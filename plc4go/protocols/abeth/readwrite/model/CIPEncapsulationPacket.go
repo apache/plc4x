@@ -257,11 +257,10 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
 		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, packetLen)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CIPEncapsulationPacket.")
 	}
 	_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 

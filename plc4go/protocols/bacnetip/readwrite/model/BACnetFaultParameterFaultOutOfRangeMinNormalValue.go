@@ -210,11 +210,10 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer utils.Rea
 	case peekedTagNumber == 0x3: // BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParse(readBuffer, tagNumber)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue.")
 	}
 	_child = _childTemp.(BACnetFaultParameterFaultOutOfRangeMinNormalValueChildSerializeRequirement)
 

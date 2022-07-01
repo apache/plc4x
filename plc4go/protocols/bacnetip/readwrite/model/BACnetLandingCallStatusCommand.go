@@ -165,11 +165,10 @@ func BACnetLandingCallStatusCommandParse(readBuffer utils.ReadBuffer) (BACnetLan
 	case peekedTagNumber == uint8(2): // BACnetLandingCallStatusCommandDestination
 		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDestinationParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetLandingCallStatusCommand.")
 	}
 	_child = _childTemp.(BACnetLandingCallStatusCommandChildSerializeRequirement)
 

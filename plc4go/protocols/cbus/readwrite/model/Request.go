@@ -151,11 +151,10 @@ func RequestParse(readBuffer utils.ReadBuffer, srchk bool) (Request, error) {
 	case peekedByte == 0x5C: // RequestCommand
 		_childTemp, typeSwitchError = RequestCommandParse(readBuffer, srchk)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v]", peekedByte)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Request.")
 	}
 	_child = _childTemp.(RequestChildSerializeRequirement)
 

@@ -139,11 +139,10 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (ServiceId, error) {
 	case serviceType == 0x08: // KnxNetObjectServer
 		_childTemp, typeSwitchError = KnxNetObjectServerParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceType=%v]", serviceType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ServiceId.")
 	}
 	_child = _childTemp.(ServiceIdChildSerializeRequirement)
 

@@ -170,11 +170,10 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	case peekedTagNumber == uint8(5): // BACnetPropertyAccessResultAccessResultPropertyAccessError
 		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetPropertyAccessResultAccessResult.")
 	}
 	_child = _childTemp.(BACnetPropertyAccessResultAccessResultChildSerializeRequirement)
 

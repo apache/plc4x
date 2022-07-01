@@ -164,11 +164,10 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	case true: // CALReplyShort
 		_childTemp, typeSwitchError = CALReplyShortParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [calType=%v]", calType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CALReply.")
 	}
 	_child = _childTemp.(CALReplyChildSerializeRequirement)
 

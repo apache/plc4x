@@ -212,11 +212,10 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetPriorityValueDateTime
 		_childTemp, typeSwitchError = BACnetPriorityValueDateTimeParse(readBuffer, objectTypeArgument)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetPriorityValue.")
 	}
 	_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 

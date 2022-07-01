@@ -165,11 +165,10 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetOptionalBin
 	case true: // BACnetOptionalBinaryPVValue
 		_childTemp, typeSwitchError = BACnetOptionalBinaryPVValueParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetOptionalBinaryPV.")
 	}
 	_child = _childTemp.(BACnetOptionalBinaryPVChildSerializeRequirement)
 

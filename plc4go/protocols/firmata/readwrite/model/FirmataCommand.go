@@ -138,11 +138,10 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (FirmataCom
 	case commandCode == 0xF: // FirmataCommandSystemReset
 		_childTemp, typeSwitchError = FirmataCommandSystemResetParse(readBuffer, response)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of FirmataCommand.")
 	}
 	_child = _childTemp.(FirmataCommandChildSerializeRequirement)
 

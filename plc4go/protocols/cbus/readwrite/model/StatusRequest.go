@@ -144,11 +144,10 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	case statusType == 0x73: // StatusRequestLevel
 		_childTemp, typeSwitchError = StatusRequestLevelParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [statusType=%v]", statusType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of StatusRequest.")
 	}
 	_child = _childTemp.(StatusRequestChildSerializeRequirement)
 

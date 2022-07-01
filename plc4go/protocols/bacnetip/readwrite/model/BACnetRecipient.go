@@ -165,11 +165,10 @@ func BACnetRecipientParse(readBuffer utils.ReadBuffer) (BACnetRecipient, error) 
 	case peekedTagNumber == uint8(1): // BACnetRecipientAddress
 		_childTemp, typeSwitchError = BACnetRecipientAddressParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetRecipient.")
 	}
 	_child = _childTemp.(BACnetRecipientChildSerializeRequirement)
 

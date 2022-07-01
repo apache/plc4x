@@ -198,11 +198,10 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	case peekedTagNumber == 0x1: // BACnetServiceAckAtomicReadFileRecord
 		_childTemp, typeSwitchError = BACnetServiceAckAtomicReadFileRecordParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetServiceAckAtomicReadFileStreamOrRecord.")
 	}
 	_child = _childTemp.(BACnetServiceAckAtomicReadFileStreamOrRecordChildSerializeRequirement)
 

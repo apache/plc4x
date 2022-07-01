@@ -126,11 +126,10 @@ func ModbusADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response
 	case driverType == DriverType_MODBUS_ASCII: // ModbusAsciiADU
 		_childTemp, typeSwitchError = ModbusAsciiADUParse(readBuffer, driverType, response)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [driverType=%v]", driverType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ModbusADU.")
 	}
 	_child = _childTemp.(ModbusADUChildSerializeRequirement)
 

@@ -226,11 +226,10 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
 		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParse(readBuffer, srchk)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [isDirect=%v]", isDirect)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToPointCommand.")
 	}
 	_child = _childTemp.(CBusPointToPointCommandChildSerializeRequirement)
 

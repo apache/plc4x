@@ -157,11 +157,10 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 	case true: // CBusPointToMultiPointCommandNormal
 		_childTemp, typeSwitchError = CBusPointToMultiPointCommandNormalParse(readBuffer, srchk)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToMultiPointCommand.")
 	}
 	_child = _childTemp.(CBusPointToMultiPointCommandChildSerializeRequirement)
 

@@ -1520,11 +1520,10 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	case true: // BACnetConstructedDataUnspecified
 		_childTemp, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [objectTypeArgument=%v, propertyIdentifierArgument=%v, peekedTagNumber=%v]", objectTypeArgument, propertyIdentifierArgument, peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetConstructedData.")
 	}
 	_child = _childTemp.(BACnetConstructedDataChildSerializeRequirement)
 

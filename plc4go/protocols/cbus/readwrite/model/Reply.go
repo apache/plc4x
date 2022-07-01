@@ -174,11 +174,10 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	case peekedByte == 0x21: // ExclamationMarkReply
 		_childTemp, typeSwitchError = ExclamationMarkReplyParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v, isAlpha=%v]", peekedByte, isAlpha)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Reply.")
 	}
 	_child = _childTemp.(ReplyChildSerializeRequirement)
 

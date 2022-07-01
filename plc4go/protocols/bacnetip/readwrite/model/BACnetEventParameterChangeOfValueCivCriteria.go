@@ -201,11 +201,10 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParse(readBuffer, tagNumber)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetEventParameterChangeOfValueCivCriteria.")
 	}
 	_child = _childTemp.(BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement)
 

@@ -237,11 +237,10 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	case command == 0x006F: // CipRRData
 		_childTemp, typeSwitchError = CipRRDataParse(readBuffer, packetLength)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [command=%v]", command)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of EipPacket.")
 	}
 	_child = _childTemp.(EipPacketChildSerializeRequirement)
 

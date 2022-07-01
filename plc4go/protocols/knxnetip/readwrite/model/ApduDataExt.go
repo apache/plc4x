@@ -210,11 +210,10 @@ func ApduDataExtParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExt, e
 	case extApciType == 0x30: // ApduDataExtFileStreamInfoReport
 		_childTemp, typeSwitchError = ApduDataExtFileStreamInfoReportParse(readBuffer, length)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [extApciType=%v]", extApciType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ApduDataExt.")
 	}
 	_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 

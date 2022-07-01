@@ -123,11 +123,10 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
 		_childTemp, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer, firmwareType)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [firmwareType=%v]", firmwareType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ComObjectTable.")
 	}
 	_child = _childTemp.(ComObjectTableChildSerializeRequirement)
 

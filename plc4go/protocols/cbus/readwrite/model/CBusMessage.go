@@ -124,11 +124,10 @@ func CBusMessageParse(readBuffer utils.ReadBuffer, response bool, srchk bool) (C
 	case response == bool(true): // CBusMessageToClient
 		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, response, srchk)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [response=%v]", response)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusMessage.")
 	}
 	_child = _childTemp.(CBusMessageChildSerializeRequirement)
 

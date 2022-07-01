@@ -142,11 +142,10 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Paramet
 	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
 		_childTemp, typeSwitchError = S7ParameterModeTransitionParse(readBuffer, messageType)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v, messageType=%v]", parameterType, messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Parameter.")
 	}
 	_child = _childTemp.(S7ParameterChildSerializeRequirement)
 

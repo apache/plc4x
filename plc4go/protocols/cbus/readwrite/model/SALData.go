@@ -177,11 +177,10 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 	case commandType == SALCommandType_TERMINATE_RAMP: // SALDataTerminateRamp
 		_childTemp, typeSwitchError = SALDataTerminateRampParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of SALData.")
 	}
 	_child = _childTemp.(SALDataChildSerializeRequirement)
 

@@ -201,11 +201,10 @@ func BACnetNotificationParametersChangeOfValueNewValueParse(readBuffer utils.Rea
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfValueNewValueChangedValue
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuffer, tagNumber, peekedTagNumber)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetNotificationParametersChangeOfValueNewValue.")
 	}
 	_child = _childTemp.(BACnetNotificationParametersChangeOfValueNewValueChildSerializeRequirement)
 

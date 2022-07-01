@@ -235,11 +235,10 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(readBuffer u
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(readBuffer, tagNumber)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue.")
 	}
 	_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 

@@ -148,11 +148,10 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter,
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
 		_childTemp, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v]", parameterType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of COTPParameter.")
 	}
 	_child = _childTemp.(COTPParameterChildSerializeRequirement)
 

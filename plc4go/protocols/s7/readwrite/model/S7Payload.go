@@ -131,11 +131,10 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7
 	case CastS7Parameter(parameter).GetParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
 		_childTemp, typeSwitchError = S7PayloadUserDataParse(readBuffer, messageType, parameter)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterparameterType=%v, messageType=%v]", CastS7Parameter(parameter).GetParameterType(), messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Payload.")
 	}
 	_child = _childTemp.(S7PayloadChildSerializeRequirement)
 

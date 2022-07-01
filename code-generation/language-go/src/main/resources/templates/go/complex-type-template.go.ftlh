@@ -1390,11 +1390,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		_childTemp, typeSwitchError = ${case.name}Parse(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")<@emitImport import="github.com/pkg/errors" />
+		typeSwitchError = errors.Errorf("Unmapped type for<#if switchField.getDiscriminatorExpressions()?has_content> parameters [<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${discriminatorExpression.stringRepresentation()}=%v<#sep>, </#sep></#list>]</#if>"<#if switchField.getDiscriminatorExpressions()?has_content>, <#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)}<#sep>, </#sep></#list></#if>)<@emitImport import="github.com/pkg/errors" />
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ${type.name}.")<@emitImport import="github.com/pkg/errors" />
 	}
 	_child = _childTemp.(${type.name}ChildSerializeRequirement)
 				<#break>

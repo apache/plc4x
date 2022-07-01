@@ -217,11 +217,10 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDU, erro
 	case errorFlag == bool(false) && functionFlag == 0x2B && response == bool(true): // ModbusPDUReadDeviceIdentificationResponse
 		_childTemp, typeSwitchError = ModbusPDUReadDeviceIdentificationResponseParse(readBuffer, response)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorFlag=%v, functionFlag=%v, response=%v]", errorFlag, functionFlag, response)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ModbusPDU.")
 	}
 	_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 

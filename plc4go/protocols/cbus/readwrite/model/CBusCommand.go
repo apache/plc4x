@@ -222,11 +222,10 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
 		_childTemp, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.Errorf("Unmapped type for destinationAddressType:%v isDeviceManagement:%v", destinationAddressType, isDeviceManagement)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [destinationAddressType=%v, isDeviceManagement=%v]", destinationAddressType, isDeviceManagement)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusCommand.")
 	}
 	_child = _childTemp.(CBusCommandChildSerializeRequirement)
 

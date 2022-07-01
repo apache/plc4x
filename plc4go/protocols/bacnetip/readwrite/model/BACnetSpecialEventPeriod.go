@@ -170,11 +170,10 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (BACnetSpecialEv
 	case peekedTagNumber == uint8(1): // BACnetSpecialEventPeriodCalendarReference
 		_childTemp, typeSwitchError = BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetSpecialEventPeriod.")
 	}
 	_child = _childTemp.(BACnetSpecialEventPeriodChildSerializeRequirement)
 

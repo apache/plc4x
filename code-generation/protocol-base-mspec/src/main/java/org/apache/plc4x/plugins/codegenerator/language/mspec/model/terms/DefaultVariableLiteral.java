@@ -77,7 +77,7 @@ public class DefaultVariableLiteral implements VariableLiteral {
 
     @Override
     public String stringRepresentation() {
-        return "";
+        return name + getChild().map(Term::stringRepresentation).orElse("");
     }
 
     @Override

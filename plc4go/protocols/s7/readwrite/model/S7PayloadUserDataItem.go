@@ -225,11 +225,10 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v, cpuSubfunction=%v, dataLength=%v]", cpuFunctionType, cpuSubfunction, dataLength)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7PayloadUserDataItem.")
 	}
 	_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 

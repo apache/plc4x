@@ -168,11 +168,10 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	case confirmationType == 0x27: // NotTransmittedTooLong
 		_childTemp, typeSwitchError = NotTransmittedTooLongParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [confirmationType=%v]", confirmationType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Confirmation.")
 	}
 	_child = _childTemp.(ConfirmationChildSerializeRequirement)
 

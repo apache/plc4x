@@ -188,11 +188,10 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint16)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetServiceAckReadPropertyConditional
 		_childTemp, typeSwitchError = BACnetServiceAckReadPropertyConditionalParse(readBuffer, serviceAckLength, serviceAckPayloadLength)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetServiceAck.")
 	}
 	_child = _childTemp.(BACnetServiceAckChildSerializeRequirement)
 

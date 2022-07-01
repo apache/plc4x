@@ -142,11 +142,10 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService
 	case service == 0x52: // CipUnconnectedRequest
 		_childTemp, typeSwitchError = CipUnconnectedRequestParse(readBuffer, serviceLen)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [service=%v]", service)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CipService.")
 	}
 	_child = _childTemp.(CipServiceChildSerializeRequirement)
 

@@ -138,11 +138,10 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (FirmataMes
 	case messageType == 0xF: // FirmataMessageCommand
 		_childTemp, typeSwitchError = FirmataMessageCommandParse(readBuffer, response)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v]", messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of FirmataMessage.")
 	}
 	_child = _childTemp.(FirmataMessageChildSerializeRequirement)
 

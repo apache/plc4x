@@ -190,11 +190,10 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	case tpduCode == 0x70: // COTPPacketTpduError
 		_childTemp, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [tpduCode=%v]", tpduCode)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of COTPPacket.")
 	}
 	_child = _childTemp.(COTPPacketChildSerializeRequirement)
 

@@ -222,11 +222,10 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	case true: // BACnetConfirmedServiceRequestUnknown
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestUnknownParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetConfirmedServiceRequest.")
 	}
 	_child = _childTemp.(BACnetConfirmedServiceRequestChildSerializeRequirement)
 

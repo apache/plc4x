@@ -161,11 +161,10 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
 		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [symbolType=%v]", symbolType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1Symbol.")
 	}
 	_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 

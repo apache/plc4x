@@ -186,11 +186,10 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
 	case messageType == 0x09: // NLMDisconnectConnectionToNetwork
 		_childTemp, typeSwitchError = NLMDisconnectConnectionToNetworkParse(readBuffer, apduLength, messageType)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v]", messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of NLM.")
 	}
 	_child = _childTemp.(NLMChildSerializeRequirement)
 

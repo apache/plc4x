@@ -133,11 +133,10 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 	case true: // BACnetErrorGeneral
 		_childTemp, typeSwitchError = BACnetErrorGeneralParse(readBuffer, errorChoice)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorChoice=%v]", errorChoice)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetError.")
 	}
 	_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 

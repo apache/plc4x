@@ -216,11 +216,10 @@ func BACnetTimerStateChangeValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	case peekedTagNumber == uint8(3) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueLightingCommand
 		_childTemp, typeSwitchError = BACnetTimerStateChangeValueLightingCommandParse(readBuffer, objectTypeArgument)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetTimerStateChangeValue.")
 	}
 	_child = _childTemp.(BACnetTimerStateChangeValueChildSerializeRequirement)
 

@@ -213,11 +213,10 @@ func BVLCParse(readBuffer utils.ReadBuffer) (BVLC, error) {
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
 		_childTemp, typeSwitchError = BVLCSecureBVLLParse(readBuffer, bvlcPayloadLength)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [bvlcFunction=%v]", bvlcFunction)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BVLC.")
 	}
 	_child = _childTemp.(BVLCChildSerializeRequirement)
 

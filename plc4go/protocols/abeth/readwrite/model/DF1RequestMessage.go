@@ -223,11 +223,10 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, err
 	case commandCode == 0x0F: // DF1CommandRequestMessage
 		_childTemp, typeSwitchError = DF1CommandRequestMessageParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1RequestMessage.")
 	}
 	_child = _childTemp.(DF1RequestMessageChildSerializeRequirement)
 

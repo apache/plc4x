@@ -252,11 +252,10 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	case messageType == 0x07: // S7MessageUserData
 		_childTemp, typeSwitchError = S7MessageUserDataParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v]", messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Message.")
 	}
 	_child = _childTemp.(S7MessageChildSerializeRequirement)
 

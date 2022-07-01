@@ -133,11 +133,10 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (ApduControl, error) {
 	case controlType == 0x3: // ApduControlNack
 		_childTemp, typeSwitchError = ApduControlNackParse(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [controlType=%v]", controlType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ApduControl.")
 	}
 	_child = _childTemp.(ApduControlChildSerializeRequirement)
 

@@ -153,11 +153,10 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute)
 	case attribute == Attribute_DSIStatus: // IdentifyReplyCommandDSIStatus
 		_childTemp, typeSwitchError = IdentifyReplyCommandDSIStatusParse(readBuffer, attribute)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [attribute=%v]", attribute)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of IdentifyReplyCommand.")
 	}
 	_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 

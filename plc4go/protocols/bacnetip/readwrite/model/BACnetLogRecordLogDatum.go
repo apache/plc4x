@@ -219,11 +219,10 @@ func BACnetLogRecordLogDatumParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	case peekedTagNumber == uint8(10): // BACnetLogRecordLogDatumAnyValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumAnyValueParse(readBuffer, tagNumber)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetLogRecordLogDatum.")
 	}
 	_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 
