@@ -61,6 +61,7 @@
             [simple   RequestTermination  termination                       ]
         ]
         ['0x5C' *Command
+            [const    byte                initiator 0x5C                    ] // 0x5C == "/"
             [simple   CBusCommand('srchk')     cbusCommand                  ]
         ]
         ['0x6E' *Null
@@ -74,7 +75,6 @@
 ]
 
 [discriminatedType CBusCommand(bit srchk)
-    [const   byte       initiator 0x5C   ] // 0x5C == "/"
     [simple  CBusHeader header           ]
     [virtual bit        isDeviceManagement 'header.dp']
     // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
@@ -517,6 +517,8 @@
 
 [type CALData
     [simple  CALCommandTypeContainer commandTypeContainer                                   ]
+    //TODO: golang doesn't like checking for 0
+    //[validation 'commandTypeContainer!=null' "no command type could be found"               ]
     [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
     [typeSwitch commandType
         ['RESET' CALDataRequestReset
@@ -882,23 +884,23 @@
     [peek    byte peekedByte                                              ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'  ]
     [typeSwitch peekedByte, isAlpha
-        ['0x0' CALReplyReply
-            [simple CALReply isA]
-        ]
-        ['0x0' MonitoredSALReply
-            [simple MonitoredSAL isA]
-        ]
         [*, 'true' ConfirmationReply
             [simple Confirmation isA]
         ]
         ['0x2B' PowerUpReply
             [simple PowerUp isA]
         ]
-        ['0x0' ParameterChangeReply
+        ['0x3D' ParameterChangeReply
             [simple ParameterChange isA]
         ]
         ['0x21' ServerErrorReply
             [const  byte    errorMarker     0x21        ]
+        ]
+        ['0x0' MonitoredSALReply
+            [simple MonitoredSAL isA]
+        ]
+        [* CALReplyReply
+            [simple CALReply isA]
         ]
     ]
 ]

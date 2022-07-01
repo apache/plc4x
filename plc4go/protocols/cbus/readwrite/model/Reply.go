@@ -161,18 +161,18 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	var _child ReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case peekedByte == 0x0: // CALReplyReply
-		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer)
-	case peekedByte == 0x0: // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer)
 	case true && isAlpha == bool(true): // ConfirmationReply
 		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer)
 	case peekedByte == 0x2B: // PowerUpReply
 		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer)
-	case peekedByte == 0x0: // ParameterChangeReply
+	case peekedByte == 0x3D: // ParameterChangeReply
 		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer)
 	case peekedByte == 0x21: // ServerErrorReply
 		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer)
+	case peekedByte == 0x0: // MonitoredSALReply
+		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer)
+	case true: // CALReplyReply
+		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v, isAlpha=%v]", peekedByte, isAlpha)
 	}

@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RandomPackagesTest {
@@ -32,6 +34,10 @@ public class RandomPackagesTest {
     static final String BACKSLASH = "5C";
     static final String CR = "0D";
     static final String LF = "0A";
+
+    static final String TILDE = "7E";
+
+    static final String AT = "40";
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf
     @Nested
@@ -41,7 +47,7 @@ public class RandomPackagesTest {
         void pointToPointCommandDirect() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "0603002102D4" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
@@ -52,7 +58,7 @@ public class RandomPackagesTest {
         void pointToPointCommandBridged() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "06420903210289" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
@@ -63,7 +69,7 @@ public class RandomPackagesTest {
         void pointToMultiPointCommandDirect() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "0538000108BA" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
@@ -74,7 +80,7 @@ public class RandomPackagesTest {
         void pointToMultiPointCommandBridged() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "05FF007A38004A" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
@@ -85,7 +91,7 @@ public class RandomPackagesTest {
         void pointToPointToMultiPointCommand2() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "03420938010871" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
@@ -96,7 +102,7 @@ public class RandomPackagesTest {
         void calRequest() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "0605002102" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, false);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, false);
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
@@ -199,7 +205,7 @@ public class RandomPackagesTest {
 
         // 9.1
         @Nested
-        class PointToMultipointComandsIntoLocalCBusNetwork {
+        class PointToMultiPointCommandsIntoLocalCBusNetwork {
             @Test
             void LightningOff() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
@@ -226,7 +232,7 @@ public class RandomPackagesTest {
             @Test
             void LightningStatusReply1() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
-                byte[] bytes = Hex.decodeHex("D83800A8AA02000000000000000000000000000000000000009C");
+                byte[] bytes = Hex.decodeHex("D83800A8AA02000000000000000000000000000000000000009C" + CR + LF);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
                 assertThat(msg)
@@ -238,7 +244,7 @@ public class RandomPackagesTest {
             @Test
             void LightningStatusReply2() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
-                byte[] bytes = Hex.decodeHex("D838580000000000000000000000000000000000000000000098");
+                byte[] bytes = Hex.decodeHex("D838580000000000000000000000000000000000000000000098" + CR + LF);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
                 assertThat(msg)
@@ -250,7 +256,7 @@ public class RandomPackagesTest {
             @Test
             void LightningStatusReply3() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
-                byte[] bytes = Hex.decodeHex("D638B0000000000000000000000000000000000000000042");
+                byte[] bytes = Hex.decodeHex("D638B0000000000000000000000000000000000000000042" + CR + LF);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
                 assertThat(msg)
@@ -262,7 +268,7 @@ public class RandomPackagesTest {
             @Test
             void LightningStatusReply4() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
-                byte[] bytes = Hex.decodeHex("86999900F8003800A8AA0200000000000000000000000000000000000000C4");
+                byte[] bytes = Hex.decodeHex("86999900F8003800A8AA0200000000000000000000000000000000000000C4" + CR + LF);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
                 assertThat(msg)
@@ -270,11 +276,12 @@ public class RandomPackagesTest {
                 System.out.println(msg);
             }
 
+
             @Disabled("something is wrong here")
             @Test
             void LightningStatusReply5() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
-                byte[] bytes = Hex.decodeHex("86999900F800385800000000000000000000000000000000000000000000C0");
+                byte[] bytes = Hex.decodeHex("86999900F800385800000000000000000000000000000000000000000000C0" + CR + LF);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
                 assertThat(msg)
@@ -286,7 +293,7 @@ public class RandomPackagesTest {
             @Test
             void LightningStatusReply6() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
-                byte[] bytes = Hex.decodeHex("86999900F60038B000000000000000000000000000000000000000008F");
+                byte[] bytes = Hex.decodeHex("86999900F60038B000000000000000000000000000000000000000008F" + CR + LF);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
                 assertThat(msg)
@@ -295,6 +302,84 @@ public class RandomPackagesTest {
             }
         }
 
+        // 9.2
+        @Nested
+        class PointToPointCommandsIntoLocalCBusNetwork {
+            @Test
+            void RecallCurrentValueOfParameter0x30onUnit0x04() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex(BACKSLASH + "0604001A3001AB" + CR);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void Reply() throws Exception {
+                byte[] bytes = Hex.decodeHex("8604990082300328" + CR + LF);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+        }
+
+        // 9.3
+        @Nested
+        class PointToMultiPointCommandsIntoaRemoteCBusNetwork {
+            @Test
+            void IssueLightningOf() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex(BACKSLASH + "03421B53643801149C" + CR);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("it is not clear if that is a request or reply... it fails in both variants")
+            @Test
+            void Reply() throws Exception {
+                byte[] bytes = Hex.decodeHex("0565380354432101148E" + CR + LF);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+        }
+
+        // 9.4
+        @Disabled("no idea that is that here")
+        @Test
+        void SwitchMode() throws Exception {
+            // TODO: the section describes that on non smart mode the message doesn't have the last CR
+            byte[] bytes = Hex.decodeHex(/*TILDE +*/ AT + "A3300019" + CR);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
+
+        // 9.5
+        @Disabled("no idea that is that here")
+        @Test
+        void MultipleCommands() throws Exception {
+            // TODO: the section describes that on non smart mode the message doesn't have the last CR
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "05380001210122012301240A25010A2601D4" + CR);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
     }
 
     @Nested
@@ -305,7 +390,7 @@ public class RandomPackagesTest {
         void pointToPointCommandDirect() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "0538007902D4" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
