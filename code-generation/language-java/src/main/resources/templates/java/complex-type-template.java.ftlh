@@ -742,7 +742,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                     }<#sep> else </#sep>
                 </#list>
                 if (builder == null) {
-                    throw new ParseException("Unsupported case for discriminated type");
+                    throw new ParseException("Unsupported case for discriminated type"<#if switchField.getDiscriminatorExpressions()?has_content>+" parameters ["<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>+"${discriminatorExpression.stringRepresentation()}="+${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)}<#sep>+" "</#sep></#list>+"]"</#if>);
                 }
                 <#break>
             <#case "unknown">
