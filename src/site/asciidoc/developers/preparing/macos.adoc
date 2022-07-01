@@ -73,23 +73,27 @@ If you get any successful output, you probably don't need to do anything.
 
 Microsoft is offering an installer for MacOS which is available from https://dotnet.microsoft.com/download/dotnet-core/2.2[here].
 
+Alternatively you can also install it via homebrew:
+
+ brew install --cask dotnet-sdk
+
 === python
 
 Checking:
 
- python --version
+ python3 --version
 
-If you get a version of 2.7 or higher reported, you probably don't need to do anything.
+If you get a version of 3.0.0 or higher reported, you probably don't need to do anything.
 
 In order to install it, please execute the following command:
 
- brew install python@2
+ brew install python
 
 === bison
 
 Checking:
 
- python --version
+ bison --version
 
 If you get a version above 2.3 output, you don't need to do anything.
 
