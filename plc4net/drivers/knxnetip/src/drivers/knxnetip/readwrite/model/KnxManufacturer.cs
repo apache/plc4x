@@ -616,8 +616,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ARIGO_SOFTWARE_GMBH = 589,
         M_FEISHELEC = 590,
         M_GORDIC = 591,
-        M_ABB___RESERVED = 592,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 593,
+        M_DELTA_ELECTRONICS = 592,
+        M_ABB___RESERVED = 593,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 594,
     }
 
     public static class KnxManufacturerInfo
@@ -2271,10 +2272,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_GORDIC: { /* '591' */
                     return 649;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '592' */
+                case KnxManufacturer.M_DELTA_ELECTRONICS: { /* '592' */
+                    return 650;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '593' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '593' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '594' */
                     return 43959;
                 }
                 case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO: { /* '6' */
@@ -4063,10 +4067,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_GORDIC: { /* '591' */
                     return "GORDIC";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '592' */
+                case KnxManufacturer.M_DELTA_ELECTRONICS: { /* '592' */
+                    return "Delta Electronics";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '593' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '593' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '594' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO: { /* '6' */
