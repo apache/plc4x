@@ -31,6 +31,7 @@ import (
 
 // Constant values.
 const CBusPointToPointCommand_CR byte = 0xD
+const CBusPointToPointCommand_LF byte = 0xA
 
 // CBusPointToPointCommand is the corresponding interface of CBusPointToPointCommand
 type CBusPointToPointCommand interface {
@@ -145,6 +146,10 @@ func (m *_CBusPointToPointCommand) GetCr() byte {
 	return CBusPointToPointCommand_CR
 }
 
+func (m *_CBusPointToPointCommand) GetLf() byte {
+	return CBusPointToPointCommand_LF
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -189,6 +194,9 @@ func (m *_CBusPointToPointCommand) GetParentLengthInBits() uint16 {
 	}
 
 	// Const Field (cr)
+	lengthInBits += 8
+
+	// Const Field (lf)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -319,6 +327,15 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CBusPointToPointCommand_CR) + " but got " + fmt.Sprintf("%d", cr))
 	}
 
+	// Const Field (lf)
+	lf, _lfErr := readBuffer.ReadByte("lf")
+	if _lfErr != nil {
+		return nil, errors.Wrap(_lfErr, "Error parsing 'lf' field")
+	}
+	if lf != CBusPointToPointCommand_LF {
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CBusPointToPointCommand_LF) + " but got " + fmt.Sprintf("%d", lf))
+	}
+
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointCommand")
 	}
@@ -395,6 +412,12 @@ func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffe
 	_crErr := writeBuffer.WriteByte("cr", 0xD)
 	if _crErr != nil {
 		return errors.Wrap(_crErr, "Error serializing 'cr' field")
+	}
+
+	// Const Field (lf)
+	_lfErr := writeBuffer.WriteByte("lf", 0xA)
+	if _lfErr != nil {
+		return errors.Wrap(_lfErr, "Error serializing 'lf' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CBusPointToPointCommand"); popErr != nil {

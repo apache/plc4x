@@ -175,6 +175,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	if closeErr := readBuffer.CloseContext("destinationAddressType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for destinationAddressType")
 	}
+	dpReservedManagement := _dpReservedManagement
 
 	if closeErr := readBuffer.CloseContext("CBusHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusHeader")
