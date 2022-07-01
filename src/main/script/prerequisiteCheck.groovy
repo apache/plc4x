@@ -311,7 +311,7 @@ def checkCmake() {
 def checkPython() {
     print "Detecting Python version:  "
     try {
-        def process = ("python --version").execute()
+        def process = ("python3 --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
@@ -336,7 +336,7 @@ def checkPython() {
 def checkSetupTools() {
     print "Detecting setuptools:      "
     try {
-        def cmdArray = ["python", "-c", "import setuptools"]
+        def cmdArray = ["python3", "-c", "import setuptools"]
         def process = cmdArray.execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
@@ -351,27 +351,6 @@ def checkSetupTools() {
     } catch (Exception e) {
         println "missing"
         allConditionsMet = false
-    }
-}
-
-/*
- * This check does an extremely simple check, if the boost library exists in the maven local repo.
- * We're not checking if it could be resolved.
- */
-
-def checkBoost() {
-    print "Detecting Boost library:   "
-    def localRepoBaseDir = session.getLocalRepository().getBasedir()
-    def expectedFile = new File(localRepoBaseDir, "org/apache/plc4x/plc4x-tools-boost/" + project.version +
-        "/plc4x-tools-boost-" + project.version + "-lib-" + project.properties["os.classifier"] + ".zip")
-    if (!expectedFile.exists()) {
-        println "              missing"
-        println ""
-        println "Missing the Boost library. This has to be built by activating the Maven profile 'with-boost'. This only has to be built once."
-        println ""
-        allConditionsMet = false
-    } else {
-        println "              OK"
     }
 }
 
@@ -478,9 +457,7 @@ println "Detected Arch: " + arch
 // Find out which profiles are enabled.
 /////////////////////////////////////////////////////
 
-def boostEnabled = false
 def cEnabled = false
-def cppEnabled = false
 def dockerEnabled = false
 def dotnetEnabled = false
 def goEnabled = false
@@ -491,9 +468,7 @@ def sandboxEnabled = false
 def apacheReleaseEnabled = false
 def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
-    if (activeProfile == "with-boost") {
-        boostEnabled = true
-    } else if (activeProfile == "with-c") {
+    if (activeProfile == "with-c") {
         cEnabled = true
     } else if (activeProfile == "with-cpp") {
         cppEnabled = true
@@ -538,14 +513,7 @@ if (dotnetEnabled) {
 }
 
 if (goEnabled) {
-    checkGo()
-}
-
-if (cppEnabled) {
-    checkClang()
-    // The cmake-maven-plugin requires at least java 11
-    checkJavaVersion("11", null)
-    checkGcc()
+//    checkGo()
 }
 
 if (javaEnabled) {
@@ -558,41 +526,22 @@ if (cEnabled) {
     checkGcc()
 }
 
-if (cppEnabled) {
-    checkGpp()
-}
-
 if (pythonEnabled) {
     checkPython()
     checkSetupTools()
-}
-
-// Boost needs the visual-studio `cl` compiler to compile the boostrap.
-if (boostEnabled && (os == "windows")) {
-    // TODO: checkVisualStudio()
-}
-
-// We only need this check, if boost is not enabled but we're enabling cpp.
-if (!boostEnabled && cppEnabled) {
-    checkBoost()
 }
 
 if (sandboxEnabled && dockerEnabled) {
     checkDocker()
 }
 
-if (cppEnabled || cEnabled) {
+if (cEnabled) {
     // CMake requires at least maven 3.6.0
     checkMavenVersion("3.6.0", null)
 }
 
 if (apacheReleaseEnabled) {
     // TODO: Check libpcap is installed
-}
-
-if (cppEnabled && (os == "windows")) {
-    print "Unfortunately currently we don't support building the 'with-cpp' profile on windows. This will definitely change in the future."
-    allConditionsMet = false
 }
 
 if (os == "mac") {
