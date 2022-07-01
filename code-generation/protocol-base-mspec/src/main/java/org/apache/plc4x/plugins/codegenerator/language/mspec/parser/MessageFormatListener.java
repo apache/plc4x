@@ -518,6 +518,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
         String namePrefix = "";
+        // TODO: maybe name this prefix and suffix wildcard
         if (ctx.nameWildcard != null) {
             namePrefix = currentTypeName;
         }
