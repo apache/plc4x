@@ -58,8 +58,8 @@ type _ConfirmationReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConfirmationReply) InitializeParent(parent Reply, magicByte byte) {
-	m.MagicByte = magicByte
+func (m *_ConfirmationReply) InitializeParent(parent Reply, peekedByte byte) {
+	m.PeekedByte = peekedByte
 }
 
 func (m *_ConfirmationReply) GetParent() Reply {
@@ -81,10 +81,10 @@ func (m *_ConfirmationReply) GetIsA() Confirmation {
 ///////////////////////////////////////////////////////////
 
 // NewConfirmationReply factory function for _ConfirmationReply
-func NewConfirmationReply(isA Confirmation, magicByte byte) *_ConfirmationReply {
+func NewConfirmationReply(isA Confirmation, peekedByte byte) *_ConfirmationReply {
 	_result := &_ConfirmationReply{
 		IsA:    isA,
-		_Reply: NewReply(magicByte),
+		_Reply: NewReply(peekedByte),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result

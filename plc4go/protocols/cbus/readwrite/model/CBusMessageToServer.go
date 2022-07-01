@@ -31,8 +31,8 @@ type CBusMessageToServer interface {
 	utils.LengthAware
 	utils.Serializable
 	CBusMessage
-	// GetCommand returns Command (property field)
-	GetCommand() CBusCommand
+	// GetRequest returns Request (property field)
+	GetRequest() Request
 }
 
 // CBusMessageToServerExactly can be used when we want exactly this type and not a type which fulfills CBusMessageToServer.
@@ -45,7 +45,7 @@ type CBusMessageToServerExactly interface {
 // _CBusMessageToServer is the data-structure of this message
 type _CBusMessageToServer struct {
 	*_CBusMessage
-	Command CBusCommand
+	Request Request
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,8 +73,8 @@ func (m *_CBusMessageToServer) GetParent() CBusMessage {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CBusMessageToServer) GetCommand() CBusCommand {
-	return m.Command
+func (m *_CBusMessageToServer) GetRequest() Request {
+	return m.Request
 }
 
 ///////////////////////
@@ -83,9 +83,9 @@ func (m *_CBusMessageToServer) GetCommand() CBusCommand {
 ///////////////////////////////////////////////////////////
 
 // NewCBusMessageToServer factory function for _CBusMessageToServer
-func NewCBusMessageToServer(command CBusCommand, srchk bool) *_CBusMessageToServer {
+func NewCBusMessageToServer(request Request, srchk bool) *_CBusMessageToServer {
 	_result := &_CBusMessageToServer{
-		Command:      command,
+		Request:      request,
 		_CBusMessage: NewCBusMessage(srchk),
 	}
 	_result._CBusMessage._CBusMessageChildRequirements = _result
@@ -114,8 +114,8 @@ func (m *_CBusMessageToServer) GetLengthInBits() uint16 {
 func (m *_CBusMessageToServer) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (command)
-	lengthInBits += m.Command.GetLengthInBits()
+	// Simple field (request)
+	lengthInBits += m.Request.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -133,17 +133,17 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, response bool, srchk 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
+	// Simple Field (request)
+	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for request")
 	}
-	_command, _commandErr := CBusCommandParse(readBuffer, bool(srchk))
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
+	_request, _requestErr := RequestParse(readBuffer, bool(srchk))
+	if _requestErr != nil {
+		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field")
 	}
-	command := _command.(CBusCommand)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
+	request := _request.(Request)
+	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for request")
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusMessageToServer"); closeErr != nil {
@@ -152,7 +152,7 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, response bool, srchk 
 
 	// Create a partially initialized instance
 	_child := &_CBusMessageToServer{
-		Command: command,
+		Request: request,
 		_CBusMessage: &_CBusMessage{
 			Srchk: srchk,
 		},
@@ -169,16 +169,16 @@ func (m *_CBusMessageToServer) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for CBusMessageToServer")
 		}
 
-		// Simple Field (command)
-		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for command")
+		// Simple Field (request)
+		if pushErr := writeBuffer.PushContext("request"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for request")
 		}
-		_commandErr := writeBuffer.WriteSerializable(m.GetCommand())
-		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for command")
+		_requestErr := writeBuffer.WriteSerializable(m.GetRequest())
+		if popErr := writeBuffer.PopContext("request"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for request")
 		}
-		if _commandErr != nil {
-			return errors.Wrap(_commandErr, "Error serializing 'command' field")
+		if _requestErr != nil {
+			return errors.Wrap(_requestErr, "Error serializing 'request' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusMessageToServer"); popErr != nil {

@@ -18,37 +18,7 @@
  */
 
 [type CBusConstants
-    [const          uint 16     cbusTcpDefaultPort 10001]
-]
-
-[type CBusMessage(bit response, bit srchk)
-    // TODO: we need to peek here too
-    [typeSwitch response
-       ['false' *ToServer
-            [simple   CBusCommand('srchk')    command]
-       ]
-       ['true' *ToClient
-            [simple   Confirmation          confirmation]
-       ]
-    ]
-]
-
-[discriminatedType CBusCommand(bit srchk)
-    //[const  byte       initiator 0x5C   ] // 0x5C == "/"
-    [simple CBusHeader header           ]
-    // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
-    [virtual DestinationAddressType destinationAddressType 'header.destinationAddressType']
-    [typeSwitch destinationAddressType
-        ['PointToPointToMultiPoint' CBusCommandPointToPointToMultiPoint
-            [simple CBusPointToPointToMultipointCommand('srchk') command]
-        ]
-        ['PointToMultiPoint'        CBusCommandPointToMultiPoint
-            [simple CBusPointToMultiPointCommand('srchk')        command]
-        ]
-        ['PointToPoint'             CBusCommandPointToPoint
-            [simple CBusPointToPointCommand('srchk')             command]
-        ]
-    ]
+    [const    uint 16     cbusTcpDefaultPort 10001]
 ]
 
 // TODO: check if that can be used in combination with srchk
@@ -63,10 +33,67 @@
     [simple bit pcn    ]
 ]
 
+[type CBusMessage(bit response, bit srchk)
+    [typeSwitch response
+       ['false' *ToServer
+            [simple   Request('srchk')      request         ]
+       ]
+       ['true' *ToClient
+            [simple   Reply                 reply           ]
+       ]
+    ]
+]
+
+[type Request(bit srchk)
+    [peek    byte peekedByte                                                ]
+    [typeSwitch peekedByte
+        ['0x7C' *SmartConnectShortcut
+            [const    byte                pipe      0x7C                    ]
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x7E' *Reset
+            [const    byte                tilde     0x7E                    ]
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x40' *DirectCommandAccess
+            [const    byte                at        0x40                    ]
+            // TODO: read device_management_cal data here
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x5C' *Command
+            [simple   CBusCommand('srchk')     cbusCommand                  ]
+        ]
+    ]
+]
+
+[discriminatedType CBusCommand(bit srchk)
+    [const   byte       initiator 0x5C   ] // 0x5C == "/"
+    [simple  CBusHeader header           ]
+    [virtual bit        isDeviceManagement 'header.dp']
+    // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
+    [virtual DestinationAddressType destinationAddressType 'header.destinationAddressType']
+    [typeSwitch destinationAddressType, isDeviceManagement
+        [*, 'true' *DeviceManagement
+            [simple     uint 8  parameterNumber                         ]
+            [const      byte    delimiter       0x0                     ]
+            [simple     byte    parameterValue                          ]
+        ]
+        ['PointToPointToMultiPoint' *PointToPointToMultiPoint
+            [simple CBusPointToPointToMultipointCommand('srchk') command]
+        ]
+        ['PointToMultiPoint'        *PointToMultiPoint
+            [simple CBusPointToMultiPointCommand('srchk')        command]
+        ]
+        ['PointToPoint'             *PointToPoint
+            [simple CBusPointToPointCommand('srchk')             command]
+        ]
+    ]
+]
+
 [type CBusHeader
     [simple   PriorityClass          priorityClass         ]
-    [simple   bit                    dpReservedManagement  ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
-    [simple   uint 2                 rcReservedManagement  ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
+    [simple   bit                    dp                    ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
+    [simple   uint 2                 rc                    ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
     [simple   DestinationAddressType destinationAddressType]
 ]
 
@@ -143,7 +170,7 @@
     [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
     [peek     byte          peekAlpha                                                           ]
     [optional Alpha         alpha    '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'               ] // Read if the peeked byte is between 'g' and 'z'
-    [const    byte          cr       0xD                                                        ] // 0xD == "<cr>"
+    [simple   RequestTermination  termination                       ]
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)
@@ -156,7 +183,6 @@
             [optional Checksum      crc           'srchk'                                              ] // checksum is optional but mspec checksum isn't
             [peek     byte          peekAlpha                                                          ]
             [optional Alpha         alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'         ] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte          cr            0xD                                                  ] // 0xD == "<cr>"
         ]
         [         CBusPointToMultiPointCommandNormal
             [simple   ApplicationIdContainer   application                                             ]
@@ -165,9 +191,9 @@
             [optional Checksum                 crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
             [peek     byte                     peekAlpha                                               ]
             [optional Alpha                    alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte                     cr          0xD                                         ] // 0xD == "<cr>"
         ]
     ]
+    [simple   RequestTermination  termination                       ]
 ]
 
 [discriminatedType CBusPointToPointToMultipointCommand(bit srchk)
@@ -181,7 +207,6 @@
             [optional Checksum    crc           'srchk'                                              ] // crc      is optional but mspec crc      isn't
             [peek     byte        peekAlpha                                                          ]
             [optional Alpha       alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'         ] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte        cr            0xD                                                  ] // 0xD == "<cr>"
         ]
         [         CBusCommandPointToPointToMultiPointNormal
             [simple   ApplicationIdContainer application                                             ]
@@ -189,9 +214,9 @@
             [optional Checksum               crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
             [peek     byte                   peekAlpha                                               ]
             [optional Alpha                  alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte                   cr          0xD                                         ] // 0xD == "<cr>"
         ]
     ]
+    [simple   RequestTermination  termination                       ]
 ]
 
 /*
@@ -851,24 +876,25 @@
 ]
 
 [type Reply
-    [peek   byte magicByte]
-    [typeSwitch magicByte
+    [peek    byte peekedByte                                              ]
+    [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'  ]
+    [typeSwitch peekedByte, isAlpha
         ['0x0' CALReplyReply
             [simple CALReply isA]
         ]
         ['0x0' MonitoredSALReply
             [simple MonitoredSAL isA]
         ]
-        ['0x0' ConfirmationReply
+        [*, 'true' ConfirmationReply
             [simple Confirmation isA]
         ]
-        ['0x0' PowerUpReply
+        ['0x2B' PowerUpReply
             [simple PowerUp isA]
         ]
         ['0x0' ParameterChangeReply
             [simple ParameterChange isA]
         ]
-        ['0x0' ExclamationMarkReply
+        ['0x21' ExclamationMarkReply
             [simple ExclamationMark isA]
         ]
     ]
@@ -894,8 +920,7 @@
     ]
     [simple   CALData   calData                                                                  ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
-    [const    byte      cr      0x0D                                                             ] // 0xD == "<cr>"
-    [const    byte      lf      0x0A                                                             ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type BridgeCount
@@ -934,8 +959,7 @@
     ]
     [optional SALData salData                                               ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
-    [const    byte        cr 0x0D                                                     ] // 0xD == "<cr>"
-    [const    byte        lf 0x0A                                                     ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type Confirmation
@@ -951,18 +975,16 @@
 ]
 
 [type PowerUp
-// TODO: implement garbage reading
-//    [array    byte        garbage   terminated  '0x2B'                              ] // "+"
-    [const    byte        plus 0x02B                                                  ] // 0xD == "<cr>"
-    [const    byte        cr   0x0D                                                   ] // 0xD == "<cr>"
-    [const    byte        lf   0x0A                                                   ] // 0xA == "<lf>"
+    [const    byte        powerUpIndicator       0x2B                  ] // "+"
+    [array    byte        garbage   terminated  '0x0D'                 ] // read all following +
+    [simple   RequestTermination  reqTermination                       ]
+    [simple   ResponseTermination resTermination                       ]
 ]
 
 [type ParameterChange
-    [const    byte        specialChar1      0x3D                                    ] // "="
-    [const    byte        specialChar2      0x3D                                    ] // "="
-    [const    byte        cr 0x0D                                                   ] // 0xD == "<cr>"
-    [const    byte        lf 0x0A                                                   ] // 0xA == "<lf>"
+    [const    byte        specialChar1      0x3D                    ] // "="
+    [const    byte        specialChar2      0x3D                    ] // "="
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type ExclamationMark
@@ -991,8 +1013,7 @@
                         'statusHeader.numberOfCharacterPairs - 2'   ]
     [simple     Checksum
                         crc                                         ]
-    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
-    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type StatusHeader
@@ -1014,8 +1035,7 @@
                         'statusHeader.numberOfCharacterPairs - 3'   ]
     [simple     Checksum
                         crc                                         ]
-    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
-    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type ExtendedStatusHeader
@@ -1048,4 +1068,13 @@
     [reserved   uint 2  '0x0'           ]
     [simple     uint 3  stackCounter    ]
     [simple     uint 3  stackDepth      ]
+]
+
+[type RequestTermination
+    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
+]
+
+[type ResponseTermination
+    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
+    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
 ]

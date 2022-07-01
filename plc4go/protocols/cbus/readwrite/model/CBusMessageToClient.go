@@ -31,8 +31,8 @@ type CBusMessageToClient interface {
 	utils.LengthAware
 	utils.Serializable
 	CBusMessage
-	// GetConfirmation returns Confirmation (property field)
-	GetConfirmation() Confirmation
+	// GetReply returns Reply (property field)
+	GetReply() Reply
 }
 
 // CBusMessageToClientExactly can be used when we want exactly this type and not a type which fulfills CBusMessageToClient.
@@ -45,7 +45,7 @@ type CBusMessageToClientExactly interface {
 // _CBusMessageToClient is the data-structure of this message
 type _CBusMessageToClient struct {
 	*_CBusMessage
-	Confirmation Confirmation
+	Reply Reply
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,8 +73,8 @@ func (m *_CBusMessageToClient) GetParent() CBusMessage {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CBusMessageToClient) GetConfirmation() Confirmation {
-	return m.Confirmation
+func (m *_CBusMessageToClient) GetReply() Reply {
+	return m.Reply
 }
 
 ///////////////////////
@@ -83,9 +83,9 @@ func (m *_CBusMessageToClient) GetConfirmation() Confirmation {
 ///////////////////////////////////////////////////////////
 
 // NewCBusMessageToClient factory function for _CBusMessageToClient
-func NewCBusMessageToClient(confirmation Confirmation, srchk bool) *_CBusMessageToClient {
+func NewCBusMessageToClient(reply Reply, srchk bool) *_CBusMessageToClient {
 	_result := &_CBusMessageToClient{
-		Confirmation: confirmation,
+		Reply:        reply,
 		_CBusMessage: NewCBusMessage(srchk),
 	}
 	_result._CBusMessage._CBusMessageChildRequirements = _result
@@ -114,8 +114,8 @@ func (m *_CBusMessageToClient) GetLengthInBits() uint16 {
 func (m *_CBusMessageToClient) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (confirmation)
-	lengthInBits += m.Confirmation.GetLengthInBits()
+	// Simple field (reply)
+	lengthInBits += m.Reply.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -133,17 +133,17 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, response bool, srchk 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (confirmation)
-	if pullErr := readBuffer.PullContext("confirmation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for confirmation")
+	// Simple Field (reply)
+	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_confirmation, _confirmationErr := ConfirmationParse(readBuffer)
-	if _confirmationErr != nil {
-		return nil, errors.Wrap(_confirmationErr, "Error parsing 'confirmation' field")
+	_reply, _replyErr := ReplyParse(readBuffer)
+	if _replyErr != nil {
+		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field")
 	}
-	confirmation := _confirmation.(Confirmation)
-	if closeErr := readBuffer.CloseContext("confirmation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for confirmation")
+	reply := _reply.(Reply)
+	if closeErr := readBuffer.CloseContext("reply"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for reply")
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusMessageToClient"); closeErr != nil {
@@ -152,7 +152,7 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, response bool, srchk 
 
 	// Create a partially initialized instance
 	_child := &_CBusMessageToClient{
-		Confirmation: confirmation,
+		Reply: reply,
 		_CBusMessage: &_CBusMessage{
 			Srchk: srchk,
 		},
@@ -169,16 +169,16 @@ func (m *_CBusMessageToClient) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for CBusMessageToClient")
 		}
 
-		// Simple Field (confirmation)
-		if pushErr := writeBuffer.PushContext("confirmation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for confirmation")
+		// Simple Field (reply)
+		if pushErr := writeBuffer.PushContext("reply"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for reply")
 		}
-		_confirmationErr := writeBuffer.WriteSerializable(m.GetConfirmation())
-		if popErr := writeBuffer.PopContext("confirmation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for confirmation")
+		_replyErr := writeBuffer.WriteSerializable(m.GetReply())
+		if popErr := writeBuffer.PopContext("reply"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for reply")
 		}
-		if _confirmationErr != nil {
-			return errors.Wrap(_confirmationErr, "Error serializing 'confirmation' field")
+		if _replyErr != nil {
+			return errors.Wrap(_replyErr, "Error serializing 'reply' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusMessageToClient"); popErr != nil {

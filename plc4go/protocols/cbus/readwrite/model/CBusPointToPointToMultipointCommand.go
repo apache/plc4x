@@ -36,6 +36,8 @@ type CBusPointToPointToMultipointCommand interface {
 	GetNetworkRoute() NetworkRoute
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
+	// GetTermination returns Termination (property field)
+	GetTermination() RequestTermination
 }
 
 // CBusPointToPointToMultipointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointToMultipointCommand.
@@ -51,6 +53,7 @@ type _CBusPointToPointToMultipointCommand struct {
 	BridgeAddress     BridgeAddress
 	NetworkRoute      NetworkRoute
 	PeekedApplication byte
+	Termination       RequestTermination
 
 	// Arguments.
 	Srchk bool
@@ -69,7 +72,7 @@ type CBusPointToPointToMultipointCommandParent interface {
 
 type CBusPointToPointToMultipointCommandChild interface {
 	utils.Serializable
-	InitializeParent(parent CBusPointToPointToMultipointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte)
+	InitializeParent(parent CBusPointToPointToMultipointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, termination RequestTermination)
 	GetParent() *CBusPointToPointToMultipointCommand
 
 	GetTypeName() string
@@ -93,14 +96,18 @@ func (m *_CBusPointToPointToMultipointCommand) GetPeekedApplication() byte {
 	return m.PeekedApplication
 }
 
+func (m *_CBusPointToPointToMultipointCommand) GetTermination() RequestTermination {
+	return m.Termination
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointToMultipointCommand factory function for _CBusPointToPointToMultipointCommand
-func NewCBusPointToPointToMultipointCommand(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, srchk bool) *_CBusPointToPointToMultipointCommand {
-	return &_CBusPointToPointToMultipointCommand{BridgeAddress: bridgeAddress, NetworkRoute: networkRoute, PeekedApplication: peekedApplication, Srchk: srchk}
+func NewCBusPointToPointToMultipointCommand(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, termination RequestTermination, srchk bool) *_CBusPointToPointToMultipointCommand {
+	return &_CBusPointToPointToMultipointCommand{BridgeAddress: bridgeAddress, NetworkRoute: networkRoute, PeekedApplication: peekedApplication, Termination: termination, Srchk: srchk}
 }
 
 // Deprecated: use the interface for direct cast
@@ -126,6 +133,9 @@ func (m *_CBusPointToPointToMultipointCommand) GetParentLengthInBits() uint16 {
 
 	// Simple field (networkRoute)
 	lengthInBits += m.NetworkRoute.GetLengthInBits()
+
+	// Simple field (termination)
+	lengthInBits += m.Termination.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -181,7 +191,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToPointToMultipointCommandChildSerializeRequirement interface {
 		CBusPointToPointToMultipointCommand
-		InitializeParent(CBusPointToPointToMultipointCommand, BridgeAddress, NetworkRoute, byte)
+		InitializeParent(CBusPointToPointToMultipointCommand, BridgeAddress, NetworkRoute, byte, RequestTermination)
 		GetParent() CBusPointToPointToMultipointCommand
 	}
 	var _childTemp interface{}
@@ -201,12 +211,25 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 	_child = _childTemp.(CBusPointToPointToMultipointCommandChildSerializeRequirement)
 
+	// Simple Field (termination)
+	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for termination")
+	}
+	_termination, _terminationErr := RequestTerminationParse(readBuffer)
+	if _terminationErr != nil {
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+	}
+	termination := _termination.(RequestTermination)
+	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for termination")
+	}
+
 	if closeErr := readBuffer.CloseContext("CBusPointToPointToMultipointCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointToMultipointCommand")
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, bridgeAddress, networkRoute, peekedApplication)
+	_child.InitializeParent(_child, bridgeAddress, networkRoute, peekedApplication, termination)
 	return _child, nil
 }
 
@@ -247,6 +270,18 @@ func (pm *_CBusPointToPointToMultipointCommand) SerializeParent(writeBuffer util
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
+	}
+
+	// Simple Field (termination)
+	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for termination")
+	}
+	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
+	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for termination")
+	}
+	if _terminationErr != nil {
+		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CBusPointToPointToMultipointCommand"); popErr != nil {

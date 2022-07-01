@@ -77,9 +77,10 @@ type _CALReplyLong struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALReplyLong) InitializeParent(parent CALReply, calType byte, calData CALData) {
+func (m *_CALReplyLong) InitializeParent(parent CALReply, calType byte, calData CALData, termination ResponseTermination) {
 	m.CalType = calType
 	m.CalData = calData
+	m.Termination = termination
 }
 
 func (m *_CALReplyLong) GetParent() CALReply {
@@ -142,7 +143,7 @@ func (m *_CALReplyLong) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyLong factory function for _CALReplyLong
-func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, calType byte, calData CALData) *_CALReplyLong {
+func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, calType byte, calData CALData, termination ResponseTermination) *_CALReplyLong {
 	_result := &_CALReplyLong{
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
@@ -150,7 +151,7 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddr
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_CALReply:              NewCALReply(calType, calData),
+		_CALReply:              NewCALReply(calType, calData, termination),
 	}
 	_result._CALReply._CALReplyChildRequirements = _result
 	return _result

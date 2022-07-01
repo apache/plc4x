@@ -30,13 +30,13 @@ import (
 // Constant values.
 const ParameterChange_SPECIALCHAR1 byte = 0x3D
 const ParameterChange_SPECIALCHAR2 byte = 0x3D
-const ParameterChange_CR byte = 0x0D
-const ParameterChange_LF byte = 0x0A
 
 // ParameterChange is the corresponding interface of ParameterChange
 type ParameterChange interface {
 	utils.LengthAware
 	utils.Serializable
+	// GetTermination returns Termination (property field)
+	GetTermination() ResponseTermination
 }
 
 // ParameterChangeExactly can be used when we want exactly this type and not a type which fulfills ParameterChange.
@@ -48,8 +48,22 @@ type ParameterChangeExactly interface {
 
 // _ParameterChange is the data-structure of this message
 type _ParameterChange struct {
+	Termination ResponseTermination
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_ParameterChange) GetTermination() ResponseTermination {
+	return m.Termination
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -63,22 +77,14 @@ func (m *_ParameterChange) GetSpecialChar2() byte {
 	return ParameterChange_SPECIALCHAR2
 }
 
-func (m *_ParameterChange) GetCr() byte {
-	return ParameterChange_CR
-}
-
-func (m *_ParameterChange) GetLf() byte {
-	return ParameterChange_LF
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewParameterChange factory function for _ParameterChange
-func NewParameterChange() *_ParameterChange {
-	return &_ParameterChange{}
+func NewParameterChange(termination ResponseTermination) *_ParameterChange {
+	return &_ParameterChange{Termination: termination}
 }
 
 // Deprecated: use the interface for direct cast
@@ -109,11 +115,8 @@ func (m *_ParameterChange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Const Field (specialChar2)
 	lengthInBits += 8
 
-	// Const Field (cr)
-	lengthInBits += 8
-
-	// Const Field (lf)
-	lengthInBits += 8
+	// Simple field (termination)
+	lengthInBits += m.Termination.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -149,22 +152,17 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) 
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ParameterChange_SPECIALCHAR2) + " but got " + fmt.Sprintf("%d", specialChar2))
 	}
 
-	// Const Field (cr)
-	cr, _crErr := readBuffer.ReadByte("cr")
-	if _crErr != nil {
-		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field")
+	// Simple Field (termination)
+	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for termination")
 	}
-	if cr != ParameterChange_CR {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ParameterChange_CR) + " but got " + fmt.Sprintf("%d", cr))
+	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
+	if _terminationErr != nil {
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
 	}
-
-	// Const Field (lf)
-	lf, _lfErr := readBuffer.ReadByte("lf")
-	if _lfErr != nil {
-		return nil, errors.Wrap(_lfErr, "Error parsing 'lf' field")
-	}
-	if lf != ParameterChange_LF {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ParameterChange_LF) + " but got " + fmt.Sprintf("%d", lf))
+	termination := _termination.(ResponseTermination)
+	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for termination")
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterChange"); closeErr != nil {
@@ -172,7 +170,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) 
 	}
 
 	// Create the instance
-	return NewParameterChange(), nil
+	return NewParameterChange(termination), nil
 }
 
 func (m *_ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -194,16 +192,16 @@ func (m *_ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_specialChar2Err, "Error serializing 'specialChar2' field")
 	}
 
-	// Const Field (cr)
-	_crErr := writeBuffer.WriteByte("cr", 0x0D)
-	if _crErr != nil {
-		return errors.Wrap(_crErr, "Error serializing 'cr' field")
+	// Simple Field (termination)
+	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for termination")
 	}
-
-	// Const Field (lf)
-	_lfErr := writeBuffer.WriteByte("lf", 0x0A)
-	if _lfErr != nil {
-		return errors.Wrap(_lfErr, "Error serializing 'lf' field")
+	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
+	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for termination")
+	}
+	if _terminationErr != nil {
+		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ParameterChange"); popErr != nil {

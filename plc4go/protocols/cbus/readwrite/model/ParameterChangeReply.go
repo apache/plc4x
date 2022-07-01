@@ -58,8 +58,8 @@ type _ParameterChangeReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterChangeReply) InitializeParent(parent Reply, magicByte byte) {
-	m.MagicByte = magicByte
+func (m *_ParameterChangeReply) InitializeParent(parent Reply, peekedByte byte) {
+	m.PeekedByte = peekedByte
 }
 
 func (m *_ParameterChangeReply) GetParent() Reply {
@@ -81,10 +81,10 @@ func (m *_ParameterChangeReply) GetIsA() ParameterChange {
 ///////////////////////////////////////////////////////////
 
 // NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(isA ParameterChange, magicByte byte) *_ParameterChangeReply {
+func NewParameterChangeReply(isA ParameterChange, peekedByte byte) *_ParameterChangeReply {
 	_result := &_ParameterChangeReply{
 		IsA:    isA,
-		_Reply: NewReply(magicByte),
+		_Reply: NewReply(peekedByte),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result

@@ -30,8 +30,10 @@ import (
 type Reply interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetMagicByte returns MagicByte (property field)
-	GetMagicByte() byte
+	// GetPeekedByte returns PeekedByte (property field)
+	GetPeekedByte() byte
+	// GetIsAlpha returns IsAlpha (virtual field)
+	GetIsAlpha() bool
 }
 
 // ReplyExactly can be used when we want exactly this type and not a type which fulfills Reply.
@@ -44,7 +46,7 @@ type ReplyExactly interface {
 // _Reply is the data-structure of this message
 type _Reply struct {
 	_ReplyChildRequirements
-	MagicByte byte
+	PeekedByte byte
 }
 
 type _ReplyChildRequirements interface {
@@ -60,7 +62,7 @@ type ReplyParent interface {
 
 type ReplyChild interface {
 	utils.Serializable
-	InitializeParent(parent Reply, magicByte byte)
+	InitializeParent(parent Reply, peekedByte byte)
 	GetParent() *Reply
 
 	GetTypeName() string
@@ -72,8 +74,21 @@ type ReplyChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_Reply) GetMagicByte() byte {
-	return m.MagicByte
+func (m *_Reply) GetPeekedByte() byte {
+	return m.PeekedByte
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_Reply) GetIsAlpha() bool {
+	return bool(bool(bool(bool((m.GetPeekedByte()) >= (0x67)))) && bool(bool(bool((m.GetPeekedByte()) <= (0x7A)))))
 }
 
 ///////////////////////
@@ -82,8 +97,8 @@ func (m *_Reply) GetMagicByte() byte {
 ///////////////////////////////////////////////////////////
 
 // NewReply factory function for _Reply
-func NewReply(magicByte byte) *_Reply {
-	return &_Reply{MagicByte: magicByte}
+func NewReply(peekedByte byte) *_Reply {
+	return &_Reply{PeekedByte: peekedByte}
 }
 
 // Deprecated: use the interface for direct cast
@@ -104,6 +119,8 @@ func (m *_Reply) GetTypeName() string {
 func (m *_Reply) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -120,14 +137,19 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (magicByte)
+	// Peek Field (peekedByte)
 	currentPos = positionAware.GetPos()
-	magicByte, _err := readBuffer.ReadByte("magicByte")
+	peekedByte, _err := readBuffer.ReadByte("peekedByte")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'magicByte' field")
+		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field")
 	}
 
 	readBuffer.Reset(currentPos)
+
+	// Virtual field
+	_isAlpha := bool(bool(bool((peekedByte) >= (0x67)))) && bool(bool(bool((peekedByte) <= (0x7A))))
+	isAlpha := bool(_isAlpha)
+	_ = isAlpha
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ReplyChildSerializeRequirement interface {
@@ -139,17 +161,17 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	var _child ReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case magicByte == 0x0: // CALReplyReply
+	case peekedByte == 0x0: // CALReplyReply
 		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer)
-	case magicByte == 0x0: // MonitoredSALReply
+	case peekedByte == 0x0: // MonitoredSALReply
 		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer)
-	case magicByte == 0x0: // ConfirmationReply
+	case true && isAlpha == bool(true): // ConfirmationReply
 		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer)
-	case magicByte == 0x0: // PowerUpReply
+	case peekedByte == 0x2B: // PowerUpReply
 		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer)
-	case magicByte == 0x0: // ParameterChangeReply
+	case peekedByte == 0x0: // ParameterChangeReply
 		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer)
-	case magicByte == 0x0: // ExclamationMarkReply
+	case peekedByte == 0x21: // ExclamationMarkReply
 		_childTemp, typeSwitchError = ExclamationMarkReplyParse(readBuffer)
 	default:
 		// TODO: return actual type
@@ -165,7 +187,7 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, magicByte)
+	_child.InitializeParent(_child, peekedByte)
 	return _child, nil
 }
 
@@ -177,6 +199,10 @@ func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, se
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Reply"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for Reply")
+	}
+	// Virtual field
+	if _isAlphaErr := writeBuffer.WriteVirtual("isAlpha", m.GetIsAlpha()); _isAlphaErr != nil {
+		return errors.Wrap(_isAlphaErr, "Error serializing 'isAlpha' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

@@ -54,12 +54,16 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "RequestTermination":
+		return model.RequestTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StandardFormatStatusReply":
 		return model.StandardFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusMessage":
 		response := parserArguments[0] == "true"
 		srchk := parserArguments[1] == "true"
 		return model.CBusMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response, srchk)
+	case "ResponseTermination":
+		return model.ResponseTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusOptions":
 		return model.CBusOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SALData":
@@ -111,6 +115,9 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ExtendedFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusHeader":
 		return model.CBusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "Request":
+		srchk := parserArguments[0] == "true"
+		return model.RequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
 	case "CBusPointToPointCommand":
 		srchk := parserArguments[0] == "true"
 		return model.CBusPointToPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)

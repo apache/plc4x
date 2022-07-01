@@ -32,10 +32,10 @@ type CBusHeader interface {
 	utils.Serializable
 	// GetPriorityClass returns PriorityClass (property field)
 	GetPriorityClass() PriorityClass
-	// GetDpReservedManagement returns DpReservedManagement (property field)
-	GetDpReservedManagement() bool
-	// GetRcReservedManagement returns RcReservedManagement (property field)
-	GetRcReservedManagement() uint8
+	// GetDp returns Dp (property field)
+	GetDp() bool
+	// GetRc returns Rc (property field)
+	GetRc() uint8
 	// GetDestinationAddressType returns DestinationAddressType (property field)
 	GetDestinationAddressType() DestinationAddressType
 }
@@ -50,8 +50,8 @@ type CBusHeaderExactly interface {
 // _CBusHeader is the data-structure of this message
 type _CBusHeader struct {
 	PriorityClass          PriorityClass
-	DpReservedManagement   bool
-	RcReservedManagement   uint8
+	Dp                     bool
+	Rc                     uint8
 	DestinationAddressType DestinationAddressType
 }
 
@@ -64,12 +64,12 @@ func (m *_CBusHeader) GetPriorityClass() PriorityClass {
 	return m.PriorityClass
 }
 
-func (m *_CBusHeader) GetDpReservedManagement() bool {
-	return m.DpReservedManagement
+func (m *_CBusHeader) GetDp() bool {
+	return m.Dp
 }
 
-func (m *_CBusHeader) GetRcReservedManagement() uint8 {
-	return m.RcReservedManagement
+func (m *_CBusHeader) GetRc() uint8 {
+	return m.Rc
 }
 
 func (m *_CBusHeader) GetDestinationAddressType() DestinationAddressType {
@@ -82,8 +82,8 @@ func (m *_CBusHeader) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////////////////////////////////////////
 
 // NewCBusHeader factory function for _CBusHeader
-func NewCBusHeader(priorityClass PriorityClass, dpReservedManagement bool, rcReservedManagement uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
-	return &_CBusHeader{PriorityClass: priorityClass, DpReservedManagement: dpReservedManagement, RcReservedManagement: rcReservedManagement, DestinationAddressType: destinationAddressType}
+func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
+	return &_CBusHeader{PriorityClass: priorityClass, Dp: dp, Rc: rc, DestinationAddressType: destinationAddressType}
 }
 
 // Deprecated: use the interface for direct cast
@@ -111,10 +111,10 @@ func (m *_CBusHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (priorityClass)
 	lengthInBits += 2
 
-	// Simple field (dpReservedManagement)
+	// Simple field (dp)
 	lengthInBits += 1
 
-	// Simple field (rcReservedManagement)
+	// Simple field (rc)
 	lengthInBits += 2
 
 	// Simple field (destinationAddressType)
@@ -149,19 +149,19 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 		return nil, errors.Wrap(closeErr, "Error closing for priorityClass")
 	}
 
-	// Simple Field (dpReservedManagement)
-	_dpReservedManagement, _dpReservedManagementErr := readBuffer.ReadBit("dpReservedManagement")
-	if _dpReservedManagementErr != nil {
-		return nil, errors.Wrap(_dpReservedManagementErr, "Error parsing 'dpReservedManagement' field")
+	// Simple Field (dp)
+	_dp, _dpErr := readBuffer.ReadBit("dp")
+	if _dpErr != nil {
+		return nil, errors.Wrap(_dpErr, "Error parsing 'dp' field")
 	}
-	dpReservedManagement := _dpReservedManagement
+	dp := _dp
 
-	// Simple Field (rcReservedManagement)
-	_rcReservedManagement, _rcReservedManagementErr := readBuffer.ReadUint8("rcReservedManagement", 2)
-	if _rcReservedManagementErr != nil {
-		return nil, errors.Wrap(_rcReservedManagementErr, "Error parsing 'rcReservedManagement' field")
+	// Simple Field (rc)
+	_rc, _rcErr := readBuffer.ReadUint8("rc", 2)
+	if _rcErr != nil {
+		return nil, errors.Wrap(_rcErr, "Error parsing 'rc' field")
 	}
-	rcReservedManagement := _rcReservedManagement
+	rc := _rc
 
 	// Simple Field (destinationAddressType)
 	if pullErr := readBuffer.PullContext("destinationAddressType"); pullErr != nil {
@@ -181,7 +181,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	}
 
 	// Create the instance
-	return NewCBusHeader(priorityClass, dpReservedManagement, rcReservedManagement, destinationAddressType), nil
+	return NewCBusHeader(priorityClass, dp, rc, destinationAddressType), nil
 }
 
 func (m *_CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -203,18 +203,18 @@ func (m *_CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_priorityClassErr, "Error serializing 'priorityClass' field")
 	}
 
-	// Simple Field (dpReservedManagement)
-	dpReservedManagement := bool(m.GetDpReservedManagement())
-	_dpReservedManagementErr := writeBuffer.WriteBit("dpReservedManagement", (dpReservedManagement))
-	if _dpReservedManagementErr != nil {
-		return errors.Wrap(_dpReservedManagementErr, "Error serializing 'dpReservedManagement' field")
+	// Simple Field (dp)
+	dp := bool(m.GetDp())
+	_dpErr := writeBuffer.WriteBit("dp", (dp))
+	if _dpErr != nil {
+		return errors.Wrap(_dpErr, "Error serializing 'dp' field")
 	}
 
-	// Simple Field (rcReservedManagement)
-	rcReservedManagement := uint8(m.GetRcReservedManagement())
-	_rcReservedManagementErr := writeBuffer.WriteUint8("rcReservedManagement", 2, (rcReservedManagement))
-	if _rcReservedManagementErr != nil {
-		return errors.Wrap(_rcReservedManagementErr, "Error serializing 'rcReservedManagement' field")
+	// Simple Field (rc)
+	rc := uint8(m.GetRc())
+	_rcErr := writeBuffer.WriteUint8("rc", 2, (rc))
+	if _rcErr != nil {
+		return errors.Wrap(_rcErr, "Error serializing 'rc' field")
 	}
 
 	// Simple Field (destinationAddressType)

@@ -58,8 +58,8 @@ type _ExclamationMarkReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ExclamationMarkReply) InitializeParent(parent Reply, magicByte byte) {
-	m.MagicByte = magicByte
+func (m *_ExclamationMarkReply) InitializeParent(parent Reply, peekedByte byte) {
+	m.PeekedByte = peekedByte
 }
 
 func (m *_ExclamationMarkReply) GetParent() Reply {
@@ -81,10 +81,10 @@ func (m *_ExclamationMarkReply) GetIsA() ExclamationMark {
 ///////////////////////////////////////////////////////////
 
 // NewExclamationMarkReply factory function for _ExclamationMarkReply
-func NewExclamationMarkReply(isA ExclamationMark, magicByte byte) *_ExclamationMarkReply {
+func NewExclamationMarkReply(isA ExclamationMark, peekedByte byte) *_ExclamationMarkReply {
 	_result := &_ExclamationMarkReply{
 		IsA:    isA,
-		_Reply: NewReply(magicByte),
+		_Reply: NewReply(peekedByte),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
