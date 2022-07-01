@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RandomPackagesTest {
 
-    static final String BACKSLASH = "";//""5C";
+    static final String BACKSLASH = "5C";
     static final String CR = "0D";
     static final String LF = "0A";
 
@@ -196,6 +196,105 @@ public class RandomPackagesTest {
                 .isNotNull();
             System.out.println(msg);
         }
+
+        // 9.1
+        @Nested
+        class PointToMultipointComandsIntoLocalCBusNetwork {
+            @Test
+            void LightningOff() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex(BACKSLASH + "0538000114AE" + CR);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void LightningStatus() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex(BACKSLASH + "05FF007A38004A" + CR);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("something is wrong here")
+            @Test
+            void LightningStatusReply1() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex("D83800A8AA02000000000000000000000000000000000000009C");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("something is wrong here")
+            @Test
+            void LightningStatusReply2() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex("D838580000000000000000000000000000000000000000000098");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("something is wrong here")
+            @Test
+            void LightningStatusReply3() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex("D638B0000000000000000000000000000000000000000042");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("something is wrong here")
+            @Test
+            void LightningStatusReply4() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex("86999900F8003800A8AA0200000000000000000000000000000000000000C4");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("something is wrong here")
+            @Test
+            void LightningStatusReply5() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex("86999900F800385800000000000000000000000000000000000000000000C0");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("something is wrong here")
+            @Test
+            void LightningStatusReply6() throws Exception {
+                // TODO: the section describes that on non smart mode the message doesn't have the last CR
+                byte[] bytes = Hex.decodeHex("86999900F60038B000000000000000000000000000000000000000008F");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+        }
+
     }
 
     @Nested

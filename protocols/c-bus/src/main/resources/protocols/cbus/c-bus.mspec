@@ -57,11 +57,18 @@
         ]
         ['0x40' *DirectCommandAccess
             [const    byte                at        0x40                    ]
-            // TODO: read device_management_cal data here
+            [simple   CBusPointToPointCommand('srchk')     cbusCommand      ]
             [simple   RequestTermination  termination                       ]
         ]
         ['0x5C' *Command
             [simple   CBusCommand('srchk')     cbusCommand                  ]
+        ]
+        ['0x6E' *Null
+            [const    uint 32             nullIndicator        0x6E756C6C   ] // "null"
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x0D' *Empty
+            [simple   RequestTermination  termination                       ]
         ]
     ]
 ]
@@ -124,6 +131,7 @@
 
 [type Alpha
     [simple byte character]
+    [validation '(character >= 0x67) && (character <= 0x7A)' "character not in alpha space" shouldFail=false] // Read if the peeked byte is between 'g' and 'z'
 ]
 
 [type NetworkRoute
@@ -168,9 +176,8 @@
     ]
     [simple   CALData calData                                                                   ]
     [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
-    [peek     byte          peekAlpha                                                           ]
-    [optional Alpha         alpha    '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'               ] // Read if the peeked byte is between 'g' and 'z'
-    [simple   RequestTermination  termination                       ]
+    [optional Alpha         alpha                                                               ]
+    [simple   RequestTermination  termination                                                   ]
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)
@@ -181,16 +188,14 @@
             [reserved byte          '0x00'                                                             ]
             [simple   StatusRequest statusRequest                                                      ]
             [optional Checksum      crc           'srchk'                                              ] // checksum is optional but mspec checksum isn't
-            [peek     byte          peekAlpha                                                          ]
-            [optional Alpha         alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'         ] // Read if the peeked byte is between 'g' and 'z'
+            [optional Alpha         alpha                                                              ]
         ]
         [         CBusPointToMultiPointCommandNormal
             [simple   ApplicationIdContainer   application                                             ]
             [reserved byte                     '0x00'                                                  ]
             [simple   SALData                  salData                                                 ]
             [optional Checksum                 crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
-            [peek     byte                     peekAlpha                                               ]
-            [optional Alpha                    alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
+            [optional Alpha         alpha                                                               ]
         ]
     ]
     [simple   RequestTermination  termination                       ]
@@ -205,15 +210,13 @@
             [reserved byte        '0xFF'                                                             ]
             [simple StatusRequest statusRequest                                                      ]
             [optional Checksum    crc           'srchk'                                              ] // crc      is optional but mspec crc      isn't
-            [peek     byte        peekAlpha                                                          ]
-            [optional Alpha       alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'         ] // Read if the peeked byte is between 'g' and 'z'
+            [optional Alpha         alpha                                                            ]
         ]
         [         CBusCommandPointToPointToMultiPointNormal
             [simple   ApplicationIdContainer application                                             ]
             [simple   SALData                salData                                                 ]
             [optional Checksum               crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
-            [peek     byte                   peekAlpha                                               ]
-            [optional Alpha                  alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
+            [optional Alpha         alpha                                                            ]
         ]
     ]
     [simple   RequestTermination  termination                       ]
@@ -894,8 +897,8 @@
         ['0x0' ParameterChangeReply
             [simple ParameterChange isA]
         ]
-        ['0x21' ExclamationMarkReply
-            [simple ExclamationMark isA]
+        ['0x21' ServerErrorReply
+            [const  byte    errorMarker     0x21        ]
         ]
     ]
 ]
@@ -971,12 +974,15 @@
         ['0x24'    NotTransmittedCorruption            ] // "$"
         ['0x25'    NotTransmittedSyncLoss              ] // "%"
         ['0x27'    NotTransmittedTooLong               ] // "'"
+        [*         *Unknown
+        ]
     ]
 ]
 
 [type PowerUp
     [const    byte        powerUpIndicator       0x2B                  ] // "+"
-    [array    byte        garbage   terminated  '0x0D'                 ] // read all following +
+    // TODO: do we really need a static helper to peek for terminated?=
+    //[array    uint 8        garbage   terminated  '0x0D'                 ] // read all following +
     [simple   RequestTermination  reqTermination                       ]
     [simple   ResponseTermination resTermination                       ]
 ]
@@ -985,10 +991,6 @@
     [const    byte        specialChar1      0x3D                    ] // "="
     [const    byte        specialChar2      0x3D                    ] // "="
     [simple   ResponseTermination termination                       ]
-]
-
-[type ExclamationMark
-    // TODO: implement me
 ]
 
 [type ReplyNetwork
