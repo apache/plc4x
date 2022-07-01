@@ -82,13 +82,6 @@
   </dependencies>
 
   <profiles>
-    <!-- Build PLC4X including the C++ modules -->
-    <profile>
-      <id>with-cpp</id>
-      <modules>
-        <module>plc4cpp</module>
-      </modules>
-    </profile>
 
     <!-- Build PLC4X including the Python modules -->
     <profile>
