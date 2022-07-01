@@ -164,7 +164,7 @@ func BACnetConstructedDataAlertEnrollmentPresentValueParse(readBuffer utils.Read
 	}
 	_presentValue, _presentValueErr := BACnetApplicationTagParse(readBuffer)
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataAlertEnrollmentPresentValue")
 	}
 	presentValue := _presentValue.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

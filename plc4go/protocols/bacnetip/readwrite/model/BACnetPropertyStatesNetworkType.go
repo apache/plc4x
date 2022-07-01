@@ -137,7 +137,7 @@ func BACnetPropertyStatesNetworkTypeParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkTypeErr != nil {
-		return nil, errors.Wrap(_networkTypeErr, "Error parsing 'networkType' field")
+		return nil, errors.Wrap(_networkTypeErr, "Error parsing 'networkType' field of BACnetPropertyStatesNetworkType")
 	}
 	networkType := _networkType.(BACnetNetworkTypeTagged)
 	if closeErr := readBuffer.CloseContext("networkType"); closeErr != nil {

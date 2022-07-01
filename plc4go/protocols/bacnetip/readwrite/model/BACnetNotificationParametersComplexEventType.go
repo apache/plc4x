@@ -139,7 +139,7 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 	}
 	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectTypeArgument))
 	if _listOfValuesErr != nil {
-		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
+		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetNotificationParametersComplexEventType")
 	}
 	listOfValues := _listOfValues.(BACnetPropertyValues)
 	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {

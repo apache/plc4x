@@ -139,7 +139,7 @@ func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetTimeStampsEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'timestamps' field")
+				return nil, errors.Wrap(_err, "Error parsing 'timestamps' field of BACnetTimeStampsEnclosed")
 			}
 			timestamps = append(timestamps, _item.(BACnetTimeStamp))
 
@@ -172,7 +172,7 @@ func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetTimeStampsEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

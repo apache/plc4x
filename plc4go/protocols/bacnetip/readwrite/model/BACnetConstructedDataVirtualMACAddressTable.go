@@ -155,7 +155,7 @@ func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVMACEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'virtualMacAddressTable' field")
+				return nil, errors.Wrap(_err, "Error parsing 'virtualMacAddressTable' field of BACnetConstructedDataVirtualMACAddressTable")
 			}
 			virtualMacAddressTable = append(virtualMacAddressTable, _item.(BACnetVMACEntry))
 

@@ -194,7 +194,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfLifeSafety")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -207,7 +207,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	}
 	_newState, _newStateErr := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _newStateErr != nil {
-		return nil, errors.Wrap(_newStateErr, "Error parsing 'newState' field")
+		return nil, errors.Wrap(_newStateErr, "Error parsing 'newState' field of BACnetNotificationParametersChangeOfLifeSafety")
 	}
 	newState := _newState.(BACnetLifeSafetyStateTagged)
 	if closeErr := readBuffer.CloseContext("newState"); closeErr != nil {
@@ -220,7 +220,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	}
 	_newMode, _newModeErr := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _newModeErr != nil {
-		return nil, errors.Wrap(_newModeErr, "Error parsing 'newMode' field")
+		return nil, errors.Wrap(_newModeErr, "Error parsing 'newMode' field of BACnetNotificationParametersChangeOfLifeSafety")
 	}
 	newMode := _newMode.(BACnetLifeSafetyModeTagged)
 	if closeErr := readBuffer.CloseContext("newMode"); closeErr != nil {
@@ -233,7 +233,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfLifeSafety")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
@@ -246,7 +246,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	}
 	_operationExpected, _operationExpectedErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _operationExpectedErr != nil {
-		return nil, errors.Wrap(_operationExpectedErr, "Error parsing 'operationExpected' field")
+		return nil, errors.Wrap(_operationExpectedErr, "Error parsing 'operationExpected' field of BACnetNotificationParametersChangeOfLifeSafety")
 	}
 	operationExpected := _operationExpected.(BACnetLifeSafetyOperationTagged)
 	if closeErr := readBuffer.CloseContext("operationExpected"); closeErr != nil {
@@ -259,7 +259,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfLifeSafety")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

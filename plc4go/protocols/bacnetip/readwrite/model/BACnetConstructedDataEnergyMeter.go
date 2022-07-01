@@ -164,7 +164,7 @@ func BACnetConstructedDataEnergyMeterParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_energyMeter, _energyMeterErr := BACnetApplicationTagParse(readBuffer)
 	if _energyMeterErr != nil {
-		return nil, errors.Wrap(_energyMeterErr, "Error parsing 'energyMeter' field")
+		return nil, errors.Wrap(_energyMeterErr, "Error parsing 'energyMeter' field of BACnetConstructedDataEnergyMeter")
 	}
 	energyMeter := _energyMeter.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("energyMeter"); closeErr != nil {

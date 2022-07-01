@@ -165,7 +165,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	}
 	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
+		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetServiceAckConfirmedPrivateTransfer")
 	}
 	vendorId := _vendorId.(BACnetVendorIdTagged)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
@@ -178,7 +178,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	}
 	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _serviceNumberErr != nil {
-		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field")
+		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field of BACnetServiceAckConfirmedPrivateTransfer")
 	}
 	serviceNumber := _serviceNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("serviceNumber"); closeErr != nil {
@@ -198,7 +198,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'resultBlock' field")
+			return nil, errors.Wrap(_err, "Error parsing 'resultBlock' field of BACnetServiceAckConfirmedPrivateTransfer")
 		default:
 			resultBlock = _val.(BACnetConstructedData)
 			if closeErr := readBuffer.CloseContext("resultBlock"); closeErr != nil {

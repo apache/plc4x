@@ -227,7 +227,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CALReplyLong")
 		}
 		if reserved != byte(0x86) {
 			log.Info().Fields(map[string]interface{}{
@@ -241,7 +241,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 	currentPos = positionAware.GetPos()
 	terminatingByte, _err := readBuffer.ReadUint32("terminatingByte", 24)
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field")
+		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field of CALReplyLong")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -264,7 +264,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field of CALReplyLong")
 		default:
 			unitAddress = _val.(UnitAddress)
 			if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
@@ -286,7 +286,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field of CALReplyLong")
 		default:
 			bridgeAddress = _val.(BridgeAddress)
 			if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
@@ -301,7 +301,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 	}
 	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParse(readBuffer)
 	if _serialInterfaceAddressErr != nil {
-		return nil, errors.Wrap(_serialInterfaceAddressErr, "Error parsing 'serialInterfaceAddress' field")
+		return nil, errors.Wrap(_serialInterfaceAddressErr, "Error parsing 'serialInterfaceAddress' field of CALReplyLong")
 	}
 	serialInterfaceAddress := _serialInterfaceAddress.(SerialInterfaceAddress)
 	if closeErr := readBuffer.CloseContext("serialInterfaceAddress"); closeErr != nil {
@@ -313,7 +313,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 	if isUnitAddress {
 		_val, _err := readBuffer.ReadByte("reservedByte")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field of CALReplyLong")
 		}
 		reservedByte = &_val
 	}
@@ -336,7 +336,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field")
+			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field of CALReplyLong")
 		default:
 			replyNetwork = _val.(ReplyNetwork)
 			if closeErr := readBuffer.CloseContext("replyNetwork"); closeErr != nil {

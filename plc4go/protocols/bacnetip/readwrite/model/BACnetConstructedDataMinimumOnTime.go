@@ -164,7 +164,7 @@ func BACnetConstructedDataMinimumOnTimeParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_minimumOnTime, _minimumOnTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _minimumOnTimeErr != nil {
-		return nil, errors.Wrap(_minimumOnTimeErr, "Error parsing 'minimumOnTime' field")
+		return nil, errors.Wrap(_minimumOnTimeErr, "Error parsing 'minimumOnTime' field of BACnetConstructedDataMinimumOnTime")
 	}
 	minimumOnTime := _minimumOnTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("minimumOnTime"); closeErr != nil {

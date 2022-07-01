@@ -183,7 +183,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersExtended")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
+		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetNotificationParametersExtended")
 	}
 	vendorId := _vendorId.(BACnetVendorIdTagged)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_extendedEventType, _extendedEventTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _extendedEventTypeErr != nil {
-		return nil, errors.Wrap(_extendedEventTypeErr, "Error parsing 'extendedEventType' field")
+		return nil, errors.Wrap(_extendedEventTypeErr, "Error parsing 'extendedEventType' field of BACnetNotificationParametersExtended")
 	}
 	extendedEventType := _extendedEventType.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("extendedEventType"); closeErr != nil {
@@ -222,7 +222,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_parameters, _parametersErr := BACnetNotificationParametersExtendedParametersParse(readBuffer, uint8(uint8(2)))
 	if _parametersErr != nil {
-		return nil, errors.Wrap(_parametersErr, "Error parsing 'parameters' field")
+		return nil, errors.Wrap(_parametersErr, "Error parsing 'parameters' field of BACnetNotificationParametersExtended")
 	}
 	parameters := _parameters.(BACnetNotificationParametersExtendedParameters)
 	if closeErr := readBuffer.CloseContext("parameters"); closeErr != nil {
@@ -235,7 +235,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersExtended")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

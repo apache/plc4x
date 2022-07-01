@@ -164,7 +164,7 @@ func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_passbackTimeout, _passbackTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _passbackTimeoutErr != nil {
-		return nil, errors.Wrap(_passbackTimeoutErr, "Error parsing 'passbackTimeout' field")
+		return nil, errors.Wrap(_passbackTimeoutErr, "Error parsing 'passbackTimeout' field of BACnetConstructedDataPassbackTimeout")
 	}
 	passbackTimeout := _passbackTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("passbackTimeout"); closeErr != nil {

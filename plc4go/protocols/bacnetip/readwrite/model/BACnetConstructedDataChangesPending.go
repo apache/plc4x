@@ -164,7 +164,7 @@ func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_changesPending, _changesPendingErr := BACnetApplicationTagParse(readBuffer)
 	if _changesPendingErr != nil {
-		return nil, errors.Wrap(_changesPendingErr, "Error parsing 'changesPending' field")
+		return nil, errors.Wrap(_changesPendingErr, "Error parsing 'changesPending' field of BACnetConstructedDataChangesPending")
 	}
 	changesPending := _changesPending.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("changesPending"); closeErr != nil {

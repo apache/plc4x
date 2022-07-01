@@ -176,7 +176,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRe
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipReadResponse")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -189,14 +189,14 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRe
 	// Simple Field (status)
 	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CipReadResponse")
 	}
 	status := _status
 
 	// Simple Field (extStatus)
 	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
-		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field")
+		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field of CipReadResponse")
 	}
 	extStatus := _extStatus
 
@@ -206,7 +206,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRe
 	}
 	_dataType, _dataTypeErr := CIPDataTypeCodeParse(readBuffer)
 	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field")
+		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CipReadResponse")
 	}
 	dataType := _dataType
 	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
@@ -216,7 +216,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRe
 	numberOfBytesdata := int(uint16(serviceLen) - uint16(uint16(6)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CipReadResponse")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipReadResponse"); closeErr != nil {

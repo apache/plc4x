@@ -137,7 +137,7 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, peekedTagNumbe
 	}
 	_action, _actionErr := BACnetActionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _actionErr != nil {
-		return nil, errors.Wrap(_actionErr, "Error parsing 'action' field")
+		return nil, errors.Wrap(_actionErr, "Error parsing 'action' field of BACnetPropertyStatesAction")
 	}
 	action := _action.(BACnetActionTagged)
 	if closeErr := readBuffer.CloseContext("action"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataModificationDateParse(readBuffer utils.ReadBuffer, tag
 	}
 	_modificationDate, _modificationDateErr := BACnetDateTimeParse(readBuffer)
 	if _modificationDateErr != nil {
-		return nil, errors.Wrap(_modificationDateErr, "Error parsing 'modificationDate' field")
+		return nil, errors.Wrap(_modificationDateErr, "Error parsing 'modificationDate' field of BACnetConstructedDataModificationDate")
 	}
 	modificationDate := _modificationDate.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("modificationDate"); closeErr != nil {

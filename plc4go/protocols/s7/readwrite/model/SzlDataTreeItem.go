@@ -151,34 +151,34 @@ func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) 
 	// Simple Field (itemIndex)
 	_itemIndex, _itemIndexErr := readBuffer.ReadUint16("itemIndex", 16)
 	if _itemIndexErr != nil {
-		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field")
+		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field of SzlDataTreeItem")
 	}
 	itemIndex := _itemIndex
 	// Byte Array field (mlfb)
 	numberOfBytesmlfb := int(uint16(20))
 	mlfb, _readArrayErr := readBuffer.ReadByteArray("mlfb", numberOfBytesmlfb)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'mlfb' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'mlfb' field of SzlDataTreeItem")
 	}
 
 	// Simple Field (moduleTypeId)
 	_moduleTypeId, _moduleTypeIdErr := readBuffer.ReadUint16("moduleTypeId", 16)
 	if _moduleTypeIdErr != nil {
-		return nil, errors.Wrap(_moduleTypeIdErr, "Error parsing 'moduleTypeId' field")
+		return nil, errors.Wrap(_moduleTypeIdErr, "Error parsing 'moduleTypeId' field of SzlDataTreeItem")
 	}
 	moduleTypeId := _moduleTypeId
 
 	// Simple Field (ausbg)
 	_ausbg, _ausbgErr := readBuffer.ReadUint16("ausbg", 16)
 	if _ausbgErr != nil {
-		return nil, errors.Wrap(_ausbgErr, "Error parsing 'ausbg' field")
+		return nil, errors.Wrap(_ausbgErr, "Error parsing 'ausbg' field of SzlDataTreeItem")
 	}
 	ausbg := _ausbg
 
 	// Simple Field (ausbe)
 	_ausbe, _ausbeErr := readBuffer.ReadUint16("ausbe", 16)
 	if _ausbeErr != nil {
-		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field")
+		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field of SzlDataTreeItem")
 	}
 	ausbe := _ausbe
 

@@ -183,7 +183,7 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersBufferReady")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 	}
 	_bufferProperty, _bufferPropertyErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _bufferPropertyErr != nil {
-		return nil, errors.Wrap(_bufferPropertyErr, "Error parsing 'bufferProperty' field")
+		return nil, errors.Wrap(_bufferPropertyErr, "Error parsing 'bufferProperty' field of BACnetNotificationParametersBufferReady")
 	}
 	bufferProperty := _bufferProperty.(BACnetDeviceObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("bufferProperty"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 	}
 	_previousNotification, _previousNotificationErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _previousNotificationErr != nil {
-		return nil, errors.Wrap(_previousNotificationErr, "Error parsing 'previousNotification' field")
+		return nil, errors.Wrap(_previousNotificationErr, "Error parsing 'previousNotification' field of BACnetNotificationParametersBufferReady")
 	}
 	previousNotification := _previousNotification.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("previousNotification"); closeErr != nil {
@@ -222,7 +222,7 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 	}
 	_currentNotification, _currentNotificationErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _currentNotificationErr != nil {
-		return nil, errors.Wrap(_currentNotificationErr, "Error parsing 'currentNotification' field")
+		return nil, errors.Wrap(_currentNotificationErr, "Error parsing 'currentNotification' field of BACnetNotificationParametersBufferReady")
 	}
 	currentNotification := _currentNotification.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("currentNotification"); closeErr != nil {
@@ -235,7 +235,7 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersBufferReady")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

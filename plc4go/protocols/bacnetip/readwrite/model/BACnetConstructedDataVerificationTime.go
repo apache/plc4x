@@ -164,7 +164,7 @@ func BACnetConstructedDataVerificationTimeParse(readBuffer utils.ReadBuffer, tag
 	}
 	_verificationTime, _verificationTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _verificationTimeErr != nil {
-		return nil, errors.Wrap(_verificationTimeErr, "Error parsing 'verificationTime' field")
+		return nil, errors.Wrap(_verificationTimeErr, "Error parsing 'verificationTime' field of BACnetConstructedDataVerificationTime")
 	}
 	verificationTime := _verificationTime.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("verificationTime"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer utils.Read
 	}
 	_occupancyUpperLimitEnforced, _occupancyUpperLimitEnforcedErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyUpperLimitEnforcedErr != nil {
-		return nil, errors.Wrap(_occupancyUpperLimitEnforcedErr, "Error parsing 'occupancyUpperLimitEnforced' field")
+		return nil, errors.Wrap(_occupancyUpperLimitEnforcedErr, "Error parsing 'occupancyUpperLimitEnforced' field of BACnetConstructedDataOccupancyUpperLimitEnforced")
 	}
 	occupancyUpperLimitEnforced := _occupancyUpperLimitEnforced.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("occupancyUpperLimitEnforced"); closeErr != nil {

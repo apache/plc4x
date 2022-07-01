@@ -159,7 +159,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 	_bridgeAddress, _bridgeAddressErr := BridgeAddressParse(readBuffer)
 	if _bridgeAddressErr != nil {
-		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field")
+		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointToMultipointCommand")
 	}
 	bridgeAddress := _bridgeAddress.(BridgeAddress)
 	if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
@@ -172,7 +172,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 	_networkRoute, _networkRouteErr := NetworkRouteParse(readBuffer)
 	if _networkRouteErr != nil {
-		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field")
+		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointToMultipointCommand")
 	}
 	networkRoute := _networkRoute.(NetworkRoute)
 	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
@@ -183,7 +183,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	currentPos = positionAware.GetPos()
 	peekedApplication, _err := readBuffer.ReadByte("peekedApplication")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field")
+		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field of CBusPointToPointToMultipointCommand")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -206,7 +206,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToPointToMultipointCommand.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToPointToMultipointCommand")
 	}
 	_child = _childTemp.(CBusPointToPointToMultipointCommandChildSerializeRequirement)
 
@@ -216,7 +216,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 	_termination, _terminationErr := RequestTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of CBusPointToPointToMultipointCommand")
 	}
 	termination := _termination.(RequestTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

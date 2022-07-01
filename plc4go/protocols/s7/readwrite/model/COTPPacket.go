@@ -158,13 +158,13 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
-		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
+		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of COTPPacket")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode, _tpduCodeErr := readBuffer.ReadUint8("tpduCode", 8)
 	if _tpduCodeErr != nil {
-		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field")
+		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field of COTPPacket")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -193,7 +193,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [tpduCode=%v]", tpduCode)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of COTPPacket.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of COTPPacket")
 	}
 	_child = _childTemp.(COTPPacketChildSerializeRequirement)
 
@@ -210,7 +210,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 		for positionAware.GetPos() < _parametersEndPos {
 			_item, _err := COTPParameterParse(readBuffer, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
+				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of COTPPacket")
 			}
 			parameters = append(parameters, _item.(COTPParameter))
 			curPos = positionAware.GetPos() - startPos
@@ -234,7 +234,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
+			return nil, errors.Wrap(_err, "Error parsing 'payload' field of COTPPacket")
 		default:
 			payload = _val.(S7Message)
 			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

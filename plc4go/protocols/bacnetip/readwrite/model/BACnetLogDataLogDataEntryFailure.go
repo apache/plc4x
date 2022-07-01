@@ -137,7 +137,7 @@ func BACnetLogDataLogDataEntryFailureParse(readBuffer utils.ReadBuffer) (BACnetL
 	}
 	_failure, _failureErr := ErrorEnclosedParse(readBuffer, uint8(uint8(7)))
 	if _failureErr != nil {
-		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field")
+		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogDataLogDataEntryFailure")
 	}
 	failure := _failure.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("failure"); closeErr != nil {

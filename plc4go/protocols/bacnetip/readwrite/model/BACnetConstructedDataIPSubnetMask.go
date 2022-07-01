@@ -164,7 +164,7 @@ func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_ipSubnetMask, _ipSubnetMaskErr := BACnetApplicationTagParse(readBuffer)
 	if _ipSubnetMaskErr != nil {
-		return nil, errors.Wrap(_ipSubnetMaskErr, "Error parsing 'ipSubnetMask' field")
+		return nil, errors.Wrap(_ipSubnetMaskErr, "Error parsing 'ipSubnetMask' field of BACnetConstructedDataIPSubnetMask")
 	}
 	ipSubnetMask := _ipSubnetMask.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipSubnetMask"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_actualShedLevel, _actualShedLevelErr := BACnetShedLevelParse(readBuffer)
 	if _actualShedLevelErr != nil {
-		return nil, errors.Wrap(_actualShedLevelErr, "Error parsing 'actualShedLevel' field")
+		return nil, errors.Wrap(_actualShedLevelErr, "Error parsing 'actualShedLevel' field of BACnetConstructedDataActualShedLevel")
 	}
 	actualShedLevel := _actualShedLevel.(BACnetShedLevel)
 	if closeErr := readBuffer.CloseContext("actualShedLevel"); closeErr != nil {

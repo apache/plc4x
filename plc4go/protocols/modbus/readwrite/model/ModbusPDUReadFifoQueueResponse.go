@@ -153,14 +153,14 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 	byteCount, _byteCountErr := readBuffer.ReadUint16("byteCount", 16)
 	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUReadFifoQueueResponse")
 	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	fifoCount, _fifoCountErr := readBuffer.ReadUint16("fifoCount", 16)
 	_ = fifoCount
 	if _fifoCountErr != nil {
-		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field")
+		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field of ModbusPDUReadFifoQueueResponse")
 	}
 
 	// Array field (fifoValue)
@@ -177,7 +177,7 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 		for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field")
+				return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field of ModbusPDUReadFifoQueueResponse")
 			}
 			fifoValue[curItem] = _item
 		}

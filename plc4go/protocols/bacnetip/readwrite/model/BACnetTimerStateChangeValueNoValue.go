@@ -137,7 +137,7 @@ func BACnetTimerStateChangeValueNoValueParse(readBuffer utils.ReadBuffer, object
 	}
 	_noValue, _noValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
 	if _noValueErr != nil {
-		return nil, errors.Wrap(_noValueErr, "Error parsing 'noValue' field")
+		return nil, errors.Wrap(_noValueErr, "Error parsing 'noValue' field of BACnetTimerStateChangeValueNoValue")
 	}
 	noValue := _noValue.(BACnetContextTagNull)
 	if closeErr := readBuffer.CloseContext("noValue"); closeErr != nil {

@@ -132,7 +132,7 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	// Const Field (messageStart)
 	messageStart, _messageStartErr := readBuffer.ReadUint8("messageStart", 8)
 	if _messageStartErr != nil {
-		return nil, errors.Wrap(_messageStartErr, "Error parsing 'messageStart' field")
+		return nil, errors.Wrap(_messageStartErr, "Error parsing 'messageStart' field of DF1Symbol")
 	}
 	if messageStart != DF1Symbol_MESSAGESTART {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", DF1Symbol_MESSAGESTART) + " but got " + fmt.Sprintf("%d", messageStart))
@@ -141,7 +141,7 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	// Discriminator Field (symbolType) (Used as input to a switch field)
 	symbolType, _symbolTypeErr := readBuffer.ReadUint8("symbolType", 8)
 	if _symbolTypeErr != nil {
-		return nil, errors.Wrap(_symbolTypeErr, "Error parsing 'symbolType' field")
+		return nil, errors.Wrap(_symbolTypeErr, "Error parsing 'symbolType' field of DF1Symbol")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -164,7 +164,7 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [symbolType=%v]", symbolType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1Symbol.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1Symbol")
 	}
 	_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 

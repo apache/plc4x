@@ -122,7 +122,7 @@ func BACnetNetworkSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetNetwor
 	}
 	_portId, _portIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portIdErr != nil {
-		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field")
+		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field of BACnetNetworkSecurityPolicy")
 	}
 	portId := _portId.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("portId"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetNetworkSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetNetwor
 	}
 	_securityLevel, _securityLevelErr := BACnetSecurityPolicyTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _securityLevelErr != nil {
-		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field")
+		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of BACnetNetworkSecurityPolicy")
 	}
 	securityLevel := _securityLevel.(BACnetSecurityPolicyTagged)
 	if closeErr := readBuffer.CloseContext("securityLevel"); closeErr != nil {

@@ -141,7 +141,7 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	currentPos = positionAware.GetPos()
 	peekedByte, _err := readBuffer.ReadByte("peekedByte")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field")
+		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of Reply")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -171,13 +171,13 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer)
 	case peekedByte == 0x0: // ParameterChangeReply
 		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer)
-	case peekedByte == 0x21: // ExclamationMarkReply
-		_childTemp, typeSwitchError = ExclamationMarkReplyParse(readBuffer)
+	case peekedByte == 0x21: // ServerErrorReply
+		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v, isAlpha=%v]", peekedByte, isAlpha)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Reply.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Reply")
 	}
 	_child = _childTemp.(ReplyChildSerializeRequirement)
 

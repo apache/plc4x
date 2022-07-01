@@ -139,7 +139,7 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (DeviceConfigurati
 	}
 	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(readBuffer)
 	if _deviceConfigurationAckDataBlockErr != nil {
-		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field")
+		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field of DeviceConfigurationAck")
 	}
 	deviceConfigurationAckDataBlock := _deviceConfigurationAckDataBlock.(DeviceConfigurationAckDataBlock)
 	if closeErr := readBuffer.CloseContext("deviceConfigurationAckDataBlock"); closeErr != nil {

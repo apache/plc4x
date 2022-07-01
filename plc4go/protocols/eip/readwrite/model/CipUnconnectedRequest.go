@@ -201,7 +201,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
 		}
 		if reserved != uint8(0x02) {
 			log.Info().Fields(map[string]interface{}{
@@ -215,7 +215,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
 		}
 		if reserved != uint8(0x20) {
 			log.Info().Fields(map[string]interface{}{
@@ -229,7 +229,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
 		}
 		if reserved != uint8(0x06) {
 			log.Info().Fields(map[string]interface{}{
@@ -243,7 +243,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
 		}
 		if reserved != uint8(0x24) {
 			log.Info().Fields(map[string]interface{}{
@@ -257,7 +257,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
 		}
 		if reserved != uint8(0x01) {
 			log.Info().Fields(map[string]interface{}{
@@ -271,7 +271,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
 		}
 		if reserved != uint16(0x9D05) {
 			log.Info().Fields(map[string]interface{}{
@@ -285,7 +285,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	messageSize, _messageSizeErr := readBuffer.ReadUint16("messageSize", 16)
 	_ = messageSize
 	if _messageSizeErr != nil {
-		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field")
+		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field of CipUnconnectedRequest")
 	}
 
 	// Simple Field (unconnectedService)
@@ -294,7 +294,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	}
 	_unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, uint16(messageSize))
 	if _unconnectedServiceErr != nil {
-		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field")
+		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field of CipUnconnectedRequest")
 	}
 	unconnectedService := _unconnectedService.(CipService)
 	if closeErr := readBuffer.CloseContext("unconnectedService"); closeErr != nil {
@@ -304,7 +304,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	// Const Field (route)
 	route, _routeErr := readBuffer.ReadUint16("route", 16)
 	if _routeErr != nil {
-		return nil, errors.Wrap(_routeErr, "Error parsing 'route' field")
+		return nil, errors.Wrap(_routeErr, "Error parsing 'route' field of CipUnconnectedRequest")
 	}
 	if route != CipUnconnectedRequest_ROUTE {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipUnconnectedRequest_ROUTE) + " but got " + fmt.Sprintf("%d", route))
@@ -313,14 +313,14 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	// Simple Field (backPlane)
 	_backPlane, _backPlaneErr := readBuffer.ReadInt8("backPlane", 8)
 	if _backPlaneErr != nil {
-		return nil, errors.Wrap(_backPlaneErr, "Error parsing 'backPlane' field")
+		return nil, errors.Wrap(_backPlaneErr, "Error parsing 'backPlane' field of CipUnconnectedRequest")
 	}
 	backPlane := _backPlane
 
 	// Simple Field (slot)
 	_slot, _slotErr := readBuffer.ReadInt8("slot", 8)
 	if _slotErr != nil {
-		return nil, errors.Wrap(_slotErr, "Error parsing 'slot' field")
+		return nil, errors.Wrap(_slotErr, "Error parsing 'slot' field of CipUnconnectedRequest")
 	}
 	slot := _slot
 

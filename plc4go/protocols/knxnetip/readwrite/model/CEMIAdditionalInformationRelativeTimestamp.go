@@ -157,7 +157,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	// Const Field (len)
 	len, _lenErr := readBuffer.ReadUint8("len", 8)
 	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
+		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of CEMIAdditionalInformationRelativeTimestamp")
 	}
 	if len != CEMIAdditionalInformationRelativeTimestamp_LEN {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CEMIAdditionalInformationRelativeTimestamp_LEN) + " but got " + fmt.Sprintf("%d", len))
@@ -169,7 +169,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	}
 	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(readBuffer)
 	if _relativeTimestampErr != nil {
-		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
+		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field of CEMIAdditionalInformationRelativeTimestamp")
 	}
 	relativeTimestamp := _relativeTimestamp.(RelativeTimestamp)
 	if closeErr := readBuffer.CloseContext("relativeTimestamp"); closeErr != nil {

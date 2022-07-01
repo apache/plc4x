@@ -174,7 +174,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 	}
 	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
-		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field")
+		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetLightingCommand")
 	}
 	lightningOperation := _lightningOperation.(BACnetLightingOperationTagged)
 	if closeErr := readBuffer.CloseContext("lightningOperation"); closeErr != nil {
@@ -194,7 +194,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'targetLevel' field")
+			return nil, errors.Wrap(_err, "Error parsing 'targetLevel' field of BACnetLightingCommand")
 		default:
 			targetLevel = _val.(BACnetContextTagReal)
 			if closeErr := readBuffer.CloseContext("targetLevel"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'rampRate' field")
+			return nil, errors.Wrap(_err, "Error parsing 'rampRate' field of BACnetLightingCommand")
 		default:
 			rampRate = _val.(BACnetContextTagReal)
 			if closeErr := readBuffer.CloseContext("rampRate"); closeErr != nil {
@@ -238,7 +238,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'stepIncrement' field")
+			return nil, errors.Wrap(_err, "Error parsing 'stepIncrement' field of BACnetLightingCommand")
 		default:
 			stepIncrement = _val.(BACnetContextTagReal)
 			if closeErr := readBuffer.CloseContext("stepIncrement"); closeErr != nil {
@@ -260,7 +260,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'fadeTime' field")
+			return nil, errors.Wrap(_err, "Error parsing 'fadeTime' field of BACnetLightingCommand")
 		default:
 			fadeTime = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("fadeTime"); closeErr != nil {
@@ -282,7 +282,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
+			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetLightingCommand")
 		default:
 			priority = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {

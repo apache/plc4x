@@ -154,7 +154,7 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, srchk bool) (
 	// Const Field (pipe)
 	pipe, _pipeErr := readBuffer.ReadByte("pipe")
 	if _pipeErr != nil {
-		return nil, errors.Wrap(_pipeErr, "Error parsing 'pipe' field")
+		return nil, errors.Wrap(_pipeErr, "Error parsing 'pipe' field of RequestSmartConnectShortcut")
 	}
 	if pipe != RequestSmartConnectShortcut_PIPE {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestSmartConnectShortcut_PIPE) + " but got " + fmt.Sprintf("%d", pipe))
@@ -166,7 +166,7 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, srchk bool) (
 	}
 	_termination, _terminationErr := RequestTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of RequestSmartConnectShortcut")
 	}
 	termination := _termination.(RequestTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

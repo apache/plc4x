@@ -164,7 +164,7 @@ func BACnetConstructedDataMemberStatusFlagsParse(readBuffer utils.ReadBuffer, ta
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetConstructedDataMemberStatusFlags")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {

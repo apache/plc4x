@@ -164,7 +164,7 @@ func BACnetConstructedDataCarPositionParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_carPosition, _carPositionErr := BACnetApplicationTagParse(readBuffer)
 	if _carPositionErr != nil {
-		return nil, errors.Wrap(_carPositionErr, "Error parsing 'carPosition' field")
+		return nil, errors.Wrap(_carPositionErr, "Error parsing 'carPosition' field of BACnetConstructedDataCarPosition")
 	}
 	carPosition := _carPosition.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("carPosition"); closeErr != nil {

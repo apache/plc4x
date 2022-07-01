@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 	}
 	_accessEventCredential, _accessEventCredentialErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _accessEventCredentialErr != nil {
-		return nil, errors.Wrap(_accessEventCredentialErr, "Error parsing 'accessEventCredential' field")
+		return nil, errors.Wrap(_accessEventCredentialErr, "Error parsing 'accessEventCredential' field of BACnetConstructedDataAccessEventCredential")
 	}
 	accessEventCredential := _accessEventCredential.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("accessEventCredential"); closeErr != nil {

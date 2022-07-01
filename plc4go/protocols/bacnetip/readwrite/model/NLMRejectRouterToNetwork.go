@@ -152,7 +152,7 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	}
 	_rejectReason, _rejectReasonErr := NLMRejectRouterToNetworkRejectReasonParse(readBuffer)
 	if _rejectReasonErr != nil {
-		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
+		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field of NLMRejectRouterToNetwork")
 	}
 	rejectReason := _rejectReason
 	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
@@ -162,7 +162,7 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field")
+		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMRejectRouterToNetwork")
 	}
 	destinationNetworkAddress := _destinationNetworkAddress
 

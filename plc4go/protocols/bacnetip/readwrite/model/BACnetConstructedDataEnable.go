@@ -164,7 +164,7 @@ func BACnetConstructedDataEnableParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	_enable, _enableErr := BACnetApplicationTagParse(readBuffer)
 	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field")
+		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetConstructedDataEnable")
 	}
 	enable := _enable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {

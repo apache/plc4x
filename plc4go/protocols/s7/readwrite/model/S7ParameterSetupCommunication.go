@@ -167,7 +167,7 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7ParameterSetupCommunication")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -180,21 +180,21 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 	// Simple Field (maxAmqCaller)
 	_maxAmqCaller, _maxAmqCallerErr := readBuffer.ReadUint16("maxAmqCaller", 16)
 	if _maxAmqCallerErr != nil {
-		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field")
+		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field of S7ParameterSetupCommunication")
 	}
 	maxAmqCaller := _maxAmqCaller
 
 	// Simple Field (maxAmqCallee)
 	_maxAmqCallee, _maxAmqCalleeErr := readBuffer.ReadUint16("maxAmqCallee", 16)
 	if _maxAmqCalleeErr != nil {
-		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field")
+		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field of S7ParameterSetupCommunication")
 	}
 	maxAmqCallee := _maxAmqCallee
 
 	// Simple Field (pduLength)
 	_pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
 	if _pduLengthErr != nil {
-		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field")
+		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field of S7ParameterSetupCommunication")
 	}
 	pduLength := _pduLength
 

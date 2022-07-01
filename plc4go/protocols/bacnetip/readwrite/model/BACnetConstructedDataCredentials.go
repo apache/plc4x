@@ -155,7 +155,7 @@ func BACnetConstructedDataCredentialsParse(readBuffer utils.ReadBuffer, tagNumbe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'credentials' field")
+				return nil, errors.Wrap(_err, "Error parsing 'credentials' field of BACnetConstructedDataCredentials")
 			}
 			credentials = append(credentials, _item.(BACnetDeviceObjectReference))
 

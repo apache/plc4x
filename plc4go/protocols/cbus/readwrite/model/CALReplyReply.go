@@ -137,7 +137,7 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer) (CALReplyReply, error) {
 	}
 	_isA, _isAErr := CALReplyParse(readBuffer)
 	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field")
+		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of CALReplyReply")
 	}
 	isA := _isA.(CALReply)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {

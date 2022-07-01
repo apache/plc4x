@@ -164,7 +164,7 @@ func BACnetConstructedDataStateDescriptionParse(readBuffer utils.ReadBuffer, tag
 	}
 	_stateDescription, _stateDescriptionErr := BACnetApplicationTagParse(readBuffer)
 	if _stateDescriptionErr != nil {
-		return nil, errors.Wrap(_stateDescriptionErr, "Error parsing 'stateDescription' field")
+		return nil, errors.Wrap(_stateDescriptionErr, "Error parsing 'stateDescription' field of BACnetConstructedDataStateDescription")
 	}
 	stateDescription := _stateDescription.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("stateDescription"); closeErr != nil {

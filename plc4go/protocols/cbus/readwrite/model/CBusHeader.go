@@ -142,7 +142,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	}
 	_priorityClass, _priorityClassErr := PriorityClassParse(readBuffer)
 	if _priorityClassErr != nil {
-		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field")
+		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field of CBusHeader")
 	}
 	priorityClass := _priorityClass
 	if closeErr := readBuffer.CloseContext("priorityClass"); closeErr != nil {
@@ -152,14 +152,14 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	// Simple Field (dp)
 	_dp, _dpErr := readBuffer.ReadBit("dp")
 	if _dpErr != nil {
-		return nil, errors.Wrap(_dpErr, "Error parsing 'dp' field")
+		return nil, errors.Wrap(_dpErr, "Error parsing 'dp' field of CBusHeader")
 	}
 	dp := _dp
 
 	// Simple Field (rc)
 	_rc, _rcErr := readBuffer.ReadUint8("rc", 2)
 	if _rcErr != nil {
-		return nil, errors.Wrap(_rcErr, "Error parsing 'rc' field")
+		return nil, errors.Wrap(_rcErr, "Error parsing 'rc' field of CBusHeader")
 	}
 	rc := _rc
 
@@ -169,7 +169,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	}
 	_destinationAddressType, _destinationAddressTypeErr := DestinationAddressTypeParse(readBuffer)
 	if _destinationAddressTypeErr != nil {
-		return nil, errors.Wrap(_destinationAddressTypeErr, "Error parsing 'destinationAddressType' field")
+		return nil, errors.Wrap(_destinationAddressTypeErr, "Error parsing 'destinationAddressType' field of CBusHeader")
 	}
 	destinationAddressType := _destinationAddressType
 	if closeErr := readBuffer.CloseContext("destinationAddressType"); closeErr != nil {

@@ -161,7 +161,7 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	}
 	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
+		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of SearchResponse")
 	}
 	hpaiControlEndpoint := _hpaiControlEndpoint.(HPAIControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
@@ -174,7 +174,7 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	}
 	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
 	if _dibDeviceInfoErr != nil {
-		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
+		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field of SearchResponse")
 	}
 	dibDeviceInfo := _dibDeviceInfo.(DIBDeviceInfo)
 	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
@@ -187,7 +187,7 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	}
 	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
-		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
+		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field of SearchResponse")
 	}
 	dibSuppSvcFamilies := _dibSuppSvcFamilies.(DIBSuppSvcFamilies)
 	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {

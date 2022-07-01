@@ -169,35 +169,35 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	// Simple Field (magicCookie)
 	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)
 	if _magicCookieErr != nil {
-		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field")
+		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field of AmsSerialFrame")
 	}
 	magicCookie := _magicCookie
 
 	// Simple Field (transmitterAddress)
 	_transmitterAddress, _transmitterAddressErr := readBuffer.ReadInt8("transmitterAddress", 8)
 	if _transmitterAddressErr != nil {
-		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field")
+		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field of AmsSerialFrame")
 	}
 	transmitterAddress := _transmitterAddress
 
 	// Simple Field (receiverAddress)
 	_receiverAddress, _receiverAddressErr := readBuffer.ReadInt8("receiverAddress", 8)
 	if _receiverAddressErr != nil {
-		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field")
+		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field of AmsSerialFrame")
 	}
 	receiverAddress := _receiverAddress
 
 	// Simple Field (fragmentNumber)
 	_fragmentNumber, _fragmentNumberErr := readBuffer.ReadInt8("fragmentNumber", 8)
 	if _fragmentNumberErr != nil {
-		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field")
+		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field of AmsSerialFrame")
 	}
 	fragmentNumber := _fragmentNumber
 
 	// Simple Field (length)
 	_length, _lengthErr := readBuffer.ReadInt8("length", 8)
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsSerialFrame")
 	}
 	length := _length
 
@@ -207,7 +207,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	}
 	_userdata, _userdataErr := AmsPacketParse(readBuffer)
 	if _userdataErr != nil {
-		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
+		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsSerialFrame")
 	}
 	userdata := _userdata.(AmsPacket)
 	if closeErr := readBuffer.CloseContext("userdata"); closeErr != nil {
@@ -217,7 +217,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	// Simple Field (crc)
 	_crc, _crcErr := readBuffer.ReadUint16("crc", 16)
 	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
+		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of AmsSerialFrame")
 	}
 	crc := _crc
 

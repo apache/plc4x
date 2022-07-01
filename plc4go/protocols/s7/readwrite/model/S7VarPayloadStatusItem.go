@@ -112,7 +112,7 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadStatu
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7VarPayloadStatusItem")
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {

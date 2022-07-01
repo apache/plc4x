@@ -137,7 +137,7 @@ func BACnetShedLevelLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevelLeve
 	}
 	_level, _levelErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of BACnetShedLevelLevel")
 	}
 	level := _level.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataMACAddressParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_macAddress, _macAddressErr := BACnetApplicationTagParse(readBuffer)
 	if _macAddressErr != nil {
-		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field")
+		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetConstructedDataMACAddress")
 	}
 	macAddress := _macAddress.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {

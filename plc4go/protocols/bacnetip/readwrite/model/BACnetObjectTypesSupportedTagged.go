@@ -215,7 +215,7 @@ func BACnetObjectTypesSupportedTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetObjectTypesSupportedTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -238,7 +238,7 @@ func BACnetObjectTypesSupportedTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_payload, _payloadErr := BACnetTagPayloadBitStringParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetObjectTypesSupportedTagged")
 	}
 	payload := _payload.(BACnetTagPayloadBitString)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

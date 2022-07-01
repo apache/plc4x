@@ -175,7 +175,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
+			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field of BACnetUnconfirmedServiceRequestWhoHas")
 		default:
 			deviceInstanceRangeLowLimit = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeLowLimit"); closeErr != nil {
@@ -197,7 +197,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
+			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field of BACnetUnconfirmedServiceRequestWhoHas")
 		default:
 			deviceInstanceRangeHighLimit = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeHighLimit"); closeErr != nil {
@@ -212,7 +212,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	}
 	_object, _objectErr := BACnetUnconfirmedServiceRequestWhoHasObjectParse(readBuffer)
 	if _objectErr != nil {
-		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field")
+		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field of BACnetUnconfirmedServiceRequestWhoHas")
 	}
 	object := _object.(BACnetUnconfirmedServiceRequestWhoHasObject)
 	if closeErr := readBuffer.CloseContext("object"); closeErr != nil {

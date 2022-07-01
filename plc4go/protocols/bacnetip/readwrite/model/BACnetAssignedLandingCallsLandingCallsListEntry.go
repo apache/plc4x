@@ -122,7 +122,7 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	}
 	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
-		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field")
+		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 	floorNumber := _floorNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("floorNumber"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	}
 	_direction, _directionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _directionErr != nil {
-		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field")
+		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 	direction := _direction.(BACnetLiftCarDirectionTagged)
 	if closeErr := readBuffer.CloseContext("direction"); closeErr != nil {

@@ -144,7 +144,7 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLC
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCBroadcastDistributionTableEntry")
 			}
 			ip[curItem] = _item
 		}
@@ -156,7 +156,7 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLC
 	// Simple Field (port)
 	_port, _portErr := readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCBroadcastDistributionTableEntry")
 	}
 	port := _port
 
@@ -174,7 +174,7 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLC
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'broadcastDistributionMap' field")
+				return nil, errors.Wrap(_err, "Error parsing 'broadcastDistributionMap' field of BVLCBroadcastDistributionTableEntry")
 			}
 			broadcastDistributionMap[curItem] = _item
 		}

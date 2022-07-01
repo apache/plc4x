@@ -164,7 +164,7 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 	}
 	_derivativeConstant, _derivativeConstantErr := BACnetApplicationTagParse(readBuffer)
 	if _derivativeConstantErr != nil {
-		return nil, errors.Wrap(_derivativeConstantErr, "Error parsing 'derivativeConstant' field")
+		return nil, errors.Wrap(_derivativeConstantErr, "Error parsing 'derivativeConstant' field of BACnetConstructedDataDerivativeConstant")
 	}
 	derivativeConstant := _derivativeConstant.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("derivativeConstant"); closeErr != nil {

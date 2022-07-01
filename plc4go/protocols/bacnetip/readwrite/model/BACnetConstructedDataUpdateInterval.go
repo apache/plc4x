@@ -164,7 +164,7 @@ func BACnetConstructedDataUpdateIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_updateInterval, _updateIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _updateIntervalErr != nil {
-		return nil, errors.Wrap(_updateIntervalErr, "Error parsing 'updateInterval' field")
+		return nil, errors.Wrap(_updateIntervalErr, "Error parsing 'updateInterval' field of BACnetConstructedDataUpdateInterval")
 	}
 	updateInterval := _updateInterval.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("updateInterval"); closeErr != nil {

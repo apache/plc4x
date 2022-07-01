@@ -176,7 +176,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field")
+		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of ConfirmedPrivateTransferError")
 	}
 	errorType := _errorType.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
@@ -189,7 +189,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	}
 	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
+		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of ConfirmedPrivateTransferError")
 	}
 	vendorId := _vendorId.(BACnetVendorIdTagged)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
@@ -202,7 +202,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	}
 	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _serviceNumberErr != nil {
-		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field")
+		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field of ConfirmedPrivateTransferError")
 	}
 	serviceNumber := _serviceNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("serviceNumber"); closeErr != nil {
@@ -222,7 +222,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'errorParameters' field")
+			return nil, errors.Wrap(_err, "Error parsing 'errorParameters' field of ConfirmedPrivateTransferError")
 		default:
 			errorParameters = _val.(BACnetConstructedData)
 			if closeErr := readBuffer.CloseContext("errorParameters"); closeErr != nil {

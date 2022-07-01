@@ -137,7 +137,7 @@ func BACnetApplicationTagDateParse(readBuffer utils.ReadBuffer) (BACnetApplicati
 	}
 	_payload, _payloadErr := BACnetTagPayloadDateParse(readBuffer)
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagDate")
 	}
 	payload := _payload.(BACnetTagPayloadDate)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

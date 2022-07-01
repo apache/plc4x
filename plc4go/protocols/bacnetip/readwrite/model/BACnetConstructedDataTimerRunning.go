@@ -164,7 +164,7 @@ func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_timerRunning, _timerRunningErr := BACnetApplicationTagParse(readBuffer)
 	if _timerRunningErr != nil {
-		return nil, errors.Wrap(_timerRunningErr, "Error parsing 'timerRunning' field")
+		return nil, errors.Wrap(_timerRunningErr, "Error parsing 'timerRunning' field of BACnetConstructedDataTimerRunning")
 	}
 	timerRunning := _timerRunning.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("timerRunning"); closeErr != nil {

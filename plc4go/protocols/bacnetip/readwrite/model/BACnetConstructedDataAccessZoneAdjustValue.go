@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer
 	}
 	_adjustValue, _adjustValueErr := BACnetApplicationTagParse(readBuffer)
 	if _adjustValueErr != nil {
-		return nil, errors.Wrap(_adjustValueErr, "Error parsing 'adjustValue' field")
+		return nil, errors.Wrap(_adjustValueErr, "Error parsing 'adjustValue' field of BACnetConstructedDataAccessZoneAdjustValue")
 	}
 	adjustValue := _adjustValue.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("adjustValue"); closeErr != nil {

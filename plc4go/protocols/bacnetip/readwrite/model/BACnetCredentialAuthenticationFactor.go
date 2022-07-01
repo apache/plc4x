@@ -122,7 +122,7 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _disableErr != nil {
-		return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field")
+		return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field of BACnetCredentialAuthenticationFactor")
 	}
 	disable := _disable.(BACnetAccessAuthenticationFactorDisableTagged)
 	if closeErr := readBuffer.CloseContext("disable"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _authenticationFactorErr != nil {
-		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field")
+		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field of BACnetCredentialAuthenticationFactor")
 	}
 	authenticationFactor := _authenticationFactor.(BACnetAuthenticationFactorEnclosed)
 	if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {

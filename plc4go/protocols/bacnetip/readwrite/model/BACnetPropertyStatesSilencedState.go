@@ -137,7 +137,7 @@ func BACnetPropertyStatesSilencedStateParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_silencedState, _silencedStateErr := BACnetSilencedStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _silencedStateErr != nil {
-		return nil, errors.Wrap(_silencedStateErr, "Error parsing 'silencedState' field")
+		return nil, errors.Wrap(_silencedStateErr, "Error parsing 'silencedState' field of BACnetPropertyStatesSilencedState")
 	}
 	silencedState := _silencedState.(BACnetSilencedStateTagged)
 	if closeErr := readBuffer.CloseContext("silencedState"); closeErr != nil {

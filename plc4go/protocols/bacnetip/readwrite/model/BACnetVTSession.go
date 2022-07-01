@@ -132,7 +132,7 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	}
 	_localVtSessionId, _localVtSessionIdErr := BACnetApplicationTagParse(readBuffer)
 	if _localVtSessionIdErr != nil {
-		return nil, errors.Wrap(_localVtSessionIdErr, "Error parsing 'localVtSessionId' field")
+		return nil, errors.Wrap(_localVtSessionIdErr, "Error parsing 'localVtSessionId' field of BACnetVTSession")
 	}
 	localVtSessionId := _localVtSessionId.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("localVtSessionId"); closeErr != nil {
@@ -145,7 +145,7 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	}
 	_removeVtSessionId, _removeVtSessionIdErr := BACnetApplicationTagParse(readBuffer)
 	if _removeVtSessionIdErr != nil {
-		return nil, errors.Wrap(_removeVtSessionIdErr, "Error parsing 'removeVtSessionId' field")
+		return nil, errors.Wrap(_removeVtSessionIdErr, "Error parsing 'removeVtSessionId' field of BACnetVTSession")
 	}
 	removeVtSessionId := _removeVtSessionId.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("removeVtSessionId"); closeErr != nil {
@@ -158,7 +158,7 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	}
 	_remoteVtAddress, _remoteVtAddressErr := BACnetAddressParse(readBuffer)
 	if _remoteVtAddressErr != nil {
-		return nil, errors.Wrap(_remoteVtAddressErr, "Error parsing 'remoteVtAddress' field")
+		return nil, errors.Wrap(_remoteVtAddressErr, "Error parsing 'remoteVtAddress' field of BACnetVTSession")
 	}
 	remoteVtAddress := _remoteVtAddress.(BACnetAddress)
 	if closeErr := readBuffer.CloseContext("remoteVtAddress"); closeErr != nil {

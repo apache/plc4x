@@ -164,7 +164,7 @@ func BACnetConstructedDataBinaryInputPresentValueParse(readBuffer utils.ReadBuff
 	}
 	_presentValue, _presentValueErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataBinaryInputPresentValue")
 	}
 	presentValue := _presentValue.(BACnetBinaryPVTagged)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

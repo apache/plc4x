@@ -135,7 +135,7 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetAuthenticationFactorEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorParse(readBuffer)
 	if _authenticationFactorErr != nil {
-		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field")
+		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field of BACnetAuthenticationFactorEnclosed")
 	}
 	authenticationFactor := _authenticationFactor.(BACnetAuthenticationFactor)
 	if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetAuthenticationFactorEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

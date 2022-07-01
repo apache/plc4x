@@ -164,7 +164,7 @@ func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_belongsTo, _belongsToErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _belongsToErr != nil {
-		return nil, errors.Wrap(_belongsToErr, "Error parsing 'belongsTo' field")
+		return nil, errors.Wrap(_belongsToErr, "Error parsing 'belongsTo' field of BACnetConstructedDataBelongsTo")
 	}
 	belongsTo := _belongsTo.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("belongsTo"); closeErr != nil {

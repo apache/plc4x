@@ -164,7 +164,7 @@ func BACnetConstructedDataLocalTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_localTime, _localTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _localTimeErr != nil {
-		return nil, errors.Wrap(_localTimeErr, "Error parsing 'localTime' field")
+		return nil, errors.Wrap(_localTimeErr, "Error parsing 'localTime' field of BACnetConstructedDataLocalTime")
 	}
 	localTime := _localTime.(BACnetApplicationTagTime)
 	if closeErr := readBuffer.CloseContext("localTime"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataLastCommandTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_lastCommandTime, _lastCommandTimeErr := BACnetTimeStampParse(readBuffer)
 	if _lastCommandTimeErr != nil {
-		return nil, errors.Wrap(_lastCommandTimeErr, "Error parsing 'lastCommandTime' field")
+		return nil, errors.Wrap(_lastCommandTimeErr, "Error parsing 'lastCommandTime' field of BACnetConstructedDataLastCommandTime")
 	}
 	lastCommandTime := _lastCommandTime.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("lastCommandTime"); closeErr != nil {

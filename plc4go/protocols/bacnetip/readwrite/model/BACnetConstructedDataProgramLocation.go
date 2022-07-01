@@ -164,7 +164,7 @@ func BACnetConstructedDataProgramLocationParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_programLocation, _programLocationErr := BACnetApplicationTagParse(readBuffer)
 	if _programLocationErr != nil {
-		return nil, errors.Wrap(_programLocationErr, "Error parsing 'programLocation' field")
+		return nil, errors.Wrap(_programLocationErr, "Error parsing 'programLocation' field of BACnetConstructedDataProgramLocation")
 	}
 	programLocation := _programLocation.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("programLocation"); closeErr != nil {

@@ -200,7 +200,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	}
 	_szlId, _szlIdErr := SzlIdParse(readBuffer)
 	if _szlIdErr != nil {
-		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field")
+		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 	}
 	szlId := _szlId.(SzlId)
 	if closeErr := readBuffer.CloseContext("szlId"); closeErr != nil {
@@ -210,14 +210,14 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	// Simple Field (szlIndex)
 	_szlIndex, _szlIndexErr := readBuffer.ReadUint16("szlIndex", 16)
 	if _szlIndexErr != nil {
-		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field")
+		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 	}
 	szlIndex := _szlIndex
 
 	// Const Field (szlItemLength)
 	szlItemLength, _szlItemLengthErr := readBuffer.ReadUint16("szlItemLength", 16)
 	if _szlItemLengthErr != nil {
-		return nil, errors.Wrap(_szlItemLengthErr, "Error parsing 'szlItemLength' field")
+		return nil, errors.Wrap(_szlItemLengthErr, "Error parsing 'szlItemLength' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 	}
 	if szlItemLength != S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH) + " but got " + fmt.Sprintf("%d", szlItemLength))
@@ -227,7 +227,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	szlItemCount, _szlItemCountErr := readBuffer.ReadUint16("szlItemCount", 16)
 	_ = szlItemCount
 	if _szlItemCountErr != nil {
-		return nil, errors.Wrap(_szlItemCountErr, "Error parsing 'szlItemCount' field")
+		return nil, errors.Wrap(_szlItemCountErr, "Error parsing 'szlItemCount' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 	}
 
 	// Array field (items)
@@ -244,7 +244,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
 			_item, _err := SzlDataTreeItemParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 			}
 			items[curItem] = _item.(SzlDataTreeItem)
 		}

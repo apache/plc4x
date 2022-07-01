@@ -154,7 +154,7 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field")
+		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of VTCloseError")
 	}
 	errorType := _errorType.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
@@ -174,7 +174,7 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field")
+			return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field of VTCloseError")
 		default:
 			listOfVtSessionIdentifiers = _val.(VTCloseErrorListOfVTSessionIdentifiers)
 			if closeErr := readBuffer.CloseContext("listOfVtSessionIdentifiers"); closeErr != nil {

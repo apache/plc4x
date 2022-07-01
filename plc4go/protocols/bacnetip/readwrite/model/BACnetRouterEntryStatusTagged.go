@@ -126,7 +126,7 @@ func BACnetRouterEntryStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetRouterEntryStatusTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetRouterEntryStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetRouterEntryStatus_AVAILABLE)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetRouterEntryStatusTagged")
 	}
 	value := _value.(BACnetRouterEntryStatus)
 

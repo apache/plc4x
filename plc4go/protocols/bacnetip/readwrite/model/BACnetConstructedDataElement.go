@@ -257,7 +257,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'applicationTag' field")
+			return nil, errors.Wrap(_err, "Error parsing 'applicationTag' field of BACnetConstructedDataElement")
 		default:
 			applicationTag = _val.(BACnetApplicationTag)
 			if closeErr := readBuffer.CloseContext("applicationTag"); closeErr != nil {
@@ -279,7 +279,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field")
+			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field of BACnetConstructedDataElement")
 		default:
 			contextTag = _val.(BACnetContextTag)
 			if closeErr := readBuffer.CloseContext("contextTag"); closeErr != nil {
@@ -301,7 +301,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field")
+			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field of BACnetConstructedDataElement")
 		default:
 			constructedData = _val.(BACnetConstructedData)
 			if closeErr := readBuffer.CloseContext("constructedData"); closeErr != nil {

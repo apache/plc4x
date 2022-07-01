@@ -167,14 +167,14 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 	// Simple Field (adsState)
 	_adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
-		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
+		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field of AdsWriteControlRequest")
 	}
 	adsState := _adsState
 
 	// Simple Field (deviceState)
 	_deviceState, _deviceStateErr := readBuffer.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
-		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
+		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field of AdsWriteControlRequest")
 	}
 	deviceState := _deviceState
 
@@ -182,13 +182,13 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsWriteControlRequest")
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(length)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsWriteControlRequest")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsWriteControlRequest"); closeErr != nil {

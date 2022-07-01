@@ -150,7 +150,7 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 	}
 	_endOfFile, _endOfFileErr := BACnetApplicationTagParse(readBuffer)
 	if _endOfFileErr != nil {
-		return nil, errors.Wrap(_endOfFileErr, "Error parsing 'endOfFile' field")
+		return nil, errors.Wrap(_endOfFileErr, "Error parsing 'endOfFile' field of BACnetServiceAckAtomicReadFile")
 	}
 	endOfFile := _endOfFile.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("endOfFile"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 	}
 	_accessMethod, _accessMethodErr := BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer)
 	if _accessMethodErr != nil {
-		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field")
+		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetServiceAckAtomicReadFile")
 	}
 	accessMethod := _accessMethod.(BACnetServiceAckAtomicReadFileStreamOrRecord)
 	if closeErr := readBuffer.CloseContext("accessMethod"); closeErr != nil {

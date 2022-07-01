@@ -164,7 +164,7 @@ func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, ta
 	}
 	_setpointReference, _setpointReferenceErr := BACnetSetpointReferenceParse(readBuffer)
 	if _setpointReferenceErr != nil {
-		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field")
+		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field of BACnetConstructedDataSetpointReference")
 	}
 	setpointReference := _setpointReference.(BACnetSetpointReference)
 	if closeErr := readBuffer.CloseContext("setpointReference"); closeErr != nil {

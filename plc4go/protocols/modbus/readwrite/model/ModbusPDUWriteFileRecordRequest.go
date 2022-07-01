@@ -152,7 +152,7 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUWriteFileRecordRequest")
 	}
 
 	// Array field (items)
@@ -167,7 +167,7 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 		for positionAware.GetPos() < _itemsEndPos {
 			_item, _err := ModbusPDUWriteFileRecordRequestItemParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+				return nil, errors.Wrap(_err, "Error parsing 'items' field of ModbusPDUWriteFileRecordRequest")
 			}
 			items = append(items, _item.(ModbusPDUWriteFileRecordRequestItem))
 		}

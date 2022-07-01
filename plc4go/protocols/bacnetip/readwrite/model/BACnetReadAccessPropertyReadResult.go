@@ -181,7 +181,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field of BACnetReadAccessPropertyReadResult")
 		default:
 			propertyValue = _val.(BACnetConstructedData)
 			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
@@ -208,7 +208,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyAccessError' field")
+			return nil, errors.Wrap(_err, "Error parsing 'propertyAccessError' field of BACnetReadAccessPropertyReadResult")
 		default:
 			propertyAccessError = _val.(ErrorEnclosed)
 			if closeErr := readBuffer.CloseContext("propertyAccessError"); closeErr != nil {

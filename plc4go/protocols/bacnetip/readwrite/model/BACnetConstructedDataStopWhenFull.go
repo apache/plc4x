@@ -164,7 +164,7 @@ func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_stopWhenFull, _stopWhenFullErr := BACnetApplicationTagParse(readBuffer)
 	if _stopWhenFullErr != nil {
-		return nil, errors.Wrap(_stopWhenFullErr, "Error parsing 'stopWhenFull' field")
+		return nil, errors.Wrap(_stopWhenFullErr, "Error parsing 'stopWhenFull' field of BACnetConstructedDataStopWhenFull")
 	}
 	stopWhenFull := _stopWhenFull.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("stopWhenFull"); closeErr != nil {

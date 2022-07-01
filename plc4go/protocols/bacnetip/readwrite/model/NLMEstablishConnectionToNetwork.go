@@ -149,14 +149,14 @@ func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLengt
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field")
+		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMEstablishConnectionToNetwork")
 	}
 	destinationNetworkAddress := _destinationNetworkAddress
 
 	// Simple Field (terminationTime)
 	_terminationTime, _terminationTimeErr := readBuffer.ReadUint8("terminationTime", 8)
 	if _terminationTimeErr != nil {
-		return nil, errors.Wrap(_terminationTimeErr, "Error parsing 'terminationTime' field")
+		return nil, errors.Wrap(_terminationTimeErr, "Error parsing 'terminationTime' field of NLMEstablishConnectionToNetwork")
 	}
 	terminationTime := _terminationTime
 

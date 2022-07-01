@@ -137,7 +137,7 @@ func BACnetPropertyStatesNodeTypeParse(readBuffer utils.ReadBuffer, peekedTagNum
 	}
 	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _nodeTypeErr != nil {
-		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field")
+		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field of BACnetPropertyStatesNodeType")
 	}
 	nodeType := _nodeType.(BACnetNodeTypeTagged)
 	if closeErr := readBuffer.CloseContext("nodeType"); closeErr != nil {

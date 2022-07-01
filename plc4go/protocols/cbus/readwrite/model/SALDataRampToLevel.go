@@ -145,14 +145,14 @@ func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (SALDataRampToLevel, e
 	// Simple Field (group)
 	_group, _groupErr := readBuffer.ReadByte("group")
 	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field")
+		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of SALDataRampToLevel")
 	}
 	group := _group
 
 	// Simple Field (level)
 	_level, _levelErr := readBuffer.ReadByte("level")
 	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of SALDataRampToLevel")
 	}
 	level := _level
 

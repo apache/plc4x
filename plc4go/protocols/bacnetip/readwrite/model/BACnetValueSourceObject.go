@@ -137,7 +137,7 @@ func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (BACnetValueSourc
 	}
 	_object, _objectErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _objectErr != nil {
-		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field")
+		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field of BACnetValueSourceObject")
 	}
 	object := _object.(BACnetDeviceObjectReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("object"); closeErr != nil {

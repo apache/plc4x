@@ -174,7 +174,7 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCForwardedNPDU")
 			}
 			ip[curItem] = _item
 		}
@@ -186,7 +186,7 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 	// Simple Field (port)
 	_port, _portErr := readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCForwardedNPDU")
 	}
 	port := _port
 
@@ -196,7 +196,7 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 	}
 	_npdu, _npduErr := NPDUParse(readBuffer, uint16(uint16(bvlcPayloadLength)-uint16(uint16(6))))
 	if _npduErr != nil {
-		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
+		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCForwardedNPDU")
 	}
 	npdu := _npdu.(NPDU)
 	if closeErr := readBuffer.CloseContext("npdu"); closeErr != nil {

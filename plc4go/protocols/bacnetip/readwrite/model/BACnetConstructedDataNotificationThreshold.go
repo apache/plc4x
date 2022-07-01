@@ -164,7 +164,7 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 	}
 	_notificationThreshold, _notificationThresholdErr := BACnetApplicationTagParse(readBuffer)
 	if _notificationThresholdErr != nil {
-		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field")
+		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field of BACnetConstructedDataNotificationThreshold")
 	}
 	notificationThreshold := _notificationThreshold.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("notificationThreshold"); closeErr != nil {

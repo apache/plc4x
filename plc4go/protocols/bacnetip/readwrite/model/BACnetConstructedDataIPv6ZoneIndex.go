@@ -164,7 +164,7 @@ func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_ipv6ZoneIndex, _ipv6ZoneIndexErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6ZoneIndexErr != nil {
-		return nil, errors.Wrap(_ipv6ZoneIndexErr, "Error parsing 'ipv6ZoneIndex' field")
+		return nil, errors.Wrap(_ipv6ZoneIndexErr, "Error parsing 'ipv6ZoneIndex' field of BACnetConstructedDataIPv6ZoneIndex")
 	}
 	ipv6ZoneIndex := _ipv6ZoneIndex.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("ipv6ZoneIndex"); closeErr != nil {

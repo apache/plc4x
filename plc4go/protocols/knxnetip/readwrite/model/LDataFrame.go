@@ -176,27 +176,27 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	// Simple Field (frameType)
 	_frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
 	if _frameTypeErr != nil {
-		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field")
+		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field of LDataFrame")
 	}
 	frameType := _frameType
 
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling, _pollingErr := readBuffer.ReadBit("polling")
 	if _pollingErr != nil {
-		return nil, errors.Wrap(_pollingErr, "Error parsing 'polling' field")
+		return nil, errors.Wrap(_pollingErr, "Error parsing 'polling' field of LDataFrame")
 	}
 
 	// Simple Field (notRepeated)
 	_notRepeated, _notRepeatedErr := readBuffer.ReadBit("notRepeated")
 	if _notRepeatedErr != nil {
-		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field")
+		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field of LDataFrame")
 	}
 	notRepeated := _notRepeated
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame, _notAckFrameErr := readBuffer.ReadBit("notAckFrame")
 	if _notAckFrameErr != nil {
-		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field")
+		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field of LDataFrame")
 	}
 
 	// Simple Field (priority)
@@ -205,7 +205,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	}
 	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
+		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of LDataFrame")
 	}
 	priority := _priority
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
@@ -215,14 +215,14 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	// Simple Field (acknowledgeRequested)
 	_acknowledgeRequested, _acknowledgeRequestedErr := readBuffer.ReadBit("acknowledgeRequested")
 	if _acknowledgeRequestedErr != nil {
-		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field")
+		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field of LDataFrame")
 	}
 	acknowledgeRequested := _acknowledgeRequested
 
 	// Simple Field (errorFlag)
 	_errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
-		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
+		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field of LDataFrame")
 	}
 	errorFlag := _errorFlag
 
@@ -246,7 +246,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [notAckFrame=%v, polling=%v]", notAckFrame, polling)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of LDataFrame.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of LDataFrame")
 	}
 	_child = _childTemp.(LDataFrameChildSerializeRequirement)
 

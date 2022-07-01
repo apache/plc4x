@@ -164,7 +164,7 @@ func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_logInterval, _logIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _logIntervalErr != nil {
-		return nil, errors.Wrap(_logIntervalErr, "Error parsing 'logInterval' field")
+		return nil, errors.Wrap(_logIntervalErr, "Error parsing 'logInterval' field of BACnetConstructedDataLogInterval")
 	}
 	logInterval := _logInterval.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("logInterval"); closeErr != nil {

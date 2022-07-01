@@ -164,7 +164,7 @@ func BACnetConstructedDataFirmwareRevisionParse(readBuffer utils.ReadBuffer, tag
 	}
 	_firmwareRevision, _firmwareRevisionErr := BACnetApplicationTagParse(readBuffer)
 	if _firmwareRevisionErr != nil {
-		return nil, errors.Wrap(_firmwareRevisionErr, "Error parsing 'firmwareRevision' field")
+		return nil, errors.Wrap(_firmwareRevisionErr, "Error parsing 'firmwareRevision' field of BACnetConstructedDataFirmwareRevision")
 	}
 	firmwareRevision := _firmwareRevision.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("firmwareRevision"); closeErr != nil {

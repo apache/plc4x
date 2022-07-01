@@ -164,7 +164,7 @@ func BACnetConstructedDataDirectReadingParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_directReading, _directReadingErr := BACnetApplicationTagParse(readBuffer)
 	if _directReadingErr != nil {
-		return nil, errors.Wrap(_directReadingErr, "Error parsing 'directReading' field")
+		return nil, errors.Wrap(_directReadingErr, "Error parsing 'directReading' field of BACnetConstructedDataDirectReading")
 	}
 	directReading := _directReading.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("directReading"); closeErr != nil {

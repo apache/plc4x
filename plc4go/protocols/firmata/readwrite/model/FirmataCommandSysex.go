@@ -143,7 +143,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 	}
 	_command, _commandErr := SysexCommandParse(readBuffer, bool(response))
 	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
+		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of FirmataCommandSysex")
 	}
 	command := _command.(SysexCommand)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
@@ -154,7 +154,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataCommandSysex")
 		}
 		if reserved != uint8(0xF7) {
 			log.Info().Fields(map[string]interface{}{

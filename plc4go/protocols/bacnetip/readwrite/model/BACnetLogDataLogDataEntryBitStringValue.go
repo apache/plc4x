@@ -137,7 +137,7 @@ func BACnetLogDataLogDataEntryBitStringValueParse(readBuffer utils.ReadBuffer) (
 	}
 	_bitStringValue, _bitStringValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(5)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitStringValueErr != nil {
-		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field")
+		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetLogDataLogDataEntryBitStringValue")
 	}
 	bitStringValue := _bitStringValue.(BACnetContextTagBitString)
 	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {

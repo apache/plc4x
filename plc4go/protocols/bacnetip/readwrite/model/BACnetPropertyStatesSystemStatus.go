@@ -137,7 +137,7 @@ func BACnetPropertyStatesSystemStatusParse(readBuffer utils.ReadBuffer, peekedTa
 	}
 	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _systemStatusErr != nil {
-		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field")
+		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field of BACnetPropertyStatesSystemStatus")
 	}
 	systemStatus := _systemStatus.(BACnetDeviceStatusTagged)
 	if closeErr := readBuffer.CloseContext("systemStatus"); closeErr != nil {

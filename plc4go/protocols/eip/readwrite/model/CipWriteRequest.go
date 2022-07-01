@@ -184,14 +184,14 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWr
 	// Simple Field (requestPathSize)
 	_requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
 	if _requestPathSizeErr != nil {
-		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field")
+		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipWriteRequest")
 	}
 	requestPathSize := _requestPathSize
 	// Byte Array field (tag)
 	numberOfBytestag := int(uint16(requestPathSize) * uint16(uint16(2)))
 	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field of CipWriteRequest")
 	}
 
 	// Simple Field (dataType)
@@ -200,7 +200,7 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWr
 	}
 	_dataType, _dataTypeErr := CIPDataTypeCodeParse(readBuffer)
 	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field")
+		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CipWriteRequest")
 	}
 	dataType := _dataType
 	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
@@ -210,14 +210,14 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWr
 	// Simple Field (elementNb)
 	_elementNb, _elementNbErr := readBuffer.ReadUint16("elementNb", 16)
 	if _elementNbErr != nil {
-		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field")
+		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field of CipWriteRequest")
 	}
 	elementNb := _elementNb
 	// Byte Array field (data)
 	numberOfBytesdata := int(uint16(dataType.Size()) * uint16(elementNb))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CipWriteRequest")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipWriteRequest"); closeErr != nil {

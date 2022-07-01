@@ -164,7 +164,7 @@ func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_scheduleDefault, _scheduleDefaultErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), nil)
 	if _scheduleDefaultErr != nil {
-		return nil, errors.Wrap(_scheduleDefaultErr, "Error parsing 'scheduleDefault' field")
+		return nil, errors.Wrap(_scheduleDefaultErr, "Error parsing 'scheduleDefault' field of BACnetConstructedDataScheduleDefault")
 	}
 	scheduleDefault := _scheduleDefault.(BACnetConstructedDataElement)
 	if closeErr := readBuffer.CloseContext("scheduleDefault"); closeErr != nil {

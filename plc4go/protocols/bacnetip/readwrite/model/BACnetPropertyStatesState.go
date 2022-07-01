@@ -137,7 +137,7 @@ func BACnetPropertyStatesStateParse(readBuffer utils.ReadBuffer, peekedTagNumber
 	}
 	_state, _stateErr := BACnetEventStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
+		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of BACnetPropertyStatesState")
 	}
 	state := _state.(BACnetEventStateTagged)
 	if closeErr := readBuffer.CloseContext("state"); closeErr != nil {

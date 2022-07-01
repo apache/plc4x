@@ -164,7 +164,7 @@ func BACnetConstructedDataCarDriveStatusParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_carDriveStatus, _carDriveStatusErr := BACnetLiftCarDriveStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carDriveStatusErr != nil {
-		return nil, errors.Wrap(_carDriveStatusErr, "Error parsing 'carDriveStatus' field")
+		return nil, errors.Wrap(_carDriveStatusErr, "Error parsing 'carDriveStatus' field of BACnetConstructedDataCarDriveStatus")
 	}
 	carDriveStatus := _carDriveStatus.(BACnetLiftCarDriveStatusTagged)
 	if closeErr := readBuffer.CloseContext("carDriveStatus"); closeErr != nil {

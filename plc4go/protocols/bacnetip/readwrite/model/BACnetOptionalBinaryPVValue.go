@@ -137,7 +137,7 @@ func BACnetOptionalBinaryPVValueParse(readBuffer utils.ReadBuffer) (BACnetOption
 	}
 	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _binaryPvErr != nil {
-		return nil, errors.Wrap(_binaryPvErr, "Error parsing 'binaryPv' field")
+		return nil, errors.Wrap(_binaryPvErr, "Error parsing 'binaryPv' field of BACnetOptionalBinaryPVValue")
 	}
 	binaryPv := _binaryPv.(BACnetBinaryPVTagged)
 	if closeErr := readBuffer.CloseContext("binaryPv"); closeErr != nil {

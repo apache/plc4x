@@ -137,7 +137,7 @@ func BACnetValueSourceAddressParse(readBuffer utils.ReadBuffer) (BACnetValueSour
 	}
 	_address, _addressErr := BACnetAddressEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of BACnetValueSourceAddress")
 	}
 	address := _address.(BACnetAddressEnclosed)
 	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {

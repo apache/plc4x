@@ -164,7 +164,7 @@ func BACnetConstructedDataAttemptedSamplesParse(readBuffer utils.ReadBuffer, tag
 	}
 	_attemptedSamples, _attemptedSamplesErr := BACnetApplicationTagParse(readBuffer)
 	if _attemptedSamplesErr != nil {
-		return nil, errors.Wrap(_attemptedSamplesErr, "Error parsing 'attemptedSamples' field")
+		return nil, errors.Wrap(_attemptedSamplesErr, "Error parsing 'attemptedSamples' field of BACnetConstructedDataAttemptedSamples")
 	}
 	attemptedSamples := _attemptedSamples.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("attemptedSamples"); closeErr != nil {

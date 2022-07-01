@@ -114,7 +114,7 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Paramet
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)
 	if _parameterTypeErr != nil {
-		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
+		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field of S7Parameter")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -145,7 +145,7 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Paramet
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v, messageType=%v]", parameterType, messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Parameter.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Parameter")
 	}
 	_child = _childTemp.(S7ParameterChildSerializeRequirement)
 

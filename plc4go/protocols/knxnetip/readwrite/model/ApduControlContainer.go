@@ -142,7 +142,7 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (A
 	}
 	_controlApdu, _controlApduErr := ApduControlParse(readBuffer)
 	if _controlApduErr != nil {
-		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field")
+		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field of ApduControlContainer")
 	}
 	controlApdu := _controlApdu.(ApduControl)
 	if closeErr := readBuffer.CloseContext("controlApdu"); closeErr != nil {

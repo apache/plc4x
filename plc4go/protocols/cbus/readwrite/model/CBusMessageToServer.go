@@ -139,7 +139,7 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, response bool, srchk 
 	}
 	_request, _requestErr := RequestParse(readBuffer, bool(srchk))
 	if _requestErr != nil {
-		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field")
+		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CBusMessageToServer")
 	}
 	request := _request.(Request)
 	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {

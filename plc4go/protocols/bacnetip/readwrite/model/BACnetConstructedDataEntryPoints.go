@@ -155,7 +155,7 @@ func BACnetConstructedDataEntryPointsParse(readBuffer utils.ReadBuffer, tagNumbe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'entryPoints' field")
+				return nil, errors.Wrap(_err, "Error parsing 'entryPoints' field of BACnetConstructedDataEntryPoints")
 			}
 			entryPoints = append(entryPoints, _item.(BACnetDeviceObjectReference))
 

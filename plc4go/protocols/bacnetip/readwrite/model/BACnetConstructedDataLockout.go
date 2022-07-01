@@ -164,7 +164,7 @@ func BACnetConstructedDataLockoutParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_lockout, _lockoutErr := BACnetApplicationTagParse(readBuffer)
 	if _lockoutErr != nil {
-		return nil, errors.Wrap(_lockoutErr, "Error parsing 'lockout' field")
+		return nil, errors.Wrap(_lockoutErr, "Error parsing 'lockout' field of BACnetConstructedDataLockout")
 	}
 	lockout := _lockout.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("lockout"); closeErr != nil {

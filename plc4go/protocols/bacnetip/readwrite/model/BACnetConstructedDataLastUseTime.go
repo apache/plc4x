@@ -164,7 +164,7 @@ func BACnetConstructedDataLastUseTimeParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_lastUseTime, _lastUseTimeErr := BACnetDateTimeParse(readBuffer)
 	if _lastUseTimeErr != nil {
-		return nil, errors.Wrap(_lastUseTimeErr, "Error parsing 'lastUseTime' field")
+		return nil, errors.Wrap(_lastUseTimeErr, "Error parsing 'lastUseTime' field of BACnetConstructedDataLastUseTime")
 	}
 	lastUseTime := _lastUseTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("lastUseTime"); closeErr != nil {

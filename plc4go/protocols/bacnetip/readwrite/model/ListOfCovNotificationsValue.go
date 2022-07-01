@@ -151,7 +151,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
+		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of ListOfCovNotificationsValue")
 	}
 	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
@@ -171,7 +171,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
+			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of ListOfCovNotificationsValue")
 		default:
 			arrayIndex = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
@@ -186,7 +186,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}
 	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _propertyValueErr != nil {
-		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field")
+		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field of ListOfCovNotificationsValue")
 	}
 	propertyValue := _propertyValue.(BACnetConstructedData)
 	if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
@@ -206,7 +206,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timeOfChange' field")
+			return nil, errors.Wrap(_err, "Error parsing 'timeOfChange' field of ListOfCovNotificationsValue")
 		default:
 			timeOfChange = _val.(BACnetContextTagTime)
 			if closeErr := readBuffer.CloseContext("timeOfChange"); closeErr != nil {

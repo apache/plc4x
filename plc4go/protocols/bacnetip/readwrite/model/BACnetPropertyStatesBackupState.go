@@ -137,7 +137,7 @@ func BACnetPropertyStatesBackupStateParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_backupState, _backupStateErr := BACnetBackupStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _backupStateErr != nil {
-		return nil, errors.Wrap(_backupStateErr, "Error parsing 'backupState' field")
+		return nil, errors.Wrap(_backupStateErr, "Error parsing 'backupState' field of BACnetPropertyStatesBackupState")
 	}
 	backupState := _backupState.(BACnetBackupStateTagged)
 	if closeErr := readBuffer.CloseContext("backupState"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataModelNameParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_modelName, _modelNameErr := BACnetApplicationTagParse(readBuffer)
 	if _modelNameErr != nil {
-		return nil, errors.Wrap(_modelNameErr, "Error parsing 'modelName' field")
+		return nil, errors.Wrap(_modelNameErr, "Error parsing 'modelName' field of BACnetConstructedDataModelName")
 	}
 	modelName := _modelName.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("modelName"); closeErr != nil {

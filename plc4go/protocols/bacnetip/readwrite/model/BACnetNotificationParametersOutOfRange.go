@@ -194,7 +194,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersOutOfRange")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -207,7 +207,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_exceedingValue, _exceedingValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _exceedingValueErr != nil {
-		return nil, errors.Wrap(_exceedingValueErr, "Error parsing 'exceedingValue' field")
+		return nil, errors.Wrap(_exceedingValueErr, "Error parsing 'exceedingValue' field of BACnetNotificationParametersOutOfRange")
 	}
 	exceedingValue := _exceedingValue.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("exceedingValue"); closeErr != nil {
@@ -220,7 +220,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersOutOfRange")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
@@ -233,7 +233,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _deadbandErr != nil {
-		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field")
+		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetNotificationParametersOutOfRange")
 	}
 	deadband := _deadband.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {
@@ -246,7 +246,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_exceededLimit, _exceededLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
 	if _exceededLimitErr != nil {
-		return nil, errors.Wrap(_exceededLimitErr, "Error parsing 'exceededLimit' field")
+		return nil, errors.Wrap(_exceededLimitErr, "Error parsing 'exceededLimit' field of BACnetNotificationParametersOutOfRange")
 	}
 	exceededLimit := _exceededLimit.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("exceededLimit"); closeErr != nil {
@@ -259,7 +259,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersOutOfRange")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

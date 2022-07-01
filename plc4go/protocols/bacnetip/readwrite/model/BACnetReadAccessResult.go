@@ -126,7 +126,7 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (BACnetReadAccessR
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
+		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetReadAccessResult")
 	}
 	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (BACnetReadAccessR
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfResults' field")
+			return nil, errors.Wrap(_err, "Error parsing 'listOfResults' field of BACnetReadAccessResult")
 		default:
 			listOfResults = _val.(BACnetReadAccessResultListOfResults)
 			if closeErr := readBuffer.CloseContext("listOfResults"); closeErr != nil {

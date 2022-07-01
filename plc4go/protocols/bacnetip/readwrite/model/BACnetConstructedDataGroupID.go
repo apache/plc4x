@@ -164,7 +164,7 @@ func BACnetConstructedDataGroupIDParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_groupId, _groupIdErr := BACnetApplicationTagParse(readBuffer)
 	if _groupIdErr != nil {
-		return nil, errors.Wrap(_groupIdErr, "Error parsing 'groupId' field")
+		return nil, errors.Wrap(_groupIdErr, "Error parsing 'groupId' field of BACnetConstructedDataGroupID")
 	}
 	groupId := _groupId.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("groupId"); closeErr != nil {

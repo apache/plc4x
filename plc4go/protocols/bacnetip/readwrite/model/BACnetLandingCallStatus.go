@@ -136,7 +136,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	}
 	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
-		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field")
+		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingCallStatus")
 	}
 	floorNumber := _floorNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("floorNumber"); closeErr != nil {
@@ -149,7 +149,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	}
 	_command, _commandErr := BACnetLandingCallStatusCommandParse(readBuffer)
 	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
+		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of BACnetLandingCallStatus")
 	}
 	command := _command.(BACnetLandingCallStatusCommand)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
@@ -169,7 +169,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'floorText' field")
+			return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetLandingCallStatus")
 		default:
 			floorText = _val.(BACnetContextTagCharacterString)
 			if closeErr := readBuffer.CloseContext("floorText"); closeErr != nil {

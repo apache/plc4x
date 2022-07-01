@@ -156,7 +156,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	// Simple Field (messageTypeFieldPresent)
 	_messageTypeFieldPresent, _messageTypeFieldPresentErr := readBuffer.ReadBit("messageTypeFieldPresent")
 	if _messageTypeFieldPresentErr != nil {
-		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field")
+		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field of NPDUControl")
 	}
 	messageTypeFieldPresent := _messageTypeFieldPresent
 
@@ -164,7 +164,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -177,7 +177,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	// Simple Field (destinationSpecified)
 	_destinationSpecified, _destinationSpecifiedErr := readBuffer.ReadBit("destinationSpecified")
 	if _destinationSpecifiedErr != nil {
-		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field")
+		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field of NPDUControl")
 	}
 	destinationSpecified := _destinationSpecified
 
@@ -185,7 +185,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -198,14 +198,14 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	// Simple Field (sourceSpecified)
 	_sourceSpecified, _sourceSpecifiedErr := readBuffer.ReadBit("sourceSpecified")
 	if _sourceSpecifiedErr != nil {
-		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field")
+		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field of NPDUControl")
 	}
 	sourceSpecified := _sourceSpecified
 
 	// Simple Field (expectingReply)
 	_expectingReply, _expectingReplyErr := readBuffer.ReadBit("expectingReply")
 	if _expectingReplyErr != nil {
-		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field")
+		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field of NPDUControl")
 	}
 	expectingReply := _expectingReply
 
@@ -215,7 +215,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	}
 	_networkPriority, _networkPriorityErr := NPDUNetworkPriorityParse(readBuffer)
 	if _networkPriorityErr != nil {
-		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field")
+		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field of NPDUControl")
 	}
 	networkPriority := _networkPriority
 	if closeErr := readBuffer.CloseContext("networkPriority"); closeErr != nil {

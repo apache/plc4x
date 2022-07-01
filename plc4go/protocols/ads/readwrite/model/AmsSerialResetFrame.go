@@ -159,42 +159,42 @@ func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (AmsSerialResetFrame,
 	// Simple Field (magicCookie)
 	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)
 	if _magicCookieErr != nil {
-		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field")
+		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field of AmsSerialResetFrame")
 	}
 	magicCookie := _magicCookie
 
 	// Simple Field (transmitterAddress)
 	_transmitterAddress, _transmitterAddressErr := readBuffer.ReadInt8("transmitterAddress", 8)
 	if _transmitterAddressErr != nil {
-		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field")
+		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field of AmsSerialResetFrame")
 	}
 	transmitterAddress := _transmitterAddress
 
 	// Simple Field (receiverAddress)
 	_receiverAddress, _receiverAddressErr := readBuffer.ReadInt8("receiverAddress", 8)
 	if _receiverAddressErr != nil {
-		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field")
+		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field of AmsSerialResetFrame")
 	}
 	receiverAddress := _receiverAddress
 
 	// Simple Field (fragmentNumber)
 	_fragmentNumber, _fragmentNumberErr := readBuffer.ReadInt8("fragmentNumber", 8)
 	if _fragmentNumberErr != nil {
-		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field")
+		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field of AmsSerialResetFrame")
 	}
 	fragmentNumber := _fragmentNumber
 
 	// Simple Field (length)
 	_length, _lengthErr := readBuffer.ReadInt8("length", 8)
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsSerialResetFrame")
 	}
 	length := _length
 
 	// Simple Field (crc)
 	_crc, _crcErr := readBuffer.ReadUint16("crc", 16)
 	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
+		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of AmsSerialResetFrame")
 	}
 	crc := _crc
 

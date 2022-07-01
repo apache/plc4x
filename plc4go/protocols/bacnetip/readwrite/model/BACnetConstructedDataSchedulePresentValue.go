@@ -164,7 +164,7 @@ func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer,
 	}
 	_presentValue, _presentValueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataSchedulePresentValue")
 	}
 	presentValue := _presentValue.(BACnetConstructedDataElement)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

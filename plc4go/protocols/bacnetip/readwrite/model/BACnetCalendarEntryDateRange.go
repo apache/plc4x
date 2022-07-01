@@ -137,7 +137,7 @@ func BACnetCalendarEntryDateRangeParse(readBuffer utils.ReadBuffer) (BACnetCalen
 	}
 	_dateRange, _dateRangeErr := BACnetDateRangeEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _dateRangeErr != nil {
-		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field")
+		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field of BACnetCalendarEntryDateRange")
 	}
 	dateRange := _dateRange.(BACnetDateRangeEnclosed)
 	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {

@@ -139,7 +139,7 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	}
 	_remoteVtSessionIdentifier, _remoteVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _remoteVtSessionIdentifierErr != nil {
-		return nil, errors.Wrap(_remoteVtSessionIdentifierErr, "Error parsing 'remoteVtSessionIdentifier' field")
+		return nil, errors.Wrap(_remoteVtSessionIdentifierErr, "Error parsing 'remoteVtSessionIdentifier' field of BACnetServiceAckVTOpen")
 	}
 	remoteVtSessionIdentifier := _remoteVtSessionIdentifier.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("remoteVtSessionIdentifier"); closeErr != nil {

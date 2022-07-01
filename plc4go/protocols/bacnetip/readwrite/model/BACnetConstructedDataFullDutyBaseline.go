@@ -164,7 +164,7 @@ func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tag
 	}
 	_fullDutyBaseLine, _fullDutyBaseLineErr := BACnetApplicationTagParse(readBuffer)
 	if _fullDutyBaseLineErr != nil {
-		return nil, errors.Wrap(_fullDutyBaseLineErr, "Error parsing 'fullDutyBaseLine' field")
+		return nil, errors.Wrap(_fullDutyBaseLineErr, "Error parsing 'fullDutyBaseLine' field of BACnetConstructedDataFullDutyBaseline")
 	}
 	fullDutyBaseLine := _fullDutyBaseLine.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("fullDutyBaseLine"); closeErr != nil {

@@ -126,7 +126,7 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (A
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [indexGroup=%v]", indexGroup)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AdsMultiRequestItem.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AdsMultiRequestItem")
 	}
 	_child = _childTemp.(AdsMultiRequestItemChildSerializeRequirement)
 

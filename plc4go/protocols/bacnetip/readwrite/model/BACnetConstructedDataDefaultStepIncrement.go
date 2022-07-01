@@ -164,7 +164,7 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 	}
 	_defaultStepIncrement, _defaultStepIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultStepIncrementErr != nil {
-		return nil, errors.Wrap(_defaultStepIncrementErr, "Error parsing 'defaultStepIncrement' field")
+		return nil, errors.Wrap(_defaultStepIncrementErr, "Error parsing 'defaultStepIncrement' field of BACnetConstructedDataDefaultStepIncrement")
 	}
 	defaultStepIncrement := _defaultStepIncrement.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("defaultStepIncrement"); closeErr != nil {

@@ -137,7 +137,7 @@ func BACnetPropertyStatesSecurityLevelParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_securityLevel, _securityLevelErr := BACnetSecurityLevelTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _securityLevelErr != nil {
-		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field")
+		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of BACnetPropertyStatesSecurityLevel")
 	}
 	securityLevel := _securityLevel.(BACnetSecurityLevelTagged)
 	if closeErr := readBuffer.CloseContext("securityLevel"); closeErr != nil {

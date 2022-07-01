@@ -166,7 +166,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
+		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7PayloadUserDataItemCpuFunctionAlarmAck")
 	}
 	functionId := _functionId
 
@@ -174,7 +174,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, 
 	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	_ = numberOfObjects
 	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
+		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAck")
 	}
 
 	// Array field (messageObjects)
@@ -191,7 +191,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, 
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := AlarmMessageObjectAckTypeParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
+				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAck")
 			}
 			messageObjects[curItem] = _item.(AlarmMessageObjectAckType)
 		}

@@ -164,7 +164,7 @@ func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tag
 	}
 	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _fileAccessMethodErr != nil {
-		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field")
+		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field of BACnetConstructedDataFileAccessMethod")
 	}
 	fileAccessMethod := _fileAccessMethod.(BACnetFileAccessMethodTagged)
 	if closeErr := readBuffer.CloseContext("fileAccessMethod"); closeErr != nil {

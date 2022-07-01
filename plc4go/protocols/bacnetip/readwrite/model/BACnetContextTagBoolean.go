@@ -171,7 +171,7 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadUint8("value", 8)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetContextTagBoolean")
 	}
 	value := _value
 
@@ -181,7 +181,7 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	}
 	_payload, _payloadErr := BACnetTagPayloadBooleanParse(readBuffer, uint32(value))
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagBoolean")
 	}
 	payload := _payload.(BACnetTagPayloadBoolean)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

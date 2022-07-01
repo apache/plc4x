@@ -155,7 +155,7 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetBDTEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'bbmdBroadcastDistributionTable' field")
+				return nil, errors.Wrap(_err, "Error parsing 'bbmdBroadcastDistributionTable' field of BACnetConstructedDataBBMDBroadcastDistributionTable")
 			}
 			bbmdBroadcastDistributionTable = append(bbmdBroadcastDistributionTable, _item.(BACnetBDTEntry))
 

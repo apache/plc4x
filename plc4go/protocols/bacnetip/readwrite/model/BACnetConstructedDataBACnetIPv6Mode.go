@@ -164,7 +164,7 @@ func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_bacnetIpv6Mode, _bacnetIpv6ModeErr := BACnetIPModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _bacnetIpv6ModeErr != nil {
-		return nil, errors.Wrap(_bacnetIpv6ModeErr, "Error parsing 'bacnetIpv6Mode' field")
+		return nil, errors.Wrap(_bacnetIpv6ModeErr, "Error parsing 'bacnetIpv6Mode' field of BACnetConstructedDataBACnetIPv6Mode")
 	}
 	bacnetIpv6Mode := _bacnetIpv6Mode.(BACnetIPModeTagged)
 	if closeErr := readBuffer.CloseContext("bacnetIpv6Mode"); closeErr != nil {

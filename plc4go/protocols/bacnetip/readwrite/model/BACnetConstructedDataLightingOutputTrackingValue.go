@@ -164,7 +164,7 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 	}
 	_trackingValue, _trackingValueErr := BACnetApplicationTagParse(readBuffer)
 	if _trackingValueErr != nil {
-		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field")
+		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field of BACnetConstructedDataLightingOutputTrackingValue")
 	}
 	trackingValue := _trackingValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("trackingValue"); closeErr != nil {

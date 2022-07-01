@@ -136,7 +136,7 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(0)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetDailySchedule")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -153,7 +153,7 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
 			_item, _err := BACnetTimeValueParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'daySchedule' field")
+				return nil, errors.Wrap(_err, "Error parsing 'daySchedule' field of BACnetDailySchedule")
 			}
 			daySchedule = append(daySchedule, _item.(BACnetTimeValue))
 
@@ -169,7 +169,7 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(0)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetDailySchedule")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

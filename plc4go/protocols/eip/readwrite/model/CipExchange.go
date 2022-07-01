@@ -151,7 +151,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	// Const Field (itemCount)
 	itemCount, _itemCountErr := readBuffer.ReadUint16("itemCount", 16)
 	if _itemCountErr != nil {
-		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field")
+		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of CipExchange")
 	}
 	if itemCount != CipExchange_ITEMCOUNT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_ITEMCOUNT) + " but got " + fmt.Sprintf("%d", itemCount))
@@ -160,7 +160,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	// Const Field (nullPtr)
 	nullPtr, _nullPtrErr := readBuffer.ReadUint32("nullPtr", 32)
 	if _nullPtrErr != nil {
-		return nil, errors.Wrap(_nullPtrErr, "Error parsing 'nullPtr' field")
+		return nil, errors.Wrap(_nullPtrErr, "Error parsing 'nullPtr' field of CipExchange")
 	}
 	if nullPtr != CipExchange_NULLPTR {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_NULLPTR) + " but got " + fmt.Sprintf("%d", nullPtr))
@@ -169,7 +169,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	// Const Field (unconnectedData)
 	unconnectedData, _unconnectedDataErr := readBuffer.ReadUint16("unconnectedData", 16)
 	if _unconnectedDataErr != nil {
-		return nil, errors.Wrap(_unconnectedDataErr, "Error parsing 'unconnectedData' field")
+		return nil, errors.Wrap(_unconnectedDataErr, "Error parsing 'unconnectedData' field of CipExchange")
 	}
 	if unconnectedData != CipExchange_UNCONNECTEDDATA {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_UNCONNECTEDDATA) + " but got " + fmt.Sprintf("%d", unconnectedData))
@@ -179,7 +179,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	size, _sizeErr := readBuffer.ReadUint16("size", 16)
 	_ = size
 	if _sizeErr != nil {
-		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field")
+		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of CipExchange")
 	}
 
 	// Simple Field (service)
@@ -188,7 +188,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	}
 	_service, _serviceErr := CipServiceParse(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
 	if _serviceErr != nil {
-		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field")
+		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of CipExchange")
 	}
 	service := _service.(CipService)
 	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {

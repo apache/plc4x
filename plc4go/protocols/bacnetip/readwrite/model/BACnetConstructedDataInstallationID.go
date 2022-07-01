@@ -164,7 +164,7 @@ func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_installationId, _installationIdErr := BACnetApplicationTagParse(readBuffer)
 	if _installationIdErr != nil {
-		return nil, errors.Wrap(_installationIdErr, "Error parsing 'installationId' field")
+		return nil, errors.Wrap(_installationIdErr, "Error parsing 'installationId' field of BACnetConstructedDataInstallationID")
 	}
 	installationId := _installationId.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("installationId"); closeErr != nil {

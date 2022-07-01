@@ -139,7 +139,7 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, response bool, srchk 
 	}
 	_reply, _replyErr := ReplyParse(readBuffer)
 	if _replyErr != nil {
-		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field")
+		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of CBusMessageToClient")
 	}
 	reply := _reply.(Reply)
 	if closeErr := readBuffer.CloseContext("reply"); closeErr != nil {

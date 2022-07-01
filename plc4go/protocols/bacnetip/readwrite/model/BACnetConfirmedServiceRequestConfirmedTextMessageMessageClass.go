@@ -166,7 +166,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -204,7 +204,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
 	_child = _childTemp.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement)
 
@@ -214,7 +214,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

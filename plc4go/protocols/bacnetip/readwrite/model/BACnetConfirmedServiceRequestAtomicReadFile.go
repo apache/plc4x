@@ -151,7 +151,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 	}
 	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _fileIdentifierErr != nil {
-		return nil, errors.Wrap(_fileIdentifierErr, "Error parsing 'fileIdentifier' field")
+		return nil, errors.Wrap(_fileIdentifierErr, "Error parsing 'fileIdentifier' field of BACnetConfirmedServiceRequestAtomicReadFile")
 	}
 	fileIdentifier := _fileIdentifier.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("fileIdentifier"); closeErr != nil {
@@ -164,7 +164,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 	}
 	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer)
 	if _accessMethodErr != nil {
-		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field")
+		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetConfirmedServiceRequestAtomicReadFile")
 	}
 	accessMethod := _accessMethod.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)
 	if closeErr := readBuffer.CloseContext("accessMethod"); closeErr != nil {

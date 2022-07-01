@@ -164,7 +164,7 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 	}
 	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParse(readBuffer)
 	if _currentCommandPriorityErr != nil {
-		return nil, errors.Wrap(_currentCommandPriorityErr, "Error parsing 'currentCommandPriority' field")
+		return nil, errors.Wrap(_currentCommandPriorityErr, "Error parsing 'currentCommandPriority' field of BACnetConstructedDataCurrentCommandPriority")
 	}
 	currentCommandPriority := _currentCommandPriority.(BACnetOptionalUnsigned)
 	if closeErr := readBuffer.CloseContext("currentCommandPriority"); closeErr != nil {

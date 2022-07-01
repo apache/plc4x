@@ -164,7 +164,7 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadB
 	}
 	_activeAuthenticationPolicy, _activeAuthenticationPolicyErr := BACnetApplicationTagParse(readBuffer)
 	if _activeAuthenticationPolicyErr != nil {
-		return nil, errors.Wrap(_activeAuthenticationPolicyErr, "Error parsing 'activeAuthenticationPolicy' field")
+		return nil, errors.Wrap(_activeAuthenticationPolicyErr, "Error parsing 'activeAuthenticationPolicy' field of BACnetConstructedDataActiveAuthenticationPolicy")
 	}
 	activeAuthenticationPolicy := _activeAuthenticationPolicy.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("activeAuthenticationPolicy"); closeErr != nil {

@@ -139,7 +139,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringPar
 	}
 	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _characterStringValueErr != nil {
-		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field")
+		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
 	}
 	characterStringValue := _characterStringValue.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {

@@ -139,7 +139,7 @@ func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	}
 	_error, _errorErr := ErrorParse(readBuffer)
 	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")
+		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of BACnetErrorGeneral")
 	}
 	error := _error.(Error)
 	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {

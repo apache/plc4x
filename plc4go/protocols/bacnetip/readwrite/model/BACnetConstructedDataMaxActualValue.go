@@ -164,7 +164,7 @@ func BACnetConstructedDataMaxActualValueParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_maxActualValue, _maxActualValueErr := BACnetApplicationTagParse(readBuffer)
 	if _maxActualValueErr != nil {
-		return nil, errors.Wrap(_maxActualValueErr, "Error parsing 'maxActualValue' field")
+		return nil, errors.Wrap(_maxActualValueErr, "Error parsing 'maxActualValue' field of BACnetConstructedDataMaxActualValue")
 	}
 	maxActualValue := _maxActualValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("maxActualValue"); closeErr != nil {

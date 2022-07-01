@@ -164,7 +164,7 @@ func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_windowInterval, _windowIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _windowIntervalErr != nil {
-		return nil, errors.Wrap(_windowIntervalErr, "Error parsing 'windowInterval' field")
+		return nil, errors.Wrap(_windowIntervalErr, "Error parsing 'windowInterval' field of BACnetConstructedDataWindowInterval")
 	}
 	windowInterval := _windowInterval.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("windowInterval"); closeErr != nil {

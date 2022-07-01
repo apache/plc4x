@@ -139,7 +139,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of VTCloseErrorListOfVTSessionIdentifiers")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field")
+				return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field of VTCloseErrorListOfVTSessionIdentifiers")
 			}
 			listOfVtSessionIdentifiers = append(listOfVtSessionIdentifiers, _item.(BACnetApplicationTagUnsignedInteger))
 
@@ -172,7 +172,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of VTCloseErrorListOfVTSessionIdentifiers")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

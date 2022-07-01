@@ -197,7 +197,7 @@ func BACnetConstructedDataWeeklyScheduleParse(readBuffer utils.ReadBuffer, tagNu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataWeeklySchedule")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataWeeklyScheduleParse(readBuffer utils.ReadBuffer, tagNu
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDailyScheduleParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'weeklySchedule' field")
+				return nil, errors.Wrap(_err, "Error parsing 'weeklySchedule' field of BACnetConstructedDataWeeklySchedule")
 			}
 			weeklySchedule = append(weeklySchedule, _item.(BACnetDailySchedule))
 

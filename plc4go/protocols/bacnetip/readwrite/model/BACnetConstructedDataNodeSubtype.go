@@ -164,7 +164,7 @@ func BACnetConstructedDataNodeSubtypeParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_nodeSubType, _nodeSubTypeErr := BACnetApplicationTagParse(readBuffer)
 	if _nodeSubTypeErr != nil {
-		return nil, errors.Wrap(_nodeSubTypeErr, "Error parsing 'nodeSubType' field")
+		return nil, errors.Wrap(_nodeSubTypeErr, "Error parsing 'nodeSubType' field of BACnetConstructedDataNodeSubtype")
 	}
 	nodeSubType := _nodeSubType.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("nodeSubType"); closeErr != nil {

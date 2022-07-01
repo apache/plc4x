@@ -136,7 +136,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)
 	if _protocolIdErr != nil {
-		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field")
+		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field of TPKTPacket")
 	}
 	if protocolId != TPKTPacket_PROTOCOLID {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", TPKTPacket_PROTOCOLID) + " but got " + fmt.Sprintf("%d", protocolId))
@@ -146,7 +146,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TPKTPacket")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -160,7 +160,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	len, _lenErr := readBuffer.ReadUint16("len", 16)
 	_ = len
 	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
+		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of TPKTPacket")
 	}
 
 	// Simple Field (payload)
@@ -169,7 +169,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	}
 	_payload, _payloadErr := COTPPacketParse(readBuffer, uint16(uint16(len)-uint16(uint16(4))))
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of TPKTPacket")
 	}
 	payload := _payload.(COTPPacket)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

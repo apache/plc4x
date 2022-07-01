@@ -164,7 +164,7 @@ func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_programError, _programErrorErr := BACnetProgramErrorTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _programErrorErr != nil {
-		return nil, errors.Wrap(_programErrorErr, "Error parsing 'programError' field")
+		return nil, errors.Wrap(_programErrorErr, "Error parsing 'programError' field of BACnetConstructedDataReasonForHalt")
 	}
 	programError := _programError.(BACnetProgramErrorTagged)
 	if closeErr := readBuffer.CloseContext("programError"); closeErr != nil {

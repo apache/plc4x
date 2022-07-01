@@ -171,14 +171,14 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuf
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
-		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
+		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
 	}
 	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
 	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
-		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
+		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
 	}
 	quantity := _quantity
 
@@ -186,13 +186,13 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuf
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
 	}
 	// Byte Array field (value)
 	numberOfBytesvalue := int(byteCount)
 	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteMultipleHoldingRegistersRequest"); closeErr != nil {

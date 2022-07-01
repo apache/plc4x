@@ -164,7 +164,7 @@ func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, t
 	}
 	_operationDirection, _operationDirectionErr := BACnetEscalatorOperationDirectionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _operationDirectionErr != nil {
-		return nil, errors.Wrap(_operationDirectionErr, "Error parsing 'operationDirection' field")
+		return nil, errors.Wrap(_operationDirectionErr, "Error parsing 'operationDirection' field of BACnetConstructedDataOperationDirection")
 	}
 	operationDirection := _operationDirection.(BACnetEscalatorOperationDirectionTagged)
 	if closeErr := readBuffer.CloseContext("operationDirection"); closeErr != nil {

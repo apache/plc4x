@@ -164,7 +164,7 @@ func BACnetConstructedDataEventEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventEnableErr != nil {
-		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field")
+		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field of BACnetConstructedDataEventEnable")
 	}
 	eventEnable := _eventEnable.(BACnetEventTransitionBitsTagged)
 	if closeErr := readBuffer.CloseContext("eventEnable"); closeErr != nil {

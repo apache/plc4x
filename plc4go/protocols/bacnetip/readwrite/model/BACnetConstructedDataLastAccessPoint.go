@@ -164,7 +164,7 @@ func BACnetConstructedDataLastAccessPointParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_lastAccessPoint, _lastAccessPointErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _lastAccessPointErr != nil {
-		return nil, errors.Wrap(_lastAccessPointErr, "Error parsing 'lastAccessPoint' field")
+		return nil, errors.Wrap(_lastAccessPointErr, "Error parsing 'lastAccessPoint' field of BACnetConstructedDataLastAccessPoint")
 	}
 	lastAccessPoint := _lastAccessPoint.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("lastAccessPoint"); closeErr != nil {

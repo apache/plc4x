@@ -137,7 +137,7 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, srchk bool) (RequestComman
 	}
 	_cbusCommand, _cbusCommandErr := CBusCommandParse(readBuffer, bool(srchk))
 	if _cbusCommandErr != nil {
-		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field")
+		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestCommand")
 	}
 	cbusCommand := _cbusCommand.(CBusCommand)
 	if closeErr := readBuffer.CloseContext("cbusCommand"); closeErr != nil {

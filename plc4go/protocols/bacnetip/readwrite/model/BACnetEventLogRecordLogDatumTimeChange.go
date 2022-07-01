@@ -139,7 +139,7 @@ func BACnetEventLogRecordLogDatumTimeChangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_timeChange, _timeChangeErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _timeChangeErr != nil {
-		return nil, errors.Wrap(_timeChangeErr, "Error parsing 'timeChange' field")
+		return nil, errors.Wrap(_timeChangeErr, "Error parsing 'timeChange' field of BACnetEventLogRecordLogDatumTimeChange")
 	}
 	timeChange := _timeChange.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("timeChange"); closeErr != nil {

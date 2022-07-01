@@ -154,7 +154,7 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 	// Simple Field (numberOfPorts)
 	_numberOfPorts, _numberOfPortsErr := readBuffer.ReadUint8("numberOfPorts", 8)
 	if _numberOfPortsErr != nil {
-		return nil, errors.Wrap(_numberOfPortsErr, "Error parsing 'numberOfPorts' field")
+		return nil, errors.Wrap(_numberOfPortsErr, "Error parsing 'numberOfPorts' field of NLMInitalizeRoutingTableAck")
 	}
 	numberOfPorts := _numberOfPorts
 
@@ -172,7 +172,7 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 		for curItem := uint16(0); curItem < uint16(numberOfPorts); curItem++ {
 			_item, _err := NLMInitalizeRoutingTablePortMappingParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field")
+				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field of NLMInitalizeRoutingTableAck")
 			}
 			portMappings[curItem] = _item.(NLMInitalizeRoutingTablePortMapping)
 		}

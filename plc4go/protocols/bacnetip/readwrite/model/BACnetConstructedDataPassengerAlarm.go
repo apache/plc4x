@@ -164,7 +164,7 @@ func BACnetConstructedDataPassengerAlarmParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_passengerAlarm, _passengerAlarmErr := BACnetApplicationTagParse(readBuffer)
 	if _passengerAlarmErr != nil {
-		return nil, errors.Wrap(_passengerAlarmErr, "Error parsing 'passengerAlarm' field")
+		return nil, errors.Wrap(_passengerAlarmErr, "Error parsing 'passengerAlarm' field of BACnetConstructedDataPassengerAlarm")
 	}
 	passengerAlarm := _passengerAlarm.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("passengerAlarm"); closeErr != nil {

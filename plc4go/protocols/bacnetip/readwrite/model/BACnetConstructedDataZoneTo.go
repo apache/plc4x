@@ -164,7 +164,7 @@ func BACnetConstructedDataZoneToParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	_zoneTo, _zoneToErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _zoneToErr != nil {
-		return nil, errors.Wrap(_zoneToErr, "Error parsing 'zoneTo' field")
+		return nil, errors.Wrap(_zoneToErr, "Error parsing 'zoneTo' field of BACnetConstructedDataZoneTo")
 	}
 	zoneTo := _zoneTo.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("zoneTo"); closeErr != nil {

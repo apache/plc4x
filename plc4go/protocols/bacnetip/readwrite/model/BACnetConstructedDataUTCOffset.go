@@ -164,7 +164,7 @@ func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_utcOffset, _utcOffsetErr := BACnetApplicationTagParse(readBuffer)
 	if _utcOffsetErr != nil {
-		return nil, errors.Wrap(_utcOffsetErr, "Error parsing 'utcOffset' field")
+		return nil, errors.Wrap(_utcOffsetErr, "Error parsing 'utcOffset' field of BACnetConstructedDataUTCOffset")
 	}
 	utcOffset := _utcOffset.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("utcOffset"); closeErr != nil {

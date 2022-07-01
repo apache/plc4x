@@ -115,13 +115,13 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (ConnectionR
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
+		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of ConnectionRequestInformation")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType, _connectionTypeErr := readBuffer.ReadUint8("connectionType", 8)
 	if _connectionTypeErr != nil {
-		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field")
+		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field of ConnectionRequestInformation")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -142,7 +142,7 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (ConnectionR
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ConnectionRequestInformation.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ConnectionRequestInformation")
 	}
 	_child = _childTemp.(ConnectionRequestInformationChildSerializeRequirement)
 

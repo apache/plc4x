@@ -137,7 +137,7 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer) (PowerUpReply, error) {
 	}
 	_isA, _isAErr := PowerUpParse(readBuffer)
 	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field")
+		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of PowerUpReply")
 	}
 	isA := _isA.(PowerUp)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {

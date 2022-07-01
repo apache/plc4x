@@ -164,7 +164,7 @@ func BACnetConstructedDataValueSetParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_valueSet, _valueSetErr := BACnetApplicationTagParse(readBuffer)
 	if _valueSetErr != nil {
-		return nil, errors.Wrap(_valueSetErr, "Error parsing 'valueSet' field")
+		return nil, errors.Wrap(_valueSetErr, "Error parsing 'valueSet' field of BACnetConstructedDataValueSet")
 	}
 	valueSet := _valueSet.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("valueSet"); closeErr != nil {

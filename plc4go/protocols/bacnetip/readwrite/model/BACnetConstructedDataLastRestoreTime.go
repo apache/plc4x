@@ -164,7 +164,7 @@ func BACnetConstructedDataLastRestoreTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_lastRestoreTime, _lastRestoreTimeErr := BACnetTimeStampParse(readBuffer)
 	if _lastRestoreTimeErr != nil {
-		return nil, errors.Wrap(_lastRestoreTimeErr, "Error parsing 'lastRestoreTime' field")
+		return nil, errors.Wrap(_lastRestoreTimeErr, "Error parsing 'lastRestoreTime' field of BACnetConstructedDataLastRestoreTime")
 	}
 	lastRestoreTime := _lastRestoreTime.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("lastRestoreTime"); closeErr != nil {

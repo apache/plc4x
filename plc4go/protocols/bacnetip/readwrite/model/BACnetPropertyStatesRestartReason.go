@@ -137,7 +137,7 @@ func BACnetPropertyStatesRestartReasonParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_restartReason, _restartReasonErr := BACnetRestartReasonTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _restartReasonErr != nil {
-		return nil, errors.Wrap(_restartReasonErr, "Error parsing 'restartReason' field")
+		return nil, errors.Wrap(_restartReasonErr, "Error parsing 'restartReason' field of BACnetPropertyStatesRestartReason")
 	}
 	restartReason := _restartReason.(BACnetRestartReasonTagged)
 	if closeErr := readBuffer.CloseContext("restartReason"); closeErr != nil {

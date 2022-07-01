@@ -164,7 +164,7 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 	}
 	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParse(readBuffer)
 	if _minimumValueTimestampErr != nil {
-		return nil, errors.Wrap(_minimumValueTimestampErr, "Error parsing 'minimumValueTimestamp' field")
+		return nil, errors.Wrap(_minimumValueTimestampErr, "Error parsing 'minimumValueTimestamp' field of BACnetConstructedDataMinimumValueTimestamp")
 	}
 	minimumValueTimestamp := _minimumValueTimestamp.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("minimumValueTimestamp"); closeErr != nil {

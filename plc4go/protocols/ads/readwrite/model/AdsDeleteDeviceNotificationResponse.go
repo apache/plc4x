@@ -143,7 +143,7 @@ func AdsDeleteDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, comma
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsDeleteDeviceNotificationResponse")
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {

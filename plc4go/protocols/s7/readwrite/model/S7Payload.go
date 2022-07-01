@@ -134,7 +134,7 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterparameterType=%v, messageType=%v]", CastS7Parameter(parameter).GetParameterType(), messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Payload.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Payload")
 	}
 	_child = _childTemp.(S7PayloadChildSerializeRequirement)
 

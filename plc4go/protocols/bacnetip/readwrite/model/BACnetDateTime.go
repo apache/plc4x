@@ -122,7 +122,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
 	}
 	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
 	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field")
+		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetDateTime")
 	}
 	dateValue := _dateValue.(BACnetApplicationTagDate)
 	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
 	}
 	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
 	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field")
+		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetDateTime")
 	}
 	timeValue := _timeValue.(BACnetApplicationTagTime)
 	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {

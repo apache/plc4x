@@ -164,7 +164,7 @@ func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _reliabilityErr != nil {
-		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field")
+		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field of BACnetConstructedDataReliability")
 	}
 	reliability := _reliability.(BACnetReliabilityTagged)
 	if closeErr := readBuffer.CloseContext("reliability"); closeErr != nil {

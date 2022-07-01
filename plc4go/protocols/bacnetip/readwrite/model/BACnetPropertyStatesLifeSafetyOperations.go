@@ -137,7 +137,7 @@ func BACnetPropertyStatesLifeSafetyOperationsParse(readBuffer utils.ReadBuffer, 
 	}
 	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyOperationsErr != nil {
-		return nil, errors.Wrap(_lifeSafetyOperationsErr, "Error parsing 'lifeSafetyOperations' field")
+		return nil, errors.Wrap(_lifeSafetyOperationsErr, "Error parsing 'lifeSafetyOperations' field of BACnetPropertyStatesLifeSafetyOperations")
 	}
 	lifeSafetyOperations := _lifeSafetyOperations.(BACnetLifeSafetyOperationTagged)
 	if closeErr := readBuffer.CloseContext("lifeSafetyOperations"); closeErr != nil {

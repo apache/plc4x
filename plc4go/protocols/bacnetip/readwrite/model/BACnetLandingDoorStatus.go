@@ -112,7 +112,7 @@ func BACnetLandingDoorStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingDoo
 	}
 	_landingDoors, _landingDoorsErr := BACnetLandingDoorStatusLandingDoorsListParse(readBuffer, uint8(uint8(0)))
 	if _landingDoorsErr != nil {
-		return nil, errors.Wrap(_landingDoorsErr, "Error parsing 'landingDoors' field")
+		return nil, errors.Wrap(_landingDoorsErr, "Error parsing 'landingDoors' field of BACnetLandingDoorStatus")
 	}
 	landingDoors := _landingDoors.(BACnetLandingDoorStatusLandingDoorsList)
 	if closeErr := readBuffer.CloseContext("landingDoors"); closeErr != nil {

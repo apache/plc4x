@@ -150,7 +150,7 @@ func ChangeListRemoveErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetC
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field")
+		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of ChangeListRemoveError")
 	}
 	errorType := _errorType.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
@@ -163,7 +163,7 @@ func ChangeListRemoveErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetC
 	}
 	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _firstFailedElementNumberErr != nil {
-		return nil, errors.Wrap(_firstFailedElementNumberErr, "Error parsing 'firstFailedElementNumber' field")
+		return nil, errors.Wrap(_firstFailedElementNumberErr, "Error parsing 'firstFailedElementNumber' field of ChangeListRemoveError")
 	}
 	firstFailedElementNumber := _firstFailedElementNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("firstFailedElementNumber"); closeErr != nil {

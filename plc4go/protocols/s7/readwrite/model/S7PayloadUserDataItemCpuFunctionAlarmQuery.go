@@ -220,7 +220,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	// Const Field (functionId)
 	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
+		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 	}
 	if functionId != S7PayloadUserDataItemCpuFunctionAlarmQuery_FUNCTIONID {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionAlarmQuery_FUNCTIONID) + " but got " + fmt.Sprintf("%d", functionId))
@@ -229,7 +229,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	// Const Field (numberMessageObj)
 	numberMessageObj, _numberMessageObjErr := readBuffer.ReadUint8("numberMessageObj", 8)
 	if _numberMessageObjErr != nil {
-		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field")
+		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 	}
 	if numberMessageObj != S7PayloadUserDataItemCpuFunctionAlarmQuery_NUMBERMESSAGEOBJ {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionAlarmQuery_NUMBERMESSAGEOBJ) + " but got " + fmt.Sprintf("%d", numberMessageObj))
@@ -238,7 +238,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
 	if _variableSpecErr != nil {
-		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field")
+		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 	}
 	if variableSpec != S7PayloadUserDataItemCpuFunctionAlarmQuery_VARIABLESPEC {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionAlarmQuery_VARIABLESPEC) + " but got " + fmt.Sprintf("%d", variableSpec))
@@ -247,7 +247,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	// Const Field (length)
 	length, _lengthErr := readBuffer.ReadUint8("length", 8)
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 	}
 	if length != S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH) + " but got " + fmt.Sprintf("%d", length))
@@ -259,7 +259,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	}
 	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
 	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field")
+		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 	}
 	syntaxId := _syntaxId
 	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
@@ -270,7 +270,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -286,7 +286,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	}
 	_queryType, _queryTypeErr := QueryTypeParse(readBuffer)
 	if _queryTypeErr != nil {
-		return nil, errors.Wrap(_queryTypeErr, "Error parsing 'queryType' field")
+		return nil, errors.Wrap(_queryTypeErr, "Error parsing 'queryType' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 	}
 	queryType := _queryType
 	if closeErr := readBuffer.CloseContext("queryType"); closeErr != nil {
@@ -297,7 +297,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 		}
 		if reserved != uint8(0x34) {
 			log.Info().Fields(map[string]interface{}{
@@ -313,7 +313,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 	}
 	_alarmType, _alarmTypeErr := AlarmTypeParse(readBuffer)
 	if _alarmTypeErr != nil {
-		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field")
+		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 	}
 	alarmType := _alarmType
 	if closeErr := readBuffer.CloseContext("alarmType"); closeErr != nil {

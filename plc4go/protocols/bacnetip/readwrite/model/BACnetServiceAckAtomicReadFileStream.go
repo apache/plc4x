@@ -150,7 +150,7 @@ func BACnetServiceAckAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParse(readBuffer)
 	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
+		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicReadFileStream")
 	}
 	fileStartPosition := _fileStartPosition.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetServiceAckAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_fileData, _fileDataErr := BACnetApplicationTagParse(readBuffer)
 	if _fileDataErr != nil {
-		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field")
+		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field of BACnetServiceAckAtomicReadFileStream")
 	}
 	fileData := _fileData.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("fileData"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataStartTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_startTime, _startTimeErr := BACnetDateTimeParse(readBuffer)
 	if _startTimeErr != nil {
-		return nil, errors.Wrap(_startTimeErr, "Error parsing 'startTime' field")
+		return nil, errors.Wrap(_startTimeErr, "Error parsing 'startTime' field of BACnetConstructedDataStartTime")
 	}
 	startTime := _startTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("startTime"); closeErr != nil {

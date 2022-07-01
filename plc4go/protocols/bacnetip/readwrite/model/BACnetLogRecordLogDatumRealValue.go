@@ -139,7 +139,7 @@ func BACnetLogRecordLogDatumRealValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_realValue, _realValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field")
+		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetLogRecordLogDatumRealValue")
 	}
 	realValue := _realValue.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {

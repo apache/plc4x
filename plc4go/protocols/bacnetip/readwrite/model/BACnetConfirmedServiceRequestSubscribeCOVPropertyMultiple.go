@@ -192,7 +192,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	}
 	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
+		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
 	subscriberProcessIdentifier := _subscriberProcessIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
@@ -212,7 +212,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field")
+			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 		default:
 			issueConfirmedNotifications = _val.(BACnetContextTagBoolean)
 			if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
@@ -234,7 +234,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field")
+			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 		default:
 			lifetime = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("lifetime"); closeErr != nil {
@@ -256,7 +256,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'maxNotificationDelay' field")
+			return nil, errors.Wrap(_err, "Error parsing 'maxNotificationDelay' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 		default:
 			maxNotificationDelay = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("maxNotificationDelay"); closeErr != nil {
@@ -271,7 +271,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	}
 	_listOfCovSubscriptionSpecifications, _listOfCovSubscriptionSpecificationsErr := BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListParse(readBuffer, uint8(uint8(4)))
 	if _listOfCovSubscriptionSpecificationsErr != nil {
-		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationsErr, "Error parsing 'listOfCovSubscriptionSpecifications' field")
+		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationsErr, "Error parsing 'listOfCovSubscriptionSpecifications' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
 	listOfCovSubscriptionSpecifications := _listOfCovSubscriptionSpecifications.(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList)
 	if closeErr := readBuffer.CloseContext("listOfCovSubscriptionSpecifications"); closeErr != nil {

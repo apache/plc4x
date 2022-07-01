@@ -137,7 +137,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer u
 	}
 	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _bitStringValueErr != nil {
-		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field")
+		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetFaultParameterFaultExtendedParametersEntryBitString")
 	}
 	bitStringValue := _bitStringValue.(BACnetApplicationTagBitString)
 	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {

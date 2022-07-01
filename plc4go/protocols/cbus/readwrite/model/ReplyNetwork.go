@@ -137,7 +137,7 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	}
 	_routeType, _routeTypeErr := RouteTypeParse(readBuffer)
 	if _routeTypeErr != nil {
-		return nil, errors.Wrap(_routeTypeErr, "Error parsing 'routeType' field")
+		return nil, errors.Wrap(_routeTypeErr, "Error parsing 'routeType' field of ReplyNetwork")
 	}
 	routeType := _routeType
 	if closeErr := readBuffer.CloseContext("routeType"); closeErr != nil {
@@ -158,7 +158,7 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 		for curItem := uint16(0); curItem < uint16(routeType.AdditionalBridges()); curItem++ {
 			_item, _err := BridgeAddressParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field")
+				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field of ReplyNetwork")
 			}
 			additionalBridgeAddresses[curItem] = _item.(BridgeAddress)
 		}
@@ -173,7 +173,7 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	}
 	_unitAddress, _unitAddressErr := UnitAddressParse(readBuffer)
 	if _unitAddressErr != nil {
-		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field")
+		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of ReplyNetwork")
 	}
 	unitAddress := _unitAddress.(UnitAddress)
 	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {

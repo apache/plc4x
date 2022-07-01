@@ -139,7 +139,7 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (TunnelingResponse, err
 	}
 	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
 	if _tunnelingResponseDataBlockErr != nil {
-		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
+		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field of TunnelingResponse")
 	}
 	tunnelingResponseDataBlock := _tunnelingResponseDataBlock.(TunnelingResponseDataBlock)
 	if closeErr := readBuffer.CloseContext("tunnelingResponseDataBlock"); closeErr != nil {

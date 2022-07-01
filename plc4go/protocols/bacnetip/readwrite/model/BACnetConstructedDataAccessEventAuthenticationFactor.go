@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 	}
 	_accessEventAuthenticationFactor, _accessEventAuthenticationFactorErr := BACnetAuthenticationFactorParse(readBuffer)
 	if _accessEventAuthenticationFactorErr != nil {
-		return nil, errors.Wrap(_accessEventAuthenticationFactorErr, "Error parsing 'accessEventAuthenticationFactor' field")
+		return nil, errors.Wrap(_accessEventAuthenticationFactorErr, "Error parsing 'accessEventAuthenticationFactor' field of BACnetConstructedDataAccessEventAuthenticationFactor")
 	}
 	accessEventAuthenticationFactor := _accessEventAuthenticationFactor.(BACnetAuthenticationFactor)
 	if closeErr := readBuffer.CloseContext("accessEventAuthenticationFactor"); closeErr != nil {

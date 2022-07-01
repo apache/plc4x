@@ -167,14 +167,14 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 	// Simple Field (length)
 	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsDeviceNotificationRequest")
 	}
 	length := _length
 
 	// Simple Field (stamps)
 	_stamps, _stampsErr := readBuffer.ReadUint32("stamps", 32)
 	if _stampsErr != nil {
-		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field")
+		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field of AdsDeviceNotificationRequest")
 	}
 	stamps := _stamps
 
@@ -192,7 +192,7 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 		for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
 			_item, _err := AdsStampHeaderParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field")
+				return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field of AdsDeviceNotificationRequest")
 			}
 			adsStampHeaders[curItem] = _item.(AdsStampHeader)
 		}

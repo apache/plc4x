@@ -164,7 +164,7 @@ func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_limitEnable, _limitEnableErr := BACnetLimitEnableTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _limitEnableErr != nil {
-		return nil, errors.Wrap(_limitEnableErr, "Error parsing 'limitEnable' field")
+		return nil, errors.Wrap(_limitEnableErr, "Error parsing 'limitEnable' field of BACnetConstructedDataLimitEnable")
 	}
 	limitEnable := _limitEnable.(BACnetLimitEnableTagged)
 	if closeErr := readBuffer.CloseContext("limitEnable"); closeErr != nil {

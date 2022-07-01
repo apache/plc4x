@@ -154,7 +154,7 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header 
 	}
 	_payload, _payloadErr := BACnetTagPayloadSignedIntegerParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagSignedInteger")
 	}
 	payload := _payload.(BACnetTagPayloadSignedInteger)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

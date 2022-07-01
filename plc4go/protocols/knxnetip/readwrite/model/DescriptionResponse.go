@@ -150,7 +150,7 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (DescriptionResponse,
 	}
 	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
 	if _dibDeviceInfoErr != nil {
-		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
+		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field of DescriptionResponse")
 	}
 	dibDeviceInfo := _dibDeviceInfo.(DIBDeviceInfo)
 	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
@@ -163,7 +163,7 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (DescriptionResponse,
 	}
 	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
-		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
+		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field of DescriptionResponse")
 	}
 	dibSuppSvcFamilies := _dibSuppSvcFamilies.(DIBSuppSvcFamilies)
 	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {

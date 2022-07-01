@@ -140,7 +140,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetPropertyValues")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -157,7 +157,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyValueParse(readBuffer, objectTypeArgument)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPropertyValues")
 			}
 			data = append(data, _item.(BACnetPropertyValue))
 
@@ -173,7 +173,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetPropertyValues")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

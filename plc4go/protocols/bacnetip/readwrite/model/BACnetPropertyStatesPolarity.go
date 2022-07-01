@@ -137,7 +137,7 @@ func BACnetPropertyStatesPolarityParse(readBuffer utils.ReadBuffer, peekedTagNum
 	}
 	_polarity, _polarityErr := BACnetPolarityTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _polarityErr != nil {
-		return nil, errors.Wrap(_polarityErr, "Error parsing 'polarity' field")
+		return nil, errors.Wrap(_polarityErr, "Error parsing 'polarity' field of BACnetPropertyStatesPolarity")
 	}
 	polarity := _polarity.(BACnetPolarityTagged)
 	if closeErr := readBuffer.CloseContext("polarity"); closeErr != nil {

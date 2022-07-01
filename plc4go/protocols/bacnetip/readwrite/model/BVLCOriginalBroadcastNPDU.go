@@ -142,7 +142,7 @@ func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLeng
 	}
 	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcPayloadLength))
 	if _npduErr != nil {
-		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
+		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCOriginalBroadcastNPDU")
 	}
 	npdu := _npdu.(NPDU)
 	if closeErr := readBuffer.CloseContext("npdu"); closeErr != nil {

@@ -188,7 +188,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	// Simple Field (Subscription)
 	_Subscription, _SubscriptionErr := readBuffer.ReadUint8("Subscription", 8)
 	if _SubscriptionErr != nil {
-		return nil, errors.Wrap(_SubscriptionErr, "Error parsing 'Subscription' field")
+		return nil, errors.Wrap(_SubscriptionErr, "Error parsing 'Subscription' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 	}
 	Subscription := _Subscription
 
@@ -196,7 +196,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -209,7 +209,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	// Simple Field (magicKey)
 	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64))
 	if _magicKeyErr != nil {
-		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field")
+		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 	}
 	magicKey := _magicKey
 
@@ -221,7 +221,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 		}
 		_val, _err := AlarmStateTypeParse(readBuffer)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'Alarmtype' field")
+			return nil, errors.Wrap(_err, "Error parsing 'Alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
 		Alarmtype = &_val
 		if closeErr := readBuffer.CloseContext("Alarmtype"); closeErr != nil {
@@ -234,7 +234,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	if bool((Subscription) >= (128)) {
 		_val, _err := readBuffer.ReadUint8("Reserve", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'Reserve' field")
+			return nil, errors.Wrap(_err, "Error parsing 'Reserve' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
 		Reserve = &_val
 	}

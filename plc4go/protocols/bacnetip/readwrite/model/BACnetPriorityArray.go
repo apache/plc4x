@@ -346,7 +346,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetPriorityArray")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -365,7 +365,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPriorityValueParse(readBuffer, objectTypeArgument)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPriorityArray")
 			}
 			data = append(data, _item.(BACnetPriorityValue))
 

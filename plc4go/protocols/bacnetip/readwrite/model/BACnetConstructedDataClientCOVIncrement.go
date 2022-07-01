@@ -164,7 +164,7 @@ func BACnetConstructedDataClientCOVIncrementParse(readBuffer utils.ReadBuffer, t
 	}
 	_covIncrement, _covIncrementErr := BACnetClientCOVParse(readBuffer)
 	if _covIncrementErr != nil {
-		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field")
+		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataClientCOVIncrement")
 	}
 	covIncrement := _covIncrement.(BACnetClientCOV)
 	if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {

@@ -133,20 +133,20 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingResp
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
-		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
+		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of TunnelingResponseDataBlock")
 	}
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of TunnelingResponseDataBlock")
 	}
 	communicationChannelId := _communicationChannelId
 
 	// Simple Field (sequenceCounter)
 	_sequenceCounter, _sequenceCounterErr := readBuffer.ReadUint8("sequenceCounter", 8)
 	if _sequenceCounterErr != nil {
-		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
+		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field of TunnelingResponseDataBlock")
 	}
 	sequenceCounter := _sequenceCounter
 
@@ -156,7 +156,7 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingResp
 	}
 	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of TunnelingResponseDataBlock")
 	}
 	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {

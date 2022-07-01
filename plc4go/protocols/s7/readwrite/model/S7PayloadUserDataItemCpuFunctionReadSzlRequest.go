@@ -161,7 +161,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 	}
 	_szlId, _szlIdErr := SzlIdParse(readBuffer)
 	if _szlIdErr != nil {
-		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field")
+		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field of S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 	}
 	szlId := _szlId.(SzlId)
 	if closeErr := readBuffer.CloseContext("szlId"); closeErr != nil {
@@ -171,7 +171,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 	// Simple Field (szlIndex)
 	_szlIndex, _szlIndexErr := readBuffer.ReadUint16("szlIndex", 16)
 	if _szlIndexErr != nil {
-		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field")
+		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field of S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 	}
 	szlIndex := _szlIndex
 

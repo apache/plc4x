@@ -139,13 +139,13 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) 
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
-		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
+		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of KnxNetIpMessage")
 	}
 
 	// Const Field (protocolVersion)
 	protocolVersion, _protocolVersionErr := readBuffer.ReadUint8("protocolVersion", 8)
 	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
+		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of KnxNetIpMessage")
 	}
 	if protocolVersion != KnxNetIpMessage_PROTOCOLVERSION {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", KnxNetIpMessage_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
@@ -154,14 +154,14 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) 
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType, _msgTypeErr := readBuffer.ReadUint16("msgType", 16)
 	if _msgTypeErr != nil {
-		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field")
+		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field of KnxNetIpMessage")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	totalLength, _totalLengthErr := readBuffer.ReadUint16("totalLength", 16)
 	_ = totalLength
 	if _totalLengthErr != nil {
-		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field")
+		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of KnxNetIpMessage")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -210,7 +210,7 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) 
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [msgType=%v]", msgType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of KnxNetIpMessage.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of KnxNetIpMessage")
 	}
 	_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 

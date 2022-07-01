@@ -164,7 +164,7 @@ func BACnetConstructedDataOccupancyCountAdjustParse(readBuffer utils.ReadBuffer,
 	}
 	_occupancyCountAdjust, _occupancyCountAdjustErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyCountAdjustErr != nil {
-		return nil, errors.Wrap(_occupancyCountAdjustErr, "Error parsing 'occupancyCountAdjust' field")
+		return nil, errors.Wrap(_occupancyCountAdjustErr, "Error parsing 'occupancyCountAdjust' field of BACnetConstructedDataOccupancyCountAdjust")
 	}
 	occupancyCountAdjust := _occupancyCountAdjust.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("occupancyCountAdjust"); closeErr != nil {

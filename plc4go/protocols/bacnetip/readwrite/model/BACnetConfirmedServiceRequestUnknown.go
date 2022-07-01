@@ -142,7 +142,7 @@ func BACnetConfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, serv
 	numberOfBytesunknownBytes := int(serviceRequestPayloadLength)
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of BACnetConfirmedServiceRequestUnknown")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestUnknown"); closeErr != nil {

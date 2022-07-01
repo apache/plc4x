@@ -164,7 +164,7 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 	}
 	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lifeSafetyOperationsErr != nil {
-		return nil, errors.Wrap(_lifeSafetyOperationsErr, "Error parsing 'lifeSafetyOperations' field")
+		return nil, errors.Wrap(_lifeSafetyOperationsErr, "Error parsing 'lifeSafetyOperations' field of BACnetConstructedDataOperationExpected")
 	}
 	lifeSafetyOperations := _lifeSafetyOperations.(BACnetLifeSafetyOperationTagged)
 	if closeErr := readBuffer.CloseContext("lifeSafetyOperations"); closeErr != nil {

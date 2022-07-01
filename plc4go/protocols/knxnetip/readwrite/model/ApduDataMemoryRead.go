@@ -147,14 +147,14 @@ func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apd
 	// Simple Field (numBytes)
 	_numBytes, _numBytesErr := readBuffer.ReadUint8("numBytes", 6)
 	if _numBytesErr != nil {
-		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
+		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field of ApduDataMemoryRead")
 	}
 	numBytes := _numBytes
 
 	// Simple Field (address)
 	_address, _addressErr := readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ApduDataMemoryRead")
 	}
 	address := _address
 

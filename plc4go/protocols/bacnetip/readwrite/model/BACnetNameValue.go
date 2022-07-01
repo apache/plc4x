@@ -126,7 +126,7 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (BACnetNameValue, error) 
 	}
 	_name, _nameErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field")
+		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetNameValue")
 	}
 	name := _name.(BACnetContextTagCharacterString)
 	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (BACnetNameValue, error) 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'value' field")
+			return nil, errors.Wrap(_err, "Error parsing 'value' field of BACnetNameValue")
 		default:
 			value = _val.(BACnetConstructedData)
 			if closeErr := readBuffer.CloseContext("value"); closeErr != nil {

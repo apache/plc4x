@@ -149,14 +149,14 @@ func NLMICouldBeRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uin
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field")
+		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMICouldBeRouterToNetwork")
 	}
 	destinationNetworkAddress := _destinationNetworkAddress
 
 	// Simple Field (performanceIndex)
 	_performanceIndex, _performanceIndexErr := readBuffer.ReadUint8("performanceIndex", 8)
 	if _performanceIndexErr != nil {
-		return nil, errors.Wrap(_performanceIndexErr, "Error parsing 'performanceIndex' field")
+		return nil, errors.Wrap(_performanceIndexErr, "Error parsing 'performanceIndex' field of NLMICouldBeRouterToNetwork")
 	}
 	performanceIndex := _performanceIndex
 

@@ -109,7 +109,7 @@ func BridgeCountParse(readBuffer utils.ReadBuffer) (BridgeCount, error) {
 	// Simple Field (count)
 	_count, _countErr := readBuffer.ReadUint8("count", 8)
 	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BridgeCount")
 	}
 	count := _count
 

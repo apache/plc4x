@@ -158,14 +158,14 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer 
 	// Simple Field (result)
 	_result, _resultErr := readBuffer.ReadUint8("result", 8)
 	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse")
 	}
 	result := _result
 
 	// Simple Field (reserved01)
 	_reserved01, _reserved01Err := readBuffer.ReadUint8("reserved01", 8)
 	if _reserved01Err != nil {
-		return nil, errors.Wrap(_reserved01Err, "Error parsing 'reserved01' field")
+		return nil, errors.Wrap(_reserved01Err, "Error parsing 'reserved01' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse")
 	}
 	reserved01 := _reserved01
 

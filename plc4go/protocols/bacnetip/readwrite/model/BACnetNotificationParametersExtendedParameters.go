@@ -419,7 +419,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetNotificationParametersExtendedParameters")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -462,7 +462,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'nullValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'nullValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			nullValue = _val.(BACnetApplicationTagNull)
 			if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
@@ -484,7 +484,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'realValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'realValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			realValue = _val.(BACnetApplicationTagReal)
 			if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
@@ -506,7 +506,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'unsignedValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'unsignedValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			unsignedValue = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
@@ -528,7 +528,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'booleanValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'booleanValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			booleanValue = _val.(BACnetApplicationTagBoolean)
 			if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
@@ -550,7 +550,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'integerValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'integerValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			integerValue = _val.(BACnetApplicationTagSignedInteger)
 			if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
@@ -572,7 +572,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'doubleValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'doubleValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			doubleValue = _val.(BACnetApplicationTagDouble)
 			if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
@@ -594,7 +594,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'octetStringValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'octetStringValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			octetStringValue = _val.(BACnetApplicationTagOctetString)
 			if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
@@ -616,7 +616,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'characterStringValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'characterStringValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			characterStringValue = _val.(BACnetApplicationTagCharacterString)
 			if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
@@ -638,7 +638,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'bitStringValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'bitStringValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			bitStringValue = _val.(BACnetApplicationTagBitString)
 			if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
@@ -660,7 +660,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'enumeratedValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'enumeratedValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			enumeratedValue = _val.(BACnetApplicationTagEnumerated)
 			if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
@@ -682,7 +682,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'dateValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'dateValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			dateValue = _val.(BACnetApplicationTagDate)
 			if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
@@ -704,7 +704,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timeValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'timeValue' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			timeValue = _val.(BACnetApplicationTagTime)
 			if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
@@ -726,7 +726,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
+			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			objectIdentifier = _val.(BACnetApplicationTagObjectIdentifier)
 			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -748,7 +748,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'reference' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reference' field of BACnetNotificationParametersExtendedParameters")
 		default:
 			reference = _val.(BACnetDeviceObjectPropertyReferenceEnclosed)
 			if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {
@@ -763,7 +763,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetNotificationParametersExtendedParameters")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

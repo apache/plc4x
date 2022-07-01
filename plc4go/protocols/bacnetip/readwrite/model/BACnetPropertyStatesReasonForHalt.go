@@ -137,7 +137,7 @@ func BACnetPropertyStatesReasonForHaltParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_reasonForHalt, _reasonForHaltErr := BACnetProgramErrorTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reasonForHaltErr != nil {
-		return nil, errors.Wrap(_reasonForHaltErr, "Error parsing 'reasonForHalt' field")
+		return nil, errors.Wrap(_reasonForHaltErr, "Error parsing 'reasonForHalt' field of BACnetPropertyStatesReasonForHalt")
 	}
 	reasonForHalt := _reasonForHalt.(BACnetProgramErrorTagged)
 	if closeErr := readBuffer.CloseContext("reasonForHalt"); closeErr != nil {

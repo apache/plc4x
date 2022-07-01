@@ -137,7 +137,7 @@ func BACnetLogDataLogDataEntryUnsignedValueParse(readBuffer utils.ReadBuffer) (B
 	}
 	_unsignedValue, _unsignedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _unsignedValueErr != nil {
-		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field")
+		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetLogDataLogDataEntryUnsignedValue")
 	}
 	unsignedValue := _unsignedValue.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {

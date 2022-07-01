@@ -137,7 +137,7 @@ func BACnetPropertyStatesNetworkPortCommandParse(readBuffer utils.ReadBuffer, pe
 	}
 	_networkPortCommand, _networkPortCommandErr := BACnetNetworkPortCommandTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkPortCommandErr != nil {
-		return nil, errors.Wrap(_networkPortCommandErr, "Error parsing 'networkPortCommand' field")
+		return nil, errors.Wrap(_networkPortCommandErr, "Error parsing 'networkPortCommand' field of BACnetPropertyStatesNetworkPortCommand")
 	}
 	networkPortCommand := _networkPortCommand.(BACnetNetworkPortCommandTagged)
 	if closeErr := readBuffer.CloseContext("networkPortCommand"); closeErr != nil {

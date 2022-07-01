@@ -164,7 +164,7 @@ func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_linkSpeed, _linkSpeedErr := BACnetApplicationTagParse(readBuffer)
 	if _linkSpeedErr != nil {
-		return nil, errors.Wrap(_linkSpeedErr, "Error parsing 'linkSpeed' field")
+		return nil, errors.Wrap(_linkSpeedErr, "Error parsing 'linkSpeed' field of BACnetConstructedDataLinkSpeed")
 	}
 	linkSpeed := _linkSpeed.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("linkSpeed"); closeErr != nil {

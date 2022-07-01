@@ -155,7 +155,7 @@ func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNu
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRecipientParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'covuRecipients' field")
+				return nil, errors.Wrap(_err, "Error parsing 'covuRecipients' field of BACnetConstructedDataCOVURecipients")
 			}
 			covuRecipients = append(covuRecipients, _item.(BACnetRecipient))
 

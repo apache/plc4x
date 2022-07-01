@@ -164,7 +164,7 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	}
 	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParse(readBuffer)
 	if _fdSubscriptionLifetimeErr != nil {
-		return nil, errors.Wrap(_fdSubscriptionLifetimeErr, "Error parsing 'fdSubscriptionLifetime' field")
+		return nil, errors.Wrap(_fdSubscriptionLifetimeErr, "Error parsing 'fdSubscriptionLifetime' field of BACnetConstructedDataFDSubscriptionLifetime")
 	}
 	fdSubscriptionLifetime := _fdSubscriptionLifetime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("fdSubscriptionLifetime"); closeErr != nil {

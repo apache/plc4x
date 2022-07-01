@@ -154,7 +154,7 @@ func BACnetApplicationTagDoubleParse(readBuffer utils.ReadBuffer) (BACnetApplica
 	}
 	_payload, _payloadErr := BACnetTagPayloadDoubleParse(readBuffer)
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagDouble")
 	}
 	payload := _payload.(BACnetTagPayloadDouble)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

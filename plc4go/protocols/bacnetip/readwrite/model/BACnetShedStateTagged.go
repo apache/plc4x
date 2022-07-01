@@ -126,7 +126,7 @@ func BACnetShedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetShedStateTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetShedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetShedState_SHED_INACTIVE)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetShedStateTagged")
 	}
 	value := _value.(BACnetShedState)
 

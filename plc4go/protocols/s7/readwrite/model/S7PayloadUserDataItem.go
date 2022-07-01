@@ -151,7 +151,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7PayloadUserDataItem")
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
@@ -164,7 +164,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
+		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7PayloadUserDataItem")
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
@@ -175,7 +175,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
 	_ = dataLength
 	if _dataLengthErr != nil {
-		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
+		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of S7PayloadUserDataItem")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -228,7 +228,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v, cpuSubfunction=%v, dataLength=%v]", cpuFunctionType, cpuSubfunction, dataLength)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7PayloadUserDataItem.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7PayloadUserDataItem")
 	}
 	_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 

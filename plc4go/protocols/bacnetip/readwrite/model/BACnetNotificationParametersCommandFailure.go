@@ -183,7 +183,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersCommandFailure")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	}
 	_commandValue, _commandValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _commandValueErr != nil {
-		return nil, errors.Wrap(_commandValueErr, "Error parsing 'commandValue' field")
+		return nil, errors.Wrap(_commandValueErr, "Error parsing 'commandValue' field of BACnetNotificationParametersCommandFailure")
 	}
 	commandValue := _commandValue.(BACnetConstructedData)
 	if closeErr := readBuffer.CloseContext("commandValue"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersCommandFailure")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
@@ -222,7 +222,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	}
 	_feedbackValue, _feedbackValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _feedbackValueErr != nil {
-		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field")
+		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetNotificationParametersCommandFailure")
 	}
 	feedbackValue := _feedbackValue.(BACnetConstructedData)
 	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {
@@ -235,7 +235,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersCommandFailure")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

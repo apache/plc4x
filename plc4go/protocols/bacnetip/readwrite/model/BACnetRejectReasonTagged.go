@@ -139,7 +139,7 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGeneric(readBuffer, actualLength, BACnetRejectReason_VENDOR_PROPRIETARY_VALUE)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetRejectReasonTagged")
 	}
 	value := _value.(BACnetRejectReason)
 
@@ -151,7 +151,7 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	// Manual Field (proprietaryValue)
 	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, actualLength, isProprietary)
 	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
+		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetRejectReasonTagged")
 	}
 	proprietaryValue := _proprietaryValue.(uint32)
 

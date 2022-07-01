@@ -164,7 +164,7 @@ func BACnetConstructedDataLastPriorityParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_lastPriority, _lastPriorityErr := BACnetApplicationTagParse(readBuffer)
 	if _lastPriorityErr != nil {
-		return nil, errors.Wrap(_lastPriorityErr, "Error parsing 'lastPriority' field")
+		return nil, errors.Wrap(_lastPriorityErr, "Error parsing 'lastPriority' field of BACnetConstructedDataLastPriority")
 	}
 	lastPriority := _lastPriority.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("lastPriority"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, 
 	}
 	_occupancyLowerLimit, _occupancyLowerLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyLowerLimitErr != nil {
-		return nil, errors.Wrap(_occupancyLowerLimitErr, "Error parsing 'occupancyLowerLimit' field")
+		return nil, errors.Wrap(_occupancyLowerLimitErr, "Error parsing 'occupancyLowerLimit' field of BACnetConstructedDataOccupancyLowerLimit")
 	}
 	occupancyLowerLimit := _occupancyLowerLimit.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("occupancyLowerLimit"); closeErr != nil {

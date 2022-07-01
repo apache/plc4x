@@ -141,28 +141,28 @@ func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (NLMI
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field")
+		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMInitalizeRoutingTablePortMapping")
 	}
 	destinationNetworkAddress := _destinationNetworkAddress
 
 	// Simple Field (portId)
 	_portId, _portIdErr := readBuffer.ReadUint8("portId", 8)
 	if _portIdErr != nil {
-		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field")
+		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field of NLMInitalizeRoutingTablePortMapping")
 	}
 	portId := _portId
 
 	// Simple Field (portInfoLength)
 	_portInfoLength, _portInfoLengthErr := readBuffer.ReadUint8("portInfoLength", 8)
 	if _portInfoLengthErr != nil {
-		return nil, errors.Wrap(_portInfoLengthErr, "Error parsing 'portInfoLength' field")
+		return nil, errors.Wrap(_portInfoLengthErr, "Error parsing 'portInfoLength' field of NLMInitalizeRoutingTablePortMapping")
 	}
 	portInfoLength := _portInfoLength
 	// Byte Array field (portInfo)
 	numberOfBytesportInfo := int(portInfoLength)
 	portInfo, _readArrayErr := readBuffer.ReadByteArray("portInfo", numberOfBytesportInfo)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'portInfo' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'portInfo' field of NLMInitalizeRoutingTablePortMapping")
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMInitalizeRoutingTablePortMapping"); closeErr != nil {

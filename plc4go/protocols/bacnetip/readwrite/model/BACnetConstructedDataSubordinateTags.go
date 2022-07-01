@@ -197,7 +197,7 @@ func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagN
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataSubordinateTags")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagN
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNameValueCollectionParse(readBuffer, uint8(0))
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'subordinateList' field")
+				return nil, errors.Wrap(_err, "Error parsing 'subordinateList' field of BACnetConstructedDataSubordinateTags")
 			}
 			subordinateList = append(subordinateList, _item.(BACnetNameValueCollection))
 

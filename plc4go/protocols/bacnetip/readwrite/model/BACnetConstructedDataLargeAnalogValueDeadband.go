@@ -164,7 +164,7 @@ func BACnetConstructedDataLargeAnalogValueDeadbandParse(readBuffer utils.ReadBuf
 	}
 	_deadband, _deadbandErr := BACnetApplicationTagParse(readBuffer)
 	if _deadbandErr != nil {
-		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field")
+		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetConstructedDataLargeAnalogValueDeadband")
 	}
 	deadband := _deadband.(BACnetApplicationTagDouble)
 	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {

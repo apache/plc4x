@@ -155,7 +155,7 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	}
 	_networkNumber, _networkNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field")
+		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetAddress")
 	}
 	networkNumber := _networkNumber.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
@@ -178,7 +178,7 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	}
 	_macAddress, _macAddressErr := BACnetApplicationTagParse(readBuffer)
 	if _macAddressErr != nil {
-		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field")
+		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetAddress")
 	}
 	macAddress := _macAddress.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {

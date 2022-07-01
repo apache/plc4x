@@ -174,14 +174,14 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
+		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessageQueryType")
 	}
 	functionId := _functionId
 
 	// Simple Field (numberOfObjects)
 	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
+		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessageQueryType")
 	}
 	numberOfObjects := _numberOfObjects
 
@@ -191,7 +191,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of AlarmMessageQueryType")
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
@@ -204,7 +204,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
+		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of AlarmMessageQueryType")
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
@@ -214,7 +214,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	// Const Field (DataLength)
 	DataLength, _DataLengthErr := readBuffer.ReadUint16("DataLength", 16)
 	if _DataLengthErr != nil {
-		return nil, errors.Wrap(_DataLengthErr, "Error parsing 'DataLength' field")
+		return nil, errors.Wrap(_DataLengthErr, "Error parsing 'DataLength' field of AlarmMessageQueryType")
 	}
 	if DataLength != AlarmMessageQueryType_DATALENGTH {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageQueryType_DATALENGTH) + " but got " + fmt.Sprintf("%d", DataLength))
@@ -234,7 +234,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := AlarmMessageObjectQueryTypeParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
+				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessageQueryType")
 			}
 			messageObjects[curItem] = _item.(AlarmMessageObjectQueryType)
 		}

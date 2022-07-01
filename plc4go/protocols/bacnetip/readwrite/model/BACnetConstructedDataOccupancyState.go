@@ -164,7 +164,7 @@ func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_occupancyState, _occupancyStateErr := BACnetAccessZoneOccupancyStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _occupancyStateErr != nil {
-		return nil, errors.Wrap(_occupancyStateErr, "Error parsing 'occupancyState' field")
+		return nil, errors.Wrap(_occupancyStateErr, "Error parsing 'occupancyState' field of BACnetConstructedDataOccupancyState")
 	}
 	occupancyState := _occupancyState.(BACnetAccessZoneOccupancyStateTagged)
 	if closeErr := readBuffer.CloseContext("occupancyState"); closeErr != nil {

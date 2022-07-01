@@ -126,7 +126,7 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [firmwareType=%v]", firmwareType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ComObjectTable.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ComObjectTable")
 	}
 	_child = _childTemp.(ComObjectTableChildSerializeRequirement)
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_silenced, _silencedErr := BACnetSilencedStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _silencedErr != nil {
-		return nil, errors.Wrap(_silencedErr, "Error parsing 'silenced' field")
+		return nil, errors.Wrap(_silencedErr, "Error parsing 'silenced' field of BACnetConstructedDataSilenced")
 	}
 	silenced := _silenced.(BACnetSilencedStateTagged)
 	if closeErr := readBuffer.CloseContext("silenced"); closeErr != nil {

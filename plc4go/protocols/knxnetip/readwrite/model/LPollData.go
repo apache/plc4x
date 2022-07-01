@@ -177,7 +177,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
 	}
 	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
 	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
+		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LPollData")
 	}
 	sourceAddress := _sourceAddress.(KnxAddress)
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
@@ -187,14 +187,14 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
 	numberOfBytestargetAddress := int(uint16(2))
 	targetAddress, _readArrayErr := readBuffer.ReadByteArray("targetAddress", numberOfBytestargetAddress)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'targetAddress' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'targetAddress' field of LPollData")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 4)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LPollData")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -207,7 +207,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
 	// Simple Field (numberExpectedPollData)
 	_numberExpectedPollData, _numberExpectedPollDataErr := readBuffer.ReadUint8("numberExpectedPollData", 6)
 	if _numberExpectedPollDataErr != nil {
-		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field")
+		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field of LPollData")
 	}
 	numberExpectedPollData := _numberExpectedPollData
 

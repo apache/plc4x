@@ -150,7 +150,7 @@ func SubscribeCOVPropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorCh
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field")
+		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of SubscribeCOVPropertyMultipleError")
 	}
 	errorType := _errorType.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
@@ -163,7 +163,7 @@ func SubscribeCOVPropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorCh
 	}
 	_firstFailedSubscription, _firstFailedSubscriptionErr := SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer, uint8(uint8(1)))
 	if _firstFailedSubscriptionErr != nil {
-		return nil, errors.Wrap(_firstFailedSubscriptionErr, "Error parsing 'firstFailedSubscription' field")
+		return nil, errors.Wrap(_firstFailedSubscriptionErr, "Error parsing 'firstFailedSubscription' field of SubscribeCOVPropertyMultipleError")
 	}
 	firstFailedSubscription := _firstFailedSubscription.(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription)
 	if closeErr := readBuffer.CloseContext("firstFailedSubscription"); closeErr != nil {

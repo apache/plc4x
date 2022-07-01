@@ -185,7 +185,7 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSe
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUSegmentAck")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -198,35 +198,35 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSe
 	// Simple Field (negativeAck)
 	_negativeAck, _negativeAckErr := readBuffer.ReadBit("negativeAck")
 	if _negativeAckErr != nil {
-		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field")
+		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field of APDUSegmentAck")
 	}
 	negativeAck := _negativeAck
 
 	// Simple Field (server)
 	_server, _serverErr := readBuffer.ReadBit("server")
 	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
+		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of APDUSegmentAck")
 	}
 	server := _server
 
 	// Simple Field (originalInvokeId)
 	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUSegmentAck")
 	}
 	originalInvokeId := _originalInvokeId
 
 	// Simple Field (sequenceNumber)
 	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of APDUSegmentAck")
 	}
 	sequenceNumber := _sequenceNumber
 
 	// Simple Field (proposedWindowSize)
 	_proposedWindowSize, _proposedWindowSizeErr := readBuffer.ReadUint8("proposedWindowSize", 8)
 	if _proposedWindowSizeErr != nil {
-		return nil, errors.Wrap(_proposedWindowSizeErr, "Error parsing 'proposedWindowSize' field")
+		return nil, errors.Wrap(_proposedWindowSizeErr, "Error parsing 'proposedWindowSize' field of APDUSegmentAck")
 	}
 	proposedWindowSize := _proposedWindowSize
 

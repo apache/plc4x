@@ -175,7 +175,7 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntry,
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetCalendarEntry.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetCalendarEntry")
 	}
 	_child = _childTemp.(BACnetCalendarEntryChildSerializeRequirement)
 

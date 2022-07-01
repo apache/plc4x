@@ -164,7 +164,7 @@ func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer,
 	}
 	_networkInterfaceName, _networkInterfaceNameErr := BACnetApplicationTagParse(readBuffer)
 	if _networkInterfaceNameErr != nil {
-		return nil, errors.Wrap(_networkInterfaceNameErr, "Error parsing 'networkInterfaceName' field")
+		return nil, errors.Wrap(_networkInterfaceNameErr, "Error parsing 'networkInterfaceName' field of BACnetConstructedDataNetworkInterfaceName")
 	}
 	networkInterfaceName := _networkInterfaceName.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("networkInterfaceName"); closeErr != nil {

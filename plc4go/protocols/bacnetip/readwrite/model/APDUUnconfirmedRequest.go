@@ -141,7 +141,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 4)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUUnconfirmedRequest")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -157,7 +157,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	}
 	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
 	if _serviceRequestErr != nil {
-		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
+		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field of APDUUnconfirmedRequest")
 	}
 	serviceRequest := _serviceRequest.(BACnetUnconfirmedServiceRequest)
 	if closeErr := readBuffer.CloseContext("serviceRequest"); closeErr != nil {

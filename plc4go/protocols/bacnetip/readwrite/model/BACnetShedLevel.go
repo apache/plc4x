@@ -170,7 +170,7 @@ func BACnetShedLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevel, error) 
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetShedLevel.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetShedLevel")
 	}
 	_child = _childTemp.(BACnetShedLevelChildSerializeRequirement)
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 	_bias, _biasErr := BACnetApplicationTagParse(readBuffer)
 	if _biasErr != nil {
-		return nil, errors.Wrap(_biasErr, "Error parsing 'bias' field")
+		return nil, errors.Wrap(_biasErr, "Error parsing 'bias' field of BACnetConstructedDataBias")
 	}
 	bias := _bias.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("bias"); closeErr != nil {

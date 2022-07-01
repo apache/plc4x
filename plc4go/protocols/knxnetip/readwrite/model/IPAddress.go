@@ -111,7 +111,7 @@ func IPAddressParse(readBuffer utils.ReadBuffer) (IPAddress, error) {
 	numberOfBytesaddr := int(uint16(4))
 	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytesaddr)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'addr' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'addr' field of IPAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("IPAddress"); closeErr != nil {

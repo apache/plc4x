@@ -164,7 +164,7 @@ func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_valueSource, _valueSourceErr := BACnetValueSourceParse(readBuffer)
 	if _valueSourceErr != nil {
-		return nil, errors.Wrap(_valueSourceErr, "Error parsing 'valueSource' field")
+		return nil, errors.Wrap(_valueSourceErr, "Error parsing 'valueSource' field of BACnetConstructedDataValueSource")
 	}
 	valueSource := _valueSource.(BACnetValueSource)
 	if closeErr := readBuffer.CloseContext("valueSource"); closeErr != nil {

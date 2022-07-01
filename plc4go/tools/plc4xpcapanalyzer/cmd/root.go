@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -32,6 +33,7 @@ import (
 var cfgFile string
 var logType string
 var logLevel string
+var verbosity int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -55,16 +57,11 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.plc4xpcapanalyzer.yaml)")
 	rootCmd.PersistentFlags().StringVar(&logType, "log-type", "text", "define how the log will be evaluated")
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "info", "define the log Level")
+	rootCmd.PersistentFlags().CountVarP(&verbosity, "verbose", "v", "counted verbosity")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
@@ -91,6 +88,7 @@ func initConfig() {
 		_, _ = fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
 
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	if logType == "text" {
 		log.Logger = log.
 			//// Enable below if you want to see the filenames

@@ -140,7 +140,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRe
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
-		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
+		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of S7VarRequestParameterItemAddress")
 	}
 
 	// Simple Field (address)
@@ -149,7 +149,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRe
 	}
 	_address, _addressErr := S7AddressParse(readBuffer)
 	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of S7VarRequestParameterItemAddress")
 	}
 	address := _address.(S7Address)
 	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {

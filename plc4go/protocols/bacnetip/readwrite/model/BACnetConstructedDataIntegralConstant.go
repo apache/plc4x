@@ -164,7 +164,7 @@ func BACnetConstructedDataIntegralConstantParse(readBuffer utils.ReadBuffer, tag
 	}
 	_integralConstant, _integralConstantErr := BACnetApplicationTagParse(readBuffer)
 	if _integralConstantErr != nil {
-		return nil, errors.Wrap(_integralConstantErr, "Error parsing 'integralConstant' field")
+		return nil, errors.Wrap(_integralConstantErr, "Error parsing 'integralConstant' field of BACnetConstructedDataIntegralConstant")
 	}
 	integralConstant := _integralConstant.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("integralConstant"); closeErr != nil {

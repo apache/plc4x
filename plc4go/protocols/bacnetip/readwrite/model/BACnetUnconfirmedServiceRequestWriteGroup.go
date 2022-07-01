@@ -177,7 +177,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	}
 	_groupNumber, _groupNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _groupNumberErr != nil {
-		return nil, errors.Wrap(_groupNumberErr, "Error parsing 'groupNumber' field")
+		return nil, errors.Wrap(_groupNumberErr, "Error parsing 'groupNumber' field of BACnetUnconfirmedServiceRequestWriteGroup")
 	}
 	groupNumber := _groupNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("groupNumber"); closeErr != nil {
@@ -190,7 +190,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	}
 	_writePriority, _writePriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _writePriorityErr != nil {
-		return nil, errors.Wrap(_writePriorityErr, "Error parsing 'writePriority' field")
+		return nil, errors.Wrap(_writePriorityErr, "Error parsing 'writePriority' field of BACnetUnconfirmedServiceRequestWriteGroup")
 	}
 	writePriority := _writePriority.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("writePriority"); closeErr != nil {
@@ -203,7 +203,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	}
 	_changeList, _changeListErr := BACnetGroupChannelValueListParse(readBuffer, uint8(uint8(2)))
 	if _changeListErr != nil {
-		return nil, errors.Wrap(_changeListErr, "Error parsing 'changeList' field")
+		return nil, errors.Wrap(_changeListErr, "Error parsing 'changeList' field of BACnetUnconfirmedServiceRequestWriteGroup")
 	}
 	changeList := _changeList.(BACnetGroupChannelValueList)
 	if closeErr := readBuffer.CloseContext("changeList"); closeErr != nil {
@@ -223,7 +223,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'inhibitDelay' field")
+			return nil, errors.Wrap(_err, "Error parsing 'inhibitDelay' field of BACnetUnconfirmedServiceRequestWriteGroup")
 		default:
 			inhibitDelay = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("inhibitDelay"); closeErr != nil {

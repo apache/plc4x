@@ -169,7 +169,7 @@ func CALDataReplyStatusExtendedParse(readBuffer utils.ReadBuffer, commandTypeCon
 	// Simple Field (encoding)
 	_encoding, _encodingErr := readBuffer.ReadUint8("encoding", 8)
 	if _encodingErr != nil {
-		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field")
+		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field of CALDataReplyStatusExtended")
 	}
 	encoding := _encoding
 
@@ -179,7 +179,7 @@ func CALDataReplyStatusExtendedParse(readBuffer utils.ReadBuffer, commandTypeCon
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CALDataReplyStatusExtended")
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
@@ -189,14 +189,14 @@ func CALDataReplyStatusExtendedParse(readBuffer utils.ReadBuffer, commandTypeCon
 	// Simple Field (blockStart)
 	_blockStart, _blockStartErr := readBuffer.ReadUint8("blockStart", 8)
 	if _blockStartErr != nil {
-		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field")
+		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of CALDataReplyStatusExtended")
 	}
 	blockStart := _blockStart
 	// Byte Array field (data)
 	numberOfBytesdata := int(commandTypeContainer.NumBytes())
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataReplyStatusExtended")
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataReplyStatusExtended"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataHigherDeckParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_higherDeck, _higherDeckErr := BACnetApplicationTagParse(readBuffer)
 	if _higherDeckErr != nil {
-		return nil, errors.Wrap(_higherDeckErr, "Error parsing 'higherDeck' field")
+		return nil, errors.Wrap(_higherDeckErr, "Error parsing 'higherDeck' field of BACnetConstructedDataHigherDeck")
 	}
 	higherDeck := _higherDeck.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("higherDeck"); closeErr != nil {

@@ -170,7 +170,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfState")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -183,7 +183,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field")
+		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfState")
 	}
 	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_listOfValues, _listOfValuesErr := BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer, uint8(uint8(1)))
 	if _listOfValuesErr != nil {
-		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
+		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetEventParameterChangeOfState")
 	}
 	listOfValues := _listOfValues.(BACnetEventParameterChangeOfStateListOfValues)
 	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfState")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

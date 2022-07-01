@@ -155,7 +155,7 @@ func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.R
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVMultipleSubscriptionParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'activeCOVMultipleSubscriptions' field")
+				return nil, errors.Wrap(_err, "Error parsing 'activeCOVMultipleSubscriptions' field of BACnetConstructedDataActiveCOVMultipleSubscriptions")
 			}
 			activeCOVMultipleSubscriptions = append(activeCOVMultipleSubscriptions, _item.(BACnetCOVMultipleSubscription))
 

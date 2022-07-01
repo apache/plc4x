@@ -137,7 +137,7 @@ func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (BA
 	}
 	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _calendarEntryErr != nil {
-		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field")
+		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field of BACnetSpecialEventPeriodCalendarEntry")
 	}
 	calendarEntry := _calendarEntry.(BACnetCalendarEntryEnclosed)
 	if closeErr := readBuffer.CloseContext("calendarEntry"); closeErr != nil {

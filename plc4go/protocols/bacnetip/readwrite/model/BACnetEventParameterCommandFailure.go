@@ -170,7 +170,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(3)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterCommandFailure")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -183,7 +183,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field")
+		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterCommandFailure")
 	}
 	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	}
 	_feedbackPropertyReference, _feedbackPropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _feedbackPropertyReferenceErr != nil {
-		return nil, errors.Wrap(_feedbackPropertyReferenceErr, "Error parsing 'feedbackPropertyReference' field")
+		return nil, errors.Wrap(_feedbackPropertyReferenceErr, "Error parsing 'feedbackPropertyReference' field of BACnetEventParameterCommandFailure")
 	}
 	feedbackPropertyReference := _feedbackPropertyReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("feedbackPropertyReference"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(3)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterCommandFailure")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

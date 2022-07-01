@@ -164,7 +164,7 @@ func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_fileType, _fileTypeErr := BACnetApplicationTagParse(readBuffer)
 	if _fileTypeErr != nil {
-		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field")
+		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field of BACnetConstructedDataFileType")
 	}
 	fileType := _fileType.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("fileType"); closeErr != nil {

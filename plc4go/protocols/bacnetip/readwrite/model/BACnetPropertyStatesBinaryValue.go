@@ -137,7 +137,7 @@ func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_binaryValue, _binaryValueErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryValueErr != nil {
-		return nil, errors.Wrap(_binaryValueErr, "Error parsing 'binaryValue' field")
+		return nil, errors.Wrap(_binaryValueErr, "Error parsing 'binaryValue' field of BACnetPropertyStatesBinaryValue")
 	}
 	binaryValue := _binaryValue.(BACnetBinaryPVTagged)
 	if closeErr := readBuffer.CloseContext("binaryValue"); closeErr != nil {

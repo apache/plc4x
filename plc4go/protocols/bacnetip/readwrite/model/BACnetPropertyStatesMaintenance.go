@@ -137,7 +137,7 @@ func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _maintenanceErr != nil {
-		return nil, errors.Wrap(_maintenanceErr, "Error parsing 'maintenance' field")
+		return nil, errors.Wrap(_maintenanceErr, "Error parsing 'maintenance' field of BACnetPropertyStatesMaintenance")
 	}
 	maintenance := _maintenance.(BACnetMaintenanceTagged)
 	if closeErr := readBuffer.CloseContext("maintenance"); closeErr != nil {

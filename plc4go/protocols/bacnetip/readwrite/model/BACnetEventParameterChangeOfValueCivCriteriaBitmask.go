@@ -139,7 +139,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer utils.R
 	}
 	_bitmask, _bitmaskErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitmaskErr != nil {
-		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field")
+		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field of BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 	}
 	bitmask := _bitmask.(BACnetContextTagBitString)
 	if closeErr := readBuffer.CloseContext("bitmask"); closeErr != nil {

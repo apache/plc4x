@@ -134,7 +134,7 @@ func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (SALDataTerminateRam
 	// Simple Field (group)
 	_group, _groupErr := readBuffer.ReadByte("group")
 	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field")
+		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of SALDataTerminateRamp")
 	}
 	group := _group
 

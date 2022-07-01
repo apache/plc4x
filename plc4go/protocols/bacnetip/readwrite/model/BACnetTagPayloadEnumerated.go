@@ -131,7 +131,7 @@ func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength u
 	numberOfBytesdata := int(actualLength)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of BACnetTagPayloadEnumerated")
 	}
 
 	// Virtual field

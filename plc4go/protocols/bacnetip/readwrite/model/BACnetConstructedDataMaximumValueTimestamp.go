@@ -164,7 +164,7 @@ func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer
 	}
 	_maximumValueTimestamp, _maximumValueTimestampErr := BACnetDateTimeParse(readBuffer)
 	if _maximumValueTimestampErr != nil {
-		return nil, errors.Wrap(_maximumValueTimestampErr, "Error parsing 'maximumValueTimestamp' field")
+		return nil, errors.Wrap(_maximumValueTimestampErr, "Error parsing 'maximumValueTimestamp' field of BACnetConstructedDataMaximumValueTimestamp")
 	}
 	maximumValueTimestamp := _maximumValueTimestamp.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("maximumValueTimestamp"); closeErr != nil {

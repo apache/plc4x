@@ -187,7 +187,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
+		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckGetEnrollmentSummary")
 	}
 	objectIdentifier := _objectIdentifier.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -200,7 +200,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventTypeErr != nil {
-		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
+		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetServiceAckGetEnrollmentSummary")
 	}
 	eventType := _eventType.(BACnetEventTypeTagged)
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
@@ -213,7 +213,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventStateErr != nil {
-		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
+		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of BACnetServiceAckGetEnrollmentSummary")
 	}
 	eventState := _eventState.(BACnetEventStateTagged)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
@@ -226,7 +226,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	_priority, _priorityErr := BACnetApplicationTagParse(readBuffer)
 	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
+		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of BACnetServiceAckGetEnrollmentSummary")
 	}
 	priority := _priority.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
@@ -246,7 +246,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'notificationClass' field")
+			return nil, errors.Wrap(_err, "Error parsing 'notificationClass' field of BACnetServiceAckGetEnrollmentSummary")
 		default:
 			notificationClass = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("notificationClass"); closeErr != nil {

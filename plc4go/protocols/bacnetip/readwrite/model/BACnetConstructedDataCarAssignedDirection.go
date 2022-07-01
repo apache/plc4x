@@ -164,7 +164,7 @@ func BACnetConstructedDataCarAssignedDirectionParse(readBuffer utils.ReadBuffer,
 	}
 	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _assignedDirectionErr != nil {
-		return nil, errors.Wrap(_assignedDirectionErr, "Error parsing 'assignedDirection' field")
+		return nil, errors.Wrap(_assignedDirectionErr, "Error parsing 'assignedDirection' field of BACnetConstructedDataCarAssignedDirection")
 	}
 	assignedDirection := _assignedDirection.(BACnetLiftCarDirectionTagged)
 	if closeErr := readBuffer.CloseContext("assignedDirection"); closeErr != nil {

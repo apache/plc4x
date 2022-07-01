@@ -164,7 +164,7 @@ func BACnetConstructedDataFaultTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_faultType, _faultTypeErr := BACnetFaultTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _faultTypeErr != nil {
-		return nil, errors.Wrap(_faultTypeErr, "Error parsing 'faultType' field")
+		return nil, errors.Wrap(_faultTypeErr, "Error parsing 'faultType' field of BACnetConstructedDataFaultType")
 	}
 	faultType := _faultType.(BACnetFaultTypeTagged)
 	if closeErr := readBuffer.CloseContext("faultType"); closeErr != nil {

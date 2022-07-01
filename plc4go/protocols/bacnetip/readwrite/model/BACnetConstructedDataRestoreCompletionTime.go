@@ -164,7 +164,7 @@ func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer
 	}
 	_completionTime, _completionTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _completionTimeErr != nil {
-		return nil, errors.Wrap(_completionTimeErr, "Error parsing 'completionTime' field")
+		return nil, errors.Wrap(_completionTimeErr, "Error parsing 'completionTime' field of BACnetConstructedDataRestoreCompletionTime")
 	}
 	completionTime := _completionTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("completionTime"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer util
 	}
 	_maintenanceRequired, _maintenanceRequiredErr := BACnetApplicationTagParse(readBuffer)
 	if _maintenanceRequiredErr != nil {
-		return nil, errors.Wrap(_maintenanceRequiredErr, "Error parsing 'maintenanceRequired' field")
+		return nil, errors.Wrap(_maintenanceRequiredErr, "Error parsing 'maintenanceRequired' field of BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 	}
 	maintenanceRequired := _maintenanceRequired.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("maintenanceRequired"); closeErr != nil {

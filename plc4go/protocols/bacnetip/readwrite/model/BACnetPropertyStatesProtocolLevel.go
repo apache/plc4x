@@ -137,7 +137,7 @@ func BACnetPropertyStatesProtocolLevelParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _protocolLevelErr != nil {
-		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field")
+		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field of BACnetPropertyStatesProtocolLevel")
 	}
 	protocolLevel := _protocolLevel.(BACnetProtocolLevelTagged)
 	if closeErr := readBuffer.CloseContext("protocolLevel"); closeErr != nil {

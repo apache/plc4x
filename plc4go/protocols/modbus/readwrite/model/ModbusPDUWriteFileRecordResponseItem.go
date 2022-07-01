@@ -144,21 +144,21 @@ func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (Mod
 	// Simple Field (referenceType)
 	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
-		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
+		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ModbusPDUWriteFileRecordResponseItem")
 	}
 	referenceType := _referenceType
 
 	// Simple Field (fileNumber)
 	_fileNumber, _fileNumberErr := readBuffer.ReadUint16("fileNumber", 16)
 	if _fileNumberErr != nil {
-		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
+		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field of ModbusPDUWriteFileRecordResponseItem")
 	}
 	fileNumber := _fileNumber
 
 	// Simple Field (recordNumber)
 	_recordNumber, _recordNumberErr := readBuffer.ReadUint16("recordNumber", 16)
 	if _recordNumberErr != nil {
-		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
+		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field of ModbusPDUWriteFileRecordResponseItem")
 	}
 	recordNumber := _recordNumber
 
@@ -166,13 +166,13 @@ func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (Mod
 	recordLength, _recordLengthErr := readBuffer.ReadUint16("recordLength", 16)
 	_ = recordLength
 	if _recordLengthErr != nil {
-		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
+		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field of ModbusPDUWriteFileRecordResponseItem")
 	}
 	// Byte Array field (recordData)
 	numberOfBytesrecordData := int(recordLength)
 	recordData, _readArrayErr := readBuffer.ReadByteArray("recordData", numberOfBytesrecordData)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'recordData' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'recordData' field of ModbusPDUWriteFileRecordResponseItem")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteFileRecordResponseItem"); closeErr != nil {

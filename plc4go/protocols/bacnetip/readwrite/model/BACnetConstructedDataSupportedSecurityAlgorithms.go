@@ -155,7 +155,7 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.Read
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'supportedSecurityAlgorithms' field")
+				return nil, errors.Wrap(_err, "Error parsing 'supportedSecurityAlgorithms' field of BACnetConstructedDataSupportedSecurityAlgorithms")
 			}
 			supportedSecurityAlgorithms = append(supportedSecurityAlgorithms, _item.(BACnetApplicationTagUnsignedInteger))
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataUserExternalIdentifierParse(readBuffer utils.ReadBuffe
 	}
 	_userExternalIdentifier, _userExternalIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _userExternalIdentifierErr != nil {
-		return nil, errors.Wrap(_userExternalIdentifierErr, "Error parsing 'userExternalIdentifier' field")
+		return nil, errors.Wrap(_userExternalIdentifierErr, "Error parsing 'userExternalIdentifier' field of BACnetConstructedDataUserExternalIdentifier")
 	}
 	userExternalIdentifier := _userExternalIdentifier.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("userExternalIdentifier"); closeErr != nil {

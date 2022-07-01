@@ -197,7 +197,7 @@ func BACnetConstructedDataIPv6DNSServerParse(readBuffer utils.ReadBuffer, tagNum
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataIPv6DNSServer")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataIPv6DNSServerParse(readBuffer utils.ReadBuffer, tagNum
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ipv6DnsServer' field")
+				return nil, errors.Wrap(_err, "Error parsing 'ipv6DnsServer' field of BACnetConstructedDataIPv6DNSServer")
 			}
 			ipv6DnsServer = append(ipv6DnsServer, _item.(BACnetApplicationTagOctetString))
 

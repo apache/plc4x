@@ -155,7 +155,7 @@ func BACnetConstructedDataMaskedAlarmValuesParse(readBuffer utils.ReadBuffer, ta
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDoorAlarmStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'maskedAlarmValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'maskedAlarmValues' field of BACnetConstructedDataMaskedAlarmValues")
 			}
 			maskedAlarmValues = append(maskedAlarmValues, _item.(BACnetDoorAlarmStateTagged))
 

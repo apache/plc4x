@@ -137,7 +137,7 @@ func BACnetPropertyStatesBacnetIpModeParse(readBuffer utils.ReadBuffer, peekedTa
 	}
 	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _bacnetIpModeErr != nil {
-		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field")
+		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field of BACnetPropertyStatesBacnetIpMode")
 	}
 	bacnetIpMode := _bacnetIpMode.(BACnetIPModeTagged)
 	if closeErr := readBuffer.CloseContext("bacnetIpMode"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataValueBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_valuesBeforeChange, _valuesBeforeChangeErr := BACnetApplicationTagParse(readBuffer)
 	if _valuesBeforeChangeErr != nil {
-		return nil, errors.Wrap(_valuesBeforeChangeErr, "Error parsing 'valuesBeforeChange' field")
+		return nil, errors.Wrap(_valuesBeforeChangeErr, "Error parsing 'valuesBeforeChange' field of BACnetConstructedDataValueBeforeChange")
 	}
 	valuesBeforeChange := _valuesBeforeChange.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("valuesBeforeChange"); closeErr != nil {

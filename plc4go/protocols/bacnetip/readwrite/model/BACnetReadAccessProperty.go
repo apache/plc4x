@@ -141,7 +141,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
+		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetReadAccessProperty")
 	}
 	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
+			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetReadAccessProperty")
 		default:
 			arrayIndex = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
@@ -183,7 +183,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'readResult' field")
+			return nil, errors.Wrap(_err, "Error parsing 'readResult' field of BACnetReadAccessProperty")
 		default:
 			readResult = _val.(BACnetReadAccessPropertyReadResult)
 			if closeErr := readBuffer.CloseContext("readResult"); closeErr != nil {

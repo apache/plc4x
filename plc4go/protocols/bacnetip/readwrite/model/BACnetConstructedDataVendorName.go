@@ -164,7 +164,7 @@ func BACnetConstructedDataVendorNameParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_vendorName, _vendorNameErr := BACnetApplicationTagParse(readBuffer)
 	if _vendorNameErr != nil {
-		return nil, errors.Wrap(_vendorNameErr, "Error parsing 'vendorName' field")
+		return nil, errors.Wrap(_vendorNameErr, "Error parsing 'vendorName' field of BACnetConstructedDataVendorName")
 	}
 	vendorName := _vendorName.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("vendorName"); closeErr != nil {

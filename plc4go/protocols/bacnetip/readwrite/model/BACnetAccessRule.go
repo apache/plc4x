@@ -158,7 +158,7 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (BACnetAccessRule, error
 	}
 	_timeRangeSpecifier, _timeRangeSpecifierErr := BACnetAccessRuleTimeRangeSpecifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timeRangeSpecifierErr != nil {
-		return nil, errors.Wrap(_timeRangeSpecifierErr, "Error parsing 'timeRangeSpecifier' field")
+		return nil, errors.Wrap(_timeRangeSpecifierErr, "Error parsing 'timeRangeSpecifier' field of BACnetAccessRule")
 	}
 	timeRangeSpecifier := _timeRangeSpecifier.(BACnetAccessRuleTimeRangeSpecifierTagged)
 	if closeErr := readBuffer.CloseContext("timeRangeSpecifier"); closeErr != nil {
@@ -178,7 +178,7 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (BACnetAccessRule, error
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timeRange' field")
+			return nil, errors.Wrap(_err, "Error parsing 'timeRange' field of BACnetAccessRule")
 		default:
 			timeRange = _val.(BACnetDeviceObjectPropertyReferenceEnclosed)
 			if closeErr := readBuffer.CloseContext("timeRange"); closeErr != nil {
@@ -193,7 +193,7 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (BACnetAccessRule, error
 	}
 	_locationSpecifier, _locationSpecifierErr := BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _locationSpecifierErr != nil {
-		return nil, errors.Wrap(_locationSpecifierErr, "Error parsing 'locationSpecifier' field")
+		return nil, errors.Wrap(_locationSpecifierErr, "Error parsing 'locationSpecifier' field of BACnetAccessRule")
 	}
 	locationSpecifier := _locationSpecifier.(BACnetAccessRuleLocationSpecifierTagged)
 	if closeErr := readBuffer.CloseContext("locationSpecifier"); closeErr != nil {
@@ -213,7 +213,7 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (BACnetAccessRule, error
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'location' field")
+			return nil, errors.Wrap(_err, "Error parsing 'location' field of BACnetAccessRule")
 		default:
 			location = _val.(BACnetDeviceObjectReferenceEnclosed)
 			if closeErr := readBuffer.CloseContext("location"); closeErr != nil {
@@ -228,7 +228,7 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (BACnetAccessRule, error
 	}
 	_enable, _enableErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field")
+		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetAccessRule")
 	}
 	enable := _enable.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {

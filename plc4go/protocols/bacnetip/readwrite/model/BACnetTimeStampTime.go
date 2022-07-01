@@ -137,7 +137,7 @@ func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampTime,
 	}
 	_timeValue, _timeValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_TIME))
 	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field")
+		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetTimeStampTime")
 	}
 	timeValue := _timeValue.(BACnetContextTagTime)
 	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {

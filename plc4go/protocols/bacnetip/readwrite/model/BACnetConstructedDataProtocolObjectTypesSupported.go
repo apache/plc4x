@@ -164,7 +164,7 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.Rea
 	}
 	_protocolObjectTypesSupported, _protocolObjectTypesSupportedErr := BACnetObjectTypesSupportedTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _protocolObjectTypesSupportedErr != nil {
-		return nil, errors.Wrap(_protocolObjectTypesSupportedErr, "Error parsing 'protocolObjectTypesSupported' field")
+		return nil, errors.Wrap(_protocolObjectTypesSupportedErr, "Error parsing 'protocolObjectTypesSupported' field of BACnetConstructedDataProtocolObjectTypesSupported")
 	}
 	protocolObjectTypesSupported := _protocolObjectTypesSupported.(BACnetObjectTypesSupportedTagged)
 	if closeErr := readBuffer.CloseContext("protocolObjectTypesSupported"); closeErr != nil {

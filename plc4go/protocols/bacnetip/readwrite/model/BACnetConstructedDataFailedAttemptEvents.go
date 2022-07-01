@@ -155,7 +155,7 @@ func BACnetConstructedDataFailedAttemptEventsParse(readBuffer utils.ReadBuffer, 
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessEventTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'failedAttemptEvents' field")
+				return nil, errors.Wrap(_err, "Error parsing 'failedAttemptEvents' field of BACnetConstructedDataFailedAttemptEvents")
 			}
 			failedAttemptEvents = append(failedAttemptEvents, _item.(BACnetAccessEventTagged))
 

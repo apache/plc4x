@@ -135,7 +135,7 @@ func BACnetDateTimeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetDateTimeEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetDateTimeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (
 	}
 	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeParse(readBuffer)
 	if _dateTimeValueErr != nil {
-		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field")
+		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetDateTimeEnclosed")
 	}
 	dateTimeValue := _dateTimeValue.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("dateTimeValue"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetDateTimeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetDateTimeEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

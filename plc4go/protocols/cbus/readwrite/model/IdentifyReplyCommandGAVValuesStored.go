@@ -138,7 +138,7 @@ func IdentifyReplyCommandGAVValuesStoredParse(readBuffer utils.ReadBuffer, attri
 	numberOfBytesvalues := int(uint16(16))
 	values, _readArrayErr := readBuffer.ReadByteArray("values", numberOfBytesvalues)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'values' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'values' field of IdentifyReplyCommandGAVValuesStored")
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandGAVValuesStored"); closeErr != nil {

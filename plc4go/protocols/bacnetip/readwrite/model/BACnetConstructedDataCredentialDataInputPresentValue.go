@@ -164,7 +164,7 @@ func BACnetConstructedDataCredentialDataInputPresentValueParse(readBuffer utils.
 	}
 	_presentValue, _presentValueErr := BACnetAuthenticationFactorParse(readBuffer)
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataCredentialDataInputPresentValue")
 	}
 	presentValue := _presentValue.(BACnetAuthenticationFactor)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

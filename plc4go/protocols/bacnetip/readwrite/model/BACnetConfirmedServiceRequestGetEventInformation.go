@@ -151,7 +151,7 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lastReceivedObjectIdentifier' field")
+			return nil, errors.Wrap(_err, "Error parsing 'lastReceivedObjectIdentifier' field of BACnetConfirmedServiceRequestGetEventInformation")
 		default:
 			lastReceivedObjectIdentifier = _val.(BACnetContextTagObjectIdentifier)
 			if closeErr := readBuffer.CloseContext("lastReceivedObjectIdentifier"); closeErr != nil {

@@ -132,7 +132,7 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _formatTypeErr != nil {
-		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field")
+		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field of BACnetAuthenticationFactor")
 	}
 	formatType := _formatType.(BACnetAuthenticationFactorTypeTagged)
 	if closeErr := readBuffer.CloseContext("formatType"); closeErr != nil {
@@ -145,7 +145,7 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 	_formatClass, _formatClassErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _formatClassErr != nil {
-		return nil, errors.Wrap(_formatClassErr, "Error parsing 'formatClass' field")
+		return nil, errors.Wrap(_formatClassErr, "Error parsing 'formatClass' field of BACnetAuthenticationFactor")
 	}
 	formatClass := _formatClass.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("formatClass"); closeErr != nil {
@@ -158,7 +158,7 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 	_value, _valueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthenticationFactor")
 	}
 	value := _value.(BACnetContextTagOctetString)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {

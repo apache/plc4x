@@ -137,7 +137,7 @@ func BACnetPropertyStatesProgramChangeParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_programState, _programStateErr := BACnetProgramStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _programStateErr != nil {
-		return nil, errors.Wrap(_programStateErr, "Error parsing 'programState' field")
+		return nil, errors.Wrap(_programStateErr, "Error parsing 'programState' field of BACnetPropertyStatesProgramChange")
 	}
 	programState := _programState.(BACnetProgramStateTagged)
 	if closeErr := readBuffer.CloseContext("programState"); closeErr != nil {

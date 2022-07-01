@@ -175,7 +175,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timeDuration' field")
+			return nil, errors.Wrap(_err, "Error parsing 'timeDuration' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
 		default:
 			timeDuration = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("timeDuration"); closeErr != nil {
@@ -190,7 +190,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	}
 	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _enableDisableErr != nil {
-		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field")
+		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
 	}
 	enableDisable := _enableDisable.(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged)
 	if closeErr := readBuffer.CloseContext("enableDisable"); closeErr != nil {
@@ -210,7 +210,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'password' field")
+			return nil, errors.Wrap(_err, "Error parsing 'password' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
 		default:
 			password = _val.(BACnetContextTagCharacterString)
 			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {

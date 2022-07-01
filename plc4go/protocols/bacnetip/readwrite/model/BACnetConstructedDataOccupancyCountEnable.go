@@ -164,7 +164,7 @@ func BACnetConstructedDataOccupancyCountEnableParse(readBuffer utils.ReadBuffer,
 	}
 	_occupancyCountEnable, _occupancyCountEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyCountEnableErr != nil {
-		return nil, errors.Wrap(_occupancyCountEnableErr, "Error parsing 'occupancyCountEnable' field")
+		return nil, errors.Wrap(_occupancyCountEnableErr, "Error parsing 'occupancyCountEnable' field of BACnetConstructedDataOccupancyCountEnable")
 	}
 	occupancyCountEnable := _occupancyCountEnable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("occupancyCountEnable"); closeErr != nil {

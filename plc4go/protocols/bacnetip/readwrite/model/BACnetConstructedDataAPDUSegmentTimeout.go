@@ -164,7 +164,7 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, t
 	}
 	_apduSegmentTimeout, _apduSegmentTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _apduSegmentTimeoutErr != nil {
-		return nil, errors.Wrap(_apduSegmentTimeoutErr, "Error parsing 'apduSegmentTimeout' field")
+		return nil, errors.Wrap(_apduSegmentTimeoutErr, "Error parsing 'apduSegmentTimeout' field of BACnetConstructedDataAPDUSegmentTimeout")
 	}
 	apduSegmentTimeout := _apduSegmentTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("apduSegmentTimeout"); closeErr != nil {

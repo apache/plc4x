@@ -137,7 +137,7 @@ func BACnetPropertyStatesLiftCarModeParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_liftCarMode, _liftCarModeErr := BACnetLiftCarModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarModeErr != nil {
-		return nil, errors.Wrap(_liftCarModeErr, "Error parsing 'liftCarMode' field")
+		return nil, errors.Wrap(_liftCarModeErr, "Error parsing 'liftCarMode' field of BACnetPropertyStatesLiftCarMode")
 	}
 	liftCarMode := _liftCarMode.(BACnetLiftCarModeTagged)
 	if closeErr := readBuffer.CloseContext("liftCarMode"); closeErr != nil {

@@ -152,7 +152,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}
 	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field")
+		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetCOVMultipleSubscription")
 	}
 	recipient := _recipient.(BACnetRecipientProcessEnclosed)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
@@ -165,7 +165,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}
 	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _issueConfirmedNotificationsErr != nil {
-		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field")
+		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetCOVMultipleSubscription")
 	}
 	issueConfirmedNotifications := _issueConfirmedNotifications.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
@@ -178,7 +178,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}
 	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field")
+		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetCOVMultipleSubscription")
 	}
 	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
@@ -191,7 +191,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}
 	_maxNotificationDelay, _maxNotificationDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _maxNotificationDelayErr != nil {
-		return nil, errors.Wrap(_maxNotificationDelayErr, "Error parsing 'maxNotificationDelay' field")
+		return nil, errors.Wrap(_maxNotificationDelayErr, "Error parsing 'maxNotificationDelay' field of BACnetCOVMultipleSubscription")
 	}
 	maxNotificationDelay := _maxNotificationDelay.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxNotificationDelay"); closeErr != nil {
@@ -204,7 +204,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}
 	_listOfCovSubscriptionSpecification, _listOfCovSubscriptionSpecificationErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBuffer, uint8(uint8(4)))
 	if _listOfCovSubscriptionSpecificationErr != nil {
-		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationErr, "Error parsing 'listOfCovSubscriptionSpecification' field")
+		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationErr, "Error parsing 'listOfCovSubscriptionSpecification' field of BACnetCOVMultipleSubscription")
 	}
 	listOfCovSubscriptionSpecification := _listOfCovSubscriptionSpecification.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification)
 	if closeErr := readBuffer.CloseContext("listOfCovSubscriptionSpecification"); closeErr != nil {

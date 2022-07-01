@@ -139,7 +139,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, e
 	// Simple Field (serviceNb)
 	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
 	if _serviceNbErr != nil {
-		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field")
+		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of Services")
 	}
 	serviceNb := _serviceNb
 
@@ -157,7 +157,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, e
 		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'offsets' field")
+				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of Services")
 			}
 			offsets[curItem] = _item
 		}
@@ -180,7 +180,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, e
 		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
 			_item, _err := CipServiceParse(readBuffer, uint16(servicesLen)/uint16(serviceNb))
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'services' field")
+				return nil, errors.Wrap(_err, "Error parsing 'services' field of Services")
 			}
 			services[curItem] = _item.(CipService)
 		}

@@ -122,7 +122,7 @@ func BACnetAssignedAccessRightsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	}
 	_assignedAccessRights, _assignedAccessRightsErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _assignedAccessRightsErr != nil {
-		return nil, errors.Wrap(_assignedAccessRightsErr, "Error parsing 'assignedAccessRights' field")
+		return nil, errors.Wrap(_assignedAccessRightsErr, "Error parsing 'assignedAccessRights' field of BACnetAssignedAccessRights")
 	}
 	assignedAccessRights := _assignedAccessRights.(BACnetDeviceObjectReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("assignedAccessRights"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetAssignedAccessRightsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	}
 	_enable, _enableErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field")
+		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetAssignedAccessRights")
 	}
 	enable := _enable.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.R
 	}
 	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParse(readBuffer)
 	if _lightingCommandDefaultPriorityErr != nil {
-		return nil, errors.Wrap(_lightingCommandDefaultPriorityErr, "Error parsing 'lightingCommandDefaultPriority' field")
+		return nil, errors.Wrap(_lightingCommandDefaultPriorityErr, "Error parsing 'lightingCommandDefaultPriority' field of BACnetConstructedDataLightingCommandDefaultPriority")
 	}
 	lightingCommandDefaultPriority := _lightingCommandDefaultPriority.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("lightingCommandDefaultPriority"); closeErr != nil {

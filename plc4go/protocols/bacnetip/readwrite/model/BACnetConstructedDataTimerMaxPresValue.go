@@ -164,7 +164,7 @@ func BACnetConstructedDataTimerMaxPresValueParse(readBuffer utils.ReadBuffer, ta
 	}
 	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParse(readBuffer)
 	if _maxPresValueErr != nil {
-		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field")
+		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataTimerMaxPresValue")
 	}
 	maxPresValue := _maxPresValue.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxPresValue"); closeErr != nil {

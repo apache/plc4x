@@ -109,7 +109,7 @@ func CommandHeaderParse(readBuffer utils.ReadBuffer) (CommandHeader, error) {
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadByte("value")
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of CommandHeader")
 	}
 	value := _value
 

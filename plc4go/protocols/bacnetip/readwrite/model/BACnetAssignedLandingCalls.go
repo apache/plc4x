@@ -112,7 +112,7 @@ func BACnetAssignedLandingCallsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	}
 	_landingCalls, _landingCallsErr := BACnetAssignedLandingCallsLandingCallsListParse(readBuffer, uint8(uint8(0)))
 	if _landingCallsErr != nil {
-		return nil, errors.Wrap(_landingCallsErr, "Error parsing 'landingCalls' field")
+		return nil, errors.Wrap(_landingCallsErr, "Error parsing 'landingCalls' field of BACnetAssignedLandingCalls")
 	}
 	landingCalls := _landingCalls.(BACnetAssignedLandingCallsLandingCallsList)
 	if closeErr := readBuffer.CloseContext("landingCalls"); closeErr != nil {

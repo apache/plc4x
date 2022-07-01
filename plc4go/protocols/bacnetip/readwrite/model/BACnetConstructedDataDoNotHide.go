@@ -164,7 +164,7 @@ func BACnetConstructedDataDoNotHideParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_doNotHide, _doNotHideErr := BACnetApplicationTagParse(readBuffer)
 	if _doNotHideErr != nil {
-		return nil, errors.Wrap(_doNotHideErr, "Error parsing 'doNotHide' field")
+		return nil, errors.Wrap(_doNotHideErr, "Error parsing 'doNotHide' field of BACnetConstructedDataDoNotHide")
 	}
 	doNotHide := _doNotHide.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("doNotHide"); closeErr != nil {

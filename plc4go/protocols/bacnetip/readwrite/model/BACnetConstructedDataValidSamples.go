@@ -164,7 +164,7 @@ func BACnetConstructedDataValidSamplesParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_validSamples, _validSamplesErr := BACnetApplicationTagParse(readBuffer)
 	if _validSamplesErr != nil {
-		return nil, errors.Wrap(_validSamplesErr, "Error parsing 'validSamples' field")
+		return nil, errors.Wrap(_validSamplesErr, "Error parsing 'validSamples' field of BACnetConstructedDataValidSamples")
 	}
 	validSamples := _validSamples.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("validSamples"); closeErr != nil {

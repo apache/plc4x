@@ -150,7 +150,7 @@ func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, res
 	// Simple Field (address)
 	_address, _addressErr := readBuffer.ReadUint8("address", 8)
 	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ModbusAsciiADU")
 	}
 	address := _address
 
@@ -160,7 +160,7 @@ func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, res
 	}
 	_pdu, _pduErr := ModbusPDUParse(readBuffer, bool(response))
 	if _pduErr != nil {
-		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
+		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusAsciiADU")
 	}
 	pdu := _pdu.(ModbusPDU)
 	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
@@ -171,7 +171,7 @@ func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, res
 	{
 		checksumRef, _checksumRefErr := readBuffer.ReadUint8("checksum", 8)
 		if _checksumRefErr != nil {
-			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")
+			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of ModbusAsciiADU")
 		}
 		checksum, _checksumErr := AsciiLrcCheck(address, pdu)
 		if _checksumErr != nil {

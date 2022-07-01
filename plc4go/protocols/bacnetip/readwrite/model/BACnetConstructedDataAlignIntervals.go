@@ -164,7 +164,7 @@ func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_alignIntervals, _alignIntervalsErr := BACnetApplicationTagParse(readBuffer)
 	if _alignIntervalsErr != nil {
-		return nil, errors.Wrap(_alignIntervalsErr, "Error parsing 'alignIntervals' field")
+		return nil, errors.Wrap(_alignIntervalsErr, "Error parsing 'alignIntervals' field of BACnetConstructedDataAlignIntervals")
 	}
 	alignIntervals := _alignIntervals.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("alignIntervals"); closeErr != nil {

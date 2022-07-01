@@ -164,7 +164,7 @@ func BACnetConstructedDataFaultParametersParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_faultParameters, _faultParametersErr := BACnetFaultParameterParse(readBuffer)
 	if _faultParametersErr != nil {
-		return nil, errors.Wrap(_faultParametersErr, "Error parsing 'faultParameters' field")
+		return nil, errors.Wrap(_faultParametersErr, "Error parsing 'faultParameters' field of BACnetConstructedDataFaultParameters")
 	}
 	faultParameters := _faultParameters.(BACnetFaultParameter)
 	if closeErr := readBuffer.CloseContext("faultParameters"); closeErr != nil {

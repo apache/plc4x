@@ -164,7 +164,7 @@ func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tag
 	}
 	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _slaveProxyEnableErr != nil {
-		return nil, errors.Wrap(_slaveProxyEnableErr, "Error parsing 'slaveProxyEnable' field")
+		return nil, errors.Wrap(_slaveProxyEnableErr, "Error parsing 'slaveProxyEnable' field of BACnetConstructedDataSlaveProxyEnable")
 	}
 	slaveProxyEnable := _slaveProxyEnable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("slaveProxyEnable"); closeErr != nil {

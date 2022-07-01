@@ -175,7 +175,7 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 	// Const Field (meiType)
 	meiType, _meiTypeErr := readBuffer.ReadUint8("meiType", 8)
 	if _meiTypeErr != nil {
-		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field")
+		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field of ModbusPDUReadDeviceIdentificationRequest")
 	}
 	if meiType != ModbusPDUReadDeviceIdentificationRequest_MEITYPE {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusPDUReadDeviceIdentificationRequest_MEITYPE) + " but got " + fmt.Sprintf("%d", meiType))
@@ -187,7 +187,7 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 	}
 	_level, _levelErr := ModbusDeviceInformationLevelParse(readBuffer)
 	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ModbusPDUReadDeviceIdentificationRequest")
 	}
 	level := _level
 	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
@@ -197,7 +197,7 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 	// Simple Field (objectId)
 	_objectId, _objectIdErr := readBuffer.ReadUint8("objectId", 8)
 	if _objectIdErr != nil {
-		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field")
+		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of ModbusPDUReadDeviceIdentificationRequest")
 	}
 	objectId := _objectId
 

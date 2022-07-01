@@ -164,7 +164,7 @@ func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_defaultTimeout, _defaultTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultTimeoutErr != nil {
-		return nil, errors.Wrap(_defaultTimeoutErr, "Error parsing 'defaultTimeout' field")
+		return nil, errors.Wrap(_defaultTimeoutErr, "Error parsing 'defaultTimeout' field of BACnetConstructedDataDefaultTimeout")
 	}
 	defaultTimeout := _defaultTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("defaultTimeout"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataCountChangeTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_countChangeTime, _countChangeTimeErr := BACnetDateTimeParse(readBuffer)
 	if _countChangeTimeErr != nil {
-		return nil, errors.Wrap(_countChangeTimeErr, "Error parsing 'countChangeTime' field")
+		return nil, errors.Wrap(_countChangeTimeErr, "Error parsing 'countChangeTime' field of BACnetConstructedDataCountChangeTime")
 	}
 	countChangeTime := _countChangeTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("countChangeTime"); closeErr != nil {

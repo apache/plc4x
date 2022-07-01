@@ -137,7 +137,7 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (BACnetTimeStampS
 	}
 	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of BACnetTimeStampSequence")
 	}
 	sequenceNumber := _sequenceNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("sequenceNumber"); closeErr != nil {

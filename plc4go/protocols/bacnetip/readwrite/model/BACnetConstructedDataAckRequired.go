@@ -164,7 +164,7 @@ func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_ackRequired, _ackRequiredErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackRequiredErr != nil {
-		return nil, errors.Wrap(_ackRequiredErr, "Error parsing 'ackRequired' field")
+		return nil, errors.Wrap(_ackRequiredErr, "Error parsing 'ackRequired' field of BACnetConstructedDataAckRequired")
 	}
 	ackRequired := _ackRequired.(BACnetEventTransitionBitsTagged)
 	if closeErr := readBuffer.CloseContext("ackRequired"); closeErr != nil {

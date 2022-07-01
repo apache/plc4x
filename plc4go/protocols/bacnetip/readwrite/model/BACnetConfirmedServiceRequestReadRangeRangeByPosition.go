@@ -150,7 +150,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(readBuffer utils
 	}
 	_referenceIndex, _referenceIndexErr := BACnetApplicationTagParse(readBuffer)
 	if _referenceIndexErr != nil {
-		return nil, errors.Wrap(_referenceIndexErr, "Error parsing 'referenceIndex' field")
+		return nil, errors.Wrap(_referenceIndexErr, "Error parsing 'referenceIndex' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}
 	referenceIndex := _referenceIndex.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("referenceIndex"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(readBuffer utils
 	}
 	_count, _countErr := BACnetApplicationTagParse(readBuffer)
 	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}
 	count := _count.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {

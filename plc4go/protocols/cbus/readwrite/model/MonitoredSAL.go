@@ -148,7 +148,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 	currentPos = positionAware.GetPos()
 	salType, _err := readBuffer.ReadByte("salType")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'salType' field")
+		return nil, errors.Wrap(_err, "Error parsing 'salType' field of MonitoredSAL")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -171,7 +171,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [salType=%v]", salType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of MonitoredSAL.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of MonitoredSAL")
 	}
 	_child = _childTemp.(MonitoredSALChildSerializeRequirement)
 
@@ -188,7 +188,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'salData' field")
+			return nil, errors.Wrap(_err, "Error parsing 'salData' field of MonitoredSAL")
 		default:
 			salData = _val.(SALData)
 			if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
@@ -203,7 +203,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 	}
 	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of MonitoredSAL")
 	}
 	termination := _termination.(ResponseTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataExpirationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_expirationTime, _expirationTimeErr := BACnetDateTimeParse(readBuffer)
 	if _expirationTimeErr != nil {
-		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field")
+		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field of BACnetConstructedDataExpirationTime")
 	}
 	expirationTime := _expirationTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {

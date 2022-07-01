@@ -179,7 +179,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	}
 	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
+		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOV")
 	}
 	subscriberProcessIdentifier := _subscriberProcessIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
@@ -192,7 +192,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	}
 	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field")
+		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOV")
 	}
 	monitoredObjectIdentifier := _monitoredObjectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
@@ -212,7 +212,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmed' field")
+			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmed' field of BACnetConfirmedServiceRequestSubscribeCOV")
 		default:
 			issueConfirmed = _val.(BACnetContextTagBoolean)
 			if closeErr := readBuffer.CloseContext("issueConfirmed"); closeErr != nil {
@@ -234,7 +234,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lifetimeInSeconds' field")
+			return nil, errors.Wrap(_err, "Error parsing 'lifetimeInSeconds' field of BACnetConfirmedServiceRequestSubscribeCOV")
 		default:
 			lifetimeInSeconds = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("lifetimeInSeconds"); closeErr != nil {

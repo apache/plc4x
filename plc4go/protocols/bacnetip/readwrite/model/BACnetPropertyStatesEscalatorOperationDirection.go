@@ -137,7 +137,7 @@ func BACnetPropertyStatesEscalatorOperationDirectionParse(readBuffer utils.ReadB
 	}
 	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorOperationDirectionErr != nil {
-		return nil, errors.Wrap(_escalatorOperationDirectionErr, "Error parsing 'escalatorOperationDirection' field")
+		return nil, errors.Wrap(_escalatorOperationDirectionErr, "Error parsing 'escalatorOperationDirection' field of BACnetPropertyStatesEscalatorOperationDirection")
 	}
 	escalatorOperationDirection := _escalatorOperationDirection.(BACnetEscalatorOperationDirectionTagged)
 	if closeErr := readBuffer.CloseContext("escalatorOperationDirection"); closeErr != nil {

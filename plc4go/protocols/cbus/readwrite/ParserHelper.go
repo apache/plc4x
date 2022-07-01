@@ -38,8 +38,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ChecksumParse(io)
 	case "CALReply":
 		return model.CALReplyParse(io)
-	case "ExclamationMark":
-		return model.ExclamationMarkParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
 	case "NetworkNumber":

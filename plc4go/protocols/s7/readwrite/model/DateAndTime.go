@@ -179,56 +179,56 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (DateAndTime, error) {
 	// Manual Field (year)
 	_year, _yearErr := BcdToInt(readBuffer)
 	if _yearErr != nil {
-		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
+		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field of DateAndTime")
 	}
 	year := _year.(uint8)
 
 	// Manual Field (month)
 	_month, _monthErr := BcdToInt(readBuffer)
 	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
+		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of DateAndTime")
 	}
 	month := _month.(uint8)
 
 	// Manual Field (day)
 	_day, _dayErr := BcdToInt(readBuffer)
 	if _dayErr != nil {
-		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
+		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of DateAndTime")
 	}
 	day := _day.(uint8)
 
 	// Manual Field (hour)
 	_hour, _hourErr := BcdToInt(readBuffer)
 	if _hourErr != nil {
-		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
+		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of DateAndTime")
 	}
 	hour := _hour.(uint8)
 
 	// Manual Field (minutes)
 	_minutes, _minutesErr := BcdToInt(readBuffer)
 	if _minutesErr != nil {
-		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
+		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field of DateAndTime")
 	}
 	minutes := _minutes.(uint8)
 
 	// Manual Field (seconds)
 	_seconds, _secondsErr := BcdToInt(readBuffer)
 	if _secondsErr != nil {
-		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
+		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field of DateAndTime")
 	}
 	seconds := _seconds.(uint8)
 
 	// Manual Field (msec)
 	_msec, _msecErr := S7msecToInt(readBuffer)
 	if _msecErr != nil {
-		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field")
+		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field of DateAndTime")
 	}
 	msec := _msec.(uint16)
 
 	// Simple Field (dow)
 	_dow, _dowErr := readBuffer.ReadUint8("dow", 4)
 	if _dowErr != nil {
-		return nil, errors.Wrap(_dowErr, "Error parsing 'dow' field")
+		return nil, errors.Wrap(_dowErr, "Error parsing 'dow' field of DateAndTime")
 	}
 	dow := _dow
 

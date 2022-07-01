@@ -137,7 +137,7 @@ func BACnetPropertyStatesLiftCarDriveStatusParse(readBuffer utils.ReadBuffer, pe
 	}
 	_liftCarDriveStatus, _liftCarDriveStatusErr := BACnetLiftCarDriveStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDriveStatusErr != nil {
-		return nil, errors.Wrap(_liftCarDriveStatusErr, "Error parsing 'liftCarDriveStatus' field")
+		return nil, errors.Wrap(_liftCarDriveStatusErr, "Error parsing 'liftCarDriveStatus' field of BACnetPropertyStatesLiftCarDriveStatus")
 	}
 	liftCarDriveStatus := _liftCarDriveStatus.(BACnetLiftCarDriveStatusTagged)
 	if closeErr := readBuffer.CloseContext("liftCarDriveStatus"); closeErr != nil {

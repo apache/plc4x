@@ -164,7 +164,7 @@ func BACnetConstructedDataTimePatternValueRelinquishDefaultParse(readBuffer util
 	}
 	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParse(readBuffer)
 	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field")
+		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataTimePatternValueRelinquishDefault")
 	}
 	relinquishDefault := _relinquishDefault.(BACnetApplicationTagTime)
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {

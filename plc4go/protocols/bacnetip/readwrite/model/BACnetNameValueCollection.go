@@ -139,7 +139,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetNameValueCollection")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNameValueParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'members' field")
+				return nil, errors.Wrap(_err, "Error parsing 'members' field of BACnetNameValueCollection")
 			}
 			members = append(members, _item.(BACnetNameValue))
 
@@ -172,7 +172,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetNameValueCollection")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

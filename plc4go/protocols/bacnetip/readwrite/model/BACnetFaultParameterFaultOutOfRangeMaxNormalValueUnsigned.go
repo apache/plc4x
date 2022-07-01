@@ -139,7 +139,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParse(readBuffer u
 	}
 	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
 	if _unsignedValueErr != nil {
-		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field")
+		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned")
 	}
 	unsignedValue := _unsignedValue.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {

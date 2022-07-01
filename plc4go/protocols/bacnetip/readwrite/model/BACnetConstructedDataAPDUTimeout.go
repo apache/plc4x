@@ -164,7 +164,7 @@ func BACnetConstructedDataAPDUTimeoutParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_apduTimeout, _apduTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _apduTimeoutErr != nil {
-		return nil, errors.Wrap(_apduTimeoutErr, "Error parsing 'apduTimeout' field")
+		return nil, errors.Wrap(_apduTimeoutErr, "Error parsing 'apduTimeout' field of BACnetConstructedDataAPDUTimeout")
 	}
 	apduTimeout := _apduTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("apduTimeout"); closeErr != nil {

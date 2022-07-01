@@ -137,7 +137,7 @@ func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (BACnetHostAddressN
 	}
 	_name, _nameErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field")
+		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetHostAddressName")
 	}
 	name := _name.(BACnetContextTagCharacterString)
 	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {

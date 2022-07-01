@@ -164,7 +164,7 @@ func BACnetConstructedDataDaylightSavingsStatusParse(readBuffer utils.ReadBuffer
 	}
 	_daylightSavingsStatus, _daylightSavingsStatusErr := BACnetApplicationTagParse(readBuffer)
 	if _daylightSavingsStatusErr != nil {
-		return nil, errors.Wrap(_daylightSavingsStatusErr, "Error parsing 'daylightSavingsStatus' field")
+		return nil, errors.Wrap(_daylightSavingsStatusErr, "Error parsing 'daylightSavingsStatus' field of BACnetConstructedDataDaylightSavingsStatus")
 	}
 	daylightSavingsStatus := _daylightSavingsStatus.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("daylightSavingsStatus"); closeErr != nil {

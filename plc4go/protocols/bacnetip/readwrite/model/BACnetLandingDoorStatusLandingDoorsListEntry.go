@@ -122,7 +122,7 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer utils.ReadBuff
 	}
 	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
-		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field")
+		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
 	floorNumber := _floorNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("floorNumber"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer utils.ReadBuff
 	}
 	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorStatusErr != nil {
-		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field")
+		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field of BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
 	doorStatus := _doorStatus.(BACnetDoorStatusTagged)
 	if closeErr := readBuffer.CloseContext("doorStatus"); closeErr != nil {

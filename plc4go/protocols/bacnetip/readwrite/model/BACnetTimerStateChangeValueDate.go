@@ -137,7 +137,7 @@ func BACnetTimerStateChangeValueDateParse(readBuffer utils.ReadBuffer, objectTyp
 	}
 	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
 	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field")
+		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetTimerStateChangeValueDate")
 	}
 	dateValue := _dateValue.(BACnetApplicationTagDate)
 	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {

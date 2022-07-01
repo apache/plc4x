@@ -164,7 +164,7 @@ func BACnetConstructedDataAbsenteeLimitParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_absenteeLimit, _absenteeLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _absenteeLimitErr != nil {
-		return nil, errors.Wrap(_absenteeLimitErr, "Error parsing 'absenteeLimit' field")
+		return nil, errors.Wrap(_absenteeLimitErr, "Error parsing 'absenteeLimit' field of BACnetConstructedDataAbsenteeLimit")
 	}
 	absenteeLimit := _absenteeLimit.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("absenteeLimit"); closeErr != nil {

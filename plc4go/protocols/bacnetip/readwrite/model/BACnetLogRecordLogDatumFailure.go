@@ -139,7 +139,7 @@ func BACnetLogRecordLogDatumFailureParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_failure, _failureErr := ErrorEnclosedParse(readBuffer, uint8(uint8(8)))
 	if _failureErr != nil {
-		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field")
+		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogRecordLogDatumFailure")
 	}
 	failure := _failure.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("failure"); closeErr != nil {

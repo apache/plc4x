@@ -159,7 +159,7 @@ func AdsReadResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadResponse")
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
@@ -170,13 +170,13 @@ func AdsReadResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsReadResponse")
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(length)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsReadResponse")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadResponse"); closeErr != nil {

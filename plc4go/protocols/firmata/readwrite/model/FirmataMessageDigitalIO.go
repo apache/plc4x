@@ -149,7 +149,7 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (F
 	// Simple Field (pinBlock)
 	_pinBlock, _pinBlockErr := readBuffer.ReadUint8("pinBlock", 4)
 	if _pinBlockErr != nil {
-		return nil, errors.Wrap(_pinBlockErr, "Error parsing 'pinBlock' field")
+		return nil, errors.Wrap(_pinBlockErr, "Error parsing 'pinBlock' field of FirmataMessageDigitalIO")
 	}
 	pinBlock := _pinBlock
 
@@ -167,7 +167,7 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (F
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 			_item, _err := readBuffer.ReadInt8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+				return nil, errors.Wrap(_err, "Error parsing 'data' field of FirmataMessageDigitalIO")
 			}
 			data[curItem] = _item
 		}

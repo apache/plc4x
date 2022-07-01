@@ -164,7 +164,7 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 	}
 	_doorOpenTooLongTime, _doorOpenTooLongTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _doorOpenTooLongTimeErr != nil {
-		return nil, errors.Wrap(_doorOpenTooLongTimeErr, "Error parsing 'doorOpenTooLongTime' field")
+		return nil, errors.Wrap(_doorOpenTooLongTimeErr, "Error parsing 'doorOpenTooLongTime' field of BACnetConstructedDataDoorOpenTooLongTime")
 	}
 	doorOpenTooLongTime := _doorOpenTooLongTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("doorOpenTooLongTime"); closeErr != nil {

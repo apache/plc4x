@@ -132,7 +132,7 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 	_policy, _policyErr := BACnetAuthenticationPolicyListParse(readBuffer, uint8(uint8(0)))
 	if _policyErr != nil {
-		return nil, errors.Wrap(_policyErr, "Error parsing 'policy' field")
+		return nil, errors.Wrap(_policyErr, "Error parsing 'policy' field of BACnetAuthenticationPolicy")
 	}
 	policy := _policy.(BACnetAuthenticationPolicyList)
 	if closeErr := readBuffer.CloseContext("policy"); closeErr != nil {
@@ -145,7 +145,7 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 	_orderEnforced, _orderEnforcedErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _orderEnforcedErr != nil {
-		return nil, errors.Wrap(_orderEnforcedErr, "Error parsing 'orderEnforced' field")
+		return nil, errors.Wrap(_orderEnforcedErr, "Error parsing 'orderEnforced' field of BACnetAuthenticationPolicy")
 	}
 	orderEnforced := _orderEnforced.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("orderEnforced"); closeErr != nil {
@@ -158,7 +158,7 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 	_timeout, _timeoutErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeoutErr != nil {
-		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field")
+		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of BACnetAuthenticationPolicy")
 	}
 	timeout := _timeout.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeout"); closeErr != nil {

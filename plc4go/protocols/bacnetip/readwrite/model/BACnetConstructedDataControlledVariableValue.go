@@ -164,7 +164,7 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 	}
 	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParse(readBuffer)
 	if _controlledVariableValueErr != nil {
-		return nil, errors.Wrap(_controlledVariableValueErr, "Error parsing 'controlledVariableValue' field")
+		return nil, errors.Wrap(_controlledVariableValueErr, "Error parsing 'controlledVariableValue' field of BACnetConstructedDataControlledVariableValue")
 	}
 	controlledVariableValue := _controlledVariableValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("controlledVariableValue"); closeErr != nil {

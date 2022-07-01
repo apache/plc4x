@@ -139,7 +139,7 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (DescriptionRequest, e
 	}
 	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
+		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DescriptionRequest")
 	}
 	hpaiControlEndpoint := _hpaiControlEndpoint.(HPAIControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {

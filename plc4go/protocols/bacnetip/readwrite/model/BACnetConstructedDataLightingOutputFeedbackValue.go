@@ -164,7 +164,7 @@ func BACnetConstructedDataLightingOutputFeedbackValueParse(readBuffer utils.Read
 	}
 	_feedbackValue, _feedbackValueErr := BACnetApplicationTagParse(readBuffer)
 	if _feedbackValueErr != nil {
-		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field")
+		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataLightingOutputFeedbackValue")
 	}
 	feedbackValue := _feedbackValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {

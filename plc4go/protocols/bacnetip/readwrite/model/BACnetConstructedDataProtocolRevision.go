@@ -164,7 +164,7 @@ func BACnetConstructedDataProtocolRevisionParse(readBuffer utils.ReadBuffer, tag
 	}
 	_protocolRevision, _protocolRevisionErr := BACnetApplicationTagParse(readBuffer)
 	if _protocolRevisionErr != nil {
-		return nil, errors.Wrap(_protocolRevisionErr, "Error parsing 'protocolRevision' field")
+		return nil, errors.Wrap(_protocolRevisionErr, "Error parsing 'protocolRevision' field of BACnetConstructedDataProtocolRevision")
 	}
 	protocolRevision := _protocolRevision.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("protocolRevision"); closeErr != nil {

@@ -137,7 +137,7 @@ func BACnetPriorityValueDateTimeParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}
 	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _dateTimeValueErr != nil {
-		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field")
+		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetPriorityValueDateTime")
 	}
 	dateTimeValue := _dateTimeValue.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("dateTimeValue"); closeErr != nil {

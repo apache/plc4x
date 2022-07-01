@@ -150,7 +150,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	}
 	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParse(readBuffer, uint8(uint8(0)))
 	if _listOfEventSummariesErr != nil {
-		return nil, errors.Wrap(_listOfEventSummariesErr, "Error parsing 'listOfEventSummaries' field")
+		return nil, errors.Wrap(_listOfEventSummariesErr, "Error parsing 'listOfEventSummaries' field of BACnetServiceAckGetEventInformation")
 	}
 	listOfEventSummaries := _listOfEventSummaries.(BACnetEventSummariesList)
 	if closeErr := readBuffer.CloseContext("listOfEventSummaries"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	}
 	_moreEvents, _moreEventsErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _moreEventsErr != nil {
-		return nil, errors.Wrap(_moreEventsErr, "Error parsing 'moreEvents' field")
+		return nil, errors.Wrap(_moreEventsErr, "Error parsing 'moreEvents' field of BACnetServiceAckGetEventInformation")
 	}
 	moreEvents := _moreEvents.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("moreEvents"); closeErr != nil {

@@ -143,7 +143,7 @@ func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer, commandId Command
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsWriteControlResponse")
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {

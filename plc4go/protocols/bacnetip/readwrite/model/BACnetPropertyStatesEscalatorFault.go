@@ -137,7 +137,7 @@ func BACnetPropertyStatesEscalatorFaultParse(readBuffer utils.ReadBuffer, peeked
 	}
 	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorFaultErr != nil {
-		return nil, errors.Wrap(_escalatorFaultErr, "Error parsing 'escalatorFault' field")
+		return nil, errors.Wrap(_escalatorFaultErr, "Error parsing 'escalatorFault' field of BACnetPropertyStatesEscalatorFault")
 	}
 	escalatorFault := _escalatorFault.(BACnetEscalatorFaultTagged)
 	if closeErr := readBuffer.CloseContext("escalatorFault"); closeErr != nil {

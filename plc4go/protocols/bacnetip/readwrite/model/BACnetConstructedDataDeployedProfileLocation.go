@@ -164,7 +164,7 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	}
 	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParse(readBuffer)
 	if _deployedProfileLocationErr != nil {
-		return nil, errors.Wrap(_deployedProfileLocationErr, "Error parsing 'deployedProfileLocation' field")
+		return nil, errors.Wrap(_deployedProfileLocationErr, "Error parsing 'deployedProfileLocation' field of BACnetConstructedDataDeployedProfileLocation")
 	}
 	deployedProfileLocation := _deployedProfileLocation.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("deployedProfileLocation"); closeErr != nil {

@@ -141,7 +141,7 @@ func BACnetContextTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	}
 	_payload, _payloadErr := BACnetTagPayloadDateParse(readBuffer)
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagDate")
 	}
 	payload := _payload.(BACnetTagPayloadDate)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

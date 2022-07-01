@@ -139,7 +139,7 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (COTPPa
 	}
 	_tpduSize, _tpduSizeErr := COTPTpduSizeParse(readBuffer)
 	if _tpduSizeErr != nil {
-		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
+		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field of COTPParameterTpduSize")
 	}
 	tpduSize := _tpduSize
 	if closeErr := readBuffer.CloseContext("tpduSize"); closeErr != nil {

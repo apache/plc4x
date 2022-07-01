@@ -170,7 +170,7 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(3)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultLifeSafety")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -183,7 +183,7 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_listOfFaultValues, _listOfFaultValuesErr := BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParse(readBuffer, uint8(uint8(0)))
 	if _listOfFaultValuesErr != nil {
-		return nil, errors.Wrap(_listOfFaultValuesErr, "Error parsing 'listOfFaultValues' field")
+		return nil, errors.Wrap(_listOfFaultValuesErr, "Error parsing 'listOfFaultValues' field of BACnetFaultParameterFaultLifeSafety")
 	}
 	listOfFaultValues := _listOfFaultValues.(BACnetFaultParameterFaultLifeSafetyListOfFaultValues)
 	if closeErr := readBuffer.CloseContext("listOfFaultValues"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_modePropertyReference, _modePropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _modePropertyReferenceErr != nil {
-		return nil, errors.Wrap(_modePropertyReferenceErr, "Error parsing 'modePropertyReference' field")
+		return nil, errors.Wrap(_modePropertyReferenceErr, "Error parsing 'modePropertyReference' field of BACnetFaultParameterFaultLifeSafety")
 	}
 	modePropertyReference := _modePropertyReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("modePropertyReference"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(3)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultLifeSafety")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

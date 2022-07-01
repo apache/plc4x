@@ -172,7 +172,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
+		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetEventSummary")
 	}
 	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -185,7 +185,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}
 	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventStateErr != nil {
-		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
+		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of BACnetEventSummary")
 	}
 	eventState := _eventState.(BACnetEventStateTagged)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
@@ -198,7 +198,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}
 	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgedTransitionsErr != nil {
-		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field")
+		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field of BACnetEventSummary")
 	}
 	acknowledgedTransitions := _acknowledgedTransitions.(BACnetEventTransitionBitsTagged)
 	if closeErr := readBuffer.CloseContext("acknowledgedTransitions"); closeErr != nil {
@@ -211,7 +211,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}
 	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsEnclosedParse(readBuffer, uint8(uint8(3)))
 	if _eventTimestampsErr != nil {
-		return nil, errors.Wrap(_eventTimestampsErr, "Error parsing 'eventTimestamps' field")
+		return nil, errors.Wrap(_eventTimestampsErr, "Error parsing 'eventTimestamps' field of BACnetEventSummary")
 	}
 	eventTimestamps := _eventTimestamps.(BACnetEventTimestampsEnclosed)
 	if closeErr := readBuffer.CloseContext("eventTimestamps"); closeErr != nil {
@@ -224,7 +224,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}
 	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(4)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
-		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field")
+		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetEventSummary")
 	}
 	notifyType := _notifyType.(BACnetNotifyTypeTagged)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
@@ -237,7 +237,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}
 	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(5)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventEnableErr != nil {
-		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field")
+		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field of BACnetEventSummary")
 	}
 	eventEnable := _eventEnable.(BACnetEventTransitionBitsTagged)
 	if closeErr := readBuffer.CloseContext("eventEnable"); closeErr != nil {
@@ -250,7 +250,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}
 	_eventPriorities, _eventPrioritiesErr := BACnetEventPrioritiesParse(readBuffer, uint8(uint8(6)))
 	if _eventPrioritiesErr != nil {
-		return nil, errors.Wrap(_eventPrioritiesErr, "Error parsing 'eventPriorities' field")
+		return nil, errors.Wrap(_eventPrioritiesErr, "Error parsing 'eventPriorities' field of BACnetEventSummary")
 	}
 	eventPriorities := _eventPriorities.(BACnetEventPriorities)
 	if closeErr := readBuffer.CloseContext("eventPriorities"); closeErr != nil {

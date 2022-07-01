@@ -122,7 +122,7 @@ func BACnetAddressBindingParse(readBuffer utils.ReadBuffer) (BACnetAddressBindin
 	}
 	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _deviceIdentifierErr != nil {
-		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
+		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetAddressBinding")
 	}
 	deviceIdentifier := _deviceIdentifier.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetAddressBindingParse(readBuffer utils.ReadBuffer) (BACnetAddressBindin
 	}
 	_deviceAddress, _deviceAddressErr := BACnetAddressParse(readBuffer)
 	if _deviceAddressErr != nil {
-		return nil, errors.Wrap(_deviceAddressErr, "Error parsing 'deviceAddress' field")
+		return nil, errors.Wrap(_deviceAddressErr, "Error parsing 'deviceAddress' field of BACnetAddressBinding")
 	}
 	deviceAddress := _deviceAddress.(BACnetAddress)
 	if closeErr := readBuffer.CloseContext("deviceAddress"); closeErr != nil {

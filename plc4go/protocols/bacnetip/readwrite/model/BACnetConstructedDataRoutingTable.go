@@ -155,7 +155,7 @@ func BACnetConstructedDataRoutingTableParse(readBuffer utils.ReadBuffer, tagNumb
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRouterEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'routingTable' field")
+				return nil, errors.Wrap(_err, "Error parsing 'routingTable' field of BACnetConstructedDataRoutingTable")
 			}
 			routingTable = append(routingTable, _item.(BACnetRouterEntry))
 

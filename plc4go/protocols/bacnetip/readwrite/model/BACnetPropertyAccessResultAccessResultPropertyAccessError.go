@@ -137,7 +137,7 @@ func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer u
 	}
 	_propertyAccessError, _propertyAccessErrorErr := ErrorEnclosedParse(readBuffer, uint8(uint8(5)))
 	if _propertyAccessErrorErr != nil {
-		return nil, errors.Wrap(_propertyAccessErrorErr, "Error parsing 'propertyAccessError' field")
+		return nil, errors.Wrap(_propertyAccessErrorErr, "Error parsing 'propertyAccessError' field of BACnetPropertyAccessResultAccessResultPropertyAccessError")
 	}
 	propertyAccessError := _propertyAccessError.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("propertyAccessError"); closeErr != nil {

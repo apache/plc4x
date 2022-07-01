@@ -164,7 +164,7 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 	}
 	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParse(readBuffer)
 	if _timeSynchronizationErr != nil {
-		return nil, errors.Wrap(_timeSynchronizationErr, "Error parsing 'timeSynchronization' field")
+		return nil, errors.Wrap(_timeSynchronizationErr, "Error parsing 'timeSynchronization' field of BACnetConstructedDataTimeSynchronizationInterval")
 	}
 	timeSynchronization := _timeSynchronization.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeSynchronization"); closeErr != nil {

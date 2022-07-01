@@ -137,7 +137,7 @@ func BACnetOptionalREALValueParse(readBuffer utils.ReadBuffer) (BACnetOptionalRE
 	}
 	_realValue, _realValueErr := BACnetApplicationTagParse(readBuffer)
 	if _realValueErr != nil {
-		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field")
+		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetOptionalREALValue")
 	}
 	realValue := _realValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {

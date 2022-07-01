@@ -164,7 +164,7 @@ func BACnetConstructedDataCarLoadParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_carLoad, _carLoadErr := BACnetApplicationTagParse(readBuffer)
 	if _carLoadErr != nil {
-		return nil, errors.Wrap(_carLoadErr, "Error parsing 'carLoad' field")
+		return nil, errors.Wrap(_carLoadErr, "Error parsing 'carLoad' field of BACnetConstructedDataCarLoad")
 	}
 	carLoad := _carLoad.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("carLoad"); closeErr != nil {

@@ -137,7 +137,7 @@ func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, peekedTagNumb
 	}
 	_booleanValue, _booleanValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _booleanValueErr != nil {
-		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field")
+		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetPropertyStatesBoolean")
 	}
 	booleanValue := _booleanValue.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {

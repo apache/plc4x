@@ -137,7 +137,7 @@ func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetCalend
 	}
 	_weekNDay, _weekNDayErr := BACnetWeekNDayTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _weekNDayErr != nil {
-		return nil, errors.Wrap(_weekNDayErr, "Error parsing 'weekNDay' field")
+		return nil, errors.Wrap(_weekNDayErr, "Error parsing 'weekNDay' field of BACnetCalendarEntryWeekNDay")
 	}
 	weekNDay := _weekNDay.(BACnetWeekNDayTagged)
 	if closeErr := readBuffer.CloseContext("weekNDay"); closeErr != nil {

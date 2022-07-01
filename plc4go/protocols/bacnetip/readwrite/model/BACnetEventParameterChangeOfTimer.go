@@ -181,7 +181,7 @@ func BACnetEventParameterChangeOfTimerParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(22)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfTimer")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -194,7 +194,7 @@ func BACnetEventParameterChangeOfTimerParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field")
+		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfTimer")
 	}
 	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
@@ -207,7 +207,7 @@ func BACnetEventParameterChangeOfTimerParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_alarmValues, _alarmValuesErr := BACnetEventParameterChangeOfTimerAlarmValueParse(readBuffer, uint8(uint8(1)))
 	if _alarmValuesErr != nil {
-		return nil, errors.Wrap(_alarmValuesErr, "Error parsing 'alarmValues' field")
+		return nil, errors.Wrap(_alarmValuesErr, "Error parsing 'alarmValues' field of BACnetEventParameterChangeOfTimer")
 	}
 	alarmValues := _alarmValues.(BACnetEventParameterChangeOfTimerAlarmValue)
 	if closeErr := readBuffer.CloseContext("alarmValues"); closeErr != nil {
@@ -220,7 +220,7 @@ func BACnetEventParameterChangeOfTimerParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_updateTimeReference, _updateTimeReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _updateTimeReferenceErr != nil {
-		return nil, errors.Wrap(_updateTimeReferenceErr, "Error parsing 'updateTimeReference' field")
+		return nil, errors.Wrap(_updateTimeReferenceErr, "Error parsing 'updateTimeReference' field of BACnetEventParameterChangeOfTimer")
 	}
 	updateTimeReference := _updateTimeReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("updateTimeReference"); closeErr != nil {
@@ -233,7 +233,7 @@ func BACnetEventParameterChangeOfTimerParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(22)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfTimer")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

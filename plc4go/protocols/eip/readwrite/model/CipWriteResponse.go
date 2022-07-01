@@ -152,7 +152,7 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipW
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipWriteResponse")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -165,14 +165,14 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipW
 	// Simple Field (status)
 	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CipWriteResponse")
 	}
 	status := _status
 
 	// Simple Field (extStatus)
 	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
-		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field")
+		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field of CipWriteResponse")
 	}
 	extStatus := _extStatus
 

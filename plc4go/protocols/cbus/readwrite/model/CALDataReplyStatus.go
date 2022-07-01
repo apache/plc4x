@@ -161,7 +161,7 @@ func CALDataReplyStatusParse(readBuffer utils.ReadBuffer, commandTypeContainer C
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CALDataReplyStatus")
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
@@ -171,14 +171,14 @@ func CALDataReplyStatusParse(readBuffer utils.ReadBuffer, commandTypeContainer C
 	// Simple Field (blockStart)
 	_blockStart, _blockStartErr := readBuffer.ReadUint8("blockStart", 8)
 	if _blockStartErr != nil {
-		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field")
+		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of CALDataReplyStatus")
 	}
 	blockStart := _blockStart
 	// Byte Array field (data)
 	numberOfBytesdata := int(commandTypeContainer.NumBytes())
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataReplyStatus")
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataReplyStatus"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataValueChangeTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_valueChangeTime, _valueChangeTimeErr := BACnetDateTimeParse(readBuffer)
 	if _valueChangeTimeErr != nil {
-		return nil, errors.Wrap(_valueChangeTimeErr, "Error parsing 'valueChangeTime' field")
+		return nil, errors.Wrap(_valueChangeTimeErr, "Error parsing 'valueChangeTime' field of BACnetConstructedDataValueChangeTime")
 	}
 	valueChangeTime := _valueChangeTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("valueChangeTime"); closeErr != nil {

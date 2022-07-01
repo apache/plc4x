@@ -177,7 +177,7 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.Read
 	}
 	_requestingProcessIdentifier, _requestingProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _requestingProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_requestingProcessIdentifierErr, "Error parsing 'requestingProcessIdentifier' field")
+		return nil, errors.Wrap(_requestingProcessIdentifierErr, "Error parsing 'requestingProcessIdentifier' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
 	}
 	requestingProcessIdentifier := _requestingProcessIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("requestingProcessIdentifier"); closeErr != nil {
@@ -190,7 +190,7 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.Read
 	}
 	_requestingSource, _requestingSourceErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _requestingSourceErr != nil {
-		return nil, errors.Wrap(_requestingSourceErr, "Error parsing 'requestingSource' field")
+		return nil, errors.Wrap(_requestingSourceErr, "Error parsing 'requestingSource' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
 	}
 	requestingSource := _requestingSource.(BACnetContextTagCharacterString)
 	if closeErr := readBuffer.CloseContext("requestingSource"); closeErr != nil {
@@ -203,7 +203,7 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.Read
 	}
 	_request, _requestErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _requestErr != nil {
-		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field")
+		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
 	}
 	request := _request.(BACnetLifeSafetyOperationTagged)
 	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {
@@ -223,7 +223,7 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.Read
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
+			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
 		default:
 			objectIdentifier = _val.(BACnetContextTagObjectIdentifier)
 			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {

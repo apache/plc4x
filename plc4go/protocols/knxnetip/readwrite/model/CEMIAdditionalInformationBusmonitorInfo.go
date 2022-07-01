@@ -212,7 +212,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 	// Const Field (len)
 	len, _lenErr := readBuffer.ReadUint8("len", 8)
 	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
+		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	if len != CEMIAdditionalInformationBusmonitorInfo_LEN {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CEMIAdditionalInformationBusmonitorInfo_LEN) + " but got " + fmt.Sprintf("%d", len))
@@ -221,42 +221,42 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 	// Simple Field (frameErrorFlag)
 	_frameErrorFlag, _frameErrorFlagErr := readBuffer.ReadBit("frameErrorFlag")
 	if _frameErrorFlagErr != nil {
-		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field")
+		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	frameErrorFlag := _frameErrorFlag
 
 	// Simple Field (bitErrorFlag)
 	_bitErrorFlag, _bitErrorFlagErr := readBuffer.ReadBit("bitErrorFlag")
 	if _bitErrorFlagErr != nil {
-		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field")
+		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	bitErrorFlag := _bitErrorFlag
 
 	// Simple Field (parityErrorFlag)
 	_parityErrorFlag, _parityErrorFlagErr := readBuffer.ReadBit("parityErrorFlag")
 	if _parityErrorFlagErr != nil {
-		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field")
+		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	parityErrorFlag := _parityErrorFlag
 
 	// Simple Field (unknownFlag)
 	_unknownFlag, _unknownFlagErr := readBuffer.ReadBit("unknownFlag")
 	if _unknownFlagErr != nil {
-		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field")
+		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	unknownFlag := _unknownFlag
 
 	// Simple Field (lostFlag)
 	_lostFlag, _lostFlagErr := readBuffer.ReadBit("lostFlag")
 	if _lostFlagErr != nil {
-		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field")
+		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	lostFlag := _lostFlag
 
 	// Simple Field (sequenceNumber)
 	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 3)
 	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	sequenceNumber := _sequenceNumber
 

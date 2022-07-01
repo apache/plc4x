@@ -167,7 +167,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 	}
 	_statusHeader, _statusHeaderErr := StatusHeaderParse(readBuffer)
 	if _statusHeaderErr != nil {
-		return nil, errors.Wrap(_statusHeaderErr, "Error parsing 'statusHeader' field")
+		return nil, errors.Wrap(_statusHeaderErr, "Error parsing 'statusHeader' field of StandardFormatStatusReply")
 	}
 	statusHeader := _statusHeader.(StatusHeader)
 	if closeErr := readBuffer.CloseContext("statusHeader"); closeErr != nil {
@@ -180,7 +180,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StandardFormatStatusReply")
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
@@ -190,7 +190,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 	// Simple Field (blockStart)
 	_blockStart, _blockStartErr := readBuffer.ReadUint8("blockStart", 8)
 	if _blockStartErr != nil {
-		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field")
+		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of StandardFormatStatusReply")
 	}
 	blockStart := _blockStart
 
@@ -208,7 +208,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 		for curItem := uint16(0); curItem < uint16(uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(2))); curItem++ {
 			_item, _err := StatusByteParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field")
+				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field of StandardFormatStatusReply")
 			}
 			statusBytes[curItem] = _item.(StatusByte)
 		}
@@ -223,7 +223,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 	}
 	_crc, _crcErr := ChecksumParse(readBuffer)
 	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
+		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of StandardFormatStatusReply")
 	}
 	crc := _crc.(Checksum)
 	if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
@@ -236,7 +236,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 	}
 	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of StandardFormatStatusReply")
 	}
 	termination := _termination.(ResponseTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

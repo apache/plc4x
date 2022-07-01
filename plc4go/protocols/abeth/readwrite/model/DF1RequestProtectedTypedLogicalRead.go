@@ -180,35 +180,35 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (DF1R
 	// Simple Field (byteSize)
 	_byteSize, _byteSizeErr := readBuffer.ReadUint8("byteSize", 8)
 	if _byteSizeErr != nil {
-		return nil, errors.Wrap(_byteSizeErr, "Error parsing 'byteSize' field")
+		return nil, errors.Wrap(_byteSizeErr, "Error parsing 'byteSize' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	byteSize := _byteSize
 
 	// Simple Field (fileNumber)
 	_fileNumber, _fileNumberErr := readBuffer.ReadUint8("fileNumber", 8)
 	if _fileNumberErr != nil {
-		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
+		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	fileNumber := _fileNumber
 
 	// Simple Field (fileType)
 	_fileType, _fileTypeErr := readBuffer.ReadUint8("fileType", 8)
 	if _fileTypeErr != nil {
-		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field")
+		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	fileType := _fileType
 
 	// Simple Field (elementNumber)
 	_elementNumber, _elementNumberErr := readBuffer.ReadUint8("elementNumber", 8)
 	if _elementNumberErr != nil {
-		return nil, errors.Wrap(_elementNumberErr, "Error parsing 'elementNumber' field")
+		return nil, errors.Wrap(_elementNumberErr, "Error parsing 'elementNumber' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	elementNumber := _elementNumber
 
 	// Simple Field (subElementNumber)
 	_subElementNumber, _subElementNumberErr := readBuffer.ReadUint8("subElementNumber", 8)
 	if _subElementNumberErr != nil {
-		return nil, errors.Wrap(_subElementNumberErr, "Error parsing 'subElementNumber' field")
+		return nil, errors.Wrap(_subElementNumberErr, "Error parsing 'subElementNumber' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	subElementNumber := _subElementNumber
 

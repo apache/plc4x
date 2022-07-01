@@ -150,7 +150,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	}
 	_referenceTime, _referenceTimeErr := BACnetDateTimeParse(readBuffer)
 	if _referenceTimeErr != nil {
-		return nil, errors.Wrap(_referenceTimeErr, "Error parsing 'referenceTime' field")
+		return nil, errors.Wrap(_referenceTimeErr, "Error parsing 'referenceTime' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
 	referenceTime := _referenceTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("referenceTime"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	}
 	_count, _countErr := BACnetApplicationTagParse(readBuffer)
 	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
 	count := _count.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {

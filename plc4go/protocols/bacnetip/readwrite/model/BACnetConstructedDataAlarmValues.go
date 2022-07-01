@@ -197,7 +197,7 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataAlarmValues")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetConstructedDataAlarmValues")
 			}
 			alarmValues = append(alarmValues, _item.(BACnetLifeSafetyStateTagged))
 

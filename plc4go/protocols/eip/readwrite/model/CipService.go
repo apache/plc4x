@@ -114,7 +114,7 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService
 	// Discriminator Field (service) (Used as input to a switch field)
 	service, _serviceErr := readBuffer.ReadUint8("service", 8)
 	if _serviceErr != nil {
-		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field")
+		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of CipService")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -145,7 +145,7 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [service=%v]", service)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CipService.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CipService")
 	}
 	_child = _childTemp.(CipServiceChildSerializeRequirement)
 

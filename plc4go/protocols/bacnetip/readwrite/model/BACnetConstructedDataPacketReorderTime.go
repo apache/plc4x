@@ -164,7 +164,7 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_packetReorderTime, _packetReorderTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _packetReorderTimeErr != nil {
-		return nil, errors.Wrap(_packetReorderTimeErr, "Error parsing 'packetReorderTime' field")
+		return nil, errors.Wrap(_packetReorderTimeErr, "Error parsing 'packetReorderTime' field of BACnetConstructedDataPacketReorderTime")
 	}
 	packetReorderTime := _packetReorderTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("packetReorderTime"); closeErr != nil {

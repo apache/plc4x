@@ -120,7 +120,7 @@ func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 6)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ApduDataGroupValueRead")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{

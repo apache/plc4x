@@ -270,7 +270,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	// Simple Field (tagNumber)
 	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
 	if _tagNumberErr != nil {
-		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field")
+		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field of BACnetTagHeader")
 	}
 	tagNumber := _tagNumber
 
@@ -280,7 +280,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	}
 	_tagClass, _tagClassErr := TagClassParse(readBuffer)
 	if _tagClassErr != nil {
-		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field")
+		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field of BACnetTagHeader")
 	}
 	tagClass := _tagClass
 	if closeErr := readBuffer.CloseContext("tagClass"); closeErr != nil {
@@ -290,7 +290,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	// Simple Field (lengthValueType)
 	_lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
-		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
+		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field of BACnetTagHeader")
 	}
 	lengthValueType := _lengthValueType
 
@@ -299,7 +299,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	if bool((tagNumber) == (15)) {
 		_val, _err := readBuffer.ReadUint8("extTagNumber", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
+			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field of BACnetTagHeader")
 		}
 		extTagNumber = &_val
 	}
@@ -329,7 +329,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	if bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))) {
 		_val, _err := readBuffer.ReadUint8("extLength", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extLength' field")
+			return nil, errors.Wrap(_err, "Error parsing 'extLength' field of BACnetTagHeader")
 		}
 		extLength = &_val
 	}
@@ -339,7 +339,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))) {
 		_val, _err := readBuffer.ReadUint16("extExtLength", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extExtLength' field")
+			return nil, errors.Wrap(_err, "Error parsing 'extExtLength' field of BACnetTagHeader")
 		}
 		extExtLength = &_val
 	}
@@ -349,7 +349,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))) {
 		_val, _err := readBuffer.ReadUint32("extExtExtLength", 32)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extExtExtLength' field")
+			return nil, errors.Wrap(_err, "Error parsing 'extExtExtLength' field of BACnetTagHeader")
 		}
 		extExtExtLength = &_val
 	}

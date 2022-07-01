@@ -148,7 +148,7 @@ func BACnetLogDataLogDataEntryAnyValueParse(readBuffer utils.ReadBuffer) (BACnet
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'anyValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'anyValue' field of BACnetLogDataLogDataEntryAnyValue")
 		default:
 			anyValue = _val.(BACnetConstructedData)
 			if closeErr := readBuffer.CloseContext("anyValue"); closeErr != nil {

@@ -165,7 +165,7 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BA
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetLogDataLogData")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -182,7 +182,7 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BA
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetLogDataLogDataEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'logData' field")
+				return nil, errors.Wrap(_err, "Error parsing 'logData' field of BACnetLogDataLogData")
 			}
 			logData = append(logData, _item.(BACnetLogDataLogDataEntry))
 
@@ -198,7 +198,7 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BA
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetLogDataLogData")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

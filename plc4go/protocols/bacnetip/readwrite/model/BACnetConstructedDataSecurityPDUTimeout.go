@@ -164,7 +164,7 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, t
 	}
 	_securityPduTimeout, _securityPduTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _securityPduTimeoutErr != nil {
-		return nil, errors.Wrap(_securityPduTimeoutErr, "Error parsing 'securityPduTimeout' field")
+		return nil, errors.Wrap(_securityPduTimeoutErr, "Error parsing 'securityPduTimeout' field of BACnetConstructedDataSecurityPDUTimeout")
 	}
 	securityPduTimeout := _securityPduTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("securityPduTimeout"); closeErr != nil {

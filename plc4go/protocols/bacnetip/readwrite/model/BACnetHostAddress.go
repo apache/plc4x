@@ -170,7 +170,7 @@ func BACnetHostAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddress, err
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetHostAddress.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetHostAddress")
 	}
 	_child = _childTemp.(BACnetHostAddressChildSerializeRequirement)
 

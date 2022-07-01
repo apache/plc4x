@@ -126,7 +126,7 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetFileAccessMethodTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetFileAccessMethod_RECORD_ACCESS)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetFileAccessMethodTagged")
 	}
 	value := _value.(BACnetFileAccessMethod)
 

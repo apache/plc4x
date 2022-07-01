@@ -164,7 +164,7 @@ func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_lastAccessEvent, _lastAccessEventErr := BACnetAccessEventTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastAccessEventErr != nil {
-		return nil, errors.Wrap(_lastAccessEventErr, "Error parsing 'lastAccessEvent' field")
+		return nil, errors.Wrap(_lastAccessEventErr, "Error parsing 'lastAccessEvent' field of BACnetConstructedDataLastAccessEvent")
 	}
 	lastAccessEvent := _lastAccessEvent.(BACnetAccessEventTagged)
 	if closeErr := readBuffer.CloseContext("lastAccessEvent"); closeErr != nil {

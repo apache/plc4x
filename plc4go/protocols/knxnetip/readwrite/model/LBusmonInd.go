@@ -175,7 +175,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 	// Simple Field (additionalInformationLength)
 	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
-		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
+		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field of LBusmonInd")
 	}
 	additionalInformationLength := _additionalInformationLength
 
@@ -191,7 +191,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 		for positionAware.GetPos() < _additionalInformationEndPos {
 			_item, _err := CEMIAdditionalInformationParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
+				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LBusmonInd")
 			}
 			additionalInformation = append(additionalInformation, _item.(CEMIAdditionalInformation))
 		}
@@ -206,7 +206,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 	}
 	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
 	if _dataFrameErr != nil {
-		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
+		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LBusmonInd")
 	}
 	dataFrame := _dataFrame.(LDataFrame)
 	if closeErr := readBuffer.CloseContext("dataFrame"); closeErr != nil {
@@ -218,7 +218,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 	if CastLDataFrame(dataFrame).GetNotAckFrame() {
 		_val, _err := readBuffer.ReadUint8("crc", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
+			return nil, errors.Wrap(_err, "Error parsing 'crc' field of LBusmonInd")
 		}
 		crc = &_val
 	}

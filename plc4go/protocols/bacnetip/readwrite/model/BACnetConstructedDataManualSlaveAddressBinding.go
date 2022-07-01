@@ -155,7 +155,7 @@ func BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer utils.ReadBu
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAddressBindingParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'manualSlaveAddressBinding' field")
+				return nil, errors.Wrap(_err, "Error parsing 'manualSlaveAddressBinding' field of BACnetConstructedDataManualSlaveAddressBinding")
 			}
 			manualSlaveAddressBinding = append(manualSlaveAddressBinding, _item.(BACnetAddressBinding))
 

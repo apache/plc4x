@@ -197,7 +197,7 @@ func BACnetConstructedDataCarDoorStatusParse(readBuffer utils.ReadBuffer, tagNum
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataCarDoorStatus")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataCarDoorStatusParse(readBuffer utils.ReadBuffer, tagNum
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDoorStatusTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'carDoorStatus' field")
+				return nil, errors.Wrap(_err, "Error parsing 'carDoorStatus' field of BACnetConstructedDataCarDoorStatus")
 			}
 			carDoorStatus = append(carDoorStatus, _item.(BACnetDoorStatusTagged))
 

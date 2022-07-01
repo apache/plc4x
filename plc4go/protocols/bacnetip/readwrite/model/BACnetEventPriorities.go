@@ -155,7 +155,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventPriorities")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -168,7 +168,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 	_toOffnormal, _toOffnormalErr := BACnetApplicationTagParse(readBuffer)
 	if _toOffnormalErr != nil {
-		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field")
+		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventPriorities")
 	}
 	toOffnormal := _toOffnormal.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("toOffnormal"); closeErr != nil {
@@ -181,7 +181,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 	_toFault, _toFaultErr := BACnetApplicationTagParse(readBuffer)
 	if _toFaultErr != nil {
-		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field")
+		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventPriorities")
 	}
 	toFault := _toFault.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("toFault"); closeErr != nil {
@@ -194,7 +194,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 	_toNormal, _toNormalErr := BACnetApplicationTagParse(readBuffer)
 	if _toNormalErr != nil {
-		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field")
+		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventPriorities")
 	}
 	toNormal := _toNormal.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("toNormal"); closeErr != nil {
@@ -207,7 +207,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventPriorities")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

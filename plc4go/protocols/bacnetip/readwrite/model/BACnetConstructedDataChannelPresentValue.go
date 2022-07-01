@@ -164,7 +164,7 @@ func BACnetConstructedDataChannelPresentValueParse(readBuffer utils.ReadBuffer, 
 	}
 	_presentValue, _presentValueErr := BACnetChannelValueParse(readBuffer)
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataChannelPresentValue")
 	}
 	presentValue := _presentValue.(BACnetChannelValue)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

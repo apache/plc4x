@@ -139,7 +139,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(read
 	}
 	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _dateTimeValueErr != nil {
-		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field")
+		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 	}
 	dateTimeValue := _dateTimeValue.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("dateTimeValue"); closeErr != nil {

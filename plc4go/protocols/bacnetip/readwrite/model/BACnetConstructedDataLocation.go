@@ -164,7 +164,7 @@ func BACnetConstructedDataLocationParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_location, _locationErr := BACnetApplicationTagParse(readBuffer)
 	if _locationErr != nil {
-		return nil, errors.Wrap(_locationErr, "Error parsing 'location' field")
+		return nil, errors.Wrap(_locationErr, "Error parsing 'location' field of BACnetConstructedDataLocation")
 	}
 	location := _location.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("location"); closeErr != nil {

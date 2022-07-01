@@ -137,7 +137,7 @@ func BACnetClientCOVObjectParse(readBuffer utils.ReadBuffer) (BACnetClientCOVObj
 	}
 	_realIncrement, _realIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _realIncrementErr != nil {
-		return nil, errors.Wrap(_realIncrementErr, "Error parsing 'realIncrement' field")
+		return nil, errors.Wrap(_realIncrementErr, "Error parsing 'realIncrement' field of BACnetClientCOVObject")
 	}
 	realIncrement := _realIncrement.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("realIncrement"); closeErr != nil {

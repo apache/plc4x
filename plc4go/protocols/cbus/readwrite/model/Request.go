@@ -127,7 +127,7 @@ func RequestParse(readBuffer utils.ReadBuffer, srchk bool) (Request, error) {
 	currentPos = positionAware.GetPos()
 	peekedByte, _err := readBuffer.ReadByte("peekedByte")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field")
+		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of Request")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -150,11 +150,15 @@ func RequestParse(readBuffer utils.ReadBuffer, srchk bool) (Request, error) {
 		_childTemp, typeSwitchError = RequestDirectCommandAccessParse(readBuffer, srchk)
 	case peekedByte == 0x5C: // RequestCommand
 		_childTemp, typeSwitchError = RequestCommandParse(readBuffer, srchk)
+	case peekedByte == 0x6E: // RequestNull
+		_childTemp, typeSwitchError = RequestNullParse(readBuffer, srchk)
+	case peekedByte == 0x0D: // RequestEmpty
+		_childTemp, typeSwitchError = RequestEmptyParse(readBuffer, srchk)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v]", peekedByte)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Request.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Request")
 	}
 	_child = _childTemp.(RequestChildSerializeRequirement)
 

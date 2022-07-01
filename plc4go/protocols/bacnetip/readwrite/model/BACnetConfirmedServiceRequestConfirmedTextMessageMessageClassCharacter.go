@@ -139,7 +139,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	}
 	_characterValue, _characterValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _characterValueErr != nil {
-		return nil, errors.Wrap(_characterValueErr, "Error parsing 'characterValue' field")
+		return nil, errors.Wrap(_characterValueErr, "Error parsing 'characterValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 	}
 	characterValue := _characterValue.(BACnetContextTagCharacterString)
 	if closeErr := readBuffer.CloseContext("characterValue"); closeErr != nil {

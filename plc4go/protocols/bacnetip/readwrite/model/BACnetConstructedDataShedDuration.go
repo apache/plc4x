@@ -164,7 +164,7 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_shedDuration, _shedDurationErr := BACnetApplicationTagParse(readBuffer)
 	if _shedDurationErr != nil {
-		return nil, errors.Wrap(_shedDurationErr, "Error parsing 'shedDuration' field")
+		return nil, errors.Wrap(_shedDurationErr, "Error parsing 'shedDuration' field of BACnetConstructedDataShedDuration")
 	}
 	shedDuration := _shedDuration.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("shedDuration"); closeErr != nil {

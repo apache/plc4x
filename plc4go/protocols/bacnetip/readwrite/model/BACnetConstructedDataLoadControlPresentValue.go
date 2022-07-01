@@ -164,7 +164,7 @@ func BACnetConstructedDataLoadControlPresentValueParse(readBuffer utils.ReadBuff
 	}
 	_presentValue, _presentValueErr := BACnetShedStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataLoadControlPresentValue")
 	}
 	presentValue := _presentValue.(BACnetShedStateTagged)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

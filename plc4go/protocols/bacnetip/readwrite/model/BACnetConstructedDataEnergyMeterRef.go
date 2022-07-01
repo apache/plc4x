@@ -164,7 +164,7 @@ func BACnetConstructedDataEnergyMeterRefParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_energyMeterRef, _energyMeterRefErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _energyMeterRefErr != nil {
-		return nil, errors.Wrap(_energyMeterRefErr, "Error parsing 'energyMeterRef' field")
+		return nil, errors.Wrap(_energyMeterRefErr, "Error parsing 'energyMeterRef' field of BACnetConstructedDataEnergyMeterRef")
 	}
 	energyMeterRef := _energyMeterRef.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("energyMeterRef"); closeErr != nil {

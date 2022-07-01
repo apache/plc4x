@@ -137,7 +137,7 @@ func BACnetShedLevelAmountParse(readBuffer utils.ReadBuffer) (BACnetShedLevelAmo
 	}
 	_amount, _amountErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _amountErr != nil {
-		return nil, errors.Wrap(_amountErr, "Error parsing 'amount' field")
+		return nil, errors.Wrap(_amountErr, "Error parsing 'amount' field of BACnetShedLevelAmount")
 	}
 	amount := _amount.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("amount"); closeErr != nil {

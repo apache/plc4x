@@ -136,7 +136,7 @@ func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (KnxNetIpRouting, error) 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
+		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of KnxNetIpRouting")
 	}
 	version := _version
 

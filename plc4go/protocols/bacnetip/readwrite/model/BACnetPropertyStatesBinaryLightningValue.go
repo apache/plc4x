@@ -137,7 +137,7 @@ func BACnetPropertyStatesBinaryLightningValueParse(readBuffer utils.ReadBuffer, 
 	}
 	_binaryLightningValue, _binaryLightningValueErr := BACnetBinaryLightingPVTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryLightningValueErr != nil {
-		return nil, errors.Wrap(_binaryLightningValueErr, "Error parsing 'binaryLightningValue' field")
+		return nil, errors.Wrap(_binaryLightningValueErr, "Error parsing 'binaryLightningValue' field of BACnetPropertyStatesBinaryLightningValue")
 	}
 	binaryLightningValue := _binaryLightningValue.(BACnetBinaryLightingPVTagged)
 	if closeErr := readBuffer.CloseContext("binaryLightningValue"); closeErr != nil {

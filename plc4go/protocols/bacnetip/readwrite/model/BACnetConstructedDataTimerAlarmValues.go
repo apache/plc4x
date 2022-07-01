@@ -155,7 +155,7 @@ func BACnetConstructedDataTimerAlarmValuesParse(readBuffer utils.ReadBuffer, tag
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimerStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetConstructedDataTimerAlarmValues")
 			}
 			alarmValues = append(alarmValues, _item.(BACnetTimerStateTagged))
 

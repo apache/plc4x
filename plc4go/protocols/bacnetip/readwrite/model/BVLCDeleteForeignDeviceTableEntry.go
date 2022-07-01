@@ -160,7 +160,7 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCDe
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCDeleteForeignDeviceTableEntry")
 			}
 			ip[curItem] = _item
 		}
@@ -172,7 +172,7 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCDe
 	// Simple Field (port)
 	_port, _portErr := readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCDeleteForeignDeviceTableEntry")
 	}
 	port := _port
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessEventParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_accessEvent, _accessEventErr := BACnetAccessEventTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _accessEventErr != nil {
-		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field")
+		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field of BACnetConstructedDataAccessEvent")
 	}
 	accessEvent := _accessEvent.(BACnetAccessEventTagged)
 	if closeErr := readBuffer.CloseContext("accessEvent"); closeErr != nil {

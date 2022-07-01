@@ -164,7 +164,7 @@ func BACnetConstructedDataCOVPeriodParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_covPeriod, _covPeriodErr := BACnetApplicationTagParse(readBuffer)
 	if _covPeriodErr != nil {
-		return nil, errors.Wrap(_covPeriodErr, "Error parsing 'covPeriod' field")
+		return nil, errors.Wrap(_covPeriodErr, "Error parsing 'covPeriod' field of BACnetConstructedDataCOVPeriod")
 	}
 	covPeriod := _covPeriod.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("covPeriod"); closeErr != nil {

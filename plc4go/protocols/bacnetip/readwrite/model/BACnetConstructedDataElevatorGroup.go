@@ -164,7 +164,7 @@ func BACnetConstructedDataElevatorGroupParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_elevatorGroup, _elevatorGroupErr := BACnetApplicationTagParse(readBuffer)
 	if _elevatorGroupErr != nil {
-		return nil, errors.Wrap(_elevatorGroupErr, "Error parsing 'elevatorGroup' field")
+		return nil, errors.Wrap(_elevatorGroupErr, "Error parsing 'elevatorGroup' field of BACnetConstructedDataElevatorGroup")
 	}
 	elevatorGroup := _elevatorGroup.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("elevatorGroup"); closeErr != nil {

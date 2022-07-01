@@ -114,7 +114,7 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode, _messageCodeErr := readBuffer.ReadUint8("messageCode", 8)
 	if _messageCodeErr != nil {
-		return nil, errors.Wrap(_messageCodeErr, "Error parsing 'messageCode' field")
+		return nil, errors.Wrap(_messageCodeErr, "Error parsing 'messageCode' field of CEMI")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -177,7 +177,7 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageCode=%v]", messageCode)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CEMI.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CEMI")
 	}
 	_child = _childTemp.(CEMIChildSerializeRequirement)
 

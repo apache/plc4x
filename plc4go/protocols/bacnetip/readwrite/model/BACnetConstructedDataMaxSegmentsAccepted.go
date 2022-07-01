@@ -164,7 +164,7 @@ func BACnetConstructedDataMaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer, 
 	}
 	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := BACnetApplicationTagParse(readBuffer)
 	if _maxSegmentsAcceptedErr != nil {
-		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field")
+		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field of BACnetConstructedDataMaxSegmentsAccepted")
 	}
 	maxSegmentsAccepted := _maxSegmentsAccepted.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxSegmentsAccepted"); closeErr != nil {

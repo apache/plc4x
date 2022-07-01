@@ -142,7 +142,7 @@ func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.
 	numberOfBytesbytesOfRemovedService := int(serviceRequestPayloadLength)
 	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field of BACnetConfirmedServiceRequestReadPropertyConditional")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadPropertyConditional"); closeErr != nil {

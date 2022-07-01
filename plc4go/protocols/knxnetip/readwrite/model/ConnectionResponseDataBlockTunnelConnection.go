@@ -140,7 +140,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 	}
 	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
 	if _knxAddressErr != nil {
-		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
+		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field of ConnectionResponseDataBlockTunnelConnection")
 	}
 	knxAddress := _knxAddress.(KnxAddress)
 	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {

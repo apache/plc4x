@@ -164,7 +164,7 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParse(readBuffer utils.ReadBuf
 	}
 	_eventAlgorithmInhibitRef, _eventAlgorithmInhibitRefErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _eventAlgorithmInhibitRefErr != nil {
-		return nil, errors.Wrap(_eventAlgorithmInhibitRefErr, "Error parsing 'eventAlgorithmInhibitRef' field")
+		return nil, errors.Wrap(_eventAlgorithmInhibitRefErr, "Error parsing 'eventAlgorithmInhibitRef' field of BACnetConstructedDataEventAlgorithmInhibitRef")
 	}
 	eventAlgorithmInhibitRef := _eventAlgorithmInhibitRef.(BACnetObjectPropertyReference)
 	if closeErr := readBuffer.CloseContext("eventAlgorithmInhibitRef"); closeErr != nil {

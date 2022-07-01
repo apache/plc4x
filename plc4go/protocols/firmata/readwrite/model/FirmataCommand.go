@@ -114,7 +114,7 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (FirmataCom
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 4)
 	if _commandCodeErr != nil {
-		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field")
+		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of FirmataCommand")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -141,7 +141,7 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (FirmataCom
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of FirmataCommand.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of FirmataCommand")
 	}
 	_child = _childTemp.(FirmataCommandChildSerializeRequirement)
 

@@ -207,7 +207,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 	}
 	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgmentFilterErr != nil {
-		return nil, errors.Wrap(_acknowledgmentFilterErr, "Error parsing 'acknowledgmentFilter' field")
+		return nil, errors.Wrap(_acknowledgmentFilterErr, "Error parsing 'acknowledgmentFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 	}
 	acknowledgmentFilter := _acknowledgmentFilter.(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged)
 	if closeErr := readBuffer.CloseContext("acknowledgmentFilter"); closeErr != nil {
@@ -227,7 +227,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'enrollmentFilter' field")
+			return nil, errors.Wrap(_err, "Error parsing 'enrollmentFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 		default:
 			enrollmentFilter = _val.(BACnetRecipientProcessEnclosed)
 			if closeErr := readBuffer.CloseContext("enrollmentFilter"); closeErr != nil {
@@ -249,7 +249,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'eventStateFilter' field")
+			return nil, errors.Wrap(_err, "Error parsing 'eventStateFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 		default:
 			eventStateFilter = _val.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged)
 			if closeErr := readBuffer.CloseContext("eventStateFilter"); closeErr != nil {
@@ -271,7 +271,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'eventTypeFilter' field")
+			return nil, errors.Wrap(_err, "Error parsing 'eventTypeFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 		default:
 			eventTypeFilter = _val.(BACnetEventTypeTagged)
 			if closeErr := readBuffer.CloseContext("eventTypeFilter"); closeErr != nil {
@@ -293,7 +293,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'priorityFilter' field")
+			return nil, errors.Wrap(_err, "Error parsing 'priorityFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 		default:
 			priorityFilter = _val.(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)
 			if closeErr := readBuffer.CloseContext("priorityFilter"); closeErr != nil {
@@ -315,7 +315,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'notificationClassFilter' field")
+			return nil, errors.Wrap(_err, "Error parsing 'notificationClassFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 		default:
 			notificationClassFilter = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("notificationClassFilter"); closeErr != nil {

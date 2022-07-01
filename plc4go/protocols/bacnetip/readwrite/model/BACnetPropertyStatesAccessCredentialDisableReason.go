@@ -137,7 +137,7 @@ func BACnetPropertyStatesAccessCredentialDisableReasonParse(readBuffer utils.Rea
 	}
 	_accessCredentialDisableReason, _accessCredentialDisableReasonErr := BACnetAccessCredentialDisableReasonTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessCredentialDisableReasonErr != nil {
-		return nil, errors.Wrap(_accessCredentialDisableReasonErr, "Error parsing 'accessCredentialDisableReason' field")
+		return nil, errors.Wrap(_accessCredentialDisableReasonErr, "Error parsing 'accessCredentialDisableReason' field of BACnetPropertyStatesAccessCredentialDisableReason")
 	}
 	accessCredentialDisableReason := _accessCredentialDisableReason.(BACnetAccessCredentialDisableReasonTagged)
 	if closeErr := readBuffer.CloseContext("accessCredentialDisableReason"); closeErr != nil {

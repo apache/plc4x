@@ -164,7 +164,7 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 	}
 	_linkSpeedAutonegotiate, _linkSpeedAutonegotiateErr := BACnetApplicationTagParse(readBuffer)
 	if _linkSpeedAutonegotiateErr != nil {
-		return nil, errors.Wrap(_linkSpeedAutonegotiateErr, "Error parsing 'linkSpeedAutonegotiate' field")
+		return nil, errors.Wrap(_linkSpeedAutonegotiateErr, "Error parsing 'linkSpeedAutonegotiate' field of BACnetConstructedDataLinkSpeedAutonegotiate")
 	}
 	linkSpeedAutonegotiate := _linkSpeedAutonegotiate.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("linkSpeedAutonegotiate"); closeErr != nil {

@@ -188,7 +188,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 	}
 	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
+		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 	}
 	subscriberProcessIdentifier := _subscriberProcessIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
@@ -201,7 +201,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 	}
 	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _initiatingDeviceIdentifierErr != nil {
-		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field")
+		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 	}
 	initiatingDeviceIdentifier := _initiatingDeviceIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("initiatingDeviceIdentifier"); closeErr != nil {
@@ -214,7 +214,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 	}
 	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field")
+		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 	}
 	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
@@ -234,7 +234,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timestamp' field")
+			return nil, errors.Wrap(_err, "Error parsing 'timestamp' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 		default:
 			timestamp = _val.(BACnetTimeStampEnclosed)
 			if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
@@ -249,7 +249,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 	}
 	_listOfCovNotifications, _listOfCovNotificationsErr := ListOfCovNotificationsListParse(readBuffer, uint8(uint8(4)))
 	if _listOfCovNotificationsErr != nil {
-		return nil, errors.Wrap(_listOfCovNotificationsErr, "Error parsing 'listOfCovNotifications' field")
+		return nil, errors.Wrap(_listOfCovNotificationsErr, "Error parsing 'listOfCovNotifications' field of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 	}
 	listOfCovNotifications := _listOfCovNotifications.(ListOfCovNotificationsList)
 	if closeErr := readBuffer.CloseContext("listOfCovNotifications"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataAnalogOutputPresentValueParse(readBuffer utils.ReadBuf
 	}
 	_presentValue, _presentValueErr := BACnetApplicationTagParse(readBuffer)
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataAnalogOutputPresentValue")
 	}
 	presentValue := _presentValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

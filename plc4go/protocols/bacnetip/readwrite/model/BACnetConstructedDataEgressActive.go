@@ -164,7 +164,7 @@ func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_egressActive, _egressActiveErr := BACnetApplicationTagParse(readBuffer)
 	if _egressActiveErr != nil {
-		return nil, errors.Wrap(_egressActiveErr, "Error parsing 'egressActive' field")
+		return nil, errors.Wrap(_egressActiveErr, "Error parsing 'egressActive' field of BACnetConstructedDataEgressActive")
 	}
 	egressActive := _egressActive.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("egressActive"); closeErr != nil {

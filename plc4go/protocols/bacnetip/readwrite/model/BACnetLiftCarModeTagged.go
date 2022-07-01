@@ -153,7 +153,7 @@ func BACnetLiftCarModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLiftCarModeTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -173,7 +173,7 @@ func BACnetLiftCarModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarModeTagged")
 	}
 	value := _value.(BACnetLiftCarMode)
 
@@ -185,7 +185,7 @@ func BACnetLiftCarModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	// Manual Field (proprietaryValue)
 	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, header.GetActualLength(), isProprietary)
 	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
+		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetLiftCarModeTagged")
 	}
 	proprietaryValue := _proprietaryValue.(uint32)
 

@@ -126,7 +126,7 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of MaxApduLengthAcceptedTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of MaxApduLengthAcceptedTagged")
 	}
 	value := _value.(MaxApduLengthAccepted)
 

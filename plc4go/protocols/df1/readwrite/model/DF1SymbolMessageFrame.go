@@ -189,14 +189,14 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFr
 	// Simple Field (destinationAddress)
 	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
 	if _destinationAddressErr != nil {
-		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field")
+		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field of DF1SymbolMessageFrame")
 	}
 	destinationAddress := _destinationAddress
 
 	// Simple Field (sourceAddress)
 	_sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
 	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
+		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of DF1SymbolMessageFrame")
 	}
 	sourceAddress := _sourceAddress
 
@@ -206,7 +206,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFr
 	}
 	_command, _commandErr := DF1CommandParse(readBuffer)
 	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
+		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of DF1SymbolMessageFrame")
 	}
 	command := _command.(DF1Command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
@@ -216,7 +216,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFr
 	// Const Field (messageEnd)
 	messageEnd, _messageEndErr := readBuffer.ReadUint8("messageEnd", 8)
 	if _messageEndErr != nil {
-		return nil, errors.Wrap(_messageEndErr, "Error parsing 'messageEnd' field")
+		return nil, errors.Wrap(_messageEndErr, "Error parsing 'messageEnd' field of DF1SymbolMessageFrame")
 	}
 	if messageEnd != DF1SymbolMessageFrame_MESSAGEEND {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", DF1SymbolMessageFrame_MESSAGEEND) + " but got " + fmt.Sprintf("%d", messageEnd))
@@ -225,7 +225,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFr
 	// Const Field (endTransaction)
 	endTransaction, _endTransactionErr := readBuffer.ReadUint8("endTransaction", 8)
 	if _endTransactionErr != nil {
-		return nil, errors.Wrap(_endTransactionErr, "Error parsing 'endTransaction' field")
+		return nil, errors.Wrap(_endTransactionErr, "Error parsing 'endTransaction' field of DF1SymbolMessageFrame")
 	}
 	if endTransaction != DF1SymbolMessageFrame_ENDTRANSACTION {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", DF1SymbolMessageFrame_ENDTRANSACTION) + " but got " + fmt.Sprintf("%d", endTransaction))
@@ -235,7 +235,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFr
 	{
 		checksumRef, _checksumRefErr := readBuffer.ReadUint16("checksum", 16)
 		if _checksumRefErr != nil {
-			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")
+			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of DF1SymbolMessageFrame")
 		}
 		checksum, _checksumErr := CrcCheck(destinationAddress, sourceAddress, command)
 		if _checksumErr != nil {

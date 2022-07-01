@@ -137,7 +137,7 @@ func BACnetChannelValueTimeParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	}
 	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
 	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field")
+		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetChannelValueTime")
 	}
 	timeValue := _timeValue.(BACnetApplicationTagTime)
 	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {

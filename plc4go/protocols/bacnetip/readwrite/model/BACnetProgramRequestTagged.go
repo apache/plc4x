@@ -126,7 +126,7 @@ func BACnetProgramRequestTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetProgramRequestTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetProgramRequestTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetProgramRequest_READY)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProgramRequestTagged")
 	}
 	value := _value.(BACnetProgramRequest)
 

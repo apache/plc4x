@@ -164,7 +164,7 @@ func BACnetConstructedDataIPDHCPEnableParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_ipDhcpEnable, _ipDhcpEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _ipDhcpEnableErr != nil {
-		return nil, errors.Wrap(_ipDhcpEnableErr, "Error parsing 'ipDhcpEnable' field")
+		return nil, errors.Wrap(_ipDhcpEnableErr, "Error parsing 'ipDhcpEnable' field of BACnetConstructedDataIPDHCPEnable")
 	}
 	ipDhcpEnable := _ipDhcpEnable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("ipDhcpEnable"); closeErr != nil {

@@ -172,7 +172,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 	_validDays, _validDaysErr := BACnetDaysOfWeekTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _validDaysErr != nil {
-		return nil, errors.Wrap(_validDaysErr, "Error parsing 'validDays' field")
+		return nil, errors.Wrap(_validDaysErr, "Error parsing 'validDays' field of BACnetDestination")
 	}
 	validDays := _validDays.(BACnetDaysOfWeekTagged)
 	if closeErr := readBuffer.CloseContext("validDays"); closeErr != nil {
@@ -185,7 +185,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 	_fromTime, _fromTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _fromTimeErr != nil {
-		return nil, errors.Wrap(_fromTimeErr, "Error parsing 'fromTime' field")
+		return nil, errors.Wrap(_fromTimeErr, "Error parsing 'fromTime' field of BACnetDestination")
 	}
 	fromTime := _fromTime.(BACnetApplicationTagTime)
 	if closeErr := readBuffer.CloseContext("fromTime"); closeErr != nil {
@@ -198,7 +198,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 	_toTime, _toTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _toTimeErr != nil {
-		return nil, errors.Wrap(_toTimeErr, "Error parsing 'toTime' field")
+		return nil, errors.Wrap(_toTimeErr, "Error parsing 'toTime' field of BACnetDestination")
 	}
 	toTime := _toTime.(BACnetApplicationTagTime)
 	if closeErr := readBuffer.CloseContext("toTime"); closeErr != nil {
@@ -211,7 +211,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 	_recipient, _recipientErr := BACnetRecipientParse(readBuffer)
 	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field")
+		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetDestination")
 	}
 	recipient := _recipient.(BACnetRecipient)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
@@ -224,7 +224,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _processIdentifierErr != nil {
-		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field")
+		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetDestination")
 	}
 	processIdentifier := _processIdentifier.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
@@ -237,7 +237,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetApplicationTagParse(readBuffer)
 	if _issueConfirmedNotificationsErr != nil {
-		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field")
+		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetDestination")
 	}
 	issueConfirmedNotifications := _issueConfirmedNotifications.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
@@ -250,7 +250,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 	_transitions, _transitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _transitionsErr != nil {
-		return nil, errors.Wrap(_transitionsErr, "Error parsing 'transitions' field")
+		return nil, errors.Wrap(_transitionsErr, "Error parsing 'transitions' field of BACnetDestination")
 	}
 	transitions := _transitions.(BACnetEventTransitionBitsTagged)
 	if closeErr := readBuffer.CloseContext("transitions"); closeErr != nil {

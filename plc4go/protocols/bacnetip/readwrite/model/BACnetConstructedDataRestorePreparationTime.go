@@ -164,7 +164,7 @@ func BACnetConstructedDataRestorePreparationTimeParse(readBuffer utils.ReadBuffe
 	}
 	_restorePreparationTime, _restorePreparationTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _restorePreparationTimeErr != nil {
-		return nil, errors.Wrap(_restorePreparationTimeErr, "Error parsing 'restorePreparationTime' field")
+		return nil, errors.Wrap(_restorePreparationTimeErr, "Error parsing 'restorePreparationTime' field of BACnetConstructedDataRestorePreparationTime")
 	}
 	restorePreparationTime := _restorePreparationTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("restorePreparationTime"); closeErr != nil {

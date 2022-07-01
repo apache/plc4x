@@ -164,7 +164,7 @@ func BACnetConstructedDataAnalogInputInterfaceValueParse(readBuffer utils.ReadBu
 	}
 	_interfaceValue, _interfaceValueErr := BACnetOptionalREALParse(readBuffer)
 	if _interfaceValueErr != nil {
-		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field")
+		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataAnalogInputInterfaceValue")
 	}
 	interfaceValue := _interfaceValue.(BACnetOptionalREAL)
 	if closeErr := readBuffer.CloseContext("interfaceValue"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.R
 	}
 	_numberOfAuthenticationPolicies, _numberOfAuthenticationPoliciesErr := BACnetApplicationTagParse(readBuffer)
 	if _numberOfAuthenticationPoliciesErr != nil {
-		return nil, errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error parsing 'numberOfAuthenticationPolicies' field")
+		return nil, errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error parsing 'numberOfAuthenticationPolicies' field of BACnetConstructedDataNumberOfAuthenticationPolicies")
 	}
 	numberOfAuthenticationPolicies := _numberOfAuthenticationPolicies.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("numberOfAuthenticationPolicies"); closeErr != nil {

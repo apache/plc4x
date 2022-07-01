@@ -164,7 +164,7 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer utils.ReadBu
 	}
 	_bbmdAcceptFDRegistrations, _bbmdAcceptFDRegistrationsErr := BACnetApplicationTagParse(readBuffer)
 	if _bbmdAcceptFDRegistrationsErr != nil {
-		return nil, errors.Wrap(_bbmdAcceptFDRegistrationsErr, "Error parsing 'bbmdAcceptFDRegistrations' field")
+		return nil, errors.Wrap(_bbmdAcceptFDRegistrationsErr, "Error parsing 'bbmdAcceptFDRegistrations' field of BACnetConstructedDataBBMDAcceptFDRegistrations")
 	}
 	bbmdAcceptFDRegistrations := _bbmdAcceptFDRegistrations.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("bbmdAcceptFDRegistrations"); closeErr != nil {

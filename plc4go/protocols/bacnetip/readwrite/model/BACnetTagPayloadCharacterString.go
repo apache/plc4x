@@ -142,7 +142,7 @@ func BACnetTagPayloadCharacterStringParse(readBuffer utils.ReadBuffer, actualLen
 	}
 	_encoding, _encodingErr := BACnetCharacterEncodingParse(readBuffer)
 	if _encodingErr != nil {
-		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field")
+		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field of BACnetTagPayloadCharacterString")
 	}
 	encoding := _encoding
 	if closeErr := readBuffer.CloseContext("encoding"); closeErr != nil {
@@ -157,7 +157,7 @@ func BACnetTagPayloadCharacterStringParse(readBuffer utils.ReadBuffer, actualLen
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadCharacterString")
 	}
 	value := _value
 

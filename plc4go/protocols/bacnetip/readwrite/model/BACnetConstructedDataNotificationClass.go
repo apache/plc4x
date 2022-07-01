@@ -164,7 +164,7 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 	}
 	_notificationClass, _notificationClassErr := BACnetApplicationTagParse(readBuffer)
 	if _notificationClassErr != nil {
-		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field")
+		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field of BACnetConstructedDataNotificationClass")
 	}
 	notificationClass := _notificationClass.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("notificationClass"); closeErr != nil {

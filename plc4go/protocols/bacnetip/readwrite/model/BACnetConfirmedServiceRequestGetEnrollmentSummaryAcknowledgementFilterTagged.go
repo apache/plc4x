@@ -126,7 +126,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
 	}
 	value := _value.(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter)
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataMinActualValueParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_minActualValue, _minActualValueErr := BACnetApplicationTagParse(readBuffer)
 	if _minActualValueErr != nil {
-		return nil, errors.Wrap(_minActualValueErr, "Error parsing 'minActualValue' field")
+		return nil, errors.Wrap(_minActualValueErr, "Error parsing 'minActualValue' field of BACnetConstructedDataMinActualValue")
 	}
 	minActualValue := _minActualValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("minActualValue"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 	}
 	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParse(readBuffer)
 	if _landingCallControlErr != nil {
-		return nil, errors.Wrap(_landingCallControlErr, "Error parsing 'landingCallControl' field")
+		return nil, errors.Wrap(_landingCallControlErr, "Error parsing 'landingCallControl' field of BACnetConstructedDataLandingCallControl")
 	}
 	landingCallControl := _landingCallControl.(BACnetLandingCallStatus)
 	if closeErr := readBuffer.CloseContext("landingCallControl"); closeErr != nil {

@@ -197,7 +197,7 @@ func BACnetConstructedDataCharacterStringValueFaultValuesParse(readBuffer utils.
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataCharacterStringValueFaultValues")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataCharacterStringValueFaultValuesParse(readBuffer utils.
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field of BACnetConstructedDataCharacterStringValueFaultValues")
 			}
 			faultValues = append(faultValues, _item.(BACnetOptionalCharacterString))
 

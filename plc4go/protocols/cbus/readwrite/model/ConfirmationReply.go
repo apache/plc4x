@@ -137,7 +137,7 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (ConfirmationReply, err
 	}
 	_isA, _isAErr := ConfirmationParse(readBuffer)
 	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field")
+		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of ConfirmationReply")
 	}
 	isA := _isA.(Confirmation)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {

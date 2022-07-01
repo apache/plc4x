@@ -190,7 +190,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	// Const Field (functionId)
 	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
+		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
 	if functionId != S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_FUNCTIONID {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_FUNCTIONID) + " but got " + fmt.Sprintf("%d", functionId))
@@ -199,7 +199,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	// Const Field (numberMessageObj)
 	numberMessageObj, _numberMessageObjErr := readBuffer.ReadUint8("numberMessageObj", 8)
 	if _numberMessageObjErr != nil {
-		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field")
+		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
 	if numberMessageObj != S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ) + " but got " + fmt.Sprintf("%d", numberMessageObj))
@@ -211,7 +211,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	}
 	_pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _pudicfReturnCodeErr != nil {
-		return nil, errors.Wrap(_pudicfReturnCodeErr, "Error parsing 'pudicfReturnCode' field")
+		return nil, errors.Wrap(_pudicfReturnCodeErr, "Error parsing 'pudicfReturnCode' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
 	pudicfReturnCode := _pudicfReturnCode
 	if closeErr := readBuffer.CloseContext("pudicfReturnCode"); closeErr != nil {
@@ -224,7 +224,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	}
 	_pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParse(readBuffer)
 	if _pudicftransportSizeErr != nil {
-		return nil, errors.Wrap(_pudicftransportSizeErr, "Error parsing 'pudicftransportSize' field")
+		return nil, errors.Wrap(_pudicftransportSizeErr, "Error parsing 'pudicftransportSize' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
 	pudicftransportSize := _pudicftransportSize
 	if closeErr := readBuffer.CloseContext("pudicftransportSize"); closeErr != nil {
@@ -235,7 +235,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{

@@ -137,7 +137,7 @@ func BACnetPropertyStatesLiftFaultParse(readBuffer utils.ReadBuffer, peekedTagNu
 	}
 	_liftFault, _liftFaultErr := BACnetLiftFaultTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftFaultErr != nil {
-		return nil, errors.Wrap(_liftFaultErr, "Error parsing 'liftFault' field")
+		return nil, errors.Wrap(_liftFaultErr, "Error parsing 'liftFault' field of BACnetPropertyStatesLiftFault")
 	}
 	liftFault := _liftFault.(BACnetLiftFaultTagged)
 	if closeErr := readBuffer.CloseContext("liftFault"); closeErr != nil {

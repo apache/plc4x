@@ -164,7 +164,7 @@ func BACnetConstructedDataActivationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_activationTime, _activationTimeErr := BACnetDateTimeParse(readBuffer)
 	if _activationTimeErr != nil {
-		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field")
+		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetConstructedDataActivationTime")
 	}
 	activationTime := _activationTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("activationTime"); closeErr != nil {

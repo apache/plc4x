@@ -203,7 +203,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	}
 	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
+		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
 	subscriberProcessIdentifier := _subscriberProcessIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	}
 	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field")
+		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
 	monitoredObjectIdentifier := _monitoredObjectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
@@ -236,7 +236,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field")
+			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 		default:
 			issueConfirmedNotifications = _val.(BACnetContextTagBoolean)
 			if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
@@ -258,7 +258,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field")
+			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 		default:
 			lifetime = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("lifetime"); closeErr != nil {
@@ -273,7 +273,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	}
 	_monitoredPropertyIdentifier, _monitoredPropertyIdentifierErr := BACnetPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(4)))
 	if _monitoredPropertyIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredPropertyIdentifierErr, "Error parsing 'monitoredPropertyIdentifier' field")
+		return nil, errors.Wrap(_monitoredPropertyIdentifierErr, "Error parsing 'monitoredPropertyIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
 	monitoredPropertyIdentifier := _monitoredPropertyIdentifier.(BACnetPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("monitoredPropertyIdentifier"); closeErr != nil {
@@ -293,7 +293,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field")
+			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 		default:
 			covIncrement = _val.(BACnetContextTagReal)
 			if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {

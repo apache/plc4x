@@ -190,7 +190,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	}
 	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _deviceIdentifierErr != nil {
-		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
+		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
 	deviceIdentifier := _deviceIdentifier.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
@@ -210,7 +210,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field")
+			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 		default:
 			openingTag = _val.(BACnetOpeningTag)
 			if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -225,7 +225,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	}
 	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParse(readBuffer)
 	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
+		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
 	fileStartPosition := _fileStartPosition.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
@@ -238,7 +238,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	}
 	_fileData, _fileDataErr := BACnetApplicationTagParse(readBuffer)
 	if _fileDataErr != nil {
-		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field")
+		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
 	fileData := _fileData.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("fileData"); closeErr != nil {
@@ -258,7 +258,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field")
+			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 		default:
 			closingTag = _val.(BACnetClosingTag)
 			if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

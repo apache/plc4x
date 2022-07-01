@@ -164,7 +164,7 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 	_mode, _modeErr := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field")
+		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of BACnetConstructedDataMode")
 	}
 	mode := _mode.(BACnetLifeSafetyModeTagged)
 	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {

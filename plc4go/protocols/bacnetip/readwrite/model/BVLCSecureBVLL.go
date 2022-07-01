@@ -141,7 +141,7 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) 
 	numberOfBytessecurityWrapper := int(bvlcPayloadLength)
 	securityWrapper, _readArrayErr := readBuffer.ReadByteArray("securityWrapper", numberOfBytessecurityWrapper)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'securityWrapper' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'securityWrapper' field of BVLCSecureBVLL")
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCSecureBVLL"); closeErr != nil {

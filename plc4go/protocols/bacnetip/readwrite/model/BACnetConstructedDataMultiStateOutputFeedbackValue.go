@@ -164,7 +164,7 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParse(readBuffer utils.Re
 	}
 	_feedbackValue, _feedbackValueErr := BACnetApplicationTagParse(readBuffer)
 	if _feedbackValueErr != nil {
-		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field")
+		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataMultiStateOutputFeedbackValue")
 	}
 	feedbackValue := _feedbackValue.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {

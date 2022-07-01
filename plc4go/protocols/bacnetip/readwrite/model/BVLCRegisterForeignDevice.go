@@ -136,7 +136,7 @@ func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (BVLCRegisterFo
 	// Simple Field (ttl)
 	_ttl, _ttlErr := readBuffer.ReadUint16("ttl", 16)
 	if _ttlErr != nil {
-		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field")
+		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCRegisterForeignDevice")
 	}
 	ttl := _ttl
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataMultiStateInputInterfaceValueParse(readBuffer utils.Re
 	}
 	_interfaceValue, _interfaceValueErr := BACnetOptionalBinaryPVParse(readBuffer)
 	if _interfaceValueErr != nil {
-		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field")
+		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataMultiStateInputInterfaceValue")
 	}
 	interfaceValue := _interfaceValue.(BACnetOptionalBinaryPV)
 	if closeErr := readBuffer.CloseContext("interfaceValue"); closeErr != nil {

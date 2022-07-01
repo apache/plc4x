@@ -114,7 +114,7 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	numberOfBytesoctets := int(actualLength)
 	octets, _readArrayErr := readBuffer.ReadByteArray("octets", numberOfBytesoctets)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'octets' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'octets' field of BACnetTagPayloadOctetString")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadOctetString"); closeErr != nil {

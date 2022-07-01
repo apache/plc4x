@@ -137,7 +137,7 @@ func BACnetRecipientAddressParse(readBuffer utils.ReadBuffer) (BACnetRecipientAd
 	}
 	_addressValue, _addressValueErr := BACnetAddressEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _addressValueErr != nil {
-		return nil, errors.Wrap(_addressValueErr, "Error parsing 'addressValue' field")
+		return nil, errors.Wrap(_addressValueErr, "Error parsing 'addressValue' field of BACnetRecipientAddress")
 	}
 	addressValue := _addressValue.(BACnetAddressEnclosed)
 	if closeErr := readBuffer.CloseContext("addressValue"); closeErr != nil {

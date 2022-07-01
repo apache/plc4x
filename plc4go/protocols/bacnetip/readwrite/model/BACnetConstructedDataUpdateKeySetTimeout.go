@@ -164,7 +164,7 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 	}
 	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _updateKeySetTimeoutErr != nil {
-		return nil, errors.Wrap(_updateKeySetTimeoutErr, "Error parsing 'updateKeySetTimeout' field")
+		return nil, errors.Wrap(_updateKeySetTimeoutErr, "Error parsing 'updateKeySetTimeout' field of BACnetConstructedDataUpdateKeySetTimeout")
 	}
 	updateKeySetTimeout := _updateKeySetTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("updateKeySetTimeout"); closeErr != nil {

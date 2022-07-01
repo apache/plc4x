@@ -122,7 +122,7 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetKeyIdentifier,
 	}
 	_algorithm, _algorithmErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _algorithmErr != nil {
-		return nil, errors.Wrap(_algorithmErr, "Error parsing 'algorithm' field")
+		return nil, errors.Wrap(_algorithmErr, "Error parsing 'algorithm' field of BACnetKeyIdentifier")
 	}
 	algorithm := _algorithm.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("algorithm"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetKeyIdentifier,
 	}
 	_keyId, _keyIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _keyIdErr != nil {
-		return nil, errors.Wrap(_keyIdErr, "Error parsing 'keyId' field")
+		return nil, errors.Wrap(_keyIdErr, "Error parsing 'keyId' field of BACnetKeyIdentifier")
 	}
 	keyId := _keyId.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("keyId"); closeErr != nil {

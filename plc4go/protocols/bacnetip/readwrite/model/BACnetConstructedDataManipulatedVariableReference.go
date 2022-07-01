@@ -164,7 +164,7 @@ func BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer utils.Rea
 	}
 	_manipulatedVariableReference, _manipulatedVariableReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _manipulatedVariableReferenceErr != nil {
-		return nil, errors.Wrap(_manipulatedVariableReferenceErr, "Error parsing 'manipulatedVariableReference' field")
+		return nil, errors.Wrap(_manipulatedVariableReferenceErr, "Error parsing 'manipulatedVariableReference' field of BACnetConstructedDataManipulatedVariableReference")
 	}
 	manipulatedVariableReference := _manipulatedVariableReference.(BACnetObjectPropertyReference)
 	if closeErr := readBuffer.CloseContext("manipulatedVariableReference"); closeErr != nil {

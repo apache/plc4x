@@ -122,7 +122,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(r
 	}
 	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field")
+		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 	monitoredObjectIdentifier := _monitoredObjectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(r
 	}
 	_listOfCovReferences, _listOfCovReferencesErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesParse(readBuffer, uint8(uint8(1)))
 	if _listOfCovReferencesErr != nil {
-		return nil, errors.Wrap(_listOfCovReferencesErr, "Error parsing 'listOfCovReferences' field")
+		return nil, errors.Wrap(_listOfCovReferencesErr, "Error parsing 'listOfCovReferences' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 	listOfCovReferences := _listOfCovReferences.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences)
 	if closeErr := readBuffer.CloseContext("listOfCovReferences"); closeErr != nil {

@@ -155,7 +155,7 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'references' field")
+				return nil, errors.Wrap(_err, "Error parsing 'references' field of BACnetConstructedDataListOfObjectPropertyReferences")
 			}
 			references = append(references, _item.(BACnetDeviceObjectPropertyReference))
 

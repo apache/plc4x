@@ -179,7 +179,7 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessa
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
 	if _variableSpecErr != nil {
-		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field")
+		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of AlarmMessageAckObjectPushType")
 	}
 	if variableSpec != AlarmMessageAckObjectPushType_VARIABLESPEC {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageAckObjectPushType_VARIABLESPEC) + " but got " + fmt.Sprintf("%d", variableSpec))
@@ -188,7 +188,7 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessa
 	// Simple Field (lengthSpec)
 	_lengthSpec, _lengthSpecErr := readBuffer.ReadUint8("lengthSpec", 8)
 	if _lengthSpecErr != nil {
-		return nil, errors.Wrap(_lengthSpecErr, "Error parsing 'lengthSpec' field")
+		return nil, errors.Wrap(_lengthSpecErr, "Error parsing 'lengthSpec' field of AlarmMessageAckObjectPushType")
 	}
 	lengthSpec := _lengthSpec
 
@@ -198,7 +198,7 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessa
 	}
 	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
 	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field")
+		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of AlarmMessageAckObjectPushType")
 	}
 	syntaxId := _syntaxId
 	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
@@ -208,14 +208,14 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessa
 	// Simple Field (numberOfValues)
 	_numberOfValues, _numberOfValuesErr := readBuffer.ReadUint8("numberOfValues", 8)
 	if _numberOfValuesErr != nil {
-		return nil, errors.Wrap(_numberOfValuesErr, "Error parsing 'numberOfValues' field")
+		return nil, errors.Wrap(_numberOfValuesErr, "Error parsing 'numberOfValues' field of AlarmMessageAckObjectPushType")
 	}
 	numberOfValues := _numberOfValues
 
 	// Simple Field (eventId)
 	_eventId, _eventIdErr := readBuffer.ReadUint32("eventId", 32)
 	if _eventIdErr != nil {
-		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field")
+		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field of AlarmMessageAckObjectPushType")
 	}
 	eventId := _eventId
 
@@ -225,7 +225,7 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessa
 	}
 	_ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
 	if _ackStateGoingErr != nil {
-		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field")
+		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field of AlarmMessageAckObjectPushType")
 	}
 	ackStateGoing := _ackStateGoing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
@@ -238,7 +238,7 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessa
 	}
 	_ackStateComing, _ackStateComingErr := StateParse(readBuffer)
 	if _ackStateComingErr != nil {
-		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field")
+		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field of AlarmMessageAckObjectPushType")
 	}
 	ackStateComing := _ackStateComing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {

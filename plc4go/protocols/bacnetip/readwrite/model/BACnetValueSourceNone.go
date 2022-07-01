@@ -137,7 +137,7 @@ func BACnetValueSourceNoneParse(readBuffer utils.ReadBuffer) (BACnetValueSourceN
 	}
 	_none, _noneErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
 	if _noneErr != nil {
-		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field")
+		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field of BACnetValueSourceNone")
 	}
 	none := _none.(BACnetContextTagNull)
 	if closeErr := readBuffer.CloseContext("none"); closeErr != nil {

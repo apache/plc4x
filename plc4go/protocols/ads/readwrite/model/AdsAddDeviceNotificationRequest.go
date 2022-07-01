@@ -202,42 +202,42 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
+		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsAddDeviceNotificationRequest")
 	}
 	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
 	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
+		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsAddDeviceNotificationRequest")
 	}
 	indexOffset := _indexOffset
 
 	// Simple Field (length)
 	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsAddDeviceNotificationRequest")
 	}
 	length := _length
 
 	// Simple Field (transmissionMode)
 	_transmissionMode, _transmissionModeErr := readBuffer.ReadUint32("transmissionMode", 32)
 	if _transmissionModeErr != nil {
-		return nil, errors.Wrap(_transmissionModeErr, "Error parsing 'transmissionMode' field")
+		return nil, errors.Wrap(_transmissionModeErr, "Error parsing 'transmissionMode' field of AdsAddDeviceNotificationRequest")
 	}
 	transmissionMode := _transmissionMode
 
 	// Simple Field (maxDelay)
 	_maxDelay, _maxDelayErr := readBuffer.ReadUint32("maxDelay", 32)
 	if _maxDelayErr != nil {
-		return nil, errors.Wrap(_maxDelayErr, "Error parsing 'maxDelay' field")
+		return nil, errors.Wrap(_maxDelayErr, "Error parsing 'maxDelay' field of AdsAddDeviceNotificationRequest")
 	}
 	maxDelay := _maxDelay
 
 	// Simple Field (cycleTime)
 	_cycleTime, _cycleTimeErr := readBuffer.ReadUint32("cycleTime", 32)
 	if _cycleTimeErr != nil {
-		return nil, errors.Wrap(_cycleTimeErr, "Error parsing 'cycleTime' field")
+		return nil, errors.Wrap(_cycleTimeErr, "Error parsing 'cycleTime' field of AdsAddDeviceNotificationRequest")
 	}
 	cycleTime := _cycleTime
 
@@ -245,7 +245,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 	{
 		reserved, _err := readBuffer.ReadUint64("reserved", 64)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
 		}
 		if reserved != uint64(0x0000) {
 			log.Info().Fields(map[string]interface{}{
@@ -259,7 +259,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 	{
 		reserved, _err := readBuffer.ReadUint64("reserved", 64)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
 		}
 		if reserved != uint64(0x0000) {
 			log.Info().Fields(map[string]interface{}{

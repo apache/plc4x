@@ -137,7 +137,7 @@ func BACnetPropertyStatesShedStateParse(readBuffer utils.ReadBuffer, peekedTagNu
 	}
 	_shedState, _shedStateErr := BACnetShedStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _shedStateErr != nil {
-		return nil, errors.Wrap(_shedStateErr, "Error parsing 'shedState' field")
+		return nil, errors.Wrap(_shedStateErr, "Error parsing 'shedState' field of BACnetPropertyStatesShedState")
 	}
 	shedState := _shedState.(BACnetShedStateTagged)
 	if closeErr := readBuffer.CloseContext("shedState"); closeErr != nil {

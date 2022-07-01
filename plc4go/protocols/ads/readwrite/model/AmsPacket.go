@@ -195,7 +195,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	}
 	_targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _targetAmsNetIdErr != nil {
-		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field")
+		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field of AmsPacket")
 	}
 	targetAmsNetId := _targetAmsNetId.(AmsNetId)
 	if closeErr := readBuffer.CloseContext("targetAmsNetId"); closeErr != nil {
@@ -205,7 +205,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	// Simple Field (targetAmsPort)
 	_targetAmsPort, _targetAmsPortErr := readBuffer.ReadUint16("targetAmsPort", 16)
 	if _targetAmsPortErr != nil {
-		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
+		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field of AmsPacket")
 	}
 	targetAmsPort := _targetAmsPort
 
@@ -215,7 +215,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	}
 	_sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _sourceAmsNetIdErr != nil {
-		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field")
+		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field of AmsPacket")
 	}
 	sourceAmsNetId := _sourceAmsNetId.(AmsNetId)
 	if closeErr := readBuffer.CloseContext("sourceAmsNetId"); closeErr != nil {
@@ -225,7 +225,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	// Simple Field (sourceAmsPort)
 	_sourceAmsPort, _sourceAmsPortErr := readBuffer.ReadUint16("sourceAmsPort", 16)
 	if _sourceAmsPortErr != nil {
-		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
+		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field of AmsPacket")
 	}
 	sourceAmsPort := _sourceAmsPort
 
@@ -235,7 +235,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	}
 	_commandId, _commandIdErr := CommandIdParse(readBuffer)
 	if _commandIdErr != nil {
-		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field")
+		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field of AmsPacket")
 	}
 	commandId := _commandId
 	if closeErr := readBuffer.CloseContext("commandId"); closeErr != nil {
@@ -248,7 +248,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	}
 	_state, _stateErr := StateParse(readBuffer)
 	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
+		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of AmsPacket")
 	}
 	state := _state.(State)
 	if closeErr := readBuffer.CloseContext("state"); closeErr != nil {
@@ -259,20 +259,20 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsPacket")
 	}
 
 	// Simple Field (errorCode)
 	_errorCode, _errorCodeErr := readBuffer.ReadUint32("errorCode", 32)
 	if _errorCodeErr != nil {
-		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
+		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of AmsPacket")
 	}
 	errorCode := _errorCode
 
 	// Simple Field (invokeId)
 	_invokeId, _invokeIdErr := readBuffer.ReadUint32("invokeId", 32)
 	if _invokeIdErr != nil {
-		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
+		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field of AmsPacket")
 	}
 	invokeId := _invokeId
 
@@ -282,7 +282,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	}
 	_data, _dataErr := AdsDataParse(readBuffer, CommandId(commandId), bool(state.GetResponse()))
 	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of AmsPacket")
 	}
 	data := _data.(AdsData)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {

@@ -150,7 +150,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	}
 	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParse(readBuffer)
 	if _fileStartRecordErr != nil {
-		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field")
+		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}
 	fileStartRecord := _fileStartRecord.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("fileStartRecord"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	}
 	_requestRecordCount, _requestRecordCountErr := BACnetApplicationTagParse(readBuffer)
 	if _requestRecordCountErr != nil {
-		return nil, errors.Wrap(_requestRecordCountErr, "Error parsing 'requestRecordCount' field")
+		return nil, errors.Wrap(_requestRecordCountErr, "Error parsing 'requestRecordCount' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}
 	requestRecordCount := _requestRecordCount.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("requestRecordCount"); closeErr != nil {

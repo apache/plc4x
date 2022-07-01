@@ -137,7 +137,7 @@ func BACnetLogDataLogDataEntryBooleanValueParse(readBuffer utils.ReadBuffer) (BA
 	}
 	_booleanValue, _booleanValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _booleanValueErr != nil {
-		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field")
+		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetLogDataLogDataEntryBooleanValue")
 	}
 	booleanValue := _booleanValue.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {

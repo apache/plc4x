@@ -164,7 +164,7 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 	}
 	_eventDetectionEnable, _eventDetectionEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _eventDetectionEnableErr != nil {
-		return nil, errors.Wrap(_eventDetectionEnableErr, "Error parsing 'eventDetectionEnable' field")
+		return nil, errors.Wrap(_eventDetectionEnableErr, "Error parsing 'eventDetectionEnable' field of BACnetConstructedDataEventDetectionEnable")
 	}
 	eventDetectionEnable := _eventDetectionEnable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("eventDetectionEnable"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataDoorExtendedPulseTimeParse(readBuffer utils.ReadBuffer
 	}
 	_doorExtendedPulseTime, _doorExtendedPulseTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _doorExtendedPulseTimeErr != nil {
-		return nil, errors.Wrap(_doorExtendedPulseTimeErr, "Error parsing 'doorExtendedPulseTime' field")
+		return nil, errors.Wrap(_doorExtendedPulseTimeErr, "Error parsing 'doorExtendedPulseTime' field of BACnetConstructedDataDoorExtendedPulseTime")
 	}
 	doorExtendedPulseTime := _doorExtendedPulseTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("doorExtendedPulseTime"); closeErr != nil {

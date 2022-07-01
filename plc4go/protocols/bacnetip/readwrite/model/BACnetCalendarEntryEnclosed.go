@@ -135,7 +135,7 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetCalendarEntryEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryParse(readBuffer)
 	if _calendarEntryErr != nil {
-		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field")
+		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field of BACnetCalendarEntryEnclosed")
 	}
 	calendarEntry := _calendarEntry.(BACnetCalendarEntry)
 	if closeErr := readBuffer.CloseContext("calendarEntry"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetCalendarEntryEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

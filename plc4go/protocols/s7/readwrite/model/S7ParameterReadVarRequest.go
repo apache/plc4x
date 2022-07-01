@@ -149,7 +149,7 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
 	_ = numItems
 	if _numItemsErr != nil {
-		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
+		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterReadVarRequest")
 	}
 
 	// Array field (items)
@@ -166,7 +166,7 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 			_item, _err := S7VarRequestParameterItemParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7ParameterReadVarRequest")
 			}
 			items[curItem] = _item.(S7VarRequestParameterItem)
 		}

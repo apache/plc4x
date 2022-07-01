@@ -167,14 +167,14 @@ func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
+		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsWriteRequest")
 	}
 	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
 	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
+		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsWriteRequest")
 	}
 	indexOffset := _indexOffset
 
@@ -182,13 +182,13 @@ func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsWriteRequest")
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(length)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsWriteRequest")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsWriteRequest"); closeErr != nil {

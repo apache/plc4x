@@ -136,7 +136,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	}
 	_monitoredProperty, _monitoredPropertyErr := BACnetPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _monitoredPropertyErr != nil {
-		return nil, errors.Wrap(_monitoredPropertyErr, "Error parsing 'monitoredProperty' field")
+		return nil, errors.Wrap(_monitoredPropertyErr, "Error parsing 'monitoredProperty' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
 	monitoredProperty := _monitoredProperty.(BACnetPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("monitoredProperty"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field")
+			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 		default:
 			covIncrement = _val.(BACnetContextTagReal)
 			if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
@@ -171,7 +171,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	}
 	_timestamped, _timestampedErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _timestampedErr != nil {
-		return nil, errors.Wrap(_timestampedErr, "Error parsing 'timestamped' field")
+		return nil, errors.Wrap(_timestampedErr, "Error parsing 'timestamped' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
 	timestamped := _timestamped.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("timestamped"); closeErr != nil {

@@ -179,56 +179,56 @@ func CBusOptionsParse(readBuffer utils.ReadBuffer) (CBusOptions, error) {
 	// Simple Field (connect)
 	_connect, _connectErr := readBuffer.ReadBit("connect")
 	if _connectErr != nil {
-		return nil, errors.Wrap(_connectErr, "Error parsing 'connect' field")
+		return nil, errors.Wrap(_connectErr, "Error parsing 'connect' field of CBusOptions")
 	}
 	connect := _connect
 
 	// Simple Field (smart)
 	_smart, _smartErr := readBuffer.ReadBit("smart")
 	if _smartErr != nil {
-		return nil, errors.Wrap(_smartErr, "Error parsing 'smart' field")
+		return nil, errors.Wrap(_smartErr, "Error parsing 'smart' field of CBusOptions")
 	}
 	smart := _smart
 
 	// Simple Field (idmon)
 	_idmon, _idmonErr := readBuffer.ReadBit("idmon")
 	if _idmonErr != nil {
-		return nil, errors.Wrap(_idmonErr, "Error parsing 'idmon' field")
+		return nil, errors.Wrap(_idmonErr, "Error parsing 'idmon' field of CBusOptions")
 	}
 	idmon := _idmon
 
 	// Simple Field (exstat)
 	_exstat, _exstatErr := readBuffer.ReadBit("exstat")
 	if _exstatErr != nil {
-		return nil, errors.Wrap(_exstatErr, "Error parsing 'exstat' field")
+		return nil, errors.Wrap(_exstatErr, "Error parsing 'exstat' field of CBusOptions")
 	}
 	exstat := _exstat
 
 	// Simple Field (monitor)
 	_monitor, _monitorErr := readBuffer.ReadBit("monitor")
 	if _monitorErr != nil {
-		return nil, errors.Wrap(_monitorErr, "Error parsing 'monitor' field")
+		return nil, errors.Wrap(_monitorErr, "Error parsing 'monitor' field of CBusOptions")
 	}
 	monitor := _monitor
 
 	// Simple Field (monall)
 	_monall, _monallErr := readBuffer.ReadBit("monall")
 	if _monallErr != nil {
-		return nil, errors.Wrap(_monallErr, "Error parsing 'monall' field")
+		return nil, errors.Wrap(_monallErr, "Error parsing 'monall' field of CBusOptions")
 	}
 	monall := _monall
 
 	// Simple Field (pun)
 	_pun, _punErr := readBuffer.ReadBit("pun")
 	if _punErr != nil {
-		return nil, errors.Wrap(_punErr, "Error parsing 'pun' field")
+		return nil, errors.Wrap(_punErr, "Error parsing 'pun' field of CBusOptions")
 	}
 	pun := _pun
 
 	// Simple Field (pcn)
 	_pcn, _pcnErr := readBuffer.ReadBit("pcn")
 	if _pcnErr != nil {
-		return nil, errors.Wrap(_pcnErr, "Error parsing 'pcn' field")
+		return nil, errors.Wrap(_pcnErr, "Error parsing 'pcn' field of CBusOptions")
 	}
 	pcn := _pcn
 

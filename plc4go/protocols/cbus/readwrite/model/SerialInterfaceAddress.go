@@ -109,7 +109,7 @@ func SerialInterfaceAddressParse(readBuffer utils.ReadBuffer) (SerialInterfaceAd
 	// Simple Field (address)
 	_address, _addressErr := readBuffer.ReadByte("address")
 	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of SerialInterfaceAddress")
 	}
 	address := _address
 

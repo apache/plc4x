@@ -150,7 +150,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 	}
 	_referenceSequenceNumber, _referenceSequenceNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _referenceSequenceNumberErr != nil {
-		return nil, errors.Wrap(_referenceSequenceNumberErr, "Error parsing 'referenceSequenceNumber' field")
+		return nil, errors.Wrap(_referenceSequenceNumberErr, "Error parsing 'referenceSequenceNumber' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
 	referenceSequenceNumber := _referenceSequenceNumber.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("referenceSequenceNumber"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 	}
 	_count, _countErr := BACnetApplicationTagParse(readBuffer)
 	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
 	count := _count.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {

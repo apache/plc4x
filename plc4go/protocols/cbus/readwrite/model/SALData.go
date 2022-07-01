@@ -146,7 +146,7 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 	}
 	_commandTypeContainer, _commandTypeContainerErr := SALCommandTypeContainerParse(readBuffer)
 	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field")
+		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of SALData")
 	}
 	commandTypeContainer := _commandTypeContainer
 	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
@@ -180,7 +180,7 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of SALData.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of SALData")
 	}
 	_child = _childTemp.(SALDataChildSerializeRequirement)
 

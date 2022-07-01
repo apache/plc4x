@@ -164,7 +164,7 @@ func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_readOnly, _readOnlyErr := BACnetApplicationTagParse(readBuffer)
 	if _readOnlyErr != nil {
-		return nil, errors.Wrap(_readOnlyErr, "Error parsing 'readOnly' field")
+		return nil, errors.Wrap(_readOnlyErr, "Error parsing 'readOnly' field of BACnetConstructedDataReadOnly")
 	}
 	readOnly := _readOnly.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("readOnly"); closeErr != nil {

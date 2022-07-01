@@ -206,21 +206,21 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (LDataExtended, error) {
 	// Simple Field (groupAddress)
 	_groupAddress, _groupAddressErr := readBuffer.ReadBit("groupAddress")
 	if _groupAddressErr != nil {
-		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field")
+		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field of LDataExtended")
 	}
 	groupAddress := _groupAddress
 
 	// Simple Field (hopCount)
 	_hopCount, _hopCountErr := readBuffer.ReadUint8("hopCount", 3)
 	if _hopCountErr != nil {
-		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field")
+		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field of LDataExtended")
 	}
 	hopCount := _hopCount
 
 	// Simple Field (extendedFrameFormat)
 	_extendedFrameFormat, _extendedFrameFormatErr := readBuffer.ReadUint8("extendedFrameFormat", 4)
 	if _extendedFrameFormatErr != nil {
-		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field")
+		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field of LDataExtended")
 	}
 	extendedFrameFormat := _extendedFrameFormat
 
@@ -230,7 +230,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (LDataExtended, error) {
 	}
 	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
 	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
+		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LDataExtended")
 	}
 	sourceAddress := _sourceAddress.(KnxAddress)
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
@@ -240,14 +240,14 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (LDataExtended, error) {
 	numberOfBytesdestinationAddress := int(uint16(2))
 	destinationAddress, _readArrayErr := readBuffer.ReadByteArray("destinationAddress", numberOfBytesdestinationAddress)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'destinationAddress' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'destinationAddress' field of LDataExtended")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
-		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
+		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of LDataExtended")
 	}
 
 	// Simple Field (apdu)
@@ -256,7 +256,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (LDataExtended, error) {
 	}
 	_apdu, _apduErr := ApduParse(readBuffer, uint8(dataLength))
 	if _apduErr != nil {
-		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
+		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field of LDataExtended")
 	}
 	apdu := _apdu.(Apdu)
 	if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 	}
 	_ackedTransitions, _ackedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackedTransitionsErr != nil {
-		return nil, errors.Wrap(_ackedTransitionsErr, "Error parsing 'ackedTransitions' field")
+		return nil, errors.Wrap(_ackedTransitionsErr, "Error parsing 'ackedTransitions' field of BACnetConstructedDataAckedTransitions")
 	}
 	ackedTransitions := _ackedTransitions.(BACnetEventTransitionBitsTagged)
 	if closeErr := readBuffer.CloseContext("ackedTransitions"); closeErr != nil {

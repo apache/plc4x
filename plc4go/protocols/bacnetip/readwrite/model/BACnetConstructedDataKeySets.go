@@ -197,7 +197,7 @@ func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber ui
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataKeySets")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber ui
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetSecurityKeySetParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'keySets' field")
+				return nil, errors.Wrap(_err, "Error parsing 'keySets' field of BACnetConstructedDataKeySets")
 			}
 			keySets = append(keySets, _item.(BACnetSecurityKeySet))
 

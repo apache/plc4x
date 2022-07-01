@@ -146,7 +146,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	}
 	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field")
+		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of ListOfCovNotifications")
 	}
 	monitoredObjectIdentifier := _monitoredObjectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
@@ -159,7 +159,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of ListOfCovNotifications")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -176,7 +176,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := ListOfCovNotificationsValueParse(readBuffer, monitoredObjectIdentifier.GetObjectType())
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of ListOfCovNotifications")
 			}
 			listOfValues = append(listOfValues, _item.(ListOfCovNotificationsValue))
 
@@ -192,7 +192,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of ListOfCovNotifications")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

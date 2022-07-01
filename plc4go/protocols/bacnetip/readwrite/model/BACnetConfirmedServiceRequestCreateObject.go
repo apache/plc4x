@@ -155,7 +155,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	}
 	_objectSpecifier, _objectSpecifierErr := BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer, uint8(uint8(0)))
 	if _objectSpecifierErr != nil {
-		return nil, errors.Wrap(_objectSpecifierErr, "Error parsing 'objectSpecifier' field")
+		return nil, errors.Wrap(_objectSpecifierErr, "Error parsing 'objectSpecifier' field of BACnetConfirmedServiceRequestCreateObject")
 	}
 	objectSpecifier := _objectSpecifier.(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier)
 	if closeErr := readBuffer.CloseContext("objectSpecifier"); closeErr != nil {
@@ -175,7 +175,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field")
+			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of BACnetConfirmedServiceRequestCreateObject")
 		default:
 			listOfValues = _val.(BACnetPropertyValues)
 			if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {

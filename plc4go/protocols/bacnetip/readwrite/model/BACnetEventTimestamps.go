@@ -132,7 +132,7 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	}
 	_toOffnormal, _toOffnormalErr := BACnetTimeStampParse(readBuffer)
 	if _toOffnormalErr != nil {
-		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field")
+		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventTimestamps")
 	}
 	toOffnormal := _toOffnormal.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("toOffnormal"); closeErr != nil {
@@ -145,7 +145,7 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	}
 	_toFault, _toFaultErr := BACnetTimeStampParse(readBuffer)
 	if _toFaultErr != nil {
-		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field")
+		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventTimestamps")
 	}
 	toFault := _toFault.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("toFault"); closeErr != nil {
@@ -158,7 +158,7 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	}
 	_toNormal, _toNormalErr := BACnetTimeStampParse(readBuffer)
 	if _toNormalErr != nil {
-		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field")
+		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventTimestamps")
 	}
 	toNormal := _toNormal.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("toNormal"); closeErr != nil {

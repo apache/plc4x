@@ -164,7 +164,7 @@ func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_inProgress, _inProgressErr := BACnetLightingInProgressTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _inProgressErr != nil {
-		return nil, errors.Wrap(_inProgressErr, "Error parsing 'inProgress' field")
+		return nil, errors.Wrap(_inProgressErr, "Error parsing 'inProgress' field of BACnetConstructedDataInProgress")
 	}
 	inProgress := _inProgress.(BACnetLightingInProgressTagged)
 	if closeErr := readBuffer.CloseContext("inProgress"); closeErr != nil {

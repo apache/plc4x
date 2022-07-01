@@ -137,7 +137,7 @@ func BACnetLogDataLogDataEntryNullValueParse(readBuffer utils.ReadBuffer) (BACne
 	}
 	_nullValue, _nullValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_NULL))
 	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field")
+		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetLogDataLogDataEntryNullValue")
 	}
 	nullValue := _nullValue.(BACnetContextTagNull)
 	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {

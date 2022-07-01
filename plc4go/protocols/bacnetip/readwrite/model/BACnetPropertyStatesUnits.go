@@ -137,7 +137,7 @@ func BACnetPropertyStatesUnitsParse(readBuffer utils.ReadBuffer, peekedTagNumber
 	}
 	_units, _unitsErr := BACnetEngineeringUnitsTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _unitsErr != nil {
-		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field")
+		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of BACnetPropertyStatesUnits")
 	}
 	units := _units.(BACnetEngineeringUnitsTagged)
 	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataObjectNameParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_objectName, _objectNameErr := BACnetApplicationTagParse(readBuffer)
 	if _objectNameErr != nil {
-		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field")
+		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetConstructedDataObjectName")
 	}
 	objectName := _objectName.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {

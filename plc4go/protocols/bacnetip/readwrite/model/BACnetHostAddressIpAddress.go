@@ -137,7 +137,7 @@ func BACnetHostAddressIpAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAdd
 	}
 	_ipAddress, _ipAddressErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _ipAddressErr != nil {
-		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field")
+		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of BACnetHostAddressIpAddress")
 	}
 	ipAddress := _ipAddress.(BACnetContextTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {

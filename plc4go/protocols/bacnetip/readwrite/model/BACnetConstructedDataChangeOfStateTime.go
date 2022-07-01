@@ -164,7 +164,7 @@ func BACnetConstructedDataChangeOfStateTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_changeOfStateTime, _changeOfStateTimeErr := BACnetDateTimeParse(readBuffer)
 	if _changeOfStateTimeErr != nil {
-		return nil, errors.Wrap(_changeOfStateTimeErr, "Error parsing 'changeOfStateTime' field")
+		return nil, errors.Wrap(_changeOfStateTimeErr, "Error parsing 'changeOfStateTime' field of BACnetConstructedDataChangeOfStateTime")
 	}
 	changeOfStateTime := _changeOfStateTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("changeOfStateTime"); closeErr != nil {

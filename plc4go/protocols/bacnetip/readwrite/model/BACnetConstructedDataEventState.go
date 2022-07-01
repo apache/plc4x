@@ -164,7 +164,7 @@ func BACnetConstructedDataEventStateParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventStateErr != nil {
-		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
+		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of BACnetConstructedDataEventState")
 	}
 	eventState := _eventState.(BACnetEventStateTagged)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {

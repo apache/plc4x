@@ -109,7 +109,7 @@ func NetworkNumberParse(readBuffer utils.ReadBuffer) (NetworkNumber, error) {
 	// Simple Field (number)
 	_number, _numberErr := readBuffer.ReadUint8("number", 8)
 	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field")
+		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of NetworkNumber")
 	}
 	number := _number
 

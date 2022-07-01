@@ -164,7 +164,7 @@ func BACnetConstructedDataIntegerValueHighLimitParse(readBuffer utils.ReadBuffer
 	}
 	_highLimit, _highLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _highLimitErr != nil {
-		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field")
+		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetConstructedDataIntegerValueHighLimit")
 	}
 	highLimit := _highLimit.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("highLimit"); closeErr != nil {

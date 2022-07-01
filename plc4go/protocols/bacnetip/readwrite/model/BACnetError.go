@@ -136,7 +136,7 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorChoice=%v]", errorChoice)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetError.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetError")
 	}
 	_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 

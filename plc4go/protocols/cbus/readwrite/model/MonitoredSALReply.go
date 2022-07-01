@@ -137,7 +137,7 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (MonitoredSALReply, err
 	}
 	_isA, _isAErr := MonitoredSALParse(readBuffer)
 	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field")
+		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of MonitoredSALReply")
 	}
 	isA := _isA.(MonitoredSAL)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {

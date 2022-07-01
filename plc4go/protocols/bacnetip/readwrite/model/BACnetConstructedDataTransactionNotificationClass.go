@@ -164,7 +164,7 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 	}
 	_transactionNotificationClass, _transactionNotificationClassErr := BACnetApplicationTagParse(readBuffer)
 	if _transactionNotificationClassErr != nil {
-		return nil, errors.Wrap(_transactionNotificationClassErr, "Error parsing 'transactionNotificationClass' field")
+		return nil, errors.Wrap(_transactionNotificationClassErr, "Error parsing 'transactionNotificationClass' field of BACnetConstructedDataTransactionNotificationClass")
 	}
 	transactionNotificationClass := _transactionNotificationClass.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("transactionNotificationClass"); closeErr != nil {

@@ -132,7 +132,7 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (SzlId, error) {
 	}
 	_typeClass, _typeClassErr := SzlModuleTypeClassParse(readBuffer)
 	if _typeClassErr != nil {
-		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field")
+		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field of SzlId")
 	}
 	typeClass := _typeClass
 	if closeErr := readBuffer.CloseContext("typeClass"); closeErr != nil {
@@ -142,7 +142,7 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (SzlId, error) {
 	// Simple Field (sublistExtract)
 	_sublistExtract, _sublistExtractErr := readBuffer.ReadUint8("sublistExtract", 4)
 	if _sublistExtractErr != nil {
-		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field")
+		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field of SzlId")
 	}
 	sublistExtract := _sublistExtract
 
@@ -152,7 +152,7 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (SzlId, error) {
 	}
 	_sublistList, _sublistListErr := SzlSublistParse(readBuffer)
 	if _sublistListErr != nil {
-		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field")
+		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field of SzlId")
 	}
 	sublistList := _sublistList
 	if closeErr := readBuffer.CloseContext("sublistList"); closeErr != nil {

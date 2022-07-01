@@ -164,7 +164,7 @@ func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuff
 	}
 	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParse(readBuffer)
 	if _distributionKeyRevisionErr != nil {
-		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field")
+		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field of BACnetConstructedDataDistributionKeyRevision")
 	}
 	distributionKeyRevision := _distributionKeyRevision.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("distributionKeyRevision"); closeErr != nil {

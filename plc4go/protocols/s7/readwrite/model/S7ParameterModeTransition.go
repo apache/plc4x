@@ -192,7 +192,7 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7ParameterModeTransition")
 		}
 		if reserved != uint16(0x0010) {
 			log.Info().Fields(map[string]interface{}{
@@ -206,41 +206,41 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
-		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
+		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of S7ParameterModeTransition")
 	}
 
 	// Simple Field (method)
 	_method, _methodErr := readBuffer.ReadUint8("method", 8)
 	if _methodErr != nil {
-		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field")
+		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field of S7ParameterModeTransition")
 	}
 	method := _method
 
 	// Simple Field (cpuFunctionType)
 	_cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
 	if _cpuFunctionTypeErr != nil {
-		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field")
+		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field of S7ParameterModeTransition")
 	}
 	cpuFunctionType := _cpuFunctionType
 
 	// Simple Field (cpuFunctionGroup)
 	_cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
 	if _cpuFunctionGroupErr != nil {
-		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field")
+		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field of S7ParameterModeTransition")
 	}
 	cpuFunctionGroup := _cpuFunctionGroup
 
 	// Simple Field (currentMode)
 	_currentMode, _currentModeErr := readBuffer.ReadUint8("currentMode", 8)
 	if _currentModeErr != nil {
-		return nil, errors.Wrap(_currentModeErr, "Error parsing 'currentMode' field")
+		return nil, errors.Wrap(_currentModeErr, "Error parsing 'currentMode' field of S7ParameterModeTransition")
 	}
 	currentMode := _currentMode
 
 	// Simple Field (sequenceNumber)
 	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of S7ParameterModeTransition")
 	}
 	sequenceNumber := _sequenceNumber
 

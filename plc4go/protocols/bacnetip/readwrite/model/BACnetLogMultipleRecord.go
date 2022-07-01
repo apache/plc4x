@@ -122,7 +122,7 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipl
 	}
 	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetLogMultipleRecord")
 	}
 	timestamp := _timestamp.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipl
 	}
 	_logData, _logDataErr := BACnetLogDataParse(readBuffer, uint8(uint8(1)))
 	if _logDataErr != nil {
-		return nil, errors.Wrap(_logDataErr, "Error parsing 'logData' field")
+		return nil, errors.Wrap(_logDataErr, "Error parsing 'logData' field of BACnetLogMultipleRecord")
 	}
 	logData := _logData.(BACnetLogData)
 	if closeErr := readBuffer.CloseContext("logData"); closeErr != nil {

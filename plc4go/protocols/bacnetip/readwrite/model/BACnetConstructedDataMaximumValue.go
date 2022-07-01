@@ -164,7 +164,7 @@ func BACnetConstructedDataMaximumValueParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_maximumValue, _maximumValueErr := BACnetApplicationTagParse(readBuffer)
 	if _maximumValueErr != nil {
-		return nil, errors.Wrap(_maximumValueErr, "Error parsing 'maximumValue' field")
+		return nil, errors.Wrap(_maximumValueErr, "Error parsing 'maximumValue' field of BACnetConstructedDataMaximumValue")
 	}
 	maximumValue := _maximumValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("maximumValue"); closeErr != nil {

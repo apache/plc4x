@@ -126,7 +126,7 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 	}
 	_bbmdAddress, _bbmdAddressErr := BACnetHostNPortEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _bbmdAddressErr != nil {
-		return nil, errors.Wrap(_bbmdAddressErr, "Error parsing 'bbmdAddress' field")
+		return nil, errors.Wrap(_bbmdAddressErr, "Error parsing 'bbmdAddress' field of BACnetBDTEntry")
 	}
 	bbmdAddress := _bbmdAddress.(BACnetHostNPortEnclosed)
 	if closeErr := readBuffer.CloseContext("bbmdAddress"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'broadcastMask' field")
+			return nil, errors.Wrap(_err, "Error parsing 'broadcastMask' field of BACnetBDTEntry")
 		default:
 			broadcastMask = _val.(BACnetContextTagOctetString)
 			if closeErr := readBuffer.CloseContext("broadcastMask"); closeErr != nil {

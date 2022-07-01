@@ -164,7 +164,7 @@ func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_machineRoomId, _machineRoomIdErr := BACnetApplicationTagParse(readBuffer)
 	if _machineRoomIdErr != nil {
-		return nil, errors.Wrap(_machineRoomIdErr, "Error parsing 'machineRoomId' field")
+		return nil, errors.Wrap(_machineRoomIdErr, "Error parsing 'machineRoomId' field of BACnetConstructedDataMachineRoomID")
 	}
 	machineRoomId := _machineRoomId.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("machineRoomId"); closeErr != nil {

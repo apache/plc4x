@@ -155,7 +155,7 @@ func BACnetConstructedDataExitPointsParse(readBuffer utils.ReadBuffer, tagNumber
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'exitPoints' field")
+				return nil, errors.Wrap(_err, "Error parsing 'exitPoints' field of BACnetConstructedDataExitPoints")
 			}
 			exitPoints = append(exitPoints, _item.(BACnetDeviceObjectReference))
 

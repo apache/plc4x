@@ -142,7 +142,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	}
 	_gav3, _gav3Err := GAVStateParse(readBuffer)
 	if _gav3Err != nil {
-		return nil, errors.Wrap(_gav3Err, "Error parsing 'gav3' field")
+		return nil, errors.Wrap(_gav3Err, "Error parsing 'gav3' field of StatusByte")
 	}
 	gav3 := _gav3
 	if closeErr := readBuffer.CloseContext("gav3"); closeErr != nil {
@@ -155,7 +155,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	}
 	_gav2, _gav2Err := GAVStateParse(readBuffer)
 	if _gav2Err != nil {
-		return nil, errors.Wrap(_gav2Err, "Error parsing 'gav2' field")
+		return nil, errors.Wrap(_gav2Err, "Error parsing 'gav2' field of StatusByte")
 	}
 	gav2 := _gav2
 	if closeErr := readBuffer.CloseContext("gav2"); closeErr != nil {
@@ -168,7 +168,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	}
 	_gav1, _gav1Err := GAVStateParse(readBuffer)
 	if _gav1Err != nil {
-		return nil, errors.Wrap(_gav1Err, "Error parsing 'gav1' field")
+		return nil, errors.Wrap(_gav1Err, "Error parsing 'gav1' field of StatusByte")
 	}
 	gav1 := _gav1
 	if closeErr := readBuffer.CloseContext("gav1"); closeErr != nil {
@@ -181,7 +181,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	}
 	_gav0, _gav0Err := GAVStateParse(readBuffer)
 	if _gav0Err != nil {
-		return nil, errors.Wrap(_gav0Err, "Error parsing 'gav0' field")
+		return nil, errors.Wrap(_gav0Err, "Error parsing 'gav0' field of StatusByte")
 	}
 	gav0 := _gav0
 	if closeErr := readBuffer.CloseContext("gav0"); closeErr != nil {

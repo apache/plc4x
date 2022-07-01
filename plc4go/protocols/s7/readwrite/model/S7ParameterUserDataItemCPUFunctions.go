@@ -223,41 +223,41 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
-		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
+		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of S7ParameterUserDataItemCPUFunctions")
 	}
 
 	// Simple Field (method)
 	_method, _methodErr := readBuffer.ReadUint8("method", 8)
 	if _methodErr != nil {
-		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field")
+		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	method := _method
 
 	// Simple Field (cpuFunctionType)
 	_cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
 	if _cpuFunctionTypeErr != nil {
-		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field")
+		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	cpuFunctionType := _cpuFunctionType
 
 	// Simple Field (cpuFunctionGroup)
 	_cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
 	if _cpuFunctionGroupErr != nil {
-		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field")
+		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	cpuFunctionGroup := _cpuFunctionGroup
 
 	// Simple Field (cpuSubfunction)
 	_cpuSubfunction, _cpuSubfunctionErr := readBuffer.ReadUint8("cpuSubfunction", 8)
 	if _cpuSubfunctionErr != nil {
-		return nil, errors.Wrap(_cpuSubfunctionErr, "Error parsing 'cpuSubfunction' field")
+		return nil, errors.Wrap(_cpuSubfunctionErr, "Error parsing 'cpuSubfunction' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	cpuSubfunction := _cpuSubfunction
 
 	// Simple Field (sequenceNumber)
 	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	sequenceNumber := _sequenceNumber
 
@@ -266,7 +266,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 	if bool((cpuFunctionType) == (8)) {
 		_val, _err := readBuffer.ReadUint8("dataUnitReferenceNumber", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'dataUnitReferenceNumber' field")
+			return nil, errors.Wrap(_err, "Error parsing 'dataUnitReferenceNumber' field of S7ParameterUserDataItemCPUFunctions")
 		}
 		dataUnitReferenceNumber = &_val
 	}
@@ -276,7 +276,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 	if bool((cpuFunctionType) == (8)) {
 		_val, _err := readBuffer.ReadUint8("lastDataUnit", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'lastDataUnit' field")
+			return nil, errors.Wrap(_err, "Error parsing 'lastDataUnit' field of S7ParameterUserDataItemCPUFunctions")
 		}
 		lastDataUnit = &_val
 	}
@@ -286,7 +286,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 	if bool((cpuFunctionType) == (8)) {
 		_val, _err := readBuffer.ReadUint16("errorCode", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
+			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field of S7ParameterUserDataItemCPUFunctions")
 		}
 		errorCode = &_val
 	}

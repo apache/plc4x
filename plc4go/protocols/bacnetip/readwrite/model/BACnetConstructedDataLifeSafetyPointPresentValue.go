@@ -164,7 +164,7 @@ func BACnetConstructedDataLifeSafetyPointPresentValueParse(readBuffer utils.Read
 	}
 	_presentValue, _presentValueErr := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataLifeSafetyPointPresentValue")
 	}
 	presentValue := _presentValue.(BACnetLifeSafetyStateTagged)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

@@ -442,7 +442,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt8 {
 		_val, _err := readBuffer.ReadInt8("valueInt8", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt8' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt8' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt8 = &_val
 	}
@@ -457,7 +457,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt16 {
 		_val, _err := readBuffer.ReadInt16("valueInt16", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt16' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt16' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt16 = &_val
 	}
@@ -472,7 +472,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt24 {
 		_val, _err := readBuffer.ReadInt32("valueInt24", 24)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt24' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt24' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt24 = &_val
 	}
@@ -487,7 +487,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt32 {
 		_val, _err := readBuffer.ReadInt32("valueInt32", 32)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt32' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt32' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt32 = &_val
 	}
@@ -502,7 +502,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt40 {
 		_val, _err := readBuffer.ReadInt64("valueInt40", 40)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt40' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt40' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt40 = &_val
 	}
@@ -517,7 +517,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt48 {
 		_val, _err := readBuffer.ReadInt64("valueInt48", 48)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt48' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt48' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt48 = &_val
 	}
@@ -532,7 +532,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt56 {
 		_val, _err := readBuffer.ReadInt64("valueInt56", 56)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt56' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt56' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt56 = &_val
 	}
@@ -547,7 +547,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if isInt64 {
 		_val, _err := readBuffer.ReadInt64("valueInt64", 64)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt64' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt64' field of BACnetTagPayloadSignedInteger")
 		}
 		valueInt64 = &_val
 	}

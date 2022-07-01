@@ -152,7 +152,7 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 		for positionAware.GetPos() < _tableEndPos {
 			_item, _err := BVLCForeignDeviceTableEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'table' field")
+				return nil, errors.Wrap(_err, "Error parsing 'table' field of BVLCReadForeignDeviceTableAck")
 			}
 			table = append(table, _item.(BVLCForeignDeviceTableEntry))
 		}

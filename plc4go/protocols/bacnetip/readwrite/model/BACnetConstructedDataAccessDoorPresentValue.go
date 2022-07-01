@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffe
 	}
 	_presentValue, _presentValueErr := BACnetDoorValueTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataAccessDoorPresentValue")
 	}
 	presentValue := _presentValue.(BACnetDoorValueTagged)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_dateRange, _dateRangeErr := BACnetDateRangeParse(readBuffer)
 	if _dateRangeErr != nil {
-		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field")
+		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field of BACnetConstructedDataEffectivePeriod")
 	}
 	dateRange := _dateRange.(BACnetDateRange)
 	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {

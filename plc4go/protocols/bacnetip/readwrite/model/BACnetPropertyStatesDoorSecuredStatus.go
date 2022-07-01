@@ -137,7 +137,7 @@ func BACnetPropertyStatesDoorSecuredStatusParse(readBuffer utils.ReadBuffer, pee
 	}
 	_doorSecuredStatus, _doorSecuredStatusErr := BACnetDoorSecuredStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorSecuredStatusErr != nil {
-		return nil, errors.Wrap(_doorSecuredStatusErr, "Error parsing 'doorSecuredStatus' field")
+		return nil, errors.Wrap(_doorSecuredStatusErr, "Error parsing 'doorSecuredStatus' field of BACnetPropertyStatesDoorSecuredStatus")
 	}
 	doorSecuredStatus := _doorSecuredStatus.(BACnetDoorSecuredStatusTagged)
 	if closeErr := readBuffer.CloseContext("doorSecuredStatus"); closeErr != nil {

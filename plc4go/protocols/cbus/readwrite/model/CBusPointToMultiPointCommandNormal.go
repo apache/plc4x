@@ -39,8 +39,6 @@ type CBusPointToMultiPointCommandNormal interface {
 	GetSalData() SALData
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
-	// GetPeekAlpha returns PeekAlpha (property field)
-	GetPeekAlpha() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
 }
@@ -58,7 +56,6 @@ type _CBusPointToMultiPointCommandNormal struct {
 	Application ApplicationIdContainer
 	SalData     SALData
 	Crc         Checksum
-	PeekAlpha   byte
 	Alpha       Alpha
 }
 
@@ -98,10 +95,6 @@ func (m *_CBusPointToMultiPointCommandNormal) GetCrc() Checksum {
 	return m.Crc
 }
 
-func (m *_CBusPointToMultiPointCommandNormal) GetPeekAlpha() byte {
-	return m.PeekAlpha
-}
-
 func (m *_CBusPointToMultiPointCommandNormal) GetAlpha() Alpha {
 	return m.Alpha
 }
@@ -112,12 +105,11 @@ func (m *_CBusPointToMultiPointCommandNormal) GetAlpha() Alpha {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, crc Checksum, peekAlpha byte, alpha Alpha, peekedApplication byte, termination RequestTermination, srchk bool) *_CBusPointToMultiPointCommandNormal {
+func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, crc Checksum, alpha Alpha, peekedApplication byte, termination RequestTermination, srchk bool) *_CBusPointToMultiPointCommandNormal {
 	_result := &_CBusPointToMultiPointCommandNormal{
 		Application:                   application,
 		SalData:                       salData,
 		Crc:                           crc,
-		PeekAlpha:                     peekAlpha,
 		Alpha:                         alpha,
 		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, termination, srchk),
 	}
@@ -188,7 +180,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CBusPointToMultiPointCommandNormal")
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
@@ -199,7 +191,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToMultiPointCommandNormal")
 		}
 		if reserved != byte(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -215,7 +207,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 	}
 	_salData, _salDataErr := SALDataParse(readBuffer)
 	if _salDataErr != nil {
-		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field")
+		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of CBusPointToMultiPointCommandNormal")
 	}
 	salData := _salData.(SALData)
 	if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
@@ -235,7 +227,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
+			return nil, errors.Wrap(_err, "Error parsing 'crc' field of CBusPointToMultiPointCommandNormal")
 		default:
 			crc = _val.(Checksum)
 			if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
@@ -244,18 +236,9 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 		}
 	}
 
-	// Peek Field (peekAlpha)
-	currentPos = positionAware.GetPos()
-	peekAlpha, _err := readBuffer.ReadByte("peekAlpha")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekAlpha' field")
-	}
-
-	readBuffer.Reset(currentPos)
-
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil
-	if bool(bool(bool((peekAlpha) >= (0x67)))) && bool(bool(bool((peekAlpha) <= (0x7A)))) {
+	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
@@ -266,7 +249,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alpha' field")
+			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of CBusPointToMultiPointCommandNormal")
 		default:
 			alpha = _val.(Alpha)
 			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
@@ -284,7 +267,6 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 		Application: application,
 		SalData:     salData,
 		Crc:         crc,
-		PeekAlpha:   peekAlpha,
 		Alpha:       alpha,
 		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
 			Srchk: srchk,

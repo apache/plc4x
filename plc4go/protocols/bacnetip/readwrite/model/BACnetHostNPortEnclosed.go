@@ -135,7 +135,7 @@ func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetHostNPortEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 	_bacnetHostNPort, _bacnetHostNPortErr := BACnetHostNPortParse(readBuffer)
 	if _bacnetHostNPortErr != nil {
-		return nil, errors.Wrap(_bacnetHostNPortErr, "Error parsing 'bacnetHostNPort' field")
+		return nil, errors.Wrap(_bacnetHostNPortErr, "Error parsing 'bacnetHostNPort' field of BACnetHostNPortEnclosed")
 	}
 	bacnetHostNPort := _bacnetHostNPort.(BACnetHostNPort)
 	if closeErr := readBuffer.CloseContext("bacnetHostNPort"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetHostNPortEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

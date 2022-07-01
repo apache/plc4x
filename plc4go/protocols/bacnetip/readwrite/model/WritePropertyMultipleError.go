@@ -150,7 +150,7 @@ func WritePropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorChoice BA
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field")
+		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of WritePropertyMultipleError")
 	}
 	errorType := _errorType.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
@@ -163,7 +163,7 @@ func WritePropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorChoice BA
 	}
 	_firstFailedWriteAttempt, _firstFailedWriteAttemptErr := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _firstFailedWriteAttemptErr != nil {
-		return nil, errors.Wrap(_firstFailedWriteAttemptErr, "Error parsing 'firstFailedWriteAttempt' field")
+		return nil, errors.Wrap(_firstFailedWriteAttemptErr, "Error parsing 'firstFailedWriteAttempt' field of WritePropertyMultipleError")
 	}
 	firstFailedWriteAttempt := _firstFailedWriteAttempt.(BACnetObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("firstFailedWriteAttempt"); closeErr != nil {

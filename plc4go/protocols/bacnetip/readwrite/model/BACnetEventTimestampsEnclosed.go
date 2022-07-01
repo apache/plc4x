@@ -135,7 +135,7 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventTimestampsEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsParse(readBuffer)
 	if _eventTimestampsErr != nil {
-		return nil, errors.Wrap(_eventTimestampsErr, "Error parsing 'eventTimestamps' field")
+		return nil, errors.Wrap(_eventTimestampsErr, "Error parsing 'eventTimestamps' field of BACnetEventTimestampsEnclosed")
 	}
 	eventTimestamps := _eventTimestamps.(BACnetEventTimestamps)
 	if closeErr := readBuffer.CloseContext("eventTimestamps"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventTimestampsEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

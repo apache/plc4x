@@ -137,7 +137,7 @@ func BACnetPropertyStatesLiftGroupModeParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_liftGroupMode, _liftGroupModeErr := BACnetLiftGroupModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftGroupModeErr != nil {
-		return nil, errors.Wrap(_liftGroupModeErr, "Error parsing 'liftGroupMode' field")
+		return nil, errors.Wrap(_liftGroupModeErr, "Error parsing 'liftGroupMode' field of BACnetPropertyStatesLiftGroupMode")
 	}
 	liftGroupMode := _liftGroupMode.(BACnetLiftGroupModeTagged)
 	if closeErr := readBuffer.CloseContext("liftGroupMode"); closeErr != nil {

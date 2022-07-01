@@ -164,7 +164,7 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_outOfService, _outOfServiceErr := BACnetApplicationTagParse(readBuffer)
 	if _outOfServiceErr != nil {
-		return nil, errors.Wrap(_outOfServiceErr, "Error parsing 'outOfService' field")
+		return nil, errors.Wrap(_outOfServiceErr, "Error parsing 'outOfService' field of BACnetConstructedDataOutOfService")
 	}
 	outOfService := _outOfService.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("outOfService"); closeErr != nil {

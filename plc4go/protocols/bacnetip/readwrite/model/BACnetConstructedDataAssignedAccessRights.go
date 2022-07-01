@@ -197,7 +197,7 @@ func BACnetConstructedDataAssignedAccessRightsParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataAssignedAccessRights")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataAssignedAccessRightsParse(readBuffer utils.ReadBuffer,
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAssignedAccessRightsParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'assignedAccessRights' field")
+				return nil, errors.Wrap(_err, "Error parsing 'assignedAccessRights' field of BACnetConstructedDataAssignedAccessRights")
 			}
 			assignedAccessRights = append(assignedAccessRights, _item.(BACnetAssignedAccessRights))
 

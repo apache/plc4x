@@ -269,14 +269,14 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	// Simple Field (segmentedMessage)
 	_segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
 	if _segmentedMessageErr != nil {
-		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field")
+		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field of APDUComplexAck")
 	}
 	segmentedMessage := _segmentedMessage
 
 	// Simple Field (moreFollows)
 	_moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
 	if _moreFollowsErr != nil {
-		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
+		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field of APDUComplexAck")
 	}
 	moreFollows := _moreFollows
 
@@ -284,7 +284,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUComplexAck")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -297,7 +297,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	// Simple Field (originalInvokeId)
 	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUComplexAck")
 	}
 	originalInvokeId := _originalInvokeId
 
@@ -306,7 +306,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	if segmentedMessage {
 		_val, _err := readBuffer.ReadUint8("sequenceNumber", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field")
+			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field of APDUComplexAck")
 		}
 		sequenceNumber = &_val
 	}
@@ -316,7 +316,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	if segmentedMessage {
 		_val, _err := readBuffer.ReadUint8("proposedWindowSize", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field")
+			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field of APDUComplexAck")
 		}
 		proposedWindowSize = &_val
 	}
@@ -339,7 +339,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'serviceAck' field")
+			return nil, errors.Wrap(_err, "Error parsing 'serviceAck' field of APDUComplexAck")
 		default:
 			serviceAck = _val.(BACnetServiceAck)
 			if closeErr := readBuffer.CloseContext("serviceAck"); closeErr != nil {
@@ -358,7 +358,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	if bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))) {
 		_val, _err := readBuffer.ReadUint8("segmentServiceChoice", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field")
+			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUComplexAck")
 		}
 		segmentServiceChoice = &_val
 	}
@@ -373,7 +373,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	}, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	segment, _readArrayErr := readBuffer.ReadByteArray("segment", numberOfBytessegment)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'segment' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'segment' field of APDUComplexAck")
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUComplexAck"); closeErr != nil {

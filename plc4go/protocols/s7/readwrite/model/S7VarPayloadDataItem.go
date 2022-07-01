@@ -144,7 +144,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadDataIte
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7VarPayloadDataItem")
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
@@ -157,7 +157,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadDataIte
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
+		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7VarPayloadDataItem")
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
@@ -168,13 +168,13 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadDataIte
 	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
 	_ = dataLength
 	if _dataLengthErr != nil {
-		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
+		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of S7VarPayloadDataItem")
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(utils.InlineIf(transportSize.SizeInBits(), func() interface{} { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() interface{} { return uint16(dataLength) }).(uint16))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of S7VarPayloadDataItem")
 	}
 
 	// Padding Field (padding)
@@ -187,7 +187,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadDataIte
 			// Just read the padding data and ignore it
 			_, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'padding' field")
+				return nil, errors.Wrap(_err, "Error parsing 'padding' field of S7VarPayloadDataItem")
 			}
 		}
 		if closeErr := readBuffer.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {

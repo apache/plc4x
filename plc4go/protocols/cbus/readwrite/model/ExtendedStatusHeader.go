@@ -114,7 +114,7 @@ func ExtendedStatusHeaderParse(readBuffer utils.ReadBuffer) (ExtendedStatusHeade
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 3)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ExtendedStatusHeader")
 		}
 		if reserved != uint8(0x7) {
 			log.Info().Fields(map[string]interface{}{
@@ -127,7 +127,7 @@ func ExtendedStatusHeaderParse(readBuffer utils.ReadBuffer) (ExtendedStatusHeade
 	// Simple Field (numberOfCharacterPairs)
 	_numberOfCharacterPairs, _numberOfCharacterPairsErr := readBuffer.ReadUint8("numberOfCharacterPairs", 5)
 	if _numberOfCharacterPairsErr != nil {
-		return nil, errors.Wrap(_numberOfCharacterPairsErr, "Error parsing 'numberOfCharacterPairs' field")
+		return nil, errors.Wrap(_numberOfCharacterPairsErr, "Error parsing 'numberOfCharacterPairs' field of ExtendedStatusHeader")
 	}
 	numberOfCharacterPairs := _numberOfCharacterPairs
 

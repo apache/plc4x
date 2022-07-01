@@ -164,7 +164,7 @@ func BACnetConstructedDataDescriptionOfHaltParse(readBuffer utils.ReadBuffer, ta
 	}
 	_descriptionForHalt, _descriptionForHaltErr := BACnetApplicationTagParse(readBuffer)
 	if _descriptionForHaltErr != nil {
-		return nil, errors.Wrap(_descriptionForHaltErr, "Error parsing 'descriptionForHalt' field")
+		return nil, errors.Wrap(_descriptionForHaltErr, "Error parsing 'descriptionForHalt' field of BACnetConstructedDataDescriptionOfHalt")
 	}
 	descriptionForHalt := _descriptionForHalt.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("descriptionForHalt"); closeErr != nil {

@@ -147,7 +147,7 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, packetLen ui
 	}
 	_response, _responseErr := DF1ResponseMessageParse(readBuffer, uint16(packetLen))
 	if _responseErr != nil {
-		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field")
+		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of CIPEncapsulationReadResponse")
 	}
 	response := _response.(DF1ResponseMessage)
 	if closeErr := readBuffer.CloseContext("response"); closeErr != nil {

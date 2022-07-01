@@ -174,7 +174,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	// Const Field (initiator)
 	initiator, _initiatorErr := readBuffer.ReadByte("initiator")
 	if _initiatorErr != nil {
-		return nil, errors.Wrap(_initiatorErr, "Error parsing 'initiator' field")
+		return nil, errors.Wrap(_initiatorErr, "Error parsing 'initiator' field of CBusCommand")
 	}
 	if initiator != CBusCommand_INITIATOR {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CBusCommand_INITIATOR) + " but got " + fmt.Sprintf("%d", initiator))
@@ -186,7 +186,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	}
 	_header, _headerErr := CBusHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of CBusCommand")
 	}
 	header := _header.(CBusHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -225,7 +225,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [destinationAddressType=%v, isDeviceManagement=%v]", destinationAddressType, isDeviceManagement)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusCommand.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusCommand")
 	}
 	_child = _childTemp.(CBusCommandChildSerializeRequirement)
 

@@ -158,21 +158,21 @@ func IdentifyReplyCommandFirmwareSummaryParse(readBuffer utils.ReadBuffer, attri
 	// Simple Field (firmwareVersion)
 	_firmwareVersion, _firmwareVersionErr := readBuffer.ReadString("firmwareVersion", uint32(48))
 	if _firmwareVersionErr != nil {
-		return nil, errors.Wrap(_firmwareVersionErr, "Error parsing 'firmwareVersion' field")
+		return nil, errors.Wrap(_firmwareVersionErr, "Error parsing 'firmwareVersion' field of IdentifyReplyCommandFirmwareSummary")
 	}
 	firmwareVersion := _firmwareVersion
 
 	// Simple Field (unitServiceType)
 	_unitServiceType, _unitServiceTypeErr := readBuffer.ReadByte("unitServiceType")
 	if _unitServiceTypeErr != nil {
-		return nil, errors.Wrap(_unitServiceTypeErr, "Error parsing 'unitServiceType' field")
+		return nil, errors.Wrap(_unitServiceTypeErr, "Error parsing 'unitServiceType' field of IdentifyReplyCommandFirmwareSummary")
 	}
 	unitServiceType := _unitServiceType
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadString("version", uint32(32))
 	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
+		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of IdentifyReplyCommandFirmwareSummary")
 	}
 	version := _version
 

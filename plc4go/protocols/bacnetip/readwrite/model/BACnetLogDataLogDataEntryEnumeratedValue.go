@@ -137,7 +137,7 @@ func BACnetLogDataLogDataEntryEnumeratedValueParse(readBuffer utils.ReadBuffer) 
 	}
 	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_ENUMERATED))
 	if _enumeratedValueErr != nil {
-		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field")
+		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetLogDataLogDataEntryEnumeratedValue")
 	}
 	enumeratedValue := _enumeratedValue.(BACnetContextTagEnumerated)
 	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {

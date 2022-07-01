@@ -164,7 +164,7 @@ func BACnetConstructedDataMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_maxInfoFrames, _maxInfoFramesErr := BACnetApplicationTagParse(readBuffer)
 	if _maxInfoFramesErr != nil {
-		return nil, errors.Wrap(_maxInfoFramesErr, "Error parsing 'maxInfoFrames' field")
+		return nil, errors.Wrap(_maxInfoFramesErr, "Error parsing 'maxInfoFrames' field of BACnetConstructedDataMaxInfoFrames")
 	}
 	maxInfoFrames := _maxInfoFrames.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxInfoFrames"); closeErr != nil {

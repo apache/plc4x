@@ -122,7 +122,7 @@ func BACnetPrescaleParse(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	}
 	_multiplier, _multiplierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _multiplierErr != nil {
-		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field")
+		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field of BACnetPrescale")
 	}
 	multiplier := _multiplier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("multiplier"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetPrescaleParse(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	}
 	_moduloDivide, _moduloDivideErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _moduloDivideErr != nil {
-		return nil, errors.Wrap(_moduloDivideErr, "Error parsing 'moduloDivide' field")
+		return nil, errors.Wrap(_moduloDivideErr, "Error parsing 'moduloDivide' field of BACnetPrescale")
 	}
 	moduloDivide := _moduloDivide.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("moduloDivide"); closeErr != nil {

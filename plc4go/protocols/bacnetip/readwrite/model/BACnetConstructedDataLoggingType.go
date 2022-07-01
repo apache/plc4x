@@ -164,7 +164,7 @@ func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_loggingType, _loggingTypeErr := BACnetLoggingTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _loggingTypeErr != nil {
-		return nil, errors.Wrap(_loggingTypeErr, "Error parsing 'loggingType' field")
+		return nil, errors.Wrap(_loggingTypeErr, "Error parsing 'loggingType' field of BACnetConstructedDataLoggingType")
 	}
 	loggingType := _loggingType.(BACnetLoggingTypeTagged)
 	if closeErr := readBuffer.CloseContext("loggingType"); closeErr != nil {

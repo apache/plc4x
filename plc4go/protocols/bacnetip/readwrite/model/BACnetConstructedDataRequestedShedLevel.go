@@ -164,7 +164,7 @@ func BACnetConstructedDataRequestedShedLevelParse(readBuffer utils.ReadBuffer, t
 	}
 	_requestedShedLevel, _requestedShedLevelErr := BACnetShedLevelParse(readBuffer)
 	if _requestedShedLevelErr != nil {
-		return nil, errors.Wrap(_requestedShedLevelErr, "Error parsing 'requestedShedLevel' field")
+		return nil, errors.Wrap(_requestedShedLevelErr, "Error parsing 'requestedShedLevel' field of BACnetConstructedDataRequestedShedLevel")
 	}
 	requestedShedLevel := _requestedShedLevel.(BACnetShedLevel)
 	if closeErr := readBuffer.CloseContext("requestedShedLevel"); closeErr != nil {

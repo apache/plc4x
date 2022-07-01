@@ -111,7 +111,7 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (S7Address, error) {
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType, _addressTypeErr := readBuffer.ReadUint8("addressType", 8)
 	if _addressTypeErr != nil {
-		return nil, errors.Wrap(_addressTypeErr, "Error parsing 'addressType' field")
+		return nil, errors.Wrap(_addressTypeErr, "Error parsing 'addressType' field of S7Address")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -130,7 +130,7 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (S7Address, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [addressType=%v]", addressType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Address.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Address")
 	}
 	_child = _childTemp.(S7AddressChildSerializeRequirement)
 

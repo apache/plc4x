@@ -164,7 +164,7 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_defaultRampRate, _defaultRampRateErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultRampRateErr != nil {
-		return nil, errors.Wrap(_defaultRampRateErr, "Error parsing 'defaultRampRate' field")
+		return nil, errors.Wrap(_defaultRampRateErr, "Error parsing 'defaultRampRate' field of BACnetConstructedDataDefaultRampRate")
 	}
 	defaultRampRate := _defaultRampRate.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("defaultRampRate"); closeErr != nil {

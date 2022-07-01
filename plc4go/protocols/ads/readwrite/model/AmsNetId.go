@@ -159,42 +159,42 @@ func AmsNetIdParse(readBuffer utils.ReadBuffer) (AmsNetId, error) {
 	// Simple Field (octet1)
 	_octet1, _octet1Err := readBuffer.ReadUint8("octet1", 8)
 	if _octet1Err != nil {
-		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field")
+		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field of AmsNetId")
 	}
 	octet1 := _octet1
 
 	// Simple Field (octet2)
 	_octet2, _octet2Err := readBuffer.ReadUint8("octet2", 8)
 	if _octet2Err != nil {
-		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field")
+		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field of AmsNetId")
 	}
 	octet2 := _octet2
 
 	// Simple Field (octet3)
 	_octet3, _octet3Err := readBuffer.ReadUint8("octet3", 8)
 	if _octet3Err != nil {
-		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field")
+		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field of AmsNetId")
 	}
 	octet3 := _octet3
 
 	// Simple Field (octet4)
 	_octet4, _octet4Err := readBuffer.ReadUint8("octet4", 8)
 	if _octet4Err != nil {
-		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field")
+		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field of AmsNetId")
 	}
 	octet4 := _octet4
 
 	// Simple Field (octet5)
 	_octet5, _octet5Err := readBuffer.ReadUint8("octet5", 8)
 	if _octet5Err != nil {
-		return nil, errors.Wrap(_octet5Err, "Error parsing 'octet5' field")
+		return nil, errors.Wrap(_octet5Err, "Error parsing 'octet5' field of AmsNetId")
 	}
 	octet5 := _octet5
 
 	// Simple Field (octet6)
 	_octet6, _octet6Err := readBuffer.ReadUint8("octet6", 8)
 	if _octet6Err != nil {
-		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field")
+		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field of AmsNetId")
 	}
 	octet6 := _octet6
 

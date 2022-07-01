@@ -164,7 +164,7 @@ func BACnetConstructedDataUserNameParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_userName, _userNameErr := BACnetApplicationTagParse(readBuffer)
 	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field")
+		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of BACnetConstructedDataUserName")
 	}
 	userName := _userName.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {

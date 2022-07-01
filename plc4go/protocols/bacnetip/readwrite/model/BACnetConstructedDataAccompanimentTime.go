@@ -164,7 +164,7 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _accompanimentTimeErr != nil {
-		return nil, errors.Wrap(_accompanimentTimeErr, "Error parsing 'accompanimentTime' field")
+		return nil, errors.Wrap(_accompanimentTimeErr, "Error parsing 'accompanimentTime' field of BACnetConstructedDataAccompanimentTime")
 	}
 	accompanimentTime := _accompanimentTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("accompanimentTime"); closeErr != nil {

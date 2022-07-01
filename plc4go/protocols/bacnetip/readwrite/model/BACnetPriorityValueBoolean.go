@@ -137,7 +137,7 @@ func BACnetPriorityValueBooleanParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	}
 	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
 	if _booleanValueErr != nil {
-		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field")
+		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetPriorityValueBoolean")
 	}
 	booleanValue := _booleanValue.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {

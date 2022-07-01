@@ -224,7 +224,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfTimer")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -237,7 +237,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	_newValue, _newValueErr := BACnetTimerStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _newValueErr != nil {
-		return nil, errors.Wrap(_newValueErr, "Error parsing 'newValue' field")
+		return nil, errors.Wrap(_newValueErr, "Error parsing 'newValue' field of BACnetNotificationParametersChangeOfTimer")
 	}
 	newValue := _newValue.(BACnetTimerStateTagged)
 	if closeErr := readBuffer.CloseContext("newValue"); closeErr != nil {
@@ -250,7 +250,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfTimer")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
@@ -263,7 +263,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	_updateTime, _updateTimeErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _updateTimeErr != nil {
-		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field")
+		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field of BACnetNotificationParametersChangeOfTimer")
 	}
 	updateTime := _updateTime.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("updateTime"); closeErr != nil {
@@ -283,7 +283,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lastStateChange' field")
+			return nil, errors.Wrap(_err, "Error parsing 'lastStateChange' field of BACnetNotificationParametersChangeOfTimer")
 		default:
 			lastStateChange = _val.(BACnetTimerTransitionTagged)
 			if closeErr := readBuffer.CloseContext("lastStateChange"); closeErr != nil {
@@ -305,7 +305,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'initialTimeout' field")
+			return nil, errors.Wrap(_err, "Error parsing 'initialTimeout' field of BACnetNotificationParametersChangeOfTimer")
 		default:
 			initialTimeout = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("initialTimeout"); closeErr != nil {
@@ -327,7 +327,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'expirationTime' field")
+			return nil, errors.Wrap(_err, "Error parsing 'expirationTime' field of BACnetNotificationParametersChangeOfTimer")
 		default:
 			expirationTime = _val.(BACnetDateTimeEnclosed)
 			if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
@@ -342,7 +342,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfTimer")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

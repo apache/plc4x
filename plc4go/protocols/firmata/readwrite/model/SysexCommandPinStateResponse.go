@@ -162,21 +162,21 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
+		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of SysexCommandPinStateResponse")
 	}
 	pin := _pin
 
 	// Simple Field (pinMode)
 	_pinMode, _pinModeErr := readBuffer.ReadUint8("pinMode", 8)
 	if _pinModeErr != nil {
-		return nil, errors.Wrap(_pinModeErr, "Error parsing 'pinMode' field")
+		return nil, errors.Wrap(_pinModeErr, "Error parsing 'pinMode' field of SysexCommandPinStateResponse")
 	}
 	pinMode := _pinMode
 
 	// Simple Field (pinState)
 	_pinState, _pinStateErr := readBuffer.ReadUint8("pinState", 8)
 	if _pinStateErr != nil {
-		return nil, errors.Wrap(_pinStateErr, "Error parsing 'pinState' field")
+		return nil, errors.Wrap(_pinStateErr, "Error parsing 'pinState' field of SysexCommandPinStateResponse")
 	}
 	pinState := _pinState
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataLargeAnalogValueMinPresValueParse(readBuffer utils.Rea
 	}
 	_minPresValue, _minPresValueErr := BACnetApplicationTagParse(readBuffer)
 	if _minPresValueErr != nil {
-		return nil, errors.Wrap(_minPresValueErr, "Error parsing 'minPresValue' field")
+		return nil, errors.Wrap(_minPresValueErr, "Error parsing 'minPresValue' field of BACnetConstructedDataLargeAnalogValueMinPresValue")
 	}
 	minPresValue := _minPresValue.(BACnetApplicationTagDouble)
 	if closeErr := readBuffer.CloseContext("minPresValue"); closeErr != nil {

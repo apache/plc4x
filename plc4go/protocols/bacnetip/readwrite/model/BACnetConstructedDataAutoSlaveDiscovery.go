@@ -164,7 +164,7 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 	}
 	_autoSlaveDiscovery, _autoSlaveDiscoveryErr := BACnetApplicationTagParse(readBuffer)
 	if _autoSlaveDiscoveryErr != nil {
-		return nil, errors.Wrap(_autoSlaveDiscoveryErr, "Error parsing 'autoSlaveDiscovery' field")
+		return nil, errors.Wrap(_autoSlaveDiscoveryErr, "Error parsing 'autoSlaveDiscovery' field of BACnetConstructedDataAutoSlaveDiscovery")
 	}
 	autoSlaveDiscovery := _autoSlaveDiscovery.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("autoSlaveDiscovery"); closeErr != nil {

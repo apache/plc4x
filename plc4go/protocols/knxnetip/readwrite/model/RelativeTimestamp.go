@@ -109,7 +109,7 @@ func RelativeTimestampParse(readBuffer utils.ReadBuffer) (RelativeTimestamp, err
 	// Simple Field (timestamp)
 	_timestamp, _timestampErr := readBuffer.ReadUint16("timestamp", 16)
 	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of RelativeTimestamp")
 	}
 	timestamp := _timestamp
 

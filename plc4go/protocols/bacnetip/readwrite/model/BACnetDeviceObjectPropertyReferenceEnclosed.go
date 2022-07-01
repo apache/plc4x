@@ -135,7 +135,7 @@ func BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffe
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetDeviceObjectPropertyReferenceEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffe
 	}
 	_value, _valueErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDeviceObjectPropertyReferenceEnclosed")
 	}
 	value := _value.(BACnetDeviceObjectPropertyReference)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffe
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetDeviceObjectPropertyReferenceEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

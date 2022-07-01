@@ -109,9 +109,14 @@ func AlphaParse(readBuffer utils.ReadBuffer) (Alpha, error) {
 	// Simple Field (character)
 	_character, _characterErr := readBuffer.ReadByte("character")
 	if _characterErr != nil {
-		return nil, errors.Wrap(_characterErr, "Error parsing 'character' field")
+		return nil, errors.Wrap(_characterErr, "Error parsing 'character' field of Alpha")
 	}
 	character := _character
+
+	// Validation
+	if !(bool(bool(bool((character) >= (0x67)))) && bool(bool(bool((character) <= (0x7A))))) {
+		return nil, errors.WithStack(utils.ParseAssertError{"character not in alpha space"})
+	}
 
 	if closeErr := readBuffer.CloseContext("Alpha"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Alpha")

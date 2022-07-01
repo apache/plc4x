@@ -35,6 +35,8 @@ type RequestDirectCommandAccess interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
+	// GetCbusCommand returns CbusCommand (property field)
+	GetCbusCommand() CBusPointToPointCommand
 	// GetTermination returns Termination (property field)
 	GetTermination() RequestTermination
 }
@@ -49,6 +51,7 @@ type RequestDirectCommandAccessExactly interface {
 // _RequestDirectCommandAccess is the data-structure of this message
 type _RequestDirectCommandAccess struct {
 	*_Request
+	CbusCommand CBusPointToPointCommand
 	Termination RequestTermination
 }
 
@@ -75,6 +78,10 @@ func (m *_RequestDirectCommandAccess) GetParent() Request {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
+func (m *_RequestDirectCommandAccess) GetCbusCommand() CBusPointToPointCommand {
+	return m.CbusCommand
+}
+
 func (m *_RequestDirectCommandAccess) GetTermination() RequestTermination {
 	return m.Termination
 }
@@ -98,8 +105,9 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(termination RequestTermination, peekedByte byte, srchk bool) *_RequestDirectCommandAccess {
+func NewRequestDirectCommandAccess(cbusCommand CBusPointToPointCommand, termination RequestTermination, peekedByte byte, srchk bool) *_RequestDirectCommandAccess {
 	_result := &_RequestDirectCommandAccess{
+		CbusCommand: cbusCommand,
 		Termination: termination,
 		_Request:    NewRequest(peekedByte, srchk),
 	}
@@ -132,6 +140,9 @@ func (m *_RequestDirectCommandAccess) GetLengthInBitsConditional(lastItem bool) 
 	// Const Field (at)
 	lengthInBits += 8
 
+	// Simple field (cbusCommand)
+	lengthInBits += m.CbusCommand.GetLengthInBits()
+
 	// Simple field (termination)
 	lengthInBits += m.Termination.GetLengthInBits()
 
@@ -154,10 +165,23 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, srchk bool) (R
 	// Const Field (at)
 	at, _atErr := readBuffer.ReadByte("at")
 	if _atErr != nil {
-		return nil, errors.Wrap(_atErr, "Error parsing 'at' field")
+		return nil, errors.Wrap(_atErr, "Error parsing 'at' field of RequestDirectCommandAccess")
 	}
 	if at != RequestDirectCommandAccess_AT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestDirectCommandAccess_AT) + " but got " + fmt.Sprintf("%d", at))
+	}
+
+	// Simple Field (cbusCommand)
+	if pullErr := readBuffer.PullContext("cbusCommand"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for cbusCommand")
+	}
+	_cbusCommand, _cbusCommandErr := CBusPointToPointCommandParse(readBuffer, bool(srchk))
+	if _cbusCommandErr != nil {
+		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestDirectCommandAccess")
+	}
+	cbusCommand := _cbusCommand.(CBusPointToPointCommand)
+	if closeErr := readBuffer.CloseContext("cbusCommand"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for cbusCommand")
 	}
 
 	// Simple Field (termination)
@@ -166,7 +190,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, srchk bool) (R
 	}
 	_termination, _terminationErr := RequestTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of RequestDirectCommandAccess")
 	}
 	termination := _termination.(RequestTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
@@ -179,6 +203,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, srchk bool) (R
 
 	// Create a partially initialized instance
 	_child := &_RequestDirectCommandAccess{
+		CbusCommand: cbusCommand,
 		Termination: termination,
 		_Request: &_Request{
 			Srchk: srchk,
@@ -200,6 +225,18 @@ func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) e
 		_atErr := writeBuffer.WriteByte("at", 0x40)
 		if _atErr != nil {
 			return errors.Wrap(_atErr, "Error serializing 'at' field")
+		}
+
+		// Simple Field (cbusCommand)
+		if pushErr := writeBuffer.PushContext("cbusCommand"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for cbusCommand")
+		}
+		_cbusCommandErr := writeBuffer.WriteSerializable(m.GetCbusCommand())
+		if popErr := writeBuffer.PopContext("cbusCommand"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for cbusCommand")
+		}
+		if _cbusCommandErr != nil {
+			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
 		}
 
 		// Simple Field (termination)

@@ -171,14 +171,14 @@ func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, respon
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
-		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
+		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field of ModbusPDUWriteMultipleCoilsRequest")
 	}
 	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
 	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
-		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
+		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field of ModbusPDUWriteMultipleCoilsRequest")
 	}
 	quantity := _quantity
 
@@ -186,13 +186,13 @@ func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, respon
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUWriteMultipleCoilsRequest")
 	}
 	// Byte Array field (value)
 	numberOfBytesvalue := int(byteCount)
 	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field of ModbusPDUWriteMultipleCoilsRequest")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteMultipleCoilsRequest"); closeErr != nil {

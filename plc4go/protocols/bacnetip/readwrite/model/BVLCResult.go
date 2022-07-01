@@ -139,7 +139,7 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	}
 	_code, _codeErr := BVLCResultCodeParse(readBuffer)
 	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field")
+		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of BVLCResult")
 	}
 	code := _code
 	if closeErr := readBuffer.CloseContext("code"); closeErr != nil {

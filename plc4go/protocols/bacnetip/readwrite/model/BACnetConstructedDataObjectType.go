@@ -164,7 +164,7 @@ func BACnetConstructedDataObjectTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_objectType, _objectTypeErr := BACnetObjectTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _objectTypeErr != nil {
-		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
+		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field of BACnetConstructedDataObjectType")
 	}
 	objectType := _objectType.(BACnetObjectTypeTagged)
 	if closeErr := readBuffer.CloseContext("objectType"); closeErr != nil {

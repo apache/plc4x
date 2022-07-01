@@ -164,7 +164,7 @@ func BACnetConstructedDataScaleFactorParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_scaleFactor, _scaleFactorErr := BACnetApplicationTagParse(readBuffer)
 	if _scaleFactorErr != nil {
-		return nil, errors.Wrap(_scaleFactorErr, "Error parsing 'scaleFactor' field")
+		return nil, errors.Wrap(_scaleFactorErr, "Error parsing 'scaleFactor' field of BACnetConstructedDataScaleFactor")
 	}
 	scaleFactor := _scaleFactor.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("scaleFactor"); closeErr != nil {

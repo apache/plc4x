@@ -164,7 +164,7 @@ func BACnetConstructedDataUpdateTimeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_updateTime, _updateTimeErr := BACnetDateTimeParse(readBuffer)
 	if _updateTimeErr != nil {
-		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field")
+		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field of BACnetConstructedDataUpdateTime")
 	}
 	updateTime := _updateTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("updateTime"); closeErr != nil {

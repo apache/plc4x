@@ -111,7 +111,7 @@ func MACAddressParse(readBuffer utils.ReadBuffer) (MACAddress, error) {
 	numberOfBytesaddr := int(uint16(6))
 	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytesaddr)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'addr' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'addr' field of MACAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("MACAddress"); closeErr != nil {

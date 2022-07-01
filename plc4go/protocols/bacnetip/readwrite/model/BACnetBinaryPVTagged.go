@@ -126,7 +126,7 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetBinaryPVTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetBinaryPVTagged")
 	}
 	value := _value.(BACnetBinaryPV)
 

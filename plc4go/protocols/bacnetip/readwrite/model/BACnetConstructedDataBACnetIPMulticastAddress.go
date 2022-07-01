@@ -164,7 +164,7 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 	}
 	_ipMulticastAddress, _ipMulticastAddressErr := BACnetApplicationTagParse(readBuffer)
 	if _ipMulticastAddressErr != nil {
-		return nil, errors.Wrap(_ipMulticastAddressErr, "Error parsing 'ipMulticastAddress' field")
+		return nil, errors.Wrap(_ipMulticastAddressErr, "Error parsing 'ipMulticastAddress' field of BACnetConstructedDataBACnetIPMulticastAddress")
 	}
 	ipMulticastAddress := _ipMulticastAddress.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipMulticastAddress"); closeErr != nil {

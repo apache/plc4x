@@ -109,7 +109,7 @@ func BACnetTagPayloadRealParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadRea
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadFloat32("value", 32)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadReal")
 	}
 	value := _value
 

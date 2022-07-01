@@ -164,7 +164,7 @@ func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_lastStateChange, _lastStateChangeErr := BACnetTimerTransitionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastStateChangeErr != nil {
-		return nil, errors.Wrap(_lastStateChangeErr, "Error parsing 'lastStateChange' field")
+		return nil, errors.Wrap(_lastStateChangeErr, "Error parsing 'lastStateChange' field of BACnetConstructedDataLastStateChange")
 	}
 	lastStateChange := _lastStateChange.(BACnetTimerTransitionTagged)
 	if closeErr := readBuffer.CloseContext("lastStateChange"); closeErr != nil {

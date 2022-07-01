@@ -183,34 +183,34 @@ func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response 
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUGetComEventLogResponse")
 	}
 
 	// Simple Field (status)
 	_status, _statusErr := readBuffer.ReadUint16("status", 16)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ModbusPDUGetComEventLogResponse")
 	}
 	status := _status
 
 	// Simple Field (eventCount)
 	_eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
-		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
+		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field of ModbusPDUGetComEventLogResponse")
 	}
 	eventCount := _eventCount
 
 	// Simple Field (messageCount)
 	_messageCount, _messageCountErr := readBuffer.ReadUint16("messageCount", 16)
 	if _messageCountErr != nil {
-		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field")
+		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field of ModbusPDUGetComEventLogResponse")
 	}
 	messageCount := _messageCount
 	// Byte Array field (events)
 	numberOfBytesevents := int(uint16(byteCount) - uint16(uint16(6)))
 	events, _readArrayErr := readBuffer.ReadByteArray("events", numberOfBytesevents)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'events' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'events' field of ModbusPDUGetComEventLogResponse")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventLogResponse"); closeErr != nil {

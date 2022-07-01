@@ -164,7 +164,7 @@ func BACnetConstructedDataLargeAnalogValueFaultLowLimitParse(readBuffer utils.Re
 	}
 	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _faultLowLimitErr != nil {
-		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field")
+		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field of BACnetConstructedDataLargeAnalogValueFaultLowLimit")
 	}
 	faultLowLimit := _faultLowLimit.(BACnetApplicationTagDouble)
 	if closeErr := readBuffer.CloseContext("faultLowLimit"); closeErr != nil {

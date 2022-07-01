@@ -164,7 +164,7 @@ func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_blinkWarnEnable, _blinkWarnEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _blinkWarnEnableErr != nil {
-		return nil, errors.Wrap(_blinkWarnEnableErr, "Error parsing 'blinkWarnEnable' field")
+		return nil, errors.Wrap(_blinkWarnEnableErr, "Error parsing 'blinkWarnEnable' field of BACnetConstructedDataBlinkWarnEnable")
 	}
 	blinkWarnEnable := _blinkWarnEnable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("blinkWarnEnable"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBu
 	}
 	_covResubscriptionInterval, _covResubscriptionIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _covResubscriptionIntervalErr != nil {
-		return nil, errors.Wrap(_covResubscriptionIntervalErr, "Error parsing 'covResubscriptionInterval' field")
+		return nil, errors.Wrap(_covResubscriptionIntervalErr, "Error parsing 'covResubscriptionInterval' field of BACnetConstructedDataCOVResubscriptionInterval")
 	}
 	covResubscriptionInterval := _covResubscriptionInterval.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("covResubscriptionInterval"); closeErr != nil {

@@ -137,7 +137,7 @@ func BACnetPropertyStatesZoneOccupanyStateParse(readBuffer utils.ReadBuffer, pee
 	}
 	_zoneOccupanyState, _zoneOccupanyStateErr := BACnetAccessZoneOccupancyStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _zoneOccupanyStateErr != nil {
-		return nil, errors.Wrap(_zoneOccupanyStateErr, "Error parsing 'zoneOccupanyState' field")
+		return nil, errors.Wrap(_zoneOccupanyStateErr, "Error parsing 'zoneOccupanyState' field of BACnetPropertyStatesZoneOccupanyState")
 	}
 	zoneOccupanyState := _zoneOccupanyState.(BACnetAccessZoneOccupancyStateTagged)
 	if closeErr := readBuffer.CloseContext("zoneOccupanyState"); closeErr != nil {

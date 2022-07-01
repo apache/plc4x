@@ -161,7 +161,7 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, err
 	}
 	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiDiscoveryEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field")
+		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field of ConnectionRequest")
 	}
 	hpaiDiscoveryEndpoint := _hpaiDiscoveryEndpoint.(HPAIDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDiscoveryEndpoint"); closeErr != nil {
@@ -174,7 +174,7 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, err
 	}
 	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(readBuffer)
 	if _hpaiDataEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field")
+		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field of ConnectionRequest")
 	}
 	hpaiDataEndpoint := _hpaiDataEndpoint.(HPAIDataEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
@@ -187,7 +187,7 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, err
 	}
 	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(readBuffer)
 	if _connectionRequestInformationErr != nil {
-		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
+		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field of ConnectionRequest")
 	}
 	connectionRequestInformation := _connectionRequestInformation.(ConnectionRequestInformation)
 	if closeErr := readBuffer.CloseContext("connectionRequestInformation"); closeErr != nil {

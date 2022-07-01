@@ -139,7 +139,7 @@ func BACnetUnconfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, se
 	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of BACnetUnconfirmedServiceRequestUnknown")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestUnknown"); closeErr != nil {

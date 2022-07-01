@@ -155,7 +155,7 @@ func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer,
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetEventNotificationSubscriptionParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'subscribedRecipients' field")
+				return nil, errors.Wrap(_err, "Error parsing 'subscribedRecipients' field of BACnetConstructedDataSubscribedRecipients")
 			}
 			subscribedRecipients = append(subscribedRecipients, _item.(BACnetEventNotificationSubscription))
 

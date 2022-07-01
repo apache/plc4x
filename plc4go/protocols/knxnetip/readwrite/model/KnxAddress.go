@@ -129,21 +129,21 @@ func KnxAddressParse(readBuffer utils.ReadBuffer) (KnxAddress, error) {
 	// Simple Field (mainGroup)
 	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 4)
 	if _mainGroupErr != nil {
-		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
+		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field of KnxAddress")
 	}
 	mainGroup := _mainGroup
 
 	// Simple Field (middleGroup)
 	_middleGroup, _middleGroupErr := readBuffer.ReadUint8("middleGroup", 4)
 	if _middleGroupErr != nil {
-		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
+		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field of KnxAddress")
 	}
 	middleGroup := _middleGroup
 
 	// Simple Field (subGroup)
 	_subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
-		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
+		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field of KnxAddress")
 	}
 	subGroup := _subGroup
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataNumberOfStatesParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_numberOfState, _numberOfStateErr := BACnetApplicationTagParse(readBuffer)
 	if _numberOfStateErr != nil {
-		return nil, errors.Wrap(_numberOfStateErr, "Error parsing 'numberOfState' field")
+		return nil, errors.Wrap(_numberOfStateErr, "Error parsing 'numberOfState' field of BACnetConstructedDataNumberOfStates")
 	}
 	numberOfState := _numberOfState.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("numberOfState"); closeErr != nil {

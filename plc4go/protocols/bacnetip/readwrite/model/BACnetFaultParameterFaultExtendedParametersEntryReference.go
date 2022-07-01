@@ -137,7 +137,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(readBuffer u
 	}
 	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _referenceErr != nil {
-		return nil, errors.Wrap(_referenceErr, "Error parsing 'reference' field")
+		return nil, errors.Wrap(_referenceErr, "Error parsing 'reference' field of BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}
 	reference := _reference.(BACnetDeviceObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {

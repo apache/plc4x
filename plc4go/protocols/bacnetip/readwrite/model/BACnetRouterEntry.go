@@ -146,7 +146,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 	}
 	_networkNumber, _networkNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field")
+		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetRouterEntry")
 	}
 	networkNumber := _networkNumber.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
@@ -159,7 +159,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 	}
 	_macAddress, _macAddressErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _macAddressErr != nil {
-		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field")
+		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetRouterEntry")
 	}
 	macAddress := _macAddress.(BACnetContextTagOctetString)
 	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {
@@ -172,7 +172,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 	}
 	_status, _statusErr := BACnetRouterEntryStatusTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of BACnetRouterEntry")
 	}
 	status := _status.(BACnetRouterEntryStatusTagged)
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
@@ -192,7 +192,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'performanceIndex' field")
+			return nil, errors.Wrap(_err, "Error parsing 'performanceIndex' field of BACnetRouterEntry")
 		default:
 			performanceIndex = _val.(BACnetContextTagOctetString)
 			if closeErr := readBuffer.CloseContext("performanceIndex"); closeErr != nil {

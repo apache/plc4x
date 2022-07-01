@@ -123,7 +123,7 @@ func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointRe
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'setPointReference' field")
+			return nil, errors.Wrap(_err, "Error parsing 'setPointReference' field of BACnetSetpointReference")
 		default:
 			setPointReference = _val.(BACnetObjectPropertyReferenceEnclosed)
 			if closeErr := readBuffer.CloseContext("setPointReference"); closeErr != nil {

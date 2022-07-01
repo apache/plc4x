@@ -164,7 +164,7 @@ func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_setpoint, _setpointErr := BACnetApplicationTagParse(readBuffer)
 	if _setpointErr != nil {
-		return nil, errors.Wrap(_setpointErr, "Error parsing 'setpoint' field")
+		return nil, errors.Wrap(_setpointErr, "Error parsing 'setpoint' field of BACnetConstructedDataSetpoint")
 	}
 	setpoint := _setpoint.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("setpoint"); closeErr != nil {

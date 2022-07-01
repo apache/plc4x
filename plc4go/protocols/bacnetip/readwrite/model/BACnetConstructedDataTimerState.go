@@ -164,7 +164,7 @@ func BACnetConstructedDataTimerStateParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_timerState, _timerStateErr := BACnetTimerStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _timerStateErr != nil {
-		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field")
+		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field of BACnetConstructedDataTimerState")
 	}
 	timerState := _timerState.(BACnetTimerStateTagged)
 	if closeErr := readBuffer.CloseContext("timerState"); closeErr != nil {

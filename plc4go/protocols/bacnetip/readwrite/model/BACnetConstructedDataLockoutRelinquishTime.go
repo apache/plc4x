@@ -164,7 +164,7 @@ func BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer utils.ReadBuffer
 	}
 	_lockoutRelinquishTime, _lockoutRelinquishTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _lockoutRelinquishTimeErr != nil {
-		return nil, errors.Wrap(_lockoutRelinquishTimeErr, "Error parsing 'lockoutRelinquishTime' field")
+		return nil, errors.Wrap(_lockoutRelinquishTimeErr, "Error parsing 'lockoutRelinquishTime' field of BACnetConstructedDataLockoutRelinquishTime")
 	}
 	lockoutRelinquishTime := _lockoutRelinquishTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("lockoutRelinquishTime"); closeErr != nil {

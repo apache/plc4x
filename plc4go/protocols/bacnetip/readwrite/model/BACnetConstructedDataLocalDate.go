@@ -164,7 +164,7 @@ func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_localDate, _localDateErr := BACnetApplicationTagParse(readBuffer)
 	if _localDateErr != nil {
-		return nil, errors.Wrap(_localDateErr, "Error parsing 'localDate' field")
+		return nil, errors.Wrap(_localDateErr, "Error parsing 'localDate' field of BACnetConstructedDataLocalDate")
 	}
 	localDate := _localDate.(BACnetApplicationTagDate)
 	if closeErr := readBuffer.CloseContext("localDate"); closeErr != nil {

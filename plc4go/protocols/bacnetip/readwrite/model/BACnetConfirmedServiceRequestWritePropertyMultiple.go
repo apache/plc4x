@@ -153,7 +153,7 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 		for positionAware.GetPos() < _dataEndPos {
 			_item, _err := BACnetWriteAccessSpecificationParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetConfirmedServiceRequestWritePropertyMultiple")
 			}
 			data = append(data, _item.(BACnetWriteAccessSpecification))
 		}

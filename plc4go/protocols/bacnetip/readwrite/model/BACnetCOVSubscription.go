@@ -156,7 +156,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	}
 	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field")
+		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetCOVSubscription")
 	}
 	recipient := _recipient.(BACnetRecipientProcessEnclosed)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
@@ -169,7 +169,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	}
 	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _monitoredPropertyReferenceErr != nil {
-		return nil, errors.Wrap(_monitoredPropertyReferenceErr, "Error parsing 'monitoredPropertyReference' field")
+		return nil, errors.Wrap(_monitoredPropertyReferenceErr, "Error parsing 'monitoredPropertyReference' field of BACnetCOVSubscription")
 	}
 	monitoredPropertyReference := _monitoredPropertyReference.(BACnetObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("monitoredPropertyReference"); closeErr != nil {
@@ -182,7 +182,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	}
 	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _issueConfirmedNotificationsErr != nil {
-		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field")
+		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetCOVSubscription")
 	}
 	issueConfirmedNotifications := _issueConfirmedNotifications.(BACnetContextTagBoolean)
 	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
@@ -195,7 +195,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	}
 	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field")
+		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetCOVSubscription")
 	}
 	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
@@ -215,7 +215,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field")
+			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetCOVSubscription")
 		default:
 			covIncrement = _val.(BACnetContextTagReal)
 			if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {

@@ -137,7 +137,7 @@ func BACnetPropertyStatesExtendedValueParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_extendedValue, _extendedValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _extendedValueErr != nil {
-		return nil, errors.Wrap(_extendedValueErr, "Error parsing 'extendedValue' field")
+		return nil, errors.Wrap(_extendedValueErr, "Error parsing 'extendedValue' field of BACnetPropertyStatesExtendedValue")
 	}
 	extendedValue := _extendedValue.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("extendedValue"); closeErr != nil {

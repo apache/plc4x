@@ -155,7 +155,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	}
 	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reinitializedStateOfDeviceErr != nil {
-		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field")
+		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field of BACnetConfirmedServiceRequestReinitializeDevice")
 	}
 	reinitializedStateOfDevice := _reinitializedStateOfDevice.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged)
 	if closeErr := readBuffer.CloseContext("reinitializedStateOfDevice"); closeErr != nil {
@@ -175,7 +175,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'password' field")
+			return nil, errors.Wrap(_err, "Error parsing 'password' field of BACnetConfirmedServiceRequestReinitializeDevice")
 		default:
 			password = _val.(BACnetContextTagCharacterString)
 			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {

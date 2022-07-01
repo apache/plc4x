@@ -164,7 +164,7 @@ func BACnetConstructedDataProtocolLevelParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _protocolLevelErr != nil {
-		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field")
+		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field of BACnetConstructedDataProtocolLevel")
 	}
 	protocolLevel := _protocolLevel.(BACnetProtocolLevelTagged)
 	if closeErr := readBuffer.CloseContext("protocolLevel"); closeErr != nil {

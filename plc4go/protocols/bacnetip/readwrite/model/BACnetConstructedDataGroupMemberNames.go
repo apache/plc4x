@@ -197,7 +197,7 @@ func BACnetConstructedDataGroupMemberNamesParse(readBuffer utils.ReadBuffer, tag
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataGroupMemberNames")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataGroupMemberNamesParse(readBuffer utils.ReadBuffer, tag
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'groupMemberNames' field")
+				return nil, errors.Wrap(_err, "Error parsing 'groupMemberNames' field of BACnetConstructedDataGroupMemberNames")
 			}
 			groupMemberNames = append(groupMemberNames, _item.(BACnetApplicationTagCharacterString))
 

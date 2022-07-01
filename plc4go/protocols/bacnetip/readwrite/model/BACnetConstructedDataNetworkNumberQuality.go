@@ -164,7 +164,7 @@ func BACnetConstructedDataNetworkNumberQualityParse(readBuffer utils.ReadBuffer,
 	}
 	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _networkNumberQualityErr != nil {
-		return nil, errors.Wrap(_networkNumberQualityErr, "Error parsing 'networkNumberQuality' field")
+		return nil, errors.Wrap(_networkNumberQualityErr, "Error parsing 'networkNumberQuality' field of BACnetConstructedDataNetworkNumberQuality")
 	}
 	networkNumberQuality := _networkNumberQuality.(BACnetNetworkNumberQualityTagged)
 	if closeErr := readBuffer.CloseContext("networkNumberQuality"); closeErr != nil {

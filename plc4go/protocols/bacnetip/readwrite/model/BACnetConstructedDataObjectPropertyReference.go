@@ -164,7 +164,7 @@ func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuff
 	}
 	_propertyReference, _propertyReferenceErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
 	if _propertyReferenceErr != nil {
-		return nil, errors.Wrap(_propertyReferenceErr, "Error parsing 'propertyReference' field")
+		return nil, errors.Wrap(_propertyReferenceErr, "Error parsing 'propertyReference' field of BACnetConstructedDataObjectPropertyReference")
 	}
 	propertyReference := _propertyReference.(BACnetDeviceObjectPropertyReference)
 	if closeErr := readBuffer.CloseContext("propertyReference"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataBackupFailureTimeoutParse(readBuffer utils.ReadBuffer,
 	}
 	_backupFailureTimeout, _backupFailureTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _backupFailureTimeoutErr != nil {
-		return nil, errors.Wrap(_backupFailureTimeoutErr, "Error parsing 'backupFailureTimeout' field")
+		return nil, errors.Wrap(_backupFailureTimeoutErr, "Error parsing 'backupFailureTimeout' field of BACnetConstructedDataBackupFailureTimeout")
 	}
 	backupFailureTimeout := _backupFailureTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("backupFailureTimeout"); closeErr != nil {

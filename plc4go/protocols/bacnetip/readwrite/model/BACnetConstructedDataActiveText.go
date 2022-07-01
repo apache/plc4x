@@ -164,7 +164,7 @@ func BACnetConstructedDataActiveTextParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_activeText, _activeTextErr := BACnetApplicationTagParse(readBuffer)
 	if _activeTextErr != nil {
-		return nil, errors.Wrap(_activeTextErr, "Error parsing 'activeText' field")
+		return nil, errors.Wrap(_activeTextErr, "Error parsing 'activeText' field of BACnetConstructedDataActiveText")
 	}
 	activeText := _activeText.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("activeText"); closeErr != nil {

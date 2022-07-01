@@ -164,7 +164,7 @@ func BACnetConstructedDataChannelNumberParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_channelNumber, _channelNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _channelNumberErr != nil {
-		return nil, errors.Wrap(_channelNumberErr, "Error parsing 'channelNumber' field")
+		return nil, errors.Wrap(_channelNumberErr, "Error parsing 'channelNumber' field of BACnetConstructedDataChannelNumber")
 	}
 	channelNumber := _channelNumber.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("channelNumber"); closeErr != nil {

@@ -160,20 +160,20 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRea
 	// Simple Field (requestPathSize)
 	_requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
 	if _requestPathSizeErr != nil {
-		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field")
+		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipReadRequest")
 	}
 	requestPathSize := _requestPathSize
 	// Byte Array field (tag)
 	numberOfBytestag := int(uint16(uint16(requestPathSize) * uint16(uint16(2))))
 	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field of CipReadRequest")
 	}
 
 	// Simple Field (elementNb)
 	_elementNb, _elementNbErr := readBuffer.ReadUint16("elementNb", 16)
 	if _elementNbErr != nil {
-		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field")
+		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field of CipReadRequest")
 	}
 	elementNb := _elementNb
 

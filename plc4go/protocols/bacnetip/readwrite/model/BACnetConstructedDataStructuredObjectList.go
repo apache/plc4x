@@ -197,7 +197,7 @@ func BACnetConstructedDataStructuredObjectListParse(readBuffer utils.ReadBuffer,
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataStructuredObjectList")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataStructuredObjectListParse(readBuffer utils.ReadBuffer,
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'structuredObjectList' field")
+				return nil, errors.Wrap(_err, "Error parsing 'structuredObjectList' field of BACnetConstructedDataStructuredObjectList")
 			}
 			structuredObjectList = append(structuredObjectList, _item.(BACnetApplicationTagObjectIdentifier))
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.Rea
 	}
 	_reliabilityEvaluationInhibit, _reliabilityEvaluationInhibitErr := BACnetApplicationTagParse(readBuffer)
 	if _reliabilityEvaluationInhibitErr != nil {
-		return nil, errors.Wrap(_reliabilityEvaluationInhibitErr, "Error parsing 'reliabilityEvaluationInhibit' field")
+		return nil, errors.Wrap(_reliabilityEvaluationInhibitErr, "Error parsing 'reliabilityEvaluationInhibit' field of BACnetConstructedDataReliabilityEvaluationInhibit")
 	}
 	reliabilityEvaluationInhibit := _reliabilityEvaluationInhibit.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("reliabilityEvaluationInhibit"); closeErr != nil {

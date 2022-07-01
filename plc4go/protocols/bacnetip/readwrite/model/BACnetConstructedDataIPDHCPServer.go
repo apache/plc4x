@@ -164,7 +164,7 @@ func BACnetConstructedDataIPDHCPServerParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParse(readBuffer)
 	if _dhcpServerErr != nil {
-		return nil, errors.Wrap(_dhcpServerErr, "Error parsing 'dhcpServer' field")
+		return nil, errors.Wrap(_dhcpServerErr, "Error parsing 'dhcpServer' field of BACnetConstructedDataIPDHCPServer")
 	}
 	dhcpServer := _dhcpServer.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("dhcpServer"); closeErr != nil {

@@ -136,7 +136,7 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	// Simple Field (unusedBits)
 	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
 	if _unusedBitsErr != nil {
-		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field")
+		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field of BACnetTagPayloadBitString")
 	}
 	unusedBits := _unusedBits
 
@@ -154,7 +154,7 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 		for curItem := uint16(0); curItem < uint16(uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
 			_item, _err := readBuffer.ReadBit("")
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetTagPayloadBitString")
 			}
 			data[curItem] = _item
 		}
@@ -177,7 +177,7 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 		for curItem := uint16(0); curItem < uint16(unusedBits); curItem++ {
 			_item, _err := readBuffer.ReadBit("")
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'unused' field")
+				return nil, errors.Wrap(_err, "Error parsing 'unused' field of BACnetTagPayloadBitString")
 			}
 			unused[curItem] = _item
 		}

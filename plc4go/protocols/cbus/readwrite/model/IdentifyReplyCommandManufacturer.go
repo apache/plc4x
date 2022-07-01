@@ -136,7 +136,7 @@ func IdentifyReplyCommandManufacturerParse(readBuffer utils.ReadBuffer, attribut
 	// Simple Field (manufacturerName)
 	_manufacturerName, _manufacturerNameErr := readBuffer.ReadString("manufacturerName", uint32(64))
 	if _manufacturerNameErr != nil {
-		return nil, errors.Wrap(_manufacturerNameErr, "Error parsing 'manufacturerName' field")
+		return nil, errors.Wrap(_manufacturerNameErr, "Error parsing 'manufacturerName' field of IdentifyReplyCommandManufacturer")
 	}
 	manufacturerName := _manufacturerName
 

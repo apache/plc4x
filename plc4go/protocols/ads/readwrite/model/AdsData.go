@@ -163,7 +163,7 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandId=%v, response=%v]", commandId, response)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AdsData.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AdsData")
 	}
 	_child = _childTemp.(AdsDataChildSerializeRequirement)
 

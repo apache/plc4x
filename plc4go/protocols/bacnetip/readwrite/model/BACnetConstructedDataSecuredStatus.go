@@ -164,7 +164,7 @@ func BACnetConstructedDataSecuredStatusParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_securedStatus, _securedStatusErr := BACnetDoorSecuredStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _securedStatusErr != nil {
-		return nil, errors.Wrap(_securedStatusErr, "Error parsing 'securedStatus' field")
+		return nil, errors.Wrap(_securedStatusErr, "Error parsing 'securedStatus' field of BACnetConstructedDataSecuredStatus")
 	}
 	securedStatus := _securedStatus.(BACnetDoorSecuredStatusTagged)
 	if closeErr := readBuffer.CloseContext("securedStatus"); closeErr != nil {

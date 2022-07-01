@@ -164,7 +164,7 @@ func BACnetConstructedDataUserTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_userType, _userTypeErr := BACnetAccessUserTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _userTypeErr != nil {
-		return nil, errors.Wrap(_userTypeErr, "Error parsing 'userType' field")
+		return nil, errors.Wrap(_userTypeErr, "Error parsing 'userType' field of BACnetConstructedDataUserType")
 	}
 	userType := _userType.(BACnetAccessUserTypeTagged)
 	if closeErr := readBuffer.CloseContext("userType"); closeErr != nil {

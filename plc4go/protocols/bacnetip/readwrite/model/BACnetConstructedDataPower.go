@@ -164,7 +164,7 @@ func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	_power, _powerErr := BACnetApplicationTagParse(readBuffer)
 	if _powerErr != nil {
-		return nil, errors.Wrap(_powerErr, "Error parsing 'power' field")
+		return nil, errors.Wrap(_powerErr, "Error parsing 'power' field of BACnetConstructedDataPower")
 	}
 	power := _power.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("power"); closeErr != nil {

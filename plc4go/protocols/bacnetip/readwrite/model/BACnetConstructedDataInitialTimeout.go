@@ -164,7 +164,7 @@ func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_initialTimeout, _initialTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _initialTimeoutErr != nil {
-		return nil, errors.Wrap(_initialTimeoutErr, "Error parsing 'initialTimeout' field")
+		return nil, errors.Wrap(_initialTimeoutErr, "Error parsing 'initialTimeout' field of BACnetConstructedDataInitialTimeout")
 	}
 	initialTimeout := _initialTimeout.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("initialTimeout"); closeErr != nil {

@@ -146,7 +146,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field")
+		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetEventNotificationSubscription")
 	}
 	recipient := _recipient.(BACnetRecipientEnclosed)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
@@ -159,7 +159,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_processIdentifier, _processIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _processIdentifierErr != nil {
-		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field")
+		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetEventNotificationSubscription")
 	}
 	processIdentifier := _processIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
@@ -179,7 +179,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field")
+			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetEventNotificationSubscription")
 		default:
 			issueConfirmedNotifications = _val.(BACnetContextTagBoolean)
 			if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
@@ -194,7 +194,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field")
+		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetEventNotificationSubscription")
 	}
 	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {

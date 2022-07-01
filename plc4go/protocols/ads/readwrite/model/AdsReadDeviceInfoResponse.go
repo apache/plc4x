@@ -189,7 +189,7 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId Comma
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadDeviceInfoResponse")
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
@@ -199,28 +199,28 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId Comma
 	// Simple Field (majorVersion)
 	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field")
+		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of AdsReadDeviceInfoResponse")
 	}
 	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
 	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field")
+		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of AdsReadDeviceInfoResponse")
 	}
 	minorVersion := _minorVersion
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint16("version", 16)
 	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
+		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of AdsReadDeviceInfoResponse")
 	}
 	version := _version
 	// Byte Array field (device)
 	numberOfBytesdevice := int(uint16(16))
 	device, _readArrayErr := readBuffer.ReadByteArray("device", numberOfBytesdevice)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'device' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'device' field of AdsReadDeviceInfoResponse")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadDeviceInfoResponse"); closeErr != nil {

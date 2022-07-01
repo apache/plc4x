@@ -168,7 +168,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParse(readBuffer utils.ReadBuffe
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject")
 	}
 	_child = _childTemp.(BACnetUnconfirmedServiceRequestWhoHasObjectChildSerializeRequirement)
 

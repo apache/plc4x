@@ -164,7 +164,7 @@ func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_bitString, _bitStringErr := BACnetApplicationTagParse(readBuffer)
 	if _bitStringErr != nil {
-		return nil, errors.Wrap(_bitStringErr, "Error parsing 'bitString' field")
+		return nil, errors.Wrap(_bitStringErr, "Error parsing 'bitString' field of BACnetConstructedDataBitMask")
 	}
 	bitString := _bitString.(BACnetApplicationTagBitString)
 	if closeErr := readBuffer.CloseContext("bitString"); closeErr != nil {

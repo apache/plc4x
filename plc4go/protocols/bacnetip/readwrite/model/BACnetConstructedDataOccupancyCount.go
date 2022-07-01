@@ -164,7 +164,7 @@ func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_occupancyCount, _occupancyCountErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyCountErr != nil {
-		return nil, errors.Wrap(_occupancyCountErr, "Error parsing 'occupancyCount' field")
+		return nil, errors.Wrap(_occupancyCountErr, "Error parsing 'occupancyCount' field of BACnetConstructedDataOccupancyCount")
 	}
 	occupancyCount := _occupancyCount.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("occupancyCount"); closeErr != nil {

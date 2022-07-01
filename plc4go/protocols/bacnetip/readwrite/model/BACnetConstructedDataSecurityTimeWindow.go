@@ -164,7 +164,7 @@ func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, t
 	}
 	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParse(readBuffer)
 	if _securityTimeWindowErr != nil {
-		return nil, errors.Wrap(_securityTimeWindowErr, "Error parsing 'securityTimeWindow' field")
+		return nil, errors.Wrap(_securityTimeWindowErr, "Error parsing 'securityTimeWindow' field of BACnetConstructedDataSecurityTimeWindow")
 	}
 	securityTimeWindow := _securityTimeWindow.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("securityTimeWindow"); closeErr != nil {

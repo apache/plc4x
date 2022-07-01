@@ -144,20 +144,20 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
 	// Discriminator Field (control) (Used as input to a switch field)
 	control, _controlErr := readBuffer.ReadUint8("control", 1)
 	if _controlErr != nil {
-		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field")
+		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field of Apdu")
 	}
 
 	// Simple Field (numbered)
 	_numbered, _numberedErr := readBuffer.ReadBit("numbered")
 	if _numberedErr != nil {
-		return nil, errors.Wrap(_numberedErr, "Error parsing 'numbered' field")
+		return nil, errors.Wrap(_numberedErr, "Error parsing 'numbered' field of Apdu")
 	}
 	numbered := _numbered
 
 	// Simple Field (counter)
 	_counter, _counterErr := readBuffer.ReadUint8("counter", 4)
 	if _counterErr != nil {
-		return nil, errors.Wrap(_counterErr, "Error parsing 'counter' field")
+		return nil, errors.Wrap(_counterErr, "Error parsing 'counter' field of Apdu")
 	}
 	counter := _counter
 
@@ -179,7 +179,7 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [control=%v]", control)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Apdu.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Apdu")
 	}
 	_child = _childTemp.(ApduChildSerializeRequirement)
 

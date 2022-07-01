@@ -164,7 +164,7 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.Rea
 	}
 	_covIncrement, _covIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _covIncrementErr != nil {
-		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field")
+		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataLargeAnalogValueCOVIncrement")
 	}
 	covIncrement := _covIncrement.(BACnetApplicationTagDouble)
 	if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {

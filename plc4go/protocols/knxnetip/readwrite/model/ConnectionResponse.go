@@ -175,7 +175,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of ConnectionResponse")
 	}
 	communicationChannelId := _communicationChannelId
 
@@ -185,7 +185,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 	}
 	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ConnectionResponse")
 	}
 	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
@@ -205,7 +205,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
+			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field of ConnectionResponse")
 		default:
 			hpaiDataEndpoint = _val.(HPAIDataEndpoint)
 			if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
@@ -227,7 +227,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
+			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field of ConnectionResponse")
 		default:
 			connectionResponseDataBlock = _val.(ConnectionResponseDataBlock)
 			if closeErr := readBuffer.CloseContext("connectionResponseDataBlock"); closeErr != nil {

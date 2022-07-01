@@ -145,7 +145,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -158,7 +158,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	}
 	_minPriority, _minPriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _minPriorityErr != nil {
-		return nil, errors.Wrap(_minPriorityErr, "Error parsing 'minPriority' field")
+		return nil, errors.Wrap(_minPriorityErr, "Error parsing 'minPriority' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 	minPriority := _minPriority.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("minPriority"); closeErr != nil {
@@ -171,7 +171,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	}
 	_maxPriority, _maxPriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _maxPriorityErr != nil {
-		return nil, errors.Wrap(_maxPriorityErr, "Error parsing 'maxPriority' field")
+		return nil, errors.Wrap(_maxPriorityErr, "Error parsing 'maxPriority' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 	maxPriority := _maxPriority.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxPriority"); closeErr != nil {
@@ -184,7 +184,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

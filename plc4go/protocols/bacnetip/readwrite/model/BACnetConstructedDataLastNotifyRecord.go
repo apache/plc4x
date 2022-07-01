@@ -164,7 +164,7 @@ func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tag
 	}
 	_lastNotifyRecord, _lastNotifyRecordErr := BACnetApplicationTagParse(readBuffer)
 	if _lastNotifyRecordErr != nil {
-		return nil, errors.Wrap(_lastNotifyRecordErr, "Error parsing 'lastNotifyRecord' field")
+		return nil, errors.Wrap(_lastNotifyRecordErr, "Error parsing 'lastNotifyRecord' field of BACnetConstructedDataLastNotifyRecord")
 	}
 	lastNotifyRecord := _lastNotifyRecord.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("lastNotifyRecord"); closeErr != nil {

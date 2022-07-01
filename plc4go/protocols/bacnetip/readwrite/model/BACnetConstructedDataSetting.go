@@ -164,7 +164,7 @@ func BACnetConstructedDataSettingParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_setting, _settingErr := BACnetApplicationTagParse(readBuffer)
 	if _settingErr != nil {
-		return nil, errors.Wrap(_settingErr, "Error parsing 'setting' field")
+		return nil, errors.Wrap(_settingErr, "Error parsing 'setting' field of BACnetConstructedDataSetting")
 	}
 	setting := _setting.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("setting"); closeErr != nil {

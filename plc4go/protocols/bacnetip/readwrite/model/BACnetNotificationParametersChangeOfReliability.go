@@ -183,7 +183,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfReliability")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	}
 	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reliabilityErr != nil {
-		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field")
+		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field of BACnetNotificationParametersChangeOfReliability")
 	}
 	reliability := _reliability.(BACnetReliabilityTagged)
 	if closeErr := readBuffer.CloseContext("reliability"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfReliability")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
@@ -222,7 +222,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	}
 	_propertyValues, _propertyValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument))
 	if _propertyValuesErr != nil {
-		return nil, errors.Wrap(_propertyValuesErr, "Error parsing 'propertyValues' field")
+		return nil, errors.Wrap(_propertyValuesErr, "Error parsing 'propertyValues' field of BACnetNotificationParametersChangeOfReliability")
 	}
 	propertyValues := _propertyValues.(BACnetPropertyValues)
 	if closeErr := readBuffer.CloseContext("propertyValues"); closeErr != nil {
@@ -235,7 +235,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfReliability")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

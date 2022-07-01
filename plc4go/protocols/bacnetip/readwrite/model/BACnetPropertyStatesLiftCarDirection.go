@@ -137,7 +137,7 @@ func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peek
 	}
 	_liftCarDirection, _liftCarDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDirectionErr != nil {
-		return nil, errors.Wrap(_liftCarDirectionErr, "Error parsing 'liftCarDirection' field")
+		return nil, errors.Wrap(_liftCarDirectionErr, "Error parsing 'liftCarDirection' field of BACnetPropertyStatesLiftCarDirection")
 	}
 	liftCarDirection := _liftCarDirection.(BACnetLiftCarDirectionTagged)
 	if closeErr := readBuffer.CloseContext("liftCarDirection"); closeErr != nil {

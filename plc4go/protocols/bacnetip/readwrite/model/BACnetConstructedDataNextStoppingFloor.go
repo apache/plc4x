@@ -164,7 +164,7 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 	}
 	_nextStoppingFloor, _nextStoppingFloorErr := BACnetApplicationTagParse(readBuffer)
 	if _nextStoppingFloorErr != nil {
-		return nil, errors.Wrap(_nextStoppingFloorErr, "Error parsing 'nextStoppingFloor' field")
+		return nil, errors.Wrap(_nextStoppingFloorErr, "Error parsing 'nextStoppingFloor' field of BACnetConstructedDataNextStoppingFloor")
 	}
 	nextStoppingFloor := _nextStoppingFloor.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("nextStoppingFloor"); closeErr != nil {

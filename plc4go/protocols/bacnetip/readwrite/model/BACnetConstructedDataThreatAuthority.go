@@ -164,7 +164,7 @@ func BACnetConstructedDataThreatAuthorityParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_threatAuthority, _threatAuthorityErr := BACnetAccessThreatLevelParse(readBuffer)
 	if _threatAuthorityErr != nil {
-		return nil, errors.Wrap(_threatAuthorityErr, "Error parsing 'threatAuthority' field")
+		return nil, errors.Wrap(_threatAuthorityErr, "Error parsing 'threatAuthority' field of BACnetConstructedDataThreatAuthority")
 	}
 	threatAuthority := _threatAuthority.(BACnetAccessThreatLevel)
 	if closeErr := readBuffer.CloseContext("threatAuthority"); closeErr != nil {

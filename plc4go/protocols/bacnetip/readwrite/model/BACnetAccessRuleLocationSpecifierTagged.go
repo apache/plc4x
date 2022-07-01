@@ -126,7 +126,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, t
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAccessRuleLocationSpecifierTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, t
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetAccessRuleLocationSpecifier_SPECIFIED)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessRuleLocationSpecifierTagged")
 	}
 	value := _value.(BACnetAccessRuleLocationSpecifier)
 

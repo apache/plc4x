@@ -137,7 +137,7 @@ func BACnetOptionalUnsignedNullParse(readBuffer utils.ReadBuffer) (BACnetOptiona
 	}
 	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
 	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field")
+		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalUnsignedNull")
 	}
 	nullValue := _nullValue.(BACnetApplicationTagNull)
 	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {

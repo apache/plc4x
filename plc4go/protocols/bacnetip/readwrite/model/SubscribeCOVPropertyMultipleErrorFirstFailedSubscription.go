@@ -155,7 +155,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -168,7 +168,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field")
+		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	monitoredObjectIdentifier := _monitoredObjectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
@@ -181,7 +181,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _monitoredPropertyReferenceErr != nil {
-		return nil, errors.Wrap(_monitoredPropertyReferenceErr, "Error parsing 'monitoredPropertyReference' field")
+		return nil, errors.Wrap(_monitoredPropertyReferenceErr, "Error parsing 'monitoredPropertyReference' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	monitoredPropertyReference := _monitoredPropertyReference.(BACnetPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("monitoredPropertyReference"); closeErr != nil {
@@ -194,7 +194,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field")
+		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	errorType := _errorType.(ErrorEnclosed)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
@@ -207,7 +207,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

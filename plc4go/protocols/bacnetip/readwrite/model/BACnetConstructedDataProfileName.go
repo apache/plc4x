@@ -164,7 +164,7 @@ func BACnetConstructedDataProfileNameParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_profileName, _profileNameErr := BACnetApplicationTagParse(readBuffer)
 	if _profileNameErr != nil {
-		return nil, errors.Wrap(_profileNameErr, "Error parsing 'profileName' field")
+		return nil, errors.Wrap(_profileNameErr, "Error parsing 'profileName' field of BACnetConstructedDataProfileName")
 	}
 	profileName := _profileName.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("profileName"); closeErr != nil {

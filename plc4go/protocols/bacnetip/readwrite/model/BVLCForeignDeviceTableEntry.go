@@ -152,7 +152,7 @@ func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCForeignD
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCForeignDeviceTableEntry")
 			}
 			ip[curItem] = _item
 		}
@@ -164,21 +164,21 @@ func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCForeignD
 	// Simple Field (port)
 	_port, _portErr := readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCForeignDeviceTableEntry")
 	}
 	port := _port
 
 	// Simple Field (ttl)
 	_ttl, _ttlErr := readBuffer.ReadUint16("ttl", 16)
 	if _ttlErr != nil {
-		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field")
+		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCForeignDeviceTableEntry")
 	}
 	ttl := _ttl
 
 	// Simple Field (secondRemainingBeforePurge)
 	_secondRemainingBeforePurge, _secondRemainingBeforePurgeErr := readBuffer.ReadUint16("secondRemainingBeforePurge", 16)
 	if _secondRemainingBeforePurgeErr != nil {
-		return nil, errors.Wrap(_secondRemainingBeforePurgeErr, "Error parsing 'secondRemainingBeforePurge' field")
+		return nil, errors.Wrap(_secondRemainingBeforePurgeErr, "Error parsing 'secondRemainingBeforePurge' field of BVLCForeignDeviceTableEntry")
 	}
 	secondRemainingBeforePurge := _secondRemainingBeforePurge
 

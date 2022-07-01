@@ -164,7 +164,7 @@ func BACnetConstructedDataProtocolVersionParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_protocolVersion, _protocolVersionErr := BACnetApplicationTagParse(readBuffer)
 	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
+		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of BACnetConstructedDataProtocolVersion")
 	}
 	protocolVersion := _protocolVersion.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("protocolVersion"); closeErr != nil {

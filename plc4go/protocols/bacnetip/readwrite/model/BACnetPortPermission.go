@@ -126,7 +126,7 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (BACnetPortPermissio
 	}
 	_port, _portErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BACnetPortPermission")
 	}
 	port := _port.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("port"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (BACnetPortPermissio
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'enable' field")
+			return nil, errors.Wrap(_err, "Error parsing 'enable' field of BACnetPortPermission")
 		default:
 			enable = _val.(BACnetContextTagBoolean)
 			if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {

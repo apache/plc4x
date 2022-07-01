@@ -163,7 +163,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 4)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUError")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -176,7 +176,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 	// Simple Field (originalInvokeId)
 	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUError")
 	}
 	originalInvokeId := _originalInvokeId
 
@@ -186,7 +186,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 	}
 	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParse(readBuffer)
 	if _errorChoiceErr != nil {
-		return nil, errors.Wrap(_errorChoiceErr, "Error parsing 'errorChoice' field")
+		return nil, errors.Wrap(_errorChoiceErr, "Error parsing 'errorChoice' field of APDUError")
 	}
 	errorChoice := _errorChoice
 	if closeErr := readBuffer.CloseContext("errorChoice"); closeErr != nil {
@@ -199,7 +199,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 	}
 	_error, _errorErr := BACnetErrorParse(readBuffer, BACnetConfirmedServiceChoice(errorChoice))
 	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")
+		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of APDUError")
 	}
 	error := _error.(BACnetError)
 	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {

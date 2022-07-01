@@ -159,7 +159,7 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(5)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultStatusFlags")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -172,7 +172,7 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_statusFlagsReference, _statusFlagsReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _statusFlagsReferenceErr != nil {
-		return nil, errors.Wrap(_statusFlagsReferenceErr, "Error parsing 'statusFlagsReference' field")
+		return nil, errors.Wrap(_statusFlagsReferenceErr, "Error parsing 'statusFlagsReference' field of BACnetFaultParameterFaultStatusFlags")
 	}
 	statusFlagsReference := _statusFlagsReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("statusFlagsReference"); closeErr != nil {
@@ -185,7 +185,7 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(5)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultStatusFlags")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

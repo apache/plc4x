@@ -137,7 +137,7 @@ func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorModeErr != nil {
-		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field")
+		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field of BACnetPropertyStatesEscalatorMode")
 	}
 	escalatorMode := _escalatorMode.(BACnetEscalatorModeTagged)
 	if closeErr := readBuffer.CloseContext("escalatorMode"); closeErr != nil {

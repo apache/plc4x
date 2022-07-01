@@ -153,7 +153,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestLevel")
 		}
 		if reserved != byte(0x73) {
 			log.Info().Fields(map[string]interface{}{
@@ -167,7 +167,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestLevel")
 		}
 		if reserved != byte(0x07) {
 			log.Info().Fields(map[string]interface{}{
@@ -180,14 +180,14 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 	// Simple Field (application)
 	_application, _applicationErr := readBuffer.ReadByte("application")
 	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestLevel")
 	}
 	application := _application
 
 	// Simple Field (startingGroupAddressLabel)
 	_startingGroupAddressLabel, _startingGroupAddressLabelErr := readBuffer.ReadByte("startingGroupAddressLabel")
 	if _startingGroupAddressLabelErr != nil {
-		return nil, errors.Wrap(_startingGroupAddressLabelErr, "Error parsing 'startingGroupAddressLabel' field")
+		return nil, errors.Wrap(_startingGroupAddressLabelErr, "Error parsing 'startingGroupAddressLabel' field of StatusRequestLevel")
 	}
 	startingGroupAddressLabel := _startingGroupAddressLabel
 

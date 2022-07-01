@@ -164,7 +164,7 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_windowSamples, _windowSamplesErr := BACnetApplicationTagParse(readBuffer)
 	if _windowSamplesErr != nil {
-		return nil, errors.Wrap(_windowSamplesErr, "Error parsing 'windowSamples' field")
+		return nil, errors.Wrap(_windowSamplesErr, "Error parsing 'windowSamples' field of BACnetConstructedDataWindowSamples")
 	}
 	windowSamples := _windowSamples.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("windowSamples"); closeErr != nil {

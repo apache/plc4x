@@ -164,7 +164,7 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer
 	}
 	_bacnetIpGlobalAddress, _bacnetIpGlobalAddressErr := BACnetHostNPortParse(readBuffer)
 	if _bacnetIpGlobalAddressErr != nil {
-		return nil, errors.Wrap(_bacnetIpGlobalAddressErr, "Error parsing 'bacnetIpGlobalAddress' field")
+		return nil, errors.Wrap(_bacnetIpGlobalAddressErr, "Error parsing 'bacnetIpGlobalAddress' field of BACnetConstructedDataBACnetIPGlobalAddress")
 	}
 	bacnetIpGlobalAddress := _bacnetIpGlobalAddress.(BACnetHostNPort)
 	if closeErr := readBuffer.CloseContext("bacnetIpGlobalAddress"); closeErr != nil {

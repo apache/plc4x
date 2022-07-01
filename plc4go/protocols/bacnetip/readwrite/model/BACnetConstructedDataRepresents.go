@@ -164,7 +164,7 @@ func BACnetConstructedDataRepresentsParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_represents, _representsErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _representsErr != nil {
-		return nil, errors.Wrap(_representsErr, "Error parsing 'represents' field")
+		return nil, errors.Wrap(_representsErr, "Error parsing 'represents' field of BACnetConstructedDataRepresents")
 	}
 	represents := _represents.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("represents"); closeErr != nil {

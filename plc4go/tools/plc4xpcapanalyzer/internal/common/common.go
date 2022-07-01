@@ -19,6 +19,20 @@
 
 package common
 
+import (
+	"fmt"
+	"net"
+	"time"
+)
+
 type PacketInformation struct {
-	Description string
+	PacketNumber    int
+	PacketTimestamp time.Time
+	Description     string
+	SrcIp           net.IP
+	DstIp           net.IP
+}
+
+func (p PacketInformation) String() string {
+	return fmt.Sprintf("%s (SrcIp:%v, DstIp:%v)", p.Description, p.SrcIp, p.DstIp)
 }

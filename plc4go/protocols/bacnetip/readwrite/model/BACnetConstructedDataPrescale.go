@@ -164,7 +164,7 @@ func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_prescale, _prescaleErr := BACnetPrescaleParse(readBuffer)
 	if _prescaleErr != nil {
-		return nil, errors.Wrap(_prescaleErr, "Error parsing 'prescale' field")
+		return nil, errors.Wrap(_prescaleErr, "Error parsing 'prescale' field of BACnetConstructedDataPrescale")
 	}
 	prescale := _prescale.(BACnetPrescale)
 	if closeErr := readBuffer.CloseContext("prescale"); closeErr != nil {

@@ -139,7 +139,7 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (SearchRequest, error) {
 	}
 	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiIDiscoveryEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
+		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field of SearchRequest")
 	}
 	hpaiIDiscoveryEndpoint := _hpaiIDiscoveryEndpoint.(HPAIDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiIDiscoveryEndpoint"); closeErr != nil {

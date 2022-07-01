@@ -164,7 +164,7 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_averageValue, _averageValueErr := BACnetApplicationTagParse(readBuffer)
 	if _averageValueErr != nil {
-		return nil, errors.Wrap(_averageValueErr, "Error parsing 'averageValue' field")
+		return nil, errors.Wrap(_averageValueErr, "Error parsing 'averageValue' field of BACnetConstructedDataAverageValue")
 	}
 	averageValue := _averageValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("averageValue"); closeErr != nil {

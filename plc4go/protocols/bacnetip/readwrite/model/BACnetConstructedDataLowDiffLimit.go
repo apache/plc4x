@@ -164,7 +164,7 @@ func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_lowDiffLimit, _lowDiffLimitErr := BACnetOptionalREALParse(readBuffer)
 	if _lowDiffLimitErr != nil {
-		return nil, errors.Wrap(_lowDiffLimitErr, "Error parsing 'lowDiffLimit' field")
+		return nil, errors.Wrap(_lowDiffLimitErr, "Error parsing 'lowDiffLimit' field of BACnetConstructedDataLowDiffLimit")
 	}
 	lowDiffLimit := _lowDiffLimit.(BACnetOptionalREAL)
 	if closeErr := readBuffer.CloseContext("lowDiffLimit"); closeErr != nil {

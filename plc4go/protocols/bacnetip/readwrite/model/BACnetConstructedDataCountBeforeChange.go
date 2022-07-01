@@ -164,7 +164,7 @@ func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_countBeforeChange, _countBeforeChangeErr := BACnetApplicationTagParse(readBuffer)
 	if _countBeforeChangeErr != nil {
-		return nil, errors.Wrap(_countBeforeChangeErr, "Error parsing 'countBeforeChange' field")
+		return nil, errors.Wrap(_countBeforeChangeErr, "Error parsing 'countBeforeChange' field of BACnetConstructedDataCountBeforeChange")
 	}
 	countBeforeChange := _countBeforeChange.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("countBeforeChange"); closeErr != nil {

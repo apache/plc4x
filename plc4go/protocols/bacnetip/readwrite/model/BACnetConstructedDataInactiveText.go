@@ -164,7 +164,7 @@ func BACnetConstructedDataInactiveTextParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_inactiveText, _inactiveTextErr := BACnetApplicationTagParse(readBuffer)
 	if _inactiveTextErr != nil {
-		return nil, errors.Wrap(_inactiveTextErr, "Error parsing 'inactiveText' field")
+		return nil, errors.Wrap(_inactiveTextErr, "Error parsing 'inactiveText' field of BACnetConstructedDataInactiveText")
 	}
 	inactiveText := _inactiveText.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("inactiveText"); closeErr != nil {

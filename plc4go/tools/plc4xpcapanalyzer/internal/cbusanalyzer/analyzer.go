@@ -25,12 +25,19 @@ import (
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"net"
 )
 
-func PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
+type Analyzer struct {
+	Client net.IP
+}
+
+func (a Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
 	log.Debug().Msgf("Parsing %s", packetInformation)
-	// TODO: we need a mechanic to identify the reponse. Best case is we define a "host" and the when the host is in the to field we set to true. For the srcchk we pull that out of the config
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), false, false)
+	// TODO: srcchk we need to pull that out of the config
+	isResponse := packetInformation.DstIp.Equal(a.Client)
+	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, true)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}
@@ -38,7 +45,7 @@ func PackageParse(packetInformation common.PacketInformation, payload []byte) (i
 	return parse, nil
 }
 
-func SerializePackage(command interface{}) ([]byte, error) {
+func (a Analyzer) SerializePackage(command interface{}) ([]byte, error) {
 	if command, ok := command.(model.CBusMessage); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", command)
 		panic("unreachable statement")

@@ -164,7 +164,7 @@ func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, t
 	}
 	_instantaneousPower, _instantaneousPowerErr := BACnetApplicationTagParse(readBuffer)
 	if _instantaneousPowerErr != nil {
-		return nil, errors.Wrap(_instantaneousPowerErr, "Error parsing 'instantaneousPower' field")
+		return nil, errors.Wrap(_instantaneousPowerErr, "Error parsing 'instantaneousPower' field of BACnetConstructedDataInstantaneousPower")
 	}
 	instantaneousPower := _instantaneousPower.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("instantaneousPower"); closeErr != nil {

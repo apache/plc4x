@@ -122,7 +122,7 @@ func BACnetEventLogRecordParse(readBuffer utils.ReadBuffer) (BACnetEventLogRecor
 	}
 	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetEventLogRecord")
 	}
 	timestamp := _timestamp.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetEventLogRecordParse(readBuffer utils.ReadBuffer) (BACnetEventLogRecor
 	}
 	_logDatum, _logDatumErr := BACnetEventLogRecordLogDatumParse(readBuffer, uint8(uint8(1)))
 	if _logDatumErr != nil {
-		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field")
+		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field of BACnetEventLogRecord")
 	}
 	logDatum := _logDatum.(BACnetEventLogRecordLogDatum)
 	if closeErr := readBuffer.CloseContext("logDatum"); closeErr != nil {

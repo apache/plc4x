@@ -164,7 +164,7 @@ func BACnetConstructedDataTimeOfStrikeCountResetParse(readBuffer utils.ReadBuffe
 	}
 	_timeOfStrikeCountReset, _timeOfStrikeCountResetErr := BACnetDateTimeParse(readBuffer)
 	if _timeOfStrikeCountResetErr != nil {
-		return nil, errors.Wrap(_timeOfStrikeCountResetErr, "Error parsing 'timeOfStrikeCountReset' field")
+		return nil, errors.Wrap(_timeOfStrikeCountResetErr, "Error parsing 'timeOfStrikeCountReset' field of BACnetConstructedDataTimeOfStrikeCountReset")
 	}
 	timeOfStrikeCountReset := _timeOfStrikeCountReset.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("timeOfStrikeCountReset"); closeErr != nil {

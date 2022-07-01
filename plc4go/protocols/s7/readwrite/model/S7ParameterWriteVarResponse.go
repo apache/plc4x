@@ -140,7 +140,7 @@ func S7ParameterWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType u
 	// Simple Field (numItems)
 	_numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
 	if _numItemsErr != nil {
-		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
+		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterWriteVarResponse")
 	}
 	numItems := _numItems
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataReferencePortParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_referencePort, _referencePortErr := BACnetApplicationTagParse(readBuffer)
 	if _referencePortErr != nil {
-		return nil, errors.Wrap(_referencePortErr, "Error parsing 'referencePort' field")
+		return nil, errors.Wrap(_referencePortErr, "Error parsing 'referencePort' field of BACnetConstructedDataReferencePort")
 	}
 	referencePort := _referencePort.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("referencePort"); closeErr != nil {

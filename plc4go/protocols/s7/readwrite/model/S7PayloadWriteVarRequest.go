@@ -156,7 +156,7 @@ func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint
 		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).GetItems()))); curItem++ {
 			_item, _err := S7VarPayloadDataItemParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadWriteVarRequest")
 			}
 			items[curItem] = _item.(S7VarPayloadDataItem)
 		}

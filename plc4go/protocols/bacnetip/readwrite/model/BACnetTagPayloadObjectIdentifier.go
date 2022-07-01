@@ -146,14 +146,14 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (BACnetT
 	// Manual Field (objectType)
 	_objectType, _objectTypeErr := ReadObjectType(readBuffer)
 	if _objectTypeErr != nil {
-		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
+		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field of BACnetTagPayloadObjectIdentifier")
 	}
 	objectType := _objectType.(BACnetObjectType)
 
 	// Manual Field (proprietaryValue)
 	_proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(readBuffer, objectType)
 	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
+		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetTagPayloadObjectIdentifier")
 	}
 	proprietaryValue := _proprietaryValue.(uint16)
 
@@ -165,7 +165,7 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (BACnetT
 	// Simple Field (instanceNumber)
 	_instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
 	if _instanceNumberErr != nil {
-		return nil, errors.Wrap(_instanceNumberErr, "Error parsing 'instanceNumber' field")
+		return nil, errors.Wrap(_instanceNumberErr, "Error parsing 'instanceNumber' field of BACnetTagPayloadObjectIdentifier")
 	}
 	instanceNumber := _instanceNumber
 

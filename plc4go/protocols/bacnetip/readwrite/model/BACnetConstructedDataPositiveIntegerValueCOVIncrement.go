@@ -164,7 +164,7 @@ func BACnetConstructedDataPositiveIntegerValueCOVIncrementParse(readBuffer utils
 	}
 	_covIncrement, _covIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _covIncrementErr != nil {
-		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field")
+		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataPositiveIntegerValueCOVIncrement")
 	}
 	covIncrement := _covIncrement.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataEgressTimeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_egressTime, _egressTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _egressTimeErr != nil {
-		return nil, errors.Wrap(_egressTimeErr, "Error parsing 'egressTime' field")
+		return nil, errors.Wrap(_egressTimeErr, "Error parsing 'egressTime' field of BACnetConstructedDataEgressTime")
 	}
 	egressTime := _egressTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("egressTime"); closeErr != nil {

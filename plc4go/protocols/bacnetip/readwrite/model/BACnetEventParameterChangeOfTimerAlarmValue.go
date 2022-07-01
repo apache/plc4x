@@ -139,7 +139,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParse(readBuffer utils.ReadBuffe
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfTimerAlarmValue")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParse(readBuffer utils.ReadBuffe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimerStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetEventParameterChangeOfTimerAlarmValue")
 			}
 			alarmValues = append(alarmValues, _item.(BACnetTimerStateTagged))
 
@@ -172,7 +172,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParse(readBuffer utils.ReadBuffe
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfTimerAlarmValue")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

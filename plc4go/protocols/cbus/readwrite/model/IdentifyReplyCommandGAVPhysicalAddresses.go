@@ -138,7 +138,7 @@ func IdentifyReplyCommandGAVPhysicalAddressesParse(readBuffer utils.ReadBuffer, 
 	numberOfBytesvalues := int(uint16(16))
 	values, _readArrayErr := readBuffer.ReadByteArray("values", numberOfBytesvalues)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'values' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'values' field of IdentifyReplyCommandGAVPhysicalAddresses")
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandGAVPhysicalAddresses"); closeErr != nil {

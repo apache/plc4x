@@ -164,7 +164,7 @@ func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer
 	}
 	_backupAndRestoreState, _backupAndRestoreStateErr := BACnetBackupStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _backupAndRestoreStateErr != nil {
-		return nil, errors.Wrap(_backupAndRestoreStateErr, "Error parsing 'backupAndRestoreState' field")
+		return nil, errors.Wrap(_backupAndRestoreStateErr, "Error parsing 'backupAndRestoreState' field of BACnetConstructedDataBackupAndRestoreState")
 	}
 	backupAndRestoreState := _backupAndRestoreState.(BACnetBackupStateTagged)
 	if closeErr := readBuffer.CloseContext("backupAndRestoreState"); closeErr != nil {

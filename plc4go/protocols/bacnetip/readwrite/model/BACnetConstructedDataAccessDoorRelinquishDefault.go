@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.Read
 	}
 	_relinquishDefault, _relinquishDefaultErr := BACnetDoorValueTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field")
+		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataAccessDoorRelinquishDefault")
 	}
 	relinquishDefault := _relinquishDefault.(BACnetDoorValueTagged)
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {

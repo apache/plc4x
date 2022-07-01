@@ -164,7 +164,7 @@ func BACnetConstructedDataBufferSizeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_bufferSize, _bufferSizeErr := BACnetApplicationTagParse(readBuffer)
 	if _bufferSizeErr != nil {
-		return nil, errors.Wrap(_bufferSizeErr, "Error parsing 'bufferSize' field")
+		return nil, errors.Wrap(_bufferSizeErr, "Error parsing 'bufferSize' field of BACnetConstructedDataBufferSize")
 	}
 	bufferSize := _bufferSize.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("bufferSize"); closeErr != nil {

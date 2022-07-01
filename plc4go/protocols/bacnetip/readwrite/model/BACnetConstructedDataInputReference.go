@@ -164,7 +164,7 @@ func BACnetConstructedDataInputReferenceParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_inputReference, _inputReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _inputReferenceErr != nil {
-		return nil, errors.Wrap(_inputReferenceErr, "Error parsing 'inputReference' field")
+		return nil, errors.Wrap(_inputReferenceErr, "Error parsing 'inputReference' field of BACnetConstructedDataInputReference")
 	}
 	inputReference := _inputReference.(BACnetObjectPropertyReference)
 	if closeErr := readBuffer.CloseContext("inputReference"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tag
 	}
 	_ipDefaultGateway, _ipDefaultGatewayErr := BACnetApplicationTagParse(readBuffer)
 	if _ipDefaultGatewayErr != nil {
-		return nil, errors.Wrap(_ipDefaultGatewayErr, "Error parsing 'ipDefaultGateway' field")
+		return nil, errors.Wrap(_ipDefaultGatewayErr, "Error parsing 'ipDefaultGateway' field of BACnetConstructedDataIPDefaultGateway")
 	}
 	ipDefaultGateway := _ipDefaultGateway.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipDefaultGateway"); closeErr != nil {

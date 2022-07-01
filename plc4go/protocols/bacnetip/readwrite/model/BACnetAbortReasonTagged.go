@@ -139,7 +139,7 @@ func BACnetAbortReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uint
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGeneric(readBuffer, actualLength, BACnetAbortReason_VENDOR_PROPRIETARY_VALUE)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAbortReasonTagged")
 	}
 	value := _value.(BACnetAbortReason)
 
@@ -151,7 +151,7 @@ func BACnetAbortReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uint
 	// Manual Field (proprietaryValue)
 	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, actualLength, isProprietary)
 	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
+		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAbortReasonTagged")
 	}
 	proprietaryValue := _proprietaryValue.(uint32)
 

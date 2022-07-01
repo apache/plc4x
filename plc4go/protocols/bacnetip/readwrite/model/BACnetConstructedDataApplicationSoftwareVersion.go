@@ -164,7 +164,7 @@ func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadB
 	}
 	_applicationSoftwareVersion, _applicationSoftwareVersionErr := BACnetApplicationTagParse(readBuffer)
 	if _applicationSoftwareVersionErr != nil {
-		return nil, errors.Wrap(_applicationSoftwareVersionErr, "Error parsing 'applicationSoftwareVersion' field")
+		return nil, errors.Wrap(_applicationSoftwareVersionErr, "Error parsing 'applicationSoftwareVersion' field of BACnetConstructedDataApplicationSoftwareVersion")
 	}
 	applicationSoftwareVersion := _applicationSoftwareVersion.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("applicationSoftwareVersion"); closeErr != nil {

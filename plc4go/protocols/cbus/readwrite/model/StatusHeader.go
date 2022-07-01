@@ -114,7 +114,7 @@ func StatusHeaderParse(readBuffer utils.ReadBuffer) (StatusHeader, error) {
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusHeader")
 		}
 		if reserved != uint8(0x3) {
 			log.Info().Fields(map[string]interface{}{
@@ -127,7 +127,7 @@ func StatusHeaderParse(readBuffer utils.ReadBuffer) (StatusHeader, error) {
 	// Simple Field (numberOfCharacterPairs)
 	_numberOfCharacterPairs, _numberOfCharacterPairsErr := readBuffer.ReadUint8("numberOfCharacterPairs", 6)
 	if _numberOfCharacterPairsErr != nil {
-		return nil, errors.Wrap(_numberOfCharacterPairsErr, "Error parsing 'numberOfCharacterPairs' field")
+		return nil, errors.Wrap(_numberOfCharacterPairsErr, "Error parsing 'numberOfCharacterPairs' field of StatusHeader")
 	}
 	numberOfCharacterPairs := _numberOfCharacterPairs
 

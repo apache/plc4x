@@ -146,7 +146,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
+		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetWriteAccessSpecification")
 	}
 	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -159,7 +159,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetWriteAccessSpecification")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -176,7 +176,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetPropertyWriteDefinitionParse(readBuffer, objectIdentifier.GetObjectType())
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyWriteDefinition' field")
+				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyWriteDefinition' field of BACnetWriteAccessSpecification")
 			}
 			listOfPropertyWriteDefinition = append(listOfPropertyWriteDefinition, _item.(BACnetPropertyWriteDefinition))
 
@@ -192,7 +192,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetWriteAccessSpecification")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

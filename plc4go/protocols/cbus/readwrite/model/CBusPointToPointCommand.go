@@ -38,8 +38,6 @@ type CBusPointToPointCommand interface {
 	GetCalData() CALData
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
-	// GetPeekAlpha returns PeekAlpha (property field)
-	GetPeekAlpha() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
 	// GetTermination returns Termination (property field)
@@ -61,7 +59,6 @@ type _CBusPointToPointCommand struct {
 	BridgeAddressCountPeek uint16
 	CalData                CALData
 	Crc                    Checksum
-	PeekAlpha              byte
 	Alpha                  Alpha
 	Termination            RequestTermination
 
@@ -82,7 +79,7 @@ type CBusPointToPointCommandParent interface {
 
 type CBusPointToPointCommandChild interface {
 	utils.Serializable
-	InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, peekAlpha byte, alpha Alpha, termination RequestTermination)
+	InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination)
 	GetParent() *CBusPointToPointCommand
 
 	GetTypeName() string
@@ -104,10 +101,6 @@ func (m *_CBusPointToPointCommand) GetCalData() CALData {
 
 func (m *_CBusPointToPointCommand) GetCrc() Checksum {
 	return m.Crc
-}
-
-func (m *_CBusPointToPointCommand) GetPeekAlpha() byte {
-	return m.PeekAlpha
 }
 
 func (m *_CBusPointToPointCommand) GetAlpha() Alpha {
@@ -141,8 +134,8 @@ func (m *_CBusPointToPointCommand) GetIsDirect() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
-func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, peekAlpha byte, alpha Alpha, termination RequestTermination, srchk bool) *_CBusPointToPointCommand {
-	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, PeekAlpha: peekAlpha, Alpha: alpha, Termination: termination, Srchk: srchk}
+func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination, srchk bool) *_CBusPointToPointCommand {
+	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, Alpha: alpha, Termination: termination, Srchk: srchk}
 }
 
 // Deprecated: use the interface for direct cast
@@ -201,7 +194,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	currentPos = positionAware.GetPos()
 	bridgeAddressCountPeek, _err := readBuffer.ReadUint16("bridgeAddressCountPeek", 16)
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'bridgeAddressCountPeek' field")
+		return nil, errors.Wrap(_err, "Error parsing 'bridgeAddressCountPeek' field of CBusPointToPointCommand")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -214,7 +207,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToPointCommandChildSerializeRequirement interface {
 		CBusPointToPointCommand
-		InitializeParent(CBusPointToPointCommand, uint16, CALData, Checksum, byte, Alpha, RequestTermination)
+		InitializeParent(CBusPointToPointCommand, uint16, CALData, Checksum, Alpha, RequestTermination)
 		GetParent() CBusPointToPointCommand
 	}
 	var _childTemp interface{}
@@ -229,7 +222,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isDirect=%v]", isDirect)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToPointCommand.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToPointCommand")
 	}
 	_child = _childTemp.(CBusPointToPointCommandChildSerializeRequirement)
 
@@ -239,7 +232,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	}
 	_calData, _calDataErr := CALDataParse(readBuffer)
 	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field")
+		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CBusPointToPointCommand")
 	}
 	calData := _calData.(CALData)
 	if closeErr := readBuffer.CloseContext("calData"); closeErr != nil {
@@ -259,7 +252,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
+			return nil, errors.Wrap(_err, "Error parsing 'crc' field of CBusPointToPointCommand")
 		default:
 			crc = _val.(Checksum)
 			if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
@@ -268,18 +261,9 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 		}
 	}
 
-	// Peek Field (peekAlpha)
-	currentPos = positionAware.GetPos()
-	peekAlpha, _err := readBuffer.ReadByte("peekAlpha")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekAlpha' field")
-	}
-
-	readBuffer.Reset(currentPos)
-
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil
-	if bool(bool(bool((peekAlpha) >= (0x67)))) && bool(bool(bool((peekAlpha) <= (0x7A)))) {
+	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
@@ -290,7 +274,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alpha' field")
+			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of CBusPointToPointCommand")
 		default:
 			alpha = _val.(Alpha)
 			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
@@ -305,7 +289,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	}
 	_termination, _terminationErr := RequestTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of CBusPointToPointCommand")
 	}
 	termination := _termination.(RequestTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
@@ -317,7 +301,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, bridgeAddressCountPeek, calData, crc, peekAlpha, alpha, termination)
+	_child.InitializeParent(_child, bridgeAddressCountPeek, calData, crc, alpha, termination)
 	return _child, nil
 }
 

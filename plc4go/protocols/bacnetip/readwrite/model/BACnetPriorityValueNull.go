@@ -137,7 +137,7 @@ func BACnetPriorityValueNullParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	}
 	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
 	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field")
+		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetPriorityValueNull")
 	}
 	nullValue := _nullValue.(BACnetApplicationTagNull)
 	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {

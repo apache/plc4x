@@ -155,7 +155,7 @@ func BACnetConstructedDataDateListParse(readBuffer utils.ReadBuffer, tagNumber u
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCalendarEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'dateList' field")
+				return nil, errors.Wrap(_err, "Error parsing 'dateList' field of BACnetConstructedDataDateList")
 			}
 			dateList = append(dateList, _item.(BACnetCalendarEntry))
 

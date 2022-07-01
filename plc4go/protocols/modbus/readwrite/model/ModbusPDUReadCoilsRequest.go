@@ -155,14 +155,14 @@ func ModbusPDUReadCoilsRequestParse(readBuffer utils.ReadBuffer, response bool) 
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
-		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
+		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field of ModbusPDUReadCoilsRequest")
 	}
 	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
 	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
-		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
+		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field of ModbusPDUReadCoilsRequest")
 	}
 	quantity := _quantity
 

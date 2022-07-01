@@ -227,7 +227,7 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataEventMessageTextsConfig")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -246,7 +246,7 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'eventMessageTextsConfig' field")
+				return nil, errors.Wrap(_err, "Error parsing 'eventMessageTextsConfig' field of BACnetConstructedDataEventMessageTextsConfig")
 			}
 			eventMessageTextsConfig = append(eventMessageTextsConfig, _item.(BACnetOptionalCharacterString))
 

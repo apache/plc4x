@@ -164,7 +164,7 @@ func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuff
 	}
 	_requestedUpdateInterval, _requestedUpdateIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _requestedUpdateIntervalErr != nil {
-		return nil, errors.Wrap(_requestedUpdateIntervalErr, "Error parsing 'requestedUpdateInterval' field")
+		return nil, errors.Wrap(_requestedUpdateIntervalErr, "Error parsing 'requestedUpdateInterval' field of BACnetConstructedDataRequestedUpdateInterval")
 	}
 	requestedUpdateInterval := _requestedUpdateInterval.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("requestedUpdateInterval"); closeErr != nil {

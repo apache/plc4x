@@ -164,7 +164,7 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuf
 	}
 	_autoAddressingEnable, _autoAddressingEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _autoAddressingEnableErr != nil {
-		return nil, errors.Wrap(_autoAddressingEnableErr, "Error parsing 'autoAddressingEnable' field")
+		return nil, errors.Wrap(_autoAddressingEnableErr, "Error parsing 'autoAddressingEnable' field of BACnetConstructedDataIPv6AutoAddressingEnable")
 	}
 	autoAddressingEnable := _autoAddressingEnable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("autoAddressingEnable"); closeErr != nil {

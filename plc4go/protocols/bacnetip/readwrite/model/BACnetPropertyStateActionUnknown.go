@@ -137,7 +137,7 @@ func BACnetPropertyStateActionUnknownParse(readBuffer utils.ReadBuffer, peekedTa
 	}
 	_unknownValue, _unknownValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
 	if _unknownValueErr != nil {
-		return nil, errors.Wrap(_unknownValueErr, "Error parsing 'unknownValue' field")
+		return nil, errors.Wrap(_unknownValueErr, "Error parsing 'unknownValue' field of BACnetPropertyStateActionUnknown")
 	}
 	unknownValue := _unknownValue.(BACnetContextTagUnknown)
 	if closeErr := readBuffer.CloseContext("unknownValue"); closeErr != nil {

@@ -137,7 +137,7 @@ func BACnetLandingCallStatusCommandDirectionParse(readBuffer utils.ReadBuffer) (
 	}
 	_direction, _directionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _directionErr != nil {
-		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field")
+		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetLandingCallStatusCommandDirection")
 	}
 	direction := _direction.(BACnetLiftCarDirectionTagged)
 	if closeErr := readBuffer.CloseContext("direction"); closeErr != nil {

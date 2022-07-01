@@ -137,7 +137,7 @@ func BACnetPropertyStatesTimerStateParse(readBuffer utils.ReadBuffer, peekedTagN
 	}
 	_timerState, _timerStateErr := BACnetTimerStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timerStateErr != nil {
-		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field")
+		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field of BACnetPropertyStatesTimerState")
 	}
 	timerState := _timerState.(BACnetTimerStateTagged)
 	if closeErr := readBuffer.CloseContext("timerState"); closeErr != nil {

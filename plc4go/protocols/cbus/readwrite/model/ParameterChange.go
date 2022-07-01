@@ -137,7 +137,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) 
 	// Const Field (specialChar1)
 	specialChar1, _specialChar1Err := readBuffer.ReadByte("specialChar1")
 	if _specialChar1Err != nil {
-		return nil, errors.Wrap(_specialChar1Err, "Error parsing 'specialChar1' field")
+		return nil, errors.Wrap(_specialChar1Err, "Error parsing 'specialChar1' field of ParameterChange")
 	}
 	if specialChar1 != ParameterChange_SPECIALCHAR1 {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ParameterChange_SPECIALCHAR1) + " but got " + fmt.Sprintf("%d", specialChar1))
@@ -146,7 +146,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) 
 	// Const Field (specialChar2)
 	specialChar2, _specialChar2Err := readBuffer.ReadByte("specialChar2")
 	if _specialChar2Err != nil {
-		return nil, errors.Wrap(_specialChar2Err, "Error parsing 'specialChar2' field")
+		return nil, errors.Wrap(_specialChar2Err, "Error parsing 'specialChar2' field of ParameterChange")
 	}
 	if specialChar2 != ParameterChange_SPECIALCHAR2 {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ParameterChange_SPECIALCHAR2) + " but got " + fmt.Sprintf("%d", specialChar2))
@@ -158,7 +158,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) 
 	}
 	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of ParameterChange")
 	}
 	termination := _termination.(ResponseTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

@@ -202,7 +202,7 @@ func BACnetEventParameterParse(readBuffer utils.ReadBuffer) (BACnetEventParamete
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetEventParameter.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetEventParameter")
 	}
 	_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 

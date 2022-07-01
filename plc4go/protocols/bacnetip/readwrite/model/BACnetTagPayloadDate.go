@@ -241,7 +241,7 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadDat
 	// Simple Field (yearMinus1900)
 	_yearMinus1900, _yearMinus1900Err := readBuffer.ReadUint8("yearMinus1900", 8)
 	if _yearMinus1900Err != nil {
-		return nil, errors.Wrap(_yearMinus1900Err, "Error parsing 'yearMinus1900' field")
+		return nil, errors.Wrap(_yearMinus1900Err, "Error parsing 'yearMinus1900' field of BACnetTagPayloadDate")
 	}
 	yearMinus1900 := _yearMinus1900
 
@@ -258,7 +258,7 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadDat
 	// Simple Field (month)
 	_month, _monthErr := readBuffer.ReadUint8("month", 8)
 	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
+		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of BACnetTagPayloadDate")
 	}
 	month := _month
 
@@ -280,7 +280,7 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadDat
 	// Simple Field (dayOfMonth)
 	_dayOfMonth, _dayOfMonthErr := readBuffer.ReadUint8("dayOfMonth", 8)
 	if _dayOfMonthErr != nil {
-		return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
+		return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field of BACnetTagPayloadDate")
 	}
 	dayOfMonth := _dayOfMonth
 
@@ -307,7 +307,7 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadDat
 	// Simple Field (dayOfWeek)
 	_dayOfWeek, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 8)
 	if _dayOfWeekErr != nil {
-		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
+		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field of BACnetTagPayloadDate")
 	}
 	dayOfWeek := _dayOfWeek
 

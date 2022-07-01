@@ -164,7 +164,7 @@ func BACnetConstructedDataMinimumOutputParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_minimumOutput, _minimumOutputErr := BACnetApplicationTagParse(readBuffer)
 	if _minimumOutputErr != nil {
-		return nil, errors.Wrap(_minimumOutputErr, "Error parsing 'minimumOutput' field")
+		return nil, errors.Wrap(_minimumOutputErr, "Error parsing 'minimumOutput' field of BACnetConstructedDataMinimumOutput")
 	}
 	minimumOutput := _minimumOutput.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("minimumOutput"); closeErr != nil {

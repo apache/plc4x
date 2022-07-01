@@ -164,7 +164,7 @@ func BACnetConstructedDataDateTimeValueRelinquishDefaultParse(readBuffer utils.R
 	}
 	_relinquishDefault, _relinquishDefaultErr := BACnetDateTimeParse(readBuffer)
 	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field")
+		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataDateTimeValueRelinquishDefault")
 	}
 	relinquishDefault := _relinquishDefault.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {

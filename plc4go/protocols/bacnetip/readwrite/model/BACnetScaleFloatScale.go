@@ -137,7 +137,7 @@ func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleFloatSc
 	}
 	_floatScale, _floatScaleErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _floatScaleErr != nil {
-		return nil, errors.Wrap(_floatScaleErr, "Error parsing 'floatScale' field")
+		return nil, errors.Wrap(_floatScaleErr, "Error parsing 'floatScale' field of BACnetScaleFloatScale")
 	}
 	floatScale := _floatScale.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("floatScale"); closeErr != nil {

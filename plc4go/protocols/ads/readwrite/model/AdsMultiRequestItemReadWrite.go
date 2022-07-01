@@ -169,28 +169,28 @@ func AdsMultiRequestItemReadWriteParse(readBuffer utils.ReadBuffer, indexGroup u
 	// Simple Field (itemIndexGroup)
 	_itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)
 	if _itemIndexGroupErr != nil {
-		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field")
+		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field of AdsMultiRequestItemReadWrite")
 	}
 	itemIndexGroup := _itemIndexGroup
 
 	// Simple Field (itemIndexOffset)
 	_itemIndexOffset, _itemIndexOffsetErr := readBuffer.ReadUint32("itemIndexOffset", 32)
 	if _itemIndexOffsetErr != nil {
-		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field")
+		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field of AdsMultiRequestItemReadWrite")
 	}
 	itemIndexOffset := _itemIndexOffset
 
 	// Simple Field (itemReadLength)
 	_itemReadLength, _itemReadLengthErr := readBuffer.ReadUint32("itemReadLength", 32)
 	if _itemReadLengthErr != nil {
-		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field")
+		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field of AdsMultiRequestItemReadWrite")
 	}
 	itemReadLength := _itemReadLength
 
 	// Simple Field (itemWriteLength)
 	_itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength", 32)
 	if _itemWriteLengthErr != nil {
-		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field")
+		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field of AdsMultiRequestItemReadWrite")
 	}
 	itemWriteLength := _itemWriteLength
 

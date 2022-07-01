@@ -145,14 +145,14 @@ func CALDataReplyAcknowledgeParse(readBuffer utils.ReadBuffer) (CALDataReplyAckn
 	// Simple Field (paramNo)
 	_paramNo, _paramNoErr := readBuffer.ReadUint8("paramNo", 8)
 	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field")
+		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataReplyAcknowledge")
 	}
 	paramNo := _paramNo
 
 	// Simple Field (code)
 	_code, _codeErr := readBuffer.ReadUint8("code", 8)
 	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field")
+		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataReplyAcknowledge")
 	}
 	code := _code
 

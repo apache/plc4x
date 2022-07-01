@@ -126,7 +126,7 @@ func BACnetLiftGroupModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLiftGroupModeTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetLiftGroupModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	// Manual Field (value)
 	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetLiftGroupMode_UNKNOWN)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftGroupModeTagged")
 	}
 	value := _value.(BACnetLiftGroupMode)
 

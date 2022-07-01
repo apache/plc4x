@@ -138,7 +138,7 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetA
 	}
 	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _formatTypeErr != nil {
-		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field")
+		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field of BACnetAuthenticationFactorFormat")
 	}
 	formatType := _formatType.(BACnetAuthenticationFactorTypeTagged)
 	if closeErr := readBuffer.CloseContext("formatType"); closeErr != nil {
@@ -158,7 +158,7 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetA
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field")
+			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field of BACnetAuthenticationFactorFormat")
 		default:
 			vendorId = _val.(BACnetVendorIdTagged)
 			if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
@@ -180,7 +180,7 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetA
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'vendorFormat' field")
+			return nil, errors.Wrap(_err, "Error parsing 'vendorFormat' field of BACnetAuthenticationFactorFormat")
 		default:
 			vendorFormat = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("vendorFormat"); closeErr != nil {

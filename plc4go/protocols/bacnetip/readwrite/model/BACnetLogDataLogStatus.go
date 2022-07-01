@@ -139,7 +139,7 @@ func BACnetLogDataLogStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8) (
 	}
 	_logStatus, _logStatusErr := BACnetLogStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _logStatusErr != nil {
-		return nil, errors.Wrap(_logStatusErr, "Error parsing 'logStatus' field")
+		return nil, errors.Wrap(_logStatusErr, "Error parsing 'logStatus' field of BACnetLogDataLogStatus")
 	}
 	logStatus := _logStatus.(BACnetLogStatusTagged)
 	if closeErr := readBuffer.CloseContext("logStatus"); closeErr != nil {

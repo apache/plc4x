@@ -164,7 +164,7 @@ func BACnetConstructedDataStrikeCountParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_strikeCount, _strikeCountErr := BACnetApplicationTagParse(readBuffer)
 	if _strikeCountErr != nil {
-		return nil, errors.Wrap(_strikeCountErr, "Error parsing 'strikeCount' field")
+		return nil, errors.Wrap(_strikeCountErr, "Error parsing 'strikeCount' field of BACnetConstructedDataStrikeCount")
 	}
 	strikeCount := _strikeCount.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("strikeCount"); closeErr != nil {

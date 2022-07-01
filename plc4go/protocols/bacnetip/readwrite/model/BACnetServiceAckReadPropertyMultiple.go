@@ -152,7 +152,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 		for positionAware.GetPos() < _dataEndPos {
 			_item, _err := BACnetReadAccessResultParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetServiceAckReadPropertyMultiple")
 			}
 			data = append(data, _item.(BACnetReadAccessResult))
 		}

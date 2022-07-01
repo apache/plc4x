@@ -164,7 +164,7 @@ func BACnetConstructedDataIPv6DefaultGatewayParse(readBuffer utils.ReadBuffer, t
 	}
 	_ipv6DefaultGateway, _ipv6DefaultGatewayErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6DefaultGatewayErr != nil {
-		return nil, errors.Wrap(_ipv6DefaultGatewayErr, "Error parsing 'ipv6DefaultGateway' field")
+		return nil, errors.Wrap(_ipv6DefaultGatewayErr, "Error parsing 'ipv6DefaultGateway' field of BACnetConstructedDataIPv6DefaultGateway")
 	}
 	ipv6DefaultGateway := _ipv6DefaultGateway.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipv6DefaultGateway"); closeErr != nil {

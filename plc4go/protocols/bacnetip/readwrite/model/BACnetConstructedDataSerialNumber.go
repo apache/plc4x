@@ -164,7 +164,7 @@ func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_serialNumber, _serialNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _serialNumberErr != nil {
-		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field")
+		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field of BACnetConstructedDataSerialNumber")
 	}
 	serialNumber := _serialNumber.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("serialNumber"); closeErr != nil {

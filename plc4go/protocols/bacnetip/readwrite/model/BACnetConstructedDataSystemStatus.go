@@ -164,7 +164,7 @@ func BACnetConstructedDataSystemStatusParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _systemStatusErr != nil {
-		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field")
+		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field of BACnetConstructedDataSystemStatus")
 	}
 	systemStatus := _systemStatus.(BACnetDeviceStatusTagged)
 	if closeErr := readBuffer.CloseContext("systemStatus"); closeErr != nil {

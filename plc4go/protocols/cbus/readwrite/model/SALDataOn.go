@@ -134,7 +134,7 @@ func SALDataOnParse(readBuffer utils.ReadBuffer) (SALDataOn, error) {
 	// Simple Field (group)
 	_group, _groupErr := readBuffer.ReadByte("group")
 	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field")
+		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of SALDataOn")
 	}
 	group := _group
 

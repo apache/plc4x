@@ -170,7 +170,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(6)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultOutOfRange")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -183,7 +183,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_minNormalValue, _minNormalValueErr := BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer, uint8(uint8(0)))
 	if _minNormalValueErr != nil {
-		return nil, errors.Wrap(_minNormalValueErr, "Error parsing 'minNormalValue' field")
+		return nil, errors.Wrap(_minNormalValueErr, "Error parsing 'minNormalValue' field of BACnetFaultParameterFaultOutOfRange")
 	}
 	minNormalValue := _minNormalValue.(BACnetFaultParameterFaultOutOfRangeMinNormalValue)
 	if closeErr := readBuffer.CloseContext("minNormalValue"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_maxNormalValue, _maxNormalValueErr := BACnetFaultParameterFaultOutOfRangeMaxNormalValueParse(readBuffer, uint8(uint8(0)))
 	if _maxNormalValueErr != nil {
-		return nil, errors.Wrap(_maxNormalValueErr, "Error parsing 'maxNormalValue' field")
+		return nil, errors.Wrap(_maxNormalValueErr, "Error parsing 'maxNormalValue' field of BACnetFaultParameterFaultOutOfRange")
 	}
 	maxNormalValue := _maxNormalValue.(BACnetFaultParameterFaultOutOfRangeMaxNormalValue)
 	if closeErr := readBuffer.CloseContext("maxNormalValue"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(6)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultOutOfRange")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

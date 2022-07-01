@@ -164,7 +164,7 @@ func BACnetConstructedDataDoorStatusParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _doorStatusErr != nil {
-		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field")
+		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field of BACnetConstructedDataDoorStatus")
 	}
 	doorStatus := _doorStatus.(BACnetDoorStatusTagged)
 	if closeErr := readBuffer.CloseContext("doorStatus"); closeErr != nil {

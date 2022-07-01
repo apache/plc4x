@@ -158,7 +158,7 @@ func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_payload, _payloadErr := BACnetTagPayloadCharacterStringParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagCharacterString")
 	}
 	payload := _payload.(BACnetTagPayloadCharacterString)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

@@ -165,14 +165,14 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, srchk bool) (
 	// Simple Field (parameterNumber)
 	_parameterNumber, _parameterNumberErr := readBuffer.ReadUint8("parameterNumber", 8)
 	if _parameterNumberErr != nil {
-		return nil, errors.Wrap(_parameterNumberErr, "Error parsing 'parameterNumber' field")
+		return nil, errors.Wrap(_parameterNumberErr, "Error parsing 'parameterNumber' field of CBusCommandDeviceManagement")
 	}
 	parameterNumber := _parameterNumber
 
 	// Const Field (delimiter)
 	delimiter, _delimiterErr := readBuffer.ReadByte("delimiter")
 	if _delimiterErr != nil {
-		return nil, errors.Wrap(_delimiterErr, "Error parsing 'delimiter' field")
+		return nil, errors.Wrap(_delimiterErr, "Error parsing 'delimiter' field of CBusCommandDeviceManagement")
 	}
 	if delimiter != CBusCommandDeviceManagement_DELIMITER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CBusCommandDeviceManagement_DELIMITER) + " but got " + fmt.Sprintf("%d", delimiter))
@@ -181,7 +181,7 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, srchk bool) (
 	// Simple Field (parameterValue)
 	_parameterValue, _parameterValueErr := readBuffer.ReadByte("parameterValue")
 	if _parameterValueErr != nil {
-		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field")
+		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CBusCommandDeviceManagement")
 	}
 	parameterValue := _parameterValue
 

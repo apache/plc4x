@@ -155,7 +155,7 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVSubscriptionParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'activeCOVSubscriptions' field")
+				return nil, errors.Wrap(_err, "Error parsing 'activeCOVSubscriptions' field of BACnetConstructedDataActiveCOVSubscriptions")
 			}
 			activeCOVSubscriptions = append(activeCOVSubscriptions, _item.(BACnetCOVSubscription))
 

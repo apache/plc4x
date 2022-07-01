@@ -139,7 +139,7 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 	}
 	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(readBuffer)
 	if _comObjectDescriptorsErr != nil {
-		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
+		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType6")
 	}
 	comObjectDescriptors := _comObjectDescriptors.(GroupObjectDescriptorRealisationType6)
 	if closeErr := readBuffer.CloseContext("comObjectDescriptors"); closeErr != nil {

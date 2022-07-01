@@ -164,7 +164,7 @@ func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_groupMode, _groupModeErr := BACnetLiftGroupModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _groupModeErr != nil {
-		return nil, errors.Wrap(_groupModeErr, "Error parsing 'groupMode' field")
+		return nil, errors.Wrap(_groupModeErr, "Error parsing 'groupMode' field of BACnetConstructedDataGroupMode")
 	}
 	groupMode := _groupMode.(BACnetLiftGroupModeTagged)
 	if closeErr := readBuffer.CloseContext("groupMode"); closeErr != nil {

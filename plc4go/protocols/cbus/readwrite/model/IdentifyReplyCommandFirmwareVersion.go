@@ -136,7 +136,7 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 	// Simple Field (firmwareVersion)
 	_firmwareVersion, _firmwareVersionErr := readBuffer.ReadString("firmwareVersion", uint32(64))
 	if _firmwareVersionErr != nil {
-		return nil, errors.Wrap(_firmwareVersionErr, "Error parsing 'firmwareVersion' field")
+		return nil, errors.Wrap(_firmwareVersionErr, "Error parsing 'firmwareVersion' field of IdentifyReplyCommandFirmwareVersion")
 	}
 	firmwareVersion := _firmwareVersion
 

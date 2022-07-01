@@ -194,21 +194,21 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
+		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsReadWriteRequest")
 	}
 	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
 	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
+		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsReadWriteRequest")
 	}
 	indexOffset := _indexOffset
 
 	// Simple Field (readLength)
 	_readLength, _readLengthErr := readBuffer.ReadUint32("readLength", 32)
 	if _readLengthErr != nil {
-		return nil, errors.Wrap(_readLengthErr, "Error parsing 'readLength' field")
+		return nil, errors.Wrap(_readLengthErr, "Error parsing 'readLength' field of AdsReadWriteRequest")
 	}
 	readLength := _readLength
 
@@ -216,7 +216,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	writeLength, _writeLengthErr := readBuffer.ReadUint32("writeLength", 32)
 	_ = writeLength
 	if _writeLengthErr != nil {
-		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field")
+		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field of AdsReadWriteRequest")
 	}
 
 	// Array field (items)
@@ -233,7 +233,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := AdsMultiRequestItemParse(readBuffer, indexGroup)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+				return nil, errors.Wrap(_err, "Error parsing 'items' field of AdsReadWriteRequest")
 			}
 			items[curItem] = _item.(AdsMultiRequestItem)
 		}
@@ -245,7 +245,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	numberOfBytesdata := int(uint16(writeLength) - uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsReadWriteRequest")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadWriteRequest"); closeErr != nil {

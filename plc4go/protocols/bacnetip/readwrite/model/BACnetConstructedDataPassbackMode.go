@@ -164,7 +164,7 @@ func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_passbackMode, _passbackModeErr := BACnetAccessPassbackModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _passbackModeErr != nil {
-		return nil, errors.Wrap(_passbackModeErr, "Error parsing 'passbackMode' field")
+		return nil, errors.Wrap(_passbackModeErr, "Error parsing 'passbackMode' field of BACnetConstructedDataPassbackMode")
 	}
 	passbackMode := _passbackMode.(BACnetAccessPassbackModeTagged)
 	if closeErr := readBuffer.CloseContext("passbackMode"); closeErr != nil {

@@ -163,14 +163,14 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareTy
 	// Simple Field (numEntries)
 	_numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)
 	if _numEntriesErr != nil {
-		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field")
+		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field of ComObjectTableRealisationType2")
 	}
 	numEntries := _numEntries
 
 	// Simple Field (ramFlagsTablePointer)
 	_ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlagsTablePointer", 8)
 	if _ramFlagsTablePointerErr != nil {
-		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field")
+		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field of ComObjectTableRealisationType2")
 	}
 	ramFlagsTablePointer := _ramFlagsTablePointer
 
@@ -188,7 +188,7 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareTy
 		for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
 			_item, _err := GroupObjectDescriptorRealisationType2Parse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
+				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType2")
 			}
 			comObjectDescriptors[curItem] = _item.(GroupObjectDescriptorRealisationType2)
 		}

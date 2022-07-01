@@ -142,7 +142,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	}
 	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetAccumulatorRecord")
 	}
 	timestamp := _timestamp.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
@@ -155,7 +155,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	}
 	_presentValue, _presentValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetAccumulatorRecord")
 	}
 	presentValue := _presentValue.(BACnetContextTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
@@ -168,7 +168,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	}
 	_accumulatedValue, _accumulatedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _accumulatedValueErr != nil {
-		return nil, errors.Wrap(_accumulatedValueErr, "Error parsing 'accumulatedValue' field")
+		return nil, errors.Wrap(_accumulatedValueErr, "Error parsing 'accumulatedValue' field of BACnetAccumulatorRecord")
 	}
 	accumulatedValue := _accumulatedValue.(BACnetContextTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("accumulatedValue"); closeErr != nil {
@@ -181,7 +181,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	}
 	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accumulatorStatusErr != nil {
-		return nil, errors.Wrap(_accumulatorStatusErr, "Error parsing 'accumulatorStatus' field")
+		return nil, errors.Wrap(_accumulatorStatusErr, "Error parsing 'accumulatorStatus' field of BACnetAccumulatorRecord")
 	}
 	accumulatorStatus := _accumulatorStatus.(BACnetAccumulatorRecordAccumulatorStatusTagged)
 	if closeErr := readBuffer.CloseContext("accumulatorStatus"); closeErr != nil {

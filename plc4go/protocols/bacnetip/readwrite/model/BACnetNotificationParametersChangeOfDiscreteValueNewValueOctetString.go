@@ -139,7 +139,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(r
 	}
 	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _octetStringValueErr != nil {
-		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field")
+		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString")
 	}
 	octetStringValue := _octetStringValue.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {

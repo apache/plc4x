@@ -139,7 +139,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBu
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBu
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfCovSubscriptionSpecificationEntry' field")
+				return nil, errors.Wrap(_err, "Error parsing 'listOfCovSubscriptionSpecificationEntry' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification")
 			}
 			listOfCovSubscriptionSpecificationEntry = append(listOfCovSubscriptionSpecificationEntry, _item.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry))
 
@@ -172,7 +172,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBu
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

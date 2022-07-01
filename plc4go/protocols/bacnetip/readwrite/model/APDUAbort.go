@@ -163,7 +163,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 3)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUAbort")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -176,14 +176,14 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 	// Simple Field (server)
 	_server, _serverErr := readBuffer.ReadBit("server")
 	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
+		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of APDUAbort")
 	}
 	server := _server
 
 	// Simple Field (originalInvokeId)
 	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUAbort")
 	}
 	originalInvokeId := _originalInvokeId
 
@@ -193,7 +193,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 	}
 	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParse(readBuffer, uint32(uint32(1)))
 	if _abortReasonErr != nil {
-		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
+		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field of APDUAbort")
 	}
 	abortReason := _abortReason.(BACnetAbortReasonTagged)
 	if closeErr := readBuffer.CloseContext("abortReason"); closeErr != nil {

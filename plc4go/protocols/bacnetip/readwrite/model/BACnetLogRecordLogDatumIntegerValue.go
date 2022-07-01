@@ -139,7 +139,7 @@ func BACnetLogRecordLogDatumIntegerValueParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_integerValue, _integerValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(5)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerValueErr != nil {
-		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field")
+		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetLogRecordLogDatumIntegerValue")
 	}
 	integerValue := _integerValue.(BACnetContextTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {

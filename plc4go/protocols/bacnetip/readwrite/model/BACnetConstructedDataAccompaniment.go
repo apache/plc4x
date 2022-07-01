@@ -164,7 +164,7 @@ func BACnetConstructedDataAccompanimentParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_accompaniment, _accompanimentErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _accompanimentErr != nil {
-		return nil, errors.Wrap(_accompanimentErr, "Error parsing 'accompaniment' field")
+		return nil, errors.Wrap(_accompanimentErr, "Error parsing 'accompaniment' field of BACnetConstructedDataAccompaniment")
 	}
 	accompaniment := _accompaniment.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("accompaniment"); closeErr != nil {

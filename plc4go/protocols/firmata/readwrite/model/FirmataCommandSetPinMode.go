@@ -147,7 +147,7 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
+		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataCommandSetPinMode")
 	}
 	pin := _pin
 
@@ -157,7 +157,7 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 	}
 	_mode, _modeErr := PinModeParse(readBuffer)
 	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field")
+		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of FirmataCommandSetPinMode")
 	}
 	mode := _mode
 	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {

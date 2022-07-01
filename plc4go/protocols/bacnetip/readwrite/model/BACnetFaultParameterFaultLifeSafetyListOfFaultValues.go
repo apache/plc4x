@@ -139,7 +139,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParse(readBuffer utils.
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParse(readBuffer utils.
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listIfFaultValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'listIfFaultValues' field of BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 			}
 			listIfFaultValues = append(listIfFaultValues, _item.(BACnetLifeSafetyStateTagged))
 
@@ -172,7 +172,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParse(readBuffer utils.
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

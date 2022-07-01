@@ -164,7 +164,7 @@ func BACnetConstructedDataPulseRateParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_pulseRate, _pulseRateErr := BACnetApplicationTagParse(readBuffer)
 	if _pulseRateErr != nil {
-		return nil, errors.Wrap(_pulseRateErr, "Error parsing 'pulseRate' field")
+		return nil, errors.Wrap(_pulseRateErr, "Error parsing 'pulseRate' field of BACnetConstructedDataPulseRate")
 	}
 	pulseRate := _pulseRate.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("pulseRate"); closeErr != nil {

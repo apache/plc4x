@@ -164,7 +164,7 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.R
 	}
 	_defaultSubordinateRelationship, _defaultSubordinateRelationshipErr := BACnetRelationshipTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _defaultSubordinateRelationshipErr != nil {
-		return nil, errors.Wrap(_defaultSubordinateRelationshipErr, "Error parsing 'defaultSubordinateRelationship' field")
+		return nil, errors.Wrap(_defaultSubordinateRelationshipErr, "Error parsing 'defaultSubordinateRelationship' field of BACnetConstructedDataDefaultSubordinateRelationship")
 	}
 	defaultSubordinateRelationship := _defaultSubordinateRelationship.(BACnetRelationshipTagged)
 	if closeErr := readBuffer.CloseContext("defaultSubordinateRelationship"); closeErr != nil {

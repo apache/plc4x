@@ -164,7 +164,7 @@ func BACnetConstructedDataLoggingObjectParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_loggingObject, _loggingObjectErr := BACnetApplicationTagParse(readBuffer)
 	if _loggingObjectErr != nil {
-		return nil, errors.Wrap(_loggingObjectErr, "Error parsing 'loggingObject' field")
+		return nil, errors.Wrap(_loggingObjectErr, "Error parsing 'loggingObject' field of BACnetConstructedDataLoggingObject")
 	}
 	loggingObject := _loggingObject.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("loggingObject"); closeErr != nil {

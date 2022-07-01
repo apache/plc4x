@@ -109,7 +109,7 @@ func BACnetTagPayloadDoubleParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadD
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadFloat64("value", 64)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadDouble")
 	}
 	value := _value
 

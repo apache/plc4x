@@ -118,7 +118,7 @@ func ResponseTerminationParse(readBuffer utils.ReadBuffer) (ResponseTermination,
 	// Const Field (cr)
 	cr, _crErr := readBuffer.ReadByte("cr")
 	if _crErr != nil {
-		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field")
+		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field of ResponseTermination")
 	}
 	if cr != ResponseTermination_CR {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ResponseTermination_CR) + " but got " + fmt.Sprintf("%d", cr))
@@ -127,7 +127,7 @@ func ResponseTerminationParse(readBuffer utils.ReadBuffer) (ResponseTermination,
 	// Const Field (lf)
 	lf, _lfErr := readBuffer.ReadByte("lf")
 	if _lfErr != nil {
-		return nil, errors.Wrap(_lfErr, "Error parsing 'lf' field")
+		return nil, errors.Wrap(_lfErr, "Error parsing 'lf' field of ResponseTermination")
 	}
 	if lf != ResponseTermination_LF {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ResponseTermination_LF) + " but got " + fmt.Sprintf("%d", lf))

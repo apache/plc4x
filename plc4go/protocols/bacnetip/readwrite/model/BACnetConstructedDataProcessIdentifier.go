@@ -164,7 +164,7 @@ func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, ta
 	}
 	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _processIdentifierErr != nil {
-		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field")
+		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetConstructedDataProcessIdentifier")
 	}
 	processIdentifier := _processIdentifier.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {

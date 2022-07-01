@@ -164,7 +164,7 @@ func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBu
 	}
 	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _protocolServicesSupportedErr != nil {
-		return nil, errors.Wrap(_protocolServicesSupportedErr, "Error parsing 'protocolServicesSupported' field")
+		return nil, errors.Wrap(_protocolServicesSupportedErr, "Error parsing 'protocolServicesSupported' field of BACnetConstructedDataProtocolServicesSupported")
 	}
 	protocolServicesSupported := _protocolServicesSupported.(BACnetServicesSupportedTagged)
 	if closeErr := readBuffer.CloseContext("protocolServicesSupported"); closeErr != nil {

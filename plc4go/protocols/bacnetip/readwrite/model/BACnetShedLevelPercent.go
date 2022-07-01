@@ -137,7 +137,7 @@ func BACnetShedLevelPercentParse(readBuffer utils.ReadBuffer) (BACnetShedLevelPe
 	}
 	_percent, _percentErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _percentErr != nil {
-		return nil, errors.Wrap(_percentErr, "Error parsing 'percent' field")
+		return nil, errors.Wrap(_percentErr, "Error parsing 'percent' field of BACnetShedLevelPercent")
 	}
 	percent := _percent.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("percent"); closeErr != nil {

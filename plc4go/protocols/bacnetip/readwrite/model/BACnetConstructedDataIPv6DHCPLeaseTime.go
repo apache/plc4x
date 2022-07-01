@@ -164,7 +164,7 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_ipv6DhcpLeaseTime, _ipv6DhcpLeaseTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6DhcpLeaseTimeErr != nil {
-		return nil, errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error parsing 'ipv6DhcpLeaseTime' field")
+		return nil, errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error parsing 'ipv6DhcpLeaseTime' field of BACnetConstructedDataIPv6DHCPLeaseTime")
 	}
 	ipv6DhcpLeaseTime := _ipv6DhcpLeaseTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("ipv6DhcpLeaseTime"); closeErr != nil {

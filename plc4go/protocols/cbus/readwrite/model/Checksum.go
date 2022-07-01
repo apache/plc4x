@@ -109,7 +109,7 @@ func ChecksumParse(readBuffer utils.ReadBuffer) (Checksum, error) {
 	// Simple Field (crc)
 	_crc, _crcErr := readBuffer.ReadByte("crc")
 	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
+		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of Checksum")
 	}
 	crc := _crc
 

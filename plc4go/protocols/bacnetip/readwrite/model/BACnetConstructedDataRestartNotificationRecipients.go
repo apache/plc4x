@@ -155,7 +155,7 @@ func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.Re
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRecipientParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'restartNotificationRecipients' field")
+				return nil, errors.Wrap(_err, "Error parsing 'restartNotificationRecipients' field of BACnetConstructedDataRestartNotificationRecipients")
 			}
 			restartNotificationRecipients = append(restartNotificationRecipients, _item.(BACnetRecipient))
 

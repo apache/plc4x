@@ -110,7 +110,7 @@ func CBusConstantsParse(readBuffer utils.ReadBuffer) (CBusConstants, error) {
 	// Const Field (cbusTcpDefaultPort)
 	cbusTcpDefaultPort, _cbusTcpDefaultPortErr := readBuffer.ReadUint16("cbusTcpDefaultPort", 16)
 	if _cbusTcpDefaultPortErr != nil {
-		return nil, errors.Wrap(_cbusTcpDefaultPortErr, "Error parsing 'cbusTcpDefaultPort' field")
+		return nil, errors.Wrap(_cbusTcpDefaultPortErr, "Error parsing 'cbusTcpDefaultPort' field of CBusConstants")
 	}
 	if cbusTcpDefaultPort != CBusConstants_CBUSTCPDEFAULTPORT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CBusConstants_CBUSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", cbusTcpDefaultPort))

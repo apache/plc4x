@@ -181,7 +181,7 @@ func BACnetFaultParameterFaultExtendedParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(2)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultExtended")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -194,7 +194,7 @@ func BACnetFaultParameterFaultExtendedParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
+		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetFaultParameterFaultExtended")
 	}
 	vendorId := _vendorId.(BACnetVendorIdTagged)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
@@ -207,7 +207,7 @@ func BACnetFaultParameterFaultExtendedParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_extendedFaultType, _extendedFaultTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _extendedFaultTypeErr != nil {
-		return nil, errors.Wrap(_extendedFaultTypeErr, "Error parsing 'extendedFaultType' field")
+		return nil, errors.Wrap(_extendedFaultTypeErr, "Error parsing 'extendedFaultType' field of BACnetFaultParameterFaultExtended")
 	}
 	extendedFaultType := _extendedFaultType.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("extendedFaultType"); closeErr != nil {
@@ -220,7 +220,7 @@ func BACnetFaultParameterFaultExtendedParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_parameters, _parametersErr := BACnetFaultParameterFaultExtendedParametersParse(readBuffer, uint8(uint8(2)))
 	if _parametersErr != nil {
-		return nil, errors.Wrap(_parametersErr, "Error parsing 'parameters' field")
+		return nil, errors.Wrap(_parametersErr, "Error parsing 'parameters' field of BACnetFaultParameterFaultExtended")
 	}
 	parameters := _parameters.(BACnetFaultParameterFaultExtendedParameters)
 	if closeErr := readBuffer.CloseContext("parameters"); closeErr != nil {
@@ -233,7 +233,7 @@ func BACnetFaultParameterFaultExtendedParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(2)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultExtended")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

@@ -170,7 +170,7 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) 
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetTimeStamp.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetTimeStamp")
 	}
 	_child = _childTemp.(BACnetTimeStampChildSerializeRequirement)
 

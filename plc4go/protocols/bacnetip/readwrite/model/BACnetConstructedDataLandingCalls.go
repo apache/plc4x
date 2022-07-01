@@ -155,7 +155,7 @@ func BACnetConstructedDataLandingCallsParse(readBuffer utils.ReadBuffer, tagNumb
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLandingCallStatusParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'landingCallStatus' field")
+				return nil, errors.Wrap(_err, "Error parsing 'landingCallStatus' field of BACnetConstructedDataLandingCalls")
 			}
 			landingCallStatus = append(landingCallStatus, _item.(BACnetLandingCallStatus))
 

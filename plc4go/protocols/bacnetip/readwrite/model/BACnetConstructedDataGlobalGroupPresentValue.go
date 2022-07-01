@@ -197,7 +197,7 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataGlobalGroupPresentValue")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyAccessResultParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'presentValue' field")
+				return nil, errors.Wrap(_err, "Error parsing 'presentValue' field of BACnetConstructedDataGlobalGroupPresentValue")
 			}
 			presentValue = append(presentValue, _item.(BACnetPropertyAccessResult))
 

@@ -137,7 +137,7 @@ func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk bool) 
 	}
 	_command, _commandErr := CBusPointToMultiPointCommandParse(readBuffer, bool(srchk))
 	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
+		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToMultiPoint")
 	}
 	command := _command.(CBusPointToMultiPointCommand)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {

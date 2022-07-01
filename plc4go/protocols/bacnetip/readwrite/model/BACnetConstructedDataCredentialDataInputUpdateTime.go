@@ -164,7 +164,7 @@ func BACnetConstructedDataCredentialDataInputUpdateTimeParse(readBuffer utils.Re
 	}
 	_updateTime, _updateTimeErr := BACnetTimeStampParse(readBuffer)
 	if _updateTimeErr != nil {
-		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field")
+		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field of BACnetConstructedDataCredentialDataInputUpdateTime")
 	}
 	updateTime := _updateTime.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("updateTime"); closeErr != nil {

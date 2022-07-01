@@ -147,7 +147,7 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUE
 	}
 	_exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(readBuffer)
 	if _exceptionCodeErr != nil {
-		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
+		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field of ModbusPDUError")
 	}
 	exceptionCode := _exceptionCode
 	if closeErr := readBuffer.CloseContext("exceptionCode"); closeErr != nil {

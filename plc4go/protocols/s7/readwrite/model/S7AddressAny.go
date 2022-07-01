@@ -211,14 +211,14 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	// Simple Field (numberOfElements)
 	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint16("numberOfElements", 16)
 	if _numberOfElementsErr != nil {
-		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
+		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field of S7AddressAny")
 	}
 	numberOfElements := _numberOfElements
 
 	// Simple Field (dbNumber)
 	_dbNumber, _dbNumberErr := readBuffer.ReadUint16("dbNumber", 16)
 	if _dbNumberErr != nil {
-		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
+		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field of S7AddressAny")
 	}
 	dbNumber := _dbNumber
 
@@ -228,7 +228,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	}
 	_area, _areaErr := MemoryAreaParse(readBuffer)
 	if _areaErr != nil {
-		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
+		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field of S7AddressAny")
 	}
 	area := _area
 	if closeErr := readBuffer.CloseContext("area"); closeErr != nil {
@@ -239,7 +239,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 5)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7AddressAny")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -252,14 +252,14 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	// Simple Field (byteAddress)
 	_byteAddress, _byteAddressErr := readBuffer.ReadUint16("byteAddress", 16)
 	if _byteAddressErr != nil {
-		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field")
+		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field of S7AddressAny")
 	}
 	byteAddress := _byteAddress
 
 	// Simple Field (bitAddress)
 	_bitAddress, _bitAddressErr := readBuffer.ReadUint8("bitAddress", 3)
 	if _bitAddressErr != nil {
-		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
+		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field of S7AddressAny")
 	}
 	bitAddress := _bitAddress
 

@@ -197,7 +197,7 @@ func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBu
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataAuthenticationPolicyNames")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBu
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'authenticationPolicyNames' field")
+				return nil, errors.Wrap(_err, "Error parsing 'authenticationPolicyNames' field of BACnetConstructedDataAuthenticationPolicyNames")
 			}
 			authenticationPolicyNames = append(authenticationPolicyNames, _item.(BACnetApplicationTagCharacterString))
 

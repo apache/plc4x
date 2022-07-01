@@ -164,7 +164,7 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParse(readBuffer utils.ReadB
 	}
 	_ipv6MulticastAddress, _ipv6MulticastAddressErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6MulticastAddressErr != nil {
-		return nil, errors.Wrap(_ipv6MulticastAddressErr, "Error parsing 'ipv6MulticastAddress' field")
+		return nil, errors.Wrap(_ipv6MulticastAddressErr, "Error parsing 'ipv6MulticastAddress' field of BACnetConstructedDataBACnetIPv6MulticastAddress")
 	}
 	ipv6MulticastAddress := _ipv6MulticastAddress.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipv6MulticastAddress"); closeErr != nil {

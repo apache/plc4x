@@ -164,7 +164,7 @@ func BACnetConstructedDataDaysRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_daysRemaining, _daysRemainingErr := BACnetApplicationTagParse(readBuffer)
 	if _daysRemainingErr != nil {
-		return nil, errors.Wrap(_daysRemainingErr, "Error parsing 'daysRemaining' field")
+		return nil, errors.Wrap(_daysRemainingErr, "Error parsing 'daysRemaining' field of BACnetConstructedDataDaysRemaining")
 	}
 	daysRemaining := _daysRemaining.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("daysRemaining"); closeErr != nil {

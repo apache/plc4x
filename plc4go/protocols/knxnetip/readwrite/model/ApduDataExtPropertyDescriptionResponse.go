@@ -220,28 +220,28 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	// Simple Field (objectIndex)
 	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
-		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
+		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	objectIndex := _objectIndex
 
 	// Simple Field (propertyId)
 	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
-		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
+		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	propertyId := _propertyId
 
 	// Simple Field (index)
 	_index, _indexErr := readBuffer.ReadUint8("index", 8)
 	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
+		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	index := _index
 
 	// Simple Field (writeEnabled)
 	_writeEnabled, _writeEnabledErr := readBuffer.ReadBit("writeEnabled")
 	if _writeEnabledErr != nil {
-		return nil, errors.Wrap(_writeEnabledErr, "Error parsing 'writeEnabled' field")
+		return nil, errors.Wrap(_writeEnabledErr, "Error parsing 'writeEnabled' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	writeEnabled := _writeEnabled
 
@@ -249,7 +249,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ApduDataExtPropertyDescriptionResponse")
 		}
 		if reserved != uint8(0x0) {
 			log.Info().Fields(map[string]interface{}{
@@ -265,7 +265,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	}
 	_propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(readBuffer)
 	if _propertyDataTypeErr != nil {
-		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field")
+		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	propertyDataType := _propertyDataType
 	if closeErr := readBuffer.CloseContext("propertyDataType"); closeErr != nil {
@@ -276,7 +276,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 4)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ApduDataExtPropertyDescriptionResponse")
 		}
 		if reserved != uint8(0x0) {
 			log.Info().Fields(map[string]interface{}{
@@ -289,7 +289,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	// Simple Field (maxNrOfElements)
 	_maxNrOfElements, _maxNrOfElementsErr := readBuffer.ReadUint16("maxNrOfElements", 12)
 	if _maxNrOfElementsErr != nil {
-		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
+		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	maxNrOfElements := _maxNrOfElements
 
@@ -299,7 +299,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	}
 	_readLevel, _readLevelErr := AccessLevelParse(readBuffer)
 	if _readLevelErr != nil {
-		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field")
+		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	readLevel := _readLevel
 	if closeErr := readBuffer.CloseContext("readLevel"); closeErr != nil {
@@ -312,7 +312,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	}
 	_writeLevel, _writeLevelErr := AccessLevelParse(readBuffer)
 	if _writeLevelErr != nil {
-		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")
+		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	writeLevel := _writeLevel
 	if closeErr := readBuffer.CloseContext("writeLevel"); closeErr != nil {

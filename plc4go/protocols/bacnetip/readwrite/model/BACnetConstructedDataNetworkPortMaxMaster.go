@@ -164,7 +164,7 @@ func BACnetConstructedDataNetworkPortMaxMasterParse(readBuffer utils.ReadBuffer,
 	}
 	_maxMaster, _maxMasterErr := BACnetApplicationTagParse(readBuffer)
 	if _maxMasterErr != nil {
-		return nil, errors.Wrap(_maxMasterErr, "Error parsing 'maxMaster' field")
+		return nil, errors.Wrap(_maxMasterErr, "Error parsing 'maxMaster' field of BACnetConstructedDataNetworkPortMaxMaster")
 	}
 	maxMaster := _maxMaster.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxMaster"); closeErr != nil {

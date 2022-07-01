@@ -164,7 +164,7 @@ func BACnetConstructedDataTraceFlagParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_traceFlag, _traceFlagErr := BACnetApplicationTagParse(readBuffer)
 	if _traceFlagErr != nil {
-		return nil, errors.Wrap(_traceFlagErr, "Error parsing 'traceFlag' field")
+		return nil, errors.Wrap(_traceFlagErr, "Error parsing 'traceFlag' field of BACnetConstructedDataTraceFlag")
 	}
 	traceFlag := _traceFlag.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("traceFlag"); closeErr != nil {

@@ -137,7 +137,7 @@ func BACnetPropertyStatesEventTypeParse(readBuffer utils.ReadBuffer, peekedTagNu
 	}
 	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventTypeErr != nil {
-		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
+		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetPropertyStatesEventType")
 	}
 	eventType := _eventType.(BACnetEventTypeTagged)
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {

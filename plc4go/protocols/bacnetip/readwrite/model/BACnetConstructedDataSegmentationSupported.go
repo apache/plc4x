@@ -164,7 +164,7 @@ func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer
 	}
 	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _segmentationSupportedErr != nil {
-		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
+		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field of BACnetConstructedDataSegmentationSupported")
 	}
 	segmentationSupported := _segmentationSupported.(BACnetSegmentationTagged)
 	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {

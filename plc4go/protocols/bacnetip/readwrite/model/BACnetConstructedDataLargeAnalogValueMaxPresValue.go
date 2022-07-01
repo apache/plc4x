@@ -164,7 +164,7 @@ func BACnetConstructedDataLargeAnalogValueMaxPresValueParse(readBuffer utils.Rea
 	}
 	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParse(readBuffer)
 	if _maxPresValueErr != nil {
-		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field")
+		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataLargeAnalogValueMaxPresValue")
 	}
 	maxPresValue := _maxPresValue.(BACnetApplicationTagDouble)
 	if closeErr := readBuffer.CloseContext("maxPresValue"); closeErr != nil {

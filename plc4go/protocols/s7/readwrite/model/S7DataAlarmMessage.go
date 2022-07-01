@@ -138,7 +138,7 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	// Const Field (functionId)
 	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
+		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7DataAlarmMessage")
 	}
 	if functionId != S7DataAlarmMessage_FUNCTIONID {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7DataAlarmMessage_FUNCTIONID) + " but got " + fmt.Sprintf("%d", functionId))
@@ -147,7 +147,7 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	// Const Field (numberMessageObj)
 	numberMessageObj, _numberMessageObjErr := readBuffer.ReadUint8("numberMessageObj", 8)
 	if _numberMessageObjErr != nil {
-		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field")
+		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field of S7DataAlarmMessage")
 	}
 	if numberMessageObj != S7DataAlarmMessage_NUMBERMESSAGEOBJ {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7DataAlarmMessage_NUMBERMESSAGEOBJ) + " but got " + fmt.Sprintf("%d", numberMessageObj))
@@ -171,7 +171,7 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v]", cpuFunctionType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7DataAlarmMessage.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7DataAlarmMessage")
 	}
 	_child = _childTemp.(S7DataAlarmMessageChildSerializeRequirement)
 

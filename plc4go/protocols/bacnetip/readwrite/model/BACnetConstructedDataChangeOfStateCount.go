@@ -164,7 +164,7 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 	}
 	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParse(readBuffer)
 	if _changeIfStateCountErr != nil {
-		return nil, errors.Wrap(_changeIfStateCountErr, "Error parsing 'changeIfStateCount' field")
+		return nil, errors.Wrap(_changeIfStateCountErr, "Error parsing 'changeIfStateCount' field of BACnetConstructedDataChangeOfStateCount")
 	}
 	changeIfStateCount := _changeIfStateCount.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("changeIfStateCount"); closeErr != nil {

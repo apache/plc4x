@@ -139,7 +139,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NetworkRoute")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -155,7 +155,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	}
 	_reverseRouteType, _reverseRouteTypeErr := RouteTypeParse(readBuffer)
 	if _reverseRouteTypeErr != nil {
-		return nil, errors.Wrap(_reverseRouteTypeErr, "Error parsing 'reverseRouteType' field")
+		return nil, errors.Wrap(_reverseRouteTypeErr, "Error parsing 'reverseRouteType' field of NetworkRoute")
 	}
 	reverseRouteType := _reverseRouteType
 	if closeErr := readBuffer.CloseContext("reverseRouteType"); closeErr != nil {
@@ -168,7 +168,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	}
 	_routeType, _routeTypeErr := RouteTypeParse(readBuffer)
 	if _routeTypeErr != nil {
-		return nil, errors.Wrap(_routeTypeErr, "Error parsing 'routeType' field")
+		return nil, errors.Wrap(_routeTypeErr, "Error parsing 'routeType' field of NetworkRoute")
 	}
 	routeType := _routeType
 	if closeErr := readBuffer.CloseContext("routeType"); closeErr != nil {
@@ -189,7 +189,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 		for curItem := uint16(0); curItem < uint16(routeType.AdditionalBridges()); curItem++ {
 			_item, _err := BridgeAddressParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field")
+				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field of NetworkRoute")
 			}
 			additionalBridgeAddresses[curItem] = _item.(BridgeAddress)
 		}

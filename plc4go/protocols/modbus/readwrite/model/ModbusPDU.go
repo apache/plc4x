@@ -119,13 +119,13 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDU, erro
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
-		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
+		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field of ModbusPDU")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag, _functionFlagErr := readBuffer.ReadUint8("functionFlag", 7)
 	if _functionFlagErr != nil {
-		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field")
+		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field of ModbusPDU")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -220,7 +220,7 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDU, erro
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorFlag=%v, functionFlag=%v, response=%v]", errorFlag, functionFlag, response)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ModbusPDU.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ModbusPDU")
 	}
 	_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 

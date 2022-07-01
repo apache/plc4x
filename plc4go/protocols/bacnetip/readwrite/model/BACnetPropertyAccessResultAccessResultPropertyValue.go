@@ -137,7 +137,7 @@ func BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer utils.R
 	}
 	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(4)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), propertyArrayIndexArgument)
 	if _propertyValueErr != nil {
-		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field")
+		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field of BACnetPropertyAccessResultAccessResultPropertyValue")
 	}
 	propertyValue := _propertyValue.(BACnetConstructedData)
 	if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {

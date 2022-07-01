@@ -164,7 +164,7 @@ func BACnetConstructedDataIntegerValueFaultLowLimitParse(readBuffer utils.ReadBu
 	}
 	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _faultLowLimitErr != nil {
-		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field")
+		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field of BACnetConstructedDataIntegerValueFaultLowLimit")
 	}
 	faultLowLimit := _faultLowLimit.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("faultLowLimit"); closeErr != nil {

@@ -154,7 +154,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7MessageObjectResponse")
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
@@ -167,7 +167,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
+		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7MessageObjectResponse")
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
@@ -178,7 +178,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7MessageObjectResponse")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{

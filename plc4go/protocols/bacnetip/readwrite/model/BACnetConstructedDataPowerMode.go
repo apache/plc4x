@@ -164,7 +164,7 @@ func BACnetConstructedDataPowerModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_powerMode, _powerModeErr := BACnetApplicationTagParse(readBuffer)
 	if _powerModeErr != nil {
-		return nil, errors.Wrap(_powerModeErr, "Error parsing 'powerMode' field")
+		return nil, errors.Wrap(_powerModeErr, "Error parsing 'powerMode' field of BACnetConstructedDataPowerMode")
 	}
 	powerMode := _powerMode.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("powerMode"); closeErr != nil {

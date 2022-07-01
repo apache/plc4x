@@ -137,7 +137,7 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	}
 	_command, _commandErr := CBusPointToPointCommandParse(readBuffer, bool(srchk))
 	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
+		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToPoint")
 	}
 	command := _command.(CBusPointToPointCommand)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {

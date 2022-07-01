@@ -164,7 +164,7 @@ func BACnetConstructedDataIntervalOffsetParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_intervalOffset, _intervalOffsetErr := BACnetApplicationTagParse(readBuffer)
 	if _intervalOffsetErr != nil {
-		return nil, errors.Wrap(_intervalOffsetErr, "Error parsing 'intervalOffset' field")
+		return nil, errors.Wrap(_intervalOffsetErr, "Error parsing 'intervalOffset' field of BACnetConstructedDataIntervalOffset")
 	}
 	intervalOffset := _intervalOffset.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("intervalOffset"); closeErr != nil {

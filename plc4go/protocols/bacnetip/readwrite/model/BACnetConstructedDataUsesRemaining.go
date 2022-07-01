@@ -164,7 +164,7 @@ func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParse(readBuffer)
 	if _usesRemainingErr != nil {
-		return nil, errors.Wrap(_usesRemainingErr, "Error parsing 'usesRemaining' field")
+		return nil, errors.Wrap(_usesRemainingErr, "Error parsing 'usesRemaining' field of BACnetConstructedDataUsesRemaining")
 	}
 	usesRemaining := _usesRemaining.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("usesRemaining"); closeErr != nil {

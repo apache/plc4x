@@ -164,7 +164,7 @@ func BACnetConstructedDataWriteStatusParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_writeStatus, _writeStatusErr := BACnetWriteStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _writeStatusErr != nil {
-		return nil, errors.Wrap(_writeStatusErr, "Error parsing 'writeStatus' field")
+		return nil, errors.Wrap(_writeStatusErr, "Error parsing 'writeStatus' field of BACnetConstructedDataWriteStatus")
 	}
 	writeStatus := _writeStatus.(BACnetWriteStatusTagged)
 	if closeErr := readBuffer.CloseContext("writeStatus"); closeErr != nil {

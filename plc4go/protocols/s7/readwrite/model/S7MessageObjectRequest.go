@@ -193,7 +193,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
 	if _variableSpecErr != nil {
-		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field")
+		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of S7MessageObjectRequest")
 	}
 	if variableSpec != S7MessageObjectRequest_VARIABLESPEC {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7MessageObjectRequest_VARIABLESPEC) + " but got " + fmt.Sprintf("%d", variableSpec))
@@ -202,7 +202,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	// Const Field (length)
 	length, _lengthErr := readBuffer.ReadUint8("length", 8)
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of S7MessageObjectRequest")
 	}
 	if length != S7MessageObjectRequest_LENGTH {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7MessageObjectRequest_LENGTH) + " but got " + fmt.Sprintf("%d", length))
@@ -214,7 +214,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	}
 	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
 	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field")
+		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of S7MessageObjectRequest")
 	}
 	syntaxId := _syntaxId
 	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
@@ -225,7 +225,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7MessageObjectRequest")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -241,7 +241,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	}
 	_queryType, _queryTypeErr := QueryTypeParse(readBuffer)
 	if _queryTypeErr != nil {
-		return nil, errors.Wrap(_queryTypeErr, "Error parsing 'queryType' field")
+		return nil, errors.Wrap(_queryTypeErr, "Error parsing 'queryType' field of S7MessageObjectRequest")
 	}
 	queryType := _queryType
 	if closeErr := readBuffer.CloseContext("queryType"); closeErr != nil {
@@ -252,7 +252,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7MessageObjectRequest")
 		}
 		if reserved != uint8(0x34) {
 			log.Info().Fields(map[string]interface{}{
@@ -268,7 +268,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	}
 	_alarmType, _alarmTypeErr := AlarmTypeParse(readBuffer)
 	if _alarmTypeErr != nil {
-		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field")
+		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field of S7MessageObjectRequest")
 	}
 	alarmType := _alarmType
 	if closeErr := readBuffer.CloseContext("alarmType"); closeErr != nil {

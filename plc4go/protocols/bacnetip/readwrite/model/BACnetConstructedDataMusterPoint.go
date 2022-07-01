@@ -164,7 +164,7 @@ func BACnetConstructedDataMusterPointParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_musterPoint, _musterPointErr := BACnetApplicationTagParse(readBuffer)
 	if _musterPointErr != nil {
-		return nil, errors.Wrap(_musterPointErr, "Error parsing 'musterPoint' field")
+		return nil, errors.Wrap(_musterPointErr, "Error parsing 'musterPoint' field of BACnetConstructedDataMusterPoint")
 	}
 	musterPoint := _musterPoint.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("musterPoint"); closeErr != nil {

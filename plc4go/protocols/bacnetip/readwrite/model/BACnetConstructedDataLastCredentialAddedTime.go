@@ -164,7 +164,7 @@ func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuff
 	}
 	_lastCredentialAddedTime, _lastCredentialAddedTimeErr := BACnetDateTimeParse(readBuffer)
 	if _lastCredentialAddedTimeErr != nil {
-		return nil, errors.Wrap(_lastCredentialAddedTimeErr, "Error parsing 'lastCredentialAddedTime' field")
+		return nil, errors.Wrap(_lastCredentialAddedTimeErr, "Error parsing 'lastCredentialAddedTime' field of BACnetConstructedDataLastCredentialAddedTime")
 	}
 	lastCredentialAddedTime := _lastCredentialAddedTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("lastCredentialAddedTime"); closeErr != nil {

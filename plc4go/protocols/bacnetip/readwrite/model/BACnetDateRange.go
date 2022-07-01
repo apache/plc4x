@@ -122,7 +122,7 @@ func BACnetDateRangeParse(readBuffer utils.ReadBuffer) (BACnetDateRange, error) 
 	}
 	_startDate, _startDateErr := BACnetApplicationTagParse(readBuffer)
 	if _startDateErr != nil {
-		return nil, errors.Wrap(_startDateErr, "Error parsing 'startDate' field")
+		return nil, errors.Wrap(_startDateErr, "Error parsing 'startDate' field of BACnetDateRange")
 	}
 	startDate := _startDate.(BACnetApplicationTagDate)
 	if closeErr := readBuffer.CloseContext("startDate"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetDateRangeParse(readBuffer utils.ReadBuffer) (BACnetDateRange, error) 
 	}
 	_endDate, _endDateErr := BACnetApplicationTagParse(readBuffer)
 	if _endDateErr != nil {
-		return nil, errors.Wrap(_endDateErr, "Error parsing 'endDate' field")
+		return nil, errors.Wrap(_endDateErr, "Error parsing 'endDate' field of BACnetDateRange")
 	}
 	endDate := _endDate.(BACnetApplicationTagDate)
 	if closeErr := readBuffer.CloseContext("endDate"); closeErr != nil {

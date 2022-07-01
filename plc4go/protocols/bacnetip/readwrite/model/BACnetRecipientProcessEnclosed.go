@@ -135,7 +135,7 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetRecipientProcessEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_recipientProcess, _recipientProcessErr := BACnetRecipientProcessParse(readBuffer)
 	if _recipientProcessErr != nil {
-		return nil, errors.Wrap(_recipientProcessErr, "Error parsing 'recipientProcess' field")
+		return nil, errors.Wrap(_recipientProcessErr, "Error parsing 'recipientProcess' field of BACnetRecipientProcessEnclosed")
 	}
 	recipientProcess := _recipientProcess.(BACnetRecipientProcess)
 	if closeErr := readBuffer.CloseContext("recipientProcess"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetRecipientProcessEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

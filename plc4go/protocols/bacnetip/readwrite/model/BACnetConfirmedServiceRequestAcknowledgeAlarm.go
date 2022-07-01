@@ -195,7 +195,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	}
 	_acknowledgingProcessIdentifier, _acknowledgingProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _acknowledgingProcessIdentifierErr != nil {
-		return nil, errors.Wrap(_acknowledgingProcessIdentifierErr, "Error parsing 'acknowledgingProcessIdentifier' field")
+		return nil, errors.Wrap(_acknowledgingProcessIdentifierErr, "Error parsing 'acknowledgingProcessIdentifier' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 	acknowledgingProcessIdentifier := _acknowledgingProcessIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("acknowledgingProcessIdentifier"); closeErr != nil {
@@ -208,7 +208,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	}
 	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _eventObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field")
+		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 	eventObjectIdentifier := _eventObjectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("eventObjectIdentifier"); closeErr != nil {
@@ -221,7 +221,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	}
 	_eventStateAcknowledged, _eventStateAcknowledgedErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventStateAcknowledgedErr != nil {
-		return nil, errors.Wrap(_eventStateAcknowledgedErr, "Error parsing 'eventStateAcknowledged' field")
+		return nil, errors.Wrap(_eventStateAcknowledgedErr, "Error parsing 'eventStateAcknowledged' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 	eventStateAcknowledged := _eventStateAcknowledged.(BACnetEventStateTagged)
 	if closeErr := readBuffer.CloseContext("eventStateAcknowledged"); closeErr != nil {
@@ -234,7 +234,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	}
 	_timestamp, _timestampErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(3)))
 	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 	timestamp := _timestamp.(BACnetTimeStampEnclosed)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
@@ -247,7 +247,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	}
 	_acknowledgmentSource, _acknowledgmentSourceErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _acknowledgmentSourceErr != nil {
-		return nil, errors.Wrap(_acknowledgmentSourceErr, "Error parsing 'acknowledgmentSource' field")
+		return nil, errors.Wrap(_acknowledgmentSourceErr, "Error parsing 'acknowledgmentSource' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 	acknowledgmentSource := _acknowledgmentSource.(BACnetContextTagCharacterString)
 	if closeErr := readBuffer.CloseContext("acknowledgmentSource"); closeErr != nil {
@@ -260,7 +260,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	}
 	_timeOfAcknowledgment, _timeOfAcknowledgmentErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(5)))
 	if _timeOfAcknowledgmentErr != nil {
-		return nil, errors.Wrap(_timeOfAcknowledgmentErr, "Error parsing 'timeOfAcknowledgment' field")
+		return nil, errors.Wrap(_timeOfAcknowledgmentErr, "Error parsing 'timeOfAcknowledgment' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
 	timeOfAcknowledgment := _timeOfAcknowledgment.(BACnetTimeStampEnclosed)
 	if closeErr := readBuffer.CloseContext("timeOfAcknowledgment"); closeErr != nil {

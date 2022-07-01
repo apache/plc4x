@@ -164,7 +164,7 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, 
 	}
 	_timeOfDeviceRestart, _timeOfDeviceRestartErr := BACnetTimeStampParse(readBuffer)
 	if _timeOfDeviceRestartErr != nil {
-		return nil, errors.Wrap(_timeOfDeviceRestartErr, "Error parsing 'timeOfDeviceRestart' field")
+		return nil, errors.Wrap(_timeOfDeviceRestartErr, "Error parsing 'timeOfDeviceRestart' field of BACnetConstructedDataTimeOfDeviceRestart")
 	}
 	timeOfDeviceRestart := _timeOfDeviceRestart.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("timeOfDeviceRestart"); closeErr != nil {

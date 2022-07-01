@@ -164,7 +164,7 @@ func BACnetConstructedDataDatePatternValuePresentValueParse(readBuffer utils.Rea
 	}
 	_presentValue, _presentValueErr := BACnetApplicationTagParse(readBuffer)
 	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
+		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataDatePatternValuePresentValue")
 	}
 	presentValue := _presentValue.(BACnetApplicationTagDate)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {

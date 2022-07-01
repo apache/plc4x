@@ -147,7 +147,7 @@ func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessagePushTyp
 	}
 	_TimeStamp, _TimeStampErr := DateAndTimeParse(readBuffer)
 	if _TimeStampErr != nil {
-		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field")
+		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of AlarmMessagePushType")
 	}
 	TimeStamp := _TimeStamp.(DateAndTime)
 	if closeErr := readBuffer.CloseContext("TimeStamp"); closeErr != nil {
@@ -157,14 +157,14 @@ func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessagePushTyp
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
+		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessagePushType")
 	}
 	functionId := _functionId
 
 	// Simple Field (numberOfObjects)
 	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
+		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessagePushType")
 	}
 	numberOfObjects := _numberOfObjects
 
@@ -182,7 +182,7 @@ func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessagePushTyp
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := AlarmMessageObjectPushTypeParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
+				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessagePushType")
 			}
 			messageObjects[curItem] = _item.(AlarmMessageObjectPushType)
 		}

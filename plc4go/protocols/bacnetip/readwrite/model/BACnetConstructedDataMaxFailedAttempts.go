@@ -164,7 +164,7 @@ func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, ta
 	}
 	_maxFailedAttempts, _maxFailedAttemptsErr := BACnetApplicationTagParse(readBuffer)
 	if _maxFailedAttemptsErr != nil {
-		return nil, errors.Wrap(_maxFailedAttemptsErr, "Error parsing 'maxFailedAttempts' field")
+		return nil, errors.Wrap(_maxFailedAttemptsErr, "Error parsing 'maxFailedAttempts' field of BACnetConstructedDataMaxFailedAttempts")
 	}
 	maxFailedAttempts := _maxFailedAttempts.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxFailedAttempts"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 	}
 	_recordsSinceNotifications, _recordsSinceNotificationsErr := BACnetApplicationTagParse(readBuffer)
 	if _recordsSinceNotificationsErr != nil {
-		return nil, errors.Wrap(_recordsSinceNotificationsErr, "Error parsing 'recordsSinceNotifications' field")
+		return nil, errors.Wrap(_recordsSinceNotificationsErr, "Error parsing 'recordsSinceNotifications' field of BACnetConstructedDataRecordsSinceNotification")
 	}
 	recordsSinceNotifications := _recordsSinceNotifications.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("recordsSinceNotifications"); closeErr != nil {

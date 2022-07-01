@@ -164,7 +164,7 @@ func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, 
 	}
 	_localForwardingOnly, _localForwardingOnlyErr := BACnetApplicationTagParse(readBuffer)
 	if _localForwardingOnlyErr != nil {
-		return nil, errors.Wrap(_localForwardingOnlyErr, "Error parsing 'localForwardingOnly' field")
+		return nil, errors.Wrap(_localForwardingOnlyErr, "Error parsing 'localForwardingOnly' field of BACnetConstructedDataLocalForwardingOnly")
 	}
 	localForwardingOnly := _localForwardingOnly.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("localForwardingOnly"); closeErr != nil {

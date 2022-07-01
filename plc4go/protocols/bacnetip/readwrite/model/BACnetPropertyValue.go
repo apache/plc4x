@@ -153,7 +153,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
+		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetPropertyValue")
 	}
 	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
@@ -173,7 +173,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field")
+			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field of BACnetPropertyValue")
 		default:
 			propertyArrayIndex = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("propertyArrayIndex"); closeErr != nil {
@@ -195,7 +195,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field of BACnetPropertyValue")
 		default:
 			propertyValue = _val.(BACnetConstructedDataElement)
 			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
@@ -217,7 +217,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
+			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetPropertyValue")
 		default:
 			priority = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {

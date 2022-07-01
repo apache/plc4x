@@ -136,7 +136,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 	}
 	_channel, _channelErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _channelErr != nil {
-		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field")
+		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field of BACnetGroupChannelValue")
 	}
 	channel := _channel.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("channel"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'overridingPriority' field")
+			return nil, errors.Wrap(_err, "Error parsing 'overridingPriority' field of BACnetGroupChannelValue")
 		default:
 			overridingPriority = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("overridingPriority"); closeErr != nil {
@@ -171,7 +171,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 	}
 	_value, _valueErr := BACnetChannelValueParse(readBuffer)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetGroupChannelValue")
 	}
 	value := _value.(BACnetChannelValue)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {

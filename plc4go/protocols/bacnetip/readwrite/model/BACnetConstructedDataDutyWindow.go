@@ -164,7 +164,7 @@ func BACnetConstructedDataDutyWindowParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_dutyWindow, _dutyWindowErr := BACnetApplicationTagParse(readBuffer)
 	if _dutyWindowErr != nil {
-		return nil, errors.Wrap(_dutyWindowErr, "Error parsing 'dutyWindow' field")
+		return nil, errors.Wrap(_dutyWindowErr, "Error parsing 'dutyWindow' field of BACnetConstructedDataDutyWindow")
 	}
 	dutyWindow := _dutyWindow.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("dutyWindow"); closeErr != nil {

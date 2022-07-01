@@ -164,7 +164,7 @@ func BACnetConstructedDataArchiveParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_archive, _archiveErr := BACnetApplicationTagParse(readBuffer)
 	if _archiveErr != nil {
-		return nil, errors.Wrap(_archiveErr, "Error parsing 'archive' field")
+		return nil, errors.Wrap(_archiveErr, "Error parsing 'archive' field of BACnetConstructedDataArchive")
 	}
 	archive := _archive.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("archive"); closeErr != nil {

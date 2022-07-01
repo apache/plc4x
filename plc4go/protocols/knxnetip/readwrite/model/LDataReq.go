@@ -162,7 +162,7 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 	// Simple Field (additionalInformationLength)
 	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
-		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
+		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field of LDataReq")
 	}
 	additionalInformationLength := _additionalInformationLength
 
@@ -178,7 +178,7 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 		for positionAware.GetPos() < _additionalInformationEndPos {
 			_item, _err := CEMIAdditionalInformationParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
+				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LDataReq")
 			}
 			additionalInformation = append(additionalInformation, _item.(CEMIAdditionalInformation))
 		}
@@ -193,7 +193,7 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 	}
 	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
 	if _dataFrameErr != nil {
-		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
+		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LDataReq")
 	}
 	dataFrame := _dataFrame.(LDataFrame)
 	if closeErr := readBuffer.CloseContext("dataFrame"); closeErr != nil {

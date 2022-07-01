@@ -164,7 +164,7 @@ func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer,
 	}
 	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParse(readBuffer)
 	if _proportionalConstantErr != nil {
-		return nil, errors.Wrap(_proportionalConstantErr, "Error parsing 'proportionalConstant' field")
+		return nil, errors.Wrap(_proportionalConstantErr, "Error parsing 'proportionalConstant' field of BACnetConstructedDataProportionalConstant")
 	}
 	proportionalConstant := _proportionalConstant.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("proportionalConstant"); closeErr != nil {

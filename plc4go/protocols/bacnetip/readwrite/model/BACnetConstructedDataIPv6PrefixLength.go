@@ -164,7 +164,7 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 	}
 	_ipv6PrefixLength, _ipv6PrefixLengthErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6PrefixLengthErr != nil {
-		return nil, errors.Wrap(_ipv6PrefixLengthErr, "Error parsing 'ipv6PrefixLength' field")
+		return nil, errors.Wrap(_ipv6PrefixLengthErr, "Error parsing 'ipv6PrefixLength' field of BACnetConstructedDataIPv6PrefixLength")
 	}
 	ipv6PrefixLength := _ipv6PrefixLength.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("ipv6PrefixLength"); closeErr != nil {

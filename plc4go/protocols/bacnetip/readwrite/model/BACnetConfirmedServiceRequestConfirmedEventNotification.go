@@ -282,7 +282,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_processIdentifier, _processIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _processIdentifierErr != nil {
-		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field")
+		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	processIdentifier := _processIdentifier.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
@@ -295,7 +295,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _initiatingDeviceIdentifierErr != nil {
-		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field")
+		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	initiatingDeviceIdentifier := _initiatingDeviceIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("initiatingDeviceIdentifier"); closeErr != nil {
@@ -308,7 +308,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _eventObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field")
+		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	eventObjectIdentifier := _eventObjectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("eventObjectIdentifier"); closeErr != nil {
@@ -321,7 +321,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_timestamp, _timestampErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(3)))
 	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	timestamp := _timestamp.(BACnetTimeStampEnclosed)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
@@ -334,7 +334,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_notificationClass, _notificationClassErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _notificationClassErr != nil {
-		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field")
+		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	notificationClass := _notificationClass.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("notificationClass"); closeErr != nil {
@@ -347,7 +347,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_priority, _priorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(5)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
+		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	priority := _priority.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
@@ -360,7 +360,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(uint8(6)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventTypeErr != nil {
-		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
+		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	eventType := _eventType.(BACnetEventTypeTagged)
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
@@ -380,7 +380,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'messageText' field")
+			return nil, errors.Wrap(_err, "Error parsing 'messageText' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 		default:
 			messageText = _val.(BACnetContextTagCharacterString)
 			if closeErr := readBuffer.CloseContext("messageText"); closeErr != nil {
@@ -395,7 +395,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(8)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
-		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field")
+		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	notifyType := _notifyType.(BACnetNotifyTypeTagged)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
@@ -415,7 +415,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'ackRequired' field")
+			return nil, errors.Wrap(_err, "Error parsing 'ackRequired' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 		default:
 			ackRequired = _val.(BACnetContextTagBoolean)
 			if closeErr := readBuffer.CloseContext("ackRequired"); closeErr != nil {
@@ -437,7 +437,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'fromState' field")
+			return nil, errors.Wrap(_err, "Error parsing 'fromState' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 		default:
 			fromState = _val.(BACnetEventStateTagged)
 			if closeErr := readBuffer.CloseContext("fromState"); closeErr != nil {
@@ -452,7 +452,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	}
 	_toState, _toStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(11)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _toStateErr != nil {
-		return nil, errors.Wrap(_toStateErr, "Error parsing 'toState' field")
+		return nil, errors.Wrap(_toStateErr, "Error parsing 'toState' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 	}
 	toState := _toState.(BACnetEventStateTagged)
 	if closeErr := readBuffer.CloseContext("toState"); closeErr != nil {
@@ -472,7 +472,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field")
+			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field of BACnetConfirmedServiceRequestConfirmedEventNotification")
 		default:
 			eventValues = _val.(BACnetNotificationParameters)
 			if closeErr := readBuffer.CloseContext("eventValues"); closeErr != nil {

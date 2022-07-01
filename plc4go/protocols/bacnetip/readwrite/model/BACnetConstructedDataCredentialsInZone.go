@@ -155,7 +155,7 @@ func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, ta
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'credentialsInZone' field")
+				return nil, errors.Wrap(_err, "Error parsing 'credentialsInZone' field of BACnetConstructedDataCredentialsInZone")
 			}
 			credentialsInZone = append(credentialsInZone, _item.(BACnetDeviceObjectReference))
 

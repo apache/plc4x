@@ -150,14 +150,14 @@ func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTP
 	// Simple Field (destinationReference)
 	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
-		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
+		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field of COTPPacketTpduError")
 	}
 	destinationReference := _destinationReference
 
 	// Simple Field (rejectCause)
 	_rejectCause, _rejectCauseErr := readBuffer.ReadUint8("rejectCause", 8)
 	if _rejectCauseErr != nil {
-		return nil, errors.Wrap(_rejectCauseErr, "Error parsing 'rejectCause' field")
+		return nil, errors.Wrap(_rejectCauseErr, "Error parsing 'rejectCause' field of COTPPacketTpduError")
 	}
 	rejectCause := _rejectCause
 

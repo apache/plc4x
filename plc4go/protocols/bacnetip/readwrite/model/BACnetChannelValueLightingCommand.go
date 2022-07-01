@@ -137,7 +137,7 @@ func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _ligthingCommandValueErr != nil {
-		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field")
+		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field of BACnetChannelValueLightingCommand")
 	}
 	ligthingCommandValue := _ligthingCommandValue.(BACnetLightingCommandEnclosed)
 	if closeErr := readBuffer.CloseContext("ligthingCommandValue"); closeErr != nil {

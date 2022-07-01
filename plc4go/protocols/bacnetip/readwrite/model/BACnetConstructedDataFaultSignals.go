@@ -155,7 +155,7 @@ func BACnetConstructedDataFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumb
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLiftFaultTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'faultSignals' field")
+				return nil, errors.Wrap(_err, "Error parsing 'faultSignals' field of BACnetConstructedDataFaultSignals")
 			}
 			faultSignals = append(faultSignals, _item.(BACnetLiftFaultTagged))
 

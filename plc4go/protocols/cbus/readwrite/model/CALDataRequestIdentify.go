@@ -137,7 +137,7 @@ func CALDataRequestIdentifyParse(readBuffer utils.ReadBuffer) (CALDataRequestIde
 	}
 	_attribute, _attributeErr := AttributeParse(readBuffer)
 	if _attributeErr != nil {
-		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field")
+		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataRequestIdentify")
 	}
 	attribute := _attribute
 	if closeErr := readBuffer.CloseContext("attribute"); closeErr != nil {

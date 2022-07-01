@@ -122,7 +122,7 @@ func ErrorParse(readBuffer utils.ReadBuffer) (Error, error) {
 	}
 	_errorClass, _errorClassErr := ErrorClassTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorClassErr != nil {
-		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
+		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field of Error")
 	}
 	errorClass := _errorClass.(ErrorClassTagged)
 	if closeErr := readBuffer.CloseContext("errorClass"); closeErr != nil {
@@ -135,7 +135,7 @@ func ErrorParse(readBuffer utils.ReadBuffer) (Error, error) {
 	}
 	_errorCode, _errorCodeErr := ErrorCodeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorCodeErr != nil {
-		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
+		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of Error")
 	}
 	errorCode := _errorCode.(ErrorCodeTagged)
 	if closeErr := readBuffer.CloseContext("errorCode"); closeErr != nil {

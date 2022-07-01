@@ -164,7 +164,7 @@ func BACnetConstructedDataNodeTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _nodeTypeErr != nil {
-		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field")
+		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field of BACnetConstructedDataNodeType")
 	}
 	nodeType := _nodeType.(BACnetNodeTypeTagged)
 	if closeErr := readBuffer.CloseContext("nodeType"); closeErr != nil {

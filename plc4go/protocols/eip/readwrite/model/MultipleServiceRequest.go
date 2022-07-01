@@ -164,7 +164,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	// Const Field (requestPathSize)
 	requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
 	if _requestPathSizeErr != nil {
-		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field")
+		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of MultipleServiceRequest")
 	}
 	if requestPathSize != MultipleServiceRequest_REQUESTPATHSIZE {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATHSIZE) + " but got " + fmt.Sprintf("%d", requestPathSize))
@@ -173,7 +173,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	// Const Field (requestPath)
 	requestPath, _requestPathErr := readBuffer.ReadUint32("requestPath", 32)
 	if _requestPathErr != nil {
-		return nil, errors.Wrap(_requestPathErr, "Error parsing 'requestPath' field")
+		return nil, errors.Wrap(_requestPathErr, "Error parsing 'requestPath' field of MultipleServiceRequest")
 	}
 	if requestPath != MultipleServiceRequest_REQUESTPATH {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATH) + " but got " + fmt.Sprintf("%d", requestPath))
@@ -185,7 +185,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	}
 	_data, _dataErr := ServicesParse(readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
 	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MultipleServiceRequest")
 	}
 	data := _data.(Services)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {

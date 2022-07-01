@@ -147,7 +147,7 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (DisconnectResponse, e
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of DisconnectResponse")
 	}
 	communicationChannelId := _communicationChannelId
 
@@ -157,7 +157,7 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (DisconnectResponse, e
 	}
 	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DisconnectResponse")
 	}
 	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {

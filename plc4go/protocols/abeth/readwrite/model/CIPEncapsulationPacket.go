@@ -170,27 +170,27 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	// Discriminator Field (commandType) (Used as input to a switch field)
 	commandType, _commandTypeErr := readBuffer.ReadUint16("commandType", 16)
 	if _commandTypeErr != nil {
-		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field")
+		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field of CIPEncapsulationPacket")
 	}
 
 	// Implicit Field (packetLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	packetLen, _packetLenErr := readBuffer.ReadUint16("packetLen", 16)
 	_ = packetLen
 	if _packetLenErr != nil {
-		return nil, errors.Wrap(_packetLenErr, "Error parsing 'packetLen' field")
+		return nil, errors.Wrap(_packetLenErr, "Error parsing 'packetLen' field of CIPEncapsulationPacket")
 	}
 
 	// Simple Field (sessionHandle)
 	_sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
 	if _sessionHandleErr != nil {
-		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field")
+		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field of CIPEncapsulationPacket")
 	}
 	sessionHandle := _sessionHandle
 
 	// Simple Field (status)
 	_status, _statusErr := readBuffer.ReadUint32("status", 32)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CIPEncapsulationPacket")
 	}
 	status := _status
 
@@ -208,7 +208,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 		for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field")
+				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field of CIPEncapsulationPacket")
 			}
 			senderContext[curItem] = _item
 		}
@@ -220,7 +220,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	// Simple Field (options)
 	_options, _optionsErr := readBuffer.ReadUint32("options", 32)
 	if _optionsErr != nil {
-		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field")
+		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field of CIPEncapsulationPacket")
 	}
 	options := _options
 
@@ -228,7 +228,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	{
 		reserved, _err := readBuffer.ReadUint32("reserved", 32)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CIPEncapsulationPacket")
 		}
 		if reserved != uint32(0x00000000) {
 			log.Info().Fields(map[string]interface{}{
@@ -260,7 +260,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CIPEncapsulationPacket.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CIPEncapsulationPacket")
 	}
 	_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 

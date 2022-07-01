@@ -139,7 +139,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfStateListOfValues")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyStatesParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of BACnetEventParameterChangeOfStateListOfValues")
 			}
 			listOfValues = append(listOfValues, _item.(BACnetPropertyStates))
 
@@ -172,7 +172,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfStateListOfValues")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

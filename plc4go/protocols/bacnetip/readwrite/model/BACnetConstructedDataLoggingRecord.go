@@ -164,7 +164,7 @@ func BACnetConstructedDataLoggingRecordParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_loggingRecord, _loggingRecordErr := BACnetAccumulatorRecordParse(readBuffer)
 	if _loggingRecordErr != nil {
-		return nil, errors.Wrap(_loggingRecordErr, "Error parsing 'loggingRecord' field")
+		return nil, errors.Wrap(_loggingRecordErr, "Error parsing 'loggingRecord' field of BACnetConstructedDataLoggingRecord")
 	}
 	loggingRecord := _loggingRecord.(BACnetAccumulatorRecord)
 	if closeErr := readBuffer.CloseContext("loggingRecord"); closeErr != nil {

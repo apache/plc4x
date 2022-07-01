@@ -164,7 +164,7 @@ func BACnetConstructedDataEventTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventTypeErr != nil {
-		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
+		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetConstructedDataEventType")
 	}
 	eventType := _eventType.(BACnetEventTypeTagged)
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {

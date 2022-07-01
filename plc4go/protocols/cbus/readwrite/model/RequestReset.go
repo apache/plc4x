@@ -154,7 +154,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, srchk bool) (RequestReset, e
 	// Const Field (tilde)
 	tilde, _tildeErr := readBuffer.ReadByte("tilde")
 	if _tildeErr != nil {
-		return nil, errors.Wrap(_tildeErr, "Error parsing 'tilde' field")
+		return nil, errors.Wrap(_tildeErr, "Error parsing 'tilde' field of RequestReset")
 	}
 	if tilde != RequestReset_TILDE {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestReset_TILDE) + " but got " + fmt.Sprintf("%d", tilde))
@@ -166,7 +166,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, srchk bool) (RequestReset, e
 	}
 	_termination, _terminationErr := RequestTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of RequestReset")
 	}
 	termination := _termination.(RequestTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

@@ -111,7 +111,7 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (ApduControl, error) {
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType, _controlTypeErr := readBuffer.ReadUint8("controlType", 2)
 	if _controlTypeErr != nil {
-		return nil, errors.Wrap(_controlTypeErr, "Error parsing 'controlType' field")
+		return nil, errors.Wrap(_controlTypeErr, "Error parsing 'controlType' field of ApduControl")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -136,7 +136,7 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (ApduControl, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [controlType=%v]", controlType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ApduControl.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ApduControl")
 	}
 	_child = _childTemp.(ApduControlChildSerializeRequirement)
 

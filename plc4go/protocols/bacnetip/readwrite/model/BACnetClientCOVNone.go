@@ -137,7 +137,7 @@ func BACnetClientCOVNoneParse(readBuffer utils.ReadBuffer) (BACnetClientCOVNone,
 	}
 	_defaultIncrement, _defaultIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultIncrementErr != nil {
-		return nil, errors.Wrap(_defaultIncrementErr, "Error parsing 'defaultIncrement' field")
+		return nil, errors.Wrap(_defaultIncrementErr, "Error parsing 'defaultIncrement' field of BACnetClientCOVNone")
 	}
 	defaultIncrement := _defaultIncrement.(BACnetApplicationTagNull)
 	if closeErr := readBuffer.CloseContext("defaultIncrement"); closeErr != nil {

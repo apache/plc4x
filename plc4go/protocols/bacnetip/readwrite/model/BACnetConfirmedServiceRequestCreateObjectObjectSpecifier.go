@@ -196,7 +196,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'rawObjectType' field")
+			return nil, errors.Wrap(_err, "Error parsing 'rawObjectType' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 		default:
 			rawObjectType = _val.(BACnetContextTagEnumerated)
 			if closeErr := readBuffer.CloseContext("rawObjectType"); closeErr != nil {
@@ -248,7 +248,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
+			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 		default:
 			objectIdentifier = _val.(BACnetContextTagObjectIdentifier)
 			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -273,7 +273,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

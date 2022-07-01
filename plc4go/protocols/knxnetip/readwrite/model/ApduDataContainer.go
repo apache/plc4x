@@ -142,7 +142,7 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu
 	}
 	_dataApdu, _dataApduErr := ApduDataParse(readBuffer, uint8(dataLength))
 	if _dataApduErr != nil {
-		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field")
+		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field of ApduDataContainer")
 	}
 	dataApdu := _dataApdu.(ApduData)
 	if closeErr := readBuffer.CloseContext("dataApdu"); closeErr != nil {

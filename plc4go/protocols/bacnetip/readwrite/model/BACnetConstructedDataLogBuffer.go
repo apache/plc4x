@@ -197,7 +197,7 @@ func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataLogBuffer")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber 
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLogRecordParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'floorText' field")
+				return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetConstructedDataLogBuffer")
 			}
 			floorText = append(floorText, _item.(BACnetLogRecord))
 

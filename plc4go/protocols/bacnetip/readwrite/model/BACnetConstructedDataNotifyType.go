@@ -164,7 +164,7 @@ func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _notifyTypeErr != nil {
-		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field")
+		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetConstructedDataNotifyType")
 	}
 	notifyType := _notifyType.(BACnetNotifyTypeTagged)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {

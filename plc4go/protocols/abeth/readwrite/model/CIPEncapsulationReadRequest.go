@@ -144,7 +144,7 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (CIPEncapsula
 	}
 	_request, _requestErr := DF1RequestMessageParse(readBuffer)
 	if _requestErr != nil {
-		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field")
+		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CIPEncapsulationReadRequest")
 	}
 	request := _request.(DF1RequestMessage)
 	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {

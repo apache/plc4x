@@ -164,7 +164,7 @@ func BACnetConstructedDataAllowGroupDelayInhibitParse(readBuffer utils.ReadBuffe
 	}
 	_allowGroupDelayInhibit, _allowGroupDelayInhibitErr := BACnetApplicationTagParse(readBuffer)
 	if _allowGroupDelayInhibitErr != nil {
-		return nil, errors.Wrap(_allowGroupDelayInhibitErr, "Error parsing 'allowGroupDelayInhibit' field")
+		return nil, errors.Wrap(_allowGroupDelayInhibitErr, "Error parsing 'allowGroupDelayInhibit' field of BACnetConstructedDataAllowGroupDelayInhibit")
 	}
 	allowGroupDelayInhibit := _allowGroupDelayInhibit.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("allowGroupDelayInhibit"); closeErr != nil {

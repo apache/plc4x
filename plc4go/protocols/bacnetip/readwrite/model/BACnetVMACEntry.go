@@ -135,7 +135,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'virtualMacAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'virtualMacAddress' field of BACnetVMACEntry")
 		default:
 			virtualMacAddress = _val.(BACnetContextTagOctetString)
 			if closeErr := readBuffer.CloseContext("virtualMacAddress"); closeErr != nil {
@@ -157,7 +157,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'nativeMacAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'nativeMacAddress' field of BACnetVMACEntry")
 		default:
 			nativeMacAddress = _val.(BACnetContextTagOctetString)
 			if closeErr := readBuffer.CloseContext("nativeMacAddress"); closeErr != nil {

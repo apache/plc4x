@@ -137,7 +137,7 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer)
 	}
 	_calendarReference, _calendarReferenceErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _calendarReferenceErr != nil {
-		return nil, errors.Wrap(_calendarReferenceErr, "Error parsing 'calendarReference' field")
+		return nil, errors.Wrap(_calendarReferenceErr, "Error parsing 'calendarReference' field of BACnetSpecialEventPeriodCalendarReference")
 	}
 	calendarReference := _calendarReference.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("calendarReference"); closeErr != nil {

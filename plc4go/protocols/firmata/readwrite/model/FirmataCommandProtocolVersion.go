@@ -147,14 +147,14 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 	// Simple Field (majorVersion)
 	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field")
+		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of FirmataCommandProtocolVersion")
 	}
 	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
 	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field")
+		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of FirmataCommandProtocolVersion")
 	}
 	minorVersion := _minorVersion
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, ta
 	}
 	_ipv6UdpPort, _ipv6UdpPortErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6UdpPortErr != nil {
-		return nil, errors.Wrap(_ipv6UdpPortErr, "Error parsing 'ipv6UdpPort' field")
+		return nil, errors.Wrap(_ipv6UdpPortErr, "Error parsing 'ipv6UdpPort' field of BACnetConstructedDataBACnetIPv6UDPPort")
 	}
 	ipv6UdpPort := _ipv6UdpPort.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("ipv6UdpPort"); closeErr != nil {

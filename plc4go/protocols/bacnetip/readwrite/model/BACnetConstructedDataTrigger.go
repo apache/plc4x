@@ -164,7 +164,7 @@ func BACnetConstructedDataTriggerParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_trigger, _triggerErr := BACnetApplicationTagParse(readBuffer)
 	if _triggerErr != nil {
-		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field")
+		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field of BACnetConstructedDataTrigger")
 	}
 	trigger := _trigger.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("trigger"); closeErr != nil {

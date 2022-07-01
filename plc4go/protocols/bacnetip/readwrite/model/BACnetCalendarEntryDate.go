@@ -137,7 +137,7 @@ func BACnetCalendarEntryDateParse(readBuffer utils.ReadBuffer) (BACnetCalendarEn
 	}
 	_dateValue, _dateValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_DATE))
 	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field")
+		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetCalendarEntryDate")
 	}
 	dateValue := _dateValue.(BACnetContextTagDate)
 	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {

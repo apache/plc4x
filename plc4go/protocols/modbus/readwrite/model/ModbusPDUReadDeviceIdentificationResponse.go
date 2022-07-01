@@ -227,7 +227,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	// Const Field (meiType)
 	meiType, _meiTypeErr := readBuffer.ReadUint8("meiType", 8)
 	if _meiTypeErr != nil {
-		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field")
+		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	if meiType != ModbusPDUReadDeviceIdentificationResponse_MEITYPE {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusPDUReadDeviceIdentificationResponse_MEITYPE) + " but got " + fmt.Sprintf("%d", meiType))
@@ -239,7 +239,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	_level, _levelErr := ModbusDeviceInformationLevelParse(readBuffer)
 	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	level := _level
 	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
@@ -249,7 +249,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	// Simple Field (individualAccess)
 	_individualAccess, _individualAccessErr := readBuffer.ReadBit("individualAccess")
 	if _individualAccessErr != nil {
-		return nil, errors.Wrap(_individualAccessErr, "Error parsing 'individualAccess' field")
+		return nil, errors.Wrap(_individualAccessErr, "Error parsing 'individualAccess' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	individualAccess := _individualAccess
 
@@ -259,7 +259,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	_conformityLevel, _conformityLevelErr := ModbusDeviceInformationConformityLevelParse(readBuffer)
 	if _conformityLevelErr != nil {
-		return nil, errors.Wrap(_conformityLevelErr, "Error parsing 'conformityLevel' field")
+		return nil, errors.Wrap(_conformityLevelErr, "Error parsing 'conformityLevel' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	conformityLevel := _conformityLevel
 	if closeErr := readBuffer.CloseContext("conformityLevel"); closeErr != nil {
@@ -272,7 +272,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	_moreFollows, _moreFollowsErr := ModbusDeviceInformationMoreFollowsParse(readBuffer)
 	if _moreFollowsErr != nil {
-		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
+		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	moreFollows := _moreFollows
 	if closeErr := readBuffer.CloseContext("moreFollows"); closeErr != nil {
@@ -282,7 +282,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	// Simple Field (nextObjectId)
 	_nextObjectId, _nextObjectIdErr := readBuffer.ReadUint8("nextObjectId", 8)
 	if _nextObjectIdErr != nil {
-		return nil, errors.Wrap(_nextObjectIdErr, "Error parsing 'nextObjectId' field")
+		return nil, errors.Wrap(_nextObjectIdErr, "Error parsing 'nextObjectId' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	nextObjectId := _nextObjectId
 
@@ -290,7 +290,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	_ = numberOfObjects
 	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
+		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 
 	// Array field (objects)
@@ -307,7 +307,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := ModbusDeviceInformationObjectParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'objects' field")
+				return nil, errors.Wrap(_err, "Error parsing 'objects' field of ModbusPDUReadDeviceIdentificationResponse")
 			}
 			objects[curItem] = _item.(ModbusDeviceInformationObject)
 		}

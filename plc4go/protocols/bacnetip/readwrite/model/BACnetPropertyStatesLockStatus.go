@@ -137,7 +137,7 @@ func BACnetPropertyStatesLockStatusParse(readBuffer utils.ReadBuffer, peekedTagN
 	}
 	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lockStatusErr != nil {
-		return nil, errors.Wrap(_lockStatusErr, "Error parsing 'lockStatus' field")
+		return nil, errors.Wrap(_lockStatusErr, "Error parsing 'lockStatus' field of BACnetPropertyStatesLockStatus")
 	}
 	lockStatus := _lockStatus.(BACnetLockStatusTagged)
 	if closeErr := readBuffer.CloseContext("lockStatus"); closeErr != nil {

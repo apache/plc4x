@@ -213,42 +213,42 @@ func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionTyp
 	// Simple Field (EventId)
 	_EventId, _EventIdErr := readBuffer.ReadUint16("EventId", 16)
 	if _EventIdErr != nil {
-		return nil, errors.Wrap(_EventIdErr, "Error parsing 'EventId' field")
+		return nil, errors.Wrap(_EventIdErr, "Error parsing 'EventId' field of S7PayloadDiagnosticMessage")
 	}
 	EventId := _EventId
 
 	// Simple Field (PriorityClass)
 	_PriorityClass, _PriorityClassErr := readBuffer.ReadUint8("PriorityClass", 8)
 	if _PriorityClassErr != nil {
-		return nil, errors.Wrap(_PriorityClassErr, "Error parsing 'PriorityClass' field")
+		return nil, errors.Wrap(_PriorityClassErr, "Error parsing 'PriorityClass' field of S7PayloadDiagnosticMessage")
 	}
 	PriorityClass := _PriorityClass
 
 	// Simple Field (ObNumber)
 	_ObNumber, _ObNumberErr := readBuffer.ReadUint8("ObNumber", 8)
 	if _ObNumberErr != nil {
-		return nil, errors.Wrap(_ObNumberErr, "Error parsing 'ObNumber' field")
+		return nil, errors.Wrap(_ObNumberErr, "Error parsing 'ObNumber' field of S7PayloadDiagnosticMessage")
 	}
 	ObNumber := _ObNumber
 
 	// Simple Field (DatId)
 	_DatId, _DatIdErr := readBuffer.ReadUint16("DatId", 16)
 	if _DatIdErr != nil {
-		return nil, errors.Wrap(_DatIdErr, "Error parsing 'DatId' field")
+		return nil, errors.Wrap(_DatIdErr, "Error parsing 'DatId' field of S7PayloadDiagnosticMessage")
 	}
 	DatId := _DatId
 
 	// Simple Field (Info1)
 	_Info1, _Info1Err := readBuffer.ReadUint16("Info1", 16)
 	if _Info1Err != nil {
-		return nil, errors.Wrap(_Info1Err, "Error parsing 'Info1' field")
+		return nil, errors.Wrap(_Info1Err, "Error parsing 'Info1' field of S7PayloadDiagnosticMessage")
 	}
 	Info1 := _Info1
 
 	// Simple Field (Info2)
 	_Info2, _Info2Err := readBuffer.ReadUint32("Info2", 32)
 	if _Info2Err != nil {
-		return nil, errors.Wrap(_Info2Err, "Error parsing 'Info2' field")
+		return nil, errors.Wrap(_Info2Err, "Error parsing 'Info2' field of S7PayloadDiagnosticMessage")
 	}
 	Info2 := _Info2
 
@@ -258,7 +258,7 @@ func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionTyp
 	}
 	_TimeStamp, _TimeStampErr := DateAndTimeParse(readBuffer)
 	if _TimeStampErr != nil {
-		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field")
+		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of S7PayloadDiagnosticMessage")
 	}
 	TimeStamp := _TimeStamp.(DateAndTime)
 	if closeErr := readBuffer.CloseContext("TimeStamp"); closeErr != nil {

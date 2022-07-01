@@ -153,7 +153,7 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (Sy
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 			_item, _err := readBuffer.ReadInt8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'id' field")
+				return nil, errors.Wrap(_err, "Error parsing 'id' field of SysexCommandExtendedId")
 			}
 			id[curItem] = _item
 		}

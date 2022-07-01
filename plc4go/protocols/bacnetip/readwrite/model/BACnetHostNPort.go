@@ -122,7 +122,7 @@ func BACnetHostNPortParse(readBuffer utils.ReadBuffer) (BACnetHostNPort, error) 
 	}
 	_host, _hostErr := BACnetHostAddressEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _hostErr != nil {
-		return nil, errors.Wrap(_hostErr, "Error parsing 'host' field")
+		return nil, errors.Wrap(_hostErr, "Error parsing 'host' field of BACnetHostNPort")
 	}
 	host := _host.(BACnetHostAddressEnclosed)
 	if closeErr := readBuffer.CloseContext("host"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetHostNPortParse(readBuffer utils.ReadBuffer) (BACnetHostNPort, error) 
 	}
 	_port, _portErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BACnetHostNPort")
 	}
 	port := _port.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("port"); closeErr != nil {

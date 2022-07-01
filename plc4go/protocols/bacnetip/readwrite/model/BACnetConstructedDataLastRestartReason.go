@@ -164,7 +164,7 @@ func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, ta
 	}
 	_lastRestartReason, _lastRestartReasonErr := BACnetRestartReasonTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastRestartReasonErr != nil {
-		return nil, errors.Wrap(_lastRestartReasonErr, "Error parsing 'lastRestartReason' field")
+		return nil, errors.Wrap(_lastRestartReasonErr, "Error parsing 'lastRestartReason' field of BACnetConstructedDataLastRestartReason")
 	}
 	lastRestartReason := _lastRestartReason.(BACnetRestartReasonTagged)
 	if closeErr := readBuffer.CloseContext("lastRestartReason"); closeErr != nil {

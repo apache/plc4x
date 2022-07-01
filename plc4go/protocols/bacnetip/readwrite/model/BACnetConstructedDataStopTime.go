@@ -164,7 +164,7 @@ func BACnetConstructedDataStopTimeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_stopTime, _stopTimeErr := BACnetDateTimeParse(readBuffer)
 	if _stopTimeErr != nil {
-		return nil, errors.Wrap(_stopTimeErr, "Error parsing 'stopTime' field")
+		return nil, errors.Wrap(_stopTimeErr, "Error parsing 'stopTime' field of BACnetConstructedDataStopTime")
 	}
 	stopTime := _stopTime.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("stopTime"); closeErr != nil {

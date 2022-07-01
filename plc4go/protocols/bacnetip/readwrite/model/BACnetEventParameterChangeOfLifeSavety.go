@@ -192,7 +192,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(8)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfLifeSavety")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -205,7 +205,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field")
+		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfLifeSavety")
 	}
 	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
@@ -218,7 +218,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	}
 	_listOfLifeSavetyAlarmValues, _listOfLifeSavetyAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(readBuffer, uint8(uint8(1)))
 	if _listOfLifeSavetyAlarmValuesErr != nil {
-		return nil, errors.Wrap(_listOfLifeSavetyAlarmValuesErr, "Error parsing 'listOfLifeSavetyAlarmValues' field")
+		return nil, errors.Wrap(_listOfLifeSavetyAlarmValuesErr, "Error parsing 'listOfLifeSavetyAlarmValues' field of BACnetEventParameterChangeOfLifeSavety")
 	}
 	listOfLifeSavetyAlarmValues := _listOfLifeSavetyAlarmValues.(BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues)
 	if closeErr := readBuffer.CloseContext("listOfLifeSavetyAlarmValues"); closeErr != nil {
@@ -231,7 +231,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	}
 	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParse(readBuffer, uint8(uint8(2)))
 	if _listOfAlarmValuesErr != nil {
-		return nil, errors.Wrap(_listOfAlarmValuesErr, "Error parsing 'listOfAlarmValues' field")
+		return nil, errors.Wrap(_listOfAlarmValuesErr, "Error parsing 'listOfAlarmValues' field of BACnetEventParameterChangeOfLifeSavety")
 	}
 	listOfAlarmValues := _listOfAlarmValues.(BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues)
 	if closeErr := readBuffer.CloseContext("listOfAlarmValues"); closeErr != nil {
@@ -244,7 +244,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	}
 	_modePropertyReference, _modePropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(4)))
 	if _modePropertyReferenceErr != nil {
-		return nil, errors.Wrap(_modePropertyReferenceErr, "Error parsing 'modePropertyReference' field")
+		return nil, errors.Wrap(_modePropertyReferenceErr, "Error parsing 'modePropertyReference' field of BACnetEventParameterChangeOfLifeSavety")
 	}
 	modePropertyReference := _modePropertyReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("modePropertyReference"); closeErr != nil {
@@ -257,7 +257,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(8)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfLifeSavety")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

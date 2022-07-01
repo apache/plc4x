@@ -132,7 +132,7 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	}
 	_period, _periodErr := BACnetSpecialEventPeriodParse(readBuffer)
 	if _periodErr != nil {
-		return nil, errors.Wrap(_periodErr, "Error parsing 'period' field")
+		return nil, errors.Wrap(_periodErr, "Error parsing 'period' field of BACnetSpecialEvent")
 	}
 	period := _period.(BACnetSpecialEventPeriod)
 	if closeErr := readBuffer.CloseContext("period"); closeErr != nil {
@@ -145,7 +145,7 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	}
 	_listOfTimeValues, _listOfTimeValuesErr := BACnetSpecialEventListOfTimeValuesParse(readBuffer, uint8(uint8(2)))
 	if _listOfTimeValuesErr != nil {
-		return nil, errors.Wrap(_listOfTimeValuesErr, "Error parsing 'listOfTimeValues' field")
+		return nil, errors.Wrap(_listOfTimeValuesErr, "Error parsing 'listOfTimeValues' field of BACnetSpecialEvent")
 	}
 	listOfTimeValues := _listOfTimeValues.(BACnetSpecialEventListOfTimeValues)
 	if closeErr := readBuffer.CloseContext("listOfTimeValues"); closeErr != nil {
@@ -158,7 +158,7 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	}
 	_eventPriority, _eventPriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _eventPriorityErr != nil {
-		return nil, errors.Wrap(_eventPriorityErr, "Error parsing 'eventPriority' field")
+		return nil, errors.Wrap(_eventPriorityErr, "Error parsing 'eventPriority' field of BACnetSpecialEvent")
 	}
 	eventPriority := _eventPriority.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("eventPriority"); closeErr != nil {

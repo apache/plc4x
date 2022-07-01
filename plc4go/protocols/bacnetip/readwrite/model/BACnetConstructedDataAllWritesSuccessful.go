@@ -164,7 +164,7 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 	}
 	_allWritesSuccessful, _allWritesSuccessfulErr := BACnetApplicationTagParse(readBuffer)
 	if _allWritesSuccessfulErr != nil {
-		return nil, errors.Wrap(_allWritesSuccessfulErr, "Error parsing 'allWritesSuccessful' field")
+		return nil, errors.Wrap(_allWritesSuccessfulErr, "Error parsing 'allWritesSuccessful' field of BACnetConstructedDataAllWritesSuccessful")
 	}
 	allWritesSuccessful := _allWritesSuccessful.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("allWritesSuccessful"); closeErr != nil {

@@ -213,7 +213,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
+		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckReadRange")
 	}
 	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -226,7 +226,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
+		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetServiceAckReadRange")
 	}
 	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
@@ -246,7 +246,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field")
+			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field of BACnetServiceAckReadRange")
 		default:
 			propertyArrayIndex = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("propertyArrayIndex"); closeErr != nil {
@@ -261,7 +261,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	_resultFlags, _resultFlagsErr := BACnetResultFlagsTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _resultFlagsErr != nil {
-		return nil, errors.Wrap(_resultFlagsErr, "Error parsing 'resultFlags' field")
+		return nil, errors.Wrap(_resultFlagsErr, "Error parsing 'resultFlags' field of BACnetServiceAckReadRange")
 	}
 	resultFlags := _resultFlags.(BACnetResultFlagsTagged)
 	if closeErr := readBuffer.CloseContext("resultFlags"); closeErr != nil {
@@ -274,7 +274,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	_itemCount, _itemCountErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _itemCountErr != nil {
-		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field")
+		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of BACnetServiceAckReadRange")
 	}
 	itemCount := _itemCount.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("itemCount"); closeErr != nil {
@@ -294,7 +294,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'itemData' field")
+			return nil, errors.Wrap(_err, "Error parsing 'itemData' field of BACnetServiceAckReadRange")
 		default:
 			itemData = _val.(BACnetConstructedData)
 			if closeErr := readBuffer.CloseContext("itemData"); closeErr != nil {
@@ -316,7 +316,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'firstSequenceNumber' field")
+			return nil, errors.Wrap(_err, "Error parsing 'firstSequenceNumber' field of BACnetServiceAckReadRange")
 		default:
 			firstSequenceNumber = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("firstSequenceNumber"); closeErr != nil {

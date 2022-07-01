@@ -150,7 +150,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	}
 	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParse(readBuffer)
 	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
+		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
 	fileStartPosition := _fileStartPosition.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
@@ -163,7 +163,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	}
 	_requestOctetCount, _requestOctetCountErr := BACnetApplicationTagParse(readBuffer)
 	if _requestOctetCountErr != nil {
-		return nil, errors.Wrap(_requestOctetCountErr, "Error parsing 'requestOctetCount' field")
+		return nil, errors.Wrap(_requestOctetCountErr, "Error parsing 'requestOctetCount' field of BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
 	requestOctetCount := _requestOctetCount.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("requestOctetCount"); closeErr != nil {

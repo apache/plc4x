@@ -164,7 +164,7 @@ func BACnetConstructedDataPositiveIntegerValueResolutionParse(readBuffer utils.R
 	}
 	_resolution, _resolutionErr := BACnetApplicationTagParse(readBuffer)
 	if _resolutionErr != nil {
-		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field")
+		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field of BACnetConstructedDataPositiveIntegerValueResolution")
 	}
 	resolution := _resolution.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("resolution"); closeErr != nil {

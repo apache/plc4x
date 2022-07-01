@@ -137,7 +137,7 @@ func BACnetChannelValueCharacterStringParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _characterStringValueErr != nil {
-		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field")
+		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetChannelValueCharacterString")
 	}
 	characterStringValue := _characterStringValue.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {

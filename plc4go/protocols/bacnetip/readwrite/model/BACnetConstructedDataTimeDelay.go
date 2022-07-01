@@ -164,7 +164,7 @@ func BACnetConstructedDataTimeDelayParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_timeDelay, _timeDelayErr := BACnetApplicationTagParse(readBuffer)
 	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field")
+		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetConstructedDataTimeDelay")
 	}
 	timeDelay := _timeDelay.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {

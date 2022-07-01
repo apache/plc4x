@@ -307,7 +307,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	// Simple Field (protocolVersionNumber)
 	_protocolVersionNumber, _protocolVersionNumberErr := readBuffer.ReadUint8("protocolVersionNumber", 8)
 	if _protocolVersionNumberErr != nil {
-		return nil, errors.Wrap(_protocolVersionNumberErr, "Error parsing 'protocolVersionNumber' field")
+		return nil, errors.Wrap(_protocolVersionNumberErr, "Error parsing 'protocolVersionNumber' field of NPDU")
 	}
 	protocolVersionNumber := _protocolVersionNumber
 
@@ -317,7 +317,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	}
 	_control, _controlErr := NPDUControlParse(readBuffer)
 	if _controlErr != nil {
-		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field")
+		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field of NPDU")
 	}
 	control := _control.(NPDUControl)
 	if closeErr := readBuffer.CloseContext("control"); closeErr != nil {
@@ -329,7 +329,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	if control.GetDestinationSpecified() {
 		_val, _err := readBuffer.ReadUint16("destinationNetworkAddress", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field of NPDU")
 		}
 		destinationNetworkAddress = &_val
 	}
@@ -339,7 +339,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	if control.GetDestinationSpecified() {
 		_val, _err := readBuffer.ReadUint8("destinationLength", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field")
+			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field of NPDU")
 		}
 		destinationLength = &_val
 	}
@@ -358,7 +358,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
+				return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field of NPDU")
 			}
 			destinationAddress[curItem] = _item
 		}
@@ -377,7 +377,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	if control.GetSourceSpecified() {
 		_val, _err := readBuffer.ReadUint16("sourceNetworkAddress", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field of NPDU")
 		}
 		sourceNetworkAddress = &_val
 	}
@@ -387,7 +387,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	if control.GetSourceSpecified() {
 		_val, _err := readBuffer.ReadUint8("sourceLength", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field")
+			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field of NPDU")
 		}
 		sourceLength = &_val
 	}
@@ -406,7 +406,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
+				return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field of NPDU")
 			}
 			sourceAddress[curItem] = _item
 		}
@@ -425,7 +425,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	if control.GetDestinationSpecified() {
 		_val, _err := readBuffer.ReadUint8("hopCount", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field")
+			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field of NPDU")
 		}
 		hopCount = &_val
 	}
@@ -448,7 +448,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
+			return nil, errors.Wrap(_err, "Error parsing 'nlm' field of NPDU")
 		default:
 			nlm = _val.(NLM)
 			if closeErr := readBuffer.CloseContext("nlm"); closeErr != nil {
@@ -470,7 +470,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
+			return nil, errors.Wrap(_err, "Error parsing 'apdu' field of NPDU")
 		default:
 			apdu = _val.(APDU)
 			if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {

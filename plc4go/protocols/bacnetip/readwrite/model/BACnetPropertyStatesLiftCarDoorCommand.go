@@ -137,7 +137,7 @@ func BACnetPropertyStatesLiftCarDoorCommandParse(readBuffer utils.ReadBuffer, pe
 	}
 	_liftCarDoorCommand, _liftCarDoorCommandErr := BACnetLiftCarDoorCommandTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDoorCommandErr != nil {
-		return nil, errors.Wrap(_liftCarDoorCommandErr, "Error parsing 'liftCarDoorCommand' field")
+		return nil, errors.Wrap(_liftCarDoorCommandErr, "Error parsing 'liftCarDoorCommand' field of BACnetPropertyStatesLiftCarDoorCommand")
 	}
 	liftCarDoorCommand := _liftCarDoorCommand.(BACnetLiftCarDoorCommandTagged)
 	if closeErr := readBuffer.CloseContext("liftCarDoorCommand"); closeErr != nil {

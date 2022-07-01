@@ -139,7 +139,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(r
 	}
 	_numericValue, _numericValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _numericValueErr != nil {
-		return nil, errors.Wrap(_numericValueErr, "Error parsing 'numericValue' field")
+		return nil, errors.Wrap(_numericValueErr, "Error parsing 'numericValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 	}
 	numericValue := _numericValue.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("numericValue"); closeErr != nil {

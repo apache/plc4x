@@ -164,7 +164,7 @@ func BACnetConstructedDataLowerDeckParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_lowerDeck, _lowerDeckErr := BACnetApplicationTagParse(readBuffer)
 	if _lowerDeckErr != nil {
-		return nil, errors.Wrap(_lowerDeckErr, "Error parsing 'lowerDeck' field")
+		return nil, errors.Wrap(_lowerDeckErr, "Error parsing 'lowerDeck' field of BACnetConstructedDataLowerDeck")
 	}
 	lowerDeck := _lowerDeck.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("lowerDeck"); closeErr != nil {

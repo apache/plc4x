@@ -142,7 +142,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryState")
 		}
 		if reserved != byte(0x7A) {
 			log.Info().Fields(map[string]interface{}{
@@ -155,7 +155,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 	// Simple Field (application)
 	_application, _applicationErr := readBuffer.ReadByte("application")
 	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryState")
 	}
 	application := _application
 
@@ -163,7 +163,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryState")
 		}
 		if reserved != byte(0x00) {
 			log.Info().Fields(map[string]interface{}{

@@ -155,7 +155,7 @@ func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetBDTEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'bbmdForeignDeviceTable' field")
+				return nil, errors.Wrap(_err, "Error parsing 'bbmdForeignDeviceTable' field of BACnetConstructedDataBBMDForeignDeviceTable")
 			}
 			bbmdForeignDeviceTable = append(bbmdForeignDeviceTable, _item.(BACnetBDTEntry))
 

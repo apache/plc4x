@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_accessEventTag, _accessEventTagErr := BACnetApplicationTagParse(readBuffer)
 	if _accessEventTagErr != nil {
-		return nil, errors.Wrap(_accessEventTagErr, "Error parsing 'accessEventTag' field")
+		return nil, errors.Wrap(_accessEventTagErr, "Error parsing 'accessEventTag' field of BACnetConstructedDataAccessEventTag")
 	}
 	accessEventTag := _accessEventTag.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("accessEventTag"); closeErr != nil {

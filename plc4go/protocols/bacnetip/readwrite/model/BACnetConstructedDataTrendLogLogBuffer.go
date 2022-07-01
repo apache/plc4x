@@ -155,7 +155,7 @@ func BACnetConstructedDataTrendLogLogBufferParse(readBuffer utils.ReadBuffer, ta
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLogRecordParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'floorText' field")
+				return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetConstructedDataTrendLogLogBuffer")
 			}
 			floorText = append(floorText, _item.(BACnetLogRecord))
 

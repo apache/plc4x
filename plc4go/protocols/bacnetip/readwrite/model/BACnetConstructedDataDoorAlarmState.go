@@ -164,7 +164,7 @@ func BACnetConstructedDataDoorAlarmStateParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_doorAlarmState, _doorAlarmStateErr := BACnetDoorAlarmStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _doorAlarmStateErr != nil {
-		return nil, errors.Wrap(_doorAlarmStateErr, "Error parsing 'doorAlarmState' field")
+		return nil, errors.Wrap(_doorAlarmStateErr, "Error parsing 'doorAlarmState' field of BACnetConstructedDataDoorAlarmState")
 	}
 	doorAlarmState := _doorAlarmState.(BACnetDoorAlarmStateTagged)
 	if closeErr := readBuffer.CloseContext("doorAlarmState"); closeErr != nil {

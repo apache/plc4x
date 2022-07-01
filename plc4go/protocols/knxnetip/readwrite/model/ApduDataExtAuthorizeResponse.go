@@ -136,7 +136,7 @@ func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8
 	// Simple Field (level)
 	_level, _levelErr := readBuffer.ReadUint8("level", 8)
 	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ApduDataExtAuthorizeResponse")
 	}
 	level := _level
 

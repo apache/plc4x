@@ -166,7 +166,7 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_payload, _payloadErr := BACnetTagPayloadObjectIdentifierParse(readBuffer)
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagObjectIdentifier")
 	}
 	payload := _payload.(BACnetTagPayloadObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

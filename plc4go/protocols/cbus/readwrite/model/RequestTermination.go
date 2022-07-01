@@ -110,7 +110,7 @@ func RequestTerminationParse(readBuffer utils.ReadBuffer) (RequestTermination, e
 	// Const Field (cr)
 	cr, _crErr := readBuffer.ReadByte("cr")
 	if _crErr != nil {
-		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field")
+		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field of RequestTermination")
 	}
 	if cr != RequestTermination_CR {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestTermination_CR) + " but got " + fmt.Sprintf("%d", cr))

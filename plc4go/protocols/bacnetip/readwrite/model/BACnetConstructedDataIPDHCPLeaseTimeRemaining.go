@@ -164,7 +164,7 @@ func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuf
 	}
 	_ipDhcpLeaseTimeRemaining, _ipDhcpLeaseTimeRemainingErr := BACnetApplicationTagParse(readBuffer)
 	if _ipDhcpLeaseTimeRemainingErr != nil {
-		return nil, errors.Wrap(_ipDhcpLeaseTimeRemainingErr, "Error parsing 'ipDhcpLeaseTimeRemaining' field")
+		return nil, errors.Wrap(_ipDhcpLeaseTimeRemainingErr, "Error parsing 'ipDhcpLeaseTimeRemaining' field of BACnetConstructedDataIPDHCPLeaseTimeRemaining")
 	}
 	ipDhcpLeaseTimeRemaining := _ipDhcpLeaseTimeRemaining.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("ipDhcpLeaseTimeRemaining"); closeErr != nil {

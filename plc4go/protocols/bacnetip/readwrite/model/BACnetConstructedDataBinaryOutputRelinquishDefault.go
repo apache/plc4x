@@ -164,7 +164,7 @@ func BACnetConstructedDataBinaryOutputRelinquishDefaultParse(readBuffer utils.Re
 	}
 	_relinquishDefault, _relinquishDefaultErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field")
+		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataBinaryOutputRelinquishDefault")
 	}
 	relinquishDefault := _relinquishDefault.(BACnetBinaryPVTagged)
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {

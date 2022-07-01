@@ -164,7 +164,7 @@ func BACnetConstructedDataLargeAnalogValueRelinquishDefaultParse(readBuffer util
 	}
 	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParse(readBuffer)
 	if _relinquishDefaultErr != nil {
-		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field")
+		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataLargeAnalogValueRelinquishDefault")
 	}
 	relinquishDefault := _relinquishDefault.(BACnetApplicationTagDouble)
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {

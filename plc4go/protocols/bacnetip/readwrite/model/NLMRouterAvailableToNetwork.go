@@ -149,7 +149,7 @@ func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength ui
 		for positionAware.GetPos() < _destinationNetworkAddressEndPos {
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
+				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field of NLMRouterAvailableToNetwork")
 			}
 			destinationNetworkAddress = append(destinationNetworkAddress, _item)
 		}

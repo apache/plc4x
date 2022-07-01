@@ -164,7 +164,7 @@ func BACnetConstructedDataDatabaseRevisionParse(readBuffer utils.ReadBuffer, tag
 	}
 	_databaseRevision, _databaseRevisionErr := BACnetApplicationTagParse(readBuffer)
 	if _databaseRevisionErr != nil {
-		return nil, errors.Wrap(_databaseRevisionErr, "Error parsing 'databaseRevision' field")
+		return nil, errors.Wrap(_databaseRevisionErr, "Error parsing 'databaseRevision' field of BACnetConstructedDataDatabaseRevision")
 	}
 	databaseRevision := _databaseRevision.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("databaseRevision"); closeErr != nil {

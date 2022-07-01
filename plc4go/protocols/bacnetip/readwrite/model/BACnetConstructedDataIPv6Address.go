@@ -164,7 +164,7 @@ func BACnetConstructedDataIPv6AddressParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_ipv6Address, _ipv6AddressErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6AddressErr != nil {
-		return nil, errors.Wrap(_ipv6AddressErr, "Error parsing 'ipv6Address' field")
+		return nil, errors.Wrap(_ipv6AddressErr, "Error parsing 'ipv6Address' field of BACnetConstructedDataIPv6Address")
 	}
 	ipv6Address := _ipv6Address.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipv6Address"); closeErr != nil {

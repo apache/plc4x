@@ -134,7 +134,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	}
 	_alpha, _alphaErr := AlphaParse(readBuffer)
 	if _alphaErr != nil {
-		return nil, errors.Wrap(_alphaErr, "Error parsing 'alpha' field")
+		return nil, errors.Wrap(_alphaErr, "Error parsing 'alpha' field of Confirmation")
 	}
 	alpha := _alpha.(Alpha)
 	if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
@@ -144,7 +144,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	// Discriminator Field (confirmationType) (Used as input to a switch field)
 	confirmationType, _confirmationTypeErr := readBuffer.ReadByte("confirmationType")
 	if _confirmationTypeErr != nil {
-		return nil, errors.Wrap(_confirmationTypeErr, "Error parsing 'confirmationType' field")
+		return nil, errors.Wrap(_confirmationTypeErr, "Error parsing 'confirmationType' field of Confirmation")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -167,11 +167,13 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 		_childTemp, typeSwitchError = NotTransmittedSyncLossParse(readBuffer)
 	case confirmationType == 0x27: // NotTransmittedTooLong
 		_childTemp, typeSwitchError = NotTransmittedTooLongParse(readBuffer)
+	case true: // ConfirmationUnknown
+		_childTemp, typeSwitchError = ConfirmationUnknownParse(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [confirmationType=%v]", confirmationType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Confirmation.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Confirmation")
 	}
 	_child = _childTemp.(ConfirmationChildSerializeRequirement)
 

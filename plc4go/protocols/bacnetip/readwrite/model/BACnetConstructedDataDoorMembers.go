@@ -197,7 +197,7 @@ func BACnetConstructedDataDoorMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataDoorMembers")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataDoorMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'doorMembers' field")
+				return nil, errors.Wrap(_err, "Error parsing 'doorMembers' field of BACnetConstructedDataDoorMembers")
 			}
 			doorMembers = append(doorMembers, _item.(BACnetDeviceObjectReference))
 

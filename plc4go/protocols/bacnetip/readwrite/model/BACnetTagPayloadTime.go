@@ -193,7 +193,7 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTim
 	// Simple Field (hour)
 	_hour, _hourErr := readBuffer.ReadUint8("hour", 8)
 	if _hourErr != nil {
-		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
+		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of BACnetTagPayloadTime")
 	}
 	hour := _hour
 
@@ -205,7 +205,7 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTim
 	// Simple Field (minute)
 	_minute, _minuteErr := readBuffer.ReadUint8("minute", 8)
 	if _minuteErr != nil {
-		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field")
+		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field of BACnetTagPayloadTime")
 	}
 	minute := _minute
 
@@ -217,7 +217,7 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTim
 	// Simple Field (second)
 	_second, _secondErr := readBuffer.ReadUint8("second", 8)
 	if _secondErr != nil {
-		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field")
+		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field of BACnetTagPayloadTime")
 	}
 	second := _second
 
@@ -229,7 +229,7 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTim
 	// Simple Field (fractional)
 	_fractional, _fractionalErr := readBuffer.ReadUint8("fractional", 8)
 	if _fractionalErr != nil {
-		return nil, errors.Wrap(_fractionalErr, "Error parsing 'fractional' field")
+		return nil, errors.Wrap(_fractionalErr, "Error parsing 'fractional' field of BACnetTagPayloadTime")
 	}
 	fractional := _fractional
 

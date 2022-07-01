@@ -149,7 +149,7 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (EipConnectionReques
 	// Const Field (protocolVersion)
 	protocolVersion, _protocolVersionErr := readBuffer.ReadUint16("protocolVersion", 16)
 	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
+		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of EipConnectionRequest")
 	}
 	if protocolVersion != EipConnectionRequest_PROTOCOLVERSION {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConnectionRequest_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
@@ -158,7 +158,7 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (EipConnectionReques
 	// Const Field (flags)
 	flags, _flagsErr := readBuffer.ReadUint16("flags", 16)
 	if _flagsErr != nil {
-		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field")
+		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field of EipConnectionRequest")
 	}
 	if flags != EipConnectionRequest_FLAGS {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConnectionRequest_FLAGS) + " but got " + fmt.Sprintf("%d", flags))

@@ -151,7 +151,7 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	}
 	_vtClass, _vtClassErr := BACnetVTClassTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vtClassErr != nil {
-		return nil, errors.Wrap(_vtClassErr, "Error parsing 'vtClass' field")
+		return nil, errors.Wrap(_vtClassErr, "Error parsing 'vtClass' field of BACnetConfirmedServiceRequestVTOpen")
 	}
 	vtClass := _vtClass.(BACnetVTClassTagged)
 	if closeErr := readBuffer.CloseContext("vtClass"); closeErr != nil {
@@ -164,7 +164,7 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	}
 	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _localVtSessionIdentifierErr != nil {
-		return nil, errors.Wrap(_localVtSessionIdentifierErr, "Error parsing 'localVtSessionIdentifier' field")
+		return nil, errors.Wrap(_localVtSessionIdentifierErr, "Error parsing 'localVtSessionIdentifier' field of BACnetConfirmedServiceRequestVTOpen")
 	}
 	localVtSessionIdentifier := _localVtSessionIdentifier.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("localVtSessionIdentifier"); closeErr != nil {

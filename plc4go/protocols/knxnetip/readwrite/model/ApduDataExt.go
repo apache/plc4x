@@ -114,7 +114,7 @@ func ApduDataExtParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExt, e
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType, _extApciTypeErr := readBuffer.ReadUint8("extApciType", 6)
 	if _extApciTypeErr != nil {
-		return nil, errors.Wrap(_extApciTypeErr, "Error parsing 'extApciType' field")
+		return nil, errors.Wrap(_extApciTypeErr, "Error parsing 'extApciType' field of ApduDataExt")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -213,7 +213,7 @@ func ApduDataExtParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExt, e
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [extApciType=%v]", extApciType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ApduDataExt.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ApduDataExt")
 	}
 	_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 

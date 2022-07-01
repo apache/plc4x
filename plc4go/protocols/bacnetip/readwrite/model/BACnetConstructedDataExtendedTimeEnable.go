@@ -164,7 +164,7 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 	}
 	_extendedTimeEnable, _extendedTimeEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _extendedTimeEnableErr != nil {
-		return nil, errors.Wrap(_extendedTimeEnableErr, "Error parsing 'extendedTimeEnable' field")
+		return nil, errors.Wrap(_extendedTimeEnableErr, "Error parsing 'extendedTimeEnable' field of BACnetConstructedDataExtendedTimeEnable")
 	}
 	extendedTimeEnable := _extendedTimeEnable.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("extendedTimeEnable"); closeErr != nil {

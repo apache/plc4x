@@ -137,7 +137,7 @@ func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (BACne
 	}
 	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
 	if _objectidentifierValueErr != nil {
-		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field")
+		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetChannelValueObjectidentifier")
 	}
 	objectidentifierValue := _objectidentifierValue.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectidentifierValue"); closeErr != nil {

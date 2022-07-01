@@ -173,7 +173,7 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (BACnetSpecialEv
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetSpecialEventPeriod.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetSpecialEventPeriod")
 	}
 	_child = _childTemp.(BACnetSpecialEventPeriodChildSerializeRequirement)
 

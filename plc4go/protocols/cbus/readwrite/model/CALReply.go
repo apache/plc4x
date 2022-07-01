@@ -144,7 +144,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	currentPos = positionAware.GetPos()
 	calType, _err := readBuffer.ReadByte("calType")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'calType' field")
+		return nil, errors.Wrap(_err, "Error parsing 'calType' field of CALReply")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -167,7 +167,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [calType=%v]", calType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CALReply.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CALReply")
 	}
 	_child = _childTemp.(CALReplyChildSerializeRequirement)
 
@@ -177,7 +177,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	}
 	_calData, _calDataErr := CALDataParse(readBuffer)
 	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field")
+		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CALReply")
 	}
 	calData := _calData.(CALData)
 	if closeErr := readBuffer.CloseContext("calData"); closeErr != nil {
@@ -190,7 +190,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	}
 	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of CALReply")
 	}
 	termination := _termination.(ResponseTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

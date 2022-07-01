@@ -152,7 +152,7 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 		for positionAware.GetPos() < _tableEndPos {
 			_item, _err := BVLCBroadcastDistributionTableEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'table' field")
+				return nil, errors.Wrap(_err, "Error parsing 'table' field of BVLCReadBroadcastDistributionTableAck")
 			}
 			table = append(table, _item.(BVLCBroadcastDistributionTableEntry))
 		}

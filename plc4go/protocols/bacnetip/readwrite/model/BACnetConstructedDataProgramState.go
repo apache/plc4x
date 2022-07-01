@@ -164,7 +164,7 @@ func BACnetConstructedDataProgramStateParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	_programState, _programStateErr := BACnetProgramStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _programStateErr != nil {
-		return nil, errors.Wrap(_programStateErr, "Error parsing 'programState' field")
+		return nil, errors.Wrap(_programStateErr, "Error parsing 'programState' field of BACnetConstructedDataProgramState")
 	}
 	programState := _programState.(BACnetProgramStateTagged)
 	if closeErr := readBuffer.CloseContext("programState"); closeErr != nil {

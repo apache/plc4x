@@ -164,7 +164,7 @@ func BACnetConstructedDataLogDeviceObjectPropertyParse(readBuffer utils.ReadBuff
 	}
 	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
 	if _logDeviceObjectPropertyErr != nil {
-		return nil, errors.Wrap(_logDeviceObjectPropertyErr, "Error parsing 'logDeviceObjectProperty' field")
+		return nil, errors.Wrap(_logDeviceObjectPropertyErr, "Error parsing 'logDeviceObjectProperty' field of BACnetConstructedDataLogDeviceObjectProperty")
 	}
 	logDeviceObjectProperty := _logDeviceObjectProperty.(BACnetDeviceObjectPropertyReference)
 	if closeErr := readBuffer.CloseContext("logDeviceObjectProperty"); closeErr != nil {

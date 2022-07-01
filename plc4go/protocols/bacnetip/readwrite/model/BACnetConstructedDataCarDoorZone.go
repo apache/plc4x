@@ -164,7 +164,7 @@ func BACnetConstructedDataCarDoorZoneParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_carDoorZone, _carDoorZoneErr := BACnetApplicationTagParse(readBuffer)
 	if _carDoorZoneErr != nil {
-		return nil, errors.Wrap(_carDoorZoneErr, "Error parsing 'carDoorZone' field")
+		return nil, errors.Wrap(_carDoorZoneErr, "Error parsing 'carDoorZone' field of BACnetConstructedDataCarDoorZone")
 	}
 	carDoorZone := _carDoorZone.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("carDoorZone"); closeErr != nil {

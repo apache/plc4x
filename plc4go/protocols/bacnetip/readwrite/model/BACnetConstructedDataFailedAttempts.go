@@ -164,7 +164,7 @@ func BACnetConstructedDataFailedAttemptsParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	_failedAttempts, _failedAttemptsErr := BACnetApplicationTagParse(readBuffer)
 	if _failedAttemptsErr != nil {
-		return nil, errors.Wrap(_failedAttemptsErr, "Error parsing 'failedAttempts' field")
+		return nil, errors.Wrap(_failedAttemptsErr, "Error parsing 'failedAttempts' field of BACnetConstructedDataFailedAttempts")
 	}
 	failedAttempts := _failedAttempts.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("failedAttempts"); closeErr != nil {

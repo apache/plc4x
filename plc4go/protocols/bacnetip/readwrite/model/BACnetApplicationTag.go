@@ -154,7 +154,7 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (BACnetApplicationTa
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetApplicationTag")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (BACnetApplicationTa
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualTagNumber=%v]", actualTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetApplicationTag.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetApplicationTag")
 	}
 	_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 

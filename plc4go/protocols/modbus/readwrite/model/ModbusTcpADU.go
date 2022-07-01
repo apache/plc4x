@@ -181,14 +181,14 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	// Simple Field (transactionIdentifier)
 	_transactionIdentifier, _transactionIdentifierErr := readBuffer.ReadUint16("transactionIdentifier", 16)
 	if _transactionIdentifierErr != nil {
-		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field")
+		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field of ModbusTcpADU")
 	}
 	transactionIdentifier := _transactionIdentifier
 
 	// Const Field (protocolIdentifier)
 	protocolIdentifier, _protocolIdentifierErr := readBuffer.ReadUint16("protocolIdentifier", 16)
 	if _protocolIdentifierErr != nil {
-		return nil, errors.Wrap(_protocolIdentifierErr, "Error parsing 'protocolIdentifier' field")
+		return nil, errors.Wrap(_protocolIdentifierErr, "Error parsing 'protocolIdentifier' field of ModbusTcpADU")
 	}
 	if protocolIdentifier != ModbusTcpADU_PROTOCOLIDENTIFIER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusTcpADU_PROTOCOLIDENTIFIER) + " but got " + fmt.Sprintf("%d", protocolIdentifier))
@@ -198,13 +198,13 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	length, _lengthErr := readBuffer.ReadUint16("length", 16)
 	_ = length
 	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of ModbusTcpADU")
 	}
 
 	// Simple Field (unitIdentifier)
 	_unitIdentifier, _unitIdentifierErr := readBuffer.ReadUint8("unitIdentifier", 8)
 	if _unitIdentifierErr != nil {
-		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
+		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field of ModbusTcpADU")
 	}
 	unitIdentifier := _unitIdentifier
 
@@ -214,7 +214,7 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	}
 	_pdu, _pduErr := ModbusPDUParse(readBuffer, bool(response))
 	if _pduErr != nil {
-		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
+		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusTcpADU")
 	}
 	pdu := _pdu.(ModbusPDU)
 	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {

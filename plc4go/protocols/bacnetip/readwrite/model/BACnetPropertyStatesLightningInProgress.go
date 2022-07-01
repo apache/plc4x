@@ -137,7 +137,7 @@ func BACnetPropertyStatesLightningInProgressParse(readBuffer utils.ReadBuffer, p
 	}
 	_lightningInProgress, _lightningInProgressErr := BACnetLightingInProgressTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningInProgressErr != nil {
-		return nil, errors.Wrap(_lightningInProgressErr, "Error parsing 'lightningInProgress' field")
+		return nil, errors.Wrap(_lightningInProgressErr, "Error parsing 'lightningInProgress' field of BACnetPropertyStatesLightningInProgress")
 	}
 	lightningInProgress := _lightningInProgress.(BACnetLightingInProgressTagged)
 	if closeErr := readBuffer.CloseContext("lightningInProgress"); closeErr != nil {

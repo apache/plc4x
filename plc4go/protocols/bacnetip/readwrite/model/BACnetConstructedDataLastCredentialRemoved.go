@@ -164,7 +164,7 @@ func BACnetConstructedDataLastCredentialRemovedParse(readBuffer utils.ReadBuffer
 	}
 	_lastCredentialRemoved, _lastCredentialRemovedErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _lastCredentialRemovedErr != nil {
-		return nil, errors.Wrap(_lastCredentialRemovedErr, "Error parsing 'lastCredentialRemoved' field")
+		return nil, errors.Wrap(_lastCredentialRemovedErr, "Error parsing 'lastCredentialRemoved' field of BACnetConstructedDataLastCredentialRemoved")
 	}
 	lastCredentialRemoved := _lastCredentialRemoved.(BACnetDeviceObjectReference)
 	if closeErr := readBuffer.CloseContext("lastCredentialRemoved"); closeErr != nil {

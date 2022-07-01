@@ -137,7 +137,7 @@ func BACnetPropertyStatesLifeSafetyModeParse(readBuffer utils.ReadBuffer, peeked
 	}
 	_lifeSafetyMode, _lifeSafetyModeErr := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyModeErr != nil {
-		return nil, errors.Wrap(_lifeSafetyModeErr, "Error parsing 'lifeSafetyMode' field")
+		return nil, errors.Wrap(_lifeSafetyModeErr, "Error parsing 'lifeSafetyMode' field of BACnetPropertyStatesLifeSafetyMode")
 	}
 	lifeSafetyMode := _lifeSafetyMode.(BACnetLifeSafetyModeTagged)
 	if closeErr := readBuffer.CloseContext("lifeSafetyMode"); closeErr != nil {

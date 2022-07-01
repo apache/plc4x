@@ -137,7 +137,7 @@ func BACnetPropertyStatesIntegerValueParse(readBuffer utils.ReadBuffer, peekedTa
 	}
 	_integerValue, _integerValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerValueErr != nil {
-		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field")
+		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetPropertyStatesIntegerValue")
 	}
 	integerValue := _integerValue.(BACnetContextTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {

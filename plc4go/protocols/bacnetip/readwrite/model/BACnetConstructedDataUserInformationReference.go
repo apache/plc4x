@@ -164,7 +164,7 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 	}
 	_userInformationReference, _userInformationReferenceErr := BACnetApplicationTagParse(readBuffer)
 	if _userInformationReferenceErr != nil {
-		return nil, errors.Wrap(_userInformationReferenceErr, "Error parsing 'userInformationReference' field")
+		return nil, errors.Wrap(_userInformationReferenceErr, "Error parsing 'userInformationReference' field of BACnetConstructedDataUserInformationReference")
 	}
 	userInformationReference := _userInformationReference.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("userInformationReference"); closeErr != nil {

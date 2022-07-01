@@ -110,7 +110,7 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (ModbusConstants, error) 
 	// Const Field (modbusTcpDefaultPort)
 	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := readBuffer.ReadUint16("modbusTcpDefaultPort", 16)
 	if _modbusTcpDefaultPortErr != nil {
-		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field")
+		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field of ModbusConstants")
 	}
 	if modbusTcpDefaultPort != ModbusConstants_MODBUSTCPDEFAULTPORT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusConstants_MODBUSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", modbusTcpDefaultPort))

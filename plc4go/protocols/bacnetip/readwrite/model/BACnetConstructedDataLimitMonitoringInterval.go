@@ -164,7 +164,7 @@ func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuff
 	}
 	_limitMonitoringInterval, _limitMonitoringIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _limitMonitoringIntervalErr != nil {
-		return nil, errors.Wrap(_limitMonitoringIntervalErr, "Error parsing 'limitMonitoringInterval' field")
+		return nil, errors.Wrap(_limitMonitoringIntervalErr, "Error parsing 'limitMonitoringInterval' field of BACnetConstructedDataLimitMonitoringInterval")
 	}
 	limitMonitoringInterval := _limitMonitoringInterval.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("limitMonitoringInterval"); closeErr != nil {

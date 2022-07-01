@@ -164,7 +164,7 @@ func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_defaultFadeTime, _defaultFadeTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultFadeTimeErr != nil {
-		return nil, errors.Wrap(_defaultFadeTimeErr, "Error parsing 'defaultFadeTime' field")
+		return nil, errors.Wrap(_defaultFadeTimeErr, "Error parsing 'defaultFadeTime' field of BACnetConstructedDataDefaultFadeTime")
 	}
 	defaultFadeTime := _defaultFadeTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("defaultFadeTime"); closeErr != nil {

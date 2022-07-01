@@ -137,7 +137,7 @@ func BACnetChannelValueDateParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	}
 	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
 	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field")
+		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetChannelValueDate")
 	}
 	dateValue := _dateValue.(BACnetApplicationTagDate)
 	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {

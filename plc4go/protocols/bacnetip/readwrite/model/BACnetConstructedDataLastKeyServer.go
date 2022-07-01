@@ -164,7 +164,7 @@ func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_lastKeyServer, _lastKeyServerErr := BACnetAddressBindingParse(readBuffer)
 	if _lastKeyServerErr != nil {
-		return nil, errors.Wrap(_lastKeyServerErr, "Error parsing 'lastKeyServer' field")
+		return nil, errors.Wrap(_lastKeyServerErr, "Error parsing 'lastKeyServer' field of BACnetConstructedDataLastKeyServer")
 	}
 	lastKeyServer := _lastKeyServer.(BACnetAddressBinding)
 	if closeErr := readBuffer.CloseContext("lastKeyServer"); closeErr != nil {

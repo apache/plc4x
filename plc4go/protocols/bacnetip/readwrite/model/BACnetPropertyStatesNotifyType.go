@@ -137,7 +137,7 @@ func BACnetPropertyStatesNotifyTypeParse(readBuffer utils.ReadBuffer, peekedTagN
 	}
 	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
-		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field")
+		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetPropertyStatesNotifyType")
 	}
 	notifyType := _notifyType.(BACnetNotifyTypeTagged)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {

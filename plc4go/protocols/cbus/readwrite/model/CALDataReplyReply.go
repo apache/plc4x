@@ -147,14 +147,14 @@ func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CA
 	// Simple Field (paramNumber)
 	_paramNumber, _paramNumberErr := readBuffer.ReadUint8("paramNumber", 8)
 	if _paramNumberErr != nil {
-		return nil, errors.Wrap(_paramNumberErr, "Error parsing 'paramNumber' field")
+		return nil, errors.Wrap(_paramNumberErr, "Error parsing 'paramNumber' field of CALDataReplyReply")
 	}
 	paramNumber := _paramNumber
 	// Byte Array field (data)
 	numberOfBytesdata := int(commandTypeContainer.NumBytes())
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataReplyReply")
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataReplyReply"); closeErr != nil {

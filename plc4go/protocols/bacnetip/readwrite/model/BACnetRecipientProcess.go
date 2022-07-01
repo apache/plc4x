@@ -126,7 +126,7 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 	}
 	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field")
+		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetRecipientProcess")
 	}
 	recipient := _recipient.(BACnetRecipientEnclosed)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
@@ -146,7 +146,7 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'processIdentifier' field")
+			return nil, errors.Wrap(_err, "Error parsing 'processIdentifier' field of BACnetRecipientProcess")
 		default:
 			processIdentifier = _val.(BACnetContextTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {

@@ -137,7 +137,7 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (ParameterChangeRepl
 	}
 	_isA, _isAErr := ParameterChangeParse(readBuffer)
 	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field")
+		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of ParameterChangeReply")
 	}
 	isA := _isA.(ParameterChange)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {

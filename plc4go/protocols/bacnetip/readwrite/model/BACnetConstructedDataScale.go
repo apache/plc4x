@@ -164,7 +164,7 @@ func BACnetConstructedDataScaleParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	_scale, _scaleErr := BACnetScaleParse(readBuffer)
 	if _scaleErr != nil {
-		return nil, errors.Wrap(_scaleErr, "Error parsing 'scale' field")
+		return nil, errors.Wrap(_scaleErr, "Error parsing 'scale' field of BACnetConstructedDataScale")
 	}
 	scale := _scale.(BACnetScale)
 	if closeErr := readBuffer.CloseContext("scale"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_carMode, _carModeErr := BACnetLiftCarModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carModeErr != nil {
-		return nil, errors.Wrap(_carModeErr, "Error parsing 'carMode' field")
+		return nil, errors.Wrap(_carModeErr, "Error parsing 'carMode' field of BACnetConstructedDataCarMode")
 	}
 	carMode := _carMode.(BACnetLiftCarModeTagged)
 	if closeErr := readBuffer.CloseContext("carMode"); closeErr != nil {

@@ -150,13 +150,13 @@ func ModbusPDUReadDiscreteInputsResponseParse(readBuffer utils.ReadBuffer, respo
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUReadDiscreteInputsResponse")
 	}
 	// Byte Array field (value)
 	numberOfBytesvalue := int(byteCount)
 	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field of ModbusPDUReadDiscreteInputsResponse")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadDiscreteInputsResponse"); closeErr != nil {

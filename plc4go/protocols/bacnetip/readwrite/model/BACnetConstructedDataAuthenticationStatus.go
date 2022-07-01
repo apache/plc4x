@@ -164,7 +164,7 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 	}
 	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authenticationStatusErr != nil {
-		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field")
+		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field of BACnetConstructedDataAuthenticationStatus")
 	}
 	authenticationStatus := _authenticationStatus.(BACnetAuthenticationStatusTagged)
 	if closeErr := readBuffer.CloseContext("authenticationStatus"); closeErr != nil {

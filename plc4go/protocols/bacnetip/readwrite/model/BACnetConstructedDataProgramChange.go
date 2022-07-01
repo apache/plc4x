@@ -164,7 +164,7 @@ func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_programChange, _programChangeErr := BACnetProgramRequestTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _programChangeErr != nil {
-		return nil, errors.Wrap(_programChangeErr, "Error parsing 'programChange' field")
+		return nil, errors.Wrap(_programChangeErr, "Error parsing 'programChange' field of BACnetConstructedDataProgramChange")
 	}
 	programChange := _programChange.(BACnetProgramRequestTagged)
 	if closeErr := readBuffer.CloseContext("programChange"); closeErr != nil {

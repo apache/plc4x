@@ -164,7 +164,7 @@ func BACnetConstructedDataLowLimitParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_lowLimit, _lowLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _lowLimitErr != nil {
-		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field")
+		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetConstructedDataLowLimit")
 	}
 	lowLimit := _lowLimit.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("lowLimit"); closeErr != nil {

@@ -182,7 +182,7 @@ func BACnetLogDataLogDataEntryParse(readBuffer utils.ReadBuffer) (BACnetLogDataL
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetLogDataLogDataEntry.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetLogDataLogDataEntry")
 	}
 	_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 

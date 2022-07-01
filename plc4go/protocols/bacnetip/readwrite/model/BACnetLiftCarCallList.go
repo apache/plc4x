@@ -112,7 +112,7 @@ func BACnetLiftCarCallListParse(readBuffer utils.ReadBuffer) (BACnetLiftCarCallL
 	}
 	_floorNumbers, _floorNumbersErr := BACnetLiftCarCallListFloorListParse(readBuffer, uint8(uint8(0)))
 	if _floorNumbersErr != nil {
-		return nil, errors.Wrap(_floorNumbersErr, "Error parsing 'floorNumbers' field")
+		return nil, errors.Wrap(_floorNumbersErr, "Error parsing 'floorNumbers' field of BACnetLiftCarCallList")
 	}
 	floorNumbers := _floorNumbers.(BACnetLiftCarCallListFloorList)
 	if closeErr := readBuffer.CloseContext("floorNumbers"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataResolutionParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_resolution, _resolutionErr := BACnetApplicationTagParse(readBuffer)
 	if _resolutionErr != nil {
-		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field")
+		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field of BACnetConstructedDataResolution")
 	}
 	resolution := _resolution.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("resolution"); closeErr != nil {

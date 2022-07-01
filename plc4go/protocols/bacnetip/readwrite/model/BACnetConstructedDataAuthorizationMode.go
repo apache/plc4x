@@ -164,7 +164,7 @@ func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authorizationModeErr != nil {
-		return nil, errors.Wrap(_authorizationModeErr, "Error parsing 'authorizationMode' field")
+		return nil, errors.Wrap(_authorizationModeErr, "Error parsing 'authorizationMode' field of BACnetConstructedDataAuthorizationMode")
 	}
 	authorizationMode := _authorizationMode.(BACnetAuthorizationModeTagged)
 	if closeErr := readBuffer.CloseContext("authorizationMode"); closeErr != nil {

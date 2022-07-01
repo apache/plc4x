@@ -137,7 +137,7 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (BACnetRecipientDev
 	}
 	_deviceValue, _deviceValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _deviceValueErr != nil {
-		return nil, errors.Wrap(_deviceValueErr, "Error parsing 'deviceValue' field")
+		return nil, errors.Wrap(_deviceValueErr, "Error parsing 'deviceValue' field of BACnetRecipientDevice")
 	}
 	deviceValue := _deviceValue.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceValue"); closeErr != nil {

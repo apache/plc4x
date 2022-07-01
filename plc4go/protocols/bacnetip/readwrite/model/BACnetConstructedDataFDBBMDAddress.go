@@ -164,7 +164,7 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParse(readBuffer)
 	if _fDBBMDAddressErr != nil {
-		return nil, errors.Wrap(_fDBBMDAddressErr, "Error parsing 'fDBBMDAddress' field")
+		return nil, errors.Wrap(_fDBBMDAddressErr, "Error parsing 'fDBBMDAddress' field of BACnetConstructedDataFDBBMDAddress")
 	}
 	fDBBMDAddress := _fDBBMDAddress.(BACnetHostNPort)
 	if closeErr := readBuffer.CloseContext("fDBBMDAddress"); closeErr != nil {

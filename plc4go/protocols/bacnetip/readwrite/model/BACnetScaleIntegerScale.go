@@ -137,7 +137,7 @@ func BACnetScaleIntegerScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleInteg
 	}
 	_integerScale, _integerScaleErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerScaleErr != nil {
-		return nil, errors.Wrap(_integerScaleErr, "Error parsing 'integerScale' field")
+		return nil, errors.Wrap(_integerScaleErr, "Error parsing 'integerScale' field of BACnetScaleIntegerScale")
 	}
 	integerScale := _integerScale.(BACnetContextTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("integerScale"); closeErr != nil {

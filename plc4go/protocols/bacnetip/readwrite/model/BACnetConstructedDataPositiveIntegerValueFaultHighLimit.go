@@ -164,7 +164,7 @@ func BACnetConstructedDataPositiveIntegerValueFaultHighLimitParse(readBuffer uti
 	}
 	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _faultHighLimitErr != nil {
-		return nil, errors.Wrap(_faultHighLimitErr, "Error parsing 'faultHighLimit' field")
+		return nil, errors.Wrap(_faultHighLimitErr, "Error parsing 'faultHighLimit' field of BACnetConstructedDataPositiveIntegerValueFaultHighLimit")
 	}
 	faultHighLimit := _faultHighLimit.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("faultHighLimit"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 	}
 	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := BACnetApplicationTagParse(readBuffer)
 	if _maxApduLengthAcceptedErr != nil {
-		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field")
+		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field of BACnetConstructedDataMaxAPDULengthAccepted")
 	}
 	maxApduLengthAccepted := _maxApduLengthAccepted.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("maxApduLengthAccepted"); closeErr != nil {

@@ -139,7 +139,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParse(readB
 	}
 	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
 	if _integerValueErr != nil {
-		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field")
+		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 	}
 	integerValue := _integerValue.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {

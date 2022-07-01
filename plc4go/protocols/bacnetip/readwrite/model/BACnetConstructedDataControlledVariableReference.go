@@ -164,7 +164,7 @@ func BACnetConstructedDataControlledVariableReferenceParse(readBuffer utils.Read
 	}
 	_controlledVariableReference, _controlledVariableReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _controlledVariableReferenceErr != nil {
-		return nil, errors.Wrap(_controlledVariableReferenceErr, "Error parsing 'controlledVariableReference' field")
+		return nil, errors.Wrap(_controlledVariableReferenceErr, "Error parsing 'controlledVariableReference' field of BACnetConstructedDataControlledVariableReference")
 	}
 	controlledVariableReference := _controlledVariableReference.(BACnetObjectPropertyReference)
 	if closeErr := readBuffer.CloseContext("controlledVariableReference"); closeErr != nil {

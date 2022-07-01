@@ -21,17 +21,20 @@ package analyzer
 
 import (
 	"bytes"
+	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/bacnetanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/cbusanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/pcaphandler"
+	"github.com/google/gopacket/layers"
 	"github.com/k0kubun/go-ansi"
 	"github.com/rs/zerolog/log"
 	"github.com/schollz/progressbar/v3"
+	"net"
 )
 
-func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bool) {
+func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bool, client string, verbosity int) {
 	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filter)
 
 	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, filter)
@@ -46,8 +49,9 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
 	case "c-bus":
-		packageParse = cbusanalyzer.PackageParse
-		serializePackage = cbusanalyzer.SerializePackage
+		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(client)}
+		packageParse = analyzer.PackageParse
+		serializePackage = analyzer.SerializePackage
 	}
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
 		progressbar.OptionEnableColorCodes(true),
@@ -71,20 +75,31 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		}
 		packetTimestamp := packet.Metadata().Timestamp
 		realPacketNumber := timestampToIndexMap[packetTimestamp]
-		description := fmt.Sprintf("%s: [%d] timestamp: %v", pcapFile, realPacketNumber, packetTimestamp)
+		description := fmt.Sprintf("No.[%d] timestamp: %v, %s", realPacketNumber, packetTimestamp, pcapFile)
+		packetInformation := common.PacketInformation{
+			PacketNumber:    realPacketNumber,
+			PacketTimestamp: packetTimestamp,
+			Description:     description,
+		}
+		if networkLayer, ok := packet.NetworkLayer().(*layers.IPv4); ok {
+			packetInformation.SrcIp = networkLayer.SrcIP
+			packetInformation.DstIp = networkLayer.DstIP
+		}
+
 		applicationLayer := packet.ApplicationLayer()
 		if applicationLayer == nil {
-			log.Info().Str("packetInformation", description).Msg("No application layer")
+			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] No application layer", realPacketNumber)
 			continue
 		}
-		// TODO: extract ips if available
-		packetInformation := common.PacketInformation{Description: description}
 		payload := applicationLayer.Payload()
 		if parsed, err := packageParse(packetInformation, payload); err != nil {
 			// TODO: write report to xml or something
-			log.Warn().Str("packetInformation", description).Err(err).Msg("Error parsing package")
+			log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error parsing package", realPacketNumber)
 			continue
 		} else {
+			if verbosity > 1 {
+				println(parsed.(fmt.Stringer).String())
+			}
 			if onlyParse {
 				log.Trace().Msg("only parsing")
 				continue
@@ -92,7 +107,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			serializedBytes, err := serializePackage(parsed)
 			if err != nil {
 				// TODO: write report to xml or something
-				log.Warn().Str("packetInformation", description).Err(err).Msg("Error serializing")
+				log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msg("Error serializing")
 				continue
 			}
 			if noBytesCompare {
@@ -101,7 +116,13 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			}
 			if compareResult := bytes.Compare(payload, serializedBytes); compareResult != 0 {
 				// TODO: write report to xml or something
-				log.Warn().Msg("Bytes don't match")
+				log.Warn().Stringer("packetInformation", packetInformation).Msg("Bytes don't match")
+				if verbosity > 0 {
+					println("Original bytes")
+					println(hex.Dump(payload))
+					println("Serialized bytes")
+					println(hex.Dump(serializedBytes))
+				}
 			}
 		}
 	}

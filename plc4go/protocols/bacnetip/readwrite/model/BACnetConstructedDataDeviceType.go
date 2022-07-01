@@ -164,7 +164,7 @@ func BACnetConstructedDataDeviceTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_deviceType, _deviceTypeErr := BACnetApplicationTagParse(readBuffer)
 	if _deviceTypeErr != nil {
-		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field")
+		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of BACnetConstructedDataDeviceType")
 	}
 	deviceType := _deviceType.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("deviceType"); closeErr != nil {

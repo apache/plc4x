@@ -137,7 +137,7 @@ func BACnetPropertyStatesWriteStatusParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_writeStatus, _writeStatusErr := BACnetWriteStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _writeStatusErr != nil {
-		return nil, errors.Wrap(_writeStatusErr, "Error parsing 'writeStatus' field")
+		return nil, errors.Wrap(_writeStatusErr, "Error parsing 'writeStatus' field of BACnetPropertyStatesWriteStatus")
 	}
 	writeStatus := _writeStatus.(BACnetWriteStatusTagged)
 	if closeErr := readBuffer.CloseContext("writeStatus"); closeErr != nil {

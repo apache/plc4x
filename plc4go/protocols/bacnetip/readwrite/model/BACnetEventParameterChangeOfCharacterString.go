@@ -170,7 +170,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(17)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfCharacterString")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -183,7 +183,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
-		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field")
+		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfCharacterString")
 	}
 	timeDelay := _timeDelay.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	}
 	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParse(readBuffer, uint8(uint8(1)))
 	if _listOfAlarmValuesErr != nil {
-		return nil, errors.Wrap(_listOfAlarmValuesErr, "Error parsing 'listOfAlarmValues' field")
+		return nil, errors.Wrap(_listOfAlarmValuesErr, "Error parsing 'listOfAlarmValues' field of BACnetEventParameterChangeOfCharacterString")
 	}
 	listOfAlarmValues := _listOfAlarmValues.(BACnetEventParameterChangeOfCharacterStringListOfAlarmValues)
 	if closeErr := readBuffer.CloseContext("listOfAlarmValues"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(17)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfCharacterString")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

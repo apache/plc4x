@@ -142,7 +142,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	}
 	_keyRevision, _keyRevisionErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _keyRevisionErr != nil {
-		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field")
+		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field of BACnetSecurityKeySet")
 	}
 	keyRevision := _keyRevision.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("keyRevision"); closeErr != nil {
@@ -155,7 +155,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	}
 	_activationTime, _activationTimeErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _activationTimeErr != nil {
-		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field")
+		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetSecurityKeySet")
 	}
 	activationTime := _activationTime.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("activationTime"); closeErr != nil {
@@ -168,7 +168,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	}
 	_expirationTime, _expirationTimeErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _expirationTimeErr != nil {
-		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field")
+		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field of BACnetSecurityKeySet")
 	}
 	expirationTime := _expirationTime.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
@@ -181,7 +181,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	}
 	_keyIds, _keyIdsErr := BACnetSecurityKeySetKeyIdsParse(readBuffer, uint8(uint8(3)))
 	if _keyIdsErr != nil {
-		return nil, errors.Wrap(_keyIdsErr, "Error parsing 'keyIds' field")
+		return nil, errors.Wrap(_keyIdsErr, "Error parsing 'keyIds' field of BACnetSecurityKeySet")
 	}
 	keyIds := _keyIds.(BACnetSecurityKeySetKeyIds)
 	if closeErr := readBuffer.CloseContext("keyIds"); closeErr != nil {

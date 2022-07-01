@@ -164,7 +164,7 @@ func BACnetConstructedDataDescriptionParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_description, _descriptionErr := BACnetApplicationTagParse(readBuffer)
 	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field")
+		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of BACnetConstructedDataDescription")
 	}
 	description := _description.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {

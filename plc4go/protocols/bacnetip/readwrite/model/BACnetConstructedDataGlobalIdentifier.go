@@ -164,7 +164,7 @@ func BACnetConstructedDataGlobalIdentifierParse(readBuffer utils.ReadBuffer, tag
 	}
 	_globalIdentifier, _globalIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _globalIdentifierErr != nil {
-		return nil, errors.Wrap(_globalIdentifierErr, "Error parsing 'globalIdentifier' field")
+		return nil, errors.Wrap(_globalIdentifierErr, "Error parsing 'globalIdentifier' field of BACnetConstructedDataGlobalIdentifier")
 	}
 	globalIdentifier := _globalIdentifier.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("globalIdentifier"); closeErr != nil {

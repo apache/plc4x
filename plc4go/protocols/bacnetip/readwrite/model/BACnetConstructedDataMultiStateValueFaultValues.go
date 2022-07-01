@@ -155,7 +155,7 @@ func BACnetConstructedDataMultiStateValueFaultValuesParse(readBuffer utils.ReadB
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field")
+				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field of BACnetConstructedDataMultiStateValueFaultValues")
 			}
 			faultValues = append(faultValues, _item.(BACnetApplicationTagUnsignedInteger))
 

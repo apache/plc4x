@@ -150,7 +150,7 @@ func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint
 	}
 	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParse(readBuffer)
 	if _alarmMessageErr != nil {
-		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field")
+		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadAlarmAckInd")
 	}
 	alarmMessage := _alarmMessage.(AlarmMessageAckPushType)
 	if closeErr := readBuffer.CloseContext("alarmMessage"); closeErr != nil {

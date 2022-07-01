@@ -197,7 +197,7 @@ func BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyParse(readBuffe
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
+			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty")
 		default:
 			numberOfDataElements = _val.(BACnetApplicationTagUnsignedInteger)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
@@ -216,7 +216,7 @@ func BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyParse(readBuffe
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'groupMembers' field")
+				return nil, errors.Wrap(_err, "Error parsing 'groupMembers' field of BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty")
 			}
 			groupMembers = append(groupMembers, _item.(BACnetDeviceObjectPropertyReference))
 

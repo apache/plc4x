@@ -164,7 +164,7 @@ func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	_isUtc, _isUtcErr := BACnetApplicationTagParse(readBuffer)
 	if _isUtcErr != nil {
-		return nil, errors.Wrap(_isUtcErr, "Error parsing 'isUtc' field")
+		return nil, errors.Wrap(_isUtcErr, "Error parsing 'isUtc' field of BACnetConstructedDataIsUTC")
 	}
 	isUtc := _isUtc.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("isUtc"); closeErr != nil {

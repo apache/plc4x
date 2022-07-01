@@ -122,7 +122,7 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_credentialDataInput, _credentialDataInputErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _credentialDataInputErr != nil {
-		return nil, errors.Wrap(_credentialDataInputErr, "Error parsing 'credentialDataInput' field")
+		return nil, errors.Wrap(_credentialDataInputErr, "Error parsing 'credentialDataInput' field of BACnetAuthenticationPolicyListEntry")
 	}
 	credentialDataInput := _credentialDataInput.(BACnetDeviceObjectReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("credentialDataInput"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (BACn
 	}
 	_index, _indexErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
+		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of BACnetAuthenticationPolicyListEntry")
 	}
 	index := _index.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("index"); closeErr != nil {

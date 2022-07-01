@@ -155,7 +155,7 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVTSessionParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'activeVTSession' field")
+				return nil, errors.Wrap(_err, "Error parsing 'activeVTSession' field of BACnetConstructedDataActiveVTSessions")
 			}
 			activeVTSession = append(activeVTSession, _item.(BACnetVTSession))
 

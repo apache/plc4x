@@ -199,42 +199,42 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (DeviceDescriptorTy
 	// Simple Field (manufacturerId)
 	_manufacturerId, _manufacturerIdErr := readBuffer.ReadUint16("manufacturerId", 16)
 	if _manufacturerIdErr != nil {
-		return nil, errors.Wrap(_manufacturerIdErr, "Error parsing 'manufacturerId' field")
+		return nil, errors.Wrap(_manufacturerIdErr, "Error parsing 'manufacturerId' field of DeviceDescriptorType2")
 	}
 	manufacturerId := _manufacturerId
 
 	// Simple Field (deviceType)
 	_deviceType, _deviceTypeErr := readBuffer.ReadUint16("deviceType", 16)
 	if _deviceTypeErr != nil {
-		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field")
+		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of DeviceDescriptorType2")
 	}
 	deviceType := _deviceType
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
+		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of DeviceDescriptorType2")
 	}
 	version := _version
 
 	// Simple Field (readSupported)
 	_readSupported, _readSupportedErr := readBuffer.ReadBit("readSupported")
 	if _readSupportedErr != nil {
-		return nil, errors.Wrap(_readSupportedErr, "Error parsing 'readSupported' field")
+		return nil, errors.Wrap(_readSupportedErr, "Error parsing 'readSupported' field of DeviceDescriptorType2")
 	}
 	readSupported := _readSupported
 
 	// Simple Field (writeSupported)
 	_writeSupported, _writeSupportedErr := readBuffer.ReadBit("writeSupported")
 	if _writeSupportedErr != nil {
-		return nil, errors.Wrap(_writeSupportedErr, "Error parsing 'writeSupported' field")
+		return nil, errors.Wrap(_writeSupportedErr, "Error parsing 'writeSupported' field of DeviceDescriptorType2")
 	}
 	writeSupported := _writeSupported
 
 	// Simple Field (logicalTagBase)
 	_logicalTagBase, _logicalTagBaseErr := readBuffer.ReadUint8("logicalTagBase", 6)
 	if _logicalTagBaseErr != nil {
-		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field")
+		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field of DeviceDescriptorType2")
 	}
 	logicalTagBase := _logicalTagBase
 
@@ -244,7 +244,7 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (DeviceDescriptorTy
 	}
 	_channelInfo1, _channelInfo1Err := ChannelInformationParse(readBuffer)
 	if _channelInfo1Err != nil {
-		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field")
+		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field of DeviceDescriptorType2")
 	}
 	channelInfo1 := _channelInfo1.(ChannelInformation)
 	if closeErr := readBuffer.CloseContext("channelInfo1"); closeErr != nil {
@@ -257,7 +257,7 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (DeviceDescriptorTy
 	}
 	_channelInfo2, _channelInfo2Err := ChannelInformationParse(readBuffer)
 	if _channelInfo2Err != nil {
-		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field")
+		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field of DeviceDescriptorType2")
 	}
 	channelInfo2 := _channelInfo2.(ChannelInformation)
 	if closeErr := readBuffer.CloseContext("channelInfo2"); closeErr != nil {
@@ -270,7 +270,7 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (DeviceDescriptorTy
 	}
 	_channelInfo3, _channelInfo3Err := ChannelInformationParse(readBuffer)
 	if _channelInfo3Err != nil {
-		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field")
+		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field of DeviceDescriptorType2")
 	}
 	channelInfo3 := _channelInfo3.(ChannelInformation)
 	if closeErr := readBuffer.CloseContext("channelInfo3"); closeErr != nil {
@@ -283,7 +283,7 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (DeviceDescriptorTy
 	}
 	_channelInfo4, _channelInfo4Err := ChannelInformationParse(readBuffer)
 	if _channelInfo4Err != nil {
-		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field")
+		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field of DeviceDescriptorType2")
 	}
 	channelInfo4 := _channelInfo4.(ChannelInformation)
 	if closeErr := readBuffer.CloseContext("channelInfo4"); closeErr != nil {

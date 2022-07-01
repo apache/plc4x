@@ -144,7 +144,7 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 	}
 	_knxLayer, _knxLayerErr := KnxLayerParse(readBuffer)
 	if _knxLayerErr != nil {
-		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")
+		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field of ConnectionRequestInformationTunnelConnection")
 	}
 	knxLayer := _knxLayer
 	if closeErr := readBuffer.CloseContext("knxLayer"); closeErr != nil {
@@ -155,7 +155,7 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ConnectionRequestInformationTunnelConnection")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{

@@ -133,7 +133,7 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (BACnetDevice
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'deviceIdentifier' field")
+			return nil, errors.Wrap(_err, "Error parsing 'deviceIdentifier' field of BACnetDeviceObjectReference")
 		default:
 			deviceIdentifier = _val.(BACnetContextTagObjectIdentifier)
 			if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (BACnetDevice
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
+		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetDeviceObjectReference")
 	}
 	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, 
 	}
 	_numberOfApduRetries, _numberOfApduRetriesErr := BACnetApplicationTagParse(readBuffer)
 	if _numberOfApduRetriesErr != nil {
-		return nil, errors.Wrap(_numberOfApduRetriesErr, "Error parsing 'numberOfApduRetries' field")
+		return nil, errors.Wrap(_numberOfApduRetriesErr, "Error parsing 'numberOfApduRetries' field of BACnetConstructedDataNumberOfAPDURetries")
 	}
 	numberOfApduRetries := _numberOfApduRetries.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("numberOfApduRetries"); closeErr != nil {

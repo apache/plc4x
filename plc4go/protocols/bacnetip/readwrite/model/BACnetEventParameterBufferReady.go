@@ -170,7 +170,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(10)))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterBufferReady")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -183,7 +183,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	}
 	_notificationThreshold, _notificationThresholdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _notificationThresholdErr != nil {
-		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field")
+		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field of BACnetEventParameterBufferReady")
 	}
 	notificationThreshold := _notificationThreshold.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("notificationThreshold"); closeErr != nil {
@@ -196,7 +196,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	}
 	_previousNotificationCount, _previousNotificationCountErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _previousNotificationCountErr != nil {
-		return nil, errors.Wrap(_previousNotificationCountErr, "Error parsing 'previousNotificationCount' field")
+		return nil, errors.Wrap(_previousNotificationCountErr, "Error parsing 'previousNotificationCount' field of BACnetEventParameterBufferReady")
 	}
 	previousNotificationCount := _previousNotificationCount.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("previousNotificationCount"); closeErr != nil {
@@ -209,7 +209,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(10)))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterBufferReady")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

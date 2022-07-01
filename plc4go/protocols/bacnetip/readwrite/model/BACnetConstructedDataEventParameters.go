@@ -164,7 +164,7 @@ func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_eventParameter, _eventParameterErr := BACnetEventParameterParse(readBuffer)
 	if _eventParameterErr != nil {
-		return nil, errors.Wrap(_eventParameterErr, "Error parsing 'eventParameter' field")
+		return nil, errors.Wrap(_eventParameterErr, "Error parsing 'eventParameter' field of BACnetConstructedDataEventParameters")
 	}
 	eventParameter := _eventParameter.(BACnetEventParameter)
 	if closeErr := readBuffer.CloseContext("eventParameter"); closeErr != nil {

@@ -137,7 +137,7 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 	currentPos = positionAware.GetPos()
 	peekedApplication, _err := readBuffer.ReadByte("peekedApplication")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field")
+		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field of CBusPointToMultiPointCommand")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -160,7 +160,7 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToMultiPointCommand.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusPointToMultiPointCommand")
 	}
 	_child = _childTemp.(CBusPointToMultiPointCommandChildSerializeRequirement)
 
@@ -170,7 +170,7 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 	}
 	_termination, _terminationErr := RequestTerminationParse(readBuffer)
 	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field")
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of CBusPointToMultiPointCommand")
 	}
 	termination := _termination.(RequestTermination)
 	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {

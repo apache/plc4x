@@ -141,7 +141,7 @@ func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLeng
 	numberOfBytesbytesOfRemovedService := int(serviceAckPayloadLength)
 	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field of BACnetServiceAckRequestKey")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckRequestKey"); closeErr != nil {

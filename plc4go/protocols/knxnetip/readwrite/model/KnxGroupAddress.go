@@ -126,7 +126,7 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGrou
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [numLevels=%v]", numLevels)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of KnxGroupAddress.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of KnxGroupAddress")
 	}
 	_child = _childTemp.(KnxGroupAddressChildSerializeRequirement)
 

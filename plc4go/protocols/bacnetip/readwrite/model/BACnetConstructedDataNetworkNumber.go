@@ -164,7 +164,7 @@ func BACnetConstructedDataNetworkNumberParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_networkNumber, _networkNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field")
+		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetConstructedDataNetworkNumber")
 	}
 	networkNumber := _networkNumber.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {

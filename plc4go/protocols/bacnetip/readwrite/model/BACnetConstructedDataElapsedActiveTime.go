@@ -164,7 +164,7 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _elapsedActiveTimeErr != nil {
-		return nil, errors.Wrap(_elapsedActiveTimeErr, "Error parsing 'elapsedActiveTime' field")
+		return nil, errors.Wrap(_elapsedActiveTimeErr, "Error parsing 'elapsedActiveTime' field of BACnetConstructedDataElapsedActiveTime")
 	}
 	elapsedActiveTime := _elapsedActiveTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("elapsedActiveTime"); closeErr != nil {

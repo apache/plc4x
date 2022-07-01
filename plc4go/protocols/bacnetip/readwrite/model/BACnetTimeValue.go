@@ -122,7 +122,7 @@ func BACnetTimeValueParse(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) 
 	}
 	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
 	if _timeValueErr != nil {
-		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field")
+		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetTimeValue")
 	}
 	timeValue := _timeValue.(BACnetApplicationTagTime)
 	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
@@ -135,7 +135,7 @@ func BACnetTimeValueParse(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) 
 	}
 	_value, _valueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTimeValue")
 	}
 	value := _value.(BACnetConstructedDataElement)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {

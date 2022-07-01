@@ -164,7 +164,7 @@ func BACnetConstructedDataIntegerValueDeadbandParse(readBuffer utils.ReadBuffer,
 	}
 	_deadband, _deadbandErr := BACnetApplicationTagParse(readBuffer)
 	if _deadbandErr != nil {
-		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field")
+		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetConstructedDataIntegerValueDeadband")
 	}
 	deadband := _deadband.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {

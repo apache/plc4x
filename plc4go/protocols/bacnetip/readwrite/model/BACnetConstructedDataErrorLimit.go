@@ -164,7 +164,7 @@ func BACnetConstructedDataErrorLimitParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_errorLimit, _errorLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _errorLimitErr != nil {
-		return nil, errors.Wrap(_errorLimitErr, "Error parsing 'errorLimit' field")
+		return nil, errors.Wrap(_errorLimitErr, "Error parsing 'errorLimit' field of BACnetConstructedDataErrorLimit")
 	}
 	errorLimit := _errorLimit.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("errorLimit"); closeErr != nil {

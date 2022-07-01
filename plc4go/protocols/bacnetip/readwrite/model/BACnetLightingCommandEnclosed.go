@@ -135,7 +135,7 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetLightingCommandEnclosed")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -148,7 +148,7 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParse(readBuffer)
 	if _lightingCommandErr != nil {
-		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field")
+		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field of BACnetLightingCommandEnclosed")
 	}
 	lightingCommand := _lightingCommand.(BACnetLightingCommand)
 	if closeErr := readBuffer.CloseContext("lightingCommand"); closeErr != nil {
@@ -161,7 +161,7 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetLightingCommandEnclosed")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

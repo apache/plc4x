@@ -137,7 +137,7 @@ func BACnetLandingCallStatusCommandDestinationParse(readBuffer utils.ReadBuffer)
 	}
 	_destination, _destinationErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _destinationErr != nil {
-		return nil, errors.Wrap(_destinationErr, "Error parsing 'destination' field")
+		return nil, errors.Wrap(_destinationErr, "Error parsing 'destination' field of BACnetLandingCallStatusCommandDestination")
 	}
 	destination := _destination.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("destination"); closeErr != nil {

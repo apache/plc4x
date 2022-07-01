@@ -164,7 +164,7 @@ func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_action, _actionErr := BACnetActionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _actionErr != nil {
-		return nil, errors.Wrap(_actionErr, "Error parsing 'action' field")
+		return nil, errors.Wrap(_actionErr, "Error parsing 'action' field of BACnetConstructedDataLoopAction")
 	}
 	action := _action.(BACnetActionTagged)
 	if closeErr := readBuffer.CloseContext("action"); closeErr != nil {

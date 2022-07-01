@@ -137,7 +137,7 @@ func BACnetPropertyStatesTimerTransitionParse(readBuffer utils.ReadBuffer, peeke
 	}
 	_timerTransition, _timerTransitionErr := BACnetTimerTransitionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timerTransitionErr != nil {
-		return nil, errors.Wrap(_timerTransitionErr, "Error parsing 'timerTransition' field")
+		return nil, errors.Wrap(_timerTransitionErr, "Error parsing 'timerTransition' field of BACnetPropertyStatesTimerTransition")
 	}
 	timerTransition := _timerTransition.(BACnetTimerTransitionTagged)
 	if closeErr := readBuffer.CloseContext("timerTransition"); closeErr != nil {

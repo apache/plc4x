@@ -164,7 +164,7 @@ func BACnetConstructedDataBinaryOutputFeedbackValueParse(readBuffer utils.ReadBu
 	}
 	_feedbackValue, _feedbackValueErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _feedbackValueErr != nil {
-		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field")
+		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataBinaryOutputFeedbackValue")
 	}
 	feedbackValue := _feedbackValue.(BACnetBinaryPVTagged)
 	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {

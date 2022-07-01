@@ -164,7 +164,7 @@ func BACnetConstructedDataAPDULengthParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_apduLength, _apduLengthErr := BACnetApplicationTagParse(readBuffer)
 	if _apduLengthErr != nil {
-		return nil, errors.Wrap(_apduLengthErr, "Error parsing 'apduLength' field")
+		return nil, errors.Wrap(_apduLengthErr, "Error parsing 'apduLength' field of BACnetConstructedDataAPDULength")
 	}
 	apduLength := _apduLength.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("apduLength"); closeErr != nil {

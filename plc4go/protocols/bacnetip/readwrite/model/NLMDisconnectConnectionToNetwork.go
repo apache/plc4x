@@ -138,7 +138,7 @@ func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLeng
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field")
+		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMDisconnectConnectionToNetwork")
 	}
 	destinationNetworkAddress := _destinationNetworkAddress
 

@@ -139,7 +139,7 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint16)
 		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
 	}
 	if _serviceChoiceErr != nil {
-		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
+		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field of BACnetServiceAck")
 	}
 
 	// Virtual field
@@ -191,7 +191,7 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint16)
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetServiceAck.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetServiceAck")
 	}
 	_child = _childTemp.(BACnetServiceAckChildSerializeRequirement)
 

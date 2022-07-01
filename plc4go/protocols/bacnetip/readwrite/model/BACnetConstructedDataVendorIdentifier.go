@@ -164,7 +164,7 @@ func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tag
 	}
 	_vendorIdentifier, _vendorIdentifierErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vendorIdentifierErr != nil {
-		return nil, errors.Wrap(_vendorIdentifierErr, "Error parsing 'vendorIdentifier' field")
+		return nil, errors.Wrap(_vendorIdentifierErr, "Error parsing 'vendorIdentifier' field of BACnetConstructedDataVendorIdentifier")
 	}
 	vendorIdentifier := _vendorIdentifier.(BACnetVendorIdTagged)
 	if closeErr := readBuffer.CloseContext("vendorIdentifier"); closeErr != nil {

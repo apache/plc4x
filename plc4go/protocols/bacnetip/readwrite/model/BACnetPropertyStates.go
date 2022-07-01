@@ -282,7 +282,7 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer) (BACnetPropertyState
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetPropertyStates.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetPropertyStates")
 	}
 	_child = _childTemp.(BACnetPropertyStatesChildSerializeRequirement)
 

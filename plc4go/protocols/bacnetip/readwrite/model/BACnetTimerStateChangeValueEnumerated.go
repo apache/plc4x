@@ -137,7 +137,7 @@ func BACnetTimerStateChangeValueEnumeratedParse(readBuffer utils.ReadBuffer, obj
 	}
 	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
 	if _enumeratedValueErr != nil {
-		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field")
+		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetTimerStateChangeValueEnumerated")
 	}
 	enumeratedValue := _enumeratedValue.(BACnetApplicationTagEnumerated)
 	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {

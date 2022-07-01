@@ -151,7 +151,7 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (DisconnectRequest, err
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of DisconnectRequest")
 	}
 	communicationChannelId := _communicationChannelId
 
@@ -159,7 +159,7 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (DisconnectRequest, err
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DisconnectRequest")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -175,7 +175,7 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (DisconnectRequest, err
 	}
 	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
+		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DisconnectRequest")
 	}
 	hpaiControlEndpoint := _hpaiControlEndpoint.(HPAIControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {

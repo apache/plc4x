@@ -139,7 +139,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 	}
 	_referencedPropertyIncrement, _referencedPropertyIncrementErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _referencedPropertyIncrementErr != nil {
-		return nil, errors.Wrap(_referencedPropertyIncrementErr, "Error parsing 'referencedPropertyIncrement' field")
+		return nil, errors.Wrap(_referencedPropertyIncrementErr, "Error parsing 'referencedPropertyIncrement' field of BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement")
 	}
 	referencedPropertyIncrement := _referencedPropertyIncrement.(BACnetContextTagReal)
 	if closeErr := readBuffer.CloseContext("referencedPropertyIncrement"); closeErr != nil {

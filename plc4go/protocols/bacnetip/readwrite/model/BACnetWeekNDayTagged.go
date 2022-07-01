@@ -267,7 +267,7 @@ func BACnetWeekNDayTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetWeekNDayTagged")
 	}
 	header := _header.(BACnetTagHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
@@ -292,7 +292,7 @@ func BACnetWeekNDayTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	// Simple Field (month)
 	_month, _monthErr := readBuffer.ReadUint8("month", 8)
 	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
+		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of BACnetWeekNDayTagged")
 	}
 	month := _month
 
@@ -314,7 +314,7 @@ func BACnetWeekNDayTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	// Simple Field (weekOfMonth)
 	_weekOfMonth, _weekOfMonthErr := readBuffer.ReadUint8("weekOfMonth", 8)
 	if _weekOfMonthErr != nil {
-		return nil, errors.Wrap(_weekOfMonthErr, "Error parsing 'weekOfMonth' field")
+		return nil, errors.Wrap(_weekOfMonthErr, "Error parsing 'weekOfMonth' field of BACnetWeekNDayTagged")
 	}
 	weekOfMonth := _weekOfMonth
 
@@ -371,7 +371,7 @@ func BACnetWeekNDayTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	// Simple Field (dayOfWeek)
 	_dayOfWeek, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 8)
 	if _dayOfWeekErr != nil {
-		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
+		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field of BACnetWeekNDayTagged")
 	}
 	dayOfWeek := _dayOfWeek
 

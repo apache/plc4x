@@ -137,7 +137,7 @@ func BACnetPropertyStatesReliabilityParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reliabilityErr != nil {
-		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field")
+		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field of BACnetPropertyStatesReliability")
 	}
 	reliability := _reliability.(BACnetReliabilityTagged)
 	if closeErr := readBuffer.CloseContext("reliability"); closeErr != nil {

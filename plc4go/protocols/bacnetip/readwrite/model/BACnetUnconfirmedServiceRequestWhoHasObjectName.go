@@ -137,7 +137,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(readBuffer utils.ReadB
 	}
 	_objectName, _objectNameErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _objectNameErr != nil {
-		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field")
+		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetUnconfirmedServiceRequestWhoHasObjectName")
 	}
 	objectName := _objectName.(BACnetContextTagCharacterString)
 	if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataInstanceOfParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_instanceOf, _instanceOfErr := BACnetApplicationTagParse(readBuffer)
 	if _instanceOfErr != nil {
-		return nil, errors.Wrap(_instanceOfErr, "Error parsing 'instanceOf' field")
+		return nil, errors.Wrap(_instanceOfErr, "Error parsing 'instanceOf' field of BACnetConstructedDataInstanceOf")
 	}
 	instanceOf := _instanceOf.(BACnetApplicationTagCharacterString)
 	if closeErr := readBuffer.CloseContext("instanceOf"); closeErr != nil {

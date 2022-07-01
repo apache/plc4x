@@ -164,7 +164,7 @@ func BACnetConstructedDataVarianceValueParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_varianceValue, _varianceValueErr := BACnetApplicationTagParse(readBuffer)
 	if _varianceValueErr != nil {
-		return nil, errors.Wrap(_varianceValueErr, "Error parsing 'varianceValue' field")
+		return nil, errors.Wrap(_varianceValueErr, "Error parsing 'varianceValue' field of BACnetConstructedDataVarianceValue")
 	}
 	varianceValue := _varianceValue.(BACnetApplicationTagReal)
 	if closeErr := readBuffer.CloseContext("varianceValue"); closeErr != nil {

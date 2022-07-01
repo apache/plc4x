@@ -164,7 +164,7 @@ func BACnetConstructedDataEscalatorModeParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _escalatorModeErr != nil {
-		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field")
+		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field of BACnetConstructedDataEscalatorMode")
 	}
 	escalatorMode := _escalatorMode.(BACnetEscalatorModeTagged)
 	if closeErr := readBuffer.CloseContext("escalatorMode"); closeErr != nil {

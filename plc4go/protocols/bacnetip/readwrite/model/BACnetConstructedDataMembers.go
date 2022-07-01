@@ -155,7 +155,7 @@ func BACnetConstructedDataMembersParse(readBuffer utils.ReadBuffer, tagNumber ui
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'members' field")
+				return nil, errors.Wrap(_err, "Error parsing 'members' field of BACnetConstructedDataMembers")
 			}
 			members = append(members, _item.(BACnetDeviceObjectReference))
 

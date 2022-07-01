@@ -137,7 +137,7 @@ func BACnetPropertyStatesAccessEventParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	_accessEvent, _accessEventErr := BACnetAccessEventTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessEventErr != nil {
-		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field")
+		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field of BACnetPropertyStatesAccessEvent")
 	}
 	accessEvent := _accessEvent.(BACnetAccessEventTagged)
 	if closeErr := readBuffer.CloseContext("accessEvent"); closeErr != nil {

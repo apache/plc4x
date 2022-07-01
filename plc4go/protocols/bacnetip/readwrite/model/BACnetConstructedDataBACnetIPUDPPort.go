@@ -164,7 +164,7 @@ func BACnetConstructedDataBACnetIPUDPPortParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_ipUdpPort, _ipUdpPortErr := BACnetApplicationTagParse(readBuffer)
 	if _ipUdpPortErr != nil {
-		return nil, errors.Wrap(_ipUdpPortErr, "Error parsing 'ipUdpPort' field")
+		return nil, errors.Wrap(_ipUdpPortErr, "Error parsing 'ipUdpPort' field of BACnetConstructedDataBACnetIPUDPPort")
 	}
 	ipUdpPort := _ipUdpPort.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("ipUdpPort"); closeErr != nil {

@@ -172,7 +172,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfBitString")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -185,7 +185,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 	}
 	_changeOfBitString, _changeOfBitStringErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _changeOfBitStringErr != nil {
-		return nil, errors.Wrap(_changeOfBitStringErr, "Error parsing 'changeOfBitString' field")
+		return nil, errors.Wrap(_changeOfBitStringErr, "Error parsing 'changeOfBitString' field of BACnetNotificationParametersChangeOfBitString")
 	}
 	changeOfBitString := _changeOfBitString.(BACnetContextTagBitString)
 	if closeErr := readBuffer.CloseContext("changeOfBitString"); closeErr != nil {
@@ -198,7 +198,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfBitString")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
@@ -211,7 +211,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfBitString")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

@@ -182,35 +182,35 @@ func ApduDataExtPropertyValueResponseParse(readBuffer utils.ReadBuffer, length u
 	// Simple Field (objectIndex)
 	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
-		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
+		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field of ApduDataExtPropertyValueResponse")
 	}
 	objectIndex := _objectIndex
 
 	// Simple Field (propertyId)
 	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
-		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
+		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of ApduDataExtPropertyValueResponse")
 	}
 	propertyId := _propertyId
 
 	// Simple Field (count)
 	_count, _countErr := readBuffer.ReadUint8("count", 4)
 	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of ApduDataExtPropertyValueResponse")
 	}
 	count := _count
 
 	// Simple Field (index)
 	_index, _indexErr := readBuffer.ReadUint16("index", 12)
 	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
+		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyValueResponse")
 	}
 	index := _index
 	// Byte Array field (data)
 	numberOfBytesdata := int(uint16(length) - uint16(uint16(5)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataExtPropertyValueResponse")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyValueResponse"); closeErr != nil {

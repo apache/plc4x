@@ -141,20 +141,20 @@ func DF1CommandParse(readBuffer utils.ReadBuffer) (DF1Command, error) {
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 8)
 	if _commandCodeErr != nil {
-		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field")
+		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of DF1Command")
 	}
 
 	// Simple Field (status)
 	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DF1Command")
 	}
 	status := _status
 
 	// Simple Field (transactionCounter)
 	_transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
 	if _transactionCounterErr != nil {
-		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field")
+		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field of DF1Command")
 	}
 	transactionCounter := _transactionCounter
 
@@ -176,7 +176,7 @@ func DF1CommandParse(readBuffer utils.ReadBuffer) (DF1Command, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1Command.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of DF1Command")
 	}
 	_child = _childTemp.(DF1CommandChildSerializeRequirement)
 

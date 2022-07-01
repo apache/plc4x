@@ -48,8 +48,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ChecksumParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CALReply":
 		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ExclamationMark":
-		return model.ExclamationMarkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":

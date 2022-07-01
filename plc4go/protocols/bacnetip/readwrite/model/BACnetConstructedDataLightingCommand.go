@@ -164,7 +164,7 @@ func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParse(readBuffer)
 	if _lightingCommandErr != nil {
-		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field")
+		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field of BACnetConstructedDataLightingCommand")
 	}
 	lightingCommand := _lightingCommand.(BACnetLightingCommand)
 	if closeErr := readBuffer.CloseContext("lightingCommand"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataIPAddressParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_ipAddress, _ipAddressErr := BACnetApplicationTagParse(readBuffer)
 	if _ipAddressErr != nil {
-		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field")
+		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of BACnetConstructedDataIPAddress")
 	}
 	ipAddress := _ipAddress.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {

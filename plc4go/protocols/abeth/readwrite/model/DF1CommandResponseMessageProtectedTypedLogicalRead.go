@@ -152,7 +152,7 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 		for positionAware.GetPos() < _dataEndPos {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+				return nil, errors.Wrap(_err, "Error parsing 'data' field of DF1CommandResponseMessageProtectedTypedLogicalRead")
 			}
 			data = append(data, _item)
 		}

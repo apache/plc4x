@@ -136,7 +136,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 	}
 	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetLogRecord")
 	}
 	timestamp := _timestamp.(BACnetDateTimeEnclosed)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
@@ -149,7 +149,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 	}
 	_logDatum, _logDatumErr := BACnetLogRecordLogDatumParse(readBuffer, uint8(uint8(1)))
 	if _logDatumErr != nil {
-		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field")
+		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field of BACnetLogRecord")
 	}
 	logDatum := _logDatum.(BACnetLogRecordLogDatum)
 	if closeErr := readBuffer.CloseContext("logDatum"); closeErr != nil {
@@ -169,7 +169,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'statusFlags' field")
+			return nil, errors.Wrap(_err, "Error parsing 'statusFlags' field of BACnetLogRecord")
 		default:
 			statusFlags = _val.(BACnetStatusFlagsTagged)
 			if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {

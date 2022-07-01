@@ -164,7 +164,7 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer,
 	}
 	_bacnetIPNATTraversal, _bacnetIPNATTraversalErr := BACnetApplicationTagParse(readBuffer)
 	if _bacnetIPNATTraversalErr != nil {
-		return nil, errors.Wrap(_bacnetIPNATTraversalErr, "Error parsing 'bacnetIPNATTraversal' field")
+		return nil, errors.Wrap(_bacnetIPNATTraversalErr, "Error parsing 'bacnetIPNATTraversal' field of BACnetConstructedDataBACnetIPNATTraversal")
 	}
 	bacnetIPNATTraversal := _bacnetIPNATTraversal.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("bacnetIPNATTraversal"); closeErr != nil {

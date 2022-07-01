@@ -150,7 +150,7 @@ func S7PayloadNotify8Parse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, c
 	}
 	_alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParse(readBuffer)
 	if _alarmMessageErr != nil {
-		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field")
+		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadNotify8")
 	}
 	alarmMessage := _alarmMessage.(AlarmMessagePushType)
 	if closeErr := readBuffer.CloseContext("alarmMessage"); closeErr != nil {

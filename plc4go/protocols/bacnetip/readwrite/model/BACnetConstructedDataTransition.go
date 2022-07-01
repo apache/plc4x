@@ -164,7 +164,7 @@ func BACnetConstructedDataTransitionParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	_transition, _transitionErr := BACnetLightingTransitionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _transitionErr != nil {
-		return nil, errors.Wrap(_transitionErr, "Error parsing 'transition' field")
+		return nil, errors.Wrap(_transitionErr, "Error parsing 'transition' field of BACnetConstructedDataTransition")
 	}
 	transition := _transition.(BACnetLightingTransitionTagged)
 	if closeErr := readBuffer.CloseContext("transition"); closeErr != nil {

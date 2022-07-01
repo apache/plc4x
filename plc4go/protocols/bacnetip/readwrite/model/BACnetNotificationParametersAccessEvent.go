@@ -220,7 +220,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersAccessEvent")
 	}
 	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
@@ -233,7 +233,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	}
 	_accessEvent, _accessEventErr := BACnetAccessEventTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessEventErr != nil {
-		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field")
+		return nil, errors.Wrap(_accessEventErr, "Error parsing 'accessEvent' field of BACnetNotificationParametersAccessEvent")
 	}
 	accessEvent := _accessEvent.(BACnetAccessEventTagged)
 	if closeErr := readBuffer.CloseContext("accessEvent"); closeErr != nil {
@@ -246,7 +246,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
-		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
+		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersAccessEvent")
 	}
 	statusFlags := _statusFlags.(BACnetStatusFlagsTagged)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
@@ -259,7 +259,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	}
 	_accessEventTag, _accessEventTagErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _accessEventTagErr != nil {
-		return nil, errors.Wrap(_accessEventTagErr, "Error parsing 'accessEventTag' field")
+		return nil, errors.Wrap(_accessEventTagErr, "Error parsing 'accessEventTag' field of BACnetNotificationParametersAccessEvent")
 	}
 	accessEventTag := _accessEventTag.(BACnetContextTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("accessEventTag"); closeErr != nil {
@@ -272,7 +272,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	}
 	_accessEventTime, _accessEventTimeErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(3)))
 	if _accessEventTimeErr != nil {
-		return nil, errors.Wrap(_accessEventTimeErr, "Error parsing 'accessEventTime' field")
+		return nil, errors.Wrap(_accessEventTimeErr, "Error parsing 'accessEventTime' field of BACnetNotificationParametersAccessEvent")
 	}
 	accessEventTime := _accessEventTime.(BACnetTimeStampEnclosed)
 	if closeErr := readBuffer.CloseContext("accessEventTime"); closeErr != nil {
@@ -285,7 +285,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	}
 	_accessCredential, _accessCredentialErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(4)))
 	if _accessCredentialErr != nil {
-		return nil, errors.Wrap(_accessCredentialErr, "Error parsing 'accessCredential' field")
+		return nil, errors.Wrap(_accessCredentialErr, "Error parsing 'accessCredential' field of BACnetNotificationParametersAccessEvent")
 	}
 	accessCredential := _accessCredential.(BACnetDeviceObjectReferenceEnclosed)
 	if closeErr := readBuffer.CloseContext("accessCredential"); closeErr != nil {
@@ -305,7 +305,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'authenticationFactor' field")
+			return nil, errors.Wrap(_err, "Error parsing 'authenticationFactor' field of BACnetNotificationParametersAccessEvent")
 		default:
 			authenticationFactor = _val.(BACnetAuthenticationFactorTypeTagged)
 			if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {
@@ -320,7 +320,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
+		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersAccessEvent")
 	}
 	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {

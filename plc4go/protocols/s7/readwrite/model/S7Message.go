@@ -186,7 +186,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)
 	if _protocolIdErr != nil {
-		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field")
+		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field of S7Message")
 	}
 	if protocolId != S7Message_PROTOCOLID {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7Message_PROTOCOLID) + " but got " + fmt.Sprintf("%d", protocolId))
@@ -195,14 +195,14 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType, _messageTypeErr := readBuffer.ReadUint8("messageType", 8)
 	if _messageTypeErr != nil {
-		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field")
+		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of S7Message")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7Message")
 		}
 		if reserved != uint16(0x0000) {
 			log.Info().Fields(map[string]interface{}{
@@ -215,7 +215,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	// Simple Field (tpduReference)
 	_tpduReference, _tpduReferenceErr := readBuffer.ReadUint16("tpduReference", 16)
 	if _tpduReferenceErr != nil {
-		return nil, errors.Wrap(_tpduReferenceErr, "Error parsing 'tpduReference' field")
+		return nil, errors.Wrap(_tpduReferenceErr, "Error parsing 'tpduReference' field of S7Message")
 	}
 	tpduReference := _tpduReference
 
@@ -223,14 +223,14 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	parameterLength, _parameterLengthErr := readBuffer.ReadUint16("parameterLength", 16)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
-		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
+		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field of S7Message")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	payloadLength, _payloadLengthErr := readBuffer.ReadUint16("payloadLength", 16)
 	_ = payloadLength
 	if _payloadLengthErr != nil {
-		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field")
+		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field of S7Message")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -255,7 +255,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v]", messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Message.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7Message")
 	}
 	_child = _childTemp.(S7MessageChildSerializeRequirement)
 
@@ -272,7 +272,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
+			return nil, errors.Wrap(_err, "Error parsing 'parameter' field of S7Message")
 		default:
 			parameter = _val.(S7Parameter)
 			if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
@@ -294,7 +294,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
+			return nil, errors.Wrap(_err, "Error parsing 'payload' field of S7Message")
 		default:
 			payload = _val.(S7Payload)
 			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataAccessEventTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	_accessEventTime, _accessEventTimeErr := BACnetTimeStampParse(readBuffer)
 	if _accessEventTimeErr != nil {
-		return nil, errors.Wrap(_accessEventTimeErr, "Error parsing 'accessEventTime' field")
+		return nil, errors.Wrap(_accessEventTimeErr, "Error parsing 'accessEventTime' field of BACnetConstructedDataAccessEventTime")
 	}
 	accessEventTime := _accessEventTime.(BACnetTimeStamp)
 	if closeErr := readBuffer.CloseContext("accessEventTime"); closeErr != nil {

@@ -158,7 +158,7 @@ func BACnetContextTagRealParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	}
 	_payload, _payloadErr := BACnetTagPayloadRealParse(readBuffer)
 	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagReal")
 	}
 	payload := _payload.(BACnetTagPayloadReal)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {

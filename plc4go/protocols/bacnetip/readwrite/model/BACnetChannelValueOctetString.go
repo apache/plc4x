@@ -137,7 +137,7 @@ func BACnetChannelValueOctetStringParse(readBuffer utils.ReadBuffer) (BACnetChan
 	}
 	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _octetStringValueErr != nil {
-		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field")
+		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetChannelValueOctetString")
 	}
 	octetStringValue := _octetStringValue.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {

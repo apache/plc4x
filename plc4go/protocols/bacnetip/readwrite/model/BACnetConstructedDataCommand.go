@@ -164,7 +164,7 @@ func BACnetConstructedDataCommandParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	_command, _commandErr := BACnetNetworkPortCommandTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
+		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of BACnetConstructedDataCommand")
 	}
 	command := _command.(BACnetNetworkPortCommandTagged)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {

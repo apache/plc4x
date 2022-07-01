@@ -140,7 +140,7 @@ func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, re
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
+		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of SysexCommandAnalogMappingQueryResponse")
 	}
 	pin := _pin
 

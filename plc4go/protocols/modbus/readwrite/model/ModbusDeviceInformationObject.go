@@ -124,7 +124,7 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (ModbusDevi
 	// Simple Field (objectId)
 	_objectId, _objectIdErr := readBuffer.ReadUint8("objectId", 8)
 	if _objectIdErr != nil {
-		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field")
+		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of ModbusDeviceInformationObject")
 	}
 	objectId := _objectId
 
@@ -132,13 +132,13 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (ModbusDevi
 	objectLength, _objectLengthErr := readBuffer.ReadUint8("objectLength", 8)
 	_ = objectLength
 	if _objectLengthErr != nil {
-		return nil, errors.Wrap(_objectLengthErr, "Error parsing 'objectLength' field")
+		return nil, errors.Wrap(_objectLengthErr, "Error parsing 'objectLength' field of ModbusDeviceInformationObject")
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(objectLength)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ModbusDeviceInformationObject")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusDeviceInformationObject"); closeErr != nil {

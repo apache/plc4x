@@ -141,7 +141,7 @@ func BACnetServiceAckAuthenticateParse(readBuffer utils.ReadBuffer, serviceAckLe
 	numberOfBytesbytesOfRemovedService := int(serviceAckPayloadLength)
 	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
 	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field")
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field of BACnetServiceAckAuthenticate")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAuthenticate"); closeErr != nil {

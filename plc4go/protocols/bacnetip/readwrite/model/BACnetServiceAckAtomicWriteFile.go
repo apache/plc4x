@@ -139,7 +139,7 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAc
 	}
 	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
+		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicWriteFile")
 	}
 	fileStartPosition := _fileStartPosition.(BACnetContextTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	_inProcess, _inProcessErr := BACnetApplicationTagParse(readBuffer)
 	if _inProcessErr != nil {
-		return nil, errors.Wrap(_inProcessErr, "Error parsing 'inProcess' field")
+		return nil, errors.Wrap(_inProcessErr, "Error parsing 'inProcess' field of BACnetConstructedDataInProcess")
 	}
 	inProcess := _inProcess.(BACnetApplicationTagBoolean)
 	if closeErr := readBuffer.CloseContext("inProcess"); closeErr != nil {

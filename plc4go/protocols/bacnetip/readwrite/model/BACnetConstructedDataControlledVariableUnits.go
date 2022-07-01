@@ -164,7 +164,7 @@ func BACnetConstructedDataControlledVariableUnitsParse(readBuffer utils.ReadBuff
 	}
 	_units, _unitsErr := BACnetEngineeringUnitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _unitsErr != nil {
-		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field")
+		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of BACnetConstructedDataControlledVariableUnits")
 	}
 	units := _units.(BACnetEngineeringUnitsTagged)
 	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {

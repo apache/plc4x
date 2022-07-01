@@ -166,7 +166,7 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParse(readBuffer)
 	if _fileStartRecordErr != nil {
-		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field")
+		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field of BACnetServiceAckAtomicReadFileRecord")
 	}
 	fileStartRecord := _fileStartRecord.(BACnetApplicationTagSignedInteger)
 	if closeErr := readBuffer.CloseContext("fileStartRecord"); closeErr != nil {
@@ -179,7 +179,7 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	_returnedRecordCount, _returnedRecordCountErr := BACnetApplicationTagParse(readBuffer)
 	if _returnedRecordCountErr != nil {
-		return nil, errors.Wrap(_returnedRecordCountErr, "Error parsing 'returnedRecordCount' field")
+		return nil, errors.Wrap(_returnedRecordCountErr, "Error parsing 'returnedRecordCount' field of BACnetServiceAckAtomicReadFileRecord")
 	}
 	returnedRecordCount := _returnedRecordCount.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("returnedRecordCount"); closeErr != nil {
@@ -200,7 +200,7 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (BAC
 		for curItem := uint16(0); curItem < uint16(returnedRecordCount.GetPayload().GetActualValue()); curItem++ {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field")
+				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field of BACnetServiceAckAtomicReadFileRecord")
 			}
 			fileRecordData[curItem] = _item.(BACnetApplicationTagOctetString)
 		}

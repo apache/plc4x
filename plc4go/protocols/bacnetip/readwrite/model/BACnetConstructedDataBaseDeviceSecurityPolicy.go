@@ -164,7 +164,7 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuf
 	}
 	_baseDeviceSecurityPolicy, _baseDeviceSecurityPolicyErr := BACnetSecurityLevelTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _baseDeviceSecurityPolicyErr != nil {
-		return nil, errors.Wrap(_baseDeviceSecurityPolicyErr, "Error parsing 'baseDeviceSecurityPolicy' field")
+		return nil, errors.Wrap(_baseDeviceSecurityPolicyErr, "Error parsing 'baseDeviceSecurityPolicy' field of BACnetConstructedDataBaseDeviceSecurityPolicy")
 	}
 	baseDeviceSecurityPolicy := _baseDeviceSecurityPolicy.(BACnetSecurityLevelTagged)
 	if closeErr := readBuffer.CloseContext("baseDeviceSecurityPolicy"); closeErr != nil {

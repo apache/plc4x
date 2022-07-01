@@ -145,14 +145,14 @@ func CALDataRequestGetStatusParse(readBuffer utils.ReadBuffer) (CALDataRequestGe
 	// Simple Field (paramNo)
 	_paramNo, _paramNoErr := readBuffer.ReadUint8("paramNo", 8)
 	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field")
+		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataRequestGetStatus")
 	}
 	paramNo := _paramNo
 
 	// Simple Field (count)
 	_count, _countErr := readBuffer.ReadUint8("count", 8)
 	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of CALDataRequestGetStatus")
 	}
 	count := _count
 

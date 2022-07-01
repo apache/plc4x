@@ -137,7 +137,7 @@ func BACnetPropertyStatesLightningOperationParse(readBuffer utils.ReadBuffer, pe
 	}
 	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
-		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field")
+		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetPropertyStatesLightningOperation")
 	}
 	lightningOperation := _lightningOperation.(BACnetLightingOperationTagged)
 	if closeErr := readBuffer.CloseContext("lightningOperation"); closeErr != nil {

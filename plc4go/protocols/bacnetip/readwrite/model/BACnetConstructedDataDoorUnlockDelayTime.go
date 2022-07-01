@@ -164,7 +164,7 @@ func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, 
 	}
 	_doorUnlockDelayTime, _doorUnlockDelayTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _doorUnlockDelayTimeErr != nil {
-		return nil, errors.Wrap(_doorUnlockDelayTimeErr, "Error parsing 'doorUnlockDelayTime' field")
+		return nil, errors.Wrap(_doorUnlockDelayTimeErr, "Error parsing 'doorUnlockDelayTime' field of BACnetConstructedDataDoorUnlockDelayTime")
 	}
 	doorUnlockDelayTime := _doorUnlockDelayTime.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("doorUnlockDelayTime"); closeErr != nil {

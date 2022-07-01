@@ -111,7 +111,7 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (S7VarRequestPa
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := readBuffer.ReadUint8("itemType", 8)
 	if _itemTypeErr != nil {
-		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field")
+		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field of S7VarRequestParameterItem")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -130,7 +130,7 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (S7VarRequestPa
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [itemType=%v]", itemType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7VarRequestParameterItem.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of S7VarRequestParameterItem")
 	}
 	_child = _childTemp.(S7VarRequestParameterItemChildSerializeRequirement)
 

@@ -164,7 +164,7 @@ func BACnetConstructedDataTimeOfActiveTimeResetParse(readBuffer utils.ReadBuffer
 	}
 	_timeOfActiveTimeReset, _timeOfActiveTimeResetErr := BACnetDateTimeParse(readBuffer)
 	if _timeOfActiveTimeResetErr != nil {
-		return nil, errors.Wrap(_timeOfActiveTimeResetErr, "Error parsing 'timeOfActiveTimeReset' field")
+		return nil, errors.Wrap(_timeOfActiveTimeResetErr, "Error parsing 'timeOfActiveTimeReset' field of BACnetConstructedDataTimeOfActiveTimeReset")
 	}
 	timeOfActiveTimeReset := _timeOfActiveTimeReset.(BACnetDateTime)
 	if closeErr := readBuffer.CloseContext("timeOfActiveTimeReset"); closeErr != nil {

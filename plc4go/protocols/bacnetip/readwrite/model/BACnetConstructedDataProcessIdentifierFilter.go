@@ -164,7 +164,7 @@ func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuff
 	}
 	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParse(readBuffer)
 	if _processIdentifierFilterErr != nil {
-		return nil, errors.Wrap(_processIdentifierFilterErr, "Error parsing 'processIdentifierFilter' field")
+		return nil, errors.Wrap(_processIdentifierFilterErr, "Error parsing 'processIdentifierFilter' field of BACnetConstructedDataProcessIdentifierFilter")
 	}
 	processIdentifierFilter := _processIdentifierFilter.(BACnetProcessIdSelection)
 	if closeErr := readBuffer.CloseContext("processIdentifierFilter"); closeErr != nil {

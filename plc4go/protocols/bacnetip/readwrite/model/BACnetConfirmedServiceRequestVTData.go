@@ -162,7 +162,7 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 	}
 	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _vtSessionIdentifierErr != nil {
-		return nil, errors.Wrap(_vtSessionIdentifierErr, "Error parsing 'vtSessionIdentifier' field")
+		return nil, errors.Wrap(_vtSessionIdentifierErr, "Error parsing 'vtSessionIdentifier' field of BACnetConfirmedServiceRequestVTData")
 	}
 	vtSessionIdentifier := _vtSessionIdentifier.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("vtSessionIdentifier"); closeErr != nil {
@@ -175,7 +175,7 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 	}
 	_vtNewData, _vtNewDataErr := BACnetApplicationTagParse(readBuffer)
 	if _vtNewDataErr != nil {
-		return nil, errors.Wrap(_vtNewDataErr, "Error parsing 'vtNewData' field")
+		return nil, errors.Wrap(_vtNewDataErr, "Error parsing 'vtNewData' field of BACnetConfirmedServiceRequestVTData")
 	}
 	vtNewData := _vtNewData.(BACnetApplicationTagOctetString)
 	if closeErr := readBuffer.CloseContext("vtNewData"); closeErr != nil {
@@ -188,7 +188,7 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 	}
 	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParse(readBuffer)
 	if _vtDataFlagErr != nil {
-		return nil, errors.Wrap(_vtDataFlagErr, "Error parsing 'vtDataFlag' field")
+		return nil, errors.Wrap(_vtDataFlagErr, "Error parsing 'vtDataFlag' field of BACnetConfirmedServiceRequestVTData")
 	}
 	vtDataFlag := _vtDataFlag.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("vtDataFlag"); closeErr != nil {

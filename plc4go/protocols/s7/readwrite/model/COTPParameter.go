@@ -117,14 +117,14 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter,
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)
 	if _parameterTypeErr != nil {
-		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
+		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field of COTPParameter")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := readBuffer.ReadUint8("parameterLength", 8)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
-		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
+		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field of COTPParameter")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -151,7 +151,7 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter,
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v]", parameterType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of COTPParameter.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of COTPParameter")
 	}
 	_child = _childTemp.(COTPParameterChildSerializeRequirement)
 

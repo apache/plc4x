@@ -164,7 +164,7 @@ func BACnetConstructedDataRecordCountParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_recordCount, _recordCountErr := BACnetApplicationTagParse(readBuffer)
 	if _recordCountErr != nil {
-		return nil, errors.Wrap(_recordCountErr, "Error parsing 'recordCount' field")
+		return nil, errors.Wrap(_recordCountErr, "Error parsing 'recordCount' field of BACnetConstructedDataRecordCount")
 	}
 	recordCount := _recordCount.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("recordCount"); closeErr != nil {

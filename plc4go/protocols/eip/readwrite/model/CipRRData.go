@@ -152,7 +152,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 	{
 		reserved, _err := readBuffer.ReadUint32("reserved", 32)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipRRData")
 		}
 		if reserved != uint32(0x00000000) {
 			log.Info().Fields(map[string]interface{}{
@@ -166,7 +166,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipRRData")
 		}
 		if reserved != uint16(0x0000) {
 			log.Info().Fields(map[string]interface{}{
@@ -182,7 +182,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 	}
 	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
 	if _exchangeErr != nil {
-		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field")
+		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field of CipRRData")
 	}
 	exchange := _exchange.(CipExchange)
 	if closeErr := readBuffer.CloseContext("exchange"); closeErr != nil {

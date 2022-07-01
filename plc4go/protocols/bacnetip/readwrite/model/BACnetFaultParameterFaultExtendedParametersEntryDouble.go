@@ -137,7 +137,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryDoubleParse(readBuffer util
 	}
 	_doubleValue, _doubleValueErr := BACnetApplicationTagParse(readBuffer)
 	if _doubleValueErr != nil {
-		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field")
+		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetFaultParameterFaultExtendedParametersEntryDouble")
 	}
 	doubleValue := _doubleValue.(BACnetApplicationTagDouble)
 	if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {

@@ -164,7 +164,7 @@ func BACnetConstructedDataPriorityForWritingParse(readBuffer utils.ReadBuffer, t
 	}
 	_priorityForWriting, _priorityForWritingErr := BACnetApplicationTagParse(readBuffer)
 	if _priorityForWritingErr != nil {
-		return nil, errors.Wrap(_priorityForWritingErr, "Error parsing 'priorityForWriting' field")
+		return nil, errors.Wrap(_priorityForWritingErr, "Error parsing 'priorityForWriting' field of BACnetConstructedDataPriorityForWriting")
 	}
 	priorityForWriting := _priorityForWriting.(BACnetApplicationTagUnsignedInteger)
 	if closeErr := readBuffer.CloseContext("priorityForWriting"); closeErr != nil {

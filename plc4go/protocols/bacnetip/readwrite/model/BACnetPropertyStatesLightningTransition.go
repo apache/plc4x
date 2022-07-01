@@ -137,7 +137,7 @@ func BACnetPropertyStatesLightningTransitionParse(readBuffer utils.ReadBuffer, p
 	}
 	_lightningTransition, _lightningTransitionErr := BACnetLightingTransitionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningTransitionErr != nil {
-		return nil, errors.Wrap(_lightningTransitionErr, "Error parsing 'lightningTransition' field")
+		return nil, errors.Wrap(_lightningTransitionErr, "Error parsing 'lightningTransition' field of BACnetPropertyStatesLightningTransition")
 	}
 	lightningTransition := _lightningTransition.(BACnetLightingTransitionTagged)
 	if closeErr := readBuffer.CloseContext("lightningTransition"); closeErr != nil {

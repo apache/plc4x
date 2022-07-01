@@ -139,7 +139,7 @@ func BACnetLogRecordLogDatumNullValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	_nullValue, _nullValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(7)), BACnetDataType(BACnetDataType_NULL))
 	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field")
+		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetLogRecordLogDatumNullValue")
 	}
 	nullValue := _nullValue.(BACnetContextTagNull)
 	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {

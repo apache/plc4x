@@ -139,7 +139,7 @@ func BACnetAssignedLandingCallsLandingCallsListParse(readBuffer utils.ReadBuffer
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetAssignedLandingCallsLandingCallsList")
 	}
 	openingTag := _openingTag.(BACnetOpeningTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -156,7 +156,7 @@ func BACnetAssignedLandingCallsLandingCallsListParse(readBuffer utils.ReadBuffer
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'landingCalls' field")
+				return nil, errors.Wrap(_err, "Error parsing 'landingCalls' field of BACnetAssignedLandingCallsLandingCallsList")
 			}
 			landingCalls = append(landingCalls, _item.(BACnetAssignedLandingCallsLandingCallsListEntry))
 
@@ -172,7 +172,7 @@ func BACnetAssignedLandingCallsLandingCallsListParse(readBuffer utils.ReadBuffer
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetAssignedLandingCallsLandingCallsList")
 	}
 	closingTag := _closingTag.(BACnetClosingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

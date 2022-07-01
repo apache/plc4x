@@ -139,7 +139,7 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLe
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
+		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckCreateObject")
 	}
 	objectIdentifier := _objectIdentifier.(BACnetApplicationTagObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {

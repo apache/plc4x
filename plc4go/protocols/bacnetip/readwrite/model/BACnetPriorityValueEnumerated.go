@@ -137,7 +137,7 @@ func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeA
 	}
 	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
 	if _enumeratedValueErr != nil {
-		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field")
+		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetPriorityValueEnumerated")
 	}
 	enumeratedValue := _enumeratedValue.(BACnetApplicationTagEnumerated)
 	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
