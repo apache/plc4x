@@ -184,7 +184,7 @@ def checkGit() {
 def checkPython() {
     print "Detecting Python version:  "
     try {
-        def process = ("python --version").execute()
+        def process = ("python3 --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)

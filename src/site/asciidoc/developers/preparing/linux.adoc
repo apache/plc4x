@@ -97,7 +97,7 @@ If you get a version of 3.3 or higher reported, you probably don't need to do an
 
 Apt-based systems:
 
- sudo apt-get install python-dev python3.10-venv
+ sudo apt-get install python3 python3-venv
 
 Yum based systems:
 
