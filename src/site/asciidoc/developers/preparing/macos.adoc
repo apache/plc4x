@@ -53,16 +53,6 @@ If you get any successful output, you probably don't need to do anything.
 
 It seems macOS comes with a version of gcc which is good enough for our usecases.
 
-=== g++
-
-Checking:
-
- g++ --version
-
-If you get any successful output, you probably don't need to do anything.
-
-It seems macOS comes with a version of g++ which is good enough for our usecases.
-
 === dotnet
 
 Checking:
@@ -81,37 +71,27 @@ Alternatively you can also install it via homebrew:
 
 Checking:
 
- python3 --version
+ python --version
 
 If you get a version of 3.0.0 or higher reported, you probably don't need to do anything.
 
 In order to install it, please execute the following command:
 
- brew install python
+ brew install pyenv
 
-=== bison
+Then use pyenv to install python:
 
-Checking:
+ pyenv install 3.9.13
 
- bison --version
+Then set this as the global python version:
 
-If you get a version above 2.3 output, you don't need to do anything.
+ pyenv global 3.9.13
 
-macOS comes with a pre-installed version of bison, however this version is 2.3 and hereby too old.
-So you need to update to a more recent version:
+And add pyenv to the PATH:
 
- brew install bison
- brew link bison --force
- echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
+ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
+ $ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bash_profile
 
-Be sure to reboot or at least restart your IDE or commandline in order for the changes to become effective.
+After opening a new terminal, `python` should be configured
 
-=== flex
-
-Checking:
-
- flex --version
-
-If you get any successful output, you probably don't need to do anything.
-
-It seems macOS comes with a version of flex which is good enough for our usecases.
+ python --version

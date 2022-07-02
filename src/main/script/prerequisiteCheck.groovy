@@ -75,29 +75,6 @@ def checkVersionAtMost(String current, String maximum) {
     curNotShorter
 }
 
-def checkBison() {
-    print "Detecting Bison version:   "
-    def output
-    try {
-        output = "bison --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.4.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-
-        // TODO: Ensure the path of the `bison` binary doesn't contain any spaces.
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
 def checkDotnet() {
     print "Detecting Dotnet version:  "
     def output
@@ -118,28 +95,6 @@ def checkDotnet() {
         allConditionsMet = false
     }
 }
-
-def checkGo() {
-    print "Detecting Go version:      "
-    def output
-    try {
-        output = "go version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.18.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
 
 def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
@@ -178,27 +133,6 @@ def checkMavenVersion(String minVersion, String maxVersion) {
             allConditionsMet = false
             return
         }
-    }
-}
-
-def checkFlex() {
-    print "Detecting Flex version:    "
-    def output
-    try {
-        output = "flex --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
     }
 }
 
@@ -245,69 +179,6 @@ def checkGit() {
     }
 }
 
-def checkGpp() {
-    print "Detecting G++ version:     "
-    def output
-    try {
-        output = "g++ --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkClang() {
-    print "Detecting clang version:   "
-    def output
-    try {
-        output = "clang --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkCmake() {
-    print "Detecting cmake version:   "
-    def output
-    try {
-        output = "cmake --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "3.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
 def checkPython() {
     print "Detecting Python version:  "
     try {
@@ -328,27 +199,6 @@ def checkPython() {
             allConditionsMet = false
         }
     } catch (Exception e) {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkOpenSSL() {
-    print "Detecting OpenSSL version: "
-    def output
-    try {
-        output = "openssl version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
         println "missing"
         allConditionsMet = false
     }
@@ -491,10 +341,6 @@ if (dotnetEnabled) {
     checkDotnet()
 }
 
-if (goEnabled) {
-//    checkGo()
-}
-
 if (javaEnabled) {
     checkGit()
 }
@@ -509,7 +355,7 @@ if (pythonEnabled) {
     checkPython()
 }
 
-if (sandboxEnabled && dockerEnabled) {
+if (dockerEnabled) {
     checkDocker()
 }
 
