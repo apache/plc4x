@@ -311,7 +311,7 @@ def checkCmake() {
 def checkPython() {
     print "Detecting Python version:  "
     try {
-        def process = ("python3 --version").execute()
+        def process = ("python --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
@@ -319,34 +319,13 @@ def checkPython() {
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "3.6.0")
+            def result = checkVersionAtLeast(curVersion, "2.0.0")
             if (!result) {
                 allConditionsMet = false
             }
         } else {
-            println "missing (Please install at least version 3.6.0)"
+            println "missing (Please install at least version 2.0.0)"
             allConditionsMet = false
-        }
-    } catch (Exception e) {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkSetupTools() {
-    print "Detecting setuptools:      "
-    try {
-        def cmdArray = ["python3", "-c", "import setuptools"]
-        def process = cmdArray.execute()
-        def stdOut = new StringBuilder()
-        def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(500)
-        if(stdErr.contains("No module named setuptools")) {
-            println "missing"
-            allConditionsMet = false
-        } else {
-            println "               OK"
         }
     } catch (Exception e) {
         println "missing"
@@ -528,7 +507,6 @@ if (cEnabled) {
 
 if (pythonEnabled) {
     checkPython()
-    checkSetupTools()
 }
 
 if (sandboxEnabled && dockerEnabled) {

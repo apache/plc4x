@@ -84,7 +84,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>python3</executable>
+              <executable>python</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>venv</argument>
@@ -100,7 +100,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}pip3</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
                 <argument>install</argument>
                 <argument>.</argument>
@@ -115,7 +115,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}pip3</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
                 <argument>install</argument>
                 <argument>.[dev]</argument>
@@ -130,7 +130,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}python3</executable>
+              <executable>${python.venv.bin}python</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>pytest</argument>
@@ -147,7 +147,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}pip3</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
                 <argument>wheel</argument>
                 <argument>.</argument>

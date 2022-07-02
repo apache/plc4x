@@ -115,7 +115,7 @@ If you get a version of 2.7 or higher reported, you probably don't need to do an
 
 Apt-based systems:
 
- sudo apt-get install python-dev
+ sudo apt-get install python-dev python-is-python3
 
 Yum based systems:
 
