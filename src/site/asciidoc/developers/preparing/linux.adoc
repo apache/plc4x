@@ -27,7 +27,7 @@ If you get any successful output, you probably don't need to do anything.
 
 Apt-based systems:
 
- sudo apt install git
+ sudo apt-get install git
 
 Yum based systems:
 
@@ -91,7 +91,7 @@ For other distributions, please select the distribution in the drop-down menu an
 
 Checking:
 
- python --version
+ python3 --version
 
 If you get a version of 3.3 or higher reported, you probably don't need to do anything.
 
@@ -102,3 +102,16 @@ Apt-based systems:
 Yum based systems:
 
  yum intall python3
+
+=== Python venv
+
+Checking:
+
+ python3 -Im ensurepip
+
+If you are getting anything else than a: `No module named ensurepip`, you're ok.
+It seems that this manually needs to be installed on some systems.
+
+Apt-based systems:
+
+ sudo apt-get install python3-venv

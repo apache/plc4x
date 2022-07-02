@@ -192,13 +192,37 @@ def checkPython() {
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "3.3.0")
+            def result = checkVersionAtLeast(curVersion, "3.7.0")
             if (!result) {
                 allConditionsMet = false
             }
         } else {
-            println "missing (Please install at least version 3.3.0)"
+            println "missing (Please install at least version 3.7.0)"
             allConditionsMet = false
+        }
+    } catch (Exception e) {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+// On Ubuntu it seems that venv is generally available, but the 'ensurepip' command fails.
+// In this case we need to install the python3-venv package. Unfortunately checking the
+// venv is successful in this case, so we need this slightly odd test.
+def checkPythonVenv() {
+    print "Detecting venv:            "
+    try {
+        def cmdArray = ["python3", "-Im", "ensurepip"]
+        def process = cmdArray.execute()
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        if(stdErr.contains("No module named")) {
+            println "missing"
+            allConditionsMet = false
+        } else {
+            println "               OK"
         }
     } catch (Exception e) {
         println "missing"
@@ -363,6 +387,7 @@ if (goEnabled) {
 
 if (pythonEnabled) {
     checkPython()
+    checkPythonVenv()
 }
 
 if (dockerEnabled) {
