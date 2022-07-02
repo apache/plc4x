@@ -179,6 +179,8 @@ def checkGit() {
     }
 }
 
+// Remark: We're using venv, which was introduced with python 3.3,
+// that's why this is the baseline for python.
 def checkPython() {
     print "Detecting Python version:  "
     try {
@@ -190,12 +192,12 @@ def checkPython() {
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "2.0.0")
+            def result = checkVersionAtLeast(curVersion, "3.3.0")
             if (!result) {
                 allConditionsMet = false
             }
         } else {
-            println "missing (Please install at least version 2.0.0)"
+            println "missing (Please install at least version 3.3.0)"
             allConditionsMet = false
         }
     } catch (Exception e) {
@@ -254,6 +256,10 @@ def checkLibPcap(String minVersion, String os) {
         println "missing"
         allConditionsMet = false
     }
+}
+
+def checkLibPcapHeaders() {
+
 }
 
 /**
@@ -349,6 +355,10 @@ if (cEnabled) {
     // The cmake-maven-plugin requires at least java 11
     checkJavaVersion("11", null)
     checkGcc()
+}
+
+if (goEnabled) {
+    checkLibPcapHeaders()
 }
 
 if (pythonEnabled) {
