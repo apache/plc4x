@@ -50,6 +50,9 @@ type RequestCommandExactly interface {
 type _RequestCommand struct {
 	*_Request
 	CbusCommand CBusCommand
+
+	// Arguments.
+	PayloadLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -62,8 +65,9 @@ type _RequestCommand struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestCommand) InitializeParent(parent Request, peekedByte byte) {
+func (m *_RequestCommand) InitializeParent(parent Request, peekedByte RequestType, termination RequestTermination) {
 	m.PeekedByte = peekedByte
+	m.Termination = termination
 }
 
 func (m *_RequestCommand) GetParent() Request {
@@ -98,10 +102,10 @@ func (m *_RequestCommand) GetInitiator() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(cbusCommand CBusCommand, peekedByte byte, srchk bool) *_RequestCommand {
+func NewRequestCommand(cbusCommand CBusCommand, peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16, payloadLength uint16) *_RequestCommand {
 	_result := &_RequestCommand{
 		CbusCommand: cbusCommand,
-		_Request:    NewRequest(peekedByte, srchk),
+		_Request:    NewRequest(peekedByte, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -132,8 +136,8 @@ func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Const Field (initiator)
 	lengthInBits += 8
 
-	// Simple field (cbusCommand)
-	lengthInBits += m.CbusCommand.GetLengthInBits()
+	// Manual Field (cbusCommand)
+	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
 
 	return lengthInBits
 }
@@ -142,7 +146,7 @@ func (m *_RequestCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestCommandParse(readBuffer utils.ReadBuffer, srchk bool) (RequestCommand, error) {
+func RequestCommandParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16, payloadLength uint16) (RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestCommand"); pullErr != nil {
@@ -160,18 +164,12 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, srchk bool) (RequestComman
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestCommand_INITIATOR) + " but got " + fmt.Sprintf("%d", initiator))
 	}
 
-	// Simple Field (cbusCommand)
-	if pullErr := readBuffer.PullContext("cbusCommand"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for cbusCommand")
-	}
-	_cbusCommand, _cbusCommandErr := CBusCommandParse(readBuffer, bool(srchk))
+	// Manual Field (cbusCommand)
+	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, payloadLength, srchk)
 	if _cbusCommandErr != nil {
 		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestCommand")
 	}
 	cbusCommand := _cbusCommand.(CBusCommand)
-	if closeErr := readBuffer.CloseContext("cbusCommand"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for cbusCommand")
-	}
 
 	if closeErr := readBuffer.CloseContext("RequestCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestCommand")
@@ -181,7 +179,8 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, srchk bool) (RequestComman
 	_child := &_RequestCommand{
 		CbusCommand: cbusCommand,
 		_Request: &_Request{
-			Srchk: srchk,
+			Srchk:         srchk,
+			MessageLength: messageLength,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child
@@ -202,14 +201,8 @@ func (m *_RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_initiatorErr, "Error serializing 'initiator' field")
 		}
 
-		// Simple Field (cbusCommand)
-		if pushErr := writeBuffer.PushContext("cbusCommand"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for cbusCommand")
-		}
-		_cbusCommandErr := writeBuffer.WriteSerializable(m.GetCbusCommand())
-		if popErr := writeBuffer.PopContext("cbusCommand"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for cbusCommand")
-		}
+		// Manual Field (cbusCommand)
+		_cbusCommandErr := WriteCBusCommand(writeBuffer, m.GetCbusCommand())
 		if _cbusCommandErr != nil {
 			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
 		}

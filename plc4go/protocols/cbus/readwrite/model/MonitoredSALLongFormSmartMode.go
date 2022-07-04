@@ -77,10 +77,9 @@ type _MonitoredSALLongFormSmartMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData, termination ResponseTermination) {
+func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData) {
 	m.SalType = salType
 	m.SalData = salData
-	m.Termination = termination
 }
 
 func (m *_MonitoredSALLongFormSmartMode) GetParent() MonitoredSAL {
@@ -143,7 +142,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, salType byte, salData SALData, termination ResponseTermination) *_MonitoredSALLongFormSmartMode {
+func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, salType byte, salData SALData) *_MonitoredSALLongFormSmartMode {
 	_result := &_MonitoredSALLongFormSmartMode{
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
@@ -151,7 +150,7 @@ func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAd
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_MonitoredSAL:          NewMonitoredSAL(salType, salData, termination),
+		_MonitoredSAL:          NewMonitoredSAL(salType, salData),
 	}
 	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
 	return _result

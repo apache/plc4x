@@ -64,12 +64,11 @@ type _CBusPointToPointCommandIndirect struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointCommandIndirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination) {
+func (m *_CBusPointToPointCommandIndirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha) {
 	m.BridgeAddressCountPeek = bridgeAddressCountPeek
 	m.CalData = calData
 	m.Crc = crc
 	m.Alpha = alpha
-	m.Termination = termination
 }
 
 func (m *_CBusPointToPointCommandIndirect) GetParent() CBusPointToPointCommand {
@@ -99,12 +98,12 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
-func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination, srchk bool) *_CBusPointToPointCommandIndirect {
+func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, srchk bool) *_CBusPointToPointCommandIndirect {
 	_result := &_CBusPointToPointCommandIndirect{
 		BridgeAddress:            bridgeAddress,
 		NetworkRoute:             networkRoute,
 		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, alpha, termination, srchk),
+		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, alpha, srchk),
 	}
 	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result
 	return _result

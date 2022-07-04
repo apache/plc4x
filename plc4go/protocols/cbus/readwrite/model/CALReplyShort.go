@@ -55,10 +55,9 @@ type _CALReplyShort struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALReplyShort) InitializeParent(parent CALReply, calType byte, calData CALData, termination ResponseTermination) {
+func (m *_CALReplyShort) InitializeParent(parent CALReply, calType byte, calData CALData) {
 	m.CalType = calType
 	m.CalData = calData
-	m.Termination = termination
 }
 
 func (m *_CALReplyShort) GetParent() CALReply {
@@ -66,9 +65,9 @@ func (m *_CALReplyShort) GetParent() CALReply {
 }
 
 // NewCALReplyShort factory function for _CALReplyShort
-func NewCALReplyShort(calType byte, calData CALData, termination ResponseTermination) *_CALReplyShort {
+func NewCALReplyShort(calType byte, calData CALData) *_CALReplyShort {
 	_result := &_CALReplyShort{
-		_CALReply: NewCALReply(calType, calData, termination),
+		_CALReply: NewCALReply(calType, calData),
 	}
 	_result._CALReply._CALReplyChildRequirements = _result
 	return _result

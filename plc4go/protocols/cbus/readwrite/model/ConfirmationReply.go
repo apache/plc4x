@@ -58,8 +58,9 @@ type _ConfirmationReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConfirmationReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_ConfirmationReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
 	m.PeekedByte = peekedByte
+	m.Termination = termination
 }
 
 func (m *_ConfirmationReply) GetParent() Reply {
@@ -81,10 +82,10 @@ func (m *_ConfirmationReply) GetIsA() Confirmation {
 ///////////////////////////////////////////////////////////
 
 // NewConfirmationReply factory function for _ConfirmationReply
-func NewConfirmationReply(isA Confirmation, peekedByte byte) *_ConfirmationReply {
+func NewConfirmationReply(isA Confirmation, peekedByte byte, termination ResponseTermination, messageLength uint16) *_ConfirmationReply {
 	_result := &_ConfirmationReply{
 		IsA:    isA,
-		_Reply: NewReply(peekedByte),
+		_Reply: NewReply(peekedByte, termination, messageLength),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -122,7 +123,7 @@ func (m *_ConfirmationReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (ConfirmationReply, error) {
+func ConfirmationReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (ConfirmationReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfirmationReply"); pullErr != nil {
@@ -150,8 +151,10 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (ConfirmationReply, err
 
 	// Create a partially initialized instance
 	_child := &_ConfirmationReply{
-		IsA:    isA,
-		_Reply: &_Reply{},
+		IsA: isA,
+		_Reply: &_Reply{
+			MessageLength: messageLength,
+		},
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil

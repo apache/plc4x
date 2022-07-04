@@ -58,8 +58,9 @@ type _ParameterChangeReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterChangeReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_ParameterChangeReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
 	m.PeekedByte = peekedByte
+	m.Termination = termination
 }
 
 func (m *_ParameterChangeReply) GetParent() Reply {
@@ -81,10 +82,10 @@ func (m *_ParameterChangeReply) GetIsA() ParameterChange {
 ///////////////////////////////////////////////////////////
 
 // NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(isA ParameterChange, peekedByte byte) *_ParameterChangeReply {
+func NewParameterChangeReply(isA ParameterChange, peekedByte byte, termination ResponseTermination, messageLength uint16) *_ParameterChangeReply {
 	_result := &_ParameterChangeReply{
 		IsA:    isA,
-		_Reply: NewReply(peekedByte),
+		_Reply: NewReply(peekedByte, termination, messageLength),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -122,7 +123,7 @@ func (m *_ParameterChangeReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (ParameterChangeReply, error) {
+func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (ParameterChangeReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {
@@ -150,8 +151,10 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (ParameterChangeRepl
 
 	// Create a partially initialized instance
 	_child := &_ParameterChangeReply{
-		IsA:    isA,
-		_Reply: &_Reply{},
+		IsA: isA,
+		_Reply: &_Reply{
+			MessageLength: messageLength,
+		},
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil

@@ -32,6 +32,8 @@ type Reply interface {
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
+	// GetTermination returns Termination (property field)
+	GetTermination() ResponseTermination
 	// GetIsAlpha returns IsAlpha (virtual field)
 	GetIsAlpha() bool
 }
@@ -46,7 +48,11 @@ type ReplyExactly interface {
 // _Reply is the data-structure of this message
 type _Reply struct {
 	_ReplyChildRequirements
-	PeekedByte byte
+	PeekedByte  byte
+	Termination ResponseTermination
+
+	// Arguments.
+	MessageLength uint16
 }
 
 type _ReplyChildRequirements interface {
@@ -62,7 +68,7 @@ type ReplyParent interface {
 
 type ReplyChild interface {
 	utils.Serializable
-	InitializeParent(parent Reply, peekedByte byte)
+	InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination)
 	GetParent() *Reply
 
 	GetTypeName() string
@@ -76,6 +82,10 @@ type ReplyChild interface {
 
 func (m *_Reply) GetPeekedByte() byte {
 	return m.PeekedByte
+}
+
+func (m *_Reply) GetTermination() ResponseTermination {
+	return m.Termination
 }
 
 ///////////////////////
@@ -97,8 +107,8 @@ func (m *_Reply) GetIsAlpha() bool {
 ///////////////////////////////////////////////////////////
 
 // NewReply factory function for _Reply
-func NewReply(peekedByte byte) *_Reply {
-	return &_Reply{PeekedByte: peekedByte}
+func NewReply(peekedByte byte, termination ResponseTermination, messageLength uint16) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, Termination: termination, MessageLength: messageLength}
 }
 
 // Deprecated: use the interface for direct cast
@@ -121,6 +131,9 @@ func (m *_Reply) GetParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
+	// Simple field (termination)
+	lengthInBits += m.Termination.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -128,7 +141,7 @@ func (m *_Reply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
+func ReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
@@ -154,7 +167,7 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ReplyChildSerializeRequirement interface {
 		Reply
-		InitializeParent(Reply, byte)
+		InitializeParent(Reply, byte, ResponseTermination)
 		GetParent() Reply
 	}
 	var _childTemp interface{}
@@ -162,17 +175,21 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	var typeSwitchError error
 	switch {
 	case true && isAlpha == bool(true): // ConfirmationReply
-		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer)
+		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer, messageLength)
 	case peekedByte == 0x2B: // PowerUpReply
-		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer)
+		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, messageLength)
 	case peekedByte == 0x3D: // ParameterChangeReply
-		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer)
+		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, messageLength)
 	case peekedByte == 0x21: // ServerErrorReply
-		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer)
+		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, messageLength)
 	case peekedByte == 0x0: // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer)
+		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, messageLength)
+	case peekedByte == 0x0: // StandardFormatStatusReplyReply
+		_childTemp, typeSwitchError = StandardFormatStatusReplyReplyParse(readBuffer, messageLength)
+	case peekedByte == 0x0: // ExtendedFormatStatusReplyReply
+		_childTemp, typeSwitchError = ExtendedFormatStatusReplyReplyParse(readBuffer, messageLength)
 	case true: // CALReplyReply
-		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer)
+		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer, messageLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v, isAlpha=%v]", peekedByte, isAlpha)
 	}
@@ -181,12 +198,25 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	}
 	_child = _childTemp.(ReplyChildSerializeRequirement)
 
+	// Simple Field (termination)
+	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for termination")
+	}
+	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
+	if _terminationErr != nil {
+		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of Reply")
+	}
+	termination := _termination.(ResponseTermination)
+	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for termination")
+	}
+
 	if closeErr := readBuffer.CloseContext("Reply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Reply")
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, peekedByte)
+	_child.InitializeParent(_child, peekedByte, termination)
 	return _child, nil
 }
 
@@ -207,6 +237,18 @@ func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, se
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
+	}
+
+	// Simple Field (termination)
+	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for termination")
+	}
+	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
+	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for termination")
+	}
+	if _terminationErr != nil {
+		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Reply"); popErr != nil {

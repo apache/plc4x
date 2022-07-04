@@ -36,8 +36,6 @@ type PowerUp interface {
 	utils.Serializable
 	// GetReqTermination returns ReqTermination (property field)
 	GetReqTermination() RequestTermination
-	// GetResTermination returns ResTermination (property field)
-	GetResTermination() ResponseTermination
 }
 
 // PowerUpExactly can be used when we want exactly this type and not a type which fulfills PowerUp.
@@ -50,7 +48,6 @@ type PowerUpExactly interface {
 // _PowerUp is the data-structure of this message
 type _PowerUp struct {
 	ReqTermination RequestTermination
-	ResTermination ResponseTermination
 }
 
 ///////////////////////////////////////////////////////////
@@ -60,10 +57,6 @@ type _PowerUp struct {
 
 func (m *_PowerUp) GetReqTermination() RequestTermination {
 	return m.ReqTermination
-}
-
-func (m *_PowerUp) GetResTermination() ResponseTermination {
-	return m.ResTermination
 }
 
 ///////////////////////
@@ -85,8 +78,8 @@ func (m *_PowerUp) GetPowerUpIndicator() byte {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUp factory function for _PowerUp
-func NewPowerUp(reqTermination RequestTermination, resTermination ResponseTermination) *_PowerUp {
-	return &_PowerUp{ReqTermination: reqTermination, ResTermination: resTermination}
+func NewPowerUp(reqTermination RequestTermination) *_PowerUp {
+	return &_PowerUp{ReqTermination: reqTermination}
 }
 
 // Deprecated: use the interface for direct cast
@@ -116,9 +109,6 @@ func (m *_PowerUp) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Simple field (reqTermination)
 	lengthInBits += m.ReqTermination.GetLengthInBits()
-
-	// Simple field (resTermination)
-	lengthInBits += m.ResTermination.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -158,25 +148,12 @@ func PowerUpParse(readBuffer utils.ReadBuffer) (PowerUp, error) {
 		return nil, errors.Wrap(closeErr, "Error closing for reqTermination")
 	}
 
-	// Simple Field (resTermination)
-	if pullErr := readBuffer.PullContext("resTermination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for resTermination")
-	}
-	_resTermination, _resTerminationErr := ResponseTerminationParse(readBuffer)
-	if _resTerminationErr != nil {
-		return nil, errors.Wrap(_resTerminationErr, "Error parsing 'resTermination' field of PowerUp")
-	}
-	resTermination := _resTermination.(ResponseTermination)
-	if closeErr := readBuffer.CloseContext("resTermination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for resTermination")
-	}
-
 	if closeErr := readBuffer.CloseContext("PowerUp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PowerUp")
 	}
 
 	// Create the instance
-	return NewPowerUp(reqTermination, resTermination), nil
+	return NewPowerUp(reqTermination), nil
 }
 
 func (m *_PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -202,18 +179,6 @@ func (m *_PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	if _reqTerminationErr != nil {
 		return errors.Wrap(_reqTerminationErr, "Error serializing 'reqTermination' field")
-	}
-
-	// Simple Field (resTermination)
-	if pushErr := writeBuffer.PushContext("resTermination"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for resTermination")
-	}
-	_resTerminationErr := writeBuffer.WriteSerializable(m.GetResTermination())
-	if popErr := writeBuffer.PopContext("resTermination"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for resTermination")
-	}
-	if _resTerminationErr != nil {
-		return errors.Wrap(_resTerminationErr, "Error serializing 'resTermination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("PowerUp"); popErr != nil {

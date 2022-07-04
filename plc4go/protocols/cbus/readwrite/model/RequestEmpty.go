@@ -31,8 +31,6 @@ type RequestEmpty interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-	// GetTermination returns Termination (property field)
-	GetTermination() RequestTermination
 }
 
 // RequestEmptyExactly can be used when we want exactly this type and not a type which fulfills RequestEmpty.
@@ -45,7 +43,6 @@ type RequestEmptyExactly interface {
 // _RequestEmpty is the data-structure of this message
 type _RequestEmpty struct {
 	*_Request
-	Termination RequestTermination
 }
 
 ///////////////////////////////////////////////////////////
@@ -58,33 +55,19 @@ type _RequestEmpty struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestEmpty) InitializeParent(parent Request, peekedByte byte) {
+func (m *_RequestEmpty) InitializeParent(parent Request, peekedByte RequestType, termination RequestTermination) {
 	m.PeekedByte = peekedByte
+	m.Termination = termination
 }
 
 func (m *_RequestEmpty) GetParent() Request {
 	return m._Request
 }
 
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for property fields.
-///////////////////////
-
-func (m *_RequestEmpty) GetTermination() RequestTermination {
-	return m.Termination
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
 // NewRequestEmpty factory function for _RequestEmpty
-func NewRequestEmpty(termination RequestTermination, peekedByte byte, srchk bool) *_RequestEmpty {
+func NewRequestEmpty(peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestEmpty {
 	_result := &_RequestEmpty{
-		Termination: termination,
-		_Request:    NewRequest(peekedByte, srchk),
+		_Request: NewRequest(peekedByte, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -112,9 +95,6 @@ func (m *_RequestEmpty) GetLengthInBits() uint16 {
 func (m *_RequestEmpty) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
-
 	return lengthInBits
 }
 
@@ -122,7 +102,7 @@ func (m *_RequestEmpty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestEmptyParse(readBuffer utils.ReadBuffer, srchk bool) (RequestEmpty, error) {
+func RequestEmptyParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16) (RequestEmpty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestEmpty"); pullErr != nil {
@@ -131,28 +111,15 @@ func RequestEmptyParse(readBuffer utils.ReadBuffer, srchk bool) (RequestEmpty, e
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := RequestTerminationParse(readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of RequestEmpty")
-	}
-	termination := _termination.(RequestTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
-	}
-
 	if closeErr := readBuffer.CloseContext("RequestEmpty"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestEmpty")
 	}
 
 	// Create a partially initialized instance
 	_child := &_RequestEmpty{
-		Termination: termination,
 		_Request: &_Request{
-			Srchk: srchk,
+			Srchk:         srchk,
+			MessageLength: messageLength,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child
@@ -165,18 +132,6 @@ func (m *_RequestEmpty) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("RequestEmpty"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for RequestEmpty")
-		}
-
-		// Simple Field (termination)
-		if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for termination")
-		}
-		_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
-		if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for termination")
-		}
-		if _terminationErr != nil {
-			return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestEmpty"); popErr != nil {

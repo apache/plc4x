@@ -36,8 +36,6 @@ type MonitoredSAL interface {
 	GetSalType() byte
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
-	// GetTermination returns Termination (property field)
-	GetTermination() ResponseTermination
 }
 
 // MonitoredSALExactly can be used when we want exactly this type and not a type which fulfills MonitoredSAL.
@@ -50,9 +48,8 @@ type MonitoredSALExactly interface {
 // _MonitoredSAL is the data-structure of this message
 type _MonitoredSAL struct {
 	_MonitoredSALChildRequirements
-	SalType     byte
-	SalData     SALData
-	Termination ResponseTermination
+	SalType byte
+	SalData SALData
 }
 
 type _MonitoredSALChildRequirements interface {
@@ -68,7 +65,7 @@ type MonitoredSALParent interface {
 
 type MonitoredSALChild interface {
 	utils.Serializable
-	InitializeParent(parent MonitoredSAL, salType byte, salData SALData, termination ResponseTermination)
+	InitializeParent(parent MonitoredSAL, salType byte, salData SALData)
 	GetParent() *MonitoredSAL
 
 	GetTypeName() string
@@ -88,18 +85,14 @@ func (m *_MonitoredSAL) GetSalData() SALData {
 	return m.SalData
 }
 
-func (m *_MonitoredSAL) GetTermination() ResponseTermination {
-	return m.Termination
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSAL factory function for _MonitoredSAL
-func NewMonitoredSAL(salType byte, salData SALData, termination ResponseTermination) *_MonitoredSAL {
-	return &_MonitoredSAL{SalType: salType, SalData: salData, Termination: termination}
+func NewMonitoredSAL(salType byte, salData SALData) *_MonitoredSAL {
+	return &_MonitoredSAL{SalType: salType, SalData: salData}
 }
 
 // Deprecated: use the interface for direct cast
@@ -124,9 +117,6 @@ func (m *_MonitoredSAL) GetParentLengthInBits() uint16 {
 	if m.SalData != nil {
 		lengthInBits += m.SalData.GetLengthInBits()
 	}
-
-	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -156,7 +146,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MonitoredSALChildSerializeRequirement interface {
 		MonitoredSAL
-		InitializeParent(MonitoredSAL, byte, SALData, ResponseTermination)
+		InitializeParent(MonitoredSAL, byte, SALData)
 		GetParent() MonitoredSAL
 	}
 	var _childTemp interface{}
@@ -197,25 +187,12 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 		}
 	}
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of MonitoredSAL")
-	}
-	termination := _termination.(ResponseTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
-	}
-
 	if closeErr := readBuffer.CloseContext("MonitoredSAL"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSAL")
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, salType, salData, termination)
+	_child.InitializeParent(_child, salType, salData)
 	return _child, nil
 }
 
@@ -248,18 +225,6 @@ func (pm *_MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child Mo
 		if _salDataErr != nil {
 			return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
 		}
-	}
-
-	// Simple Field (termination)
-	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for termination")
-	}
-	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
-	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for termination")
-	}
-	if _terminationErr != nil {
-		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("MonitoredSAL"); popErr != nil {

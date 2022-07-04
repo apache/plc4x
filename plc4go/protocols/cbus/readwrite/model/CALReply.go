@@ -34,8 +34,6 @@ type CALReply interface {
 	GetCalType() byte
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
-	// GetTermination returns Termination (property field)
-	GetTermination() ResponseTermination
 }
 
 // CALReplyExactly can be used when we want exactly this type and not a type which fulfills CALReply.
@@ -48,9 +46,8 @@ type CALReplyExactly interface {
 // _CALReply is the data-structure of this message
 type _CALReply struct {
 	_CALReplyChildRequirements
-	CalType     byte
-	CalData     CALData
-	Termination ResponseTermination
+	CalType byte
+	CalData CALData
 }
 
 type _CALReplyChildRequirements interface {
@@ -66,7 +63,7 @@ type CALReplyParent interface {
 
 type CALReplyChild interface {
 	utils.Serializable
-	InitializeParent(parent CALReply, calType byte, calData CALData, termination ResponseTermination)
+	InitializeParent(parent CALReply, calType byte, calData CALData)
 	GetParent() *CALReply
 
 	GetTypeName() string
@@ -86,18 +83,14 @@ func (m *_CALReply) GetCalData() CALData {
 	return m.CalData
 }
 
-func (m *_CALReply) GetTermination() ResponseTermination {
-	return m.Termination
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewCALReply factory function for _CALReply
-func NewCALReply(calType byte, calData CALData, termination ResponseTermination) *_CALReply {
-	return &_CALReply{CalType: calType, CalData: calData, Termination: termination}
+func NewCALReply(calType byte, calData CALData) *_CALReply {
+	return &_CALReply{CalType: calType, CalData: calData}
 }
 
 // Deprecated: use the interface for direct cast
@@ -120,9 +113,6 @@ func (m *_CALReply) GetParentLengthInBits() uint16 {
 
 	// Simple field (calData)
 	lengthInBits += m.CalData.GetLengthInBits()
-
-	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -152,7 +142,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CALReplyChildSerializeRequirement interface {
 		CALReply
-		InitializeParent(CALReply, byte, CALData, ResponseTermination)
+		InitializeParent(CALReply, byte, CALData)
 		GetParent() CALReply
 	}
 	var _childTemp interface{}
@@ -184,25 +174,12 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 		return nil, errors.Wrap(closeErr, "Error closing for calData")
 	}
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of CALReply")
-	}
-	termination := _termination.(ResponseTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
-	}
-
 	if closeErr := readBuffer.CloseContext("CALReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALReply")
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, calType, calData, termination)
+	_child.InitializeParent(_child, calType, calData)
 	return _child, nil
 }
 
@@ -231,18 +208,6 @@ func (pm *_CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child CALRep
 	}
 	if _calDataErr != nil {
 		return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
-	}
-
-	// Simple Field (termination)
-	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for termination")
-	}
-	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
-	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for termination")
-	}
-	if _terminationErr != nil {
-		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CALReply"); popErr != nil {

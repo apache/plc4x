@@ -35,8 +35,6 @@ type RequestNull interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-	// GetTermination returns Termination (property field)
-	GetTermination() RequestTermination
 }
 
 // RequestNullExactly can be used when we want exactly this type and not a type which fulfills RequestNull.
@@ -49,7 +47,6 @@ type RequestNullExactly interface {
 // _RequestNull is the data-structure of this message
 type _RequestNull struct {
 	*_Request
-	Termination RequestTermination
 }
 
 ///////////////////////////////////////////////////////////
@@ -62,27 +59,15 @@ type _RequestNull struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestNull) InitializeParent(parent Request, peekedByte byte) {
+func (m *_RequestNull) InitializeParent(parent Request, peekedByte RequestType, termination RequestTermination) {
 	m.PeekedByte = peekedByte
+	m.Termination = termination
 }
 
 func (m *_RequestNull) GetParent() Request {
 	return m._Request
 }
 
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for property fields.
-///////////////////////
-
-func (m *_RequestNull) GetTermination() RequestTermination {
-	return m.Termination
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -98,10 +83,9 @@ func (m *_RequestNull) GetNullIndicator() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewRequestNull factory function for _RequestNull
-func NewRequestNull(termination RequestTermination, peekedByte byte, srchk bool) *_RequestNull {
+func NewRequestNull(peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestNull {
 	_result := &_RequestNull{
-		Termination: termination,
-		_Request:    NewRequest(peekedByte, srchk),
+		_Request: NewRequest(peekedByte, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -132,9 +116,6 @@ func (m *_RequestNull) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Const Field (nullIndicator)
 	lengthInBits += 32
 
-	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
-
 	return lengthInBits
 }
 
@@ -142,7 +123,7 @@ func (m *_RequestNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestNullParse(readBuffer utils.ReadBuffer, srchk bool) (RequestNull, error) {
+func RequestNullParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16) (RequestNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestNull"); pullErr != nil {
@@ -160,28 +141,15 @@ func RequestNullParse(readBuffer utils.ReadBuffer, srchk bool) (RequestNull, err
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestNull_NULLINDICATOR) + " but got " + fmt.Sprintf("%d", nullIndicator))
 	}
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := RequestTerminationParse(readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of RequestNull")
-	}
-	termination := _termination.(RequestTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
-	}
-
 	if closeErr := readBuffer.CloseContext("RequestNull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestNull")
 	}
 
 	// Create a partially initialized instance
 	_child := &_RequestNull{
-		Termination: termination,
 		_Request: &_Request{
-			Srchk: srchk,
+			Srchk:         srchk,
+			MessageLength: messageLength,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child
@@ -200,18 +168,6 @@ func (m *_RequestNull) Serialize(writeBuffer utils.WriteBuffer) error {
 		_nullIndicatorErr := writeBuffer.WriteUint32("nullIndicator", 32, 0x6E756C6C)
 		if _nullIndicatorErr != nil {
 			return errors.Wrap(_nullIndicatorErr, "Error serializing 'nullIndicator' field")
-		}
-
-		// Simple Field (termination)
-		if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for termination")
-		}
-		_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
-		if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for termination")
-		}
-		if _terminationErr != nil {
-			return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestNull"); popErr != nil {

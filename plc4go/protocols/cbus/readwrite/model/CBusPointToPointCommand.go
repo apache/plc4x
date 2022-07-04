@@ -40,8 +40,6 @@ type CBusPointToPointCommand interface {
 	GetCrc() Checksum
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
-	// GetTermination returns Termination (property field)
-	GetTermination() RequestTermination
 	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
 }
@@ -60,7 +58,6 @@ type _CBusPointToPointCommand struct {
 	CalData                CALData
 	Crc                    Checksum
 	Alpha                  Alpha
-	Termination            RequestTermination
 
 	// Arguments.
 	Srchk bool
@@ -79,7 +76,7 @@ type CBusPointToPointCommandParent interface {
 
 type CBusPointToPointCommandChild interface {
 	utils.Serializable
-	InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination)
+	InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha)
 	GetParent() *CBusPointToPointCommand
 
 	GetTypeName() string
@@ -107,10 +104,6 @@ func (m *_CBusPointToPointCommand) GetAlpha() Alpha {
 	return m.Alpha
 }
 
-func (m *_CBusPointToPointCommand) GetTermination() RequestTermination {
-	return m.Termination
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,8 +127,8 @@ func (m *_CBusPointToPointCommand) GetIsDirect() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
-func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination, srchk bool) *_CBusPointToPointCommand {
-	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, Alpha: alpha, Termination: termination, Srchk: srchk}
+func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, srchk bool) *_CBusPointToPointCommand {
+	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, Alpha: alpha, Srchk: srchk}
 }
 
 // Deprecated: use the interface for direct cast
@@ -171,9 +164,6 @@ func (m *_CBusPointToPointCommand) GetParentLengthInBits() uint16 {
 		lengthInBits += m.Alpha.GetLengthInBits()
 	}
 
-	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
-
 	return lengthInBits
 }
 
@@ -207,7 +197,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToPointCommandChildSerializeRequirement interface {
 		CBusPointToPointCommand
-		InitializeParent(CBusPointToPointCommand, uint16, CALData, Checksum, Alpha, RequestTermination)
+		InitializeParent(CBusPointToPointCommand, uint16, CALData, Checksum, Alpha)
 		GetParent() CBusPointToPointCommand
 	}
 	var _childTemp interface{}
@@ -283,25 +273,12 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 		}
 	}
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := RequestTerminationParse(readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of CBusPointToPointCommand")
-	}
-	termination := _termination.(RequestTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
-	}
-
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointCommand")
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, bridgeAddressCountPeek, calData, crc, alpha, termination)
+	_child.InitializeParent(_child, bridgeAddressCountPeek, calData, crc, alpha)
 	return _child, nil
 }
 
@@ -366,18 +343,6 @@ func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffe
 		if _alphaErr != nil {
 			return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
 		}
-	}
-
-	// Simple Field (termination)
-	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for termination")
-	}
-	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
-	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for termination")
-	}
-	if _terminationErr != nil {
-		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CBusPointToPointCommand"); popErr != nil {

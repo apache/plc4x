@@ -97,6 +97,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error parsing package", realPacketNumber)
 			continue
 		} else {
+			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Parsed", realPacketNumber)
 			if verbosity > 1 {
 				println(parsed.(fmt.Stringer).String())
 			}
@@ -107,7 +108,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			serializedBytes, err := serializePackage(parsed)
 			if err != nil {
 				// TODO: write report to xml or something
-				log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msg("Error serializing")
+				log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error serializing", realPacketNumber)
 				continue
 			}
 			if noBytesCompare {
@@ -116,7 +117,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			}
 			if compareResult := bytes.Compare(payload, serializedBytes); compareResult != 0 {
 				// TODO: write report to xml or something
-				log.Warn().Stringer("packetInformation", packetInformation).Msg("Bytes don't match")
+				log.Warn().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Bytes don't match", realPacketNumber)
 				if verbosity > 0 {
 					println("Original bytes")
 					println(hex.Dump(payload))

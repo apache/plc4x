@@ -69,11 +69,10 @@ type _CBusCommandPointToPointToMultiPointNormal struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusCommandPointToPointToMultiPointNormal) InitializeParent(parent CBusPointToPointToMultipointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, termination RequestTermination) {
+func (m *_CBusCommandPointToPointToMultiPointNormal) InitializeParent(parent CBusPointToPointToMultipointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte) {
 	m.BridgeAddress = bridgeAddress
 	m.NetworkRoute = networkRoute
 	m.PeekedApplication = peekedApplication
-	m.Termination = termination
 }
 
 func (m *_CBusCommandPointToPointToMultiPointNormal) GetParent() CBusPointToPointToMultipointCommand {
@@ -107,13 +106,13 @@ func (m *_CBusCommandPointToPointToMultiPointNormal) GetAlpha() Alpha {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPointToMultiPointNormal factory function for _CBusCommandPointToPointToMultiPointNormal
-func NewCBusCommandPointToPointToMultiPointNormal(application ApplicationIdContainer, salData SALData, crc Checksum, alpha Alpha, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, termination RequestTermination, srchk bool) *_CBusCommandPointToPointToMultiPointNormal {
+func NewCBusCommandPointToPointToMultiPointNormal(application ApplicationIdContainer, salData SALData, crc Checksum, alpha Alpha, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, srchk bool) *_CBusCommandPointToPointToMultiPointNormal {
 	_result := &_CBusCommandPointToPointToMultiPointNormal{
 		Application:                          application,
 		SalData:                              salData,
 		Crc:                                  crc,
 		Alpha:                                alpha,
-		_CBusPointToPointToMultipointCommand: NewCBusPointToPointToMultipointCommand(bridgeAddress, networkRoute, peekedApplication, termination, srchk),
+		_CBusPointToPointToMultipointCommand: NewCBusPointToPointToMultipointCommand(bridgeAddress, networkRoute, peekedApplication, srchk),
 	}
 	_result._CBusPointToPointToMultipointCommand._CBusPointToPointToMultipointCommandChildRequirements = _result
 	return _result

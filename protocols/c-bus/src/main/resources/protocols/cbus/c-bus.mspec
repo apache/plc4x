@@ -33,45 +33,64 @@
     [simple bit pcn    ]
 ]
 
-[type CBusMessage(bit response, bit srchk)
+[type CBusMessage(bit response, bit srchk, uint 16 messageLength)
     [typeSwitch response
        ['false' *ToServer
-            [simple   Request('srchk')      request         ]
+            [simple   Request('srchk', 'messageLength')         request         ]
        ]
        ['true' *ToClient
-            [simple   Reply                 reply           ]
+            [simple   Reply('messageLength')                    reply           ]
        ]
     ]
 ]
 
-[type Request(bit srchk)
-    [peek    byte peekedByte                                                ]
+[type Request(bit srchk, uint 16 messageLength)
+    [peek    RequestType peekedByte                                         ]
+    [virtual uint 16 payloadLength 'messageLength-2'                        ] // We substract the command itself and the termination
     [typeSwitch peekedByte
-        ['0x7C' *SmartConnectShortcut
+        ['SMART_CONNECT_SHORTCUT' *SmartConnectShortcut
             [const    byte                pipe      0x7C                    ]
-            [simple   RequestTermination  termination                       ]
         ]
-        ['0x7E' *Reset
+        ['RESET' *Reset
             [const    byte                tilde     0x7E                    ]
-            [simple   RequestTermination  termination                       ]
         ]
-        ['0x40' *DirectCommandAccess
+        ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
             [const    byte                at        0x40                    ]
-            [simple   CBusPointToPointCommand('srchk')     cbusCommand      ]
-            [simple   RequestTermination  termination                       ]
+            // Usually you would read the command now here but we need to decode ascii first
+            //[simple   CBusCommandPointToPoint('srchk')     cbusCommand    ]
+            [manual   CBusCommand
+                                          cbusCommand
+                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, srchk)'
+                        'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
+                        '_value.lengthInBytes*2'                                     ]
         ]
-        ['0x5C' *Command
+        ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
             [const    byte                initiator 0x5C                    ] // 0x5C == "/"
-            [simple   CBusCommand('srchk')     cbusCommand                  ]
+            // Usually you would read the command now here but we need to decode ascii first
+            //[simple   CBusCommand('srchk')     cbusCommand                ]
+            [manual   CBusCommand
+                                          cbusCommand
+                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, srchk)'
+                        'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
+                        '_value.lengthInBytes*2'                                     ]
         ]
-        ['0x6E' *Null
+        ['NULL' *Null
             [const    uint 32             nullIndicator        0x6E756C6C   ] // "null"
-            [simple   RequestTermination  termination                       ]
         ]
-        ['0x0D' *Empty
-            [simple   RequestTermination  termination                       ]
+        ['EMPTY' *Empty
         ]
     ]
+    [simple   RequestTermination  termination                               ]
+]
+
+[enum uint 8 RequestType(uint 8 controlChar)
+    ['0x00' UNKNOWN                 ['0x00']]
+    ['0x7C' SMART_CONNECT_SHORTCUT  ['0x7C']] // control char = '|'
+    ['0x7E' RESET                   ['0x7E']] // control char = '~'
+    ['0x40' DIRECT_COMMAND          ['0x40']] // control char = '@'
+    ['0x5C' REQUEST_COMMAND         ['0x5C']] // control char = '/'
+    ['0x6E' NULL                    ['0x00']] // null doesn't have a "control char" so we just consume the rest
+    ['0x0D' EMPTY                   ['0x00']] // empty doesn't have a "control char" so we just consume the rest
 ]
 
 [discriminatedType CBusCommand(bit srchk)
@@ -177,7 +196,6 @@
     [simple   CALData calData                                                                   ]
     [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
     [optional Alpha         alpha                                                               ]
-    [simple   RequestTermination  termination                                                   ]
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)
@@ -198,7 +216,6 @@
             [optional Alpha         alpha                                                               ]
         ]
     ]
-    [simple   RequestTermination  termination                       ]
 ]
 
 [discriminatedType CBusPointToPointToMultipointCommand(bit srchk)
@@ -219,7 +236,6 @@
             [optional Alpha         alpha                                                            ]
         ]
     ]
-    [simple   RequestTermination  termination                       ]
 ]
 
 /*
@@ -880,29 +896,41 @@
     [simple byte value]
 ]
 
-[type Reply
+[type Reply(uint 16 messageLength)
     [peek    byte peekedByte                                              ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'  ]
     [typeSwitch peekedByte, isAlpha
         [*, 'true' ConfirmationReply
             [simple Confirmation isA]
         ]
-        ['0x2B' PowerUpReply
+        ['0x2B' PowerUpReply // is a +
             [simple PowerUp isA]
         ]
-        ['0x3D' ParameterChangeReply
+        ['0x3D' ParameterChangeReply // is a =
             [simple ParameterChange isA]
         ]
-        ['0x21' ServerErrorReply
+        ['0x21' ServerErrorReply // is a !
             [const  byte    errorMarker     0x21        ]
         ]
         ['0x0' MonitoredSALReply
             [simple MonitoredSAL isA]
         ]
+        ['0x0' StandardFormatStatusReplyReply
+            [simple StandardFormatStatusReply reply]
+        ]
+        ['0x0' ExtendedFormatStatusReplyReply
+            [simple ExtendedFormatStatusReply reply]
+        ]
         [* CALReplyReply
-            [simple CALReply isA]
+            [virtual uint 16 payloadLength 'messageLength-2'                        ] // We substract the termination \r\n
+            [manual   CALReply
+                              calReply
+                                    'STATIC_CALL("readCALReply", readBuffer, payloadLength)'
+                                    'STATIC_CALL("writeCALReply", writeBuffer, calReply)'
+                                    '_value.lengthInBytes*2'                                     ]
         ]
     ]
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type CALReply
@@ -925,7 +953,6 @@
     ]
     [simple   CALData   calData                                                                  ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
-    [simple   ResponseTermination termination                       ]
 ]
 
 [type BridgeCount
@@ -964,7 +991,6 @@
     ]
     [optional SALData salData                                               ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
-    [simple   ResponseTermination termination                       ]
 ]
 
 [type Confirmation
@@ -985,14 +1011,12 @@
     [const    byte        powerUpIndicator       0x2B                  ] // "+"
     // TODO: do we really need a static helper to peek for terminated?=
     //[array    uint 8        garbage   terminated  '0x0D'                 ] // read all following +
-    [simple   RequestTermination  reqTermination                       ]
-    [simple   ResponseTermination resTermination                       ]
+    [simple   RequestTermination  reqTermination                       ] // TODO: maybe should be externalized
 ]
 
 [type ParameterChange
     [const    byte        specialChar1      0x3D                    ] // "="
     [const    byte        specialChar2      0x3D                    ] // "="
-    [simple   ResponseTermination termination                       ]
 ]
 
 [type ReplyNetwork
@@ -1017,7 +1041,6 @@
                         'statusHeader.numberOfCharacterPairs - 2'   ]
     [simple     Checksum
                         crc                                         ]
-    [simple   ResponseTermination termination                       ]
 ]
 
 [type StatusHeader
@@ -1039,7 +1062,6 @@
                         'statusHeader.numberOfCharacterPairs - 3'   ]
     [simple     Checksum
                         crc                                         ]
-    [simple   ResponseTermination termination                       ]
 ]
 
 [type ExtendedStatusHeader

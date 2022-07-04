@@ -40,8 +40,6 @@ type StandardFormatStatusReply interface {
 	GetStatusBytes() []StatusByte
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
-	// GetTermination returns Termination (property field)
-	GetTermination() ResponseTermination
 }
 
 // StandardFormatStatusReplyExactly can be used when we want exactly this type and not a type which fulfills StandardFormatStatusReply.
@@ -58,7 +56,6 @@ type _StandardFormatStatusReply struct {
 	BlockStart   uint8
 	StatusBytes  []StatusByte
 	Crc          Checksum
-	Termination  ResponseTermination
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,18 +83,14 @@ func (m *_StandardFormatStatusReply) GetCrc() Checksum {
 	return m.Crc
 }
 
-func (m *_StandardFormatStatusReply) GetTermination() ResponseTermination {
-	return m.Termination
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewStandardFormatStatusReply factory function for _StandardFormatStatusReply
-func NewStandardFormatStatusReply(statusHeader StatusHeader, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, crc Checksum, termination ResponseTermination) *_StandardFormatStatusReply {
-	return &_StandardFormatStatusReply{StatusHeader: statusHeader, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc, Termination: termination}
+func NewStandardFormatStatusReply(statusHeader StatusHeader, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, crc Checksum) *_StandardFormatStatusReply {
+	return &_StandardFormatStatusReply{StatusHeader: statusHeader, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
 }
 
 // Deprecated: use the interface for direct cast
@@ -141,9 +134,6 @@ func (m *_StandardFormatStatusReply) GetLengthInBitsConditional(lastItem bool) u
 
 	// Simple field (crc)
 	lengthInBits += m.Crc.GetLengthInBits()
-
-	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -230,25 +220,12 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 		return nil, errors.Wrap(closeErr, "Error closing for crc")
 	}
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := ResponseTerminationParse(readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of StandardFormatStatusReply")
-	}
-	termination := _termination.(ResponseTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
-	}
-
 	if closeErr := readBuffer.CloseContext("StandardFormatStatusReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StandardFormatStatusReply")
 	}
 
 	// Create the instance
-	return NewStandardFormatStatusReply(statusHeader, application, blockStart, statusBytes, crc, termination), nil
+	return NewStandardFormatStatusReply(statusHeader, application, blockStart, statusBytes, crc), nil
 }
 
 func (m *_StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -313,18 +290,6 @@ func (m *_StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	if _crcErr != nil {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
-	}
-
-	// Simple Field (termination)
-	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for termination")
-	}
-	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
-	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for termination")
-	}
-	if _terminationErr != nil {
-		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("StandardFormatStatusReply"); popErr != nil {

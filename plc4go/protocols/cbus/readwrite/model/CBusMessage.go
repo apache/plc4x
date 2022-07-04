@@ -46,7 +46,8 @@ type _CBusMessage struct {
 	_CBusMessageChildRequirements
 
 	// Arguments.
-	Srchk bool
+	Srchk         bool
+	MessageLength uint16
 }
 
 type _CBusMessageChildRequirements interface {
@@ -71,8 +72,8 @@ type CBusMessageChild interface {
 }
 
 // NewCBusMessage factory function for _CBusMessage
-func NewCBusMessage(srchk bool) *_CBusMessage {
-	return &_CBusMessage{Srchk: srchk}
+func NewCBusMessage(srchk bool, messageLength uint16) *_CBusMessage {
+	return &_CBusMessage{Srchk: srchk, MessageLength: messageLength}
 }
 
 // Deprecated: use the interface for direct cast
@@ -100,7 +101,7 @@ func (m *_CBusMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageParse(readBuffer utils.ReadBuffer, response bool, srchk bool) (CBusMessage, error) {
+func CBusMessageParse(readBuffer utils.ReadBuffer, response bool, srchk bool, messageLength uint16) (CBusMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessage"); pullErr != nil {
@@ -120,9 +121,9 @@ func CBusMessageParse(readBuffer utils.ReadBuffer, response bool, srchk bool) (C
 	var typeSwitchError error
 	switch {
 	case response == bool(false): // CBusMessageToServer
-		_childTemp, typeSwitchError = CBusMessageToServerParse(readBuffer, response, srchk)
+		_childTemp, typeSwitchError = CBusMessageToServerParse(readBuffer, response, srchk, messageLength)
 	case response == bool(true): // CBusMessageToClient
-		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, response, srchk)
+		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, response, srchk, messageLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [response=%v]", response)
 	}

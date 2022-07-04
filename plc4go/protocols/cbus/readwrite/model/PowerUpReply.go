@@ -58,8 +58,9 @@ type _PowerUpReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PowerUpReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_PowerUpReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
 	m.PeekedByte = peekedByte
+	m.Termination = termination
 }
 
 func (m *_PowerUpReply) GetParent() Reply {
@@ -81,10 +82,10 @@ func (m *_PowerUpReply) GetIsA() PowerUp {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(isA PowerUp, peekedByte byte) *_PowerUpReply {
+func NewPowerUpReply(isA PowerUp, peekedByte byte, termination ResponseTermination, messageLength uint16) *_PowerUpReply {
 	_result := &_PowerUpReply{
 		IsA:    isA,
-		_Reply: NewReply(peekedByte),
+		_Reply: NewReply(peekedByte, termination, messageLength),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -122,7 +123,7 @@ func (m *_PowerUpReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PowerUpReplyParse(readBuffer utils.ReadBuffer) (PowerUpReply, error) {
+func PowerUpReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (PowerUpReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {
@@ -150,8 +151,10 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer) (PowerUpReply, error) {
 
 	// Create a partially initialized instance
 	_child := &_PowerUpReply{
-		IsA:    isA,
-		_Reply: &_Reply{},
+		IsA: isA,
+		_Reply: &_Reply{
+			MessageLength: messageLength,
+		},
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil

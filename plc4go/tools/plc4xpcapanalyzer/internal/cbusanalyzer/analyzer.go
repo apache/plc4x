@@ -37,7 +37,7 @@ func (a Analyzer) PackageParse(packetInformation common.PacketInformation, paylo
 	// TODO: srcchk we need to pull that out of the config
 	isResponse := packetInformation.DstIp.Equal(a.Client)
 	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, true)
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, true, uint16(len(payload)))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}

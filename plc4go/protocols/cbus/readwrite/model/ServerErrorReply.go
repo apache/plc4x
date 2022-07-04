@@ -59,8 +59,9 @@ type _ServerErrorReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerErrorReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_ServerErrorReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
 	m.PeekedByte = peekedByte
+	m.Termination = termination
 }
 
 func (m *_ServerErrorReply) GetParent() Reply {
@@ -82,9 +83,9 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////////////////////////////////////////
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte, termination ResponseTermination, messageLength uint16) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_Reply: NewReply(peekedByte),
+		_Reply: NewReply(peekedByte, termination, messageLength),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -122,7 +123,7 @@ func (m *_ServerErrorReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServerErrorReplyParse(readBuffer utils.ReadBuffer) (ServerErrorReply, error) {
+func ServerErrorReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {
@@ -146,7 +147,9 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer) (ServerErrorReply, error
 
 	// Create a partially initialized instance
 	_child := &_ServerErrorReply{
-		_Reply: &_Reply{},
+		_Reply: &_Reply{
+			MessageLength: messageLength,
+		},
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil
