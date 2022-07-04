@@ -98,7 +98,11 @@ func (b *boxedWriteBuffer) WriteBit(logicalName string, value bool, writerArgs .
 
 func (b *boxedWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
-	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#02x%s", value, additionalStringRepresentation), 0))
+	printSafeChar := value
+	if value < 32 || value > 126 {
+		printSafeChar = '.'
+	}
+	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#02x '%c'%s", value, printSafeChar, additionalStringRepresentation), 0))
 	b.move(8)
 	return nil
 }

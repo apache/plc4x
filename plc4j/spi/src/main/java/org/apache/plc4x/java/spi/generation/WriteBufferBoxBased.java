@@ -92,7 +92,7 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%02x%s", value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%02x '%c'%s", value, value < 32 || value > 126 ? '.' : value, additionalStringRepresentation), 0)));
         move(8);
     }
 
