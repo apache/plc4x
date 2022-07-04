@@ -20,6 +20,7 @@ package org.apache.plc4x.java.cbus.readwrite.utils;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.cbus.readwrite.CALData;
 import org.apache.plc4x.java.cbus.readwrite.CALReply;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
 import org.apache.plc4x.java.spi.generation.*;
@@ -63,6 +64,25 @@ public class StaticHelper {
             throw new ParseException("error getting hex", e);
         }
         return CALReply.staticParse(new ReadBufferByteBased(rawBytes));
+    }
+
+    public static void writeCALData(WriteBuffer writeBuffer, CALData calData) throws SerializationException {
+        // TODO: maybe we use a writebuffer hex based
+        WriteBufferByteBased payloadWriteBuffer = new WriteBufferByteBased(calData.getLengthInBytes() * 2);
+        calData.serialize(payloadWriteBuffer);
+        byte[] hexBytes = Hex.encodeHexString(payloadWriteBuffer.getBytes()).getBytes(StandardCharsets.UTF_8);
+        writeBuffer.writeByteArray("calReply", hexBytes);
+    }
+
+    public static CALData readCALData(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
+        byte[] hexBytes = readBuffer.readByteArray("calReply", payloadLength);
+        byte[] rawBytes;
+        try {
+            rawBytes = Hex.decodeHex(new String(hexBytes));
+        } catch (DecoderException e) {
+            throw new ParseException("error getting hex", e);
+        }
+        return CALData.staticParse(new ReadBufferByteBased(rawBytes));
     }
 
 }

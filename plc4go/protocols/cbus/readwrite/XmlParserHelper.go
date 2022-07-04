@@ -44,12 +44,21 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	switch typeName {
 	case "CALData":
 		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CALDataNormal":
+		return model.CALDataNormalParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Checksum":
 		return model.ChecksumParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CALReply":
 		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "NormalReply":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		messageLength := uint16(parsedUint0)
+		return model.NormalReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageLength)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestTermination":

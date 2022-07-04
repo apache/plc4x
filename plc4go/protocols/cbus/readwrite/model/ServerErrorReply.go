@@ -34,7 +34,7 @@ const ServerErrorReply_ERRORMARKER byte = 0x21
 type ServerErrorReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 }
 
 // ServerErrorReplyExactly can be used when we want exactly this type and not a type which fulfills ServerErrorReply.
@@ -46,7 +46,7 @@ type ServerErrorReplyExactly interface {
 
 // _ServerErrorReply is the data-structure of this message
 type _ServerErrorReply struct {
-	*_Reply
+	*_NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -59,13 +59,12 @@ type _ServerErrorReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerErrorReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
+func (m *_ServerErrorReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
-	m.Termination = termination
 }
 
-func (m *_ServerErrorReply) GetParent() Reply {
-	return m._Reply
+func (m *_ServerErrorReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -83,11 +82,11 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////////////////////////////////////////
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, termination ResponseTermination, messageLength uint16) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte, messageLength uint16) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_Reply: NewReply(peekedByte, termination, messageLength),
+		_NormalReply: NewNormalReply(peekedByte, messageLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -147,11 +146,11 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (S
 
 	// Create a partially initialized instance
 	_child := &_ServerErrorReply{
-		_Reply: &_Reply{
+		_NormalReply: &_NormalReply{
 			MessageLength: messageLength,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

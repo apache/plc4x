@@ -30,7 +30,7 @@ import (
 type CALReplyReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 	// GetCalReply returns CalReply (property field)
 	GetCalReply() CALReply
 	// GetPayloadLength returns PayloadLength (virtual field)
@@ -46,7 +46,7 @@ type CALReplyReplyExactly interface {
 
 // _CALReplyReply is the data-structure of this message
 type _CALReplyReply struct {
-	*_Reply
+	*_NormalReply
 	CalReply CALReply
 }
 
@@ -60,13 +60,12 @@ type _CALReplyReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALReplyReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
+func (m *_CALReplyReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
-	m.Termination = termination
 }
 
-func (m *_CALReplyReply) GetParent() Reply {
-	return m._Reply
+func (m *_CALReplyReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,12 +96,12 @@ func (m *_CALReplyReply) GetPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyReply factory function for _CALReplyReply
-func NewCALReplyReply(calReply CALReply, peekedByte byte, termination ResponseTermination, messageLength uint16) *_CALReplyReply {
+func NewCALReplyReply(calReply CALReply, peekedByte byte, messageLength uint16) *_CALReplyReply {
 	_result := &_CALReplyReply{
-		CalReply: calReply,
-		_Reply:   NewReply(peekedByte, termination, messageLength),
+		CalReply:     calReply,
+		_NormalReply: NewNormalReply(peekedByte, messageLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -168,11 +167,11 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (CALR
 	// Create a partially initialized instance
 	_child := &_CALReplyReply{
 		CalReply: calReply,
-		_Reply: &_Reply{
+		_NormalReply: &_NormalReply{
 			MessageLength: messageLength,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

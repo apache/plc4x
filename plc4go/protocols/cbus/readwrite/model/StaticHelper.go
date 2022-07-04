@@ -79,3 +79,30 @@ func ReadCALReply(readBuffer utils.ReadBuffer, payloadLength uint16) (CALReply, 
 	log.Debug().Msgf("%d bytes decoded", n)
 	return CALReplyParse(utils.NewReadBufferByteBased(rawBytes))
 }
+
+func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
+	// TODO: maybe we use a writebuffer hex based
+	wbbb := utils.NewWriteBufferByteBased()
+	err := calData.Serialize(wbbb)
+	if err != nil {
+		return errors.Wrap(err, "Error serializing")
+	}
+	hexBytes := make([]byte, hex.EncodedLen(len(wbbb.GetBytes())))
+	n := hex.Encode(hexBytes, wbbb.GetBytes())
+	log.Debug().Msgf("%d bytes encoded", n)
+	return writeBuffer.WriteByteArray("calReply", hexBytes)
+}
+
+func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, error) {
+	hexBytes, err := readBuffer.ReadByteArray("calReply", int(payloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, "Error parsing")
+	}
+	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
+	n, err := hex.Decode(rawBytes, hexBytes)
+	if err != nil {
+		return nil, err
+	}
+	log.Debug().Msgf("%d bytes decoded", n)
+	return CALDataParse(utils.NewReadBufferByteBased(rawBytes))
+}

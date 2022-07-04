@@ -30,7 +30,7 @@ import (
 type ParameterChangeReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 	// GetIsA returns IsA (property field)
 	GetIsA() ParameterChange
 }
@@ -44,7 +44,7 @@ type ParameterChangeReplyExactly interface {
 
 // _ParameterChangeReply is the data-structure of this message
 type _ParameterChangeReply struct {
-	*_Reply
+	*_NormalReply
 	IsA ParameterChange
 }
 
@@ -58,13 +58,12 @@ type _ParameterChangeReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterChangeReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
+func (m *_ParameterChangeReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
-	m.Termination = termination
 }
 
-func (m *_ParameterChangeReply) GetParent() Reply {
-	return m._Reply
+func (m *_ParameterChangeReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -82,12 +81,12 @@ func (m *_ParameterChangeReply) GetIsA() ParameterChange {
 ///////////////////////////////////////////////////////////
 
 // NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(isA ParameterChange, peekedByte byte, termination ResponseTermination, messageLength uint16) *_ParameterChangeReply {
+func NewParameterChangeReply(isA ParameterChange, peekedByte byte, messageLength uint16) *_ParameterChangeReply {
 	_result := &_ParameterChangeReply{
-		IsA:    isA,
-		_Reply: NewReply(peekedByte, termination, messageLength),
+		IsA:          isA,
+		_NormalReply: NewNormalReply(peekedByte, messageLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -152,11 +151,11 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, messageLength uint16
 	// Create a partially initialized instance
 	_child := &_ParameterChangeReply{
 		IsA: isA,
-		_Reply: &_Reply{
+		_NormalReply: &_NormalReply{
 			MessageLength: messageLength,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

@@ -30,7 +30,7 @@ import (
 type ExtendedFormatStatusReplyReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 	// GetReply returns Reply (property field)
 	GetReply() ExtendedFormatStatusReply
 }
@@ -44,7 +44,7 @@ type ExtendedFormatStatusReplyReplyExactly interface {
 
 // _ExtendedFormatStatusReplyReply is the data-structure of this message
 type _ExtendedFormatStatusReplyReply struct {
-	*_Reply
+	*_NormalReply
 	Reply ExtendedFormatStatusReply
 }
 
@@ -58,13 +58,12 @@ type _ExtendedFormatStatusReplyReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ExtendedFormatStatusReplyReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
+func (m *_ExtendedFormatStatusReplyReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
-	m.Termination = termination
 }
 
-func (m *_ExtendedFormatStatusReplyReply) GetParent() Reply {
-	return m._Reply
+func (m *_ExtendedFormatStatusReplyReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -82,12 +81,12 @@ func (m *_ExtendedFormatStatusReplyReply) GetReply() ExtendedFormatStatusReply {
 ///////////////////////////////////////////////////////////
 
 // NewExtendedFormatStatusReplyReply factory function for _ExtendedFormatStatusReplyReply
-func NewExtendedFormatStatusReplyReply(reply ExtendedFormatStatusReply, peekedByte byte, termination ResponseTermination, messageLength uint16) *_ExtendedFormatStatusReplyReply {
+func NewExtendedFormatStatusReplyReply(reply ExtendedFormatStatusReply, peekedByte byte, messageLength uint16) *_ExtendedFormatStatusReplyReply {
 	_result := &_ExtendedFormatStatusReplyReply{
-		Reply:  reply,
-		_Reply: NewReply(peekedByte, termination, messageLength),
+		Reply:        reply,
+		_NormalReply: NewNormalReply(peekedByte, messageLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -152,11 +151,11 @@ func ExtendedFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, messageLen
 	// Create a partially initialized instance
 	_child := &_ExtendedFormatStatusReplyReply{
 		Reply: reply,
-		_Reply: &_Reply{
+		_NormalReply: &_NormalReply{
 			MessageLength: messageLength,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

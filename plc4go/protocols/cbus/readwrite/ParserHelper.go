@@ -34,12 +34,20 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	switch typeName {
 	case "CALData":
 		return model.CALDataParse(io)
+	case "CALDataNormal":
+		return model.CALDataNormalParse(io)
 	case "Checksum":
 		return model.ChecksumParse(io)
 	case "CALReply":
 		return model.CALReplyParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
+	case "NormalReply":
+		messageLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.NormalReplyParse(io, messageLength)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "RequestTermination":

@@ -31,8 +31,8 @@ type ConfirmationReply interface {
 	utils.LengthAware
 	utils.Serializable
 	Reply
-	// GetIsA returns IsA (property field)
-	GetIsA() Confirmation
+	// GetConfirmation returns Confirmation (property field)
+	GetConfirmation() Confirmation
 }
 
 // ConfirmationReplyExactly can be used when we want exactly this type and not a type which fulfills ConfirmationReply.
@@ -45,7 +45,7 @@ type ConfirmationReplyExactly interface {
 // _ConfirmationReply is the data-structure of this message
 type _ConfirmationReply struct {
 	*_Reply
-	IsA Confirmation
+	Confirmation Confirmation
 }
 
 ///////////////////////////////////////////////////////////
@@ -58,9 +58,8 @@ type _ConfirmationReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ConfirmationReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
+func (m *_ConfirmationReply) InitializeParent(parent Reply, peekedByte byte) {
 	m.PeekedByte = peekedByte
-	m.Termination = termination
 }
 
 func (m *_ConfirmationReply) GetParent() Reply {
@@ -72,8 +71,8 @@ func (m *_ConfirmationReply) GetParent() Reply {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ConfirmationReply) GetIsA() Confirmation {
-	return m.IsA
+func (m *_ConfirmationReply) GetConfirmation() Confirmation {
+	return m.Confirmation
 }
 
 ///////////////////////
@@ -82,10 +81,10 @@ func (m *_ConfirmationReply) GetIsA() Confirmation {
 ///////////////////////////////////////////////////////////
 
 // NewConfirmationReply factory function for _ConfirmationReply
-func NewConfirmationReply(isA Confirmation, peekedByte byte, termination ResponseTermination, messageLength uint16) *_ConfirmationReply {
+func NewConfirmationReply(confirmation Confirmation, peekedByte byte, messageLength uint16) *_ConfirmationReply {
 	_result := &_ConfirmationReply{
-		IsA:    isA,
-		_Reply: NewReply(peekedByte, termination, messageLength),
+		Confirmation: confirmation,
+		_Reply:       NewReply(peekedByte, messageLength),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -113,8 +112,8 @@ func (m *_ConfirmationReply) GetLengthInBits() uint16 {
 func (m *_ConfirmationReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (isA)
-	lengthInBits += m.IsA.GetLengthInBits()
+	// Simple field (confirmation)
+	lengthInBits += m.Confirmation.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -132,17 +131,17 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (isA)
-	if pullErr := readBuffer.PullContext("isA"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for isA")
+	// Simple Field (confirmation)
+	if pullErr := readBuffer.PullContext("confirmation"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for confirmation")
 	}
-	_isA, _isAErr := ConfirmationParse(readBuffer)
-	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of ConfirmationReply")
+	_confirmation, _confirmationErr := ConfirmationParse(readBuffer)
+	if _confirmationErr != nil {
+		return nil, errors.Wrap(_confirmationErr, "Error parsing 'confirmation' field of ConfirmationReply")
 	}
-	isA := _isA.(Confirmation)
-	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for isA")
+	confirmation := _confirmation.(Confirmation)
+	if closeErr := readBuffer.CloseContext("confirmation"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for confirmation")
 	}
 
 	if closeErr := readBuffer.CloseContext("ConfirmationReply"); closeErr != nil {
@@ -151,7 +150,7 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (
 
 	// Create a partially initialized instance
 	_child := &_ConfirmationReply{
-		IsA: isA,
+		Confirmation: confirmation,
 		_Reply: &_Reply{
 			MessageLength: messageLength,
 		},
@@ -168,16 +167,16 @@ func (m *_ConfirmationReply) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for ConfirmationReply")
 		}
 
-		// Simple Field (isA)
-		if pushErr := writeBuffer.PushContext("isA"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for isA")
+		// Simple Field (confirmation)
+		if pushErr := writeBuffer.PushContext("confirmation"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for confirmation")
 		}
-		_isAErr := writeBuffer.WriteSerializable(m.GetIsA())
-		if popErr := writeBuffer.PopContext("isA"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for isA")
+		_confirmationErr := writeBuffer.WriteSerializable(m.GetConfirmation())
+		if popErr := writeBuffer.PopContext("confirmation"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for confirmation")
 		}
-		if _isAErr != nil {
-			return errors.Wrap(_isAErr, "Error serializing 'isA' field")
+		if _confirmationErr != nil {
+			return errors.Wrap(_confirmationErr, "Error serializing 'confirmation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConfirmationReply"); popErr != nil {

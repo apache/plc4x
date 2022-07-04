@@ -46,7 +46,7 @@
 
 [type Request(bit srchk, uint 16 messageLength)
     [peek    RequestType peekedByte                                         ]
-    [virtual uint 16 payloadLength 'messageLength-2'                        ] // We substract the command itself and the termination
+    [virtual uint 16 payloadLength 'messageLength-2'                        ] // We subtract the command itself and the termination
     [typeSwitch peekedByte
         ['SMART_CONNECT_SHORTCUT' *SmartConnectShortcut
             [const    byte                pipe      0x7C                    ]
@@ -57,11 +57,11 @@
         ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
             [const    byte                at        0x40                    ]
             // Usually you would read the command now here but we need to decode ascii first
-            //[simple   CBusCommandPointToPoint('srchk')     cbusCommand    ]
-            [manual   CBusCommand
-                                          cbusCommand
-                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, srchk)'
-                        'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
+            //[simple   CALData     calData    ]
+            [manual   CALData
+                                          calData
+                        'STATIC_CALL("readCALData", readBuffer, payloadLength)'
+                        'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '_value.lengthInBytes*2'                                     ]
         ]
         ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
@@ -532,44 +532,62 @@
 ]
 
 [type CALData
+    [peek    byte     firstByte           ]
+    [typeSwitch firstByte
+        ['0xA3' *SetParameter
+            [const      uint 8  magicId         0xA3                    ]
+            [simple     uint 8  parameterNumber                         ]
+            [const      byte    delimiter       0x0                     ]
+            [simple     byte    parameterValue                          ]
+        ]
+        [* *NormalValue
+            [simple   CALDataNormal calData]
+        ]
+    ]
+]
+
+[type CALDataNormal
     [simple  CALCommandTypeContainer commandTypeContainer                                   ]
     //TODO: golang doesn't like checking for 0
     //[validation 'commandTypeContainer!=null' "no command type could be found"               ]
     [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
     [typeSwitch commandType
-        ['RESET' CALDataRequestReset
+        ['RESET' *RequestReset
         ]
-        ['RECALL' CALDataRequestRecall
+        ['RECALL' *RequestRecall
             [simple uint 8 paramNo                                                          ]
             [simple uint 8 count                                                            ]
         ]
-        ['IDENTIFY' CALDataRequestIdentify
+        ['IDENTIFY' *RequestIdentify
             [simple Attribute attribute                                                     ]
         ]
-        ['GET_STATUS' CALDataRequestGetStatus
+        ['GET_STATUS' *RequestGetStatus
             [simple uint 8 paramNo                                                          ]
             [simple uint 8 count                                                            ]
         ]
-        ['REPLY' CALDataReplyReply(CALCommandTypeContainer commandTypeContainer)
+        ['REPLY' *ReplyReply(CALCommandTypeContainer commandTypeContainer)
             [simple uint 8 paramNumber                                                      ]
             [array  byte   data        count 'commandTypeContainer.numBytes'                ]
         ]
-        ['ACKNOWLEDGE' CALDataReplyAcknowledge
+        ['ACKNOWLEDGE' *ReplyAcknowledge
             [simple uint 8 paramNo                                                          ]
             [simple uint 8 code                                                             ]
         ]
-        ['STATUS' CALDataReplyStatus(CALCommandTypeContainer commandTypeContainer)
+        ['STATUS' *ReplyStatus(CALCommandTypeContainer commandTypeContainer)
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
             [array  byte                   data        count 'commandTypeContainer.numBytes'           ]
         ]
-        ['STATUS_EXTENDED' CALDataReplyStatusExtended(CALCommandTypeContainer commandTypeContainer)
+        ['STATUS_EXTENDED' *ReplyStatusExtended(CALCommandTypeContainer commandTypeContainer)
             [simple uint 8                 encoding                                                    ]
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
             [array  byte                   data        count 'commandTypeContainer.numBytes'           ]
         ]
     ]
+    // TODO: validate that this is the intention of 7.1
+    // FIXME: as long as golang doesn't use pointer here we can't check if a value is known...
+    //[optional CALDataNormal additionalData]
 ]
 
 [enum uint 8 Attribute(uint 8 bytesReturned)
@@ -897,29 +915,39 @@
 ]
 
 [type Reply(uint 16 messageLength)
-    [peek    byte peekedByte                                              ]
-    [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'  ]
-    [typeSwitch peekedByte, isAlpha
-        [*, 'true' ConfirmationReply
-            [simple Confirmation isA]
+    [peek    byte peekedByte                                                ]
+    [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'    ]
+    [typeSwitch isAlpha
+        ['true' ConfirmationReply
+            [simple   Confirmation                      confirmation        ]
         ]
+        ['false' *NormalReply
+            [simple   NormalReply('messageLength')      reply               ]
+            [simple   ResponseTermination               termination         ]
+        ]
+    ]
+]
+
+[type NormalReply(uint 16 messageLength)
+    [peek    byte peekedByte                            ]
+    [typeSwitch peekedByte
         ['0x2B' PowerUpReply // is a +
             [simple PowerUp isA]
         ]
         ['0x3D' ParameterChangeReply // is a =
-            [simple ParameterChange isA]
+            [simple ParameterChange isA                 ]
         ]
         ['0x21' ServerErrorReply // is a !
             [const  byte    errorMarker     0x21        ]
         ]
         ['0x0' MonitoredSALReply
-            [simple MonitoredSAL isA]
+            [simple MonitoredSAL isA                    ]
         ]
         ['0x0' StandardFormatStatusReplyReply
-            [simple StandardFormatStatusReply reply]
+            [simple StandardFormatStatusReply reply     ]
         ]
         ['0x0' ExtendedFormatStatusReplyReply
-            [simple ExtendedFormatStatusReply reply]
+            [simple ExtendedFormatStatusReply reply     ]
         ]
         [* CALReplyReply
             [virtual uint 16 payloadLength 'messageLength-2'                        ] // We substract the termination \r\n
@@ -930,7 +958,6 @@
                                     '_value.lengthInBytes*2'                                     ]
         ]
     ]
-    [simple   ResponseTermination termination                       ]
 ]
 
 [type CALReply
@@ -994,17 +1021,17 @@
 ]
 
 [type Confirmation
-    [simple Alpha alpha]
-    [discriminator   byte confirmationType]
-    [typeSwitch confirmationType
-        ['0x2E'    ConfirmationSuccessful              ] // "."
-        ['0x23'    NotTransmittedToManyReTransmissions ] // "#"
-        ['0x24'    NotTransmittedCorruption            ] // "$"
-        ['0x25'    NotTransmittedSyncLoss              ] // "%"
-        ['0x27'    NotTransmittedTooLong               ] // "'"
-        [*         *Unknown
-        ]
-    ]
+    [simple  Alpha            alpha                                                     ]
+    [simple  ConfirmationType confirmationType                                          ]
+    [virtual bit              isSuccess 'confirmationType == ConfirmationType.CONFIRMATION_SUCCESSFUL'   ]
+]
+
+[enum byte ConfirmationType
+    ['0x2E'    CONFIRMATION_SUCCESSFUL                  ] // "."
+    ['0x23'    NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS ] // "#"
+    ['0x24'    NOT_TRANSMITTED_CORRUPTION               ] // "$"
+    ['0x25'    NOT_TRANSMITTED_SYNC_LOSS                ] // "%"
+    ['0x27'    NOT_TRANSMITTED_TOO_LONG                 ] // "'"
 ]
 
 [type PowerUp

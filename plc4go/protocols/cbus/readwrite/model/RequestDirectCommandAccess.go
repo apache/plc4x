@@ -35,8 +35,8 @@ type RequestDirectCommandAccess interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-	// GetCbusCommand returns CbusCommand (property field)
-	GetCbusCommand() CBusCommand
+	// GetCalData returns CalData (property field)
+	GetCalData() CALData
 }
 
 // RequestDirectCommandAccessExactly can be used when we want exactly this type and not a type which fulfills RequestDirectCommandAccess.
@@ -49,7 +49,7 @@ type RequestDirectCommandAccessExactly interface {
 // _RequestDirectCommandAccess is the data-structure of this message
 type _RequestDirectCommandAccess struct {
 	*_Request
-	CbusCommand CBusCommand
+	CalData CALData
 
 	// Arguments.
 	PayloadLength uint16
@@ -79,8 +79,8 @@ func (m *_RequestDirectCommandAccess) GetParent() Request {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RequestDirectCommandAccess) GetCbusCommand() CBusCommand {
-	return m.CbusCommand
+func (m *_RequestDirectCommandAccess) GetCalData() CALData {
+	return m.CalData
 }
 
 ///////////////////////
@@ -102,10 +102,10 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(cbusCommand CBusCommand, peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16, payloadLength uint16) *_RequestDirectCommandAccess {
+func NewRequestDirectCommandAccess(calData CALData, peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16, payloadLength uint16) *_RequestDirectCommandAccess {
 	_result := &_RequestDirectCommandAccess{
-		CbusCommand: cbusCommand,
-		_Request:    NewRequest(peekedByte, termination, srchk, messageLength),
+		CalData:  calData,
+		_Request: NewRequest(peekedByte, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -136,7 +136,7 @@ func (m *_RequestDirectCommandAccess) GetLengthInBitsConditional(lastItem bool) 
 	// Const Field (at)
 	lengthInBits += 8
 
-	// Manual Field (cbusCommand)
+	// Manual Field (calData)
 	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
 
 	return lengthInBits
@@ -164,12 +164,12 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, srchk bool, me
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestDirectCommandAccess_AT) + " but got " + fmt.Sprintf("%d", at))
 	}
 
-	// Manual Field (cbusCommand)
-	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, payloadLength, srchk)
-	if _cbusCommandErr != nil {
-		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestDirectCommandAccess")
+	// Manual Field (calData)
+	_calData, _calDataErr := ReadCALData(readBuffer, payloadLength)
+	if _calDataErr != nil {
+		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestDirectCommandAccess")
 	}
-	cbusCommand := _cbusCommand.(CBusCommand)
+	calData := _calData.(CALData)
 
 	if closeErr := readBuffer.CloseContext("RequestDirectCommandAccess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestDirectCommandAccess")
@@ -177,7 +177,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, srchk bool, me
 
 	// Create a partially initialized instance
 	_child := &_RequestDirectCommandAccess{
-		CbusCommand: cbusCommand,
+		CalData: calData,
 		_Request: &_Request{
 			Srchk:         srchk,
 			MessageLength: messageLength,
@@ -201,10 +201,10 @@ func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) e
 			return errors.Wrap(_atErr, "Error serializing 'at' field")
 		}
 
-		// Manual Field (cbusCommand)
-		_cbusCommandErr := WriteCBusCommand(writeBuffer, m.GetCbusCommand())
-		if _cbusCommandErr != nil {
-			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
+		// Manual Field (calData)
+		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
+		if _calDataErr != nil {
+			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestDirectCommandAccess"); popErr != nil {

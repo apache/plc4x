@@ -30,7 +30,7 @@ import (
 type StandardFormatStatusReplyReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 	// GetReply returns Reply (property field)
 	GetReply() StandardFormatStatusReply
 }
@@ -44,7 +44,7 @@ type StandardFormatStatusReplyReplyExactly interface {
 
 // _StandardFormatStatusReplyReply is the data-structure of this message
 type _StandardFormatStatusReplyReply struct {
-	*_Reply
+	*_NormalReply
 	Reply StandardFormatStatusReply
 }
 
@@ -58,13 +58,12 @@ type _StandardFormatStatusReplyReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_StandardFormatStatusReplyReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
+func (m *_StandardFormatStatusReplyReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
-	m.Termination = termination
 }
 
-func (m *_StandardFormatStatusReplyReply) GetParent() Reply {
-	return m._Reply
+func (m *_StandardFormatStatusReplyReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -82,12 +81,12 @@ func (m *_StandardFormatStatusReplyReply) GetReply() StandardFormatStatusReply {
 ///////////////////////////////////////////////////////////
 
 // NewStandardFormatStatusReplyReply factory function for _StandardFormatStatusReplyReply
-func NewStandardFormatStatusReplyReply(reply StandardFormatStatusReply, peekedByte byte, termination ResponseTermination, messageLength uint16) *_StandardFormatStatusReplyReply {
+func NewStandardFormatStatusReplyReply(reply StandardFormatStatusReply, peekedByte byte, messageLength uint16) *_StandardFormatStatusReplyReply {
 	_result := &_StandardFormatStatusReplyReply{
-		Reply:  reply,
-		_Reply: NewReply(peekedByte, termination, messageLength),
+		Reply:        reply,
+		_NormalReply: NewNormalReply(peekedByte, messageLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -152,11 +151,11 @@ func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, messageLen
 	// Create a partially initialized instance
 	_child := &_StandardFormatStatusReplyReply{
 		Reply: reply,
-		_Reply: &_Reply{
+		_NormalReply: &_NormalReply{
 			MessageLength: messageLength,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

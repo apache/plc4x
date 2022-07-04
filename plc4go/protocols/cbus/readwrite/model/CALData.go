@@ -30,10 +30,8 @@ import (
 type CALData interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandTypeContainer returns CommandTypeContainer (property field)
-	GetCommandTypeContainer() CALCommandTypeContainer
-	// GetCommandType returns CommandType (virtual field)
-	GetCommandType() CALCommandType
+	// GetFirstByte returns FirstByte (property field)
+	GetFirstByte() byte
 }
 
 // CALDataExactly can be used when we want exactly this type and not a type which fulfills CALData.
@@ -46,7 +44,7 @@ type CALDataExactly interface {
 // _CALData is the data-structure of this message
 type _CALData struct {
 	_CALDataChildRequirements
-	CommandTypeContainer CALCommandTypeContainer
+	FirstByte byte
 }
 
 type _CALDataChildRequirements interface {
@@ -62,7 +60,7 @@ type CALDataParent interface {
 
 type CALDataChild interface {
 	utils.Serializable
-	InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer)
+	InitializeParent(parent CALData, firstByte byte)
 	GetParent() *CALData
 
 	GetTypeName() string
@@ -74,21 +72,8 @@ type CALDataChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALData) GetCommandTypeContainer() CALCommandTypeContainer {
-	return m.CommandTypeContainer
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_CALData) GetCommandType() CALCommandType {
-	return CastCALCommandType(m.GetCommandTypeContainer().CommandType())
+func (m *_CALData) GetFirstByte() byte {
+	return m.FirstByte
 }
 
 ///////////////////////
@@ -97,8 +82,8 @@ func (m *_CALData) GetCommandType() CALCommandType {
 ///////////////////////////////////////////////////////////
 
 // NewCALData factory function for _CALData
-func NewCALData(commandTypeContainer CALCommandTypeContainer) *_CALData {
-	return &_CALData{CommandTypeContainer: commandTypeContainer}
+func NewCALData(firstByte byte) *_CALData {
+	return &_CALData{FirstByte: firstByte}
 }
 
 // Deprecated: use the interface for direct cast
@@ -119,11 +104,6 @@ func (m *_CALData) GetTypeName() string {
 func (m *_CALData) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (commandTypeContainer)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
-
 	return lengthInBits
 }
 
@@ -140,52 +120,31 @@ func CALDataParse(readBuffer utils.ReadBuffer) (CALData, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParse(readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of CALData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	// Peek Field (firstByte)
+	currentPos = positionAware.GetPos()
+	firstByte, _err := readBuffer.ReadByte("firstByte")
+	if _err != nil {
+		return nil, errors.Wrap(_err, "Error parsing 'firstByte' field of CALData")
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := CALCommandType(_commandType)
-	_ = commandType
+	readBuffer.Reset(currentPos)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CALDataChildSerializeRequirement interface {
 		CALData
-		InitializeParent(CALData, CALCommandTypeContainer)
+		InitializeParent(CALData, byte)
 		GetParent() CALData
 	}
 	var _childTemp interface{}
 	var _child CALDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case commandType == CALCommandType_RESET: // CALDataRequestReset
-		_childTemp, typeSwitchError = CALDataRequestResetParse(readBuffer)
-	case commandType == CALCommandType_RECALL: // CALDataRequestRecall
-		_childTemp, typeSwitchError = CALDataRequestRecallParse(readBuffer)
-	case commandType == CALCommandType_IDENTIFY: // CALDataRequestIdentify
-		_childTemp, typeSwitchError = CALDataRequestIdentifyParse(readBuffer)
-	case commandType == CALCommandType_GET_STATUS: // CALDataRequestGetStatus
-		_childTemp, typeSwitchError = CALDataRequestGetStatusParse(readBuffer)
-	case commandType == CALCommandType_REPLY: // CALDataReplyReply
-		_childTemp, typeSwitchError = CALDataReplyReplyParse(readBuffer, commandTypeContainer)
-	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataReplyAcknowledge
-		_childTemp, typeSwitchError = CALDataReplyAcknowledgeParse(readBuffer)
-	case commandType == CALCommandType_STATUS: // CALDataReplyStatus
-		_childTemp, typeSwitchError = CALDataReplyStatusParse(readBuffer, commandTypeContainer)
-	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataReplyStatusExtended
-		_childTemp, typeSwitchError = CALDataReplyStatusExtendedParse(readBuffer, commandTypeContainer)
+	case firstByte == 0xA3: // CALDataSetParameter
+		_childTemp, typeSwitchError = CALDataSetParameterParse(readBuffer)
+	case true: // CALDataNormalValue
+		_childTemp, typeSwitchError = CALDataNormalValueParse(readBuffer)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [firstByte=%v]", firstByte)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CALData")
@@ -197,7 +156,7 @@ func CALDataParse(readBuffer utils.ReadBuffer) (CALData, error) {
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, commandTypeContainer)
+	_child.InitializeParent(_child, firstByte)
 	return _child, nil
 }
 
@@ -209,22 +168,6 @@ func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CALData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for CALData")
-	}
-
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
-	}
-	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
-		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

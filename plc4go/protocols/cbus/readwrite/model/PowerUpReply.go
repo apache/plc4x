@@ -30,7 +30,7 @@ import (
 type PowerUpReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 	// GetIsA returns IsA (property field)
 	GetIsA() PowerUp
 }
@@ -44,7 +44,7 @@ type PowerUpReplyExactly interface {
 
 // _PowerUpReply is the data-structure of this message
 type _PowerUpReply struct {
-	*_Reply
+	*_NormalReply
 	IsA PowerUp
 }
 
@@ -58,13 +58,12 @@ type _PowerUpReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PowerUpReply) InitializeParent(parent Reply, peekedByte byte, termination ResponseTermination) {
+func (m *_PowerUpReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
-	m.Termination = termination
 }
 
-func (m *_PowerUpReply) GetParent() Reply {
-	return m._Reply
+func (m *_PowerUpReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -82,12 +81,12 @@ func (m *_PowerUpReply) GetIsA() PowerUp {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(isA PowerUp, peekedByte byte, termination ResponseTermination, messageLength uint16) *_PowerUpReply {
+func NewPowerUpReply(isA PowerUp, peekedByte byte, messageLength uint16) *_PowerUpReply {
 	_result := &_PowerUpReply{
-		IsA:    isA,
-		_Reply: NewReply(peekedByte, termination, messageLength),
+		IsA:          isA,
+		_NormalReply: NewNormalReply(peekedByte, messageLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -152,11 +151,11 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (Power
 	// Create a partially initialized instance
 	_child := &_PowerUpReply{
 		IsA: isA,
-		_Reply: &_Reply{
+		_NormalReply: &_NormalReply{
 			MessageLength: messageLength,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

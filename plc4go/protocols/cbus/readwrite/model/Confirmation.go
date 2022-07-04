@@ -30,10 +30,12 @@ import (
 type Confirmation interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetConfirmationType returns ConfirmationType (discriminator field)
-	GetConfirmationType() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
+	// GetConfirmationType returns ConfirmationType (property field)
+	GetConfirmationType() ConfirmationType
+	// GetIsSuccess returns IsSuccess (virtual field)
+	GetIsSuccess() bool
 }
 
 // ConfirmationExactly can be used when we want exactly this type and not a type which fulfills Confirmation.
@@ -45,29 +47,8 @@ type ConfirmationExactly interface {
 
 // _Confirmation is the data-structure of this message
 type _Confirmation struct {
-	_ConfirmationChildRequirements
-	Alpha Alpha
-}
-
-type _ConfirmationChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
-	GetConfirmationType() byte
-}
-
-type ConfirmationParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child Confirmation, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type ConfirmationChild interface {
-	utils.Serializable
-	InitializeParent(parent Confirmation, alpha Alpha)
-	GetParent() *Confirmation
-
-	GetTypeName() string
-	Confirmation
+	Alpha            Alpha
+	ConfirmationType ConfirmationType
 }
 
 ///////////////////////////////////////////////////////////
@@ -79,14 +60,31 @@ func (m *_Confirmation) GetAlpha() Alpha {
 	return m.Alpha
 }
 
+func (m *_Confirmation) GetConfirmationType() ConfirmationType {
+	return m.ConfirmationType
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_Confirmation) GetIsSuccess() bool {
+	return bool(bool((m.GetConfirmationType()) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)))
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewConfirmation factory function for _Confirmation
-func NewConfirmation(alpha Alpha) *_Confirmation {
-	return &_Confirmation{Alpha: alpha}
+func NewConfirmation(alpha Alpha, confirmationType ConfirmationType) *_Confirmation {
+	return &_Confirmation{Alpha: alpha, ConfirmationType: confirmationType}
 }
 
 // Deprecated: use the interface for direct cast
@@ -104,13 +102,20 @@ func (m *_Confirmation) GetTypeName() string {
 	return "Confirmation"
 }
 
-func (m *_Confirmation) GetParentLengthInBits() uint16 {
+func (m *_Confirmation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
+}
+
+func (m *_Confirmation) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (alpha)
 	lengthInBits += m.Alpha.GetLengthInBits()
-	// Discriminator Field (confirmationType)
+
+	// Simple field (confirmationType)
 	lengthInBits += 8
+
+	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
@@ -141,55 +146,33 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 		return nil, errors.Wrap(closeErr, "Error closing for alpha")
 	}
 
-	// Discriminator Field (confirmationType) (Used as input to a switch field)
-	confirmationType, _confirmationTypeErr := readBuffer.ReadByte("confirmationType")
+	// Simple Field (confirmationType)
+	if pullErr := readBuffer.PullContext("confirmationType"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for confirmationType")
+	}
+	_confirmationType, _confirmationTypeErr := ConfirmationTypeParse(readBuffer)
 	if _confirmationTypeErr != nil {
 		return nil, errors.Wrap(_confirmationTypeErr, "Error parsing 'confirmationType' field of Confirmation")
 	}
+	confirmationType := _confirmationType
+	if closeErr := readBuffer.CloseContext("confirmationType"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for confirmationType")
+	}
 
-	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type ConfirmationChildSerializeRequirement interface {
-		Confirmation
-		InitializeParent(Confirmation, Alpha)
-		GetParent() Confirmation
-	}
-	var _childTemp interface{}
-	var _child ConfirmationChildSerializeRequirement
-	var typeSwitchError error
-	switch {
-	case confirmationType == 0x2E: // ConfirmationSuccessful
-		_childTemp, typeSwitchError = ConfirmationSuccessfulParse(readBuffer)
-	case confirmationType == 0x23: // NotTransmittedToManyReTransmissions
-		_childTemp, typeSwitchError = NotTransmittedToManyReTransmissionsParse(readBuffer)
-	case confirmationType == 0x24: // NotTransmittedCorruption
-		_childTemp, typeSwitchError = NotTransmittedCorruptionParse(readBuffer)
-	case confirmationType == 0x25: // NotTransmittedSyncLoss
-		_childTemp, typeSwitchError = NotTransmittedSyncLossParse(readBuffer)
-	case confirmationType == 0x27: // NotTransmittedTooLong
-		_childTemp, typeSwitchError = NotTransmittedTooLongParse(readBuffer)
-	case true: // ConfirmationUnknown
-		_childTemp, typeSwitchError = ConfirmationUnknownParse(readBuffer)
-	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [confirmationType=%v]", confirmationType)
-	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Confirmation")
-	}
-	_child = _childTemp.(ConfirmationChildSerializeRequirement)
+	// Virtual field
+	_isSuccess := bool((confirmationType) == (ConfirmationType_CONFIRMATION_SUCCESSFUL))
+	isSuccess := bool(_isSuccess)
+	_ = isSuccess
 
 	if closeErr := readBuffer.CloseContext("Confirmation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Confirmation")
 	}
 
-	// Finish initializing
-	_child.InitializeParent(_child, alpha)
-	return _child, nil
+	// Create the instance
+	return NewConfirmation(alpha, confirmationType), nil
 }
 
-func (pm *_Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child Confirmation, serializeChildFunction func() error) error {
-	// We redirect all calls through client as some methods are only implemented there
-	m := child
-	_ = m
+func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Confirmation"); pushErr != nil {
@@ -208,17 +191,20 @@ func (pm *_Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child Co
 		return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
 	}
 
-	// Discriminator Field (confirmationType) (Used as input to a switch field)
-	confirmationType := byte(child.GetConfirmationType())
-	_confirmationTypeErr := writeBuffer.WriteByte("confirmationType", (confirmationType))
-
+	// Simple Field (confirmationType)
+	if pushErr := writeBuffer.PushContext("confirmationType"); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for confirmationType")
+	}
+	_confirmationTypeErr := writeBuffer.WriteSerializable(m.GetConfirmationType())
+	if popErr := writeBuffer.PopContext("confirmationType"); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for confirmationType")
+	}
 	if _confirmationTypeErr != nil {
 		return errors.Wrap(_confirmationTypeErr, "Error serializing 'confirmationType' field")
 	}
-
-	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
-		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
+	// Virtual field
+	if _isSuccessErr := writeBuffer.WriteVirtual("isSuccess", m.GetIsSuccess()); _isSuccessErr != nil {
+		return errors.Wrap(_isSuccessErr, "Error serializing 'isSuccess' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Confirmation"); popErr != nil {

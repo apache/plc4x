@@ -34,103 +34,207 @@ public class RandomPackagesTest {
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf
     @Nested
     class ReferenceDocumentationTest {
-        // 4.2.9.1
-        @Test
-        void pointToPointCommandDirect() throws Exception {
-            byte[] bytes = "\\0603002102D4\r".getBytes(StandardCharsets.UTF_8);
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
+
+        // 3.4
+        @Nested
+        class Header {
+            @Test
+            void Point_point_multipoint_lowest_priority_class() throws Exception {
+                byte[] bytes = new byte[]{0x03};
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void Point_multipoint_lowest_priority_class() throws Exception {
+                byte[] bytes = new byte[]{0x05};
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void Point_point_lowest_priority_class() throws Exception {
+                byte[] bytes = new byte[]{0x06};
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
         }
+
 
         // 4.2.9.1
-        @Test
-        void pointToPointCommandBridged() throws Exception {
-            byte[] bytes = "\\06420903210289\r".getBytes(StandardCharsets.UTF_8);
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
+        @Nested
+        class PointToPointCommands {
+            @Test
+            void pointToPointCommandDirect() throws Exception {
+                byte[] bytes = "\\0603002102D4\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void pointToPointCommandBridged() throws Exception {
+                byte[] bytes = "\\06420903210289\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
         }
 
-        // 4.2.9.2
-        @Test
-        void pointToMultiPointCommandDirect() throws Exception {
-            byte[] bytes = "\\0538000108BA\r".getBytes(StandardCharsets.UTF_8);
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
-        }
 
         // 4.2.9.2
-        @Test
-        void pointToMultiPointCommandBridged() throws Exception {
-            byte[] bytes = "\\05FF007A38004A\r".getBytes(StandardCharsets.UTF_8);
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
+        @Nested
+        class PointToMultiPointCommands {
+            @Test
+            void pointToMultiPointCommandDirect() throws Exception {
+                byte[] bytes = "\\0538000108BA\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void pointToMultiPointCommandBridged() throws Exception {
+                byte[] bytes = "\\05FF007A38004A\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
         }
 
         // 4.2.9.3
-        @Test
-        void pointToPointToMultiPointCommand2() throws Exception {
-            byte[] bytes = "\\03420938010871\r".getBytes(StandardCharsets.UTF_8);
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
+        @Nested
+        class PointToPointToMultoPointCommands {
+            @Test
+            void pointToPointToMultiPointCommand2() throws Exception {
+                byte[] bytes = "\\03420938010871\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
         }
 
         // 4.3.3.1
-        @Test
-        void calRequest() throws Exception {
-            byte[] bytes = "\\0605002102\r".getBytes(StandardCharsets.UTF_8);
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, false, bytes.length);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
-        }
+        @Nested
+        class _CALReply {
+            @Test
+            void calRequest() throws Exception {
+                byte[] bytes = "\\0605002102\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, false, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
 
-        // 4.3.3.1
-        @Test
-        void calReplyNormal() throws Exception {
-            byte[] bytes = Hex.decodeHex("8902312E322E363620200A");
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CALReply msg = CALReplyShort.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
-        }
+            @Test
+            void calReplyNormal() throws Exception {
+                byte[] bytes = Hex.decodeHex("8902312E322E363620200A");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CALReply msg = CALReplyShort.staticParse(readBufferByteBased, false);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
 
-        @Test
-        void calReplySmart() throws Exception {
-            byte[] bytes = Hex.decodeHex("860593008902312E322E363620207F");
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CALReply msg = CALReplyLong.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
+            @Test
+            void calReplySmart() throws Exception {
+                byte[] bytes = Hex.decodeHex("860593008902312E322E363620207F");
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CALReply msg = CALReplyLong.staticParse(readBufferByteBased, false);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
         }
 
         // 4.3.3.2
-        @Test
-        @Disabled("Not yet implemented")
-        void monitoredSal() throws Exception {
-            byte[] bytes = Hex.decodeHex("0503380079083F");
-            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            Reply msg = MonitoredSALReply.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
-            System.out.println(msg);
+        @Nested
+        class MonitoredSAL {
+            @Test
+            @Disabled("Not yet implemented")
+            void monitoredSal() throws Exception {
+                byte[] bytes = "0503380079083F\r\n".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                Reply msg = Reply.staticParse(readBufferByteBased, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+        }
+
+        // 4.3.3.3
+        @Nested
+        class Confirmation {
+            @Test
+            void successful() throws Exception {
+                byte[] bytes = "g.".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                Reply msg = Reply.staticParse(readBufferByteBased, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void toManyRetransmissions() throws Exception {
+                byte[] bytes = "g#".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                Reply msg = Reply.staticParse(readBufferByteBased, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void corruption() throws Exception {
+                byte[] bytes = "g$".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                Reply msg = Reply.staticParse(readBufferByteBased, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void desync() throws Exception {
+                byte[] bytes = "g%".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                Reply msg = Reply.staticParse(readBufferByteBased, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Test
+            void tooLong() throws Exception {
+                byte[] bytes = "g'".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                Reply msg = Reply.staticParse(readBufferByteBased, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
         }
 
         // 7.3
@@ -369,6 +473,16 @@ public class RandomPackagesTest {
                 .isNotNull();
             System.out.println(msg);
         }
+
+        @Test
+        void testParameterSet() throws Exception {
+            byte[] bytes = "@A3470011\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
     }
 
     @Nested
@@ -387,12 +501,23 @@ public class RandomPackagesTest {
 
     }
 
-    @Disabled
     @Nested
-    class OwnCaptures{
+    class OwnCaptures {
+
+        @Disabled
         @Test
         void whatEverThisIs() throws Exception {
             byte[] bytes = "\\3436303230303231303167\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
+
+        @Test
+        void deviceManagementInstruction() throws Exception {
+            byte[] bytes = "@1A2001\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
             assertThat(msg)
