@@ -38,8 +38,6 @@ type CBusPointToPointCommand interface {
 	GetCalData() CALData
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
-	// GetAlpha returns Alpha (property field)
-	GetAlpha() Alpha
 	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
 }
@@ -57,7 +55,6 @@ type _CBusPointToPointCommand struct {
 	BridgeAddressCountPeek uint16
 	CalData                CALData
 	Crc                    Checksum
-	Alpha                  Alpha
 
 	// Arguments.
 	Srchk bool
@@ -76,7 +73,7 @@ type CBusPointToPointCommandParent interface {
 
 type CBusPointToPointCommandChild interface {
 	utils.Serializable
-	InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha)
+	InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum)
 	GetParent() *CBusPointToPointCommand
 
 	GetTypeName() string
@@ -100,10 +97,6 @@ func (m *_CBusPointToPointCommand) GetCrc() Checksum {
 	return m.Crc
 }
 
-func (m *_CBusPointToPointCommand) GetAlpha() Alpha {
-	return m.Alpha
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,8 +109,6 @@ func (m *_CBusPointToPointCommand) GetAlpha() Alpha {
 func (m *_CBusPointToPointCommand) GetIsDirect() bool {
 	crc := m.Crc
 	_ = crc
-	alpha := m.Alpha
-	_ = alpha
 	return bool(bool(((m.GetBridgeAddressCountPeek()) & (0x00FF)) == (0x0000)))
 }
 
@@ -127,8 +118,8 @@ func (m *_CBusPointToPointCommand) GetIsDirect() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
-func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, srchk bool) *_CBusPointToPointCommand {
-	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, Alpha: alpha, Srchk: srchk}
+func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, srchk bool) *_CBusPointToPointCommand {
+	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, Srchk: srchk}
 }
 
 // Deprecated: use the interface for direct cast
@@ -157,11 +148,6 @@ func (m *_CBusPointToPointCommand) GetParentLengthInBits() uint16 {
 	// Optional Field (crc)
 	if m.Crc != nil {
 		lengthInBits += m.Crc.GetLengthInBits()
-	}
-
-	// Optional Field (alpha)
-	if m.Alpha != nil {
-		lengthInBits += m.Alpha.GetLengthInBits()
 	}
 
 	return lengthInBits
@@ -197,7 +183,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToPointCommandChildSerializeRequirement interface {
 		CBusPointToPointCommand
-		InitializeParent(CBusPointToPointCommand, uint16, CALData, Checksum, Alpha)
+		InitializeParent(CBusPointToPointCommand, uint16, CALData, Checksum)
 		GetParent() CBusPointToPointCommand
 	}
 	var _childTemp interface{}
@@ -251,34 +237,12 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 		}
 	}
 
-	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
-	var alpha Alpha = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
-		}
-		_val, _err := AlphaParse(readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of CBusPointToPointCommand")
-		default:
-			alpha = _val.(Alpha)
-			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for alpha")
-			}
-		}
-	}
-
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointCommand")
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, bridgeAddressCountPeek, calData, crc, alpha)
+	_child.InitializeParent(_child, bridgeAddressCountPeek, calData, crc)
 	return _child, nil
 }
 
@@ -326,22 +290,6 @@ func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffe
 		}
 		if _crcErr != nil {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
-		}
-	}
-
-	// Optional Field (alpha) (Can be skipped, if the value is null)
-	var alpha Alpha = nil
-	if m.GetAlpha() != nil {
-		if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alpha")
-		}
-		alpha = m.GetAlpha()
-		_alphaErr := writeBuffer.WriteSerializable(alpha)
-		if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alpha")
-		}
-		if _alphaErr != nil {
-			return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
 		}
 	}
 

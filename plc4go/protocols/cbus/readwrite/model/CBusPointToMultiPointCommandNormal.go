@@ -39,8 +39,6 @@ type CBusPointToMultiPointCommandNormal interface {
 	GetSalData() SALData
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
-	// GetAlpha returns Alpha (property field)
-	GetAlpha() Alpha
 }
 
 // CBusPointToMultiPointCommandNormalExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommandNormal.
@@ -56,7 +54,6 @@ type _CBusPointToMultiPointCommandNormal struct {
 	Application ApplicationIdContainer
 	SalData     SALData
 	Crc         Checksum
-	Alpha       Alpha
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,22 +91,17 @@ func (m *_CBusPointToMultiPointCommandNormal) GetCrc() Checksum {
 	return m.Crc
 }
 
-func (m *_CBusPointToMultiPointCommandNormal) GetAlpha() Alpha {
-	return m.Alpha
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, crc Checksum, alpha Alpha, peekedApplication byte, srchk bool) *_CBusPointToMultiPointCommandNormal {
+func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, crc Checksum, peekedApplication byte, srchk bool) *_CBusPointToMultiPointCommandNormal {
 	_result := &_CBusPointToMultiPointCommandNormal{
 		Application:                   application,
 		SalData:                       salData,
 		Crc:                           crc,
-		Alpha:                         alpha,
 		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, srchk),
 	}
 	_result._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _result
@@ -150,11 +142,6 @@ func (m *_CBusPointToMultiPointCommandNormal) GetLengthInBitsConditional(lastIte
 	// Optional Field (crc)
 	if m.Crc != nil {
 		lengthInBits += m.Crc.GetLengthInBits()
-	}
-
-	// Optional Field (alpha)
-	if m.Alpha != nil {
-		lengthInBits += m.Alpha.GetLengthInBits()
 	}
 
 	return lengthInBits
@@ -235,28 +222,6 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 		}
 	}
 
-	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
-	var alpha Alpha = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
-		}
-		_val, _err := AlphaParse(readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of CBusPointToMultiPointCommandNormal")
-		default:
-			alpha = _val.(Alpha)
-			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for alpha")
-			}
-		}
-	}
-
 	if closeErr := readBuffer.CloseContext("CBusPointToMultiPointCommandNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToMultiPointCommandNormal")
 	}
@@ -266,7 +231,6 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 		Application: application,
 		SalData:     salData,
 		Crc:         crc,
-		Alpha:       alpha,
 		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
 			Srchk: srchk,
 		},
@@ -328,22 +292,6 @@ func (m *_CBusPointToMultiPointCommandNormal) Serialize(writeBuffer utils.WriteB
 			}
 			if _crcErr != nil {
 				return errors.Wrap(_crcErr, "Error serializing 'crc' field")
-			}
-		}
-
-		// Optional Field (alpha) (Can be skipped, if the value is null)
-		var alpha Alpha = nil
-		if m.GetAlpha() != nil {
-			if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alpha")
-			}
-			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(alpha)
-			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alpha")
-			}
-			if _alphaErr != nil {
-				return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
 			}
 		}
 

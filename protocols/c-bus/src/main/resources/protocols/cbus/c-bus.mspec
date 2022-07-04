@@ -62,7 +62,7 @@
                                           calData
                         'STATIC_CALL("readCALData", readBuffer, payloadLength)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
-                        '_value.lengthInBytes*2'                                     ]
+                        '_value.lengthInBytes*2'                            ]
         ]
         ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
             [const    byte                initiator 0x5C                    ] // 0x5C == "/"
@@ -72,7 +72,8 @@
                                           cbusCommand
                         'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, srchk)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
-                        '_value.lengthInBytes*2'                                     ]
+                        '_value.lengthInBytes*2'                            ]
+            [optional Alpha         alpha                                   ]
         ]
         ['NULL' *Null
             [const    uint 32             nullIndicator        0x6E756C6C   ] // "null"
@@ -195,7 +196,6 @@
     ]
     [simple   CALData calData                                                                   ]
     [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
-    [optional Alpha         alpha                                                               ]
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)
@@ -206,14 +206,12 @@
             [reserved byte          '0x00'                                                             ]
             [simple   StatusRequest statusRequest                                                      ]
             [optional Checksum      crc           'srchk'                                              ] // checksum is optional but mspec checksum isn't
-            [optional Alpha         alpha                                                              ]
         ]
         [         CBusPointToMultiPointCommandNormal
             [simple   ApplicationIdContainer   application                                             ]
             [reserved byte                     '0x00'                                                  ]
             [simple   SALData                  salData                                                 ]
             [optional Checksum                 crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
-            [optional Alpha         alpha                                                               ]
         ]
     ]
 ]
@@ -227,13 +225,11 @@
             [reserved byte        '0xFF'                                                             ]
             [simple StatusRequest statusRequest                                                      ]
             [optional Checksum    crc           'srchk'                                              ] // crc      is optional but mspec crc      isn't
-            [optional Alpha         alpha                                                            ]
         ]
         [         CBusCommandPointToPointToMultiPointNormal
             [simple   ApplicationIdContainer application                                             ]
             [simple   SALData                salData                                                 ]
             [optional Checksum               crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
-            [optional Alpha         alpha                                                            ]
         ]
     ]
 ]

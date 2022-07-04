@@ -524,5 +524,15 @@ public class RandomPackagesTest {
                 .isNotNull();
             System.out.println(msg);
         }
+
+        @Test
+        void setLight() throws Exception {
+            byte[] bytes = "\\0538000100g\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
     }
 }

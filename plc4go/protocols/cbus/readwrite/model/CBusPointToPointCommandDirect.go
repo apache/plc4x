@@ -59,11 +59,10 @@ type _CBusPointToPointCommandDirect struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointCommandDirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha) {
+func (m *_CBusPointToPointCommandDirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum) {
 	m.BridgeAddressCountPeek = bridgeAddressCountPeek
 	m.CalData = calData
 	m.Crc = crc
-	m.Alpha = alpha
 }
 
 func (m *_CBusPointToPointCommandDirect) GetParent() CBusPointToPointCommand {
@@ -85,10 +84,10 @@ func (m *_CBusPointToPointCommandDirect) GetUnitAddress() UnitAddress {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
-func NewCBusPointToPointCommandDirect(unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, srchk bool) *_CBusPointToPointCommandDirect {
+func NewCBusPointToPointCommandDirect(unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, srchk bool) *_CBusPointToPointCommandDirect {
 	_result := &_CBusPointToPointCommandDirect{
 		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, alpha, srchk),
+		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, srchk),
 	}
 	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result
 	return _result

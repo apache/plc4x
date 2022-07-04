@@ -44,6 +44,12 @@ func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, srcchk b
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing")
 	}
+	lastByte := hexBytes[len(hexBytes)-1]
+	if (lastByte >= 0x67) && (lastByte <= 0x7A) {
+		// We need to reset the alpha
+		readBuffer.Reset(readBuffer.GetPos() - 1)
+		hexBytes = hexBytes[:len(hexBytes)-1]
+	}
 	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
 	n, err := hex.Decode(rawBytes, hexBytes)
 	if err != nil {
@@ -71,6 +77,12 @@ func ReadCALReply(readBuffer utils.ReadBuffer, payloadLength uint16) (CALReply, 
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing")
 	}
+	lastByte := hexBytes[len(hexBytes)-1]
+	if (lastByte >= 0x67) && (lastByte <= 0x7A) {
+		// We need to reset the alpha
+		readBuffer.Reset(readBuffer.GetPos() - 1)
+		hexBytes = hexBytes[:len(hexBytes)-1]
+	}
 	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
 	n, err := hex.Decode(rawBytes, hexBytes)
 	if err != nil {
@@ -97,6 +109,12 @@ func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, er
 	hexBytes, err := readBuffer.ReadByteArray("calReply", int(payloadLength))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing")
+	}
+	lastByte := hexBytes[len(hexBytes)-1]
+	if (lastByte >= 0x67) && (lastByte <= 0x7A) {
+		// We need to reset the alpha
+		readBuffer.Reset(readBuffer.GetPos() - 1)
+		hexBytes = hexBytes[:len(hexBytes)-1]
 	}
 	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
 	n, err := hex.Decode(rawBytes, hexBytes)

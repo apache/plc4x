@@ -37,8 +37,6 @@ type CBusPointToMultiPointCommandStatus interface {
 	GetStatusRequest() StatusRequest
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
-	// GetAlpha returns Alpha (property field)
-	GetAlpha() Alpha
 }
 
 // CBusPointToMultiPointCommandStatusExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommandStatus.
@@ -53,7 +51,6 @@ type _CBusPointToMultiPointCommandStatus struct {
 	*_CBusPointToMultiPointCommand
 	StatusRequest StatusRequest
 	Crc           Checksum
-	Alpha         Alpha
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,21 +84,16 @@ func (m *_CBusPointToMultiPointCommandStatus) GetCrc() Checksum {
 	return m.Crc
 }
 
-func (m *_CBusPointToMultiPointCommandStatus) GetAlpha() Alpha {
-	return m.Alpha
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
-func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, crc Checksum, alpha Alpha, peekedApplication byte, srchk bool) *_CBusPointToMultiPointCommandStatus {
+func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, crc Checksum, peekedApplication byte, srchk bool) *_CBusPointToMultiPointCommandStatus {
 	_result := &_CBusPointToMultiPointCommandStatus{
 		StatusRequest:                 statusRequest,
 		Crc:                           crc,
-		Alpha:                         alpha,
 		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, srchk),
 	}
 	_result._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _result
@@ -142,11 +134,6 @@ func (m *_CBusPointToMultiPointCommandStatus) GetLengthInBitsConditional(lastIte
 	// Optional Field (crc)
 	if m.Crc != nil {
 		lengthInBits += m.Crc.GetLengthInBits()
-	}
-
-	// Optional Field (alpha)
-	if m.Alpha != nil {
-		lengthInBits += m.Alpha.GetLengthInBits()
 	}
 
 	return lengthInBits
@@ -228,28 +215,6 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 		}
 	}
 
-	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
-	var alpha Alpha = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
-		}
-		_val, _err := AlphaParse(readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of CBusPointToMultiPointCommandStatus")
-		default:
-			alpha = _val.(Alpha)
-			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for alpha")
-			}
-		}
-	}
-
 	if closeErr := readBuffer.CloseContext("CBusPointToMultiPointCommandStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToMultiPointCommandStatus")
 	}
@@ -258,7 +223,6 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 	_child := &_CBusPointToMultiPointCommandStatus{
 		StatusRequest: statusRequest,
 		Crc:           crc,
-		Alpha:         alpha,
 		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
 			Srchk: srchk,
 		},
@@ -316,22 +280,6 @@ func (m *_CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteB
 			}
 			if _crcErr != nil {
 				return errors.Wrap(_crcErr, "Error serializing 'crc' field")
-			}
-		}
-
-		// Optional Field (alpha) (Can be skipped, if the value is null)
-		var alpha Alpha = nil
-		if m.GetAlpha() != nil {
-			if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alpha")
-			}
-			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(alpha)
-			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alpha")
-			}
-			if _alphaErr != nil {
-				return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
 			}
 		}
 

@@ -26,6 +26,7 @@ import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
 import org.apache.plc4x.java.spi.generation.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class StaticHelper {
     public static void writeCBusCommand(WriteBuffer writeBuffer, CBusCommand cbusCommand) throws SerializationException {
@@ -38,6 +39,12 @@ public class StaticHelper {
 
     public static CBusCommand readCBusCommand(ReadBuffer readBuffer, Integer payloadLength, boolean srcchk) throws ParseException {
         byte[] hexBytes = readBuffer.readByteArray("cbusCommand", payloadLength);
+        byte lastByte = hexBytes[hexBytes.length - 1];
+        if ((lastByte >= 0x67) && (lastByte <= 0x7A)) {
+            // We need to reset the alpha
+            readBuffer.reset(readBuffer.getPos() - 1);
+            hexBytes = Arrays.copyOf(hexBytes,hexBytes.length-1);
+        }
         byte[] rawBytes;
         try {
             rawBytes = Hex.decodeHex(new String(hexBytes));
@@ -57,6 +64,12 @@ public class StaticHelper {
 
     public static CALReply readCALReply(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
         byte[] hexBytes = readBuffer.readByteArray("calReply", payloadLength);
+        byte lastByte = hexBytes[hexBytes.length - 1];
+        if ((lastByte >= 0x67) && (lastByte <= 0x7A)) {
+            // We need to reset the alpha
+            readBuffer.reset(readBuffer.getPos() - 1);
+            hexBytes = Arrays.copyOf(hexBytes,hexBytes.length-1);
+        }
         byte[] rawBytes;
         try {
             rawBytes = Hex.decodeHex(new String(hexBytes));
@@ -76,6 +89,12 @@ public class StaticHelper {
 
     public static CALData readCALData(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
         byte[] hexBytes = readBuffer.readByteArray("calReply", payloadLength);
+        byte lastByte = hexBytes[hexBytes.length - 1];
+        if ((lastByte >= 0x67) && (lastByte <= 0x7A)) {
+            // We need to reset the alpha
+            readBuffer.reset(readBuffer.getPos() - 1);
+            hexBytes = Arrays.copyOf(hexBytes,hexBytes.length-1);
+        }
         byte[] rawBytes;
         try {
             rawBytes = Hex.decodeHex(new String(hexBytes));
