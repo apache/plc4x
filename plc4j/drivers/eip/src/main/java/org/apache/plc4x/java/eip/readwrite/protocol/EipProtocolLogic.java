@@ -596,6 +596,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         //ByteBuffer buffer = ByteBuffer.allocate(4+type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer buffer = ByteBuffer.allocate(type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
         switch (type) {
+            case BOOL:
+                buffer.put(value.getByte());
+                break;
             case SINT:
                 buffer.put(value.getByte());
                 break;
