@@ -70,6 +70,87 @@ public class RandomPackagesTest {
 
         }
 
+        // 4
+        @Nested
+        class SerialInterface {
+
+            // 4.2.3
+            @Test
+            void reset() throws Exception {
+                byte[] bytes = "~\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("not implemented yet")
+            // 4.2.4
+            @Test
+            void cancel() throws Exception {
+                byte[] bytes = "AB0123?9876\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            // 4.2.5
+            @Test
+            void smartConnectShortcut() throws Exception {
+                byte[] bytes = "\r|\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            @Disabled("not implemented yet")
+            // 4.2.4
+            @Test
+            void confirmation() throws Exception {
+                // If you follow the spec a confirmation can occur at any place... seems strange
+                byte[] bytes = "AB0123n9876\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+            }
+
+            // 4.2.7
+            @Test
+            void directCommandAccess1() throws Exception {
+                byte[] bytes = "@2102\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+                CALData calData = ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData();
+                System.out.println(calData);
+            }
+
+            @Disabled("not implemented yet")
+            // 4.2.7
+            @Test
+            void directCommandAccess2() throws Exception {
+                // TODO: this should be the same as the @above but that is not yet implemented
+                byte[] bytes = "~2102\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+                assertThat(msg)
+                    .isNotNull();
+                System.out.println(msg);
+                CALData calData = ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData();
+                System.out.println(calData);
+            }
+
+        }
+
 
         // 4.2.9.1
         @Nested
@@ -566,6 +647,19 @@ public class RandomPackagesTest {
             ReplyNormalReply normalReply = (ReplyNormalReply) confirmationReply.getEmbeddedReply();
             CALReplyReply calReplyReply = (CALReplyReply) normalReply.getReply();
             System.out.println(calReplyReply.getCalReply());
+        }
+
+        @Test
+        void someOtherResponse() throws Exception {
+            byte[] bytes = "\\0538000100g\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+            CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
+            RequestCommand requestCommand = (RequestCommand) messageToServer.getRequest();
+            System.out.println(requestCommand.getCbusCommand());
         }
     }
 }
