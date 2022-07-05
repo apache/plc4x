@@ -325,16 +325,49 @@
         <executions>
           <!-- add tools required for generating code, test, etc-->
           <execution>
-            <id>get-tools</id>
+            <id>get-stringer</id>
             <phase>initialize</phase>
             <goals>
-              <goal>get</goal>
+              <goal>install</goal>
             </goals>
             <configuration>
               <packages>
                 <package>golang.org/x/tools/cmd/stringer@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-licenser</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
                 <package>github.com/elastic/go-licenser@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-goxunit</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
                 <package>github.com/tebeka/go2xunit@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-gotestsum</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
                 <package>gotest.tools/gotestsum@latest</package>
               </packages>
             </configuration>
