@@ -533,6 +533,10 @@ public class RandomPackagesTest {
             assertThat(msg)
                 .isNotNull();
             System.out.println(msg);
+            CBusMessageToServer msgToServer = (CBusMessageToServer) msg;
+            RequestCommand requestCommand = (RequestCommand) msgToServer.getRequest();
+            CBusCommand cbusCommand = requestCommand.getCbusCommand();
+            System.out.println(cbusCommand);
         }
     }
 }

@@ -328,14 +328,14 @@
             <id>get-tools</id>
             <phase>initialize</phase>
             <goals>
-              <goal>install</goal>
+              <goal>get</goal>
             </goals>
             <configuration>
               <packages>
-                <package>golang.org/x/tools/cmd/stringer</package>
-                <package>github.com/elastic/go-licenser</package>
-                <package>github.com/tebeka/go2xunit</package>
-                <package>gotest.tools/gotestsum</package>
+                <package>golang.org/x/tools/cmd/stringer@latest</package>
+                <package>github.com/elastic/go-licenser@latest</package>
+                <package>github.com/tebeka/go2xunit@latest</package>
+                <package>gotest.tools/gotestsum@latest</package>
               </packages>
             </configuration>
           </execution>
