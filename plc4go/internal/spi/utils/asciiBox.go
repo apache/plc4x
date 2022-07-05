@@ -132,6 +132,7 @@ func (a *asciiBoxWriter) boxString(name string, data string, charWidth int) Asci
 		if linePadding < 0 {
 			linePadding = 0
 		}
+		// TODO: this distorts boxes...
 		frontPadding := math.Floor(linePadding / 2.0)
 		backPadding := math.Ceil(linePadding / 2.0)
 		boxedString.WriteString(a.verticalLine + strings.Repeat(a.emptyPadding, int(frontPadding)) + line + strings.Repeat(a.emptyPadding, int(backPadding)) + a.verticalLine)
@@ -284,6 +285,7 @@ func (m AsciiBox) String() string {
 
 // BoxBox boxes a box
 func (a *asciiBoxWriter) BoxBox(name string, box AsciiBox, charWidth int) AsciiBox {
+	// TODO: if there is a box bigger then others in that this will get distorted
 	return a.BoxString(name, box.data, charWidth)
 }
 

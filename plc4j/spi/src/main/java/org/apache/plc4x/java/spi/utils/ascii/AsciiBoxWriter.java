@@ -84,6 +84,7 @@ public class AsciiBoxWriter {
      * @return boxed data
      */
     public AsciiBox boxBox(String name, AsciiBox box, int charWidth) {
+        // TODO: if there is a box bigger then others in that this will get distorted
         return boxString(name, box.toString(), charWidth);
     }
 
