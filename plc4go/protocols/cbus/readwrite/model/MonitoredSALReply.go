@@ -81,10 +81,10 @@ func (m *_MonitoredSALReply) GetIsA() MonitoredSAL {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(isA MonitoredSAL, peekedByte byte, messageLength uint16) *_MonitoredSALReply {
+func NewMonitoredSALReply(isA MonitoredSAL, peekedByte byte, replyLength uint16) *_MonitoredSALReply {
 	_result := &_MonitoredSALReply{
 		IsA:          isA,
-		_NormalReply: NewNormalReply(peekedByte, messageLength),
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_MonitoredSALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (MonitoredSALReply, error) {
+func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (MonitoredSALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
@@ -152,7 +152,7 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (
 	_child := &_MonitoredSALReply{
 		IsA: isA,
 		_NormalReply: &_NormalReply{
-			MessageLength: messageLength,
+			ReplyLength: replyLength,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child

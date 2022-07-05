@@ -924,13 +924,14 @@
             [optional Reply('messageLength-confirmation.lengthInBytes') embeddedReply]
         ]
         ['false' *NormalReply
-            [simple   NormalReply('messageLength')      reply               ]
-            [simple   ResponseTermination               termination         ]
+            [virtual  uint 16                       replyLength 'messageLength-2'] // We substract the termination \r\n
+            [simple   NormalReply('replyLength')    reply               ]
+            [simple   ResponseTermination           termination         ]
         ]
     ]
 ]
 
-[type NormalReply(uint 16 messageLength)
+[type NormalReply(uint 16 replyLength)
     [peek    byte peekedByte                            ]
     [typeSwitch peekedByte
         ['0x2B' PowerUpReply // is a +
@@ -952,7 +953,7 @@
             [simple ExtendedFormatStatusReply reply     ]
         ]
         [* CALReplyReply
-            [virtual uint 16 payloadLength 'messageLength-2'                        ] // We substract the termination \r\n
+            [virtual uint 16 payloadLength 'replyLength'                        ]
             [manual   CALReply
                               calReply
                                     'STATIC_CALL("readCALReply", readBuffer, payloadLength)'
@@ -1023,7 +1024,9 @@
 ]
 
 [type Confirmation
-    [simple  Alpha            alpha                                                     ]
+    [simple   Alpha           alpha                                                     ]
+    // TODO: seem like sometimes there are two alphas in a confirmation... check that
+    [optional Alpha           secondAlpha                                               ]
     [simple  ConfirmationType confirmationType                                          ]
     [virtual bit              isSuccess 'confirmationType == ConfirmationType.CONFIRMATION_SUCCESSFUL'   ]
 ]

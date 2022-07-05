@@ -57,8 +57,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		if err != nil {
 			return nil, err
 		}
-		messageLength := uint16(parsedUint0)
-		return model.NormalReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageLength)
+		replyLength := uint16(parsedUint0)
+		return model.NormalReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), replyLength)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestTermination":

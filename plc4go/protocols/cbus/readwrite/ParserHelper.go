@@ -43,11 +43,11 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
 	case "NormalReply":
-		messageLength, err := utils.StrToUint16(arguments[0])
+		replyLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.NormalReplyParse(io, messageLength)
+		return model.NormalReplyParse(io, replyLength)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "RequestTermination":

@@ -552,5 +552,20 @@ public class RandomPackagesTest {
             CALReplyReply calReplyReply = (CALReplyReply) normalReply.getReply();
             System.out.println(calReplyReply.getCalReply());
         }
+
+        @Test
+        void someResponse() throws Exception {
+            byte[] bytes = "nl.8220025C\r\n".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true, bytes.length);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+            CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
+            ConfirmationReply confirmationReply = (ConfirmationReply) messageToClient.getReply();
+            ReplyNormalReply normalReply = (ReplyNormalReply) confirmationReply.getEmbeddedReply();
+            CALReplyReply calReplyReply = (CALReplyReply) normalReply.getReply();
+            System.out.println(calReplyReply.getCalReply());
+        }
     }
 }

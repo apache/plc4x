@@ -47,7 +47,7 @@ type _NormalReply struct {
 	PeekedByte byte
 
 	// Arguments.
-	MessageLength uint16
+	ReplyLength uint16
 }
 
 type _NormalReplyChildRequirements interface {
@@ -85,8 +85,8 @@ func (m *_NormalReply) GetPeekedByte() byte {
 ///////////////////////////////////////////////////////////
 
 // NewNormalReply factory function for _NormalReply
-func NewNormalReply(peekedByte byte, messageLength uint16) *_NormalReply {
-	return &_NormalReply{PeekedByte: peekedByte, MessageLength: messageLength}
+func NewNormalReply(peekedByte byte, replyLength uint16) *_NormalReply {
+	return &_NormalReply{PeekedByte: peekedByte, ReplyLength: replyLength}
 }
 
 // Deprecated: use the interface for direct cast
@@ -114,7 +114,7 @@ func (m *_NormalReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NormalReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (NormalReply, error) {
+func NormalReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (NormalReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NormalReply"); pullErr != nil {
@@ -143,19 +143,19 @@ func NormalReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (Normal
 	var typeSwitchError error
 	switch {
 	case peekedByte == 0x2B: // PowerUpReply
-		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, replyLength)
 	case peekedByte == 0x3D: // ParameterChangeReply
-		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, replyLength)
 	case peekedByte == 0x21: // ServerErrorReply
-		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, replyLength)
 	case peekedByte == 0x0: // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, replyLength)
 	case peekedByte == 0x0: // StandardFormatStatusReplyReply
-		_childTemp, typeSwitchError = StandardFormatStatusReplyReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = StandardFormatStatusReplyReplyParse(readBuffer, replyLength)
 	case peekedByte == 0x0: // ExtendedFormatStatusReplyReply
-		_childTemp, typeSwitchError = ExtendedFormatStatusReplyReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = ExtendedFormatStatusReplyReplyParse(readBuffer, replyLength)
 	case true: // CALReplyReply
-		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer, replyLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v]", peekedByte)
 	}

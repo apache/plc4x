@@ -81,10 +81,10 @@ func (m *_ExtendedFormatStatusReplyReply) GetReply() ExtendedFormatStatusReply {
 ///////////////////////////////////////////////////////////
 
 // NewExtendedFormatStatusReplyReply factory function for _ExtendedFormatStatusReplyReply
-func NewExtendedFormatStatusReplyReply(reply ExtendedFormatStatusReply, peekedByte byte, messageLength uint16) *_ExtendedFormatStatusReplyReply {
+func NewExtendedFormatStatusReplyReply(reply ExtendedFormatStatusReply, peekedByte byte, replyLength uint16) *_ExtendedFormatStatusReplyReply {
 	_result := &_ExtendedFormatStatusReplyReply{
 		Reply:        reply,
-		_NormalReply: NewNormalReply(peekedByte, messageLength),
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_ExtendedFormatStatusReplyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ExtendedFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (ExtendedFormatStatusReplyReply, error) {
+func ExtendedFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (ExtendedFormatStatusReplyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtendedFormatStatusReplyReply"); pullErr != nil {
@@ -152,7 +152,7 @@ func ExtendedFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, messageLen
 	_child := &_ExtendedFormatStatusReplyReply{
 		Reply: reply,
 		_NormalReply: &_NormalReply{
-			MessageLength: messageLength,
+			ReplyLength: replyLength,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child

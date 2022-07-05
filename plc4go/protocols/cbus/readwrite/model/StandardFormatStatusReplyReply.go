@@ -81,10 +81,10 @@ func (m *_StandardFormatStatusReplyReply) GetReply() StandardFormatStatusReply {
 ///////////////////////////////////////////////////////////
 
 // NewStandardFormatStatusReplyReply factory function for _StandardFormatStatusReplyReply
-func NewStandardFormatStatusReplyReply(reply StandardFormatStatusReply, peekedByte byte, messageLength uint16) *_StandardFormatStatusReplyReply {
+func NewStandardFormatStatusReplyReply(reply StandardFormatStatusReply, peekedByte byte, replyLength uint16) *_StandardFormatStatusReplyReply {
 	_result := &_StandardFormatStatusReplyReply{
 		Reply:        reply,
-		_NormalReply: NewNormalReply(peekedByte, messageLength),
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_StandardFormatStatusReplyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (StandardFormatStatusReplyReply, error) {
+func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (StandardFormatStatusReplyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StandardFormatStatusReplyReply"); pullErr != nil {
@@ -152,7 +152,7 @@ func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, messageLen
 	_child := &_StandardFormatStatusReplyReply{
 		Reply: reply,
 		_NormalReply: &_NormalReply{
-			MessageLength: messageLength,
+			ReplyLength: replyLength,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child

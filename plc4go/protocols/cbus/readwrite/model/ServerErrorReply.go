@@ -82,9 +82,9 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////////////////////////////////////////
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, messageLength uint16) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte, replyLength uint16) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_NormalReply: NewNormalReply(peekedByte, messageLength),
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_ServerErrorReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServerErrorReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (ServerErrorReply, error) {
+func ServerErrorReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {
@@ -147,7 +147,7 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (S
 	// Create a partially initialized instance
 	_child := &_ServerErrorReply{
 		_NormalReply: &_NormalReply{
-			MessageLength: messageLength,
+			ReplyLength: replyLength,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child

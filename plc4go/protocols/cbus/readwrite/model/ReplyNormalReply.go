@@ -35,6 +35,8 @@ type ReplyNormalReply interface {
 	GetReply() NormalReply
 	// GetTermination returns Termination (property field)
 	GetTermination() ResponseTermination
+	// GetReplyLength returns ReplyLength (virtual field)
+	GetReplyLength() uint16
 }
 
 // ReplyNormalReplyExactly can be used when we want exactly this type and not a type which fulfills ReplyNormalReply.
@@ -86,6 +88,19 @@ func (m *_ReplyNormalReply) GetTermination() ResponseTermination {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_ReplyNormalReply) GetReplyLength() uint16 {
+	return uint16(uint16(m.MessageLength) - uint16(uint16(2)))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewReplyNormalReply factory function for _ReplyNormalReply
 func NewReplyNormalReply(reply NormalReply, termination ResponseTermination, peekedByte byte, messageLength uint16) *_ReplyNormalReply {
@@ -120,6 +135,8 @@ func (m *_ReplyNormalReply) GetLengthInBits() uint16 {
 func (m *_ReplyNormalReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// A virtual field doesn't have any in- or output.
+
 	// Simple field (reply)
 	lengthInBits += m.Reply.GetLengthInBits()
 
@@ -142,11 +159,16 @@ func ReplyNormalReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	// Virtual field
+	_replyLength := uint16(messageLength) - uint16(uint16(2))
+	replyLength := uint16(_replyLength)
+	_ = replyLength
+
 	// Simple Field (reply)
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := NormalReplyParse(readBuffer, uint16(messageLength))
+	_reply, _replyErr := NormalReplyParse(readBuffer, uint16(replyLength))
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of ReplyNormalReply")
 	}
@@ -190,6 +212,10 @@ func (m *_ReplyNormalReply) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ReplyNormalReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ReplyNormalReply")
+		}
+		// Virtual field
+		if _replyLengthErr := writeBuffer.WriteVirtual("replyLength", m.GetReplyLength()); _replyLengthErr != nil {
+			return errors.Wrap(_replyLengthErr, "Error serializing 'replyLength' field")
 		}
 
 		// Simple Field (reply)

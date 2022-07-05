@@ -87,7 +87,7 @@ func (m *_CALReplyReply) GetCalReply() CALReply {
 ///////////////////////
 
 func (m *_CALReplyReply) GetPayloadLength() uint16 {
-	return uint16(uint16(m.MessageLength) - uint16(uint16(2)))
+	return uint16(m.ReplyLength)
 }
 
 ///////////////////////
@@ -96,10 +96,10 @@ func (m *_CALReplyReply) GetPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyReply factory function for _CALReplyReply
-func NewCALReplyReply(calReply CALReply, peekedByte byte, messageLength uint16) *_CALReplyReply {
+func NewCALReplyReply(calReply CALReply, peekedByte byte, replyLength uint16) *_CALReplyReply {
 	_result := &_CALReplyReply{
 		CalReply:     calReply,
-		_NormalReply: NewNormalReply(peekedByte, messageLength),
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -139,7 +139,7 @@ func (m *_CALReplyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (CALReplyReply, error) {
+func CALReplyReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (CALReplyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyReply"); pullErr != nil {
@@ -149,7 +149,7 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (CALR
 	_ = currentPos
 
 	// Virtual field
-	_payloadLength := uint16(messageLength) - uint16(uint16(2))
+	_payloadLength := replyLength
 	payloadLength := uint16(_payloadLength)
 	_ = payloadLength
 
@@ -168,7 +168,7 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (CALR
 	_child := &_CALReplyReply{
 		CalReply: calReply,
 		_NormalReply: &_NormalReply{
-			MessageLength: messageLength,
+			ReplyLength: replyLength,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child
