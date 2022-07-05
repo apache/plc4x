@@ -70,8 +70,11 @@ type _RequestCommand struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestCommand) InitializeParent(parent Request, peekedByte RequestType, termination RequestTermination) {
+func (m *_RequestCommand) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
 	m.PeekedByte = peekedByte
+	m.StartingCR = startingCR
+	m.ResetMode = resetMode
+	m.SecondPeek = secondPeek
 	m.Termination = termination
 }
 
@@ -111,11 +114,11 @@ func (m *_RequestCommand) GetInitiator() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(cbusCommand CBusCommand, alpha Alpha, peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16, payloadLength uint16) *_RequestCommand {
+func NewRequestCommand(cbusCommand CBusCommand, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, srchk bool, messageLength uint16, payloadLength uint16) *_RequestCommand {
 	_result := &_RequestCommand{
 		CbusCommand: cbusCommand,
 		Alpha:       alpha,
-		_Request:    NewRequest(peekedByte, termination, srchk, messageLength),
+		_Request:    NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result

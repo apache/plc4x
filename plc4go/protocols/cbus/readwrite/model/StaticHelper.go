@@ -27,86 +27,46 @@ import (
 )
 
 func WriteCBusCommand(writeBuffer utils.WriteBuffer, cbusCommand CBusCommand) error {
-	// TODO: maybe we use a writebuffer hex based
-	wbbb := utils.NewWriteBufferByteBased()
-	err := cbusCommand.Serialize(wbbb)
-	if err != nil {
-		return errors.Wrap(err, "Error serializing")
-	}
-	hexBytes := make([]byte, hex.EncodedLen(len(wbbb.GetBytes())))
-	n := hex.Encode(hexBytes, wbbb.GetBytes())
-	log.Debug().Msgf("%d bytes encoded", n)
-	return writeBuffer.WriteByteArray("cbusCommand", hexBytes)
+	return writeToHex("cbusCommand", writeBuffer, cbusCommand)
 }
 
 func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, srcchk bool) (CBusCommand, error) {
-	hexBytes, err := readBuffer.ReadByteArray("cbusCommand", int(payloadLength))
+	rawBytes, err := readBytesFromHex("cbusCommand", readBuffer, payloadLength)
 	if err != nil {
-		return nil, errors.Wrap(err, "Error parsing")
+		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	lastByte := hexBytes[len(hexBytes)-1]
-	if (lastByte >= 0x67) && (lastByte <= 0x7A) {
-		// We need to reset the alpha
-		readBuffer.Reset(readBuffer.GetPos() - 1)
-		hexBytes = hexBytes[:len(hexBytes)-1]
-	}
-	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
-	n, err := hex.Decode(rawBytes, hexBytes)
-	if err != nil {
-		return nil, err
-	}
-	log.Debug().Msgf("%d bytes decoded", n)
 	return CBusCommandParse(utils.NewReadBufferByteBased(rawBytes), srcchk)
 }
 
 func WriteCALReply(writeBuffer utils.WriteBuffer, calReply CALReply) error {
-	// TODO: maybe we use a writebuffer hex based
-	wbbb := utils.NewWriteBufferByteBased()
-	err := calReply.Serialize(wbbb)
-	if err != nil {
-		return errors.Wrap(err, "Error serializing")
-	}
-	hexBytes := make([]byte, hex.EncodedLen(len(wbbb.GetBytes())))
-	n := hex.Encode(hexBytes, wbbb.GetBytes())
-	log.Debug().Msgf("%d bytes encoded", n)
-	return writeBuffer.WriteByteArray("calReply", hexBytes)
+	return writeToHex("calReply", writeBuffer, calReply)
 }
 
 func ReadCALReply(readBuffer utils.ReadBuffer, payloadLength uint16) (CALReply, error) {
-	hexBytes, err := readBuffer.ReadByteArray("calReply", int(payloadLength))
+	rawBytes, err := readBytesFromHex("calReply", readBuffer, payloadLength)
 	if err != nil {
-		return nil, errors.Wrap(err, "Error parsing")
+		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	lastByte := hexBytes[len(hexBytes)-1]
-	if (lastByte >= 0x67) && (lastByte <= 0x7A) {
-		// We need to reset the alpha
-		readBuffer.Reset(readBuffer.GetPos() - 1)
-		hexBytes = hexBytes[:len(hexBytes)-1]
-	}
-	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
-	n, err := hex.Decode(rawBytes, hexBytes)
-	if err != nil {
-		return nil, err
-	}
-	log.Debug().Msgf("%d bytes decoded", n)
 	return CALReplyParse(utils.NewReadBufferByteBased(rawBytes))
 }
 
 func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
-	// TODO: maybe we use a writebuffer hex based
-	wbbb := utils.NewWriteBufferByteBased()
-	err := calData.Serialize(wbbb)
-	if err != nil {
-		return errors.Wrap(err, "Error serializing")
-	}
-	hexBytes := make([]byte, hex.EncodedLen(len(wbbb.GetBytes())))
-	n := hex.Encode(hexBytes, wbbb.GetBytes())
-	log.Debug().Msgf("%d bytes encoded", n)
-	return writeBuffer.WriteByteArray("calReply", hexBytes)
+	return writeToHex("calData", writeBuffer, calData)
 }
 
 func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, error) {
-	hexBytes, err := readBuffer.ReadByteArray("calReply", int(payloadLength))
+	rawBytes, err := readBytesFromHex("calData", readBuffer, payloadLength)
+	if err != nil {
+		return nil, errors.Wrap(err, "Error getting hex")
+	}
+	return CALDataParse(utils.NewReadBufferByteBased(rawBytes))
+}
+
+func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLength uint16) ([]byte, error) {
+	if payloadLength == 0 {
+		return nil, errors.New("Length is 0")
+	}
+	hexBytes, err := readBuffer.ReadByteArray(logicalName, int(payloadLength))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing")
 	}
@@ -122,5 +82,31 @@ func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, er
 		return nil, err
 	}
 	log.Debug().Msgf("%d bytes decoded", n)
-	return CALDataParse(utils.NewReadBufferByteBased(rawBytes))
+	return rawBytes, nil
+}
+
+func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable utils.Serializable) error {
+	wbbb := utils.NewWriteBufferByteBased()
+	err := serializable.Serialize(wbbb)
+	if err != nil {
+		return errors.Wrap(err, "Error serializing")
+	}
+	hexBytes := make([]byte, hex.EncodedLen(len(wbbb.GetBytes())))
+	// usually you use hex.Encode but we want the encoding in uppercase
+	//n := hex.Encode(hexBytes, wbbb.GetBytes())
+	n := encodeHexUpperCase(hexBytes, wbbb.GetBytes())
+	log.Debug().Msgf("%d bytes encoded", n)
+	return writeBuffer.WriteByteArray(logicalName, hexBytes)
+}
+
+const hextable = "0123456789ABCDEF"
+
+func encodeHexUpperCase(dst, src []byte) int {
+	j := 0
+	for _, v := range src {
+		dst[j] = hextable[v>>4]
+		dst[j+1] = hextable[v&0x0f]
+		j += 2
+	}
+	return len(src) * 2
 }

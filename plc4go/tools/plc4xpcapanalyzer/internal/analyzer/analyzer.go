@@ -44,6 +44,9 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 	source := pcaphandler.GetPacketSource(handle)
 	var packageParse func(common.PacketInformation, []byte) (interface{}, error)
 	var serializePackage func(interface{}) ([]byte, error)
+	var prettyPrint = func(item interface{}) {
+		fmt.Printf("%v\n", item)
+	}
 	switch protocolType {
 	case "bacnet":
 		packageParse = bacnetanalyzer.PackageParse
@@ -52,6 +55,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(client)}
 		packageParse = analyzer.PackageParse
 		serializePackage = analyzer.SerializePackage
+		prettyPrint = analyzer.PrettyPrint
 	}
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
 		progressbar.OptionEnableColorCodes(true),
@@ -99,7 +103,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		} else {
 			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Parsed", realPacketNumber)
 			if verbosity > 1 {
-				println(parsed.(fmt.Stringer).String())
+				prettyPrint(parsed)
 			}
 			if onlyParse {
 				log.Trace().Msg("only parsing")

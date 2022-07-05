@@ -45,17 +45,22 @@
 ]
 
 [type Request(bit srchk, uint 16 messageLength)
-    [peek    RequestType peekedByte                                         ]
-    [virtual uint 16 payloadLength 'messageLength-2'                        ] // We subtract the command itself and the termination
-    [typeSwitch peekedByte
+    [peek     RequestType peekedByte                                        ]
+    [optional RequestType startingCR       'peekedByte == RequestType.EMPTY']
+    [optional RequestType resetMode        'peekedByte == RequestType.RESET']
+    [peek     RequestType secondPeek                                        ]
+    [virtual  RequestType actualPeek '(startingCR==null&&resetMode==null)||(startingCR==null&&resetMode!=null&&secondPeek==RequestType.EMPTY)?peekedByte:secondPeek']
+    [virtual uint 16 payloadLength '(messageLength-2)-((resetMode!=null)?1:0)'] // We subtract the command itself and the termination
+    [typeSwitch actualPeek
         ['SMART_CONNECT_SHORTCUT' *SmartConnectShortcut
-            [const    byte                pipe      0x7C                    ]
+            [const    byte        pipe      0x7C                            ]
+            [peek     RequestType pipePeek                                  ]
+            [optional byte        secondPipe 'pipePeek == RequestType.SMART_CONNECT_SHORTCUT']
         ]
         ['RESET' *Reset
-            [const    byte                tilde     0x7E                    ]
         ]
         ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
-            [const    byte                at        0x40                    ]
+            [const    byte         at        0x40                           ]
             // Usually you would read the command now here but we need to decode ascii first
             //[simple   CALData     calData    ]
             [manual   CALData
@@ -916,6 +921,7 @@
     [typeSwitch isAlpha
         ['true' ConfirmationReply
             [simple   Confirmation                      confirmation        ]
+            [optional Reply('messageLength-confirmation.lengthInBytes') embeddedReply]
         ]
         ['false' *NormalReply
             [simple   NormalReply('messageLength')      reply               ]

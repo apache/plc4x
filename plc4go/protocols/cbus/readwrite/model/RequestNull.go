@@ -59,8 +59,11 @@ type _RequestNull struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestNull) InitializeParent(parent Request, peekedByte RequestType, termination RequestTermination) {
+func (m *_RequestNull) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
 	m.PeekedByte = peekedByte
+	m.StartingCR = startingCR
+	m.ResetMode = resetMode
+	m.SecondPeek = secondPeek
 	m.Termination = termination
 }
 
@@ -83,9 +86,9 @@ func (m *_RequestNull) GetNullIndicator() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewRequestNull factory function for _RequestNull
-func NewRequestNull(peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestNull {
+func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestNull {
 	_result := &_RequestNull{
-		_Request: NewRequest(peekedByte, termination, srchk, messageLength),
+		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result

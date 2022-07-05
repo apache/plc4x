@@ -454,8 +454,7 @@ public class RandomPackagesTest {
         // 9.4
         @Test
         void SwitchMode() throws Exception {
-            // TODO: the section describes that on non smart mode the message doesn't have the last CR
-            byte[] bytes = "@A3300019\r".getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = "~@A3300019\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, true, bytes.length);
             assertThat(msg)
@@ -537,6 +536,21 @@ public class RandomPackagesTest {
             RequestCommand requestCommand = (RequestCommand) msgToServer.getRequest();
             CBusCommand cbusCommand = requestCommand.getCbusCommand();
             System.out.println(cbusCommand);
+        }
+
+        @Test
+        void identifyResponse() throws Exception {
+            byte[] bytes = "g.890150435F434E49454421\r\n".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, true, bytes.length);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+            CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
+            ConfirmationReply confirmationReply = (ConfirmationReply) messageToClient.getReply();
+            ReplyNormalReply normalReply = (ReplyNormalReply) confirmationReply.getEmbeddedReply();
+            CALReplyReply calReplyReply = (CALReplyReply) normalReply.getReply();
+            System.out.println(calReplyReply.getCalReply());
         }
     }
 }

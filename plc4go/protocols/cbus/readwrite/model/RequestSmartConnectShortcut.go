@@ -35,6 +35,10 @@ type RequestSmartConnectShortcut interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
+	// GetPipePeek returns PipePeek (property field)
+	GetPipePeek() RequestType
+	// GetSecondPipe returns SecondPipe (property field)
+	GetSecondPipe() *byte
 }
 
 // RequestSmartConnectShortcutExactly can be used when we want exactly this type and not a type which fulfills RequestSmartConnectShortcut.
@@ -47,6 +51,8 @@ type RequestSmartConnectShortcutExactly interface {
 // _RequestSmartConnectShortcut is the data-structure of this message
 type _RequestSmartConnectShortcut struct {
 	*_Request
+	PipePeek   RequestType
+	SecondPipe *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -59,8 +65,11 @@ type _RequestSmartConnectShortcut struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestSmartConnectShortcut) InitializeParent(parent Request, peekedByte RequestType, termination RequestTermination) {
+func (m *_RequestSmartConnectShortcut) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
 	m.PeekedByte = peekedByte
+	m.StartingCR = startingCR
+	m.ResetMode = resetMode
+	m.SecondPeek = secondPeek
 	m.Termination = termination
 }
 
@@ -68,6 +77,23 @@ func (m *_RequestSmartConnectShortcut) GetParent() Request {
 	return m._Request
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_RequestSmartConnectShortcut) GetPipePeek() RequestType {
+	return m.PipePeek
+}
+
+func (m *_RequestSmartConnectShortcut) GetSecondPipe() *byte {
+	return m.SecondPipe
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -83,9 +109,11 @@ func (m *_RequestSmartConnectShortcut) GetPipe() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
-func NewRequestSmartConnectShortcut(peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestSmartConnectShortcut {
+func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestSmartConnectShortcut {
 	_result := &_RequestSmartConnectShortcut{
-		_Request: NewRequest(peekedByte, termination, srchk, messageLength),
+		PipePeek:   pipePeek,
+		SecondPipe: secondPipe,
+		_Request:   NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -116,6 +144,11 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBitsConditional(lastItem bool)
 	// Const Field (pipe)
 	lengthInBits += 8
 
+	// Optional Field (secondPipe)
+	if m.SecondPipe != nil {
+		lengthInBits += 8
+	}
+
 	return lengthInBits
 }
 
@@ -141,12 +174,39 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, srchk bool, m
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestSmartConnectShortcut_PIPE) + " but got " + fmt.Sprintf("%d", pipe))
 	}
 
+	// Peek Field (pipePeek)
+	currentPos = positionAware.GetPos()
+	if pullErr := readBuffer.PullContext("pipePeek"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for pipePeek")
+	}
+	pipePeek, _err := RequestTypeParse(readBuffer)
+	if _err != nil {
+		return nil, errors.Wrap(_err, "Error parsing 'pipePeek' field of RequestSmartConnectShortcut")
+	}
+	if closeErr := readBuffer.CloseContext("pipePeek"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for pipePeek")
+	}
+
+	readBuffer.Reset(currentPos)
+
+	// Optional Field (secondPipe) (Can be skipped, if a given expression evaluates to false)
+	var secondPipe *byte = nil
+	if bool((pipePeek) == (RequestType_SMART_CONNECT_SHORTCUT)) {
+		_val, _err := readBuffer.ReadByte("secondPipe")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'secondPipe' field of RequestSmartConnectShortcut")
+		}
+		secondPipe = &_val
+	}
+
 	if closeErr := readBuffer.CloseContext("RequestSmartConnectShortcut"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestSmartConnectShortcut")
 	}
 
 	// Create a partially initialized instance
 	_child := &_RequestSmartConnectShortcut{
+		PipePeek:   pipePeek,
+		SecondPipe: secondPipe,
 		_Request: &_Request{
 			Srchk:         srchk,
 			MessageLength: messageLength,
@@ -168,6 +228,16 @@ func (m *_RequestSmartConnectShortcut) Serialize(writeBuffer utils.WriteBuffer) 
 		_pipeErr := writeBuffer.WriteByte("pipe", 0x7C)
 		if _pipeErr != nil {
 			return errors.Wrap(_pipeErr, "Error serializing 'pipe' field")
+		}
+
+		// Optional Field (secondPipe) (Can be skipped, if the value is null)
+		var secondPipe *byte = nil
+		if m.GetSecondPipe() != nil {
+			secondPipe = m.GetSecondPipe()
+			_secondPipeErr := writeBuffer.WriteByte("secondPipe", *(secondPipe))
+			if _secondPipeErr != nil {
+				return errors.Wrap(_secondPipeErr, "Error serializing 'secondPipe' field")
+			}
 		}
 
 		if popErr := writeBuffer.PopContext("RequestSmartConnectShortcut"); popErr != nil {

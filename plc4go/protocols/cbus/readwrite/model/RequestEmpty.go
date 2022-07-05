@@ -55,8 +55,11 @@ type _RequestEmpty struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_RequestEmpty) InitializeParent(parent Request, peekedByte RequestType, termination RequestTermination) {
+func (m *_RequestEmpty) InitializeParent(parent Request, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination) {
 	m.PeekedByte = peekedByte
+	m.StartingCR = startingCR
+	m.ResetMode = resetMode
+	m.SecondPeek = secondPeek
 	m.Termination = termination
 }
 
@@ -65,9 +68,9 @@ func (m *_RequestEmpty) GetParent() Request {
 }
 
 // NewRequestEmpty factory function for _RequestEmpty
-func NewRequestEmpty(peekedByte RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestEmpty {
+func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestEmpty {
 	_result := &_RequestEmpty{
-		_Request: NewRequest(peekedByte, termination, srchk, messageLength),
+		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, srchk, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
