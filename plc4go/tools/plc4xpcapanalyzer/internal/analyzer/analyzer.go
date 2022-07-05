@@ -69,6 +69,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			BarStart:      "[",
 			BarEnd:        "]",
 		}))
+	failedPackages := 0
 	for packet := range source.Packets() {
 		if packet == nil {
 			log.Debug().Msg("Done reading packages. (nil returned)")
@@ -97,6 +98,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		}
 		payload := applicationLayer.Payload()
 		if parsed, err := packageParse(packetInformation, payload); err != nil {
+			failedPackages++
 			// TODO: write report to xml or something
 			log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error parsing package", realPacketNumber)
 			continue
@@ -111,6 +113,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			}
 			serializedBytes, err := serializePackage(parsed)
 			if err != nil {
+				failedPackages++
 				// TODO: write report to xml or something
 				log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error serializing", realPacketNumber)
 				continue
@@ -120,6 +123,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 				continue
 			}
 			if compareResult := bytes.Compare(payload, serializedBytes); compareResult != 0 {
+				failedPackages++
 				// TODO: write report to xml or something
 				log.Warn().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Bytes don't match", realPacketNumber)
 				if verbosity > 0 {
@@ -132,5 +136,5 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		}
 	}
 
-	log.Info().Msgf("Done evaluating %d packages", numberOfPackage)
+	log.Info().Msgf("Done evaluating %d packages (%d failed)", numberOfPackage, failedPackages)
 }
