@@ -151,7 +151,7 @@
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.2.11</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
-    <milo.version>0.6.6</milo.version>
+    <milo.version>0.6.7</milo.version>
     <milo.version>0.6.6</milo.version>
     <mockito.version>4.6.1</mockito.version>
     <netty.version>4.1.77.Final</netty.version>
@@ -1048,7 +1048,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>properties-maven-plugin</artifactId>
-          <version>1.0.0</version>
+          <version>1.1.0</version>
         </plugin>
 
         <plugin>
@@ -1158,7 +1158,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.2.2</version>
         </plugin>
 
         <plugin>
