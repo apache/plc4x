@@ -57,7 +57,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		serializePackage = analyzer.SerializePackage
 		prettyPrint = analyzer.PrettyPrint
 	}
-	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
+	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStderr()),
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionShowBytes(false),
 		progressbar.OptionSetWidth(15),
