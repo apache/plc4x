@@ -48,10 +48,15 @@ public class OpcuaPlcDriverTest {
     @BeforeAll
     static void setUp() {
         assumeTrue(() -> {
-            String osArch= System.getProperty("os.arch");
-            // TODO: PLC4X-330 somehow opcua doesn't run properly on aarch64
-            return !"aarch64".equals(osArch);
-        }, "somehow opcua doesn't run properly on aarch64");
+            String OS = System.getProperty("os.name").toLowerCase();
+            if (OS.contains("nix")
+                || OS.contains("nux")
+                || OS.contains("aix")) {
+                return false;
+            }
+
+            return true;
+        }, "somehow opcua doesn't run properly on linux");
     }
 
     // Read only variables of milo example server of version 3.6

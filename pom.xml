@@ -293,6 +293,11 @@
         <artifactId>gson</artifactId>
         <version>${gson.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.google.googlejavaformat</groupId>
+        <artifactId>google-java-format</artifactId>
+        <version>1.15.0</version>
+      </dependency>
 
       <dependency>
         <groupId>org.awaitility</groupId>
@@ -722,8 +727,9 @@
 
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
+            <exclude>**/EPL-2.0</exclude>
             <!--
-              Explicitly exclude these files as I was unable
+              Explicitly exclude thfese files as I was unable
               to add a new licenses to the configuration.
             -->
             <exclude>**/Expression.g4</exclude>

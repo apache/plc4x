@@ -84,6 +84,11 @@
       <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
@@ -99,15 +104,8 @@
       <artifactId>commons-text</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.googlejavaformat</groupId>
       <artifactId>google-java-format</artifactId>
-      <version>1.15.0</version>
     </dependency>
 
     <!-- Make sure the dependencies of the module are built first -->
