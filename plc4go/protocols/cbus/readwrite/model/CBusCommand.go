@@ -51,7 +51,7 @@ type _CBusCommand struct {
 	Header CBusHeader
 
 	// Arguments.
-	Srchk bool
+	CBusOptions CBusOptions
 }
 
 type _CBusCommandChildRequirements interface {
@@ -106,8 +106,8 @@ func (m *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommand factory function for _CBusCommand
-func NewCBusCommand(header CBusHeader, srchk bool) *_CBusCommand {
-	return &_CBusCommand{Header: header, Srchk: srchk}
+func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
+	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,7 +142,7 @@ func (m *_CBusCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, error) {
+func CBusCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommand"); pullErr != nil {
@@ -184,14 +184,14 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	var _child CBusCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case true && isDeviceManagement == bool(true): // CBusCommandDeviceManagement
-		_childTemp, typeSwitchError = CBusCommandDeviceManagementParse(readBuffer, srchk)
+	case 0 == 0 && isDeviceManagement == bool(true): // CBusCommandDeviceManagement
+		_childTemp, typeSwitchError = CBusCommandDeviceManagementParse(readBuffer, cBusOptions)
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
-		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, cBusOptions)
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
-		_childTemp, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, cBusOptions)
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
-		_childTemp, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusCommandPointToPointParse(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [destinationAddressType=%v, isDeviceManagement=%v]", destinationAddressType, isDeviceManagement)
 	}

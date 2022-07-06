@@ -90,11 +90,11 @@ func (m *_CBusPointToMultiPointCommandStatus) GetCrc() Checksum {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
-func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, crc Checksum, peekedApplication byte, srchk bool) *_CBusPointToMultiPointCommandStatus {
+func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, crc Checksum, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
 	_result := &_CBusPointToMultiPointCommandStatus{
 		StatusRequest:                 statusRequest,
 		Crc:                           crc,
-		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, srchk),
+		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
 	}
 	_result._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _result
 	return _result
@@ -143,7 +143,7 @@ func (m *_CBusPointToMultiPointCommandStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk bool) (CBusPointToMultiPointCommandStatus, error) {
+func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommandStatus"); pullErr != nil {
@@ -195,7 +195,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
 	var crc Checksum = nil
-	if srchk {
+	if cBusOptions.GetSrchk() {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for crc")
@@ -224,7 +224,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 		StatusRequest: statusRequest,
 		Crc:           crc,
 		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
-			Srchk: srchk,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _child

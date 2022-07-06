@@ -49,7 +49,9 @@ type _Reply struct {
 	PeekedByte byte
 
 	// Arguments.
-	MessageLength uint16
+	CBusOptions    CBusOptions
+	MessageLength  uint16
+	RequestContext RequestContext
 }
 
 type _ReplyChildRequirements interface {
@@ -100,8 +102,8 @@ func (m *_Reply) GetIsAlpha() bool {
 ///////////////////////////////////////////////////////////
 
 // NewReply factory function for _Reply
-func NewReply(peekedByte byte, messageLength uint16) *_Reply {
-	return &_Reply{PeekedByte: peekedByte, MessageLength: messageLength}
+func NewReply(peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, MessageLength: messageLength, RequestContext: requestContext}
 }
 
 // Deprecated: use the interface for direct cast
@@ -131,7 +133,7 @@ func (m *_Reply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (Reply, error) {
+func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
@@ -165,9 +167,9 @@ func ReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (Reply, error
 	var typeSwitchError error
 	switch {
 	case isAlpha == bool(true): // ConfirmationReply
-		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer, cBusOptions, messageLength, requestContext)
 	case isAlpha == bool(false): // ReplyNormalReply
-		_childTemp, typeSwitchError = ReplyNormalReplyParse(readBuffer, messageLength)
+		_childTemp, typeSwitchError = ReplyNormalReplyParse(readBuffer, cBusOptions, messageLength, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v]", isAlpha)
 	}

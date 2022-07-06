@@ -109,11 +109,11 @@ func (m *_RequestSmartConnectShortcut) GetPipe() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
-func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestSmartConnectShortcut {
+func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_RequestSmartConnectShortcut {
 	_result := &_RequestSmartConnectShortcut{
 		PipePeek:   pipePeek,
 		SecondPipe: secondPipe,
-		_Request:   NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, srchk, messageLength),
+		_Request:   NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -156,7 +156,7 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16) (RequestSmartConnectShortcut, error) {
+func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (RequestSmartConnectShortcut, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestSmartConnectShortcut"); pullErr != nil {
@@ -208,7 +208,7 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, srchk bool, m
 		PipePeek:   pipePeek,
 		SecondPipe: secondPipe,
 		_Request: &_Request{
-			Srchk:         srchk,
+			CBusOptions:   cBusOptions,
 			MessageLength: messageLength,
 		},
 	}

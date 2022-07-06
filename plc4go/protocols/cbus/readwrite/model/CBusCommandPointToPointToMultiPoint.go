@@ -81,10 +81,10 @@ func (m *_CBusCommandPointToPointToMultiPoint) GetCommand() CBusPointToPointToMu
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPointToMultiPoint factory function for _CBusCommandPointToPointToMultiPoint
-func NewCBusCommandPointToPointToMultiPoint(command CBusPointToPointToMultipointCommand, header CBusHeader, srchk bool) *_CBusCommandPointToPointToMultiPoint {
+func NewCBusCommandPointToPointToMultiPoint(command CBusPointToPointToMultipointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToPointToMultiPoint {
 	_result := &_CBusCommandPointToPointToMultiPoint{
 		Command:      command,
-		_CBusCommand: NewCBusCommand(header, srchk),
+		_CBusCommand: NewCBusCommand(header, cBusOptions),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_CBusCommandPointToPointToMultiPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommandPointToPointToMultiPoint, error) {
+func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToPointToMultiPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPointToMultiPoint"); pullErr != nil {
@@ -135,7 +135,7 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToPointToMultipointCommandParse(readBuffer, bool(srchk))
+	_command, _commandErr := CBusPointToPointToMultipointCommandParse(readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToPointToMultiPoint")
 	}
@@ -152,7 +152,7 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk
 	_child := &_CBusCommandPointToPointToMultiPoint{
 		Command: command,
 		_CBusCommand: &_CBusCommand{
-			Srchk: srchk,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child

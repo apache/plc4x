@@ -81,10 +81,10 @@ func (m *_CBusCommandPointToMultiPoint) GetCommand() CBusPointToMultiPointComman
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToMultiPoint factory function for _CBusCommandPointToMultiPoint
-func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, header CBusHeader, srchk bool) *_CBusCommandPointToMultiPoint {
+func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToMultiPoint {
 	_result := &_CBusCommandPointToMultiPoint{
 		Command:      command,
-		_CBusCommand: NewCBusCommand(header, srchk),
+		_CBusCommand: NewCBusCommand(header, cBusOptions),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_CBusCommandPointToMultiPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommandPointToMultiPoint, error) {
+func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToMultiPoint"); pullErr != nil {
@@ -135,7 +135,7 @@ func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk bool) 
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToMultiPointCommandParse(readBuffer, bool(srchk))
+	_command, _commandErr := CBusPointToMultiPointCommandParse(readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToMultiPoint")
 	}
@@ -152,7 +152,7 @@ func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk bool) 
 	_child := &_CBusCommandPointToMultiPoint{
 		Command: command,
 		_CBusCommand: &_CBusCommand{
-			Srchk: srchk,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child

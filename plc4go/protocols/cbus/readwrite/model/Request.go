@@ -63,7 +63,7 @@ type _Request struct {
 	Termination RequestTermination
 
 	// Arguments.
-	Srchk         bool
+	CBusOptions   CBusOptions
 	MessageLength uint16
 }
 
@@ -134,7 +134,7 @@ func (m *_Request) GetPayloadLength() uint16 {
 	_ = startingCR
 	resetMode := m.ResetMode
 	_ = resetMode
-	return uint16(uint16(uint16(uint16(m.MessageLength)-uint16(uint16(2)))) - uint16(uint16(utils.InlineIf(bool(bool((m.GetResetMode()) != (nil))), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))
+	return uint16(uint16(uint16(uint16(m.MessageLength)-uint16(uint16(2)))) - uint16(uint16(utils.InlineIf(bool(bool((m.GetResetMode()) != (nil))), func() interface{} { return uint16(uint16(uint16(1))) }, func() interface{} { return uint16(uint16(uint16(0))) }).(uint16))))
 }
 
 ///////////////////////
@@ -143,8 +143,8 @@ func (m *_Request) GetPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewRequest factory function for _Request
-func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_Request {
-	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, Srchk: srchk, MessageLength: messageLength}
+func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_Request {
+	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions, MessageLength: messageLength}
 }
 
 // Deprecated: use the interface for direct cast
@@ -189,7 +189,7 @@ func (m *_Request) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16) (Request, error) {
+func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (Request, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Request"); pullErr != nil {
@@ -266,7 +266,7 @@ func RequestParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16)
 	_ = actualPeek
 
 	// Virtual field
-	_payloadLength := uint16(uint16(uint16(messageLength)-uint16(uint16(2)))) - uint16(uint16(utils.InlineIf(bool(bool((resetMode) != (nil))), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))
+	_payloadLength := uint16(uint16(uint16(messageLength)-uint16(uint16(2)))) - uint16(uint16(utils.InlineIf(bool(bool((resetMode) != (nil))), func() interface{} { return uint16(uint16(uint16(1))) }, func() interface{} { return uint16(uint16(uint16(0))) }).(uint16)))
 	payloadLength := uint16(_payloadLength)
 	_ = payloadLength
 
@@ -281,17 +281,19 @@ func RequestParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16)
 	var typeSwitchError error
 	switch {
 	case actualPeek == RequestType_SMART_CONNECT_SHORTCUT: // RequestSmartConnectShortcut
-		_childTemp, typeSwitchError = RequestSmartConnectShortcutParse(readBuffer, srchk, messageLength)
+		_childTemp, typeSwitchError = RequestSmartConnectShortcutParse(readBuffer, cBusOptions, messageLength)
 	case actualPeek == RequestType_RESET: // RequestReset
-		_childTemp, typeSwitchError = RequestResetParse(readBuffer, srchk, messageLength)
+		_childTemp, typeSwitchError = RequestResetParse(readBuffer, cBusOptions, messageLength)
 	case actualPeek == RequestType_DIRECT_COMMAND: // RequestDirectCommandAccess
-		_childTemp, typeSwitchError = RequestDirectCommandAccessParse(readBuffer, srchk, messageLength, payloadLength)
+		_childTemp, typeSwitchError = RequestDirectCommandAccessParse(readBuffer, cBusOptions, messageLength, payloadLength)
 	case actualPeek == RequestType_REQUEST_COMMAND: // RequestCommand
-		_childTemp, typeSwitchError = RequestCommandParse(readBuffer, srchk, messageLength, payloadLength)
+		_childTemp, typeSwitchError = RequestCommandParse(readBuffer, cBusOptions, messageLength, payloadLength)
 	case actualPeek == RequestType_NULL: // RequestNull
-		_childTemp, typeSwitchError = RequestNullParse(readBuffer, srchk, messageLength)
+		_childTemp, typeSwitchError = RequestNullParse(readBuffer, cBusOptions, messageLength)
 	case actualPeek == RequestType_EMPTY: // RequestEmpty
-		_childTemp, typeSwitchError = RequestEmptyParse(readBuffer, srchk, messageLength)
+		_childTemp, typeSwitchError = RequestEmptyParse(readBuffer, cBusOptions, messageLength)
+	case 0 == 0: // RequestObsolete
+		_childTemp, typeSwitchError = RequestObsoleteParse(readBuffer, cBusOptions, messageLength, payloadLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualPeek=%v]", actualPeek)
 	}

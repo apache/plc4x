@@ -81,10 +81,10 @@ func (m *_ParameterChangeReply) GetIsA() ParameterChange {
 ///////////////////////////////////////////////////////////
 
 // NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(isA ParameterChange, peekedByte byte, replyLength uint16) *_ParameterChangeReply {
+func NewParameterChangeReply(isA ParameterChange, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ParameterChangeReply {
 	_result := &_ParameterChangeReply{
 		IsA:          isA,
-		_NormalReply: NewNormalReply(peekedByte, replyLength),
+		_NormalReply: NewNormalReply(peekedByte, cBusOptions, replyLength, requestContext),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_ParameterChangeReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (ParameterChangeReply, error) {
+func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (ParameterChangeReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {
@@ -152,7 +152,9 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) 
 	_child := &_ParameterChangeReply{
 		IsA: isA,
 		_NormalReply: &_NormalReply{
-			ReplyLength: replyLength,
+			CBusOptions:    cBusOptions,
+			ReplyLength:    replyLength,
+			RequestContext: requestContext,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child

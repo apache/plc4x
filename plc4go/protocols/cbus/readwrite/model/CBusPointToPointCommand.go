@@ -57,7 +57,7 @@ type _CBusPointToPointCommand struct {
 	Crc                    Checksum
 
 	// Arguments.
-	Srchk bool
+	CBusOptions CBusOptions
 }
 
 type _CBusPointToPointCommandChildRequirements interface {
@@ -118,8 +118,8 @@ func (m *_CBusPointToPointCommand) GetIsDirect() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
-func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, srchk bool) *_CBusPointToPointCommand {
-	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, Srchk: srchk}
+func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, crc Checksum, cBusOptions CBusOptions) *_CBusPointToPointCommand {
+	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, Crc: crc, CBusOptions: cBusOptions}
 }
 
 // Deprecated: use the interface for direct cast
@@ -157,7 +157,7 @@ func (m *_CBusPointToPointCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusPointToPointCommand, error) {
+func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommand"); pullErr != nil {
@@ -191,9 +191,9 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	var typeSwitchError error
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
-		_childTemp, typeSwitchError = CBusPointToPointCommandDirectParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusPointToPointCommandDirectParse(readBuffer, cBusOptions)
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
-		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParse(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isDirect=%v]", isDirect)
 	}
@@ -217,7 +217,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
 	var crc Checksum = nil
-	if srchk {
+	if cBusOptions.GetSrchk() {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for crc")

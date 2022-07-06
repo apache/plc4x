@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/analyzer"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"math"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -39,6 +40,8 @@ var (
 	noFilter, onlyParse, noBytesCompare bool
 	client                              string
 	bacnetFilter                        string
+	startPackageNumber                  uint
+	packageNumberLimit                  uint
 )
 
 // analyzeCmd represents the analyze command
@@ -75,7 +78,8 @@ TODO: document me
 		} else {
 			log.Info().Msg("All filtering disabled")
 		}
-		analyzer.Analyze(pcapFile, protocolType, filter, onlyParse, noBytesCompare, client, verbosity)
+		analyzer.Analyze(pcapFile, protocolType, filter, onlyParse, noBytesCompare, client, startPackageNumber, packageNumberLimit, verbosity)
+		println("Done")
 	},
 }
 
@@ -87,6 +91,8 @@ func init() {
 	analyzeCmd.Flags().BoolVarP(&onlyParse, "onlyParse", "o", false, "only parse messaged")
 	analyzeCmd.Flags().BoolVarP(&noBytesCompare, "noBytesCompare", "b", false, "don't compare original bytes with serialized bytes")
 	analyzeCmd.Flags().StringVarP(&client, "client", "c", "", "The client ip (this is useful for protocols where request/response is different e.g. modbus, cbus)")
+	analyzeCmd.Flags().UintVarP(&startPackageNumber, "startPackageNumber", "s", 0, "Defines with what package number should be started")
+	analyzeCmd.Flags().UintVarP(&packageNumberLimit, "packageNumberLimit", "l", math.MaxUint, "Defines how many packages should be parsed")
 	// TODO: maybe it is smarter to convert this into subcommands because this option is only relevant to bacnet
 	analyzeCmd.PersistentFlags().StringVarP(&bacnetFilter, "default-bacnet-filter", "", "udp port 47808 and udp[4:2] > 29", "Defines the default filter when bacnet is selected")
 	// TODO: support other protocols

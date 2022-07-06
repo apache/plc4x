@@ -105,11 +105,11 @@ func (m *_CBusCommandDeviceManagement) GetDelimiter() byte {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
-func NewCBusCommandDeviceManagement(parameterNumber uint8, parameterValue byte, header CBusHeader, srchk bool) *_CBusCommandDeviceManagement {
+func NewCBusCommandDeviceManagement(parameterNumber uint8, parameterValue byte, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
 	_result := &_CBusCommandDeviceManagement{
 		ParameterNumber: parameterNumber,
 		ParameterValue:  parameterValue,
-		_CBusCommand:    NewCBusCommand(header, srchk),
+		_CBusCommand:    NewCBusCommand(header, cBusOptions),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result
 	return _result
@@ -153,7 +153,7 @@ func (m *_CBusCommandDeviceManagement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommandDeviceManagement, error) {
+func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandDeviceManagement"); pullErr != nil {
@@ -194,7 +194,7 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, srchk bool) (
 		ParameterNumber: parameterNumber,
 		ParameterValue:  parameterValue,
 		_CBusCommand: &_CBusCommand{
-			Srchk: srchk,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child

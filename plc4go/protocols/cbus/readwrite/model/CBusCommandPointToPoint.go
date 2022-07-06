@@ -81,10 +81,10 @@ func (m *_CBusCommandPointToPoint) GetCommand() CBusPointToPointCommand {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
-func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHeader, srchk bool) *_CBusCommandPointToPoint {
+func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
 	_result := &_CBusCommandPointToPoint{
 		Command:      command,
-		_CBusCommand: NewCBusCommand(header, srchk),
+		_CBusCommand: NewCBusCommand(header, cBusOptions),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_CBusCommandPointToPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommandPointToPoint, error) {
+func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPoint"); pullErr != nil {
@@ -135,7 +135,7 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToPointCommandParse(readBuffer, bool(srchk))
+	_command, _commandErr := CBusPointToPointCommandParse(readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToPoint")
 	}
@@ -152,7 +152,7 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	_child := &_CBusCommandPointToPoint{
 		Command: command,
 		_CBusCommand: &_CBusCommand{
-			Srchk: srchk,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child

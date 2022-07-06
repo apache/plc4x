@@ -103,11 +103,11 @@ func (m *_ReplyNormalReply) GetReplyLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewReplyNormalReply factory function for _ReplyNormalReply
-func NewReplyNormalReply(reply NormalReply, termination ResponseTermination, peekedByte byte, messageLength uint16) *_ReplyNormalReply {
+func NewReplyNormalReply(reply NormalReply, termination ResponseTermination, peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_ReplyNormalReply {
 	_result := &_ReplyNormalReply{
 		Reply:       reply,
 		Termination: termination,
-		_Reply:      NewReply(peekedByte, messageLength),
+		_Reply:      NewReply(peekedByte, cBusOptions, messageLength, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -150,7 +150,7 @@ func (m *_ReplyNormalReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyNormalReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (ReplyNormalReply, error) {
+func ReplyNormalReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (ReplyNormalReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyNormalReply"); pullErr != nil {
@@ -168,7 +168,7 @@ func ReplyNormalReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (R
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := NormalReplyParse(readBuffer, uint16(replyLength))
+	_reply, _replyErr := NormalReplyParse(readBuffer, cBusOptions, uint16(replyLength), requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of ReplyNormalReply")
 	}
@@ -199,7 +199,9 @@ func ReplyNormalReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (R
 		Reply:       reply,
 		Termination: termination,
 		_Reply: &_Reply{
-			MessageLength: messageLength,
+			CBusOptions:    cBusOptions,
+			MessageLength:  messageLength,
+			RequestContext: requestContext,
 		},
 	}
 	_child._Reply._ReplyChildRequirements = _child

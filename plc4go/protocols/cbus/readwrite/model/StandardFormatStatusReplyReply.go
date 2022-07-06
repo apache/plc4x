@@ -33,6 +33,8 @@ type StandardFormatStatusReplyReply interface {
 	NormalReply
 	// GetReply returns Reply (property field)
 	GetReply() StandardFormatStatusReply
+	// GetPayloadLength returns PayloadLength (virtual field)
+	GetPayloadLength() uint16
 }
 
 // StandardFormatStatusReplyReplyExactly can be used when we want exactly this type and not a type which fulfills StandardFormatStatusReplyReply.
@@ -79,12 +81,25 @@ func (m *_StandardFormatStatusReplyReply) GetReply() StandardFormatStatusReply {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_StandardFormatStatusReplyReply) GetPayloadLength() uint16 {
+	return uint16(m.ReplyLength)
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewStandardFormatStatusReplyReply factory function for _StandardFormatStatusReplyReply
-func NewStandardFormatStatusReplyReply(reply StandardFormatStatusReply, peekedByte byte, replyLength uint16) *_StandardFormatStatusReplyReply {
+func NewStandardFormatStatusReplyReply(reply StandardFormatStatusReply, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_StandardFormatStatusReplyReply {
 	_result := &_StandardFormatStatusReplyReply{
 		Reply:        reply,
-		_NormalReply: NewNormalReply(peekedByte, replyLength),
+		_NormalReply: NewNormalReply(peekedByte, cBusOptions, replyLength, requestContext),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -112,8 +127,10 @@ func (m *_StandardFormatStatusReplyReply) GetLengthInBits() uint16 {
 func (m *_StandardFormatStatusReplyReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (reply)
-	lengthInBits += m.Reply.GetLengthInBits()
+	// A virtual field doesn't have any in- or output.
+
+	// Manual Field (reply)
+	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
 
 	return lengthInBits
 }
@@ -122,7 +139,7 @@ func (m *_StandardFormatStatusReplyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (StandardFormatStatusReplyReply, error) {
+func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (StandardFormatStatusReplyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StandardFormatStatusReplyReply"); pullErr != nil {
@@ -131,18 +148,17 @@ func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, replyLengt
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reply)
-	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reply")
-	}
-	_reply, _replyErr := StandardFormatStatusReplyParse(readBuffer)
+	// Virtual field
+	_payloadLength := replyLength
+	payloadLength := uint16(_payloadLength)
+	_ = payloadLength
+
+	// Manual Field (reply)
+	_reply, _replyErr := ReadStandardFormatStatusReply(readBuffer, payloadLength)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of StandardFormatStatusReplyReply")
 	}
 	reply := _reply.(StandardFormatStatusReply)
-	if closeErr := readBuffer.CloseContext("reply"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reply")
-	}
 
 	if closeErr := readBuffer.CloseContext("StandardFormatStatusReplyReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StandardFormatStatusReplyReply")
@@ -152,7 +168,9 @@ func StandardFormatStatusReplyReplyParse(readBuffer utils.ReadBuffer, replyLengt
 	_child := &_StandardFormatStatusReplyReply{
 		Reply: reply,
 		_NormalReply: &_NormalReply{
-			ReplyLength: replyLength,
+			CBusOptions:    cBusOptions,
+			ReplyLength:    replyLength,
+			RequestContext: requestContext,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child
@@ -166,15 +184,13 @@ func (m *_StandardFormatStatusReplyReply) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("StandardFormatStatusReplyReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for StandardFormatStatusReplyReply")
 		}
+		// Virtual field
+		if _payloadLengthErr := writeBuffer.WriteVirtual("payloadLength", m.GetPayloadLength()); _payloadLengthErr != nil {
+			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
+		}
 
-		// Simple Field (reply)
-		if pushErr := writeBuffer.PushContext("reply"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reply")
-		}
-		_replyErr := writeBuffer.WriteSerializable(m.GetReply())
-		if popErr := writeBuffer.PopContext("reply"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reply")
-		}
+		// Manual Field (reply)
+		_replyErr := WriteStandardFormatStatusReply(writeBuffer, m.GetReply())
 		if _replyErr != nil {
 			return errors.Wrap(_replyErr, "Error serializing 'reply' field")
 		}

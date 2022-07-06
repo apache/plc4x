@@ -38,16 +38,20 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CALDataNormalParse(io)
 	case "Checksum":
 		return model.ChecksumParse(io)
+	case "RequestContext":
+		return model.RequestContextParse(io)
 	case "CALReply":
 		return model.CALReplyParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
 	case "NormalReply":
-		replyLength, err := utils.StrToUint16(arguments[0])
+		var cBusOptions model.CBusOptions
+		replyLength, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.NormalReplyParse(io, replyLength)
+		var requestContext model.RequestContext
+		return model.NormalReplyParse(io, cBusOptions, replyLength, requestContext)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "RequestTermination":
@@ -55,19 +59,17 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "StandardFormatStatusReply":
 		return model.StandardFormatStatusReplyParse(io)
 	case "CBusMessage":
-		response, err := utils.StrToBool(arguments[0])
+		isResponse, err := utils.StrToBool(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		srchk, err := utils.StrToBool(arguments[1])
+		var requestContext model.RequestContext
+		var cBusOptions model.CBusOptions
+		messageLength, err := utils.StrToUint16(arguments[3])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		messageLength, err := utils.StrToUint16(arguments[2])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusMessageParse(io, response, srchk, messageLength)
+		return model.CBusMessageParse(io, isResponse, requestContext, cBusOptions, messageLength)
 	case "ResponseTermination":
 		return model.ResponseTerminationParse(io)
 	case "CBusOptions":
@@ -75,11 +77,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "SALData":
 		return model.SALDataParse(io)
 	case "CBusCommand":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusCommandParse(io, srchk)
+		var cBusOptions model.CBusOptions
+		return model.CBusCommandParse(io, cBusOptions)
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(arguments[0])
 		return model.IdentifyReplyCommandParse(io, attribute)
@@ -90,11 +89,13 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "PowerUp":
 		return model.PowerUpParse(io)
 	case "Reply":
-		messageLength, err := utils.StrToUint16(arguments[0])
+		var cBusOptions model.CBusOptions
+		messageLength, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ReplyParse(io, messageLength)
+		var requestContext model.RequestContext
+		return model.ReplyParse(io, cBusOptions, messageLength, requestContext)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(io)
 	case "BridgeAddress":
@@ -114,11 +115,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "Confirmation":
 		return model.ConfirmationParse(io)
 	case "CBusPointToMultiPointCommand":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusPointToMultiPointCommandParse(io, srchk)
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToMultiPointCommandParse(io, cBusOptions)
 	case "StatusHeader":
 		return model.StatusHeaderParse(io)
 	case "StatusRequest":
@@ -132,29 +130,20 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CBusHeader":
 		return model.CBusHeaderParse(io)
 	case "Request":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
+		var cBusOptions model.CBusOptions
 		messageLength, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.RequestParse(io, srchk, messageLength)
+		return model.RequestParse(io, cBusOptions, messageLength)
 	case "CBusPointToPointCommand":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusPointToPointCommandParse(io, srchk)
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToPointCommandParse(io, cBusOptions)
 	case "Alpha":
 		return model.AlphaParse(io)
 	case "CBusPointToPointToMultipointCommand":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusPointToPointToMultipointCommandParse(io, srchk)
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToPointToMultipointCommandParse(io, cBusOptions)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

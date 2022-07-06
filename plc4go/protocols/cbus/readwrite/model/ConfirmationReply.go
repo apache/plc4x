@@ -90,11 +90,11 @@ func (m *_ConfirmationReply) GetEmbeddedReply() Reply {
 ///////////////////////////////////////////////////////////
 
 // NewConfirmationReply factory function for _ConfirmationReply
-func NewConfirmationReply(confirmation Confirmation, embeddedReply Reply, peekedByte byte, messageLength uint16) *_ConfirmationReply {
+func NewConfirmationReply(confirmation Confirmation, embeddedReply Reply, peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_ConfirmationReply {
 	_result := &_ConfirmationReply{
 		Confirmation:  confirmation,
 		EmbeddedReply: embeddedReply,
-		_Reply:        NewReply(peekedByte, messageLength),
+		_Reply:        NewReply(peekedByte, cBusOptions, messageLength, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -137,7 +137,7 @@ func (m *_ConfirmationReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConfirmationReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (ConfirmationReply, error) {
+func ConfirmationReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (ConfirmationReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfirmationReply"); pullErr != nil {
@@ -166,7 +166,7 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (
 		if pullErr := readBuffer.PullContext("embeddedReply"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for embeddedReply")
 		}
-		_val, _err := ReplyParse(readBuffer, uint16(messageLength)-uint16(confirmation.GetLengthInBytes()))
+		_val, _err := ReplyParse(readBuffer, cBusOptions, uint16(messageLength)-uint16(confirmation.GetLengthInBytes()), requestContext)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -190,7 +190,9 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (
 		Confirmation:  confirmation,
 		EmbeddedReply: embeddedReply,
 		_Reply: &_Reply{
-			MessageLength: messageLength,
+			CBusOptions:    cBusOptions,
+			MessageLength:  messageLength,
+			RequestContext: requestContext,
 		},
 	}
 	_child._Reply._ReplyChildRequirements = _child

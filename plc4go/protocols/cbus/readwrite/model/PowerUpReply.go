@@ -81,10 +81,10 @@ func (m *_PowerUpReply) GetIsA() PowerUp {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(isA PowerUp, peekedByte byte, replyLength uint16) *_PowerUpReply {
+func NewPowerUpReply(isA PowerUp, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_PowerUpReply {
 	_result := &_PowerUpReply{
 		IsA:          isA,
-		_NormalReply: NewNormalReply(peekedByte, replyLength),
+		_NormalReply: NewNormalReply(peekedByte, cBusOptions, replyLength, requestContext),
 	}
 	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_PowerUpReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PowerUpReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (PowerUpReply, error) {
+func PowerUpReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (PowerUpReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {
@@ -152,7 +152,9 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (PowerUp
 	_child := &_PowerUpReply{
 		IsA: isA,
 		_NormalReply: &_NormalReply{
-			ReplyLength: replyLength,
+			CBusOptions:    cBusOptions,
+			ReplyLength:    replyLength,
+			RequestContext: requestContext,
 		},
 	}
 	_child._NormalReply._NormalReplyChildRequirements = _child

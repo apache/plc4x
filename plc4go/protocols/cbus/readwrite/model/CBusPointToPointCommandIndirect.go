@@ -97,12 +97,12 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
-func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, srchk bool) *_CBusPointToPointCommandIndirect {
+func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
 	_result := &_CBusPointToPointCommandIndirect{
 		BridgeAddress:            bridgeAddress,
 		NetworkRoute:             networkRoute,
 		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, srchk),
+		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, cBusOptions),
 	}
 	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result
 	return _result
@@ -146,7 +146,7 @@ func (m *_CBusPointToPointCommandIndirect) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk bool) (CBusPointToPointCommandIndirect, error) {
+func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandIndirect"); pullErr != nil {
@@ -204,7 +204,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk boo
 		NetworkRoute:  networkRoute,
 		UnitAddress:   unitAddress,
 		_CBusPointToPointCommand: &_CBusPointToPointCommand{
-			Srchk: srchk,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child

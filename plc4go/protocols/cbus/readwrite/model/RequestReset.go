@@ -68,9 +68,9 @@ func (m *_RequestReset) GetParent() Request {
 }
 
 // NewRequestReset factory function for _RequestReset
-func NewRequestReset(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, srchk bool, messageLength uint16) *_RequestReset {
+func NewRequestReset(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_RequestReset {
 	_result := &_RequestReset{
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, srchk, messageLength),
+		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -105,7 +105,7 @@ func (m *_RequestReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestResetParse(readBuffer utils.ReadBuffer, srchk bool, messageLength uint16) (RequestReset, error) {
+func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (RequestReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestReset"); pullErr != nil {
@@ -121,7 +121,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, srchk bool, messageLength ui
 	// Create a partially initialized instance
 	_child := &_RequestReset{
 		_Request: &_Request{
-			Srchk:         srchk,
+			CBusOptions:   cBusOptions,
 			MessageLength: messageLength,
 		},
 	}

@@ -20,10 +20,7 @@ package org.apache.plc4x.java.cbus.readwrite.utils;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.cbus.readwrite.CALData;
-import org.apache.plc4x.java.cbus.readwrite.CALReply;
-import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
-import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
+import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
@@ -55,8 +52,36 @@ public class StaticHelper {
     }
 
     public static CALData readCALData(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("calReply", readBuffer, payloadLength);
+        byte[] rawBytes = readBytesFromHex("calData", readBuffer, payloadLength);
         return CALData.staticParse(new ReadBufferByteBased(rawBytes));
+    }
+
+    public static void writeMonitoredSAL(WriteBuffer writeBuffer, MonitoredSAL monitoredSAL) throws SerializationException {
+        writeToHex("monitoredSAL", writeBuffer, monitoredSAL, monitoredSAL.getLengthInBytes());
+    }
+
+    public static MonitoredSAL readMonitoredSAL(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("monitoredSAL", readBuffer, payloadLength);
+        return MonitoredSAL.staticParse(new ReadBufferByteBased(rawBytes));
+    }
+
+    public static void writeStandardFormatStatusReply(WriteBuffer writeBuffer, StandardFormatStatusReply standardFormatStatusReply) throws SerializationException {
+        writeToHex("reply", writeBuffer, standardFormatStatusReply, standardFormatStatusReply.getLengthInBytes());
+    }
+
+    public static StandardFormatStatusReply readStandardFormatStatusReply(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("reply", readBuffer, payloadLength);
+        return StandardFormatStatusReply.staticParse(new ReadBufferByteBased(rawBytes));
+    }
+
+
+    public static void writeExtendedFormatStatusReply(WriteBuffer writeBuffer, ExtendedFormatStatusReply extendedFormatStatusReply) throws SerializationException {
+        writeToHex("reply", writeBuffer, extendedFormatStatusReply, extendedFormatStatusReply.getLengthInBytes());
+    }
+
+    public static ExtendedFormatStatusReply readExtendedFormatStatusReply(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("reply", readBuffer, payloadLength);
+        return ExtendedFormatStatusReply.staticParse(new ReadBufferByteBased(rawBytes));
     }
 
     private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, Integer payloadLength) throws ParseException {

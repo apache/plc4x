@@ -30,23 +30,62 @@ import (
 )
 
 type Analyzer struct {
-	Client net.IP
+	Client         net.IP
+	requestContext model.RequestContext
+	cBusOptions    model.CBusOptions
+	initialized    bool
 }
 
-func (a Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
-	log.Debug().Msgf("Parsing %s", packetInformation)
+func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
+	if !a.initialized {
+		log.Warn().Msg("Not initialized... doing that now")
+		a.requestContext = model.NewRequestContext(false, false)
+		a.cBusOptions = model.NewCBusOptions(false, false, false, false, false, false, false, false, false)
+		a.initialized = true
+	}
+	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s", packetInformation, a.requestContext, a.cBusOptions)
 	// TODO: srcchk we need to pull that out of the config
 	isResponse := packetInformation.DstIp.Equal(a.Client)
 	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, true, uint16(len(payload)))
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, a.requestContext, a.cBusOptions, uint16(len(payload)))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}
-	log.Debug().Msgf("Parsed c-bus command %s", parse)
+	switch cBusMessage := parse.(type) {
+	case model.CBusMessageToServerExactly:
+		switch request := cBusMessage.GetRequest().(type) {
+		case model.RequestDirectCommandAccessExactly:
+			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
+			a.requestContext = model.NewRequestContext(true, false)
+		case model.RequestCommandExactly:
+			switch command := request.GetCbusCommand().(type) {
+			case model.CBusCommandDeviceManagementExactly:
+				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
+				a.requestContext = model.NewRequestContext(true, false)
+			case model.CBusCommandPointToPointExactly:
+				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
+				a.requestContext = model.NewRequestContext(true, false)
+			case model.CBusCommandPointToMultiPointExactly:
+				switch command.GetCommand().(type) {
+				case model.CBusPointToMultiPointCommandStatusExactly:
+					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
+					a.requestContext = model.NewRequestContext(false, true)
+				}
+			case model.CBusCommandPointToPointToMultiPointExactly:
+				switch command.GetCommand().(type) {
+				case model.CBusPointToPointToMultipointCommandStatusExactly:
+					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
+					a.requestContext = model.NewRequestContext(false, true)
+				}
+			}
+		}
+	case model.CBusMessageToClientExactly:
+	}
+	log.Debug().Msgf("Parsed c-bus command \n%v", parse)
 	return parse, nil
 }
 
-func (a Analyzer) SerializePackage(message interface{}) ([]byte, error) {
+func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {
 	if message, ok := message.(model.CBusMessage); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")
@@ -59,7 +98,7 @@ func (a Analyzer) SerializePackage(message interface{}) ([]byte, error) {
 	}
 }
 
-func (a Analyzer) PrettyPrint(message interface{}) {
+func (a *Analyzer) PrettyPrint(message interface{}) {
 	if message, ok := message.(model.CBusMessage); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")

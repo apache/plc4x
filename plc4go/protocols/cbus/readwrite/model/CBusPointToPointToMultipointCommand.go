@@ -53,7 +53,7 @@ type _CBusPointToPointToMultipointCommand struct {
 	PeekedApplication byte
 
 	// Arguments.
-	Srchk bool
+	CBusOptions CBusOptions
 }
 
 type _CBusPointToPointToMultipointCommandChildRequirements interface {
@@ -99,8 +99,8 @@ func (m *_CBusPointToPointToMultipointCommand) GetPeekedApplication() byte {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointToMultipointCommand factory function for _CBusPointToPointToMultipointCommand
-func NewCBusPointToPointToMultipointCommand(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, srchk bool) *_CBusPointToPointToMultipointCommand {
-	return &_CBusPointToPointToMultipointCommand{BridgeAddress: bridgeAddress, NetworkRoute: networkRoute, PeekedApplication: peekedApplication, Srchk: srchk}
+func NewCBusPointToPointToMultipointCommand(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultipointCommand {
+	return &_CBusPointToPointToMultipointCommand{BridgeAddress: bridgeAddress, NetworkRoute: networkRoute, PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
 }
 
 // Deprecated: use the interface for direct cast
@@ -134,7 +134,7 @@ func (m *_CBusPointToPointToMultipointCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusPointToPointToMultipointCommand, error) {
+func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultipointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultipointCommand"); pullErr != nil {
@@ -188,10 +188,10 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	var _child CBusPointToPointToMultipointCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case peekedApplication == 0xFF: // CBusCommandPointToPointToMultiPointStatus
-		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointStatusParse(readBuffer, srchk)
-	case true: // CBusCommandPointToPointToMultiPointNormal
-		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointNormalParse(readBuffer, srchk)
+	case peekedApplication == 0xFF: // CBusPointToPointToMultipointCommandStatus
+		_childTemp, typeSwitchError = CBusPointToPointToMultipointCommandStatusParse(readBuffer, cBusOptions)
+	case 0 == 0: // CBusPointToPointToMultipointCommandNormal
+		_childTemp, typeSwitchError = CBusPointToPointToMultipointCommandNormalParse(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}

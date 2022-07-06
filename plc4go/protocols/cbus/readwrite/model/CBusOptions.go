@@ -46,6 +46,8 @@ type CBusOptions interface {
 	GetPun() bool
 	// GetPcn returns Pcn (property field)
 	GetPcn() bool
+	// GetSrchk returns Srchk (property field)
+	GetSrchk() bool
 }
 
 // CBusOptionsExactly can be used when we want exactly this type and not a type which fulfills CBusOptions.
@@ -65,6 +67,7 @@ type _CBusOptions struct {
 	Monall  bool
 	Pun     bool
 	Pcn     bool
+	Srchk   bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -104,14 +107,18 @@ func (m *_CBusOptions) GetPcn() bool {
 	return m.Pcn
 }
 
+func (m *_CBusOptions) GetSrchk() bool {
+	return m.Srchk
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewCBusOptions factory function for _CBusOptions
-func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool) *_CBusOptions {
-	return &_CBusOptions{Connect: connect, Smart: smart, Idmon: idmon, Exstat: exstat, Monitor: monitor, Monall: monall, Pun: pun, Pcn: pcn}
+func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) *_CBusOptions {
+	return &_CBusOptions{Connect: connect, Smart: smart, Idmon: idmon, Exstat: exstat, Monitor: monitor, Monall: monall, Pun: pun, Pcn: pcn, Srchk: srchk}
 }
 
 // Deprecated: use the interface for direct cast
@@ -158,6 +165,9 @@ func (m *_CBusOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 1
 
 	// Simple field (pcn)
+	lengthInBits += 1
+
+	// Simple field (srchk)
 	lengthInBits += 1
 
 	return lengthInBits
@@ -232,12 +242,19 @@ func CBusOptionsParse(readBuffer utils.ReadBuffer) (CBusOptions, error) {
 	}
 	pcn := _pcn
 
+	// Simple Field (srchk)
+	_srchk, _srchkErr := readBuffer.ReadBit("srchk")
+	if _srchkErr != nil {
+		return nil, errors.Wrap(_srchkErr, "Error parsing 'srchk' field of CBusOptions")
+	}
+	srchk := _srchk
+
 	if closeErr := readBuffer.CloseContext("CBusOptions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusOptions")
 	}
 
 	// Create the instance
-	return NewCBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn), nil
+	return NewCBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn, srchk), nil
 }
 
 func (m *_CBusOptions) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -301,6 +318,13 @@ func (m *_CBusOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 	_pcnErr := writeBuffer.WriteBit("pcn", (pcn))
 	if _pcnErr != nil {
 		return errors.Wrap(_pcnErr, "Error serializing 'pcn' field")
+	}
+
+	// Simple Field (srchk)
+	srchk := bool(m.GetSrchk())
+	_srchkErr := writeBuffer.WriteBit("srchk", (srchk))
+	if _srchkErr != nil {
+		return errors.Wrap(_srchkErr, "Error serializing 'srchk' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CBusOptions"); popErr != nil {

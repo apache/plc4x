@@ -53,7 +53,7 @@ type _CBusMessageToClient struct {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CBusMessageToClient) GetResponse() bool {
+func (m *_CBusMessageToClient) GetIsResponse() bool {
 	return bool(true)
 }
 
@@ -83,10 +83,10 @@ func (m *_CBusMessageToClient) GetReply() Reply {
 ///////////////////////////////////////////////////////////
 
 // NewCBusMessageToClient factory function for _CBusMessageToClient
-func NewCBusMessageToClient(reply Reply, srchk bool, messageLength uint16) *_CBusMessageToClient {
+func NewCBusMessageToClient(reply Reply, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) *_CBusMessageToClient {
 	_result := &_CBusMessageToClient{
 		Reply:        reply,
-		_CBusMessage: NewCBusMessage(srchk, messageLength),
+		_CBusMessage: NewCBusMessage(requestContext, cBusOptions, messageLength),
 	}
 	_result._CBusMessage._CBusMessageChildRequirements = _result
 	return _result
@@ -124,7 +124,7 @@ func (m *_CBusMessageToClient) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageToClientParse(readBuffer utils.ReadBuffer, response bool, srchk bool, messageLength uint16) (CBusMessageToClient, error) {
+func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) (CBusMessageToClient, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToClient"); pullErr != nil {
@@ -137,7 +137,7 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, response bool, srchk 
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := ReplyParse(readBuffer, uint16(messageLength))
+	_reply, _replyErr := ReplyParse(readBuffer, cBusOptions, uint16(messageLength), requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of CBusMessageToClient")
 	}
@@ -154,8 +154,9 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, response bool, srchk 
 	_child := &_CBusMessageToClient{
 		Reply: reply,
 		_CBusMessage: &_CBusMessage{
-			Srchk:         srchk,
-			MessageLength: messageLength,
+			RequestContext: requestContext,
+			CBusOptions:    cBusOptions,
+			MessageLength:  messageLength,
 		},
 	}
 	_child._CBusMessage._CBusMessageChildRequirements = _child

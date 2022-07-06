@@ -271,16 +271,17 @@ public class RandomPackagesTest {
 
         // 4.3.3.2
         @Nested
-        class MonitoredSAL {
+        class _MonitoredSAL {
             @Test
-            @Disabled("Not yet implemented")
             void monitoredSal() throws Exception {
                 byte[] bytes = "0503380079083F\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                Reply msg = Reply.staticParse(readBufferByteBased, bytes.length);
+                Reply msg = Reply.staticParse(readBufferByteBased, cBusOptions, bytes.length, requestContext);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                MonitoredSAL monitoredSAL = ((MonitoredSALReply) ((ReplyNormalReply) msg).getReply()).getMonitoredSAL();
+                System.out.println(monitoredSAL);
             }
         }
 
@@ -425,77 +426,89 @@ public class RandomPackagesTest {
                 System.out.println(msg);
             }
 
-            @Disabled("something is wrong here, the command requires to many bytes")
             @Test
             void LightningStatusReply1() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
                 byte[] bytes = "D83800A8AA02000000000000000000000000000000000000009C\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                requestContext = new RequestContext(false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                StandardFormatStatusReply reply = ((StandardFormatStatusReplyReply) ((ReplyNormalReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
+                System.out.println(reply);
             }
 
-            @Disabled("something is wrong here")
             @Test
             void LightningStatusReply2() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
                 byte[] bytes = "D838580000000000000000000000000000000000000000000098\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                requestContext = new RequestContext(false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                StandardFormatStatusReply reply = ((StandardFormatStatusReplyReply) ((ReplyNormalReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
+                System.out.println(reply);
             }
 
-            @Disabled("something is wrong here")
             @Test
             void LightningStatusReply3() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
                 byte[] bytes = "D638B0000000000000000000000000000000000000000042\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                requestContext = new RequestContext(false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                StandardFormatStatusReply reply = ((StandardFormatStatusReplyReply) ((ReplyNormalReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
+                System.out.println(reply);
             }
 
-            @Disabled("something is wrong here")
             @Test
             void LightningStatusReply4() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
                 byte[] bytes = "86999900F8003800A8AA0200000000000000000000000000000000000000C4\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                requestContext = new RequestContext(false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                StandardFormatStatusReply reply = ((StandardFormatStatusReplyReply) ((ReplyNormalReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
+                System.out.println(reply);
             }
 
 
-            @Disabled("something is wrong here")
             @Test
             void LightningStatusReply5() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
                 byte[] bytes = "86999900F800385800000000000000000000000000000000000000000000C0\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                requestContext = new RequestContext(false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                StandardFormatStatusReply reply = ((StandardFormatStatusReplyReply) ((ReplyNormalReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
+                System.out.println(reply);
             }
 
-            @Disabled("something is wrong here")
             @Test
             void LightningStatusReply6() throws Exception {
                 // TODO: the section describes that on non smart mode the message doesn't have the last CR
                 byte[] bytes = "86999900F60038B000000000000000000000000000000000000000008F\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                requestContext = new RequestContext(false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                StandardFormatStatusReply reply = ((StandardFormatStatusReplyReply) ((ReplyNormalReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
+                System.out.println(reply);
             }
         }
 
@@ -538,14 +551,16 @@ public class RandomPackagesTest {
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
+                CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
+                System.out.println(cbusCommand);
             }
 
-            @Disabled("it is not clear if that is a request or reply... it fails in both variants")
+            @Disabled("the transformation from point to point to multipoint message is not yet implemented as described in 8.4... not sure if we will ever implement that")
             @Test
             void Reply() throws Exception {
-                byte[] bytes = "0565380354432101148E\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = Hex.decodeHex("0565380354432101148E");
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, cBusOptions);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
@@ -575,9 +590,21 @@ public class RandomPackagesTest {
             System.out.println(msg);
         }
 
+        // 10.2.1
         @Test
         void testParameterSet() throws Exception {
             byte[] bytes = "@A3470011\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
+
+        // 10.2.1
+        @Test
+        void testParameterSetObsolete() throws Exception {
+            byte[] bytes = "A3470011\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
             assertThat(msg)

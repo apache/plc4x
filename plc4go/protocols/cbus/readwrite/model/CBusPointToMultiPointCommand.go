@@ -47,7 +47,7 @@ type _CBusPointToMultiPointCommand struct {
 	PeekedApplication byte
 
 	// Arguments.
-	Srchk bool
+	CBusOptions CBusOptions
 }
 
 type _CBusPointToMultiPointCommandChildRequirements interface {
@@ -85,8 +85,8 @@ func (m *_CBusPointToMultiPointCommand) GetPeekedApplication() byte {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommand factory function for _CBusPointToMultiPointCommand
-func NewCBusPointToMultiPointCommand(peekedApplication byte, srchk bool) *_CBusPointToMultiPointCommand {
-	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, Srchk: srchk}
+func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommand {
+	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
 }
 
 // Deprecated: use the interface for direct cast
@@ -114,7 +114,7 @@ func (m *_CBusPointToMultiPointCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusPointToMultiPointCommand, error) {
+func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommand"); pullErr != nil {
@@ -143,9 +143,9 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 	var typeSwitchError error
 	switch {
 	case peekedApplication == 0xFF: // CBusPointToMultiPointCommandStatus
-		_childTemp, typeSwitchError = CBusPointToMultiPointCommandStatusParse(readBuffer, srchk)
-	case true: // CBusPointToMultiPointCommandNormal
-		_childTemp, typeSwitchError = CBusPointToMultiPointCommandNormalParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusPointToMultiPointCommandStatusParse(readBuffer, cBusOptions)
+	case 0 == 0: // Normal
+		_childTemp, typeSwitchError = NormalParse(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}

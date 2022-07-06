@@ -30,8 +30,8 @@ import (
 type CBusMessage interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetResponse returns Response (discriminator field)
-	GetResponse() bool
+	// GetIsResponse returns IsResponse (discriminator field)
+	GetIsResponse() bool
 }
 
 // CBusMessageExactly can be used when we want exactly this type and not a type which fulfills CBusMessage.
@@ -46,15 +46,16 @@ type _CBusMessage struct {
 	_CBusMessageChildRequirements
 
 	// Arguments.
-	Srchk         bool
-	MessageLength uint16
+	RequestContext RequestContext
+	CBusOptions    CBusOptions
+	MessageLength  uint16
 }
 
 type _CBusMessageChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	GetResponse() bool
+	GetIsResponse() bool
 }
 
 type CBusMessageParent interface {
@@ -72,8 +73,8 @@ type CBusMessageChild interface {
 }
 
 // NewCBusMessage factory function for _CBusMessage
-func NewCBusMessage(srchk bool, messageLength uint16) *_CBusMessage {
-	return &_CBusMessage{Srchk: srchk, MessageLength: messageLength}
+func NewCBusMessage(requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) *_CBusMessage {
+	return &_CBusMessage{RequestContext: requestContext, CBusOptions: cBusOptions, MessageLength: messageLength}
 }
 
 // Deprecated: use the interface for direct cast
@@ -101,7 +102,7 @@ func (m *_CBusMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageParse(readBuffer utils.ReadBuffer, response bool, srchk bool, messageLength uint16) (CBusMessage, error) {
+func CBusMessageParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) (CBusMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessage"); pullErr != nil {
@@ -109,6 +110,16 @@ func CBusMessageParse(readBuffer utils.ReadBuffer, response bool, srchk bool, me
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(bool((requestContext) != (nil))) {
+		return nil, errors.WithStack(utils.ParseValidationError{"requestContext required"})
+	}
+
+	// Validation
+	if !(bool((cBusOptions) != (nil))) {
+		return nil, errors.WithStack(utils.ParseValidationError{"cBusOptions required"})
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusMessageChildSerializeRequirement interface {
@@ -120,12 +131,12 @@ func CBusMessageParse(readBuffer utils.ReadBuffer, response bool, srchk bool, me
 	var _child CBusMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case response == bool(false): // CBusMessageToServer
-		_childTemp, typeSwitchError = CBusMessageToServerParse(readBuffer, response, srchk, messageLength)
-	case response == bool(true): // CBusMessageToClient
-		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, response, srchk, messageLength)
+	case isResponse == bool(false): // CBusMessageToServer
+		_childTemp, typeSwitchError = CBusMessageToServerParse(readBuffer, isResponse, requestContext, cBusOptions, messageLength)
+	case isResponse == bool(true): // CBusMessageToClient
+		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, isResponse, requestContext, cBusOptions, messageLength)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [response=%v]", response)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [isResponse=%v]", isResponse)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusMessage")

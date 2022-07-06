@@ -141,7 +141,7 @@ func CALDataParse(readBuffer utils.ReadBuffer) (CALData, error) {
 	switch {
 	case firstByte == 0xA3: // CALDataSetParameter
 		_childTemp, typeSwitchError = CALDataSetParameterParse(readBuffer)
-	case true: // CALDataNormalValue
+	case 0 == 0: // CALDataNormalValue
 		_childTemp, typeSwitchError = CALDataNormalValueParse(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [firstByte=%v]", firstByte)
