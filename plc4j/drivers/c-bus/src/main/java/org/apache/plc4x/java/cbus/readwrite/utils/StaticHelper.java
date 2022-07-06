@@ -23,6 +23,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.cbus.readwrite.CALData;
 import org.apache.plc4x.java.cbus.readwrite.CALReply;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
+import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
@@ -35,9 +36,9 @@ public class StaticHelper {
         writeToHex("cbusCommand", writeBuffer, cbusCommand, cbusCommand.getLengthInBytes());
     }
 
-    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, Integer payloadLength, boolean srcchk) throws ParseException {
+    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions) throws ParseException {
         byte[] rawBytes = readBytesFromHex("cbusCommand", readBuffer, payloadLength);
-        return CBusCommand.staticParse(new ReadBufferByteBased(rawBytes), srcchk);
+        return CBusCommand.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions);
     }
 
     public static void writeCALReply(WriteBuffer writeBuffer, CALReply calReply) throws SerializationException {

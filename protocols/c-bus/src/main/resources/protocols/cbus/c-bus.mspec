@@ -21,36 +21,54 @@
     [const    uint 16     cbusTcpDefaultPort 10001]
 ]
 
-// TODO: check if that can be used in combination with srchk
-[type CBusOptions
-    [simple bit connect]
-    [simple bit smart  ]
-    [simple bit idmon  ]
-    [simple bit exstat ]
-    [simple bit monitor]
-    [simple bit monall ]
-    [simple bit pun    ]
-    [simple bit pcn    ]
+[type RequestContext
+    // Useful for response parsing: Set this to true if you send a CAL before. This will change the way the response will be parsed
+    [simple bit sendCalCommandBefore        ]
+    // Useful for response parsing: Set this to true if you send a SAL status request before. This will change the way the response will be parsed
+    [simple bit sendSALStatusRequestBefore  ]
 ]
 
-[type CBusMessage(bit response, bit srchk, uint 16 messageLength)
+[type CBusOptions
+    // Defines that SAL messages can occur at any time
+    [simple bit connect]
+    // Disable echo of characters. When used with connect SAL have a long option. Select long from of most CAL replies
+    [simple bit smart  ]
+    // only works with smart. Select long form of CAL messages
+    [simple bit idmon  ]
+    // useful with smart. Select long form, extended format for all monitored and initiated status requests
+    [simple bit exstat ]
+    // monitors all traffic for status requests. Status requests will be returned as CAL. Replies are modified by exstat. Usually used in conjunction with connect.
+    [simple bit monitor]
+    // Same as connect. In addition it will return remote network SAL
+    [simple bit monall ]
+    // Serial interface will emit a power up notification
+    [simple bit pun    ]
+    // causes parameter change notifications to be emitted.
+    [simple bit pcn    ]
+    // enabled the crc checks
+    [simple bit srchk ]
+]
+
+[type CBusMessage(bit response, RequestContext requestContext, CBusOptions cBusOptions, uint 16 messageLength)
+    [validation 'requestContext != null' "requestContext required"  ]
+    [validation 'cBusOptions != null'    "cBusOptions required"     ]
     [typeSwitch response
        ['false' *ToServer
-            [simple   Request('srchk', 'messageLength')         request         ]
+            [simple   Request('cBusOptions', 'messageLength')         request         ]
        ]
        ['true' *ToClient
-            [simple   Reply('messageLength')                    reply           ]
+            [simple   Reply('cBusOptions', 'messageLength', 'requestContext')  reply           ]
        ]
     ]
 ]
 
-[type Request(bit srchk, uint 16 messageLength)
+[type Request(CBusOptions cBusOptions, uint 16 messageLength)
     [peek     RequestType peekedByte                                        ]
     [optional RequestType startingCR       'peekedByte == RequestType.EMPTY']
     [optional RequestType resetMode        'peekedByte == RequestType.RESET']
     [peek     RequestType secondPeek                                        ]
     [virtual  RequestType actualPeek '(startingCR==null&&resetMode==null)||(startingCR==null&&resetMode!=null&&secondPeek==RequestType.EMPTY)?peekedByte:secondPeek']
-    [virtual uint 16 payloadLength '(messageLength-2)-((resetMode!=null)?1:0)'] // We subtract the command itself and the termination
+    [virtual uint 16 payloadLength '(messageLength-2)-((resetMode!=null)?(1):(0))'] // We subtract the command itself and the termination
     [typeSwitch actualPeek
         ['SMART_CONNECT_SHORTCUT' *SmartConnectShortcut
             [const    byte        pipe      0x7C                            ]
@@ -72,10 +90,10 @@
         ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
             [const    byte                initiator 0x5C                    ] // 0x5C == "/"
             // Usually you would read the command now here but we need to decode ascii first
-            //[simple   CBusCommand('srchk')     cbusCommand                ]
+            //[simple   CBusCommand('cBusOptions')     cbusCommand                ]
             [manual   CBusCommand
                                           cbusCommand
-                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, srchk)'
+                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, cBusOptions)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
                         '_value.lengthInBytes*2'                            ]
             [optional Alpha         alpha                                   ]
@@ -99,7 +117,7 @@
     ['0x0D' EMPTY                   ['0x00']] // empty doesn't have a "control char" so we just consume the rest
 ]
 
-[discriminatedType CBusCommand(bit srchk)
+[discriminatedType CBusCommand(CBusOptions cBusOptions)
     [simple  CBusHeader header           ]
     [virtual bit        isDeviceManagement 'header.dp']
     // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
@@ -111,13 +129,13 @@
             [simple     byte    parameterValue                          ]
         ]
         ['PointToPointToMultiPoint' *PointToPointToMultiPoint
-            [simple CBusPointToPointToMultipointCommand('srchk') command]
+            [simple CBusPointToPointToMultipointCommand('cBusOptions') command]
         ]
         ['PointToMultiPoint'        *PointToMultiPoint
-            [simple CBusPointToMultiPointCommand('srchk')        command]
+            [simple CBusPointToMultiPointCommand('cBusOptions')        command]
         ]
         ['PointToPoint'             *PointToPoint
-            [simple CBusPointToPointCommand('srchk')             command]
+            [simple CBusPointToPointCommand('cBusOptions')             command]
         ]
     ]
 ]
@@ -185,7 +203,7 @@
     ['0x7' SixAdditionalBridge   ['6']]
 ]
 
-[discriminatedType CBusPointToPointCommand(bit srchk)
+[discriminatedType CBusPointToPointCommand(CBusOptions cBusOptions)
     [peek    uint 16     bridgeAddressCountPeek ]
     [virtual bit         isDirect  '(bridgeAddressCountPeek & 0x00FF) == 0x0000']
     [typeSwitch isDirect
@@ -200,28 +218,28 @@
         ]
     ]
     [simple   CALData calData                                                                   ]
-    [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
+    [optional Checksum      crc      'cBusOptions.srchk'                                                    ] // checksum is optional but mspec checksum isn't
 ]
 
-[discriminatedType CBusPointToMultiPointCommand(bit srchk)
+[discriminatedType CBusPointToMultiPointCommand(CBusOptions cBusOptions)
     [peek    byte     peekedApplication                                                                ]
     [typeSwitch peekedApplication
         ['0xFF'   CBusPointToMultiPointCommandStatus
             [reserved byte          '0xFF'                                                             ]
             [reserved byte          '0x00'                                                             ]
             [simple   StatusRequest statusRequest                                                      ]
-            [optional Checksum      crc           'srchk'                                              ] // checksum is optional but mspec checksum isn't
+            [optional Checksum      crc           'cBusOptions.srchk'                                              ] // checksum is optional but mspec checksum isn't
         ]
         [         CBusPointToMultiPointCommandNormal
             [simple   ApplicationIdContainer   application                                             ]
             [reserved byte                     '0x00'                                                  ]
             [simple   SALData                  salData                                                 ]
-            [optional Checksum                 crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
+            [optional Checksum                 crc         'cBusOptions.srchk'                                     ] // crc      is optional but mspec crc      isn't
         ]
     ]
 ]
 
-[discriminatedType CBusPointToPointToMultipointCommand(bit srchk)
+[discriminatedType CBusPointToPointToMultipointCommand(CBusOptions cBusOptions)
     [simple BridgeAddress bridgeAddress                                                              ]
     [simple NetworkRoute  networkRoute                                                               ]
     [peek    byte       peekedApplication                                                            ]
@@ -229,12 +247,12 @@
         ['0xFF'   CBusCommandPointToPointToMultiPointStatus
             [reserved byte        '0xFF'                                                             ]
             [simple StatusRequest statusRequest                                                      ]
-            [optional Checksum    crc           'srchk'                                              ] // crc      is optional but mspec crc      isn't
+            [optional Checksum    crc           'cBusOptions.srchk'                                              ] // crc      is optional but mspec crc      isn't
         ]
         [         CBusCommandPointToPointToMultiPointNormal
             [simple   ApplicationIdContainer application                                             ]
             [simple   SALData                salData                                                 ]
-            [optional Checksum               crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
+            [optional Checksum               crc         'cBusOptions.srchk'                                     ] // crc      is optional but mspec crc      isn't
         ]
     ]
 ]
@@ -915,50 +933,53 @@
     [simple byte value]
 ]
 
-[type Reply(uint 16 messageLength)
+[type Reply(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)
     [peek    byte peekedByte                                                ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'    ]
     [typeSwitch isAlpha
         ['true' ConfirmationReply
             [simple   Confirmation                      confirmation        ]
-            [optional Reply('messageLength-confirmation.lengthInBytes') embeddedReply]
+            [optional Reply('cBusOptions','messageLength-confirmation.lengthInBytes', 'requestContext') embeddedReply]
         ]
         ['false' *NormalReply
             [virtual  uint 16                       replyLength 'messageLength-2'] // We substract the termination \r\n
-            [simple   NormalReply('replyLength')    reply               ]
+            [simple   NormalReply('cBusOptions', 'replyLength', 'requestContext')    reply               ]
             [simple   ResponseTermination           termination         ]
         ]
     ]
 ]
 
-[type NormalReply(uint 16 replyLength)
+[type NormalReply(CBusOptions cBusOptions, uint 16 replyLength, RequestContext requestContext)
     [peek    byte peekedByte                            ]
-    [typeSwitch peekedByte
-        ['0x2B' PowerUpReply // is a +
+    [virtual bit  sendCalCommandBefore        'requestContext.sendCalCommandBefore'         ]
+    [virtual bit  sendSALStatusRequestBefore  'requestContext.sendSALStatusRequestBefore'   ]
+    [virtual bit  exstat                      'cBusOptions.exstat'                          ]
+    [typeSwitch peekedByte, sendCalCommandBefore, sendSALStatusRequestBefore, exstat
+        ['0x2B'                 PowerUpReply // is a +
             [simple PowerUp isA]
         ]
-        ['0x3D' ParameterChangeReply // is a =
+        ['0x3D'                 ParameterChangeReply // is a =
             [simple ParameterChange isA                 ]
         ]
-        ['0x21' ServerErrorReply // is a !
+        ['0x21'                 ServerErrorReply // is a !
             [const  byte    errorMarker     0x21        ]
         ]
-        ['0x0' MonitoredSALReply
-            [simple MonitoredSAL isA                    ]
-        ]
-        ['0x0' StandardFormatStatusReplyReply
+        [*, *, 'true', *        StandardFormatStatusReplyReply
             [simple StandardFormatStatusReply reply     ]
         ]
-        ['0x0' ExtendedFormatStatusReplyReply
+        [*, *, 'true', 'false'  ExtendedFormatStatusReplyReply
             [simple ExtendedFormatStatusReply reply     ]
         ]
-        [* CALReplyReply
-            [virtual uint 16 payloadLength 'replyLength'                        ]
+        [*, 'true', *, *        CALReplyReply
+            [virtual uint 16 payloadLength 'replyLength']
             [manual   CALReply
                               calReply
                                     'STATIC_CALL("readCALReply", readBuffer, payloadLength)'
                                     'STATIC_CALL("writeCALReply", writeBuffer, calReply)'
                                     '_value.lengthInBytes*2'                                     ]
+        ]
+        [*                      MonitoredSALReply
+            [simple MonitoredSAL isA                    ]
         ]
     ]
 ]

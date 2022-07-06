@@ -27,5 +27,5 @@ To use plc4go import `"github.com/apache/plc4x/plc4go/pkg/api"` and use the driv
 
 ## plc4go tools
 
-To install a tool e.g. plc4xpcapanalyzer install it like that: 
+To install a tool e.g. `plc4xpcapanalyzer` install it like that: 
 `go install github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer@latest`
