@@ -20,6 +20,10 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms;
 
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+/**
+ * @deprecated {@link org.apache.plc4x.plugins.codegenerator.types.terms.WildcardTerm} should be used instead
+ */
+@Deprecated
 public class WildcardTerm implements Term {
 
     public static final WildcardTerm INSTANCE = new WildcardTerm();

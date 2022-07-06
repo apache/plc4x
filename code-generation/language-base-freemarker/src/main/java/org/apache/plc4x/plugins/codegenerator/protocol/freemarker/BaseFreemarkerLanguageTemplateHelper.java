@@ -346,6 +346,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
 
+    // TODO: replace that with term.isWildcard() (once the referenced wildcard term from build utils is used)
     public boolean isWildcard(Term term) {
         return term instanceof WildcardTerm;
     }
