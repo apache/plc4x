@@ -130,7 +130,7 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 		_childTemp, typeSwitchError = ConfirmedPrivateTransferErrorParse(readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // VTCloseError
 		_childTemp, typeSwitchError = VTCloseErrorParse(readBuffer, errorChoice)
-	case true: // BACnetErrorGeneral
+	case 0 == 0: // BACnetErrorGeneral
 		_childTemp, typeSwitchError = BACnetErrorGeneralParse(readBuffer, errorChoice)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorChoice=%v]", errorChoice)

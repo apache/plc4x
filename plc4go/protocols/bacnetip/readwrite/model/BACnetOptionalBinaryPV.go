@@ -162,7 +162,7 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetOptionalBin
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalBinaryPVNull
 		_childTemp, typeSwitchError = BACnetOptionalBinaryPVNullParse(readBuffer)
-	case true: // BACnetOptionalBinaryPVValue
+	case 0 == 0: // BACnetOptionalBinaryPVValue
 		_childTemp, typeSwitchError = BACnetOptionalBinaryPVValueParse(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)

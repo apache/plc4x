@@ -162,7 +162,7 @@ func BACnetOptionalUnsignedParse(readBuffer utils.ReadBuffer) (BACnetOptionalUns
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalUnsignedNull
 		_childTemp, typeSwitchError = BACnetOptionalUnsignedNullParse(readBuffer)
-	case true: // BACnetOptionalUnsignedValue
+	case 0 == 0: // BACnetOptionalUnsignedValue
 		_childTemp, typeSwitchError = BACnetOptionalUnsignedValueParse(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)

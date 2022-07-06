@@ -150,7 +150,7 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 		_childTemp, typeSwitchError = APDURejectParse(readBuffer, apduLength)
 	case apduType == ApduType_ABORT_PDU: // APDUAbort
 		_childTemp, typeSwitchError = APDUAbortParse(readBuffer, apduLength)
-	case true: // APDUUnknown
+	case 0 == 0: // APDUUnknown
 		_childTemp, typeSwitchError = APDUUnknownParse(readBuffer, apduLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [apduType=%v]", apduType)

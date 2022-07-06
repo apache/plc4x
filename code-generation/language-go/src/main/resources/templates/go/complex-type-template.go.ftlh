@@ -1354,7 +1354,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 							case
 							<#list case.discriminatorValueTerms as discriminatorValueTerm>
 								<#if helper.isWildcard(discriminatorValueTerm)>
-									true
+									// TODO: we could use the above isWildcard as filter but then the switchField.discriminatorExpressions[discriminatorValueTerm?index] is offset. Solution would be to have it as a pair list
+                                    ${discriminatorValueTerm?index}==${discriminatorValueTerm?index}
 								<#else>
 									<#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index]>
 									<#assign parsedDiscriminatorExpression=helper.toParseExpression(null, null, discriminatorExpression, parserArguments)>
