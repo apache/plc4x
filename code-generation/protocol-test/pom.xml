@@ -29,7 +29,7 @@
 
   <artifactId>plc4x-code-generation-protocol-test</artifactId>
 
-  <name>Code-Generation: Protocol Test: Test Mspec (Documentation)</name>
+  <name>Code-Generation: Protocol Test: Test Mspec</name>
   <description>Fake protocol intended for demonstrating the different features and aspects of MSpec.</description>
 
   <build>
