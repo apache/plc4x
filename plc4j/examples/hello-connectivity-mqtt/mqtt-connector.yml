@@ -22,7 +22,7 @@ mqtt:
   server-host: test.mosquitto.org
   server-port: 1883
 plc:
-  connection: test:plc4x-example-mqtt
+  connection: simulated:plc4x-example-mqtt
   addresses:
     - name: intParam
       address: RANDOM/foo:INTEGER
