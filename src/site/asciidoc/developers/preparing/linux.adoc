@@ -93,11 +93,11 @@ Checking:
 
  python3 --version
 
-If you get a version of 3.3 or higher reported, you probably don't need to do anything.
+If you get a version of 3.7 or higher reported, you probably don't need to do anything.
 
 Apt-based systems:
 
- sudo apt-get install python3 python3-venv
+ sudo apt-get install python3
 
 Yum based systems:
 
