@@ -252,7 +252,7 @@ public class RandomPackagesTest {
             void calReplyNormal() throws Exception {
                 byte[] bytes = Hex.decodeHex("8902312E322E363620200A");
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CALReply msg = CALReplyShort.staticParse(readBufferByteBased, requestContext);
+                CALReply msg = CALReplyShort.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);
@@ -262,7 +262,7 @@ public class RandomPackagesTest {
             void calReplySmart() throws Exception {
                 byte[] bytes = Hex.decodeHex("860593008902312E322E363620207F");
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CALReply msg = CALReplyLong.staticParse(readBufferByteBased, requestContext);
+                CALReply msg = CALReplyLong.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg)
                     .isNotNull();
                 System.out.println(msg);

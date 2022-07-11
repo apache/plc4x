@@ -154,7 +154,7 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	_ = payloadLength
 
 	// Manual Field (monitoredSAL)
-	_monitoredSAL, _monitoredSALErr := ReadMonitoredSAL(readBuffer, payloadLength)
+	_monitoredSAL, _monitoredSALErr := ReadMonitoredSAL(readBuffer, payloadLength, cBusOptions)
 	if _monitoredSALErr != nil {
 		return nil, errors.Wrap(_monitoredSALErr, "Error parsing 'monitoredSAL' field of MonitoredSALReply")
 	}

@@ -154,7 +154,7 @@ func ReplyCALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, re
 	_ = payloadLength
 
 	// Manual Field (calReply)
-	_calReply, _calReplyErr := ReadCALReply(readBuffer, payloadLength, requestContext)
+	_calReply, _calReplyErr := ReadCALReply(readBuffer, payloadLength, cBusOptions, requestContext)
 	if _calReplyErr != nil {
 		return nil, errors.Wrap(_calReplyErr, "Error parsing 'calReply' field of ReplyCALReply")
 	}

@@ -52,8 +52,10 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.RequestContextParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CALReply":
 		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
-		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), requestContext)
+		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
@@ -122,7 +124,9 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "BridgeAddress":
 		return model.BridgeAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "MonitoredSAL":
-		return model.MonitoredSALParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		return model.MonitoredSALParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
 	case "ParameterChange":
 		return model.ParameterChangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusByte":

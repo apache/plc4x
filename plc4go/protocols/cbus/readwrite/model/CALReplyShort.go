@@ -55,9 +55,10 @@ type _CALReplyShort struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALReplyShort) InitializeParent(parent CALReply, calType byte, calData CALData) {
+func (m *_CALReplyShort) InitializeParent(parent CALReply, calType byte, calData CALData, crc Checksum) {
 	m.CalType = calType
 	m.CalData = calData
+	m.Crc = crc
 }
 
 func (m *_CALReplyShort) GetParent() CALReply {
@@ -65,9 +66,9 @@ func (m *_CALReplyShort) GetParent() CALReply {
 }
 
 // NewCALReplyShort factory function for _CALReplyShort
-func NewCALReplyShort(calType byte, calData CALData, requestContext RequestContext) *_CALReplyShort {
+func NewCALReplyShort(calType byte, calData CALData, crc Checksum, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyShort {
 	_result := &_CALReplyShort{
-		_CALReply: NewCALReply(calType, calData, requestContext),
+		_CALReply: NewCALReply(calType, calData, crc, cBusOptions, requestContext),
 	}
 	_result._CALReply._CALReplyChildRequirements = _result
 	return _result
@@ -102,7 +103,7 @@ func (m *_CALReplyShort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyShortParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALReplyShort, error) {
+func CALReplyShortParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyShort"); pullErr != nil {
@@ -118,6 +119,7 @@ func CALReplyShortParse(readBuffer utils.ReadBuffer, requestContext RequestConte
 	// Create a partially initialized instance
 	_child := &_CALReplyShort{
 		_CALReply: &_CALReply{
+			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
 	}

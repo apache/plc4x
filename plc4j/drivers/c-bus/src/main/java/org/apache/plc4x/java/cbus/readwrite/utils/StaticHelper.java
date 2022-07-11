@@ -42,9 +42,9 @@ public class StaticHelper {
         writeToHex("calReply", writeBuffer, calReply, calReply.getLengthInBytes());
     }
 
-    public static CALReply readCALReply(ReadBuffer readBuffer, Integer payloadLength, RequestContext requestContext) throws ParseException {
+    public static CALReply readCALReply(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions, RequestContext requestContext) throws ParseException {
         byte[] rawBytes = readBytesFromHex("calReply", readBuffer, payloadLength);
-        return CALReply.staticParse(new ReadBufferByteBased(rawBytes), requestContext);
+        return CALReply.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions, requestContext);
     }
 
     public static void writeCALDataOrSetParameter(WriteBuffer writeBuffer, CALDataOrSetParameter calDataOrSetParameter) throws SerializationException {
@@ -60,9 +60,9 @@ public class StaticHelper {
         writeToHex("monitoredSAL", writeBuffer, monitoredSAL, monitoredSAL.getLengthInBytes());
     }
 
-    public static MonitoredSAL readMonitoredSAL(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
+    public static MonitoredSAL readMonitoredSAL(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions) throws ParseException {
         byte[] rawBytes = readBytesFromHex("monitoredSAL", readBuffer, payloadLength);
-        return MonitoredSAL.staticParse(new ReadBufferByteBased(rawBytes));
+        return MonitoredSAL.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions);
     }
 
     public static void writeStandardFormatStatusReply(WriteBuffer writeBuffer, StandardFormatStatusReply standardFormatStatusReply) throws SerializationException {

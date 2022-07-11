@@ -40,8 +40,9 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "RequestContext":
 		return model.RequestContextParse(io)
 	case "CALReply":
+		var cBusOptions model.CBusOptions
 		var requestContext model.RequestContext
-		return model.CALReplyParse(io, requestContext)
+		return model.CALReplyParse(io, cBusOptions, requestContext)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
 	case "NetworkNumber":
@@ -103,7 +104,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "BridgeAddress":
 		return model.BridgeAddressParse(io)
 	case "MonitoredSAL":
-		return model.MonitoredSALParse(io)
+		var cBusOptions model.CBusOptions
+		return model.MonitoredSALParse(io, cBusOptions)
 	case "ParameterChange":
 		return model.ParameterChangeParse(io)
 	case "StatusByte":

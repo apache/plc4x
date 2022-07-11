@@ -72,9 +72,10 @@ type _MonitoredSALShortFormBasicMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALShortFormBasicMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData) {
+func (m *_MonitoredSALShortFormBasicMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData, crc Checksum) {
 	m.SalType = salType
 	m.SalData = salData
+	m.Crc = crc
 }
 
 func (m *_MonitoredSALShortFormBasicMode) GetParent() MonitoredSAL {
@@ -112,14 +113,14 @@ func (m *_MonitoredSALShortFormBasicMode) GetApplication() ApplicationIdContaine
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, networkNumber NetworkNumber, noCounts *byte, application ApplicationIdContainer, salType byte, salData SALData) *_MonitoredSALShortFormBasicMode {
+func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, networkNumber NetworkNumber, noCounts *byte, application ApplicationIdContainer, salType byte, salData SALData, crc Checksum, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
 	_result := &_MonitoredSALShortFormBasicMode{
 		Counts:        counts,
 		BridgeCount:   bridgeCount,
 		NetworkNumber: networkNumber,
 		NoCounts:      noCounts,
 		Application:   application,
-		_MonitoredSAL: NewMonitoredSAL(salType, salData),
+		_MonitoredSAL: NewMonitoredSAL(salType, salData, crc, cBusOptions),
 	}
 	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
 	return _result
@@ -172,7 +173,7 @@ func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (MonitoredSALShortFormBasicMode, error) {
+func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
@@ -268,7 +269,9 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (Monitored
 		NetworkNumber: networkNumber,
 		NoCounts:      noCounts,
 		Application:   application,
-		_MonitoredSAL: &_MonitoredSAL{},
+		_MonitoredSAL: &_MonitoredSAL{
+			CBusOptions: cBusOptions,
+		},
 	}
 	_child._MonitoredSAL._MonitoredSALChildRequirements = _child
 	return _child, nil

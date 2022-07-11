@@ -225,8 +225,8 @@
             [simple UnitAddress   unitAddress                                                   ]
         ]
     ]
-    [simple   CALData('null') calData                                                                   ]
-    [optional Checksum      crc      'cBusOptions.srchk'                                                    ] // checksum is optional but mspec checksum isn't
+    [simple   CALData('null') calData                                                           ]
+    [optional Checksum      crc      'cBusOptions.srchk'                                        ] // checksum is optional but mspec checksum isn't
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(CBusOptions cBusOptions)
@@ -997,7 +997,7 @@
             [virtual uint 16 payloadLength 'replyLength']
             [manual   CALReply
                               calReply
-                                    'STATIC_CALL("readCALReply", readBuffer, payloadLength, requestContext)'
+                                    'STATIC_CALL("readCALReply", readBuffer, payloadLength, cBusOptions, requestContext)'
                                     'STATIC_CALL("writeCALReply", writeBuffer, calReply)'
                                     '_value.lengthInBytes*2'                                     ]
         ]
@@ -1005,14 +1005,14 @@
             [virtual uint 16 payloadLength 'replyLength']
             [manual   MonitoredSAL
                               monitoredSAL
-                                    'STATIC_CALL("readMonitoredSAL", readBuffer, payloadLength)'
+                                    'STATIC_CALL("readMonitoredSAL", readBuffer, payloadLength, cBusOptions)'
                                     'STATIC_CALL("writeMonitoredSAL", writeBuffer, monitoredSAL)'
                                     '_value.lengthInBytes*2'                                     ]
         ]
     ]
 ]
 
-[type CALReply(RequestContext requestContext)
+[type CALReply(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte     calType                                                                    ]
     [typeSwitch calType
         ['0x86' CALReplyLong
@@ -1031,7 +1031,7 @@
         ]
     ]
     [simple   CALData('requestContext')   calData                                                ]
-    //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
+    [optional Checksum      crc      'cBusOptions.srchk'                                         ] // checksum is optional but mspec checksum isn't
 ]
 
 [type BridgeCount
@@ -1042,7 +1042,7 @@
     [simple uint 8 number]
 ]
 
-[type MonitoredSAL
+[type MonitoredSAL(CBusOptions cBusOptions)
     [peek    byte     salType             ]
     [typeSwitch salType
         ['0x05' MonitoredSALLongFormSmartMode
@@ -1069,7 +1069,7 @@
         ]
     ]
     [optional SALData salData                                               ]
-    //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
+    [optional Checksum      crc      'cBusOptions.srchk'                                                    ] // checksum is optional but mspec checksum isn't
 ]
 
 [type Confirmation
