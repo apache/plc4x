@@ -976,7 +976,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         sb.append(va.getName().substring(1)).append(va.getChild().map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)).orElse(""));
                     } else {
                         sb.append(va.getName()).append((va.getChild().isPresent()) ?
-                            "." + toVariableExpression(field, typeReference, variableLiteral.getChild().orElseThrow(IllegalStateException::new), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
+                            "." + toVariableExpression(field, typeReference, va.getChild().orElseThrow(IllegalStateException::new), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
                     }
                 }
                 // We have to manually evaluate the type information at code-generation time.
