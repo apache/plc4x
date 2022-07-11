@@ -33,29 +33,29 @@ type CbusParserHelper struct {
 func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "CALData":
-		return model.CALDataParse(io)
-	case "CALDataNormal":
-		return model.CALDataNormalParse(io)
+		var requestContext model.RequestContext
+		return model.CALDataParse(io, requestContext)
 	case "Checksum":
 		return model.ChecksumParse(io)
 	case "RequestContext":
 		return model.RequestContextParse(io)
 	case "CALReply":
-		return model.CALReplyParse(io)
+		var requestContext model.RequestContext
+		return model.CALReplyParse(io, requestContext)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
-	case "NormalReply":
-		var cBusOptions model.CBusOptions
-		replyLength, err := utils.StrToUint16(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		var requestContext model.RequestContext
-		return model.NormalReplyParse(io, cBusOptions, replyLength, requestContext)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "RequestTermination":
 		return model.RequestTerminationParse(io)
+	case "ReplyOrConfirmation":
+		var cBusOptions model.CBusOptions
+		messageLength, err := utils.StrToUint16(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		var requestContext model.RequestContext
+		return model.ReplyOrConfirmationParse(io, cBusOptions, messageLength, requestContext)
 	case "StandardFormatStatusReply":
 		return model.StandardFormatStatusReplyParse(io)
 	case "CBusMessage":
@@ -82,6 +82,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(arguments[0])
 		return model.IdentifyReplyCommandParse(io, attribute)
+	case "CALDataOrSetParameter":
+		return model.CALDataOrSetParameterParse(io)
 	case "CBusConstants":
 		return model.CBusConstantsParse(io)
 	case "BridgeCount":
@@ -90,12 +92,12 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.PowerUpParse(io)
 	case "Reply":
 		var cBusOptions model.CBusOptions
-		messageLength, err := utils.StrToUint16(arguments[1])
+		replyLength, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		var requestContext model.RequestContext
-		return model.ReplyParse(io, cBusOptions, messageLength, requestContext)
+		return model.ReplyParse(io, cBusOptions, replyLength, requestContext)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(io)
 	case "BridgeAddress":

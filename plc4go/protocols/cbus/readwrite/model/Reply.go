@@ -32,8 +32,12 @@ type Reply interface {
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
-	// GetIsAlpha returns IsAlpha (virtual field)
-	GetIsAlpha() bool
+	// GetSendCalCommandBefore returns SendCalCommandBefore (virtual field)
+	GetSendCalCommandBefore() bool
+	// GetSendSALStatusRequestBefore returns SendSALStatusRequestBefore (virtual field)
+	GetSendSALStatusRequestBefore() bool
+	// GetExstat returns Exstat (virtual field)
+	GetExstat() bool
 }
 
 // ReplyExactly can be used when we want exactly this type and not a type which fulfills Reply.
@@ -50,7 +54,7 @@ type _Reply struct {
 
 	// Arguments.
 	CBusOptions    CBusOptions
-	MessageLength  uint16
+	ReplyLength    uint16
 	RequestContext RequestContext
 }
 
@@ -92,8 +96,16 @@ func (m *_Reply) GetPeekedByte() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_Reply) GetIsAlpha() bool {
-	return bool(bool(bool(bool((m.GetPeekedByte()) >= (0x67)))) && bool(bool(bool((m.GetPeekedByte()) <= (0x7A)))))
+func (m *_Reply) GetSendCalCommandBefore() bool {
+	return bool(m.RequestContext.GetSendCalCommandBefore())
+}
+
+func (m *_Reply) GetSendSALStatusRequestBefore() bool {
+	return bool(m.RequestContext.GetSendSALStatusRequestBefore())
+}
+
+func (m *_Reply) GetExstat() bool {
+	return bool(m.CBusOptions.GetExstat())
 }
 
 ///////////////////////
@@ -102,8 +114,8 @@ func (m *_Reply) GetIsAlpha() bool {
 ///////////////////////////////////////////////////////////
 
 // NewReply factory function for _Reply
-func NewReply(peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_Reply {
-	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, MessageLength: messageLength, RequestContext: requestContext}
+func NewReply(peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, ReplyLength: replyLength, RequestContext: requestContext}
 }
 
 // Deprecated: use the interface for direct cast
@@ -126,6 +138,10 @@ func (m *_Reply) GetParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -133,7 +149,7 @@ func (m *_Reply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (Reply, error) {
+func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
@@ -152,9 +168,19 @@ func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLen
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isAlpha := bool(bool(bool((peekedByte) >= (0x67)))) && bool(bool(bool((peekedByte) <= (0x7A))))
-	isAlpha := bool(_isAlpha)
-	_ = isAlpha
+	_sendCalCommandBefore := requestContext.GetSendCalCommandBefore()
+	sendCalCommandBefore := bool(_sendCalCommandBefore)
+	_ = sendCalCommandBefore
+
+	// Virtual field
+	_sendSALStatusRequestBefore := requestContext.GetSendSALStatusRequestBefore()
+	sendSALStatusRequestBefore := bool(_sendSALStatusRequestBefore)
+	_ = sendSALStatusRequestBefore
+
+	// Virtual field
+	_exstat := cBusOptions.GetExstat()
+	exstat := bool(_exstat)
+	_ = exstat
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ReplyChildSerializeRequirement interface {
@@ -166,12 +192,22 @@ func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLen
 	var _child ReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case isAlpha == bool(true): // ConfirmationReply
-		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer, cBusOptions, messageLength, requestContext)
-	case isAlpha == bool(false): // ReplyNormalReply
-		_childTemp, typeSwitchError = ReplyNormalReplyParse(readBuffer, cBusOptions, messageLength, requestContext)
+	case peekedByte == 0x2B: // PowerUpReply
+		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+	case peekedByte == 0x3D: // ParameterChangeReply
+		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+	case peekedByte == 0x21: // ServerErrorReply
+		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+	case 0 == 0 && 1 == 1 && sendSALStatusRequestBefore == bool(true) && exstat == bool(false): // ReplyStandardFormatStatusReply
+		_childTemp, typeSwitchError = ReplyStandardFormatStatusReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+	case 0 == 0 && 1 == 1 && sendSALStatusRequestBefore == bool(true) && exstat == bool(true): // ReplyExtendedFormatStatusReply
+		_childTemp, typeSwitchError = ReplyExtendedFormatStatusReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+	case 0 == 0 && sendCalCommandBefore == bool(true) && 2 == 2 && 3 == 3: // ReplyCALReply
+		_childTemp, typeSwitchError = ReplyCALReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+	case 0 == 0: // MonitoredSALReply
+		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v]", isAlpha)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v, sendCalCommandBefore=%v, sendSALStatusRequestBefore=%v, exstat=%v]", peekedByte, sendCalCommandBefore, sendSALStatusRequestBefore, exstat)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Reply")
@@ -197,8 +233,16 @@ func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, se
 		return errors.Wrap(pushErr, "Error pushing for Reply")
 	}
 	// Virtual field
-	if _isAlphaErr := writeBuffer.WriteVirtual("isAlpha", m.GetIsAlpha()); _isAlphaErr != nil {
-		return errors.Wrap(_isAlphaErr, "Error serializing 'isAlpha' field")
+	if _sendCalCommandBeforeErr := writeBuffer.WriteVirtual("sendCalCommandBefore", m.GetSendCalCommandBefore()); _sendCalCommandBeforeErr != nil {
+		return errors.Wrap(_sendCalCommandBeforeErr, "Error serializing 'sendCalCommandBefore' field")
+	}
+	// Virtual field
+	if _sendSALStatusRequestBeforeErr := writeBuffer.WriteVirtual("sendSALStatusRequestBefore", m.GetSendSALStatusRequestBefore()); _sendSALStatusRequestBeforeErr != nil {
+		return errors.Wrap(_sendSALStatusRequestBeforeErr, "Error serializing 'sendSALStatusRequestBefore' field")
+	}
+	// Virtual field
+	if _exstatErr := writeBuffer.WriteVirtual("exstat", m.GetExstat()); _exstatErr != nil {
+		return errors.Wrap(_exstatErr, "Error serializing 'exstat' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

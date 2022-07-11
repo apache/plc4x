@@ -34,6 +34,8 @@ type RequestContext interface {
 	GetSendCalCommandBefore() bool
 	// GetSendSALStatusRequestBefore returns SendSALStatusRequestBefore (property field)
 	GetSendSALStatusRequestBefore() bool
+	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
+	GetSendIdentifyRequestBefore() bool
 }
 
 // RequestContextExactly can be used when we want exactly this type and not a type which fulfills RequestContext.
@@ -47,6 +49,7 @@ type RequestContextExactly interface {
 type _RequestContext struct {
 	SendCalCommandBefore       bool
 	SendSALStatusRequestBefore bool
+	SendIdentifyRequestBefore  bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -62,14 +65,18 @@ func (m *_RequestContext) GetSendSALStatusRequestBefore() bool {
 	return m.SendSALStatusRequestBefore
 }
 
+func (m *_RequestContext) GetSendIdentifyRequestBefore() bool {
+	return m.SendIdentifyRequestBefore
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewRequestContext factory function for _RequestContext
-func NewRequestContext(sendCalCommandBefore bool, sendSALStatusRequestBefore bool) *_RequestContext {
-	return &_RequestContext{SendCalCommandBefore: sendCalCommandBefore, SendSALStatusRequestBefore: sendSALStatusRequestBefore}
+func NewRequestContext(sendCalCommandBefore bool, sendSALStatusRequestBefore bool, sendIdentifyRequestBefore bool) *_RequestContext {
+	return &_RequestContext{SendCalCommandBefore: sendCalCommandBefore, SendSALStatusRequestBefore: sendSALStatusRequestBefore, SendIdentifyRequestBefore: sendIdentifyRequestBefore}
 }
 
 // Deprecated: use the interface for direct cast
@@ -98,6 +105,9 @@ func (m *_RequestContext) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 1
 
 	// Simple field (sendSALStatusRequestBefore)
+	lengthInBits += 1
+
+	// Simple field (sendIdentifyRequestBefore)
 	lengthInBits += 1
 
 	return lengthInBits
@@ -130,12 +140,19 @@ func RequestContextParse(readBuffer utils.ReadBuffer) (RequestContext, error) {
 	}
 	sendSALStatusRequestBefore := _sendSALStatusRequestBefore
 
+	// Simple Field (sendIdentifyRequestBefore)
+	_sendIdentifyRequestBefore, _sendIdentifyRequestBeforeErr := readBuffer.ReadBit("sendIdentifyRequestBefore")
+	if _sendIdentifyRequestBeforeErr != nil {
+		return nil, errors.Wrap(_sendIdentifyRequestBeforeErr, "Error parsing 'sendIdentifyRequestBefore' field of RequestContext")
+	}
+	sendIdentifyRequestBefore := _sendIdentifyRequestBefore
+
 	if closeErr := readBuffer.CloseContext("RequestContext"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestContext")
 	}
 
 	// Create the instance
-	return NewRequestContext(sendCalCommandBefore, sendSALStatusRequestBefore), nil
+	return NewRequestContext(sendCalCommandBefore, sendSALStatusRequestBefore, sendIdentifyRequestBefore), nil
 }
 
 func (m *_RequestContext) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -157,6 +174,13 @@ func (m *_RequestContext) Serialize(writeBuffer utils.WriteBuffer) error {
 	_sendSALStatusRequestBeforeErr := writeBuffer.WriteBit("sendSALStatusRequestBefore", (sendSALStatusRequestBefore))
 	if _sendSALStatusRequestBeforeErr != nil {
 		return errors.Wrap(_sendSALStatusRequestBeforeErr, "Error serializing 'sendSALStatusRequestBefore' field")
+	}
+
+	// Simple Field (sendIdentifyRequestBefore)
+	sendIdentifyRequestBefore := bool(m.GetSendIdentifyRequestBefore())
+	_sendIdentifyRequestBeforeErr := writeBuffer.WriteBit("sendIdentifyRequestBefore", (sendIdentifyRequestBefore))
+	if _sendIdentifyRequestBeforeErr != nil {
+		return errors.Wrap(_sendIdentifyRequestBeforeErr, "Error serializing 'sendIdentifyRequestBefore' field")
 	}
 
 	if popErr := writeBuffer.PopContext("RequestContext"); popErr != nil {

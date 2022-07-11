@@ -39,7 +39,7 @@ type Analyzer struct {
 func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
 	if !a.initialized {
 		log.Warn().Msg("Not initialized... doing that now")
-		a.requestContext = model.NewRequestContext(false, false)
+		a.requestContext = model.NewRequestContext(false, false, false)
 		a.cBusOptions = model.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 		a.initialized = true
 	}
@@ -55,29 +55,48 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 	case model.CBusMessageToServerExactly:
 		switch request := cBusMessage.GetRequest().(type) {
 		case model.RequestDirectCommandAccessExactly:
+			sendIdentifyRequestBefore := false
 			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			a.requestContext = model.NewRequestContext(true, false)
+			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
+			case model.CALDataOrSetParameterValueExactly:
+				switch calDataOrSetParameter.GetCalData().(type) {
+				case model.CALDataIdentifyExactly:
+					sendIdentifyRequestBefore = true
+				}
+			}
+			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
 		case model.RequestCommandExactly:
 			switch command := request.GetCbusCommand().(type) {
 			case model.CBusCommandDeviceManagementExactly:
 				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				a.requestContext = model.NewRequestContext(true, false)
+				a.requestContext = model.NewRequestContext(true, false, false)
 			case model.CBusCommandPointToPointExactly:
 				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				a.requestContext = model.NewRequestContext(true, false)
+				a.requestContext = model.NewRequestContext(true, false, false)
 			case model.CBusCommandPointToMultiPointExactly:
 				switch command.GetCommand().(type) {
 				case model.CBusPointToMultiPointCommandStatusExactly:
 					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true)
+					a.requestContext = model.NewRequestContext(false, true, false)
 				}
 			case model.CBusCommandPointToPointToMultiPointExactly:
 				switch command.GetCommand().(type) {
 				case model.CBusPointToPointToMultipointCommandStatusExactly:
 					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true)
+					a.requestContext = model.NewRequestContext(false, true, false)
 				}
 			}
+		case model.RequestObsoleteExactly:
+			sendIdentifyRequestBefore := false
+			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
+			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
+			case model.CALDataOrSetParameterValueExactly:
+				switch calDataOrSetParameter.GetCalData().(type) {
+				case model.CALDataIdentifyExactly:
+					sendIdentifyRequestBefore = true
+				}
+			}
+			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
 		}
 	case model.CBusMessageToClientExactly:
 	}
@@ -108,24 +127,25 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 		case model.CBusMessageToServerExactly:
 			switch request := message.GetRequest().(type) {
 			case model.RequestDirectCommandAccessExactly:
-				fmt.Printf("%v\n", request.GetCalData())
+				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
 			case model.RequestCommandExactly:
 				fmt.Printf("%v\n", request.GetCbusCommand())
 			}
 		case model.CBusMessageToClientExactly:
 			switch reply := message.GetReply().(type) {
-			case model.ConfirmationReplyExactly:
+			case model.ReplyOrConfirmationConfirmationExactly:
 				switch reply := reply.GetEmbeddedReply().(type) {
-				case model.ReplyNormalReplyExactly:
+				// TODO: add recursion
+				case model.ReplyOrConfirmationReplyExactly:
 					switch reply := reply.GetReply().(type) {
-					case model.CALReplyReplyExactly:
+					case model.ReplyCALReplyExactly:
 						// We print this a second time as the first print contains only the hex part
 						fmt.Printf("%v\n", reply.GetCalReply())
 					}
 				}
-			case model.ReplyNormalReplyExactly:
+			case model.ReplyOrConfirmationReplyExactly:
 				switch reply := reply.GetReply().(type) {
-				case model.CALReplyReplyExactly:
+				case model.ReplyCALReplyExactly:
 					// We print this a second time as the first print contains only the hex part
 					fmt.Printf("%v\n", reply.GetCalReply())
 				}

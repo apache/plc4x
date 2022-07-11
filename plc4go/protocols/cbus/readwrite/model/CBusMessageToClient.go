@@ -32,7 +32,7 @@ type CBusMessageToClient interface {
 	utils.Serializable
 	CBusMessage
 	// GetReply returns Reply (property field)
-	GetReply() Reply
+	GetReply() ReplyOrConfirmation
 }
 
 // CBusMessageToClientExactly can be used when we want exactly this type and not a type which fulfills CBusMessageToClient.
@@ -45,7 +45,7 @@ type CBusMessageToClientExactly interface {
 // _CBusMessageToClient is the data-structure of this message
 type _CBusMessageToClient struct {
 	*_CBusMessage
-	Reply Reply
+	Reply ReplyOrConfirmation
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ func (m *_CBusMessageToClient) GetParent() CBusMessage {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CBusMessageToClient) GetReply() Reply {
+func (m *_CBusMessageToClient) GetReply() ReplyOrConfirmation {
 	return m.Reply
 }
 
@@ -83,7 +83,7 @@ func (m *_CBusMessageToClient) GetReply() Reply {
 ///////////////////////////////////////////////////////////
 
 // NewCBusMessageToClient factory function for _CBusMessageToClient
-func NewCBusMessageToClient(reply Reply, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) *_CBusMessageToClient {
+func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) *_CBusMessageToClient {
 	_result := &_CBusMessageToClient{
 		Reply:        reply,
 		_CBusMessage: NewCBusMessage(requestContext, cBusOptions, messageLength),
@@ -137,11 +137,11 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := ReplyParse(readBuffer, cBusOptions, uint16(messageLength), requestContext)
+	_reply, _replyErr := ReplyOrConfirmationParse(readBuffer, cBusOptions, uint16(messageLength), requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of CBusMessageToClient")
 	}
-	reply := _reply.(Reply)
+	reply := _reply.(ReplyOrConfirmation)
 	if closeErr := readBuffer.CloseContext("reply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for reply")
 	}

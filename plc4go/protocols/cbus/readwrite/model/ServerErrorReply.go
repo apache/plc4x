@@ -34,7 +34,7 @@ const ServerErrorReply_ERRORMARKER byte = 0x21
 type ServerErrorReply interface {
 	utils.LengthAware
 	utils.Serializable
-	NormalReply
+	Reply
 }
 
 // ServerErrorReplyExactly can be used when we want exactly this type and not a type which fulfills ServerErrorReply.
@@ -46,7 +46,7 @@ type ServerErrorReplyExactly interface {
 
 // _ServerErrorReply is the data-structure of this message
 type _ServerErrorReply struct {
-	*_NormalReply
+	*_Reply
 }
 
 ///////////////////////////////////////////////////////////
@@ -59,12 +59,12 @@ type _ServerErrorReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerErrorReply) InitializeParent(parent NormalReply, peekedByte byte) {
+func (m *_ServerErrorReply) InitializeParent(parent Reply, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_ServerErrorReply) GetParent() NormalReply {
-	return m._NormalReply
+func (m *_ServerErrorReply) GetParent() Reply {
+	return m._Reply
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,9 +84,9 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 // NewServerErrorReply factory function for _ServerErrorReply
 func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_NormalReply: NewNormalReply(peekedByte, cBusOptions, replyLength, requestContext),
+		_Reply: NewReply(peekedByte, cBusOptions, replyLength, requestContext),
 	}
-	_result._NormalReply._NormalReplyChildRequirements = _result
+	_result._Reply._ReplyChildRequirements = _result
 	return _result
 }
 
@@ -146,13 +146,13 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions,
 
 	// Create a partially initialized instance
 	_child := &_ServerErrorReply{
-		_NormalReply: &_NormalReply{
+		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
 			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}
-	_child._NormalReply._NormalReplyChildRequirements = _child
+	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil
 }
 

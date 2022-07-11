@@ -206,7 +206,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusO
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calData")
 	}
-	_calData, _calDataErr := CALDataParse(readBuffer)
+	_calData, _calDataErr := CALDataParse(readBuffer, nil)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CBusPointToPointCommand")
 	}

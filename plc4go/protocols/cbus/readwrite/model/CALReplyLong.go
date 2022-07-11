@@ -142,7 +142,7 @@ func (m *_CALReplyLong) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyLong factory function for _CALReplyLong
-func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, calType byte, calData CALData) *_CALReplyLong {
+func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, calType byte, calData CALData, requestContext RequestContext) *_CALReplyLong {
 	_result := &_CALReplyLong{
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
@@ -150,7 +150,7 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddr
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_CALReply:              NewCALReply(calType, calData),
+		_CALReply:              NewCALReply(calType, calData, requestContext),
 	}
 	_result._CALReply._CALReplyChildRequirements = _result
 	return _result
@@ -213,7 +213,7 @@ func (m *_CALReplyLong) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
+func CALReplyLongParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALReplyLong, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyLong"); pullErr != nil {
@@ -356,7 +356,9 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_CALReply:              &_CALReply{},
+		_CALReply: &_CALReply{
+			RequestContext: requestContext,
+		},
 	}
 	_child._CALReply._CALReplyChildRequirements = _child
 	return _child, nil

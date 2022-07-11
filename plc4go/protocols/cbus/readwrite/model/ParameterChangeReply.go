@@ -30,7 +30,7 @@ import (
 type ParameterChangeReply interface {
 	utils.LengthAware
 	utils.Serializable
-	NormalReply
+	Reply
 	// GetIsA returns IsA (property field)
 	GetIsA() ParameterChange
 }
@@ -44,7 +44,7 @@ type ParameterChangeReplyExactly interface {
 
 // _ParameterChangeReply is the data-structure of this message
 type _ParameterChangeReply struct {
-	*_NormalReply
+	*_Reply
 	IsA ParameterChange
 }
 
@@ -58,12 +58,12 @@ type _ParameterChangeReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ParameterChangeReply) InitializeParent(parent NormalReply, peekedByte byte) {
+func (m *_ParameterChangeReply) InitializeParent(parent Reply, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_ParameterChangeReply) GetParent() NormalReply {
-	return m._NormalReply
+func (m *_ParameterChangeReply) GetParent() Reply {
+	return m._Reply
 }
 
 ///////////////////////////////////////////////////////////
@@ -83,10 +83,10 @@ func (m *_ParameterChangeReply) GetIsA() ParameterChange {
 // NewParameterChangeReply factory function for _ParameterChangeReply
 func NewParameterChangeReply(isA ParameterChange, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ParameterChangeReply {
 	_result := &_ParameterChangeReply{
-		IsA:          isA,
-		_NormalReply: NewNormalReply(peekedByte, cBusOptions, replyLength, requestContext),
+		IsA:    isA,
+		_Reply: NewReply(peekedByte, cBusOptions, replyLength, requestContext),
 	}
-	_result._NormalReply._NormalReplyChildRequirements = _result
+	_result._Reply._ReplyChildRequirements = _result
 	return _result
 }
 
@@ -151,13 +151,13 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 	// Create a partially initialized instance
 	_child := &_ParameterChangeReply{
 		IsA: isA,
-		_NormalReply: &_NormalReply{
+		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
 			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}
-	_child._NormalReply._NormalReplyChildRequirements = _child
+	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil
 }
 

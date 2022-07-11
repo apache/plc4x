@@ -35,8 +35,8 @@ type RequestDirectCommandAccess interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-	// GetCalData returns CalData (property field)
-	GetCalData() CALData
+	// GetCalDataOrSetParameter returns CalDataOrSetParameter (property field)
+	GetCalDataOrSetParameter() CALDataOrSetParameter
 }
 
 // RequestDirectCommandAccessExactly can be used when we want exactly this type and not a type which fulfills RequestDirectCommandAccess.
@@ -49,7 +49,7 @@ type RequestDirectCommandAccessExactly interface {
 // _RequestDirectCommandAccess is the data-structure of this message
 type _RequestDirectCommandAccess struct {
 	*_Request
-	CalData CALData
+	CalDataOrSetParameter CALDataOrSetParameter
 
 	// Arguments.
 	PayloadLength uint16
@@ -82,8 +82,8 @@ func (m *_RequestDirectCommandAccess) GetParent() Request {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RequestDirectCommandAccess) GetCalData() CALData {
-	return m.CalData
+func (m *_RequestDirectCommandAccess) GetCalDataOrSetParameter() CALDataOrSetParameter {
+	return m.CalDataOrSetParameter
 }
 
 ///////////////////////
@@ -105,10 +105,10 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(calData CALData, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestDirectCommandAccess {
+func NewRequestDirectCommandAccess(calDataOrSetParameter CALDataOrSetParameter, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestDirectCommandAccess {
 	_result := &_RequestDirectCommandAccess{
-		CalData:  calData,
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		CalDataOrSetParameter: calDataOrSetParameter,
+		_Request:              NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -139,7 +139,7 @@ func (m *_RequestDirectCommandAccess) GetLengthInBitsConditional(lastItem bool) 
 	// Const Field (at)
 	lengthInBits += 8
 
-	// Manual Field (calData)
+	// Manual Field (calDataOrSetParameter)
 	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
 
 	return lengthInBits
@@ -167,12 +167,12 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", RequestDirectCommandAccess_AT) + " but got " + fmt.Sprintf("%d", at))
 	}
 
-	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(readBuffer, payloadLength)
-	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestDirectCommandAccess")
+	// Manual Field (calDataOrSetParameter)
+	_calDataOrSetParameter, _calDataOrSetParameterErr := ReadCALDataOrSetParameter(readBuffer, payloadLength)
+	if _calDataOrSetParameterErr != nil {
+		return nil, errors.Wrap(_calDataOrSetParameterErr, "Error parsing 'calDataOrSetParameter' field of RequestDirectCommandAccess")
 	}
-	calData := _calData.(CALData)
+	calDataOrSetParameter := _calDataOrSetParameter.(CALDataOrSetParameter)
 
 	if closeErr := readBuffer.CloseContext("RequestDirectCommandAccess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestDirectCommandAccess")
@@ -180,7 +180,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 
 	// Create a partially initialized instance
 	_child := &_RequestDirectCommandAccess{
-		CalData: calData,
+		CalDataOrSetParameter: calDataOrSetParameter,
 		_Request: &_Request{
 			CBusOptions:   cBusOptions,
 			MessageLength: messageLength,
@@ -204,10 +204,10 @@ func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) e
 			return errors.Wrap(_atErr, "Error serializing 'at' field")
 		}
 
-		// Manual Field (calData)
-		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
-		if _calDataErr != nil {
-			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		// Manual Field (calDataOrSetParameter)
+		_calDataOrSetParameterErr := WriteCALDataOrSetParameter(writeBuffer, m.GetCalDataOrSetParameter())
+		if _calDataOrSetParameterErr != nil {
+			return errors.Wrap(_calDataOrSetParameterErr, "Error serializing 'calDataOrSetParameter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestDirectCommandAccess"); popErr != nil {

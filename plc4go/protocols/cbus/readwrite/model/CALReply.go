@@ -48,6 +48,9 @@ type _CALReply struct {
 	_CALReplyChildRequirements
 	CalType byte
 	CalData CALData
+
+	// Arguments.
+	RequestContext RequestContext
 }
 
 type _CALReplyChildRequirements interface {
@@ -89,8 +92,8 @@ func (m *_CALReply) GetCalData() CALData {
 ///////////////////////////////////////////////////////////
 
 // NewCALReply factory function for _CALReply
-func NewCALReply(calType byte, calData CALData) *_CALReply {
-	return &_CALReply{CalType: calType, CalData: calData}
+func NewCALReply(calType byte, calData CALData, requestContext RequestContext) *_CALReply {
+	return &_CALReply{CalType: calType, CalData: calData, RequestContext: requestContext}
 }
 
 // Deprecated: use the interface for direct cast
@@ -121,7 +124,7 @@ func (m *_CALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
+func CALReplyParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReply"); pullErr != nil {
@@ -150,9 +153,9 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	var typeSwitchError error
 	switch {
 	case calType == 0x86: // CALReplyLong
-		_childTemp, typeSwitchError = CALReplyLongParse(readBuffer)
+		_childTemp, typeSwitchError = CALReplyLongParse(readBuffer, requestContext)
 	case true: // CALReplyShort
-		_childTemp, typeSwitchError = CALReplyShortParse(readBuffer)
+		_childTemp, typeSwitchError = CALReplyShortParse(readBuffer, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [calType=%v]", calType)
 	}
@@ -165,7 +168,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calData")
 	}
-	_calData, _calDataErr := CALDataParse(readBuffer)
+	_calData, _calDataErr := CALDataParse(readBuffer, requestContext)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CALReply")
 	}

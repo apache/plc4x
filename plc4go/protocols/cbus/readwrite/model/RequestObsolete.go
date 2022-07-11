@@ -33,8 +33,8 @@ type RequestObsolete interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-	// GetCalData returns CalData (property field)
-	GetCalData() CALData
+	// GetCalDataOrSetParameter returns CalDataOrSetParameter (property field)
+	GetCalDataOrSetParameter() CALDataOrSetParameter
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
 	// GetObsoletePayloadLength returns ObsoletePayloadLength (virtual field)
@@ -51,8 +51,8 @@ type RequestObsoleteExactly interface {
 // _RequestObsolete is the data-structure of this message
 type _RequestObsolete struct {
 	*_Request
-	CalData CALData
-	Alpha   Alpha
+	CalDataOrSetParameter CALDataOrSetParameter
+	Alpha                 Alpha
 
 	// Arguments.
 	PayloadLength uint16
@@ -85,8 +85,8 @@ func (m *_RequestObsolete) GetParent() Request {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RequestObsolete) GetCalData() CALData {
-	return m.CalData
+func (m *_RequestObsolete) GetCalDataOrSetParameter() CALDataOrSetParameter {
+	return m.CalDataOrSetParameter
 }
 
 func (m *_RequestObsolete) GetAlpha() Alpha {
@@ -114,11 +114,11 @@ func (m *_RequestObsolete) GetObsoletePayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewRequestObsolete factory function for _RequestObsolete
-func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestObsolete {
+func NewRequestObsolete(calDataOrSetParameter CALDataOrSetParameter, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestObsolete {
 	_result := &_RequestObsolete{
-		CalData:  calData,
-		Alpha:    alpha,
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		CalDataOrSetParameter: calDataOrSetParameter,
+		Alpha:                 alpha,
+		_Request:              NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -148,7 +148,7 @@ func (m *_RequestObsolete) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
-	// Manual Field (calData)
+	// Manual Field (calDataOrSetParameter)
 	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
 
 	// Optional Field (alpha)
@@ -177,12 +177,12 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 	obsoletePayloadLength := uint16(_obsoletePayloadLength)
 	_ = obsoletePayloadLength
 
-	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(readBuffer, obsoletePayloadLength)
-	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestObsolete")
+	// Manual Field (calDataOrSetParameter)
+	_calDataOrSetParameter, _calDataOrSetParameterErr := ReadCALDataOrSetParameter(readBuffer, obsoletePayloadLength)
+	if _calDataOrSetParameterErr != nil {
+		return nil, errors.Wrap(_calDataOrSetParameterErr, "Error parsing 'calDataOrSetParameter' field of RequestObsolete")
 	}
-	calData := _calData.(CALData)
+	calDataOrSetParameter := _calDataOrSetParameter.(CALDataOrSetParameter)
 
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil
@@ -212,8 +212,8 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 
 	// Create a partially initialized instance
 	_child := &_RequestObsolete{
-		CalData: calData,
-		Alpha:   alpha,
+		CalDataOrSetParameter: calDataOrSetParameter,
+		Alpha:                 alpha,
 		_Request: &_Request{
 			CBusOptions:   cBusOptions,
 			MessageLength: messageLength,
@@ -235,10 +235,10 @@ func (m *_RequestObsolete) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_obsoletePayloadLengthErr, "Error serializing 'obsoletePayloadLength' field")
 		}
 
-		// Manual Field (calData)
-		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
-		if _calDataErr != nil {
-			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		// Manual Field (calDataOrSetParameter)
+		_calDataOrSetParameterErr := WriteCALDataOrSetParameter(writeBuffer, m.GetCalDataOrSetParameter())
+		if _calDataOrSetParameterErr != nil {
+			return errors.Wrap(_calDataOrSetParameterErr, "Error serializing 'calDataOrSetParameter' field")
 		}
 
 		// Optional Field (alpha) (Can be skipped, if the value is null)

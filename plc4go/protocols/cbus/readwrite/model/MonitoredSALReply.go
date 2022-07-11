@@ -30,7 +30,7 @@ import (
 type MonitoredSALReply interface {
 	utils.LengthAware
 	utils.Serializable
-	NormalReply
+	Reply
 	// GetMonitoredSAL returns MonitoredSAL (property field)
 	GetMonitoredSAL() MonitoredSAL
 	// GetPayloadLength returns PayloadLength (virtual field)
@@ -46,7 +46,7 @@ type MonitoredSALReplyExactly interface {
 
 // _MonitoredSALReply is the data-structure of this message
 type _MonitoredSALReply struct {
-	*_NormalReply
+	*_Reply
 	MonitoredSAL MonitoredSAL
 }
 
@@ -60,12 +60,12 @@ type _MonitoredSALReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALReply) InitializeParent(parent NormalReply, peekedByte byte) {
+func (m *_MonitoredSALReply) InitializeParent(parent Reply, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_MonitoredSALReply) GetParent() NormalReply {
-	return m._NormalReply
+func (m *_MonitoredSALReply) GetParent() Reply {
+	return m._Reply
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,9 +99,9 @@ func (m *_MonitoredSALReply) GetPayloadLength() uint16 {
 func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_MonitoredSALReply {
 	_result := &_MonitoredSALReply{
 		MonitoredSAL: monitoredSAL,
-		_NormalReply: NewNormalReply(peekedByte, cBusOptions, replyLength, requestContext),
+		_Reply:       NewReply(peekedByte, cBusOptions, replyLength, requestContext),
 	}
-	_result._NormalReply._NormalReplyChildRequirements = _result
+	_result._Reply._ReplyChildRequirements = _result
 	return _result
 }
 
@@ -167,13 +167,13 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	// Create a partially initialized instance
 	_child := &_MonitoredSALReply{
 		MonitoredSAL: monitoredSAL,
-		_NormalReply: &_NormalReply{
+		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
 			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}
-	_child._NormalReply._NormalReplyChildRequirements = _child
+	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil
 }
 

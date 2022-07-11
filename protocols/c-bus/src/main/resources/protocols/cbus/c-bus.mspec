@@ -23,9 +23,11 @@
 
 [type RequestContext
     // Useful for response parsing: Set this to true if you send a CAL before. This will change the way the response will be parsed
-    [simple bit sendCalCommandBefore        ]
+    [simple   bit       sendCalCommandBefore        ]
     // Useful for response parsing: Set this to true if you send a SAL status request before. This will change the way the response will be parsed
-    [simple bit sendSALStatusRequestBefore  ]
+    [simple   bit       sendSALStatusRequestBefore  ]
+    // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
+    [simple   bit       sendIdentifyRequestBefore   ]
 ]
 
 [type CBusOptions
@@ -57,7 +59,7 @@
             [simple   Request('cBusOptions', 'messageLength')         request         ]
        ]
        ['true' *ToClient
-            [simple   Reply('cBusOptions', 'messageLength', 'requestContext')  reply           ]
+            [simple   ReplyOrConfirmation('cBusOptions', 'messageLength', 'requestContext')  reply           ]
        ]
     ]
 ]
@@ -67,8 +69,8 @@
     [optional RequestType startingCR       'peekedByte == RequestType.EMPTY']
     [optional RequestType resetMode        'peekedByte == RequestType.RESET']
     [peek     RequestType secondPeek                                        ]
-    [virtual  RequestType actualPeek '(startingCR==null&&resetMode==null)||(startingCR==null&&resetMode!=null&&secondPeek==RequestType.EMPTY)?peekedByte:secondPeek']
-    [virtual uint 16 payloadLength '(messageLength-2)-((resetMode!=null)?(1):(0))'] // We subtract the command itself and the termination
+    [virtual  RequestType actualPeek       '(startingCR==null&&resetMode==null)||(startingCR==null&&resetMode!=null&&secondPeek==RequestType.EMPTY)?peekedByte:secondPeek'  ]
+    [virtual uint 16 payloadLength         '(messageLength-2)-((resetMode!=null)?(1):(0))'                                                                                  ] // We subtract the command itself and the termination
     [typeSwitch actualPeek
         ['SMART_CONNECT_SHORTCUT' *SmartConnectShortcut
             [const    byte        pipe      0x7C                            ]
@@ -79,18 +81,14 @@
         ]
         ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
             [const    byte         at        0x40                           ]
-            // Usually you would read the command now here but we need to decode ascii first
-            //[simple   CALData     calData    ]
-            [manual   CALData
-                                          calData
-                        'STATIC_CALL("readCALData", readBuffer, payloadLength)'
-                        'STATIC_CALL("writeCALData", writeBuffer, calData)'
+            [manual   CALDataOrSetParameter
+                                          calDataOrSetParameter
+                        'STATIC_CALL("readCALDataOrSetParameter", readBuffer, payloadLength)'
+                        'STATIC_CALL("writeCALDataOrSetParameter", writeBuffer, calDataOrSetParameter)'
                         '_value.lengthInBytes*2'                            ]
         ]
         ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
             [const    byte                initiator 0x5C                    ] // 0x5C == "/"
-            // Usually you would read the command now here but we need to decode ascii first
-            //[simple   CBusCommand('cBusOptions')     cbusCommand                ]
             [manual   CBusCommand
                                           cbusCommand
                         'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, cBusOptions)'
@@ -106,10 +104,10 @@
         // TODO: we should check if we are in basic mode
         [* *Obsolete(uint 16 payloadLength)
             [virtual  uint 16 obsoletePayloadLength 'payloadLength+1']
-            [manual   CALData
-                                          calData
-                        'STATIC_CALL("readCALData", readBuffer, obsoletePayloadLength)'
-                        'STATIC_CALL("writeCALData", writeBuffer, calData)'
+            [manual   CALDataOrSetParameter
+                                          calDataOrSetParameter
+                        'STATIC_CALL("readCALDataOrSetParameter", readBuffer, obsoletePayloadLength)'
+                        'STATIC_CALL("writeCALDataOrSetParameter", writeBuffer, calDataOrSetParameter)'
                         '_value.lengthInBytes*2'                            ]
             [optional Alpha         alpha                                   ]
         ]
@@ -227,7 +225,7 @@
             [simple UnitAddress   unitAddress                                                   ]
         ]
     ]
-    [simple   CALData calData                                                                   ]
+    [simple   CALData('null') calData                                                                   ]
     [optional Checksum      crc      'cBusOptions.srchk'                                                    ] // checksum is optional but mspec checksum isn't
 ]
 
@@ -560,7 +558,7 @@
     ['0xFF' RESERVED_FF                           ['RESERVED'                          , 'NO'                  ]] // NETWORK_CONTROL
 ]
 
-[type CALData
+[type CALDataOrSetParameter
     [peek    byte     firstByte           ]
     [typeSwitch firstByte
         ['0xA3' *SetParameter
@@ -569,45 +567,50 @@
             [const      byte    delimiter       0x0                     ]
             [simple     byte    parameterValue                          ]
         ]
-        [* *NormalValue
-            [simple   CALDataNormal calData]
+        [* *Value
+            [simple   CALData('null') calData]
         ]
     ]
 ]
 
-[type CALDataNormal
+[type CALData(RequestContext requestContext)
     [simple  CALCommandTypeContainer commandTypeContainer                                   ]
     //TODO: golang doesn't like checking for 0
-    //[validation 'commandTypeContainer!=null' "no command type could be found"               ]
+    //[validation 'commandTypeContainer!=null' "no command type could be found"             ]
     [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
-    [typeSwitch commandType
-        ['RESET' *RequestReset
+    [virtual bit  sendIdentifyRequestBefore       'requestContext!=null?requestContext.sendIdentifyRequestBefore:false']
+    [typeSwitch commandType, sendIdentifyRequestBefore
+        ['RESET'            *Reset // Request
         ]
-        ['RECALL' *RequestRecall
+        ['RECALL'           *Recall // Request
             [simple uint 8 paramNo                                                          ]
             [simple uint 8 count                                                            ]
         ]
-        ['IDENTIFY' *RequestIdentify
+        ['IDENTIFY'         *Identify // Request
             [simple Attribute attribute                                                     ]
         ]
-        ['GET_STATUS' *RequestGetStatus
+        ['GET_STATUS'       *GetStatus // Request
             [simple uint 8 paramNo                                                          ]
             [simple uint 8 count                                                            ]
         ]
-        ['REPLY' *ReplyReply(CALCommandTypeContainer commandTypeContainer)
+        ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer) // Reply
+            [simple Attribute attribute                                                     ]
+            [simple IdentifyReplyCommand('attribute') identifyReplyCommand                  ]
+        ]
+        ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple uint 8 paramNumber                                                      ]
             [array  byte   data        count 'commandTypeContainer.numBytes'                ]
         ]
-        ['ACKNOWLEDGE' *ReplyAcknowledge
+        ['ACKNOWLEDGE'      *Acknowledge // Reply
             [simple uint 8 paramNo                                                          ]
             [simple uint 8 code                                                             ]
         ]
-        ['STATUS' *ReplyStatus(CALCommandTypeContainer commandTypeContainer)
+        ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
             [array  byte                   data        count 'commandTypeContainer.numBytes'           ]
         ]
-        ['STATUS_EXTENDED' *ReplyStatusExtended(CALCommandTypeContainer commandTypeContainer)
+        ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple uint 8                 encoding                                                    ]
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
@@ -616,7 +619,7 @@
     ]
     // TODO: validate that this is the intention of 7.1
     // FIXME: as long as golang doesn't use pointer here we can't check if a value is known...
-    //[optional CALDataNormal additionalData]
+    //[optional CALData('requestContext') additionalData]
 ]
 
 [enum uint 8 Attribute(uint 8 bytesReturned)
@@ -943,38 +946,38 @@
     [simple byte value]
 ]
 
-[type Reply(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)
+[type ReplyOrConfirmation(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)
     [peek    byte peekedByte                                                ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'    ]
     [typeSwitch isAlpha
-        ['true' ConfirmationReply
+        ['true' *Confirmation
             [simple   Confirmation                      confirmation        ]
-            [optional Reply('cBusOptions','messageLength-confirmation.lengthInBytes', 'requestContext') embeddedReply]
+            [optional ReplyOrConfirmation('cBusOptions','messageLength-confirmation.lengthInBytes', 'requestContext') embeddedReply]
         ]
-        ['false' *NormalReply
-            [virtual  uint 16                       replyLength 'messageLength-2'] // We substract the termination \r\n
-            [simple   NormalReply('cBusOptions', 'replyLength', 'requestContext')    reply               ]
-            [simple   ResponseTermination           termination         ]
+        ['false' *Reply
+            [virtual  uint 16                       replyLength 'messageLength-2'] // remove the termination \r\n
+            [simple   Reply('cBusOptions', 'replyLength', 'requestContext')    reply               ]
+            [simple   ResponseTermination               termination         ]
         ]
     ]
 ]
 
-[type NormalReply(CBusOptions cBusOptions, uint 16 replyLength, RequestContext requestContext)
-    [peek    byte peekedByte                            ]
+[type Reply(CBusOptions cBusOptions, uint 16 replyLength, RequestContext requestContext)
+    [peek    byte peekedByte                                                                ]
     [virtual bit  sendCalCommandBefore        'requestContext.sendCalCommandBefore'         ]
     [virtual bit  sendSALStatusRequestBefore  'requestContext.sendSALStatusRequestBefore'   ]
     [virtual bit  exstat                      'cBusOptions.exstat'                          ]
     [typeSwitch peekedByte, sendCalCommandBefore, sendSALStatusRequestBefore, exstat
-        ['0x2B'                 PowerUpReply // is a +
+        ['0x2B'                     PowerUpReply // is a +
             [simple PowerUp isA]
         ]
-        ['0x3D'                 ParameterChangeReply // is a =
+        ['0x3D'                     ParameterChangeReply // is a =
             [simple ParameterChange isA                 ]
         ]
-        ['0x21'                 ServerErrorReply // is a !
+        ['0x21'                     ServerErrorReply // is a !
             [const  byte    errorMarker     0x21        ]
         ]
-        [*, *, 'true', *        StandardFormatStatusReplyReply
+        [*, *, 'true', 'false'      *StandardFormatStatusReply
             [virtual uint 16 payloadLength 'replyLength']
             [manual   StandardFormatStatusReply
                               reply
@@ -982,7 +985,7 @@
                                     'STATIC_CALL("writeStandardFormatStatusReply", writeBuffer, reply)'
                                     '_value.lengthInBytes*2'                                     ]
         ]
-        [*, *, 'true', 'false'  ExtendedFormatStatusReplyReply
+        [*, *, 'true', 'true'       *ExtendedFormatStatusReply
             [virtual uint 16 payloadLength 'replyLength']
             [manual   ExtendedFormatStatusReply
                               reply
@@ -990,15 +993,15 @@
                                     'STATIC_CALL("writeExtendedFormatStatusReply", writeBuffer, reply)'
                                     '_value.lengthInBytes*2'                                     ]
         ]
-        [*, 'true', *, *        CALReplyReply
+        [*, 'true', *, *            *CALReply
             [virtual uint 16 payloadLength 'replyLength']
             [manual   CALReply
                               calReply
-                                    'STATIC_CALL("readCALReply", readBuffer, payloadLength)'
+                                    'STATIC_CALL("readCALReply", readBuffer, payloadLength, requestContext)'
                                     'STATIC_CALL("writeCALReply", writeBuffer, calReply)'
                                     '_value.lengthInBytes*2'                                     ]
         ]
-        [*                      MonitoredSALReply
+        [*                          MonitoredSALReply
             [virtual uint 16 payloadLength 'replyLength']
             [manual   MonitoredSAL
                               monitoredSAL
@@ -1009,7 +1012,7 @@
     ]
 ]
 
-[type CALReply
+[type CALReply(RequestContext requestContext)
     [peek    byte     calType                                                                    ]
     [typeSwitch calType
         ['0x86' CALReplyLong
@@ -1027,7 +1030,7 @@
         [       CALReplyShort
         ]
     ]
-    [simple   CALData   calData                                                                  ]
+    [simple   CALData('requestContext')   calData                                                ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
 ]
 

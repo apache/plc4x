@@ -42,24 +42,24 @@ func WriteCALReply(writeBuffer utils.WriteBuffer, calReply CALReply) error {
 	return writeToHex("calReply", writeBuffer, calReply)
 }
 
-func ReadCALReply(readBuffer utils.ReadBuffer, payloadLength uint16) (CALReply, error) {
+func ReadCALReply(readBuffer utils.ReadBuffer, payloadLength uint16, requestContext RequestContext) (CALReply, error) {
 	rawBytes, err := readBytesFromHex("calReply", readBuffer, payloadLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALReplyParse(utils.NewReadBufferByteBased(rawBytes))
+	return CALReplyParse(utils.NewReadBufferByteBased(rawBytes), requestContext)
 }
 
-func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
-	return writeToHex("calData", writeBuffer, calData)
+func WriteCALDataOrSetParameter(writeBuffer utils.WriteBuffer, calDataOrSetParameter CALDataOrSetParameter) error {
+	return writeToHex("calDataOrSetParameter", writeBuffer, calDataOrSetParameter)
 }
 
-func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, error) {
-	rawBytes, err := readBytesFromHex("calData", readBuffer, payloadLength)
+func ReadCALDataOrSetParameter(readBuffer utils.ReadBuffer, payloadLength uint16) (CALDataOrSetParameter, error) {
+	rawBytes, err := readBytesFromHex("calDataOrSetParameter", readBuffer, payloadLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALDataParse(utils.NewReadBufferByteBased(rawBytes))
+	return CALDataOrSetParameterParse(utils.NewReadBufferByteBased(rawBytes))
 }
 
 func WriteMonitoredSAL(writeBuffer utils.WriteBuffer, monitoredSAL MonitoredSAL) error {
