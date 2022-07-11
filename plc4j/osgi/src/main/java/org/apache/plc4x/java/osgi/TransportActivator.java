@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.osgi;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -29,7 +31,7 @@ import java.util.ServiceLoader;
 
 public class TransportActivator implements BundleActivator {
 
-    private ServiceRegistration<Transport> reg;
+    private final List<ServiceRegistration<Transport>> registrations = new ArrayList<>();
     private final String TRANSPORT_CODE ="org.apache.plc4x.transport.code";
     private final String TRANSPORT_NAME ="org.apache.plc4x.transport.name";
 
@@ -41,13 +43,14 @@ public class TransportActivator implements BundleActivator {
             Hashtable<String, String> props = new Hashtable<String, String>();
             props.put(TRANSPORT_CODE, transport.getTransportCode());
             props.put(TRANSPORT_NAME, transport.getTransportName());
-            reg = context.registerService(Transport.class, transport, props);
+            registrations.add(context.registerService(Transport.class, transport, props));
         }
     }
 
     @Override
     public void stop(BundleContext context) {
-        reg.unregister();
+        registrations.forEach(ServiceRegistration::unregister);
+        registrations.clear();
     }
 }
 

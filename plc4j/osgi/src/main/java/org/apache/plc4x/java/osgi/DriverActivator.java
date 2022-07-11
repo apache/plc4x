@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.osgi;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -29,7 +31,7 @@ import java.util.ServiceLoader;
 
 public class DriverActivator implements BundleActivator {
 
-    private ServiceRegistration<PlcDriver> reg;
+    private List<ServiceRegistration<PlcDriver>> registrations = new ArrayList<>();
     public static final String PROTOCOL_NAME = "org.apache.plc4x.driver.name";
     public static final String PROTOCOL_CODE = "org.apache.plc4x.driver.code";
 
@@ -41,13 +43,14 @@ public class DriverActivator implements BundleActivator {
             Hashtable<String, String> props = new Hashtable<>();
             props.put(PROTOCOL_CODE, driver.getProtocolCode());
             props.put(PROTOCOL_NAME, driver.getProtocolName());
-            reg = context.registerService(PlcDriver.class, driver, props);
+            registrations.add(context.registerService(PlcDriver.class, driver, props));
         }
     }
 
     @Override
     public void stop(BundleContext context) {
-        reg.unregister();
+        registrations.forEach(ServiceRegistration::unregister);
+        registrations.clear();
     }
 }
 
