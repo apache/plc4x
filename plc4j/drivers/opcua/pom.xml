@@ -98,6 +98,20 @@
           </instructions>
         </configuration>
       </plugin>
+      <!--
+        When instrumenting the Eclipse Milo files for code coverage calculation
+        We're getting errors which don't hurt, but sort of make the build ugly.
+        So we're telling the plugin to exclude them from instrumentation.
+      -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org/eclipse/**/*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
