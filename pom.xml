@@ -168,6 +168,7 @@
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
+    <enable-all-tests>false</enable-all-tests>
   </properties>
 
   <modules>
@@ -1651,6 +1652,7 @@
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
         <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+        <enable-all-tests>true</enable-all-tests>
       </properties>
     </profile>
 
@@ -1659,6 +1661,7 @@
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
         <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+        <enable-all-tests>true</enable-all-tests>
       </properties>
     </profile>
 

@@ -199,6 +199,10 @@
             <include>**/*Tests.java</include>
             <include>**/*Spec.java</include>
           </includes>
+          <environmentVariables>
+            <!-- Pass in to the build, if all tests should be run -->
+            <ENABLE_ALL_TESTS>${enable-all-tests}</ENABLE_ALL_TESTS>
+          </environmentVariables>
         </configuration>
       </plugin>
 

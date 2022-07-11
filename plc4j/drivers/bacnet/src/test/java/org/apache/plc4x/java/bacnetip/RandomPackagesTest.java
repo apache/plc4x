@@ -25,6 +25,7 @@ import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
+import org.apache.plc4x.test.RequireAllTestsFlag;
 import org.apache.plc4x.test.RequirePcapNg;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.presentation.HexadecimalRepresentation;
@@ -53,6 +54,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Tests from http://kargs.net/captures
 @RequirePcapNg
+@RequireAllTestsFlag
 @Tag("bacnet-regression")
 public class RandomPackagesTest {
 

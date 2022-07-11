@@ -59,7 +59,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
                 } else if (SystemUtils.IS_OS_WINDOWS) {
                     return ConditionEvaluationResult.disabled("Test disabled due to too old Npcap version. Please install from here: https://npcap.com/ as this version supports all needed features.");
                 } else {
-                    return ConditionEvaluationResult.disabled("Test disabled due to too old libpcap version. Please install at least version 1.1.0 to support all features.");
+                    return ConditionEvaluationResult.disabled("Test disabled due to too old libpcap version. Please install at least version 1.10.1 to support all features.");
                 }
             }
         } catch(Throwable e) {
@@ -68,7 +68,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
         if(SystemUtils.IS_OS_WINDOWS) {
             return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid Npcap version. Please install from here: https://npcap.com/ as this version supports all needed features.");
         } else {
-            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid libpcap version. Please install at least version 1.1.0 to support all features.");
+            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid libpcap version. Please install at least version 1.10.1 to support all features.");
         }
     }
 
