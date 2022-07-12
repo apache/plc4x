@@ -40,6 +40,7 @@ const (
 	CALCommandTypeContainer_CALCommandRecall                 CALCommandTypeContainer = 0x1A
 	CALCommandTypeContainer_CALCommandIdentify               CALCommandTypeContainer = 0x21
 	CALCommandTypeContainer_CALCommandGetStatus              CALCommandTypeContainer = 0x2A
+	CALCommandTypeContainer_CALCommandReply_0Bytes           CALCommandTypeContainer = 0x80
 	CALCommandTypeContainer_CALCommandReply_1Bytes           CALCommandTypeContainer = 0x81
 	CALCommandTypeContainer_CALCommandReply_2Bytes           CALCommandTypeContainer = 0x82
 	CALCommandTypeContainer_CALCommandReply_3Bytes           CALCommandTypeContainer = 0x83
@@ -72,6 +73,7 @@ const (
 	CALCommandTypeContainer_CALCommandReply_30Bytes          CALCommandTypeContainer = 0x9E
 	CALCommandTypeContainer_CALCommandReply_31Bytes          CALCommandTypeContainer = 0x9F
 	CALCommandTypeContainer_CALCommandAcknowledge            CALCommandTypeContainer = 0x32
+	CALCommandTypeContainer_CALCommandStatus_0Bytes          CALCommandTypeContainer = 0xC0
 	CALCommandTypeContainer_CALCommandStatus_1Bytes          CALCommandTypeContainer = 0xC1
 	CALCommandTypeContainer_CALCommandStatus_2Bytes          CALCommandTypeContainer = 0xC2
 	CALCommandTypeContainer_CALCommandStatus_3Bytes          CALCommandTypeContainer = 0xC3
@@ -103,6 +105,7 @@ const (
 	CALCommandTypeContainer_CALCommandStatus_29Bytes         CALCommandTypeContainer = 0xDD
 	CALCommandTypeContainer_CALCommandStatus_30Bytes         CALCommandTypeContainer = 0xDE
 	CALCommandTypeContainer_CALCommandStatus_31Bytes         CALCommandTypeContainer = 0xDF
+	CALCommandTypeContainer_CALCommandStatusExtended_0Bytes  CALCommandTypeContainer = 0xE0
 	CALCommandTypeContainer_CALCommandStatusExtended_1Bytes  CALCommandTypeContainer = 0xE1
 	CALCommandTypeContainer_CALCommandStatusExtended_2Bytes  CALCommandTypeContainer = 0xE1
 	CALCommandTypeContainer_CALCommandStatusExtended_3Bytes  CALCommandTypeContainer = 0xE3
@@ -145,6 +148,7 @@ func init() {
 		CALCommandTypeContainer_CALCommandRecall,
 		CALCommandTypeContainer_CALCommandIdentify,
 		CALCommandTypeContainer_CALCommandGetStatus,
+		CALCommandTypeContainer_CALCommandReply_0Bytes,
 		CALCommandTypeContainer_CALCommandReply_1Bytes,
 		CALCommandTypeContainer_CALCommandReply_2Bytes,
 		CALCommandTypeContainer_CALCommandReply_3Bytes,
@@ -177,6 +181,7 @@ func init() {
 		CALCommandTypeContainer_CALCommandReply_30Bytes,
 		CALCommandTypeContainer_CALCommandReply_31Bytes,
 		CALCommandTypeContainer_CALCommandAcknowledge,
+		CALCommandTypeContainer_CALCommandStatus_0Bytes,
 		CALCommandTypeContainer_CALCommandStatus_1Bytes,
 		CALCommandTypeContainer_CALCommandStatus_2Bytes,
 		CALCommandTypeContainer_CALCommandStatus_3Bytes,
@@ -208,6 +213,7 @@ func init() {
 		CALCommandTypeContainer_CALCommandStatus_29Bytes,
 		CALCommandTypeContainer_CALCommandStatus_30Bytes,
 		CALCommandTypeContainer_CALCommandStatus_31Bytes,
+		CALCommandTypeContainer_CALCommandStatusExtended_0Bytes,
 		CALCommandTypeContainer_CALCommandStatusExtended_1Bytes,
 		CALCommandTypeContainer_CALCommandStatusExtended_2Bytes,
 		CALCommandTypeContainer_CALCommandStatusExtended_3Bytes,
@@ -262,6 +268,10 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 		}
 	case 0x32:
 		{ /* '0x32' */
+			return 0
+		}
+	case 0x80:
+		{ /* '0x80' */
 			return 0
 		}
 	case 0x81:
@@ -388,6 +398,10 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 		{ /* '0x9F' */
 			return 31
 		}
+	case 0xC0:
+		{ /* '0xC0' */
+			return 0
+		}
 	case 0xC1:
 		{ /* '0xC1' */
 			return 1
@@ -511,6 +525,10 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 	case 0xDF:
 		{ /* '0xDF' */
 			return 31
+		}
+	case 0xE0:
+		{ /* '0xE0' */
+			return 0
 		}
 	case 0xE1:
 		{ /* '0xE1' */
@@ -670,6 +688,10 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 		{ /* '0x32' */
 			return CALCommandType_ACKNOWLEDGE
 		}
+	case 0x80:
+		{ /* '0x80' */
+			return CALCommandType_REPLY
+		}
 	case 0x81:
 		{ /* '0x81' */
 			return CALCommandType_REPLY
@@ -794,6 +816,10 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 		{ /* '0x9F' */
 			return CALCommandType_REPLY
 		}
+	case 0xC0:
+		{ /* '0xC0' */
+			return CALCommandType_STATUS
+		}
 	case 0xC1:
 		{ /* '0xC1' */
 			return CALCommandType_STATUS
@@ -917,6 +943,10 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 	case 0xDF:
 		{ /* '0xDF' */
 			return CALCommandType_STATUS
+		}
+	case 0xE0:
+		{ /* '0xE0' */
+			return CALCommandType_STATUS_EXTENDED
 		}
 	case 0xE1:
 		{ /* '0xE1' */
@@ -1065,6 +1095,8 @@ func CALCommandTypeContainerByValue(value uint8) CALCommandTypeContainer {
 		return CALCommandTypeContainer_CALCommandGetStatus
 	case 0x32:
 		return CALCommandTypeContainer_CALCommandAcknowledge
+	case 0x80:
+		return CALCommandTypeContainer_CALCommandReply_0Bytes
 	case 0x81:
 		return CALCommandTypeContainer_CALCommandReply_1Bytes
 	case 0x82:
@@ -1127,6 +1159,8 @@ func CALCommandTypeContainerByValue(value uint8) CALCommandTypeContainer {
 		return CALCommandTypeContainer_CALCommandReply_30Bytes
 	case 0x9F:
 		return CALCommandTypeContainer_CALCommandReply_31Bytes
+	case 0xC0:
+		return CALCommandTypeContainer_CALCommandStatus_0Bytes
 	case 0xC1:
 		return CALCommandTypeContainer_CALCommandStatus_1Bytes
 	case 0xC2:
@@ -1189,6 +1223,8 @@ func CALCommandTypeContainerByValue(value uint8) CALCommandTypeContainer {
 		return CALCommandTypeContainer_CALCommandStatus_30Bytes
 	case 0xDF:
 		return CALCommandTypeContainer_CALCommandStatus_31Bytes
+	case 0xE0:
+		return CALCommandTypeContainer_CALCommandStatusExtended_0Bytes
 	case 0xE1:
 		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes
 	case 0xE3:
@@ -1266,6 +1302,8 @@ func CALCommandTypeContainerByName(value string) (enum CALCommandTypeContainer, 
 		enum = CALCommandTypeContainer_CALCommandGetStatus
 	case "CALCommandAcknowledge":
 		enum = CALCommandTypeContainer_CALCommandAcknowledge
+	case "CALCommandReply_0Bytes":
+		enum = CALCommandTypeContainer_CALCommandReply_0Bytes
 	case "CALCommandReply_1Bytes":
 		enum = CALCommandTypeContainer_CALCommandReply_1Bytes
 	case "CALCommandReply_2Bytes":
@@ -1328,6 +1366,8 @@ func CALCommandTypeContainerByName(value string) (enum CALCommandTypeContainer, 
 		enum = CALCommandTypeContainer_CALCommandReply_30Bytes
 	case "CALCommandReply_31Bytes":
 		enum = CALCommandTypeContainer_CALCommandReply_31Bytes
+	case "CALCommandStatus_0Bytes":
+		enum = CALCommandTypeContainer_CALCommandStatus_0Bytes
 	case "CALCommandStatus_1Bytes":
 		enum = CALCommandTypeContainer_CALCommandStatus_1Bytes
 	case "CALCommandStatus_2Bytes":
@@ -1390,6 +1430,8 @@ func CALCommandTypeContainerByName(value string) (enum CALCommandTypeContainer, 
 		enum = CALCommandTypeContainer_CALCommandStatus_30Bytes
 	case "CALCommandStatus_31Bytes":
 		enum = CALCommandTypeContainer_CALCommandStatus_31Bytes
+	case "CALCommandStatusExtended_0Bytes":
+		enum = CALCommandTypeContainer_CALCommandStatusExtended_0Bytes
 	case "CALCommandStatusExtended_1Bytes":
 		enum = CALCommandTypeContainer_CALCommandStatusExtended_1Bytes
 	case "CALCommandStatusExtended_3Bytes":
@@ -1509,6 +1551,8 @@ func (e CALCommandTypeContainer) PLC4XEnumName() string {
 		return "CALCommandGetStatus"
 	case CALCommandTypeContainer_CALCommandAcknowledge:
 		return "CALCommandAcknowledge"
+	case CALCommandTypeContainer_CALCommandReply_0Bytes:
+		return "CALCommandReply_0Bytes"
 	case CALCommandTypeContainer_CALCommandReply_1Bytes:
 		return "CALCommandReply_1Bytes"
 	case CALCommandTypeContainer_CALCommandReply_2Bytes:
@@ -1571,6 +1615,8 @@ func (e CALCommandTypeContainer) PLC4XEnumName() string {
 		return "CALCommandReply_30Bytes"
 	case CALCommandTypeContainer_CALCommandReply_31Bytes:
 		return "CALCommandReply_31Bytes"
+	case CALCommandTypeContainer_CALCommandStatus_0Bytes:
+		return "CALCommandStatus_0Bytes"
 	case CALCommandTypeContainer_CALCommandStatus_1Bytes:
 		return "CALCommandStatus_1Bytes"
 	case CALCommandTypeContainer_CALCommandStatus_2Bytes:
@@ -1633,6 +1679,8 @@ func (e CALCommandTypeContainer) PLC4XEnumName() string {
 		return "CALCommandStatus_30Bytes"
 	case CALCommandTypeContainer_CALCommandStatus_31Bytes:
 		return "CALCommandStatus_31Bytes"
+	case CALCommandTypeContainer_CALCommandStatusExtended_0Bytes:
+		return "CALCommandStatusExtended_0Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_1Bytes:
 		return "CALCommandStatusExtended_1Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_3Bytes:

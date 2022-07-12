@@ -61,8 +61,9 @@ type _SALDataRampToLevel struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataRampToLevel) InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer) {
+func (m *_SALDataRampToLevel) InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer, salData SALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.SalData = salData
 }
 
 func (m *_SALDataRampToLevel) GetParent() SALData {
@@ -88,11 +89,11 @@ func (m *_SALDataRampToLevel) GetLevel() byte {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataRampToLevel factory function for _SALDataRampToLevel
-func NewSALDataRampToLevel(group byte, level byte, commandTypeContainer SALCommandTypeContainer) *_SALDataRampToLevel {
+func NewSALDataRampToLevel(group byte, level byte, commandTypeContainer SALCommandTypeContainer, salData SALData) *_SALDataRampToLevel {
 	_result := &_SALDataRampToLevel{
 		Group:    group,
 		Level:    level,
-		_SALData: NewSALData(commandTypeContainer),
+		_SALData: NewSALData(commandTypeContainer, salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result

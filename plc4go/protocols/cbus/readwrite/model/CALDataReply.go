@@ -61,8 +61,9 @@ type _CALDataReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataReply) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataReply) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataReply) GetParent() CALData {
@@ -88,11 +89,11 @@ func (m *_CALDataReply) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReply factory function for _CALDataReply
-func NewCALDataReply(paramNumber uint8, data []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataReply {
+func NewCALDataReply(paramNumber uint8, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReply {
 	_result := &_CALDataReply{
 		ParamNumber: paramNumber,
 		Data:        data,
-		_CALData:    NewCALData(commandTypeContainer, requestContext),
+		_CALData:    NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result

@@ -104,11 +104,36 @@ public class StaticHelper {
     }
 
     private static void writeToHex(String logicalName, WriteBuffer writeBuffer, Serializable serializable, int lengthInBytes) throws SerializationException {
-        // TODO: maybe we use a writebuffer hex based
+        // TODO: maybe we use a writeBuffer hex based
         WriteBufferByteBased payloadWriteBuffer = new WriteBufferByteBased(lengthInBytes * 2);
         serializable.serialize(payloadWriteBuffer);
-        byte[] hexBytes = Hex.encodeHexString(payloadWriteBuffer.getBytes()).getBytes(StandardCharsets.UTF_8);
+        byte[] hexBytes = Hex.encodeHexString(payloadWriteBuffer.getBytes(), false).getBytes(StandardCharsets.UTF_8);
         writeBuffer.writeByteArray(logicalName, hexBytes);
     }
 
+    public static boolean knowsCALCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return CALCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsSALCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return SALCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean moreThanOneByteLeft(ReadBuffer readBuffer) {
+        return readBuffer.hasMore(16);
+    }
 }

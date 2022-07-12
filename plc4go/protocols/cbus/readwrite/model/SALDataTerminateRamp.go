@@ -58,8 +58,9 @@ type _SALDataTerminateRamp struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataTerminateRamp) InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer) {
+func (m *_SALDataTerminateRamp) InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer, salData SALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.SalData = salData
 }
 
 func (m *_SALDataTerminateRamp) GetParent() SALData {
@@ -81,10 +82,10 @@ func (m *_SALDataTerminateRamp) GetGroup() byte {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataTerminateRamp factory function for _SALDataTerminateRamp
-func NewSALDataTerminateRamp(group byte, commandTypeContainer SALCommandTypeContainer) *_SALDataTerminateRamp {
+func NewSALDataTerminateRamp(group byte, commandTypeContainer SALCommandTypeContainer, salData SALData) *_SALDataTerminateRamp {
 	_result := &_SALDataTerminateRamp{
 		Group:    group,
-		_SALData: NewSALData(commandTypeContainer),
+		_SALData: NewSALData(commandTypeContainer, salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result

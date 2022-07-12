@@ -236,15 +236,14 @@
             [reserved byte          '0xFF'                                                             ]
             [reserved byte          '0x00'                                                             ]
             [simple   StatusRequest statusRequest                                                      ]
-            [optional Checksum      crc           'cBusOptions.srchk'                                              ] // checksum is optional but mspec checksum isn't
         ]
         [         *Normal
             [simple   ApplicationIdContainer   application                                             ]
             [reserved byte                     '0x00'                                                  ]
             [simple   SALData                  salData                                                 ]
-            [optional Checksum                 crc         'cBusOptions.srchk'                                     ] // crc      is optional but mspec crc      isn't
         ]
     ]
+    [optional Checksum      crc           'cBusOptions.srchk'                                          ] // checksum is optional but mspec checksum isn't
 ]
 
 [discriminatedType CBusPointToPointToMultipointCommand(CBusOptions cBusOptions)
@@ -255,14 +254,13 @@
         ['0xFF'   *Status
             [reserved byte        '0xFF'                                                             ]
             [simple StatusRequest statusRequest                                                      ]
-            [optional Checksum    crc           'cBusOptions.srchk'                                              ] // crc      is optional but mspec crc      isn't
         ]
         [*        *Normal
             [simple   ApplicationIdContainer application                                             ]
             [simple   SALData                salData                                                 ]
-            [optional Checksum               crc         'cBusOptions.srchk'                                     ] // crc      is optional but mspec crc      isn't
         ]
     ]
+    [optional Checksum      crc           'cBusOptions.srchk'                                        ] // checksum is optional but mspec checksum isn't
 ]
 
 /*
@@ -574,9 +572,9 @@
 ]
 
 [type CALData(RequestContext requestContext)
+    //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
+    [validation 'STATIC_CALL("knowsCALCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
     [simple  CALCommandTypeContainer commandTypeContainer                                   ]
-    //TODO: golang doesn't like checking for 0
-    //[validation 'commandTypeContainer!=null' "no command type could be found"             ]
     [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
     [virtual bit  sendIdentifyRequestBefore       'requestContext!=null?requestContext.sendIdentifyRequestBefore:false']
     [typeSwitch commandType, sendIdentifyRequestBefore
@@ -617,9 +615,8 @@
             [array  byte                   data        count 'commandTypeContainer.numBytes'           ]
         ]
     ]
-    // TODO: validate that this is the intention of 7.1
-    // FIXME: as long as golang doesn't use pointer here we can't check if a value is known...
-    //[optional CALData('requestContext') additionalData]
+    // TODO: we need to check that we don't read the crc by accident
+    [optional CALData('requestContext') additionalData]
 ]
 
 [enum uint 8 Attribute(uint 8 bytesReturned)
@@ -757,6 +754,7 @@
     ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
     ['0x21' CALCommandIdentify               ['IDENTIFY',         '0']]
     ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '0']]
+    ['0x80' CALCommandReply_0Bytes           ['REPLY',            '0']]
     ['0x81' CALCommandReply_1Bytes           ['REPLY',            '1']]
     ['0x82' CALCommandReply_2Bytes           ['REPLY',            '2']]
     ['0x83' CALCommandReply_3Bytes           ['REPLY',            '3']]
@@ -789,6 +787,7 @@
     ['0x9E' CALCommandReply_30Bytes          ['REPLY',           '30']]
     ['0x9F' CALCommandReply_31Bytes          ['REPLY',           '31']]
     ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '0']]
+    ['0xC0' CALCommandStatus_0Bytes          ['STATUS',           '0']]
     ['0xC1' CALCommandStatus_1Bytes          ['STATUS',           '1']]
     ['0xC2' CALCommandStatus_2Bytes          ['STATUS',           '2']]
     ['0xC3' CALCommandStatus_3Bytes          ['STATUS',           '3']]
@@ -820,6 +819,7 @@
     ['0xDD' CALCommandStatus_29Bytes         ['STATUS',          '29']]
     ['0xDE' CALCommandStatus_30Bytes         ['STATUS',          '30']]
     ['0xDF' CALCommandStatus_31Bytes         ['STATUS',          '31']]
+    ['0xE0' CALCommandStatusExtended_0Bytes  ['STATUS_EXTENDED',  '0']]
     ['0xE1' CALCommandStatusExtended_1Bytes  ['STATUS_EXTENDED',  '1']]
     ['0xE1' CALCommandStatusExtended_2Bytes  ['STATUS_EXTENDED',  '2']]
     ['0xE3' CALCommandStatusExtended_3Bytes  ['STATUS_EXTENDED',  '3']]
@@ -855,15 +855,15 @@
 
 [enum uint 4 CALCommandType
     // Request
-    ['0x0' RESET          ] //00001000
-    ['0x0' RECALL         ] //00011010
-    ['0x1' IDENTIFY       ] //00100001
-    ['0x2' GET_STATUS     ] //01000001
+    ['0x0' RESET          ]
+    ['0x1' RECALL         ]
+    ['0x2' IDENTIFY       ]
+    ['0x3' GET_STATUS     ]
     // Response
-    ['0x3' REPLY          ] //100xxxxx
-    ['0x4' ACKNOWLEDGE    ] //00110010
-    ['0x5' STATUS         ] //110xxxxx
-    ['0x5' STATUS_EXTENDED] //111xxxxx
+    ['0x4' REPLY          ]
+    ['0x5' ACKNOWLEDGE    ]
+    ['0x6' STATUS         ]
+    ['0x7' STATUS_EXTENDED]
 ]
 
 [type StatusRequest
@@ -892,6 +892,8 @@
 ]
 
 [type SALData
+    //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
+    [validation 'STATIC_CALL("knowsSALCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
     [simple  SALCommandTypeContainer commandTypeContainer                                   ]
     [virtual SALCommandType          commandType          'commandTypeContainer.commandType']
     [typeSwitch commandType
@@ -909,8 +911,8 @@
             [simple byte group                                                              ]
         ]
     ]
-    // TODO: According to spec this could be recursive
-    //[optional SALData salData 'what decides if this is present?']
+    // TODO: we need to check that we don't read the crc by accident
+    [optional SALData salData                                                               ]
 ]
 
 [enum uint 8 SALCommandTypeContainer(SALCommandType commandType)

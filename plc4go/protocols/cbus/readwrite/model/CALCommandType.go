@@ -35,13 +35,13 @@ type ICALCommandType interface {
 
 const (
 	CALCommandType_RESET           CALCommandType = 0x0
-	CALCommandType_RECALL          CALCommandType = 0x0
-	CALCommandType_IDENTIFY        CALCommandType = 0x1
-	CALCommandType_GET_STATUS      CALCommandType = 0x2
-	CALCommandType_REPLY           CALCommandType = 0x3
-	CALCommandType_ACKNOWLEDGE     CALCommandType = 0x4
-	CALCommandType_STATUS          CALCommandType = 0x5
-	CALCommandType_STATUS_EXTENDED CALCommandType = 0x5
+	CALCommandType_RECALL          CALCommandType = 0x1
+	CALCommandType_IDENTIFY        CALCommandType = 0x2
+	CALCommandType_GET_STATUS      CALCommandType = 0x3
+	CALCommandType_REPLY           CALCommandType = 0x4
+	CALCommandType_ACKNOWLEDGE     CALCommandType = 0x5
+	CALCommandType_STATUS          CALCommandType = 0x6
+	CALCommandType_STATUS_EXTENDED CALCommandType = 0x7
 )
 
 var CALCommandTypeValues []CALCommandType
@@ -65,15 +65,19 @@ func CALCommandTypeByValue(value uint8) CALCommandType {
 	case 0x0:
 		return CALCommandType_RESET
 	case 0x1:
-		return CALCommandType_IDENTIFY
+		return CALCommandType_RECALL
 	case 0x2:
-		return CALCommandType_GET_STATUS
+		return CALCommandType_IDENTIFY
 	case 0x3:
-		return CALCommandType_REPLY
+		return CALCommandType_GET_STATUS
 	case 0x4:
-		return CALCommandType_ACKNOWLEDGE
+		return CALCommandType_REPLY
 	case 0x5:
+		return CALCommandType_ACKNOWLEDGE
+	case 0x6:
 		return CALCommandType_STATUS
+	case 0x7:
+		return CALCommandType_STATUS_EXTENDED
 	}
 	return 0
 }
@@ -83,6 +87,8 @@ func CALCommandTypeByName(value string) (enum CALCommandType, ok bool) {
 	switch value {
 	case "RESET":
 		enum = CALCommandType_RESET
+	case "RECALL":
+		enum = CALCommandType_RECALL
 	case "IDENTIFY":
 		enum = CALCommandType_IDENTIFY
 	case "GET_STATUS":
@@ -93,6 +99,8 @@ func CALCommandTypeByName(value string) (enum CALCommandType, ok bool) {
 		enum = CALCommandType_ACKNOWLEDGE
 	case "STATUS":
 		enum = CALCommandType_STATUS
+	case "STATUS_EXTENDED":
+		enum = CALCommandType_STATUS_EXTENDED
 	default:
 		enum = 0
 		ok = false
@@ -144,6 +152,8 @@ func (e CALCommandType) PLC4XEnumName() string {
 	switch e {
 	case CALCommandType_RESET:
 		return "RESET"
+	case CALCommandType_RECALL:
+		return "RECALL"
 	case CALCommandType_IDENTIFY:
 		return "IDENTIFY"
 	case CALCommandType_GET_STATUS:
@@ -154,6 +164,8 @@ func (e CALCommandType) PLC4XEnumName() string {
 		return "ACKNOWLEDGE"
 	case CALCommandType_STATUS:
 		return "STATUS"
+	case CALCommandType_STATUS_EXTENDED:
+		return "STATUS_EXTENDED"
 	}
 	return ""
 }

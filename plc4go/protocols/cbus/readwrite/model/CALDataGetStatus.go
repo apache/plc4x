@@ -61,8 +61,9 @@ type _CALDataGetStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataGetStatus) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataGetStatus) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataGetStatus) GetParent() CALData {
@@ -88,11 +89,11 @@ func (m *_CALDataGetStatus) GetCount() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataGetStatus factory function for _CALDataGetStatus
-func NewCALDataGetStatus(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataGetStatus {
+func NewCALDataGetStatus(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataGetStatus {
 	_result := &_CALDataGetStatus{
 		ParamNo:  paramNo,
 		Count:    count,
-		_CALData: NewCALData(commandTypeContainer, requestContext),
+		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result

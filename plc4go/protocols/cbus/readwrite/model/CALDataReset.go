@@ -55,8 +55,9 @@ type _CALDataReset struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataReset) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataReset) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataReset) GetParent() CALData {
@@ -64,9 +65,9 @@ func (m *_CALDataReset) GetParent() CALData {
 }
 
 // NewCALDataReset factory function for _CALDataReset
-func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataReset {
+func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReset {
 	_result := &_CALDataReset{
-		_CALData: NewCALData(commandTypeContainer, requestContext),
+		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result

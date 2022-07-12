@@ -61,8 +61,9 @@ type _CALDataAcknowledge struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataAcknowledge) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataAcknowledge) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataAcknowledge) GetParent() CALData {
@@ -88,11 +89,11 @@ func (m *_CALDataAcknowledge) GetCode() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataAcknowledge factory function for _CALDataAcknowledge
-func NewCALDataAcknowledge(paramNo uint8, code uint8, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataAcknowledge {
+func NewCALDataAcknowledge(paramNo uint8, code uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataAcknowledge {
 	_result := &_CALDataAcknowledge{
 		ParamNo:  paramNo,
 		Code:     code,
-		_CALData: NewCALData(commandTypeContainer, requestContext),
+		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result

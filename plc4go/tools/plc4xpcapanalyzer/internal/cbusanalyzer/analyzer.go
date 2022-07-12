@@ -129,6 +129,8 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 			switch request := message.GetRequest().(type) {
 			case model.RequestDirectCommandAccessExactly:
 				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
+			case model.RequestObsoleteExactly:
+				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
 			case model.RequestCommandExactly:
 				fmt.Printf("%v\n", request.GetCbusCommand())
 			}
@@ -142,6 +144,9 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 					case model.ReplyCALReplyExactly:
 						// We print this a second time as the first print contains only the hex part
 						fmt.Printf("%v\n", reply.GetCalReply())
+					case model.MonitoredSALReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetMonitoredSAL())
 					}
 				}
 			case model.ReplyOrConfirmationReplyExactly:

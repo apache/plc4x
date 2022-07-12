@@ -58,8 +58,9 @@ type _CALDataIdentify struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataIdentify) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataIdentify) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataIdentify) GetParent() CALData {
@@ -81,10 +82,10 @@ func (m *_CALDataIdentify) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataIdentify factory function for _CALDataIdentify
-func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataIdentify {
+func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentify {
 	_result := &_CALDataIdentify{
 		Attribute: attribute,
-		_CALData:  NewCALData(commandTypeContainer, requestContext),
+		_CALData:  NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result

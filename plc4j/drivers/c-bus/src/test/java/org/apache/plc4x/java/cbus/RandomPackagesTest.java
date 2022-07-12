@@ -21,6 +21,7 @@ package org.apache.plc4x.java.cbus;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
@@ -53,8 +54,7 @@ public class RandomPackagesTest {
                 byte[] bytes = new byte[]{0x03};
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -63,8 +63,7 @@ public class RandomPackagesTest {
                 byte[] bytes = new byte[]{0x05};
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -73,8 +72,7 @@ public class RandomPackagesTest {
                 byte[] bytes = new byte[]{0x06};
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -90,8 +88,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "~\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -102,8 +99,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "AB0123?9876\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -113,8 +109,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\r|\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -126,8 +121,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "AB0123n9876\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -137,8 +131,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "@2102\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CALData calData = ((CALDataOrSetParameterValue) ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter()).getCalData();
                 System.out.println(calData);
@@ -152,8 +145,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "~2102\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CALData calData = ((CALDataOrSetParameterValue) ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter()).getCalData();
                 System.out.println(calData);
@@ -170,8 +162,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\0603002102D4\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
                 System.out.println(cbusCommand);
@@ -182,8 +173,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\06420903210289\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
                 System.out.println(cbusCommand);
@@ -199,8 +189,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\0538000108BA\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
                 System.out.println(cbusCommand);
@@ -211,8 +200,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\05FF007A38004A\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
                 System.out.println(cbusCommand);
@@ -227,8 +215,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\03420938010871\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
                 System.out.println(cbusCommand);
@@ -243,8 +230,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\0605002102\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -253,8 +239,7 @@ public class RandomPackagesTest {
                 byte[] bytes = Hex.decodeHex("8902312E322E363620200A");
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CALReply msg = CALReplyShort.staticParse(readBufferByteBased, cBusOptions, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -263,8 +248,7 @@ public class RandomPackagesTest {
                 byte[] bytes = Hex.decodeHex("860593008902312E322E363620207F");
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CALReply msg = CALReplyLong.staticParse(readBufferByteBased, cBusOptions, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
         }
@@ -277,8 +261,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "0503380079083F\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, bytes.length, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 MonitoredSAL monitoredSAL = ((MonitoredSALReply) ((ReplyOrConfirmationReply) msg).getReply()).getMonitoredSAL();
                 System.out.println(monitoredSAL);
@@ -293,8 +276,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "g.".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, bytes.length, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -303,8 +285,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "g#".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, bytes.length, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -313,8 +294,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "g$".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, bytes.length, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -323,8 +303,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "g%".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, bytes.length, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -333,8 +312,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "g'".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, bytes.length, requestContext);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
         }
@@ -345,8 +323,7 @@ public class RandomPackagesTest {
             byte[] bytes = Hex.decodeHex("D8380068AA0140550550001000000014000000000000000000CF");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             StandardFormatStatusReply msg = StandardFormatStatusReply.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -355,8 +332,7 @@ public class RandomPackagesTest {
             byte[] bytes = Hex.decodeHex("D838580000000000000000000000000000000000000000000098");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             StandardFormatStatusReply msg = StandardFormatStatusReply.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -365,8 +341,7 @@ public class RandomPackagesTest {
             byte[] bytes = Hex.decodeHex("D638B000000000FF00000000000000000000000000000043");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             StandardFormatStatusReply msg = StandardFormatStatusReply.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -376,8 +351,7 @@ public class RandomPackagesTest {
             byte[] bytes = Hex.decodeHex("F9073800AAAA000095990000000005555000000000005555555548");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             ExtendedFormatStatusReply msg = ExtendedFormatStatusReply.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -386,8 +360,7 @@ public class RandomPackagesTest {
             byte[] bytes = Hex.decodeHex("F907380B0000000000005555000000000000000000000000000013");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             ExtendedFormatStatusReply msg = ExtendedFormatStatusReply.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -396,8 +369,7 @@ public class RandomPackagesTest {
             byte[] bytes = Hex.decodeHex("f70738160000000000000000000000000000000000000000B4");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             ExtendedFormatStatusReply msg = ExtendedFormatStatusReply.staticParse(readBufferByteBased, false);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -410,8 +382,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\0538000114AE\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -421,8 +392,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\05FF007A38004A\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -433,8 +403,7 @@ public class RandomPackagesTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 requestContext = new RequestContext(false, true, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 StandardFormatStatusReply reply = ((ReplyStandardFormatStatusReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
                 System.out.println(reply);
@@ -447,8 +416,7 @@ public class RandomPackagesTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 requestContext = new RequestContext(false, true, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 StandardFormatStatusReply reply = ((ReplyStandardFormatStatusReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
                 System.out.println(reply);
@@ -461,8 +429,7 @@ public class RandomPackagesTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 requestContext = new RequestContext(false, true, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 StandardFormatStatusReply reply = ((ReplyStandardFormatStatusReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
                 System.out.println(reply);
@@ -475,8 +442,7 @@ public class RandomPackagesTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 requestContext = new RequestContext(false, true, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 StandardFormatStatusReply reply = ((ReplyStandardFormatStatusReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
                 System.out.println(reply);
@@ -490,8 +456,7 @@ public class RandomPackagesTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 requestContext = new RequestContext(false, true, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 StandardFormatStatusReply reply = ((ReplyStandardFormatStatusReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
                 System.out.println(reply);
@@ -504,8 +469,7 @@ public class RandomPackagesTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 requestContext = new RequestContext(false, true, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 StandardFormatStatusReply reply = ((ReplyStandardFormatStatusReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getReply();
                 System.out.println(reply);
@@ -521,8 +485,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\0604001A3001AB\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -532,8 +495,7 @@ public class RandomPackagesTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 requestContext = new RequestContext(true, false, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -548,8 +510,7 @@ public class RandomPackagesTest {
                 byte[] bytes = "\\03421B53643801149C\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
                 CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
                 System.out.println(cbusCommand);
@@ -561,8 +522,7 @@ public class RandomPackagesTest {
                 byte[] bytes = Hex.decodeHex("0565380354432101148E");
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, cBusOptions);
-                assertThat(msg)
-                    .isNotNull();
+                assertThat(msg).isNotNull();
                 System.out.println(msg);
             }
 
@@ -574,8 +534,7 @@ public class RandomPackagesTest {
             byte[] bytes = "~@A3300019\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -585,8 +544,7 @@ public class RandomPackagesTest {
             byte[] bytes = "\\05380001210122012301240A25010A2601D4\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -596,8 +554,7 @@ public class RandomPackagesTest {
             byte[] bytes = "@A3470011\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -607,8 +564,7 @@ public class RandomPackagesTest {
             byte[] bytes = "A3470011\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
 
             CALDataOrSetParameterSetParameter calDataOrSetParameter = (CALDataOrSetParameterSetParameter) ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter();
@@ -625,8 +581,7 @@ public class RandomPackagesTest {
             byte[] bytes = "\\0538007902D4\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -641,8 +596,7 @@ public class RandomPackagesTest {
             byte[] bytes = "\\3436303230303231303167\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -651,8 +605,7 @@ public class RandomPackagesTest {
             byte[] bytes = "@1A2001\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
         }
 
@@ -661,8 +614,7 @@ public class RandomPackagesTest {
             byte[] bytes = "\\0538000100g\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
             CBusMessageToServer msgToServer = (CBusMessageToServer) msg;
             RequestCommand requestCommand = (RequestCommand) msgToServer.getRequest();
@@ -677,8 +629,7 @@ public class RandomPackagesTest {
             // We know we send an identify command so we set the cal flag
             requestContext = new RequestContext(true, false, false);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
             CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
             ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
@@ -693,8 +644,7 @@ public class RandomPackagesTest {
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             requestContext = new RequestContext(true, false, false);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
             CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
             ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
@@ -708,8 +658,7 @@ public class RandomPackagesTest {
             byte[] bytes = "\\0538000100g\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
             CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
             RequestCommand requestCommand = (RequestCommand) messageToServer.getRequest();
@@ -722,8 +671,7 @@ public class RandomPackagesTest {
             byte[] bytes = "21021A2102i\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
             CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
             RequestObsolete requestObsolete = (RequestObsolete) messageToServer.getRequest();
@@ -738,13 +686,50 @@ public class RandomPackagesTest {
             // We know we send an identify command so we set the cal flag
             requestContext = new RequestContext(true, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
-            assertThat(msg)
-                .isNotNull();
+            assertThat(msg).isNotNull();
             System.out.println(msg);
             CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
             ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
             ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
             System.out.println(((ReplyCALReply) normalReply.getReply()).getCalReply());
+        }
+
+        @Test
+        void recall() throws Exception {
+            byte[] bytes = "@1A2001\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
+            RequestDirectCommandAccess requestDirectCommandAccess = (RequestDirectCommandAccess) messageToServer.getRequest();
+            CALDataOrSetParameter calDataOrSetParameter = requestDirectCommandAccess.getCalDataOrSetParameter();
+            System.out.println(calDataOrSetParameter);
+
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bytes.length);
+            msg.serialize(writeBuffer);
+            assertThat(writeBuffer.getBytes()).isEqualTo(bytes);
+        }
+
+        @Test
+        void identifyTypeReply() throws Exception {
+            byte[] bytes = "h.890150435F434E49454421\r\n".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            requestContext = new RequestContext(true, false, true);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
+            ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
+            ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
+            ReplyCALReply calReplyReply = (ReplyCALReply) normalReply.getReply();
+            System.out.println(calReplyReply.getCalReply());
+
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bytes.length);
+            msg.serialize(writeBuffer);
+            byte[] bytes1 = writeBuffer.getBytes();
+            assertThat(bytes1).isEqualTo(bytes);
         }
     }
 }

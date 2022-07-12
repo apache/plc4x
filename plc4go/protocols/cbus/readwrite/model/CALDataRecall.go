@@ -61,8 +61,9 @@ type _CALDataRecall struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataRecall) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataRecall) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataRecall) GetParent() CALData {
@@ -88,11 +89,11 @@ func (m *_CALDataRecall) GetCount() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataRecall factory function for _CALDataRecall
-func NewCALDataRecall(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataRecall {
+func NewCALDataRecall(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataRecall {
 	_result := &_CALDataRecall{
 		ParamNo:  paramNo,
 		Count:    count,
-		_CALData: NewCALData(commandTypeContainer, requestContext),
+		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result

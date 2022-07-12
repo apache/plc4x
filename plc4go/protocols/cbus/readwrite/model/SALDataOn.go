@@ -58,8 +58,9 @@ type _SALDataOn struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_SALDataOn) InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer) {
+func (m *_SALDataOn) InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer, salData SALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.SalData = salData
 }
 
 func (m *_SALDataOn) GetParent() SALData {
@@ -81,10 +82,10 @@ func (m *_SALDataOn) GetGroup() byte {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataOn factory function for _SALDataOn
-func NewSALDataOn(group byte, commandTypeContainer SALCommandTypeContainer) *_SALDataOn {
+func NewSALDataOn(group byte, commandTypeContainer SALCommandTypeContainer, salData SALData) *_SALDataOn {
 	_result := &_SALDataOn{
 		Group:    group,
-		_SALData: NewSALData(commandTypeContainer),
+		_SALData: NewSALData(commandTypeContainer, salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result

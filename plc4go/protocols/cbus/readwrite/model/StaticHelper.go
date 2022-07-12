@@ -127,10 +127,11 @@ func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable 
 	if err != nil {
 		return errors.Wrap(err, "Error serializing")
 	}
-	hexBytes := make([]byte, hex.EncodedLen(len(wbbb.GetBytes())))
+	bytesToWrite := wbbb.GetBytes()
+	hexBytes := make([]byte, hex.EncodedLen(len(bytesToWrite)))
 	// usually you use hex.Encode but we want the encoding in uppercase
 	//n := hex.Encode(hexBytes, wbbb.GetBytes())
-	n := encodeHexUpperCase(hexBytes, wbbb.GetBytes())
+	n := encodeHexUpperCase(hexBytes, bytesToWrite)
 	log.Debug().Msgf("%d bytes encoded", n)
 	return writeBuffer.WriteByteArray(logicalName, hexBytes)
 }
@@ -145,4 +146,24 @@ func encodeHexUpperCase(dst, src []byte) int {
 		j += 2
 	}
 	return len(src) * 2
+}
+
+func KnowsCALCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return CALCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsSALCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return SALCommandTypeContainerKnows(readUint8)
 }
