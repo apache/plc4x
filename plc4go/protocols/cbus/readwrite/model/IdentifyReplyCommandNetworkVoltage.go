@@ -112,11 +112,11 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetV() byte {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandNetworkVoltage factory function for _IdentifyReplyCommandNetworkVoltage
-func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string) *_IdentifyReplyCommandNetworkVoltage {
+func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string, numBytes uint8) *_IdentifyReplyCommandNetworkVoltage {
 	_result := &_IdentifyReplyCommandNetworkVoltage{
 		Volts:                 volts,
 		VoltsDecimalPlace:     voltsDecimalPlace,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -163,7 +163,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandNetworkVoltage, error) {
+func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkVoltage"); pullErr != nil {
@@ -210,9 +210,11 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandNetworkVoltage{
-		Volts:                 volts,
-		VoltsDecimalPlace:     voltsDecimalPlace,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		Volts:             volts,
+		VoltsDecimalPlace: voltsDecimalPlace,
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

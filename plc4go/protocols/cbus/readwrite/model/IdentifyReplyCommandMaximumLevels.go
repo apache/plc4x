@@ -66,9 +66,9 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetParent() IdentifyReplyCommand {
 }
 
 // NewIdentifyReplyCommandMaximumLevels factory function for _IdentifyReplyCommandMaximumLevels
-func NewIdentifyReplyCommandMaximumLevels() *_IdentifyReplyCommandMaximumLevels {
+func NewIdentifyReplyCommandMaximumLevels(numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
 	_result := &_IdentifyReplyCommandMaximumLevels{
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -103,7 +103,7 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandMaximumLevels, error) {
+func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMaximumLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMaximumLevels"); pullErr != nil {
@@ -118,7 +118,9 @@ func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribu
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandMaximumLevels{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

@@ -88,9 +88,15 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CBusCommandParse(io, cBusOptions)
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(arguments[0])
-		return model.IdentifyReplyCommandParse(io, attribute)
+		numBytes, err := utils.StrToUint8(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.IdentifyReplyCommandParse(io, attribute, numBytes)
 	case "CALDataOrSetParameter":
 		return model.CALDataOrSetParameterParse(io)
+	case "IdentifyReplyCommandUnitSummary":
+		return model.IdentifyReplyCommandUnitSummaryParse(io)
 	case "CBusConstants":
 		return model.CBusConstantsParse(io)
 	case "BridgeCount":

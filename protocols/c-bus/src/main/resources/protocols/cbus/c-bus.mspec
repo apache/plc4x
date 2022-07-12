@@ -592,8 +592,9 @@
             [simple uint 8    code                                                          ]
         ]
         ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer) // Reply
-            [simple Attribute attribute                                                     ]
-            [simple IdentifyReplyCommand('attribute') identifyReplyCommand                  ]
+            [simple Attribute   attribute                                                   ]
+            [simple IdentifyReplyCommand('attribute', 'commandTypeContainer.numBytes-1') // We substract 1 byte as it was used by the attribute
+                                identifyReplyCommand                                        ]
         ]
         ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple uint 8 paramNumber                                                      ]
@@ -981,7 +982,7 @@
     ['0x11' DSIStatus                 ['10']]
 ]
 
-[type IdentifyReplyCommand(Attribute attribute)
+[type IdentifyReplyCommand(Attribute attribute, uint 5 numBytes)
     [typeSwitch attribute
         ['Manufacturer'                 IdentifyReplyCommandManufacturer
             [simple string 64  manufacturerName ]
@@ -998,28 +999,29 @@
             [simple string 32  version          ]
         ]
         ['ExtendedDiagnosticSummary'    IdentifyReplyCommandExtendedDiagnosticSummary
-            [simple ApplicationIdContainer  lowApplication         ]
-            [simple ApplicationIdContainer  highApplication        ]
-            [simple byte                    area                   ]
-            [simple uint 16                 crc                    ]
-            [simple uint 32                 serialNumber           ]
-            [simple byte                    networkVoltage         ]
-            [simple bit                     outputUnit             ]
-            [simple bit                     enableChecksumAlarm    ]
-            [reserved uint 1                '0'                    ]
-            [reserved uint 1                '0'                    ]
-            [reserved uint 1                '0'                    ]
-            [simple bit                     networkVoltageMarginal ]
-            [simple bit                     networkVoltageLow      ]
-            [simple bit                     unitInLearnMode        ]
-            [simple bit                     microPowerReset        ]
-            [simple bit                     internalStackOverflow  ]
-            [simple bit                     commsTxError           ]
-            [simple bit                     microReset             ]
-            [simple bit                     EEDataError            ]
-            [simple bit                     EEChecksumError        ]
-            [simple bit                     EEWriteError           ]
-            [simple bit                     installationMMIError   ]
+            [simple   ApplicationIdContainer  lowApplication         ]
+            [simple   ApplicationIdContainer  highApplication        ]
+            [simple   byte                    area                   ]
+            [simple   uint 16                 crc                    ]
+            [simple   uint 32                 serialNumber           ]
+            [simple   byte                    networkVoltage         ]
+            [virtual  float 32                networkVoltageInVolts 'networkVoltage/6.375']
+            [simple   bit                     unitInLearnMode        ]
+            [simple   bit                     networkVoltageLow      ]
+            [simple   bit                     networkVoltageMarginal ]
+            [reserved uint 1                  '0'                    ]
+            [reserved uint 1                  '0'                    ]
+            [reserved uint 1                  '0'                    ]
+            [simple   bit                     enableChecksumAlarm    ]
+            [simple   bit                     outputUnit             ]
+            [simple   bit                     installationMMIError   ]
+            [simple   bit                     EEWriteError           ]
+            [simple   bit                     EEChecksumError        ]
+            [simple   bit                     EEDataError            ]
+            [simple   bit                     microReset             ]
+            [simple   bit                     commsTxError           ]
+            [simple   bit                     internalStackOverflow  ]
+            [simple   bit                     microPowerReset        ]
         ]
         ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
             //TODO: read dynamic
@@ -1058,7 +1060,12 @@
             //TODO: read dynamic
         ]
         ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
-            //TODO: read dynamic
+            // TODO: we can use the bytes from above, but how is that dynamic? repeat the complete block here?
+            [simple   IdentifyReplyCommandUnitSummary
+                             unitFlags                              ]
+            [simple   byte   gavStoreEnabledByte1                   ]
+            [simple   byte   gavStoreEnabledByte2                   ]
+            [simple   uint 8 timeFromLastRecoverOfMainsInSeconds    ]
         ]
         ['DSIStatus'                    IdentifyReplyCommandDSIStatus
             [simple ChannelStatus   channelStatus1          ]
@@ -1073,6 +1080,17 @@
             [simple byte            dimmingUCRevisionNumber ]
         ]
     ]
+]
+
+[type IdentifyReplyCommandUnitSummary
+    [simple bit assertingNetworkBurden  ]
+    [simple bit restrikeTimingActive    ]
+    [simple bit remoteOFFInputAsserted  ]
+    [simple bit remoteONInputAsserted   ]
+    [simple bit localToggleEnabled      ]
+    [simple bit localToggleActiveState  ]
+    [simple bit clockGenerationEnabled  ]
+    [simple bit unitGeneratingClock     ]
 ]
 
 [enum uint 8 ChannelStatus

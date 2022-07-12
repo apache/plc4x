@@ -66,9 +66,9 @@ func (m *_IdentifyReplyCommandDelays) GetParent() IdentifyReplyCommand {
 }
 
 // NewIdentifyReplyCommandDelays factory function for _IdentifyReplyCommandDelays
-func NewIdentifyReplyCommandDelays() *_IdentifyReplyCommandDelays {
+func NewIdentifyReplyCommandDelays(numBytes uint8) *_IdentifyReplyCommandDelays {
 	_result := &_IdentifyReplyCommandDelays{
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -103,7 +103,7 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandDelays, error) {
+func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDelays"); pullErr != nil {
@@ -118,7 +118,9 @@ func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attr
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandDelays{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

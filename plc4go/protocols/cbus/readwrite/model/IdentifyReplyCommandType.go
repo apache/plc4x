@@ -83,10 +83,10 @@ func (m *_IdentifyReplyCommandType) GetUnitType() string {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandType factory function for _IdentifyReplyCommandType
-func NewIdentifyReplyCommandType(unitType string) *_IdentifyReplyCommandType {
+func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyReplyCommandType {
 	_result := &_IdentifyReplyCommandType{
 		UnitType:              unitType,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -124,7 +124,7 @@ func (m *_IdentifyReplyCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandType, error) {
+func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandType"); pullErr != nil {
@@ -146,8 +146,10 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandType{
-		UnitType:              unitType,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		UnitType: unitType,
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

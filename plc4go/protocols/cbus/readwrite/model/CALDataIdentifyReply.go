@@ -160,7 +160,7 @@ func CALDataIdentifyReplyParse(readBuffer utils.ReadBuffer, requestContext Reque
 	if pullErr := readBuffer.PullContext("identifyReplyCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for identifyReplyCommand")
 	}
-	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParse(readBuffer, Attribute(attribute))
+	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParse(readBuffer, Attribute(attribute), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
 	if _identifyReplyCommandErr != nil {
 		return nil, errors.Wrap(_identifyReplyCommandErr, "Error parsing 'identifyReplyCommand' field of CALDataIdentifyReply")
 	}

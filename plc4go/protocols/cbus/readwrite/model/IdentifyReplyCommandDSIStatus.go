@@ -146,7 +146,7 @@ func (m *_IdentifyReplyCommandDSIStatus) GetDimmingUCRevisionNumber() byte {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandDSIStatus factory function for _IdentifyReplyCommandDSIStatus
-func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) *_IdentifyReplyCommandDSIStatus {
+func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte, numBytes uint8) *_IdentifyReplyCommandDSIStatus {
 	_result := &_IdentifyReplyCommandDSIStatus{
 		ChannelStatus1:          channelStatus1,
 		ChannelStatus2:          channelStatus2,
@@ -158,7 +158,7 @@ func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatu
 		ChannelStatus8:          channelStatus8,
 		UnitStatus:              unitStatus,
 		DimmingUCRevisionNumber: dimmingUCRevisionNumber,
-		_IdentifyReplyCommand:   NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand:   NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -223,7 +223,7 @@ func (m *_IdentifyReplyCommandDSIStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandDSIStatus, error) {
+func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDSIStatus"); pullErr != nil {
@@ -372,7 +372,9 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 		ChannelStatus8:          channelStatus8,
 		UnitStatus:              unitStatus,
 		DimmingUCRevisionNumber: dimmingUCRevisionNumber,
-		_IdentifyReplyCommand:   &_IdentifyReplyCommand{},
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

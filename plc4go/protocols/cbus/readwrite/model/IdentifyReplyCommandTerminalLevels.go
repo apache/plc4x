@@ -66,9 +66,9 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetParent() IdentifyReplyCommand {
 }
 
 // NewIdentifyReplyCommandTerminalLevels factory function for _IdentifyReplyCommandTerminalLevels
-func NewIdentifyReplyCommandTerminalLevels() *_IdentifyReplyCommandTerminalLevels {
+func NewIdentifyReplyCommandTerminalLevels(numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
 	_result := &_IdentifyReplyCommandTerminalLevels{
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -103,7 +103,7 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandTerminalLevels, error) {
+func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandTerminalLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandTerminalLevels"); pullErr != nil {
@@ -118,7 +118,9 @@ func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandTerminalLevels{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

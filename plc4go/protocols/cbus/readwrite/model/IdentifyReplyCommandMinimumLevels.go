@@ -66,9 +66,9 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetParent() IdentifyReplyCommand {
 }
 
 // NewIdentifyReplyCommandMinimumLevels factory function for _IdentifyReplyCommandMinimumLevels
-func NewIdentifyReplyCommandMinimumLevels() *_IdentifyReplyCommandMinimumLevels {
+func NewIdentifyReplyCommandMinimumLevels(numBytes uint8) *_IdentifyReplyCommandMinimumLevels {
 	_result := &_IdentifyReplyCommandMinimumLevels{
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -103,7 +103,7 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandMinimumLevels, error) {
+func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMinimumLevels"); pullErr != nil {
@@ -118,7 +118,9 @@ func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribu
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandMinimumLevels{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

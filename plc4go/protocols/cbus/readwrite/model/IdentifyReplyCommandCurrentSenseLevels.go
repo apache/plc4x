@@ -66,9 +66,9 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetParent() IdentifyReplyComma
 }
 
 // NewIdentifyReplyCommandCurrentSenseLevels factory function for _IdentifyReplyCommandCurrentSenseLevels
-func NewIdentifyReplyCommandCurrentSenseLevels() *_IdentifyReplyCommandCurrentSenseLevels {
+func NewIdentifyReplyCommandCurrentSenseLevels(numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
 	_result := &_IdentifyReplyCommandCurrentSenseLevels{
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -103,7 +103,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandCurrentSenseLevels, error) {
+func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandCurrentSenseLevels"); pullErr != nil {
@@ -118,7 +118,9 @@ func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, at
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandCurrentSenseLevels{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

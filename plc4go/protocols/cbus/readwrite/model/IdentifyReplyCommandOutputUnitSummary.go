@@ -31,6 +31,14 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
+	// GetUnitFlags returns UnitFlags (property field)
+	GetUnitFlags() IdentifyReplyCommandUnitSummary
+	// GetGavStoreEnabledByte1 returns GavStoreEnabledByte1 (property field)
+	GetGavStoreEnabledByte1() byte
+	// GetGavStoreEnabledByte2 returns GavStoreEnabledByte2 (property field)
+	GetGavStoreEnabledByte2() byte
+	// GetTimeFromLastRecoverOfMainsInSeconds returns TimeFromLastRecoverOfMainsInSeconds (property field)
+	GetTimeFromLastRecoverOfMainsInSeconds() uint8
 }
 
 // IdentifyReplyCommandOutputUnitSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandOutputUnitSummary.
@@ -43,6 +51,10 @@ type IdentifyReplyCommandOutputUnitSummaryExactly interface {
 // _IdentifyReplyCommandOutputUnitSummary is the data-structure of this message
 type _IdentifyReplyCommandOutputUnitSummary struct {
 	*_IdentifyReplyCommand
+	UnitFlags                           IdentifyReplyCommandUnitSummary
+	GavStoreEnabledByte1                byte
+	GavStoreEnabledByte2                byte
+	TimeFromLastRecoverOfMainsInSeconds uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -65,10 +77,40 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetParent() IdentifyReplyComman
 	return m._IdentifyReplyCommand
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetUnitFlags() IdentifyReplyCommandUnitSummary {
+	return m.UnitFlags
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetGavStoreEnabledByte1() byte {
+	return m.GavStoreEnabledByte1
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetGavStoreEnabledByte2() byte {
+	return m.GavStoreEnabledByte2
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetTimeFromLastRecoverOfMainsInSeconds() uint8 {
+	return m.TimeFromLastRecoverOfMainsInSeconds
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
-func NewIdentifyReplyCommandOutputUnitSummary() *_IdentifyReplyCommandOutputUnitSummary {
+func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 byte, gavStoreEnabledByte2 byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
 	_result := &_IdentifyReplyCommandOutputUnitSummary{
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		UnitFlags:                           unitFlags,
+		GavStoreEnabledByte1:                gavStoreEnabledByte1,
+		GavStoreEnabledByte2:                gavStoreEnabledByte2,
+		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
+		_IdentifyReplyCommand:               NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -96,6 +138,18 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBits() uint16 {
 func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (unitFlags)
+	lengthInBits += m.UnitFlags.GetLengthInBits()
+
+	// Simple field (gavStoreEnabledByte1)
+	lengthInBits += 8
+
+	// Simple field (gavStoreEnabledByte2)
+	lengthInBits += 8
+
+	// Simple field (timeFromLastRecoverOfMainsInSeconds)
+	lengthInBits += 8
+
 	return lengthInBits
 }
 
@@ -103,7 +157,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandOutputUnitSummary, error) {
+func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandOutputUnitSummary"); pullErr != nil {
@@ -112,13 +166,53 @@ func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, att
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	// Simple Field (unitFlags)
+	if pullErr := readBuffer.PullContext("unitFlags"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for unitFlags")
+	}
+	_unitFlags, _unitFlagsErr := IdentifyReplyCommandUnitSummaryParse(readBuffer)
+	if _unitFlagsErr != nil {
+		return nil, errors.Wrap(_unitFlagsErr, "Error parsing 'unitFlags' field of IdentifyReplyCommandOutputUnitSummary")
+	}
+	unitFlags := _unitFlags.(IdentifyReplyCommandUnitSummary)
+	if closeErr := readBuffer.CloseContext("unitFlags"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for unitFlags")
+	}
+
+	// Simple Field (gavStoreEnabledByte1)
+	_gavStoreEnabledByte1, _gavStoreEnabledByte1Err := readBuffer.ReadByte("gavStoreEnabledByte1")
+	if _gavStoreEnabledByte1Err != nil {
+		return nil, errors.Wrap(_gavStoreEnabledByte1Err, "Error parsing 'gavStoreEnabledByte1' field of IdentifyReplyCommandOutputUnitSummary")
+	}
+	gavStoreEnabledByte1 := _gavStoreEnabledByte1
+
+	// Simple Field (gavStoreEnabledByte2)
+	_gavStoreEnabledByte2, _gavStoreEnabledByte2Err := readBuffer.ReadByte("gavStoreEnabledByte2")
+	if _gavStoreEnabledByte2Err != nil {
+		return nil, errors.Wrap(_gavStoreEnabledByte2Err, "Error parsing 'gavStoreEnabledByte2' field of IdentifyReplyCommandOutputUnitSummary")
+	}
+	gavStoreEnabledByte2 := _gavStoreEnabledByte2
+
+	// Simple Field (timeFromLastRecoverOfMainsInSeconds)
+	_timeFromLastRecoverOfMainsInSeconds, _timeFromLastRecoverOfMainsInSecondsErr := readBuffer.ReadUint8("timeFromLastRecoverOfMainsInSeconds", 8)
+	if _timeFromLastRecoverOfMainsInSecondsErr != nil {
+		return nil, errors.Wrap(_timeFromLastRecoverOfMainsInSecondsErr, "Error parsing 'timeFromLastRecoverOfMainsInSeconds' field of IdentifyReplyCommandOutputUnitSummary")
+	}
+	timeFromLastRecoverOfMainsInSeconds := _timeFromLastRecoverOfMainsInSeconds
+
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandOutputUnitSummary"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandOutputUnitSummary")
 	}
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandOutputUnitSummary{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		UnitFlags:                           unitFlags,
+		GavStoreEnabledByte1:                gavStoreEnabledByte1,
+		GavStoreEnabledByte2:                gavStoreEnabledByte2,
+		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil
@@ -130,6 +224,39 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize(writeBuffer utils.Wri
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandOutputUnitSummary"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandOutputUnitSummary")
+		}
+
+		// Simple Field (unitFlags)
+		if pushErr := writeBuffer.PushContext("unitFlags"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for unitFlags")
+		}
+		_unitFlagsErr := writeBuffer.WriteSerializable(m.GetUnitFlags())
+		if popErr := writeBuffer.PopContext("unitFlags"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for unitFlags")
+		}
+		if _unitFlagsErr != nil {
+			return errors.Wrap(_unitFlagsErr, "Error serializing 'unitFlags' field")
+		}
+
+		// Simple Field (gavStoreEnabledByte1)
+		gavStoreEnabledByte1 := byte(m.GetGavStoreEnabledByte1())
+		_gavStoreEnabledByte1Err := writeBuffer.WriteByte("gavStoreEnabledByte1", (gavStoreEnabledByte1))
+		if _gavStoreEnabledByte1Err != nil {
+			return errors.Wrap(_gavStoreEnabledByte1Err, "Error serializing 'gavStoreEnabledByte1' field")
+		}
+
+		// Simple Field (gavStoreEnabledByte2)
+		gavStoreEnabledByte2 := byte(m.GetGavStoreEnabledByte2())
+		_gavStoreEnabledByte2Err := writeBuffer.WriteByte("gavStoreEnabledByte2", (gavStoreEnabledByte2))
+		if _gavStoreEnabledByte2Err != nil {
+			return errors.Wrap(_gavStoreEnabledByte2Err, "Error serializing 'gavStoreEnabledByte2' field")
+		}
+
+		// Simple Field (timeFromLastRecoverOfMainsInSeconds)
+		timeFromLastRecoverOfMainsInSeconds := uint8(m.GetTimeFromLastRecoverOfMainsInSeconds())
+		_timeFromLastRecoverOfMainsInSecondsErr := writeBuffer.WriteUint8("timeFromLastRecoverOfMainsInSeconds", 8, (timeFromLastRecoverOfMainsInSeconds))
+		if _timeFromLastRecoverOfMainsInSecondsErr != nil {
+			return errors.Wrap(_timeFromLastRecoverOfMainsInSecondsErr, "Error serializing 'timeFromLastRecoverOfMainsInSeconds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandOutputUnitSummary"); popErr != nil {

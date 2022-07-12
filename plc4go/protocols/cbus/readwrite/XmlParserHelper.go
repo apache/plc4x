@@ -105,9 +105,16 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CBusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(parserArguments[0])
-		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute)
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 5)
+		if err != nil {
+			return nil, err
+		}
+		numBytes := uint8(parsedUint1)
+		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute, numBytes)
 	case "CALDataOrSetParameter":
 		return model.CALDataOrSetParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "IdentifyReplyCommandUnitSummary":
+		return model.IdentifyReplyCommandUnitSummaryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusConstants":
 		return model.CBusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BridgeCount":

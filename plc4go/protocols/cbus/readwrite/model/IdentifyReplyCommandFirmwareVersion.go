@@ -83,10 +83,10 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetFirmwareVersion() string {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandFirmwareVersion factory function for _IdentifyReplyCommandFirmwareVersion
-func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string) *_IdentifyReplyCommandFirmwareVersion {
+func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uint8) *_IdentifyReplyCommandFirmwareVersion {
 	_result := &_IdentifyReplyCommandFirmwareVersion{
 		FirmwareVersion:       firmwareVersion,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -124,7 +124,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandFirmwareVersion, error) {
+func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandFirmwareVersion"); pullErr != nil {
@@ -146,8 +146,10 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandFirmwareVersion{
-		FirmwareVersion:       firmwareVersion,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		FirmwareVersion: firmwareVersion,
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

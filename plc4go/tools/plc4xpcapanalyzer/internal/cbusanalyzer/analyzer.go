@@ -72,8 +72,13 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
 				a.requestContext = model.NewRequestContext(true, false, false)
 			case model.CBusCommandPointToPointExactly:
+				sendIdentifyRequestBefore := false
 				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				a.requestContext = model.NewRequestContext(true, false, false)
+				switch command.GetCommand().GetCalData().(type) {
+				case model.CALDataIdentifyExactly:
+					sendIdentifyRequestBefore = true
+				}
+				a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
 			case model.CBusCommandPointToMultiPointExactly:
 				switch command.GetCommand().(type) {
 				case model.CBusPointToMultiPointCommandStatusExactly:

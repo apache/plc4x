@@ -44,6 +44,9 @@ type IdentifyReplyCommandExactly interface {
 // _IdentifyReplyCommand is the data-structure of this message
 type _IdentifyReplyCommand struct {
 	_IdentifyReplyCommandChildRequirements
+
+	// Arguments.
+	NumBytes uint8
 }
 
 type _IdentifyReplyCommandChildRequirements interface {
@@ -68,8 +71,8 @@ type IdentifyReplyCommandChild interface {
 }
 
 // NewIdentifyReplyCommand factory function for _IdentifyReplyCommand
-func NewIdentifyReplyCommand() *_IdentifyReplyCommand {
-	return &_IdentifyReplyCommand{}
+func NewIdentifyReplyCommand(numBytes uint8) *_IdentifyReplyCommand {
+	return &_IdentifyReplyCommand{NumBytes: numBytes}
 }
 
 // Deprecated: use the interface for direct cast
@@ -97,7 +100,7 @@ func (m *_IdentifyReplyCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommand, error) {
+func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommand"); pullErr != nil {
@@ -117,41 +120,41 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute)
 	var typeSwitchError error
 	switch {
 	case attribute == Attribute_Manufacturer: // IdentifyReplyCommandManufacturer
-		_childTemp, typeSwitchError = IdentifyReplyCommandManufacturerParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandManufacturerParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_Type: // IdentifyReplyCommandType
-		_childTemp, typeSwitchError = IdentifyReplyCommandTypeParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandTypeParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_FirmwareVersion: // IdentifyReplyCommandFirmwareVersion
-		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareVersionParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareVersionParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_Summary: // IdentifyReplyCommandFirmwareSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareSummaryParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareSummaryParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_ExtendedDiagnosticSummary: // IdentifyReplyCommandExtendedDiagnosticSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_NetworkTerminalLevels: // IdentifyReplyCommandNetworkTerminalLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkTerminalLevelsParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkTerminalLevelsParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_TerminalLevel: // IdentifyReplyCommandTerminalLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandTerminalLevelsParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandTerminalLevelsParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_NetworkVoltage: // IdentifyReplyCommandNetworkVoltage
-		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkVoltageParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkVoltageParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_GAVValuesCurrent: // IdentifyReplyCommandGAVValuesCurrent
-		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesCurrentParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesCurrentParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_GAVValuesStored: // IdentifyReplyCommandGAVValuesStored
-		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesStoredParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesStoredParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_GAVPhysicalAddresses: // IdentifyReplyCommandGAVPhysicalAddresses
-		_childTemp, typeSwitchError = IdentifyReplyCommandGAVPhysicalAddressesParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandGAVPhysicalAddressesParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_LogicalAssignment: // IdentifyReplyCommandLogicalAssignment
-		_childTemp, typeSwitchError = IdentifyReplyCommandLogicalAssignmentParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandLogicalAssignmentParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_Delays: // IdentifyReplyCommandDelays
-		_childTemp, typeSwitchError = IdentifyReplyCommandDelaysParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandDelaysParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_MinimumLevels: // IdentifyReplyCommandMinimumLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandMinimumLevelsParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandMinimumLevelsParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_MaximumLevels: // IdentifyReplyCommandMaximumLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandMaximumLevelsParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandMaximumLevelsParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_CurrentSenseLevels: // IdentifyReplyCommandCurrentSenseLevels
-		_childTemp, typeSwitchError = IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_OutputUnitSummary: // IdentifyReplyCommandOutputUnitSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandOutputUnitSummaryParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandOutputUnitSummaryParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_DSIStatus: // IdentifyReplyCommandDSIStatus
-		_childTemp, typeSwitchError = IdentifyReplyCommandDSIStatusParse(readBuffer, attribute)
+		_childTemp, typeSwitchError = IdentifyReplyCommandDSIStatusParse(readBuffer, attribute, numBytes)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [attribute=%v]", attribute)
 	}

@@ -66,9 +66,9 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetParent() IdentifyReplyComman
 }
 
 // NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
-func NewIdentifyReplyCommandLogicalAssignment() *_IdentifyReplyCommandLogicalAssignment {
+func NewIdentifyReplyCommandLogicalAssignment(numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
 	_result := &_IdentifyReplyCommandLogicalAssignment{
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -103,7 +103,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandLogicalAssignment, error) {
+func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandLogicalAssignment"); pullErr != nil {
@@ -118,7 +118,9 @@ func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, att
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandLogicalAssignment{
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

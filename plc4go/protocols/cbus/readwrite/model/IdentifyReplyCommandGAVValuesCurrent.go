@@ -83,10 +83,10 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetValues() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
-func NewIdentifyReplyCommandGAVValuesCurrent(values []byte) *_IdentifyReplyCommandGAVValuesCurrent {
+func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
 	_result := &_IdentifyReplyCommandGAVValuesCurrent{
 		Values:                values,
-		_IdentifyReplyCommand: NewIdentifyReplyCommand(),
+		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
 	return _result
@@ -126,7 +126,7 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandGAVValuesCurrentParse(readBuffer utils.ReadBuffer, attribute Attribute) (IdentifyReplyCommandGAVValuesCurrent, error) {
+func IdentifyReplyCommandGAVValuesCurrentParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVValuesCurrent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVValuesCurrent"); pullErr != nil {
@@ -147,8 +147,10 @@ func IdentifyReplyCommandGAVValuesCurrentParse(readBuffer utils.ReadBuffer, attr
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandGAVValuesCurrent{
-		Values:                values,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{},
+		Values: values,
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil
