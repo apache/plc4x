@@ -67,7 +67,7 @@ public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
         I rawValue = dataReader.read(logicalName, readerArgs);
         T enumValue = enumResolver.apply(rawValue);
         if (enumValue == null) {
-            LOGGER.error("No {} enum found for value {}", logicalName, rawValue);
+            LOGGER.debug("No {} enum found for value {}", logicalName, rawValue);
         }
         return enumValue;
     }
