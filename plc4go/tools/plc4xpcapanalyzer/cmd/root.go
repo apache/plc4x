@@ -21,6 +21,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
@@ -29,11 +30,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
-
-var cfgFile string
-var logType string
-var logLevel string
-var verbosity int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -57,19 +53,19 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.plc4xpcapanalyzer.yaml)")
-	rootCmd.PersistentFlags().StringVar(&logType, "log-type", "text", "define how the log will be evaluated")
-	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "off", "define the log Level")
-	rootCmd.PersistentFlags().CountVarP(&verbosity, "verbose", "v", "counted verbosity")
+	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.CfgFile, "config", "", "config file (default is $HOME/.plc4xpcapanalyzer.yaml)")
+	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.LogType, "log-type", "text", "define how the log will be evaluated")
+	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.LogLevel, "log-level", "off", "define the log Level")
+	rootCmd.PersistentFlags().CountVarP(&config.RootConfigInstance.Verbosity, "verbose", "v", "counted verbosity")
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" {
+	if config.RootConfigInstance.CfgFile != "" {
 		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
+		viper.SetConfigFile(config.RootConfigInstance.CfgFile)
 	} else {
 		// Find home directory.
 		home, err := os.UserHomeDir()
@@ -89,7 +85,7 @@ func initConfig() {
 	}
 
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-	if logType == "text" {
+	if config.RootConfigInstance.LogType == "text" {
 		log.Logger = log.
 			//// Enable below if you want to see the filenames
 			//With().Caller().Logger().
@@ -99,9 +95,9 @@ func initConfig() {
 }
 
 func parseLogLevel() zerolog.Level {
-	level, err := zerolog.ParseLevel(logLevel)
+	level, err := zerolog.ParseLevel(config.RootConfigInstance.LogLevel)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Unknown log level %s", logLevel)
+		log.Fatal().Err(err).Msgf("Unknown log level %s", config.RootConfigInstance.LogLevel)
 	}
 	return level
 }

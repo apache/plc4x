@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -40,7 +41,7 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 	if !a.initialized {
 		log.Warn().Msg("Not initialized... doing that now")
 		a.requestContext = model.NewRequestContext(false, false, false)
-		a.cBusOptions = model.NewCBusOptions(false, false, false, false, false, false, false, false, false)
+		a.cBusOptions = model.NewCBusOptions(config.CBusConfigInstance.Connect, config.CBusConfigInstance.Smart, config.CBusConfigInstance.Idmon, config.CBusConfigInstance.Exstat, config.CBusConfigInstance.Monitor, config.CBusConfigInstance.Monall, config.CBusConfigInstance.Pun, config.CBusConfigInstance.Pcn, config.CBusConfigInstance.Srchk)
 		a.initialized = true
 	}
 	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s", packetInformation, a.requestContext, a.cBusOptions)

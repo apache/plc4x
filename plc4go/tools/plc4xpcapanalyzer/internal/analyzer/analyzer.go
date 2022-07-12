@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/bacnetanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/cbusanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
@@ -34,10 +35,10 @@ import (
 	"net"
 )
 
-func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bool, client string, startPackageNumber, packageNumberLimit uint, verbosity int) {
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filter)
+func Analyze(pcapFile, protocolType string) {
+	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.AnalyzeConfigInstance.Filter)
 
-	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, filter)
+	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, config.AnalyzeConfigInstance.Filter)
 	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
 	defer handle.Close()
 	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
@@ -52,7 +53,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
 	case "c-bus":
-		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(client)}
+		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(config.AnalyzeConfigInstance.Client)}
 		packageParse = analyzer.PackageParse
 		serializePackage = analyzer.SerializePackage
 		prettyPrint = analyzer.PrettyPrint
@@ -75,12 +76,12 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 	compareFails := 0
 	for packet := range source.Packets() {
 		currentPackageNum++
-		if currentPackageNum < startPackageNumber {
-			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, startPackageNumber)
+		if currentPackageNum < config.AnalyzeConfigInstance.StartPackageNumber {
+			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.AnalyzeConfigInstance.StartPackageNumber)
 			continue
 		}
-		if currentPackageNum > packageNumberLimit {
-			log.Warn().Msgf("Aborting reading packages because we hit the limit of %d", packageNumberLimit)
+		if currentPackageNum > config.AnalyzeConfigInstance.PackageNumberLimit {
+			log.Warn().Msgf("Aborting reading packages because we hit the limit of %d", config.AnalyzeConfigInstance.PackageNumberLimit)
 			break
 		}
 		if packet == nil {
@@ -116,10 +117,10 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			continue
 		} else {
 			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Parsed", realPacketNumber)
-			if verbosity > 1 {
+			if config.AnalyzeConfigInstance.Verbosity > 1 {
 				prettyPrint(parsed)
 			}
-			if onlyParse {
+			if config.AnalyzeConfigInstance.OnlyParse {
 				log.Trace().Msg("only parsing")
 				continue
 			}
@@ -130,7 +131,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 				log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error serializing", realPacketNumber)
 				continue
 			}
-			if noBytesCompare {
+			if config.AnalyzeConfigInstance.NoBytesCompare {
 				log.Trace().Msg("not comparing bytes")
 				continue
 			}
@@ -138,7 +139,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 				compareFails++
 				// TODO: write report to xml or something
 				log.Warn().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Bytes don't match", realPacketNumber)
-				if verbosity > 0 {
+				if config.AnalyzeConfigInstance.Verbosity > 0 {
 					println("Original bytes")
 					println(hex.Dump(payload))
 					println("Serialized bytes")
