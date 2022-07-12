@@ -597,8 +597,8 @@
                                 identifyReplyCommand                                        ]
         ]
         ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer) // Reply
-            [simple uint 8 paramNumber                                                      ]
-            [array  byte   data        count 'commandTypeContainer.numBytes-1'              ]
+            [simple Parameter paramNo                                                       ]
+            [array  byte      data        count 'commandTypeContainer.numBytes-1'           ]
         ]
         ['ACKNOWLEDGE'      *Acknowledge // Reply
             [simple Parameter paramNo                                                       ]

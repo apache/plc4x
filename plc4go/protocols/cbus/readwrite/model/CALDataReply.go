@@ -31,8 +31,8 @@ type CALDataReply interface {
 	utils.LengthAware
 	utils.Serializable
 	CALData
-	// GetParamNumber returns ParamNumber (property field)
-	GetParamNumber() uint8
+	// GetParamNo returns ParamNo (property field)
+	GetParamNo() Parameter
 	// GetData returns Data (property field)
 	GetData() []byte
 }
@@ -47,8 +47,8 @@ type CALDataReplyExactly interface {
 // _CALDataReply is the data-structure of this message
 type _CALDataReply struct {
 	*_CALData
-	ParamNumber uint8
-	Data        []byte
+	ParamNo Parameter
+	Data    []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,8 +75,8 @@ func (m *_CALDataReply) GetParent() CALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALDataReply) GetParamNumber() uint8 {
-	return m.ParamNumber
+func (m *_CALDataReply) GetParamNo() Parameter {
+	return m.ParamNo
 }
 
 func (m *_CALDataReply) GetData() []byte {
@@ -89,11 +89,11 @@ func (m *_CALDataReply) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReply factory function for _CALDataReply
-func NewCALDataReply(paramNumber uint8, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReply {
+func NewCALDataReply(paramNo Parameter, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReply {
 	_result := &_CALDataReply{
-		ParamNumber: paramNumber,
-		Data:        data,
-		_CALData:    NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:  paramNo,
+		Data:     data,
+		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result
@@ -121,7 +121,7 @@ func (m *_CALDataReply) GetLengthInBits() uint16 {
 func (m *_CALDataReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (paramNumber)
+	// Simple field (paramNo)
 	lengthInBits += 8
 
 	// Array field
@@ -145,12 +145,18 @@ func CALDataReplyParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNumber)
-	_paramNumber, _paramNumberErr := readBuffer.ReadUint8("paramNumber", 8)
-	if _paramNumberErr != nil {
-		return nil, errors.Wrap(_paramNumberErr, "Error parsing 'paramNumber' field of CALDataReply")
+	// Simple Field (paramNo)
+	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	paramNumber := _paramNumber
+	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	if _paramNoErr != nil {
+		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataReply")
+	}
+	paramNo := _paramNo
+	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(1)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
@@ -164,8 +170,8 @@ func CALDataReplyParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 
 	// Create a partially initialized instance
 	_child := &_CALDataReply{
-		ParamNumber: paramNumber,
-		Data:        data,
+		ParamNo: paramNo,
+		Data:    data,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
@@ -182,11 +188,16 @@ func (m *_CALDataReply) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for CALDataReply")
 		}
 
-		// Simple Field (paramNumber)
-		paramNumber := uint8(m.GetParamNumber())
-		_paramNumberErr := writeBuffer.WriteUint8("paramNumber", 8, (paramNumber))
-		if _paramNumberErr != nil {
-			return errors.Wrap(_paramNumberErr, "Error serializing 'paramNumber' field")
+		// Simple Field (paramNo)
+		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for paramNo")
+		}
+		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for paramNo")
+		}
+		if _paramNoErr != nil {
+			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}
 
 		// Array Field (data)
