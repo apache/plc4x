@@ -33,8 +33,8 @@ type CALDataRecall interface {
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
-	// GetCode returns Code (property field)
-	GetCode() uint8
+	// GetCount returns Count (property field)
+	GetCount() uint8
 }
 
 // CALDataRecallExactly can be used when we want exactly this type and not a type which fulfills CALDataRecall.
@@ -48,7 +48,7 @@ type CALDataRecallExactly interface {
 type _CALDataRecall struct {
 	*_CALData
 	ParamNo Parameter
-	Code    uint8
+	Count   uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -79,8 +79,8 @@ func (m *_CALDataRecall) GetParamNo() Parameter {
 	return m.ParamNo
 }
 
-func (m *_CALDataRecall) GetCode() uint8 {
-	return m.Code
+func (m *_CALDataRecall) GetCount() uint8 {
+	return m.Count
 }
 
 ///////////////////////
@@ -89,10 +89,10 @@ func (m *_CALDataRecall) GetCode() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataRecall factory function for _CALDataRecall
-func NewCALDataRecall(paramNo Parameter, code uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataRecall {
+func NewCALDataRecall(paramNo Parameter, count uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataRecall {
 	_result := &_CALDataRecall{
 		ParamNo:  paramNo,
-		Code:     code,
+		Count:    count,
 		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
@@ -124,7 +124,7 @@ func (m *_CALDataRecall) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (paramNo)
 	lengthInBits += 8
 
-	// Simple field (code)
+	// Simple field (count)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -156,12 +156,12 @@ func CALDataRecallParse(readBuffer utils.ReadBuffer, requestContext RequestConte
 		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
 	}
 
-	// Simple Field (code)
-	_code, _codeErr := readBuffer.ReadUint8("code", 8)
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataRecall")
+	// Simple Field (count)
+	_count, _countErr := readBuffer.ReadUint8("count", 8)
+	if _countErr != nil {
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of CALDataRecall")
 	}
-	code := _code
+	count := _count
 
 	if closeErr := readBuffer.CloseContext("CALDataRecall"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataRecall")
@@ -170,7 +170,7 @@ func CALDataRecallParse(readBuffer utils.ReadBuffer, requestContext RequestConte
 	// Create a partially initialized instance
 	_child := &_CALDataRecall{
 		ParamNo: paramNo,
-		Code:    code,
+		Count:   count,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
@@ -199,11 +199,11 @@ func (m *_CALDataRecall) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}
 
-		// Simple Field (code)
-		code := uint8(m.GetCode())
-		_codeErr := writeBuffer.WriteUint8("code", 8, (code))
-		if _codeErr != nil {
-			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		// Simple Field (count)
+		count := uint8(m.GetCount())
+		_countErr := writeBuffer.WriteUint8("count", 8, (count))
+		if _countErr != nil {
+			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataRecall"); popErr != nil {

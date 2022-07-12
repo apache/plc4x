@@ -194,7 +194,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	}
 	blockStart := _blockStart
 	// Byte Array field (data)
-	numberOfBytesdata := int(commandTypeContainer.NumBytes())
+	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(3)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataStatusExtended")

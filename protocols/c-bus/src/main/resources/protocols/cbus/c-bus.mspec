@@ -582,23 +582,23 @@
         ]
         ['RECALL'           *Recall // Request
             [simple Parameter paramNo                                                       ]
-            [simple uint 8    code                                                          ]
+            [simple uint 8    count                                                         ]
         ]
         ['IDENTIFY'         *Identify // Request
             [simple Attribute attribute                                                     ]
         ]
         ['GET_STATUS'       *GetStatus // Request
             [simple Parameter paramNo                                                       ]
-            [simple uint 8    code                                                          ]
+            [simple uint 8    count                                                         ]
         ]
         ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple Attribute   attribute                                                   ]
-            [simple IdentifyReplyCommand('attribute', 'commandTypeContainer.numBytes-1') // We substract 1 byte as it was used by the attribute
+            [simple IdentifyReplyCommand('attribute', 'commandTypeContainer.numBytes - 1')
                                 identifyReplyCommand                                        ]
         ]
         ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple uint 8 paramNumber                                                      ]
-            [array  byte   data        count 'commandTypeContainer.numBytes'                ]
+            [array  byte   data        count 'commandTypeContainer.numBytes-1'              ]
         ]
         ['ACKNOWLEDGE'      *Acknowledge // Reply
             [simple Parameter paramNo                                                       ]
@@ -607,13 +607,13 @@
         ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes'           ]
+            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ]
         ]
         ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple uint 8                 encoding                                                    ]
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes'           ]
+            [array  byte                   data        count 'commandTypeContainer.numBytes - 3'       ]
         ]
     ]
     // TODO: we need to check that we don't read the crc by accident

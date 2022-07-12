@@ -152,7 +152,7 @@ func CALDataReplyParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	}
 	paramNumber := _paramNumber
 	// Byte Array field (data)
-	numberOfBytesdata := int(commandTypeContainer.NumBytes())
+	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(1)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataReply")
