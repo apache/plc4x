@@ -885,6 +885,81 @@
     ['3' READ_ONLY          ['"Read only"'                      ]]
 ]
 
+[type ApplicationAddress1 // Note 1
+    [simple  byte address                       ]
+    // if wildcard is set address 2 should set to wildcard as well
+    [virtual bit  isWildcard 'address == 0xFF'  ]
+]
+
+[type ApplicationAddress2 // Note 1
+    [simple  byte address                       ]
+    [virtual bit  isWildcard 'address == 0xFF'  ]
+]
+
+[type InterfaceOptions1 // Note 2
+    [reserved bit  'false'                       ]
+    [simple   bit  idmon                         ]
+    [simple   bit  monitor                       ]
+    [simple   bit  smart                         ]
+    [simple   bit  srchk                         ]
+    [simple   bit  xonXoff                       ]
+    [reserved bit  'false'                       ]
+    [simple   bit  connect                       ]
+]
+
+// Undefined values default to 0xFF
+[enum uint 8 BaudRateSelector
+    ['0x01' SELECTED_4800_BAUD]
+    ['0x02' SELECTED_2400_BAUD]
+    ['0x03' SELECTED_1200_BAUD]
+    ['0x04' SELECTED_600_BAUD ]
+    ['0x05' SELECTED_300_BAUD ]
+    ['0xFF' SELECTED_9600_BAUD]
+]
+
+[type InterfaceOptions2 // Note 4
+    [reserved bit  'false'                       ]
+    [simple   bit  burden                        ]
+    [reserved bit  'false'                       ]
+    [reserved bit  'false'                       ]
+    [reserved bit  'false'                       ]
+    [reserved bit  'false'                       ]
+    [reserved bit  'false'                       ]
+    [simple   bit  clockGen                      ]
+]
+
+[type InterfaceOptions1PowerUpSettings // Note 5
+    [simple InterfaceOptions1 interfaceOptions1  ]
+]
+
+[type InterfaceOptions3 // Note 6
+    [reserved bit  'false'                       ]
+    [reserved bit  'false'                       ]
+    [reserved bit  'false'                       ]
+    [reserved bit  'false'                       ]
+    [simple   bit  exstat                        ]
+    [simple   bit  pun                           ]
+    [simple   bit  localSal                      ]
+    [simple   bit  pcn                           ]
+]
+
+[type CustomManufacturer // Note 7
+    // TODO: 8 is a placeholder at the moment
+    [simple vstring '8' customString                 ]
+]
+
+[type SerialNumber // Note 8
+    [simple byte octet1]
+    [simple byte octet2]
+    [simple byte octet3]
+    [simple byte octet4]
+]
+
+[type CustomTypes // Note 9
+    // TODO: 8 is a placeholder at the moment
+    [simple vstring '8' customString                 ]
+]
+
 [enum uint 8 Attribute(uint 8 bytesReturned)
     ['0x00' Manufacturer              [ '8']]
     ['0x01' Type                      [ '8']]
