@@ -114,7 +114,7 @@ func (m SzlModuleTypeClass) GetLengthInBytes() uint16 {
 func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {
 	val, err := readBuffer.ReadUint8("SzlModuleTypeClass", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SzlModuleTypeClass")
 	}
 	return SzlModuleTypeClassByValue(val), nil
 }

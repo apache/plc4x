@@ -114,7 +114,7 @@ func (m EventType) GetLengthInBytes() uint16 {
 func EventTypeParse(readBuffer utils.ReadBuffer) (EventType, error) {
 	val, err := readBuffer.ReadUint8("EventType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading EventType")
 	}
 	return EventTypeByValue(val), nil
 }

@@ -132,7 +132,7 @@ func (m BACnetEscalatorMode) GetLengthInBytes() uint16 {
 func BACnetEscalatorModeParse(readBuffer utils.ReadBuffer) (BACnetEscalatorMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorMode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEscalatorMode")
 	}
 	return BACnetEscalatorModeByValue(val), nil
 }

@@ -102,7 +102,7 @@ func (m TagClass) GetLengthInBytes() uint16 {
 func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {
 	val, err := readBuffer.ReadUint8("TagClass", 1)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading TagClass")
 	}
 	return TagClassByValue(val), nil
 }

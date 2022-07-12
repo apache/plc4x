@@ -102,7 +102,7 @@ func (m BACnetPolarity) GetLengthInBytes() uint16 {
 func BACnetPolarityParse(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 	val, err := readBuffer.ReadUint8("BACnetPolarity", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetPolarity")
 	}
 	return BACnetPolarityByValue(val), nil
 }

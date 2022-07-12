@@ -1244,7 +1244,7 @@ func (m KnxDatapointMainType) GetLengthInBytes() uint16 {
 func KnxDatapointMainTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointMainType, error) {
 	val, err := readBuffer.ReadUint16("KnxDatapointMainType", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxDatapointMainType")
 	}
 	return KnxDatapointMainTypeByValue(val), nil
 }

@@ -102,7 +102,7 @@ func (m HostProtocolCode) GetLengthInBytes() uint16 {
 func HostProtocolCodeParse(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
 	val, err := readBuffer.ReadUint8("HostProtocolCode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading HostProtocolCode")
 	}
 	return HostProtocolCodeByValue(val), nil
 }

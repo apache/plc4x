@@ -126,7 +126,7 @@ func (m BACnetProgramError) GetLengthInBytes() uint16 {
 func BACnetProgramErrorParse(readBuffer utils.ReadBuffer) (BACnetProgramError, error) {
 	val, err := readBuffer.ReadUint16("BACnetProgramError", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetProgramError")
 	}
 	return BACnetProgramErrorByValue(val), nil
 }

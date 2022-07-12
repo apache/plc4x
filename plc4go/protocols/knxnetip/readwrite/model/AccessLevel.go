@@ -197,7 +197,7 @@ func (m AccessLevel) GetLengthInBytes() uint16 {
 func AccessLevelParse(readBuffer utils.ReadBuffer) (AccessLevel, error) {
 	val, err := readBuffer.ReadUint8("AccessLevel", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading AccessLevel")
 	}
 	return AccessLevelByValue(val), nil
 }

@@ -156,7 +156,7 @@ func (m BACnetRejectReason) GetLengthInBytes() uint16 {
 func BACnetRejectReasonParse(readBuffer utils.ReadBuffer) (BACnetRejectReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRejectReason", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetRejectReason")
 	}
 	return BACnetRejectReasonByValue(val), nil
 }

@@ -258,7 +258,7 @@ func (m ComObjectValueType) GetLengthInBytes() uint16 {
 func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
 	val, err := readBuffer.ReadUint8("ComObjectValueType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ComObjectValueType")
 	}
 	return ComObjectValueTypeByValue(val), nil
 }

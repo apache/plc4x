@@ -186,7 +186,7 @@ func (m ApduType) GetLengthInBytes() uint16 {
 func ApduTypeParse(readBuffer utils.ReadBuffer) (ApduType, error) {
 	val, err := readBuffer.ReadUint8("ApduType", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ApduType")
 	}
 	return ApduTypeByValue(val), nil
 }

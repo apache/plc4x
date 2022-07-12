@@ -162,7 +162,7 @@ func (m BACnetNetworkType) GetLengthInBytes() uint16 {
 func BACnetNetworkTypeParse(readBuffer utils.ReadBuffer) (BACnetNetworkType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNetworkType")
 	}
 	return BACnetNetworkTypeByValue(val), nil
 }

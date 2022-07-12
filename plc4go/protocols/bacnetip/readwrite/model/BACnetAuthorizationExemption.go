@@ -138,7 +138,7 @@ func (m BACnetAuthorizationExemption) GetLengthInBytes() uint16 {
 func BACnetAuthorizationExemptionParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthorizationExemption", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthorizationExemption")
 	}
 	return BACnetAuthorizationExemptionByValue(val), nil
 }

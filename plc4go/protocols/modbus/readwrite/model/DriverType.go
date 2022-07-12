@@ -108,7 +108,7 @@ func (m DriverType) GetLengthInBytes() uint16 {
 func DriverTypeParse(readBuffer utils.ReadBuffer) (DriverType, error) {
 	val, err := readBuffer.ReadUint32("DriverType", 32)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DriverType")
 	}
 	return DriverTypeByValue(val), nil
 }

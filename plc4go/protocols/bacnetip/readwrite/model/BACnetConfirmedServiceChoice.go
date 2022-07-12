@@ -282,7 +282,7 @@ func (m BACnetConfirmedServiceChoice) GetLengthInBytes() uint16 {
 func BACnetConfirmedServiceChoiceParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceChoice, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceChoice", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceChoice")
 	}
 	return BACnetConfirmedServiceChoiceByValue(val), nil
 }

@@ -132,7 +132,7 @@ func (m BACnetDaysOfWeek) GetLengthInBytes() uint16 {
 func BACnetDaysOfWeekParse(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
 	val, err := readBuffer.ReadUint8("BACnetDaysOfWeek", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDaysOfWeek")
 	}
 	return BACnetDaysOfWeekByValue(val), nil
 }

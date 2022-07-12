@@ -108,7 +108,7 @@ func (m KnxLayer) GetLengthInBytes() uint16 {
 func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 	val, err := readBuffer.ReadUint8("KnxLayer", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxLayer")
 	}
 	return KnxLayerByValue(val), nil
 }

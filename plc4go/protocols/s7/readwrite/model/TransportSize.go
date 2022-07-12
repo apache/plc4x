@@ -1598,7 +1598,7 @@ func (m TransportSize) GetLengthInBytes() uint16 {
 func TransportSizeParse(readBuffer utils.ReadBuffer) (TransportSize, error) {
 	val, err := readBuffer.ReadUint8("TransportSize", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading TransportSize")
 	}
 	return TransportSizeByValue(val), nil
 }

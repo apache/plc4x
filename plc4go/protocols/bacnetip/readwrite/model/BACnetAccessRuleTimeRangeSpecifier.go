@@ -102,7 +102,7 @@ func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBytes() uint16 {
 func BACnetAccessRuleTimeRangeSpecifierParse(readBuffer utils.ReadBuffer) (BACnetAccessRuleTimeRangeSpecifier, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessRuleTimeRangeSpecifier", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessRuleTimeRangeSpecifier")
 	}
 	return BACnetAccessRuleTimeRangeSpecifierByValue(val), nil
 }

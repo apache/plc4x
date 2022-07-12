@@ -18868,7 +18868,7 @@ func (m ComObjectTableAddresses) GetLengthInBytes() uint16 {
 func ComObjectTableAddressesParse(readBuffer utils.ReadBuffer) (ComObjectTableAddresses, error) {
 	val, err := readBuffer.ReadUint16("ComObjectTableAddresses", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ComObjectTableAddresses")
 	}
 	return ComObjectTableAddressesByValue(val), nil
 }

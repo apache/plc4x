@@ -126,7 +126,7 @@ func (m BACnetCharacterEncoding) GetLengthInBytes() uint16 {
 func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
 	val, err := readBuffer.ReadByte("BACnetCharacterEncoding")
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetCharacterEncoding")
 	}
 	return BACnetCharacterEncodingByValue(val), nil
 }

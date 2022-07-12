@@ -108,7 +108,7 @@ func (m ChannelStatus) GetLengthInBytes() uint16 {
 func ChannelStatusParse(readBuffer utils.ReadBuffer) (ChannelStatus, error) {
 	val, err := readBuffer.ReadUint8("ChannelStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ChannelStatus")
 	}
 	return ChannelStatusByValue(val), nil
 }

@@ -533,7 +533,7 @@ func (m DeviceDescriptor) GetLengthInBytes() uint16 {
 func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
 	val, err := readBuffer.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
 	}
 	return DeviceDescriptorByValue(val), nil
 }

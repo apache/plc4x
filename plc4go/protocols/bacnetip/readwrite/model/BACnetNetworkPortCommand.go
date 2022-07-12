@@ -144,7 +144,7 @@ func (m BACnetNetworkPortCommand) GetLengthInBytes() uint16 {
 func BACnetNetworkPortCommandParse(readBuffer utils.ReadBuffer) (BACnetNetworkPortCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkPortCommand", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNetworkPortCommand")
 	}
 	return BACnetNetworkPortCommandByValue(val), nil
 }

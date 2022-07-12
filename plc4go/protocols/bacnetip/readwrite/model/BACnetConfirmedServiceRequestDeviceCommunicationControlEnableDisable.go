@@ -108,7 +108,7 @@ func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Ge
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable")
 	}
 	return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(val), nil
 }

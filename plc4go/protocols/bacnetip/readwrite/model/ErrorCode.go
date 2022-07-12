@@ -870,7 +870,7 @@ func (m ErrorCode) GetLengthInBytes() uint16 {
 func ErrorCodeParse(readBuffer utils.ReadBuffer) (ErrorCode, error) {
 	val, err := readBuffer.ReadUint16("ErrorCode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ErrorCode")
 	}
 	return ErrorCodeByValue(val), nil
 }

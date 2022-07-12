@@ -108,7 +108,7 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter")
 	}
 	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(val), nil
 }

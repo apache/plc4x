@@ -188,7 +188,7 @@ func (m RouteType) GetLengthInBytes() uint16 {
 func RouteTypeParse(readBuffer utils.ReadBuffer) (RouteType, error) {
 	val, err := readBuffer.ReadUint8("RouteType", 3)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading RouteType")
 	}
 	return RouteTypeByValue(val), nil
 }

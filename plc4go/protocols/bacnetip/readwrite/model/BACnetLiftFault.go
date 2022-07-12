@@ -198,7 +198,7 @@ func (m BACnetLiftFault) GetLengthInBytes() uint16 {
 func BACnetLiftFaultParse(readBuffer utils.ReadBuffer) (BACnetLiftFault, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftFault", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLiftFault")
 	}
 	return BACnetLiftFaultByValue(val), nil
 }

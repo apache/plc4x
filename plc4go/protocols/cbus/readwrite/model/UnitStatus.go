@@ -108,7 +108,7 @@ func (m UnitStatus) GetLengthInBytes() uint16 {
 func UnitStatusParse(readBuffer utils.ReadBuffer) (UnitStatus, error) {
 	val, err := readBuffer.ReadUint8("UnitStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading UnitStatus")
 	}
 	return UnitStatusByValue(val), nil
 }

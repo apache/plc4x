@@ -378,7 +378,7 @@ func (m SimulatedDataTypeSizes) GetLengthInBytes() uint16 {
 func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
 	val, err := readBuffer.ReadUint8("SimulatedDataTypeSizes", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SimulatedDataTypeSizes")
 	}
 	return SimulatedDataTypeSizesByValue(val), nil
 }

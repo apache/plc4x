@@ -120,7 +120,7 @@ func (m COTPProtocolClass) GetLengthInBytes() uint16 {
 func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
 	val, err := readBuffer.ReadUint8("COTPProtocolClass", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading COTPProtocolClass")
 	}
 	return COTPProtocolClassByValue(val), nil
 }

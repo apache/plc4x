@@ -120,7 +120,7 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLe
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
 	}
 	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(val), nil
 }

@@ -126,7 +126,7 @@ func (m KnxMedium) GetLengthInBytes() uint16 {
 func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 	val, err := readBuffer.ReadUint8("KnxMedium", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxMedium")
 	}
 	return KnxMediumByValue(val), nil
 }

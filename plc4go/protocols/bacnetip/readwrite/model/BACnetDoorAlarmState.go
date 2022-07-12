@@ -150,7 +150,7 @@ func (m BACnetDoorAlarmState) GetLengthInBytes() uint16 {
 func BACnetDoorAlarmStateParse(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorAlarmState", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDoorAlarmState")
 	}
 	return BACnetDoorAlarmStateByValue(val), nil
 }

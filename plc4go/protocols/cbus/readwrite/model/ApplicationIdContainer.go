@@ -3711,7 +3711,7 @@ func (m ApplicationIdContainer) GetLengthInBytes() uint16 {
 func ApplicationIdContainerParse(readBuffer utils.ReadBuffer) (ApplicationIdContainer, error) {
 	val, err := readBuffer.ReadUint8("ApplicationIdContainer", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ApplicationIdContainer")
 	}
 	return ApplicationIdContainerByValue(val), nil
 }

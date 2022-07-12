@@ -276,7 +276,7 @@ func (m BACnetRelationship) GetLengthInBytes() uint16 {
 func BACnetRelationshipParse(readBuffer utils.ReadBuffer) (BACnetRelationship, error) {
 	val, err := readBuffer.ReadUint16("BACnetRelationship", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetRelationship")
 	}
 	return BACnetRelationshipByValue(val), nil
 }

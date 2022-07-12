@@ -102,7 +102,7 @@ func (m BACnetBinaryPV) GetLengthInBytes() uint16 {
 func BACnetBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
 	val, err := readBuffer.ReadUint8("BACnetBinaryPV", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetBinaryPV")
 	}
 	return BACnetBinaryPVByValue(val), nil
 }

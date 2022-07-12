@@ -240,7 +240,7 @@ func (m BACnetAuthenticationFactorType) GetLengthInBytes() uint16 {
 func BACnetAuthenticationFactorTypeParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationFactorType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthenticationFactorType")
 	}
 	return BACnetAuthenticationFactorTypeByValue(val), nil
 }

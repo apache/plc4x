@@ -114,7 +114,7 @@ func (m PriorityClass) GetLengthInBytes() uint16 {
 func PriorityClassParse(readBuffer utils.ReadBuffer) (PriorityClass, error) {
 	val, err := readBuffer.ReadUint8("PriorityClass", 2)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading PriorityClass")
 	}
 	return PriorityClassByValue(val), nil
 }

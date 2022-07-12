@@ -204,7 +204,7 @@ func (m SzlSublist) GetLengthInBytes() uint16 {
 func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {
 	val, err := readBuffer.ReadUint8("SzlSublist", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SzlSublist")
 	}
 	return SzlSublistByValue(val), nil
 }

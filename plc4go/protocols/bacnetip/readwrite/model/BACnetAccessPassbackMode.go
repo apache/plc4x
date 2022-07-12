@@ -108,7 +108,7 @@ func (m BACnetAccessPassbackMode) GetLengthInBytes() uint16 {
 func BACnetAccessPassbackModeParse(readBuffer utils.ReadBuffer) (BACnetAccessPassbackMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessPassbackMode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessPassbackMode")
 	}
 	return BACnetAccessPassbackModeByValue(val), nil
 }

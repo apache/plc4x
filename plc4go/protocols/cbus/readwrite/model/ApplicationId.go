@@ -210,7 +210,7 @@ func (m ApplicationId) GetLengthInBytes() uint16 {
 func ApplicationIdParse(readBuffer utils.ReadBuffer) (ApplicationId, error) {
 	val, err := readBuffer.ReadUint8("ApplicationId", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ApplicationId")
 	}
 	return ApplicationIdByValue(val), nil
 }

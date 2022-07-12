@@ -132,7 +132,7 @@ func (m BACnetLiftGroupMode) GetLengthInBytes() uint16 {
 func BACnetLiftGroupModeParse(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftGroupMode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLiftGroupMode")
 	}
 	return BACnetLiftGroupModeByValue(val), nil
 }

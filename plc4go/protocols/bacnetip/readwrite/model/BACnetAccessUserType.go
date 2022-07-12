@@ -114,7 +114,7 @@ func (m BACnetAccessUserType) GetLengthInBytes() uint16 {
 func BACnetAccessUserTypeParse(readBuffer utils.ReadBuffer) (BACnetAccessUserType, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessUserType", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessUserType")
 	}
 	return BACnetAccessUserTypeByValue(val), nil
 }

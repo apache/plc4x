@@ -126,7 +126,7 @@ func (m AlarmStateType) GetLengthInBytes() uint16 {
 func AlarmStateTypeParse(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 	val, err := readBuffer.ReadUint8("AlarmStateType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading AlarmStateType")
 	}
 	return AlarmStateTypeByValue(val), nil
 }

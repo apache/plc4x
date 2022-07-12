@@ -102,7 +102,7 @@ func (m BACnetAccessRuleLocationSpecifier) GetLengthInBytes() uint16 {
 func BACnetAccessRuleLocationSpecifierParse(readBuffer utils.ReadBuffer) (BACnetAccessRuleLocationSpecifier, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessRuleLocationSpecifier", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessRuleLocationSpecifier")
 	}
 	return BACnetAccessRuleLocationSpecifierByValue(val), nil
 }

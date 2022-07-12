@@ -114,7 +114,7 @@ func (m BACnetLoggingType) GetLengthInBytes() uint16 {
 func BACnetLoggingTypeParse(readBuffer utils.ReadBuffer) (BACnetLoggingType, error) {
 	val, err := readBuffer.ReadUint8("BACnetLoggingType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLoggingType")
 	}
 	return BACnetLoggingTypeByValue(val), nil
 }

@@ -120,7 +120,7 @@ func (m BACnetLightingInProgress) GetLengthInBytes() uint16 {
 func BACnetLightingInProgressParse(readBuffer utils.ReadBuffer) (BACnetLightingInProgress, error) {
 	val, err := readBuffer.ReadUint8("BACnetLightingInProgress", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLightingInProgress")
 	}
 	return BACnetLightingInProgressByValue(val), nil
 }

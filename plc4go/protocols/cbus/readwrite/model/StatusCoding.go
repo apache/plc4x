@@ -114,7 +114,7 @@ func (m StatusCoding) GetLengthInBytes() uint16 {
 func StatusCodingParse(readBuffer utils.ReadBuffer) (StatusCoding, error) {
 	val, err := readBuffer.ReadByte("StatusCoding")
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading StatusCoding")
 	}
 	return StatusCodingByValue(val), nil
 }

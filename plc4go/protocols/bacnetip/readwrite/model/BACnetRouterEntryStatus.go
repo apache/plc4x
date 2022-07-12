@@ -108,7 +108,7 @@ func (m BACnetRouterEntryStatus) GetLengthInBytes() uint16 {
 func BACnetRouterEntryStatusParse(readBuffer utils.ReadBuffer) (BACnetRouterEntryStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetRouterEntryStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetRouterEntryStatus")
 	}
 	return BACnetRouterEntryStatusByValue(val), nil
 }

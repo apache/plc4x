@@ -1046,7 +1046,7 @@ func (m KnxPropertyDataType) GetLengthInBytes() uint16 {
 func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
 	val, err := readBuffer.ReadUint8("KnxPropertyDataType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxPropertyDataType")
 	}
 	return KnxPropertyDataTypeByValue(val), nil
 }

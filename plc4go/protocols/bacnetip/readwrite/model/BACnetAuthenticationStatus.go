@@ -132,7 +132,7 @@ func (m BACnetAuthenticationStatus) GetLengthInBytes() uint16 {
 func BACnetAuthenticationStatusParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthenticationStatus")
 	}
 	return BACnetAuthenticationStatusByValue(val), nil
 }

@@ -2838,7 +2838,7 @@ func (m BACnetPropertyIdentifier) GetLengthInBytes() uint16 {
 func BACnetPropertyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {
 	val, err := readBuffer.ReadUint32("BACnetPropertyIdentifier", 32)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetPropertyIdentifier")
 	}
 	return BACnetPropertyIdentifierByValue(val), nil
 }

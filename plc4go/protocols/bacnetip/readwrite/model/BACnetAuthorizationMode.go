@@ -132,7 +132,7 @@ func (m BACnetAuthorizationMode) GetLengthInBytes() uint16 {
 func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetAuthorizationMode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")
 	}
 	return BACnetAuthorizationModeByValue(val), nil
 }

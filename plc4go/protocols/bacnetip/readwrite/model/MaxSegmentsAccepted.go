@@ -138,7 +138,7 @@ func (m MaxSegmentsAccepted) GetLengthInBytes() uint16 {
 func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxSegmentsAccepted", 3)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
 	}
 	return MaxSegmentsAcceptedByValue(val), nil
 }

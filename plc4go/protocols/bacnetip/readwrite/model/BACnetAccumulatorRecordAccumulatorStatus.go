@@ -120,7 +120,7 @@ func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBytes() uint16 {
 func BACnetAccumulatorRecordAccumulatorStatusParse(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccumulatorRecordAccumulatorStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccumulatorRecordAccumulatorStatus")
 	}
 	return BACnetAccumulatorRecordAccumulatorStatusByValue(val), nil
 }

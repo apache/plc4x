@@ -114,7 +114,7 @@ func (m GAVState) GetLengthInBytes() uint16 {
 func GAVStateParse(readBuffer utils.ReadBuffer) (GAVState, error) {
 	val, err := readBuffer.ReadUint8("GAVState", 2)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading GAVState")
 	}
 	return GAVStateByValue(val), nil
 }

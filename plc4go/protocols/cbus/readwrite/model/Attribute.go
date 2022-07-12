@@ -288,7 +288,7 @@ func (m Attribute) GetLengthInBytes() uint16 {
 func AttributeParse(readBuffer utils.ReadBuffer) (Attribute, error) {
 	val, err := readBuffer.ReadUint8("Attribute", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading Attribute")
 	}
 	return AttributeByValue(val), nil
 }

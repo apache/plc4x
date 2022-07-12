@@ -450,7 +450,7 @@ func (m BACnetObjectTypesSupported) GetLengthInBytes() uint16 {
 func BACnetObjectTypesSupportedParse(readBuffer utils.ReadBuffer) (BACnetObjectTypesSupported, error) {
 	val, err := readBuffer.ReadUint8("BACnetObjectTypesSupported", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetObjectTypesSupported")
 	}
 	return BACnetObjectTypesSupportedByValue(val), nil
 }

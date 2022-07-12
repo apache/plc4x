@@ -108,7 +108,7 @@ func (m EiPCommand) GetLengthInBytes() uint16 {
 func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {
 	val, err := readBuffer.ReadUint16("EiPCommand", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading EiPCommand")
 	}
 	return EiPCommandByValue(val), nil
 }

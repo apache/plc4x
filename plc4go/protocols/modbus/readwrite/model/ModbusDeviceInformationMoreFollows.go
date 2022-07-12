@@ -102,7 +102,7 @@ func (m ModbusDeviceInformationMoreFollows) GetLengthInBytes() uint16 {
 func ModbusDeviceInformationMoreFollowsParse(readBuffer utils.ReadBuffer) (ModbusDeviceInformationMoreFollows, error) {
 	val, err := readBuffer.ReadUint8("ModbusDeviceInformationMoreFollows", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationMoreFollows")
 	}
 	return ModbusDeviceInformationMoreFollowsByValue(val), nil
 }

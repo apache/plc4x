@@ -168,7 +168,7 @@ func (m BACnetAbortReason) GetLengthInBytes() uint16 {
 func BACnetAbortReasonParse(readBuffer utils.ReadBuffer) (BACnetAbortReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetAbortReason", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAbortReason")
 	}
 	return BACnetAbortReasonByValue(val), nil
 }

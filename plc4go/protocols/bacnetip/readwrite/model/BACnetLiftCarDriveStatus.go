@@ -156,7 +156,7 @@ func (m BACnetLiftCarDriveStatus) GetLengthInBytes() uint16 {
 func BACnetLiftCarDriveStatusParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDriveStatus, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftCarDriveStatus", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLiftCarDriveStatus")
 	}
 	return BACnetLiftCarDriveStatusByValue(val), nil
 }

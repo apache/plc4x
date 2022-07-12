@@ -120,7 +120,7 @@ func (m BACnetMaintenance) GetLengthInBytes() uint16 {
 func BACnetMaintenanceParse(readBuffer utils.ReadBuffer) (BACnetMaintenance, error) {
 	val, err := readBuffer.ReadUint8("BACnetMaintenance", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetMaintenance")
 	}
 	return BACnetMaintenanceByValue(val), nil
 }

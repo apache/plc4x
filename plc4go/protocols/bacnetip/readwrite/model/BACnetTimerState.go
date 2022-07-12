@@ -108,7 +108,7 @@ func (m BACnetTimerState) GetLengthInBytes() uint16 {
 func BACnetTimerStateParse(readBuffer utils.ReadBuffer) (BACnetTimerState, error) {
 	val, err := readBuffer.ReadUint8("BACnetTimerState", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetTimerState")
 	}
 	return BACnetTimerStateByValue(val), nil
 }

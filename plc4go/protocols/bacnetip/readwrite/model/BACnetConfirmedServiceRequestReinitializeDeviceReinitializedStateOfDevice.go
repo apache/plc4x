@@ -144,7 +144,7 @@ func (m BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevic
 func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice")
 	}
 	return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceByValue(val), nil
 }

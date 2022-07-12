@@ -132,7 +132,7 @@ func (m BACnetLiftCarDirection) GetLengthInBytes() uint16 {
 func BACnetLiftCarDirectionParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDirection, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftCarDirection", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLiftCarDirection")
 	}
 	return BACnetLiftCarDirectionByValue(val), nil
 }

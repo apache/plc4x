@@ -108,7 +108,7 @@ func (m BACnetLiftCarDoorCommand) GetLengthInBytes() uint16 {
 func BACnetLiftCarDoorCommandParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDoorCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftCarDoorCommand", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLiftCarDoorCommand")
 	}
 	return BACnetLiftCarDoorCommandByValue(val), nil
 }

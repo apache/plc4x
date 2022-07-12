@@ -150,7 +150,7 @@ func (m BACnetRestartReason) GetLengthInBytes() uint16 {
 func BACnetRestartReasonParse(readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRestartReason", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetRestartReason")
 	}
 	return BACnetRestartReasonByValue(val), nil
 }

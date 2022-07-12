@@ -138,7 +138,7 @@ func (m CALCommandType) GetLengthInBytes() uint16 {
 func CALCommandTypeParse(readBuffer utils.ReadBuffer) (CALCommandType, error) {
 	val, err := readBuffer.ReadUint8("CALCommandType", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CALCommandType")
 	}
 	return CALCommandTypeByValue(val), nil
 }

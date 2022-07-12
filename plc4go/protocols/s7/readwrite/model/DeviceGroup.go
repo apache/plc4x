@@ -108,7 +108,7 @@ func (m DeviceGroup) GetLengthInBytes() uint16 {
 func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 	val, err := readBuffer.ReadUint8("DeviceGroup", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DeviceGroup")
 	}
 	return DeviceGroupByValue(val), nil
 }

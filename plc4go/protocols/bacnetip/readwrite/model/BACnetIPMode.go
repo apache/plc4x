@@ -108,7 +108,7 @@ func (m BACnetIPMode) GetLengthInBytes() uint16 {
 func BACnetIPModeParse(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetIPMode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetIPMode")
 	}
 	return BACnetIPModeByValue(val), nil
 }

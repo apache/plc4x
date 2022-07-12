@@ -114,7 +114,7 @@ func (m SALCommandType) GetLengthInBytes() uint16 {
 func SALCommandTypeParse(readBuffer utils.ReadBuffer) (SALCommandType, error) {
 	val, err := readBuffer.ReadUint8("SALCommandType", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SALCommandType")
 	}
 	return SALCommandTypeByValue(val), nil
 }

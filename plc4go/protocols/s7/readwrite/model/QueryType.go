@@ -108,7 +108,7 @@ func (m QueryType) GetLengthInBytes() uint16 {
 func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
 	val, err := readBuffer.ReadUint8("QueryType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading QueryType")
 	}
 	return QueryTypeByValue(val), nil
 }

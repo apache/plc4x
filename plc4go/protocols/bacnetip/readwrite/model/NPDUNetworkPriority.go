@@ -114,7 +114,7 @@ func (m NPDUNetworkPriority) GetLengthInBytes() uint16 {
 func NPDUNetworkPriorityParse(readBuffer utils.ReadBuffer) (NPDUNetworkPriority, error) {
 	val, err := readBuffer.ReadUint8("NPDUNetworkPriority", 2)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading NPDUNetworkPriority")
 	}
 	return NPDUNetworkPriorityByValue(val), nil
 }

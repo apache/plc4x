@@ -298,7 +298,7 @@ func (m SALCommandTypeContainer) GetLengthInBytes() uint16 {
 func SALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (SALCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("SALCommandTypeContainer", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SALCommandTypeContainer")
 	}
 	return SALCommandTypeContainerByValue(val), nil
 }

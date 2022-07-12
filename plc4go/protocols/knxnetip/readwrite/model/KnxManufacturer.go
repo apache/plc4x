@@ -8457,7 +8457,7 @@ func (m KnxManufacturer) GetLengthInBytes() uint16 {
 func KnxManufacturerParse(readBuffer utils.ReadBuffer) (KnxManufacturer, error) {
 	val, err := readBuffer.ReadUint16("KnxManufacturer", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxManufacturer")
 	}
 	return KnxManufacturerByValue(val), nil
 }

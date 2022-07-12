@@ -108,7 +108,7 @@ func (m BACnetEventTransitionBits) GetLengthInBytes() uint16 {
 func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer) (BACnetEventTransitionBits, error) {
 	val, err := readBuffer.ReadUint8("BACnetEventTransitionBits", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEventTransitionBits")
 	}
 	return BACnetEventTransitionBitsByValue(val), nil
 }

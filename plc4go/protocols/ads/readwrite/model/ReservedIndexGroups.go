@@ -270,7 +270,7 @@ func (m ReservedIndexGroups) GetLengthInBytes() uint16 {
 func ReservedIndexGroupsParse(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
 	val, err := readBuffer.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")
 	}
 	return ReservedIndexGroupsByValue(val), nil
 }

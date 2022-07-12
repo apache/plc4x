@@ -138,7 +138,7 @@ func (m BACnetTimerTransition) GetLengthInBytes() uint16 {
 func BACnetTimerTransitionParse(readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
 	val, err := readBuffer.ReadUint8("BACnetTimerTransition", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetTimerTransition")
 	}
 	return BACnetTimerTransitionByValue(val), nil
 }

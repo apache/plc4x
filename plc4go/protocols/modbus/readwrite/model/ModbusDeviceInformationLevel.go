@@ -114,7 +114,7 @@ func (m ModbusDeviceInformationLevel) GetLengthInBytes() uint16 {
 func ModbusDeviceInformationLevelParse(readBuffer utils.ReadBuffer) (ModbusDeviceInformationLevel, error) {
 	val, err := readBuffer.ReadUint8("ModbusDeviceInformationLevel", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationLevel")
 	}
 	return ModbusDeviceInformationLevelByValue(val), nil
 }

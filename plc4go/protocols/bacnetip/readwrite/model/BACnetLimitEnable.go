@@ -102,7 +102,7 @@ func (m BACnetLimitEnable) GetLengthInBytes() uint16 {
 func BACnetLimitEnableParse(readBuffer utils.ReadBuffer) (BACnetLimitEnable, error) {
 	val, err := readBuffer.ReadUint8("BACnetLimitEnable", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLimitEnable")
 	}
 	return BACnetLimitEnableByValue(val), nil
 }

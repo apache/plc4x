@@ -420,7 +420,7 @@ func (m BACnetAccessEvent) GetLengthInBytes() uint16 {
 func BACnetAccessEventParse(readBuffer utils.ReadBuffer) (BACnetAccessEvent, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessEvent", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessEvent")
 	}
 	return BACnetAccessEventByValue(val), nil
 }

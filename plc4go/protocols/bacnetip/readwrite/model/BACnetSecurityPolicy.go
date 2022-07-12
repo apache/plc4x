@@ -114,7 +114,7 @@ func (m BACnetSecurityPolicy) GetLengthInBytes() uint16 {
 func BACnetSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetSecurityPolicy, error) {
 	val, err := readBuffer.ReadUint8("BACnetSecurityPolicy", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetSecurityPolicy")
 	}
 	return BACnetSecurityPolicyByValue(val), nil
 }

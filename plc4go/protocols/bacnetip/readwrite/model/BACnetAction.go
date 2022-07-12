@@ -102,7 +102,7 @@ func (m BACnetAction) GetLengthInBytes() uint16 {
 func BACnetActionParse(readBuffer utils.ReadBuffer) (BACnetAction, error) {
 	val, err := readBuffer.ReadUint8("BACnetAction", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAction")
 	}
 	return BACnetActionByValue(val), nil
 }

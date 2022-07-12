@@ -114,7 +114,7 @@ func (m BACnetDoorValue) GetLengthInBytes() uint16 {
 func BACnetDoorValueParse(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorValue", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDoorValue")
 	}
 	return BACnetDoorValueByValue(val), nil
 }

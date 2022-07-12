@@ -174,7 +174,7 @@ func (m BACnetDataType) GetLengthInBytes() uint16 {
 func BACnetDataTypeParse(readBuffer utils.ReadBuffer) (BACnetDataType, error) {
 	val, err := readBuffer.ReadUint8("BACnetDataType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDataType")
 	}
 	return BACnetDataTypeByValue(val), nil
 }

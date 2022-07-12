@@ -114,7 +114,7 @@ func (m BACnetProtocolLevel) GetLengthInBytes() uint16 {
 func BACnetProtocolLevelParse(readBuffer utils.ReadBuffer) (BACnetProtocolLevel, error) {
 	val, err := readBuffer.ReadUint8("BACnetProtocolLevel", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetProtocolLevel")
 	}
 	return BACnetProtocolLevelByValue(val), nil
 }

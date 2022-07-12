@@ -150,7 +150,7 @@ func (m ModbusErrorCode) GetLengthInBytes() uint16 {
 func ModbusErrorCodeParse(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {
 	val, err := readBuffer.ReadUint8("ModbusErrorCode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusErrorCode")
 	}
 	return ModbusErrorCodeByValue(val), nil
 }

@@ -114,7 +114,7 @@ func (m LightingCompatible) GetLengthInBytes() uint16 {
 func LightingCompatibleParse(readBuffer utils.ReadBuffer) (LightingCompatible, error) {
 	val, err := readBuffer.ReadUint8("LightingCompatible", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading LightingCompatible")
 	}
 	return LightingCompatibleByValue(val), nil
 }

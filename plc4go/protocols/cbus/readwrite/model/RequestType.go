@@ -178,7 +178,7 @@ func (m RequestType) GetLengthInBytes() uint16 {
 func RequestTypeParse(readBuffer utils.ReadBuffer) (RequestType, error) {
 	val, err := readBuffer.ReadUint8("RequestType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading RequestType")
 	}
 	return RequestTypeByValue(val), nil
 }

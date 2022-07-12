@@ -138,7 +138,7 @@ func (m BACnetAccessZoneOccupancyState) GetLengthInBytes() uint16 {
 func BACnetAccessZoneOccupancyStateParse(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessZoneOccupancyState", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")
 	}
 	return BACnetAccessZoneOccupancyStateByValue(val), nil
 }

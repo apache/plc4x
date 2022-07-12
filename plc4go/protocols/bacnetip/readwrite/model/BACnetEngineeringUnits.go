@@ -1602,7 +1602,7 @@ func (m BACnetEngineeringUnits) GetLengthInBytes() uint16 {
 func BACnetEngineeringUnitsParse(readBuffer utils.ReadBuffer) (BACnetEngineeringUnits, error) {
 	val, err := readBuffer.ReadUint32("BACnetEngineeringUnits", 32)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEngineeringUnits")
 	}
 	return BACnetEngineeringUnitsByValue(val), nil
 }

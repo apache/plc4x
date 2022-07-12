@@ -120,7 +120,7 @@ func (m BACnetSilencedState) GetLengthInBytes() uint16 {
 func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
 	val, err := readBuffer.ReadUint16("BACnetSilencedState", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
 	}
 	return BACnetSilencedStateByValue(val), nil
 }

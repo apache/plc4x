@@ -120,7 +120,7 @@ func (m ConfirmationType) GetLengthInBytes() uint16 {
 func ConfirmationTypeParse(readBuffer utils.ReadBuffer) (ConfirmationType, error) {
 	val, err := readBuffer.ReadByte("ConfirmationType")
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ConfirmationType")
 	}
 	return ConfirmationTypeByValue(val), nil
 }

@@ -114,7 +114,7 @@ func (m BACnetNetworkNumberQuality) GetLengthInBytes() uint16 {
 func BACnetNetworkNumberQualityParse(readBuffer utils.ReadBuffer) (BACnetNetworkNumberQuality, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkNumberQuality", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNetworkNumberQuality")
 	}
 	return BACnetNetworkNumberQualityByValue(val), nil
 }

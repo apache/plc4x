@@ -120,7 +120,7 @@ func (m BACnetAccessCredentialDisable) GetLengthInBytes() uint16 {
 func BACnetAccessCredentialDisableParse(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisable, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessCredentialDisable", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisable")
 	}
 	return BACnetAccessCredentialDisableByValue(val), nil
 }

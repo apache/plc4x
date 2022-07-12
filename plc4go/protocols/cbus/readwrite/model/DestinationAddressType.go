@@ -108,7 +108,7 @@ func (m DestinationAddressType) GetLengthInBytes() uint16 {
 func DestinationAddressTypeParse(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
 	val, err := readBuffer.ReadUint8("DestinationAddressType", 3)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DestinationAddressType")
 	}
 	return DestinationAddressTypeByValue(val), nil
 }

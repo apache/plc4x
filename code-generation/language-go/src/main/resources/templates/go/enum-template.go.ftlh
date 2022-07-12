@@ -184,7 +184,7 @@ func (m ${type.name}) GetLengthInBytes() uint16 {
 func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type.orElseThrow(), null)}
 	if err != nil {
-		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, nil
+		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")
 	}
 	return ${type.name}ByValue(val), nil
 }

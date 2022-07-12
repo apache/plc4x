@@ -421,7 +421,7 @@ func (m SupportedPhysicalMedia) GetLengthInBytes() uint16 {
 func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
 	val, err := readBuffer.ReadUint8("SupportedPhysicalMedia", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SupportedPhysicalMedia")
 	}
 	return SupportedPhysicalMediaByValue(val), nil
 }

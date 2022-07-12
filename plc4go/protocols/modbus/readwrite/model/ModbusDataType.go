@@ -378,7 +378,7 @@ func (m ModbusDataType) GetLengthInBytes() uint16 {
 func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
 	val, err := readBuffer.ReadUint8("ModbusDataType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusDataType")
 	}
 	return ModbusDataTypeByValue(val), nil
 }

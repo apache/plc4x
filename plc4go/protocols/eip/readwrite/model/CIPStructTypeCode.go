@@ -96,7 +96,7 @@ func (m CIPStructTypeCode) GetLengthInBytes() uint16 {
 func CIPStructTypeCodeParse(readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPStructTypeCode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CIPStructTypeCode")
 	}
 	return CIPStructTypeCodeByValue(val), nil
 }

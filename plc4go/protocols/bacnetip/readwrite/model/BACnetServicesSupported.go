@@ -336,7 +336,7 @@ func (m BACnetServicesSupported) GetLengthInBytes() uint16 {
 func BACnetServicesSupportedParse(readBuffer utils.ReadBuffer) (BACnetServicesSupported, error) {
 	val, err := readBuffer.ReadUint8("BACnetServicesSupported", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetServicesSupported")
 	}
 	return BACnetServicesSupportedByValue(val), nil
 }

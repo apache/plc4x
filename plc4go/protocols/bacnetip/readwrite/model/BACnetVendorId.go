@@ -19153,7 +19153,7 @@ func (m BACnetVendorId) GetLengthInBytes() uint16 {
 func BACnetVendorIdParse(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
 	val, err := readBuffer.ReadUint16("BACnetVendorId", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetVendorId")
 	}
 	return BACnetVendorIdByValue(val), nil
 }

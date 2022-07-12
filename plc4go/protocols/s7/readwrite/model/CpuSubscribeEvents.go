@@ -114,7 +114,7 @@ func (m CpuSubscribeEvents) GetLengthInBytes() uint16 {
 func CpuSubscribeEventsParse(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {
 	val, err := readBuffer.ReadUint8("CpuSubscribeEvents", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CpuSubscribeEvents")
 	}
 	return CpuSubscribeEventsByValue(val), nil
 }

@@ -132,7 +132,7 @@ func (m BACnetEscalatorOperationDirection) GetLengthInBytes() uint16 {
 func BACnetEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer) (BACnetEscalatorOperationDirection, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorOperationDirection", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEscalatorOperationDirection")
 	}
 	return BACnetEscalatorOperationDirectionByValue(val), nil
 }

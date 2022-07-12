@@ -822,7 +822,7 @@ func (m ReturnCode) GetLengthInBytes() uint16 {
 func ReturnCodeParse(readBuffer utils.ReadBuffer) (ReturnCode, error) {
 	val, err := readBuffer.ReadUint32("ReturnCode", 32)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ReturnCode")
 	}
 	return ReturnCodeByValue(val), nil
 }

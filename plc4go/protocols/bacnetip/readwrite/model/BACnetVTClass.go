@@ -138,7 +138,7 @@ func (m BACnetVTClass) GetLengthInBytes() uint16 {
 func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 	val, err := readBuffer.ReadUint16("BACnetVTClass", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetVTClass")
 	}
 	return BACnetVTClassByValue(val), nil
 }

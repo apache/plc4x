@@ -132,7 +132,7 @@ func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBytes() uint16 {
 func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
 	val, err := readBuffer.ReadUint8("NLMRejectRouterToNetworkRejectReason", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")
 	}
 	return NLMRejectRouterToNetworkRejectReasonByValue(val), nil
 }

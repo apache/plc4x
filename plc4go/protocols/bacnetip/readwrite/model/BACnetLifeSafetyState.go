@@ -240,7 +240,7 @@ func (m BACnetLifeSafetyState) GetLengthInBytes() uint16 {
 func BACnetLifeSafetyStateParse(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetLifeSafetyState", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyState")
 	}
 	return BACnetLifeSafetyStateByValue(val), nil
 }

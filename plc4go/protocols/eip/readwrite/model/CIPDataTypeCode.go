@@ -192,7 +192,7 @@ func (m CIPDataTypeCode) GetLengthInBytes() uint16 {
 func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPDataTypeCode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CIPDataTypeCode")
 	}
 	return CIPDataTypeCodeByValue(val), nil
 }

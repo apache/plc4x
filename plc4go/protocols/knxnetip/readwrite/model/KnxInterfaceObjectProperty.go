@@ -4917,7 +4917,7 @@ func (m KnxInterfaceObjectProperty) GetLengthInBytes() uint16 {
 func KnxInterfaceObjectPropertyParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
 	val, err := readBuffer.ReadUint32("KnxInterfaceObjectProperty", 32)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectProperty")
 	}
 	return KnxInterfaceObjectPropertyByValue(val), nil
 }

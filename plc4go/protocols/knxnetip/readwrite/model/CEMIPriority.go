@@ -114,7 +114,7 @@ func (m CEMIPriority) GetLengthInBytes() uint16 {
 func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 	val, err := readBuffer.ReadUint8("CEMIPriority", 2)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CEMIPriority")
 	}
 	return CEMIPriorityByValue(val), nil
 }

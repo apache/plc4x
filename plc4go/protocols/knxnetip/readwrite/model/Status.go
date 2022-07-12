@@ -162,7 +162,7 @@ func (m Status) GetLengthInBytes() uint16 {
 func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {
 	val, err := readBuffer.ReadUint8("Status", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading Status")
 	}
 	return StatusByValue(val), nil
 }

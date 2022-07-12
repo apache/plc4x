@@ -168,7 +168,7 @@ func (m SyntaxIdType) GetLengthInBytes() uint16 {
 func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 	val, err := readBuffer.ReadUint8("SyntaxIdType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SyntaxIdType")
 	}
 	return SyntaxIdTypeByValue(val), nil
 }

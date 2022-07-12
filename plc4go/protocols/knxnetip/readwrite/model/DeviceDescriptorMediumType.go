@@ -126,7 +126,7 @@ func (m DeviceDescriptorMediumType) GetLengthInBytes() uint16 {
 func DeviceDescriptorMediumTypeParse(readBuffer utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
 	val, err := readBuffer.ReadUint8("DeviceDescriptorMediumType", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DeviceDescriptorMediumType")
 	}
 	return DeviceDescriptorMediumTypeByValue(val), nil
 }

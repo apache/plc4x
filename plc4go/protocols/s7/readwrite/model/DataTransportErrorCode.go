@@ -126,7 +126,7 @@ func (m DataTransportErrorCode) GetLengthInBytes() uint16 {
 func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
 	val, err := readBuffer.ReadUint8("DataTransportErrorCode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
 	}
 	return DataTransportErrorCodeByValue(val), nil
 }

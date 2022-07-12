@@ -114,7 +114,7 @@ func (m BACnetLightingTransition) GetLengthInBytes() uint16 {
 func BACnetLightingTransitionParse(readBuffer utils.ReadBuffer) (BACnetLightingTransition, error) {
 	val, err := readBuffer.ReadUint8("BACnetLightingTransition", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLightingTransition")
 	}
 	return BACnetLightingTransitionByValue(val), nil
 }
