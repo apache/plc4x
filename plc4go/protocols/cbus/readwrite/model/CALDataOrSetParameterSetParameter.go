@@ -36,8 +36,8 @@ type CALDataOrSetParameterSetParameter interface {
 	utils.LengthAware
 	utils.Serializable
 	CALDataOrSetParameter
-	// GetParameterNumber returns ParameterNumber (property field)
-	GetParameterNumber() uint8
+	// GetParamNo returns ParamNo (property field)
+	GetParamNo() Parameter
 	// GetParameterValue returns ParameterValue (property field)
 	GetParameterValue() byte
 }
@@ -52,8 +52,8 @@ type CALDataOrSetParameterSetParameterExactly interface {
 // _CALDataOrSetParameterSetParameter is the data-structure of this message
 type _CALDataOrSetParameterSetParameter struct {
 	*_CALDataOrSetParameter
-	ParameterNumber uint8
-	ParameterValue  byte
+	ParamNo        Parameter
+	ParameterValue byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -79,8 +79,8 @@ func (m *_CALDataOrSetParameterSetParameter) GetParent() CALDataOrSetParameter {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALDataOrSetParameterSetParameter) GetParameterNumber() uint8 {
-	return m.ParameterNumber
+func (m *_CALDataOrSetParameterSetParameter) GetParamNo() Parameter {
+	return m.ParamNo
 }
 
 func (m *_CALDataOrSetParameterSetParameter) GetParameterValue() byte {
@@ -110,9 +110,9 @@ func (m *_CALDataOrSetParameterSetParameter) GetDelimiter() byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataOrSetParameterSetParameter factory function for _CALDataOrSetParameterSetParameter
-func NewCALDataOrSetParameterSetParameter(parameterNumber uint8, parameterValue byte, firstByte byte) *_CALDataOrSetParameterSetParameter {
+func NewCALDataOrSetParameterSetParameter(paramNo Parameter, parameterValue byte, firstByte byte) *_CALDataOrSetParameterSetParameter {
 	_result := &_CALDataOrSetParameterSetParameter{
-		ParameterNumber:        parameterNumber,
+		ParamNo:                paramNo,
 		ParameterValue:         parameterValue,
 		_CALDataOrSetParameter: NewCALDataOrSetParameter(firstByte),
 	}
@@ -145,7 +145,7 @@ func (m *_CALDataOrSetParameterSetParameter) GetLengthInBitsConditional(lastItem
 	// Const Field (magicId)
 	lengthInBits += 8
 
-	// Simple field (parameterNumber)
+	// Simple field (paramNo)
 	lengthInBits += 8
 
 	// Const Field (delimiter)
@@ -179,12 +179,18 @@ func CALDataOrSetParameterSetParameterParse(readBuffer utils.ReadBuffer) (CALDat
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CALDataOrSetParameterSetParameter_MAGICID) + " but got " + fmt.Sprintf("%d", magicId))
 	}
 
-	// Simple Field (parameterNumber)
-	_parameterNumber, _parameterNumberErr := readBuffer.ReadUint8("parameterNumber", 8)
-	if _parameterNumberErr != nil {
-		return nil, errors.Wrap(_parameterNumberErr, "Error parsing 'parameterNumber' field of CALDataOrSetParameterSetParameter")
+	// Simple Field (paramNo)
+	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	parameterNumber := _parameterNumber
+	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	if _paramNoErr != nil {
+		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataOrSetParameterSetParameter")
+	}
+	paramNo := _paramNo
+	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	}
 
 	// Const Field (delimiter)
 	delimiter, _delimiterErr := readBuffer.ReadByte("delimiter")
@@ -208,7 +214,7 @@ func CALDataOrSetParameterSetParameterParse(readBuffer utils.ReadBuffer) (CALDat
 
 	// Create a partially initialized instance
 	_child := &_CALDataOrSetParameterSetParameter{
-		ParameterNumber:        parameterNumber,
+		ParamNo:                paramNo,
 		ParameterValue:         parameterValue,
 		_CALDataOrSetParameter: &_CALDataOrSetParameter{},
 	}
@@ -230,11 +236,16 @@ func (m *_CALDataOrSetParameterSetParameter) Serialize(writeBuffer utils.WriteBu
 			return errors.Wrap(_magicIdErr, "Error serializing 'magicId' field")
 		}
 
-		// Simple Field (parameterNumber)
-		parameterNumber := uint8(m.GetParameterNumber())
-		_parameterNumberErr := writeBuffer.WriteUint8("parameterNumber", 8, (parameterNumber))
-		if _parameterNumberErr != nil {
-			return errors.Wrap(_parameterNumberErr, "Error serializing 'parameterNumber' field")
+		// Simple Field (paramNo)
+		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for paramNo")
+		}
+		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for paramNo")
+		}
+		if _paramNoErr != nil {
+			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}
 
 		// Const Field (delimiter)

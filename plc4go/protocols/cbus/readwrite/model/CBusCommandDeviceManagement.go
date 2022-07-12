@@ -35,8 +35,8 @@ type CBusCommandDeviceManagement interface {
 	utils.LengthAware
 	utils.Serializable
 	CBusCommand
-	// GetParameterNumber returns ParameterNumber (property field)
-	GetParameterNumber() uint8
+	// GetParamNo returns ParamNo (property field)
+	GetParamNo() Parameter
 	// GetParameterValue returns ParameterValue (property field)
 	GetParameterValue() byte
 }
@@ -51,8 +51,8 @@ type CBusCommandDeviceManagementExactly interface {
 // _CBusCommandDeviceManagement is the data-structure of this message
 type _CBusCommandDeviceManagement struct {
 	*_CBusCommand
-	ParameterNumber uint8
-	ParameterValue  byte
+	ParamNo        Parameter
+	ParameterValue byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -78,8 +78,8 @@ func (m *_CBusCommandDeviceManagement) GetParent() CBusCommand {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CBusCommandDeviceManagement) GetParameterNumber() uint8 {
-	return m.ParameterNumber
+func (m *_CBusCommandDeviceManagement) GetParamNo() Parameter {
+	return m.ParamNo
 }
 
 func (m *_CBusCommandDeviceManagement) GetParameterValue() byte {
@@ -105,11 +105,11 @@ func (m *_CBusCommandDeviceManagement) GetDelimiter() byte {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
-func NewCBusCommandDeviceManagement(parameterNumber uint8, parameterValue byte, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
+func NewCBusCommandDeviceManagement(paramNo Parameter, parameterValue byte, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
 	_result := &_CBusCommandDeviceManagement{
-		ParameterNumber: parameterNumber,
-		ParameterValue:  parameterValue,
-		_CBusCommand:    NewCBusCommand(header, cBusOptions),
+		ParamNo:        paramNo,
+		ParameterValue: parameterValue,
+		_CBusCommand:   NewCBusCommand(header, cBusOptions),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result
 	return _result
@@ -137,7 +137,7 @@ func (m *_CBusCommandDeviceManagement) GetLengthInBits() uint16 {
 func (m *_CBusCommandDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (parameterNumber)
+	// Simple field (paramNo)
 	lengthInBits += 8
 
 	// Const Field (delimiter)
@@ -162,12 +162,18 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (parameterNumber)
-	_parameterNumber, _parameterNumberErr := readBuffer.ReadUint8("parameterNumber", 8)
-	if _parameterNumberErr != nil {
-		return nil, errors.Wrap(_parameterNumberErr, "Error parsing 'parameterNumber' field of CBusCommandDeviceManagement")
+	// Simple Field (paramNo)
+	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	parameterNumber := _parameterNumber
+	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	if _paramNoErr != nil {
+		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CBusCommandDeviceManagement")
+	}
+	paramNo := _paramNo
+	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	}
 
 	// Const Field (delimiter)
 	delimiter, _delimiterErr := readBuffer.ReadByte("delimiter")
@@ -191,8 +197,8 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions C
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandDeviceManagement{
-		ParameterNumber: parameterNumber,
-		ParameterValue:  parameterValue,
+		ParamNo:        paramNo,
+		ParameterValue: parameterValue,
 		_CBusCommand: &_CBusCommand{
 			CBusOptions: cBusOptions,
 		},
@@ -209,11 +215,16 @@ func (m *_CBusCommandDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(pushErr, "Error pushing for CBusCommandDeviceManagement")
 		}
 
-		// Simple Field (parameterNumber)
-		parameterNumber := uint8(m.GetParameterNumber())
-		_parameterNumberErr := writeBuffer.WriteUint8("parameterNumber", 8, (parameterNumber))
-		if _parameterNumberErr != nil {
-			return errors.Wrap(_parameterNumberErr, "Error serializing 'parameterNumber' field")
+		// Simple Field (paramNo)
+		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for paramNo")
+		}
+		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for paramNo")
+		}
+		if _paramNoErr != nil {
+			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}
 
 		// Const Field (delimiter)

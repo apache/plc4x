@@ -32,7 +32,7 @@ type CALDataAcknowledge interface {
 	utils.Serializable
 	CALData
 	// GetParamNo returns ParamNo (property field)
-	GetParamNo() uint8
+	GetParamNo() Parameter
 	// GetCode returns Code (property field)
 	GetCode() uint8
 }
@@ -47,7 +47,7 @@ type CALDataAcknowledgeExactly interface {
 // _CALDataAcknowledge is the data-structure of this message
 type _CALDataAcknowledge struct {
 	*_CALData
-	ParamNo uint8
+	ParamNo Parameter
 	Code    uint8
 }
 
@@ -75,7 +75,7 @@ func (m *_CALDataAcknowledge) GetParent() CALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALDataAcknowledge) GetParamNo() uint8 {
+func (m *_CALDataAcknowledge) GetParamNo() Parameter {
 	return m.ParamNo
 }
 
@@ -89,7 +89,7 @@ func (m *_CALDataAcknowledge) GetCode() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataAcknowledge factory function for _CALDataAcknowledge
-func NewCALDataAcknowledge(paramNo uint8, code uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataAcknowledge {
+func NewCALDataAcknowledge(paramNo Parameter, code uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataAcknowledge {
 	_result := &_CALDataAcknowledge{
 		ParamNo:  paramNo,
 		Code:     code,
@@ -144,11 +144,17 @@ func CALDataAcknowledgeParse(readBuffer utils.ReadBuffer, requestContext Request
 	_ = currentPos
 
 	// Simple Field (paramNo)
-	_paramNo, _paramNoErr := readBuffer.ReadUint8("paramNo", 8)
+	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
+	}
+	_paramNo, _paramNoErr := ParameterParse(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataAcknowledge")
 	}
 	paramNo := _paramNo
+	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	}
 
 	// Simple Field (code)
 	_code, _codeErr := readBuffer.ReadUint8("code", 8)
@@ -182,8 +188,13 @@ func (m *_CALDataAcknowledge) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (paramNo)
-		paramNo := uint8(m.GetParamNo())
-		_paramNoErr := writeBuffer.WriteUint8("paramNo", 8, (paramNo))
+		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for paramNo")
+		}
+		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for paramNo")
+		}
 		if _paramNoErr != nil {
 			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}

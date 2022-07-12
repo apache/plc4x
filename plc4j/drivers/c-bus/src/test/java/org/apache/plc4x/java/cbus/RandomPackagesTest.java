@@ -731,5 +731,47 @@ public class RandomPackagesTest {
             byte[] bytes1 = writeBuffer.getBytes();
             assertThat(bytes1).isEqualTo(bytes);
         }
+
+        @Disabled
+        @Test
+        void strangeNotYetParsableCommand() throws Exception {
+            byte[] bytes = "A3309755s\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
+            ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
+            ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
+            ReplyCALReply calReplyReply = (ReplyCALReply) normalReply.getReply();
+            System.out.println(calReplyReply.getCalReply());
+
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bytes.length);
+            msg.serialize(writeBuffer);
+            byte[] bytes1 = writeBuffer.getBytes();
+            assertThat(bytes1).isEqualTo(bytes);
+        }
+
+        @Test
+        void strangeNotYetParsableCommandResponse() throws Exception {
+            byte[] bytes = "s.860202003230977D\r\n".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            requestContext = new RequestContext(true, false, false);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
+            ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
+            ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
+            ReplyCALReply calReplyReply = (ReplyCALReply) normalReply.getReply();
+            System.out.println(calReplyReply.getCalReply());
+
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bytes.length);
+            msg.serialize(writeBuffer);
+            byte[] bytes1 = writeBuffer.getBytes();
+            assertThat(bytes1).isEqualTo(bytes);
+        }
     }
 }
