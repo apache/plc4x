@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func AlarmStateTypeByValue(value uint8) AlarmStateType {
+func AlarmStateTypeByValue(value uint8) (enum AlarmStateType, ok bool) {
 	switch value {
 	case 0x00:
-		return AlarmStateType_SCAN_ABORT
+		return AlarmStateType_SCAN_ABORT, true
 	case 0x01:
-		return AlarmStateType_SCAN_INITIATE
+		return AlarmStateType_SCAN_INITIATE, true
 	case 0x04:
-		return AlarmStateType_ALARM_ABORT
+		return AlarmStateType_ALARM_ABORT, true
 	case 0x05:
-		return AlarmStateType_ALARM_INITIATE
+		return AlarmStateType_ALARM_INITIATE, true
 	case 0x08:
-		return AlarmStateType_ALARM_S_ABORT
+		return AlarmStateType_ALARM_S_ABORT, true
 	case 0x09:
-		return AlarmStateType_ALARM_S_INITIATE
+		return AlarmStateType_ALARM_S_INITIATE, true
 	}
-	return 0
+	return 0, false
 }
 
 func AlarmStateTypeByName(value string) (enum AlarmStateType, ok bool) {
-	ok = true
 	switch value {
 	case "SCAN_ABORT":
-		enum = AlarmStateType_SCAN_ABORT
+		return AlarmStateType_SCAN_ABORT, true
 	case "SCAN_INITIATE":
-		enum = AlarmStateType_SCAN_INITIATE
+		return AlarmStateType_SCAN_INITIATE, true
 	case "ALARM_ABORT":
-		enum = AlarmStateType_ALARM_ABORT
+		return AlarmStateType_ALARM_ABORT, true
 	case "ALARM_INITIATE":
-		enum = AlarmStateType_ALARM_INITIATE
+		return AlarmStateType_ALARM_INITIATE, true
 	case "ALARM_S_ABORT":
-		enum = AlarmStateType_ALARM_S_ABORT
+		return AlarmStateType_ALARM_S_ABORT, true
 	case "ALARM_S_INITIATE":
-		enum = AlarmStateType_ALARM_S_INITIATE
-	default:
-		enum = 0
-		ok = false
+		return AlarmStateType_ALARM_S_INITIATE, true
 	}
-	return
+	return 0, false
 }
 
 func AlarmStateTypeKnows(value uint8) bool {
@@ -128,7 +124,11 @@ func AlarmStateTypeParse(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AlarmStateType")
 	}
-	return AlarmStateTypeByValue(val), nil
+	if enum, ok := AlarmStateTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for AlarmStateType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e AlarmStateType) Serialize(writeBuffer utils.WriteBuffer) error {

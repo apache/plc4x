@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetTimerStateByValue(value uint8) BACnetTimerState {
+func BACnetTimerStateByValue(value uint8) (enum BACnetTimerState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetTimerState_IDLE
+		return BACnetTimerState_IDLE, true
 	case 1:
-		return BACnetTimerState_RUNNING
+		return BACnetTimerState_RUNNING, true
 	case 2:
-		return BACnetTimerState_EXPIRED
+		return BACnetTimerState_EXPIRED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetTimerStateByName(value string) (enum BACnetTimerState, ok bool) {
-	ok = true
 	switch value {
 	case "IDLE":
-		enum = BACnetTimerState_IDLE
+		return BACnetTimerState_IDLE, true
 	case "RUNNING":
-		enum = BACnetTimerState_RUNNING
+		return BACnetTimerState_RUNNING, true
 	case "EXPIRED":
-		enum = BACnetTimerState_EXPIRED
-	default:
-		enum = 0
-		ok = false
+		return BACnetTimerState_EXPIRED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetTimerStateKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetTimerStateParse(readBuffer utils.ReadBuffer) (BACnetTimerState, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetTimerState")
 	}
-	return BACnetTimerStateByValue(val), nil
+	if enum, ok := BACnetTimerStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetTimerState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetTimerState) Serialize(writeBuffer utils.WriteBuffer) error {

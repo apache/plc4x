@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func BACnetProgramStateByValue(value uint8) BACnetProgramState {
+func BACnetProgramStateByValue(value uint8) (enum BACnetProgramState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetProgramState_IDLE
+		return BACnetProgramState_IDLE, true
 	case 1:
-		return BACnetProgramState_LOADING
+		return BACnetProgramState_LOADING, true
 	case 2:
-		return BACnetProgramState_RUNNING
+		return BACnetProgramState_RUNNING, true
 	case 3:
-		return BACnetProgramState_WAITING
+		return BACnetProgramState_WAITING, true
 	case 4:
-		return BACnetProgramState_HALTED
+		return BACnetProgramState_HALTED, true
 	case 5:
-		return BACnetProgramState_UNLOADING
+		return BACnetProgramState_UNLOADING, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetProgramStateByName(value string) (enum BACnetProgramState, ok bool) {
-	ok = true
 	switch value {
 	case "IDLE":
-		enum = BACnetProgramState_IDLE
+		return BACnetProgramState_IDLE, true
 	case "LOADING":
-		enum = BACnetProgramState_LOADING
+		return BACnetProgramState_LOADING, true
 	case "RUNNING":
-		enum = BACnetProgramState_RUNNING
+		return BACnetProgramState_RUNNING, true
 	case "WAITING":
-		enum = BACnetProgramState_WAITING
+		return BACnetProgramState_WAITING, true
 	case "HALTED":
-		enum = BACnetProgramState_HALTED
+		return BACnetProgramState_HALTED, true
 	case "UNLOADING":
-		enum = BACnetProgramState_UNLOADING
-	default:
-		enum = 0
-		ok = false
+		return BACnetProgramState_UNLOADING, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetProgramStateKnows(value uint8) bool {
@@ -128,7 +124,11 @@ func BACnetProgramStateParse(readBuffer utils.ReadBuffer) (BACnetProgramState, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetProgramState")
 	}
-	return BACnetProgramStateByValue(val), nil
+	if enum, ok := BACnetProgramStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetProgramState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetProgramState) Serialize(writeBuffer utils.WriteBuffer) error {

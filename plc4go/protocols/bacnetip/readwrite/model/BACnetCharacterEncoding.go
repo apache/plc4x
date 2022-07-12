@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func BACnetCharacterEncodingByValue(value byte) BACnetCharacterEncoding {
+func BACnetCharacterEncodingByValue(value byte) (enum BACnetCharacterEncoding, ok bool) {
 	switch value {
 	case 0x0:
-		return BACnetCharacterEncoding_ISO_10646
+		return BACnetCharacterEncoding_ISO_10646, true
 	case 0x1:
-		return BACnetCharacterEncoding_IBM_Microsoft_DBCS
+		return BACnetCharacterEncoding_IBM_Microsoft_DBCS, true
 	case 0x2:
-		return BACnetCharacterEncoding_JIS_X_0208
+		return BACnetCharacterEncoding_JIS_X_0208, true
 	case 0x3:
-		return BACnetCharacterEncoding_ISO_10646_4
+		return BACnetCharacterEncoding_ISO_10646_4, true
 	case 0x4:
-		return BACnetCharacterEncoding_ISO_10646_2
+		return BACnetCharacterEncoding_ISO_10646_2, true
 	case 0x5:
-		return BACnetCharacterEncoding_ISO_8859_1
+		return BACnetCharacterEncoding_ISO_8859_1, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetCharacterEncodingByName(value string) (enum BACnetCharacterEncoding, ok bool) {
-	ok = true
 	switch value {
 	case "ISO_10646":
-		enum = BACnetCharacterEncoding_ISO_10646
+		return BACnetCharacterEncoding_ISO_10646, true
 	case "IBM_Microsoft_DBCS":
-		enum = BACnetCharacterEncoding_IBM_Microsoft_DBCS
+		return BACnetCharacterEncoding_IBM_Microsoft_DBCS, true
 	case "JIS_X_0208":
-		enum = BACnetCharacterEncoding_JIS_X_0208
+		return BACnetCharacterEncoding_JIS_X_0208, true
 	case "ISO_10646_4":
-		enum = BACnetCharacterEncoding_ISO_10646_4
+		return BACnetCharacterEncoding_ISO_10646_4, true
 	case "ISO_10646_2":
-		enum = BACnetCharacterEncoding_ISO_10646_2
+		return BACnetCharacterEncoding_ISO_10646_2, true
 	case "ISO_8859_1":
-		enum = BACnetCharacterEncoding_ISO_8859_1
-	default:
-		enum = 0
-		ok = false
+		return BACnetCharacterEncoding_ISO_8859_1, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetCharacterEncodingKnows(value byte) bool {
@@ -128,7 +124,11 @@ func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterE
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetCharacterEncoding")
 	}
-	return BACnetCharacterEncodingByValue(val), nil
+	if enum, ok := BACnetCharacterEncodingByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetCharacterEncoding", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetCharacterEncoding) Serialize(writeBuffer utils.WriteBuffer) error {

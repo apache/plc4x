@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func BACnetAccumulatorRecordAccumulatorStatusByValue(value uint8) BACnetAccumulatorRecordAccumulatorStatus {
+func BACnetAccumulatorRecordAccumulatorStatusByValue(value uint8) (enum BACnetAccumulatorRecordAccumulatorStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccumulatorRecordAccumulatorStatus_NORMAL
+		return BACnetAccumulatorRecordAccumulatorStatus_NORMAL, true
 	case 1:
-		return BACnetAccumulatorRecordAccumulatorStatus_STARTING
+		return BACnetAccumulatorRecordAccumulatorStatus_STARTING, true
 	case 2:
-		return BACnetAccumulatorRecordAccumulatorStatus_RECOVERED
+		return BACnetAccumulatorRecordAccumulatorStatus_RECOVERED, true
 	case 3:
-		return BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL
+		return BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL, true
 	case 4:
-		return BACnetAccumulatorRecordAccumulatorStatus_FAILED
+		return BACnetAccumulatorRecordAccumulatorStatus_FAILED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccumulatorRecordAccumulatorStatusByName(value string) (enum BACnetAccumulatorRecordAccumulatorStatus, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetAccumulatorRecordAccumulatorStatus_NORMAL
+		return BACnetAccumulatorRecordAccumulatorStatus_NORMAL, true
 	case "STARTING":
-		enum = BACnetAccumulatorRecordAccumulatorStatus_STARTING
+		return BACnetAccumulatorRecordAccumulatorStatus_STARTING, true
 	case "RECOVERED":
-		enum = BACnetAccumulatorRecordAccumulatorStatus_RECOVERED
+		return BACnetAccumulatorRecordAccumulatorStatus_RECOVERED, true
 	case "ABNORMAL":
-		enum = BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL
+		return BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL, true
 	case "FAILED":
-		enum = BACnetAccumulatorRecordAccumulatorStatus_FAILED
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccumulatorRecordAccumulatorStatus_FAILED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccumulatorRecordAccumulatorStatusKnows(value uint8) bool {
@@ -122,7 +118,11 @@ func BACnetAccumulatorRecordAccumulatorStatusParse(readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccumulatorRecordAccumulatorStatus")
 	}
-	return BACnetAccumulatorRecordAccumulatorStatusByValue(val), nil
+	if enum, ok := BACnetAccumulatorRecordAccumulatorStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccumulatorRecordAccumulatorStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccumulatorRecordAccumulatorStatus) Serialize(writeBuffer utils.WriteBuffer) error {

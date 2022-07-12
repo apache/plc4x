@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func KnxLayerByValue(value uint8) KnxLayer {
+func KnxLayerByValue(value uint8) (enum KnxLayer, ok bool) {
 	switch value {
 	case 0x02:
-		return KnxLayer_TUNNEL_LINK_LAYER
+		return KnxLayer_TUNNEL_LINK_LAYER, true
 	case 0x04:
-		return KnxLayer_TUNNEL_RAW
+		return KnxLayer_TUNNEL_RAW, true
 	case 0x80:
-		return KnxLayer_TUNNEL_BUSMONITOR
+		return KnxLayer_TUNNEL_BUSMONITOR, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxLayerByName(value string) (enum KnxLayer, ok bool) {
-	ok = true
 	switch value {
 	case "TUNNEL_LINK_LAYER":
-		enum = KnxLayer_TUNNEL_LINK_LAYER
+		return KnxLayer_TUNNEL_LINK_LAYER, true
 	case "TUNNEL_RAW":
-		enum = KnxLayer_TUNNEL_RAW
+		return KnxLayer_TUNNEL_RAW, true
 	case "TUNNEL_BUSMONITOR":
-		enum = KnxLayer_TUNNEL_BUSMONITOR
-	default:
-		enum = 0
-		ok = false
+		return KnxLayer_TUNNEL_BUSMONITOR, true
 	}
-	return
+	return 0, false
 }
 
 func KnxLayerKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxLayer")
 	}
-	return KnxLayerByValue(val), nil
+	if enum, ok := KnxLayerByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for KnxLayer", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e KnxLayer) Serialize(writeBuffer utils.WriteBuffer) error {

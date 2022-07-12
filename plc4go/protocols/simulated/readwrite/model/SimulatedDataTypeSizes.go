@@ -224,128 +224,124 @@ func SimulatedDataTypeSizesFirstEnumForFieldDataTypeSize(value uint8) (Simulated
 	}
 	return 0, errors.Errorf("enum for %v describing DataTypeSize not found", value)
 }
-func SimulatedDataTypeSizesByValue(value uint8) SimulatedDataTypeSizes {
+func SimulatedDataTypeSizesByValue(value uint8) (enum SimulatedDataTypeSizes, ok bool) {
 	switch value {
 	case 1:
-		return SimulatedDataTypeSizes_BOOL
+		return SimulatedDataTypeSizes_BOOL, true
 	case 10:
-		return SimulatedDataTypeSizes_USINT
+		return SimulatedDataTypeSizes_USINT, true
 	case 11:
-		return SimulatedDataTypeSizes_UINT
+		return SimulatedDataTypeSizes_UINT, true
 	case 12:
-		return SimulatedDataTypeSizes_UDINT
+		return SimulatedDataTypeSizes_UDINT, true
 	case 13:
-		return SimulatedDataTypeSizes_ULINT
+		return SimulatedDataTypeSizes_ULINT, true
 	case 14:
-		return SimulatedDataTypeSizes_REAL
+		return SimulatedDataTypeSizes_REAL, true
 	case 15:
-		return SimulatedDataTypeSizes_LREAL
+		return SimulatedDataTypeSizes_LREAL, true
 	case 16:
-		return SimulatedDataTypeSizes_TIME
+		return SimulatedDataTypeSizes_TIME, true
 	case 17:
-		return SimulatedDataTypeSizes_LTIME
+		return SimulatedDataTypeSizes_LTIME, true
 	case 18:
-		return SimulatedDataTypeSizes_DATE
+		return SimulatedDataTypeSizes_DATE, true
 	case 19:
-		return SimulatedDataTypeSizes_LDATE
+		return SimulatedDataTypeSizes_LDATE, true
 	case 2:
-		return SimulatedDataTypeSizes_BYTE
+		return SimulatedDataTypeSizes_BYTE, true
 	case 20:
-		return SimulatedDataTypeSizes_TIME_OF_DAY
+		return SimulatedDataTypeSizes_TIME_OF_DAY, true
 	case 21:
-		return SimulatedDataTypeSizes_LTIME_OF_DAY
+		return SimulatedDataTypeSizes_LTIME_OF_DAY, true
 	case 22:
-		return SimulatedDataTypeSizes_DATE_AND_TIME
+		return SimulatedDataTypeSizes_DATE_AND_TIME, true
 	case 23:
-		return SimulatedDataTypeSizes_LDATE_AND_TIME
+		return SimulatedDataTypeSizes_LDATE_AND_TIME, true
 	case 24:
-		return SimulatedDataTypeSizes_CHAR
+		return SimulatedDataTypeSizes_CHAR, true
 	case 25:
-		return SimulatedDataTypeSizes_WCHAR
+		return SimulatedDataTypeSizes_WCHAR, true
 	case 26:
-		return SimulatedDataTypeSizes_STRING
+		return SimulatedDataTypeSizes_STRING, true
 	case 27:
-		return SimulatedDataTypeSizes_WSTRING
+		return SimulatedDataTypeSizes_WSTRING, true
 	case 3:
-		return SimulatedDataTypeSizes_WORD
+		return SimulatedDataTypeSizes_WORD, true
 	case 4:
-		return SimulatedDataTypeSizes_DWORD
+		return SimulatedDataTypeSizes_DWORD, true
 	case 5:
-		return SimulatedDataTypeSizes_LWORD
+		return SimulatedDataTypeSizes_LWORD, true
 	case 6:
-		return SimulatedDataTypeSizes_SINT
+		return SimulatedDataTypeSizes_SINT, true
 	case 7:
-		return SimulatedDataTypeSizes_INT
+		return SimulatedDataTypeSizes_INT, true
 	case 8:
-		return SimulatedDataTypeSizes_DINT
+		return SimulatedDataTypeSizes_DINT, true
 	case 9:
-		return SimulatedDataTypeSizes_LINT
+		return SimulatedDataTypeSizes_LINT, true
 	}
-	return 0
+	return 0, false
 }
 
 func SimulatedDataTypeSizesByName(value string) (enum SimulatedDataTypeSizes, ok bool) {
-	ok = true
 	switch value {
 	case "BOOL":
-		enum = SimulatedDataTypeSizes_BOOL
+		return SimulatedDataTypeSizes_BOOL, true
 	case "USINT":
-		enum = SimulatedDataTypeSizes_USINT
+		return SimulatedDataTypeSizes_USINT, true
 	case "UINT":
-		enum = SimulatedDataTypeSizes_UINT
+		return SimulatedDataTypeSizes_UINT, true
 	case "UDINT":
-		enum = SimulatedDataTypeSizes_UDINT
+		return SimulatedDataTypeSizes_UDINT, true
 	case "ULINT":
-		enum = SimulatedDataTypeSizes_ULINT
+		return SimulatedDataTypeSizes_ULINT, true
 	case "REAL":
-		enum = SimulatedDataTypeSizes_REAL
+		return SimulatedDataTypeSizes_REAL, true
 	case "LREAL":
-		enum = SimulatedDataTypeSizes_LREAL
+		return SimulatedDataTypeSizes_LREAL, true
 	case "TIME":
-		enum = SimulatedDataTypeSizes_TIME
+		return SimulatedDataTypeSizes_TIME, true
 	case "LTIME":
-		enum = SimulatedDataTypeSizes_LTIME
+		return SimulatedDataTypeSizes_LTIME, true
 	case "DATE":
-		enum = SimulatedDataTypeSizes_DATE
+		return SimulatedDataTypeSizes_DATE, true
 	case "LDATE":
-		enum = SimulatedDataTypeSizes_LDATE
+		return SimulatedDataTypeSizes_LDATE, true
 	case "BYTE":
-		enum = SimulatedDataTypeSizes_BYTE
+		return SimulatedDataTypeSizes_BYTE, true
 	case "TIME_OF_DAY":
-		enum = SimulatedDataTypeSizes_TIME_OF_DAY
+		return SimulatedDataTypeSizes_TIME_OF_DAY, true
 	case "LTIME_OF_DAY":
-		enum = SimulatedDataTypeSizes_LTIME_OF_DAY
+		return SimulatedDataTypeSizes_LTIME_OF_DAY, true
 	case "DATE_AND_TIME":
-		enum = SimulatedDataTypeSizes_DATE_AND_TIME
+		return SimulatedDataTypeSizes_DATE_AND_TIME, true
 	case "LDATE_AND_TIME":
-		enum = SimulatedDataTypeSizes_LDATE_AND_TIME
+		return SimulatedDataTypeSizes_LDATE_AND_TIME, true
 	case "CHAR":
-		enum = SimulatedDataTypeSizes_CHAR
+		return SimulatedDataTypeSizes_CHAR, true
 	case "WCHAR":
-		enum = SimulatedDataTypeSizes_WCHAR
+		return SimulatedDataTypeSizes_WCHAR, true
 	case "STRING":
-		enum = SimulatedDataTypeSizes_STRING
+		return SimulatedDataTypeSizes_STRING, true
 	case "WSTRING":
-		enum = SimulatedDataTypeSizes_WSTRING
+		return SimulatedDataTypeSizes_WSTRING, true
 	case "WORD":
-		enum = SimulatedDataTypeSizes_WORD
+		return SimulatedDataTypeSizes_WORD, true
 	case "DWORD":
-		enum = SimulatedDataTypeSizes_DWORD
+		return SimulatedDataTypeSizes_DWORD, true
 	case "LWORD":
-		enum = SimulatedDataTypeSizes_LWORD
+		return SimulatedDataTypeSizes_LWORD, true
 	case "SINT":
-		enum = SimulatedDataTypeSizes_SINT
+		return SimulatedDataTypeSizes_SINT, true
 	case "INT":
-		enum = SimulatedDataTypeSizes_INT
+		return SimulatedDataTypeSizes_INT, true
 	case "DINT":
-		enum = SimulatedDataTypeSizes_DINT
+		return SimulatedDataTypeSizes_DINT, true
 	case "LINT":
-		enum = SimulatedDataTypeSizes_LINT
-	default:
-		enum = 0
-		ok = false
+		return SimulatedDataTypeSizes_LINT, true
 	}
-	return
+	return 0, false
 }
 
 func SimulatedDataTypeSizesKnows(value uint8) bool {
@@ -380,7 +376,11 @@ func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataType
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SimulatedDataTypeSizes")
 	}
-	return SimulatedDataTypeSizesByValue(val), nil
+	if enum, ok := SimulatedDataTypeSizesByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for SimulatedDataTypeSizes", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e SimulatedDataTypeSizes) Serialize(writeBuffer utils.WriteBuffer) error {

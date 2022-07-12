@@ -66,64 +66,60 @@ func init() {
 	}
 }
 
-func BACnetLifeSafetyOperationByValue(value uint16) BACnetLifeSafetyOperation {
+func BACnetLifeSafetyOperationByValue(value uint16) (enum BACnetLifeSafetyOperation, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLifeSafetyOperation_NONE
+		return BACnetLifeSafetyOperation_NONE, true
 	case 0xFFFF:
-		return BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE
+		return BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLifeSafetyOperation_SILENCE
+		return BACnetLifeSafetyOperation_SILENCE, true
 	case 2:
-		return BACnetLifeSafetyOperation_SILENCE_AUDIBLE
+		return BACnetLifeSafetyOperation_SILENCE_AUDIBLE, true
 	case 3:
-		return BACnetLifeSafetyOperation_SILENCE_VISUAL
+		return BACnetLifeSafetyOperation_SILENCE_VISUAL, true
 	case 4:
-		return BACnetLifeSafetyOperation_RESET
+		return BACnetLifeSafetyOperation_RESET, true
 	case 5:
-		return BACnetLifeSafetyOperation_RESET_ALARM
+		return BACnetLifeSafetyOperation_RESET_ALARM, true
 	case 6:
-		return BACnetLifeSafetyOperation_RESET_FAULT
+		return BACnetLifeSafetyOperation_RESET_FAULT, true
 	case 7:
-		return BACnetLifeSafetyOperation_UNSILENCE
+		return BACnetLifeSafetyOperation_UNSILENCE, true
 	case 8:
-		return BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE
+		return BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE, true
 	case 9:
-		return BACnetLifeSafetyOperation_UNSILENCE_VISUAL
+		return BACnetLifeSafetyOperation_UNSILENCE_VISUAL, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLifeSafetyOperationByName(value string) (enum BACnetLifeSafetyOperation, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetLifeSafetyOperation_NONE
+		return BACnetLifeSafetyOperation_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE
+		return BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE, true
 	case "SILENCE":
-		enum = BACnetLifeSafetyOperation_SILENCE
+		return BACnetLifeSafetyOperation_SILENCE, true
 	case "SILENCE_AUDIBLE":
-		enum = BACnetLifeSafetyOperation_SILENCE_AUDIBLE
+		return BACnetLifeSafetyOperation_SILENCE_AUDIBLE, true
 	case "SILENCE_VISUAL":
-		enum = BACnetLifeSafetyOperation_SILENCE_VISUAL
+		return BACnetLifeSafetyOperation_SILENCE_VISUAL, true
 	case "RESET":
-		enum = BACnetLifeSafetyOperation_RESET
+		return BACnetLifeSafetyOperation_RESET, true
 	case "RESET_ALARM":
-		enum = BACnetLifeSafetyOperation_RESET_ALARM
+		return BACnetLifeSafetyOperation_RESET_ALARM, true
 	case "RESET_FAULT":
-		enum = BACnetLifeSafetyOperation_RESET_FAULT
+		return BACnetLifeSafetyOperation_RESET_FAULT, true
 	case "UNSILENCE":
-		enum = BACnetLifeSafetyOperation_UNSILENCE
+		return BACnetLifeSafetyOperation_UNSILENCE, true
 	case "UNSILENCE_AUDIBLE":
-		enum = BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE
+		return BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE, true
 	case "UNSILENCE_VISUAL":
-		enum = BACnetLifeSafetyOperation_UNSILENCE_VISUAL
-	default:
-		enum = 0
-		ok = false
+		return BACnetLifeSafetyOperation_UNSILENCE_VISUAL, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLifeSafetyOperationKnows(value uint16) bool {
@@ -158,7 +154,11 @@ func BACnetLifeSafetyOperationParse(readBuffer utils.ReadBuffer) (BACnetLifeSafe
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyOperation")
 	}
-	return BACnetLifeSafetyOperationByValue(val), nil
+	if enum, ok := BACnetLifeSafetyOperationByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLifeSafetyOperation", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLifeSafetyOperation) Serialize(writeBuffer utils.WriteBuffer) error {

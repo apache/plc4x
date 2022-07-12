@@ -176,96 +176,92 @@ func SALCommandTypeContainerFirstEnumForFieldCommandType(value SALCommandType) (
 	}
 	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
 }
-func SALCommandTypeContainerByValue(value uint8) SALCommandTypeContainer {
+func SALCommandTypeContainerByValue(value uint8) (enum SALCommandTypeContainer, ok bool) {
 	switch value {
 	case 0x01:
-		return SALCommandTypeContainer_SALCommandOff
+		return SALCommandTypeContainer_SALCommandOff, true
 	case 0x02:
-		return SALCommandTypeContainer_SALCommandRampToLevel_Instantaneous
+		return SALCommandTypeContainer_SALCommandRampToLevel_Instantaneous, true
 	case 0x09:
-		return SALCommandTypeContainer_SALCommandTerminateRamp
+		return SALCommandTypeContainer_SALCommandTerminateRamp, true
 	case 0x0A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_4Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_4Second, true
 	case 0x12:
-		return SALCommandTypeContainer_SALCommandRampToLevel_8Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_8Second, true
 	case 0x1A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_12Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_12Second, true
 	case 0x22:
-		return SALCommandTypeContainer_SALCommandRampToLevel_20Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_20Second, true
 	case 0x2A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_30Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_30Second, true
 	case 0x32:
-		return SALCommandTypeContainer_SALCommandRampToLevel_40Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_40Second, true
 	case 0x3A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_60Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_60Second, true
 	case 0x42:
-		return SALCommandTypeContainer_SALCommandRampToLevel_90Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_90Second, true
 	case 0x4A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_120Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_120Second, true
 	case 0x52:
-		return SALCommandTypeContainer_SALCommandRampToLevel_180Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_180Second, true
 	case 0x5A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_300Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_300Second, true
 	case 0x62:
-		return SALCommandTypeContainer_SALCommandRampToLevel_420Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_420Second, true
 	case 0x6A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_600Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_600Second, true
 	case 0x72:
-		return SALCommandTypeContainer_SALCommandRampToLevel_900Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_900Second, true
 	case 0x79:
-		return SALCommandTypeContainer_SALCommandOn
+		return SALCommandTypeContainer_SALCommandOn, true
 	case 0x7A:
-		return SALCommandTypeContainer_SALCommandRampToLevel_1020Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_1020Second, true
 	}
-	return 0
+	return 0, false
 }
 
 func SALCommandTypeContainerByName(value string) (enum SALCommandTypeContainer, ok bool) {
-	ok = true
 	switch value {
 	case "SALCommandOff":
-		enum = SALCommandTypeContainer_SALCommandOff
+		return SALCommandTypeContainer_SALCommandOff, true
 	case "SALCommandRampToLevel_Instantaneous":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_Instantaneous
+		return SALCommandTypeContainer_SALCommandRampToLevel_Instantaneous, true
 	case "SALCommandTerminateRamp":
-		enum = SALCommandTypeContainer_SALCommandTerminateRamp
+		return SALCommandTypeContainer_SALCommandTerminateRamp, true
 	case "SALCommandRampToLevel_4Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_4Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_4Second, true
 	case "SALCommandRampToLevel_8Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_8Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_8Second, true
 	case "SALCommandRampToLevel_12Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_12Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_12Second, true
 	case "SALCommandRampToLevel_20Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_20Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_20Second, true
 	case "SALCommandRampToLevel_30Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_30Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_30Second, true
 	case "SALCommandRampToLevel_40Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_40Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_40Second, true
 	case "SALCommandRampToLevel_60Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_60Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_60Second, true
 	case "SALCommandRampToLevel_90Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_90Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_90Second, true
 	case "SALCommandRampToLevel_120Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_120Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_120Second, true
 	case "SALCommandRampToLevel_180Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_180Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_180Second, true
 	case "SALCommandRampToLevel_300Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_300Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_300Second, true
 	case "SALCommandRampToLevel_420Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_420Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_420Second, true
 	case "SALCommandRampToLevel_600Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_600Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_600Second, true
 	case "SALCommandRampToLevel_900Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_900Second
+		return SALCommandTypeContainer_SALCommandRampToLevel_900Second, true
 	case "SALCommandOn":
-		enum = SALCommandTypeContainer_SALCommandOn
+		return SALCommandTypeContainer_SALCommandOn, true
 	case "SALCommandRampToLevel_1020Second":
-		enum = SALCommandTypeContainer_SALCommandRampToLevel_1020Second
-	default:
-		enum = 0
-		ok = false
+		return SALCommandTypeContainer_SALCommandRampToLevel_1020Second, true
 	}
-	return
+	return 0, false
 }
 
 func SALCommandTypeContainerKnows(value uint8) bool {
@@ -300,7 +296,11 @@ func SALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (SALCommandTypeCo
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SALCommandTypeContainer")
 	}
-	return SALCommandTypeContainerByValue(val), nil
+	if enum, ok := SALCommandTypeContainerByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for SALCommandTypeContainer", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e SALCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {

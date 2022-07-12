@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(value uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(value uint8) (enum BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL, true
 	case 1:
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByName(value string) (enum BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL, true
 	case "URGENT":
-		enum = BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT
-	default:
-		enum = 0
-		ok = false
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(readB
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority")
 	}
-	return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) Serialize(writeBuffer utils.WriteBuffer) error {

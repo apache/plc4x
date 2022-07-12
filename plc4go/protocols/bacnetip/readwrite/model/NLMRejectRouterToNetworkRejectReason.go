@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func NLMRejectRouterToNetworkRejectReasonByValue(value uint8) NLMRejectRouterToNetworkRejectReason {
+func NLMRejectRouterToNetworkRejectReasonByValue(value uint8) (enum NLMRejectRouterToNetworkRejectReason, ok bool) {
 	switch value {
 	case 0:
-		return NLMRejectRouterToNetworkRejectReason_OTHER
+		return NLMRejectRouterToNetworkRejectReason_OTHER, true
 	case 1:
-		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED
+		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED, true
 	case 2:
-		return NLMRejectRouterToNetworkRejectReason_BUSY
+		return NLMRejectRouterToNetworkRejectReason_BUSY, true
 	case 3:
-		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT
+		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT, true
 	case 4:
-		return NLMRejectRouterToNetworkRejectReason_TOO_LONG
+		return NLMRejectRouterToNetworkRejectReason_TOO_LONG, true
 	case 5:
-		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR
+		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR, true
 	case 6:
-		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR
+		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
 func NLMRejectRouterToNetworkRejectReasonByName(value string) (enum NLMRejectRouterToNetworkRejectReason, ok bool) {
-	ok = true
 	switch value {
 	case "OTHER":
-		enum = NLMRejectRouterToNetworkRejectReason_OTHER
+		return NLMRejectRouterToNetworkRejectReason_OTHER, true
 	case "NOT_DIRECTLY_CONNECTED":
-		enum = NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED
+		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED, true
 	case "BUSY":
-		enum = NLMRejectRouterToNetworkRejectReason_BUSY
+		return NLMRejectRouterToNetworkRejectReason_BUSY, true
 	case "UNKNOWN_NLMT":
-		enum = NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT
+		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT, true
 	case "TOO_LONG":
-		enum = NLMRejectRouterToNetworkRejectReason_TOO_LONG
+		return NLMRejectRouterToNetworkRejectReason_TOO_LONG, true
 	case "SECURITY_ERROR":
-		enum = NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR
+		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR, true
 	case "ADDRESSING_ERROR":
-		enum = NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR
-	default:
-		enum = 0
-		ok = false
+		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR, true
 	}
-	return
+	return 0, false
 }
 
 func NLMRejectRouterToNetworkRejectReasonKnows(value uint8) bool {
@@ -134,7 +130,11 @@ func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLM
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")
 	}
-	return NLMRejectRouterToNetworkRejectReasonByValue(val), nil
+	if enum, ok := NLMRejectRouterToNetworkRejectReasonByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for NLMRejectRouterToNetworkRejectReason", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e NLMRejectRouterToNetworkRejectReason) Serialize(writeBuffer utils.WriteBuffer) error {

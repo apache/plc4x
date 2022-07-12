@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func BACnetProgramErrorByValue(value uint16) BACnetProgramError {
+func BACnetProgramErrorByValue(value uint16) (enum BACnetProgramError, ok bool) {
 	switch value {
 	case 0:
-		return BACnetProgramError_NORMAL
+		return BACnetProgramError_NORMAL, true
 	case 0xFFFF:
-		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE
+		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetProgramError_LOAD_FAILED
+		return BACnetProgramError_LOAD_FAILED, true
 	case 2:
-		return BACnetProgramError_INTERNAL
+		return BACnetProgramError_INTERNAL, true
 	case 3:
-		return BACnetProgramError_PROGRAM
+		return BACnetProgramError_PROGRAM, true
 	case 4:
-		return BACnetProgramError_OTHER
+		return BACnetProgramError_OTHER, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetProgramErrorByName(value string) (enum BACnetProgramError, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetProgramError_NORMAL
+		return BACnetProgramError_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetProgramError_VENDOR_PROPRIETARY_VALUE
+		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE, true
 	case "LOAD_FAILED":
-		enum = BACnetProgramError_LOAD_FAILED
+		return BACnetProgramError_LOAD_FAILED, true
 	case "INTERNAL":
-		enum = BACnetProgramError_INTERNAL
+		return BACnetProgramError_INTERNAL, true
 	case "PROGRAM":
-		enum = BACnetProgramError_PROGRAM
+		return BACnetProgramError_PROGRAM, true
 	case "OTHER":
-		enum = BACnetProgramError_OTHER
-	default:
-		enum = 0
-		ok = false
+		return BACnetProgramError_OTHER, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetProgramErrorKnows(value uint16) bool {
@@ -128,7 +124,11 @@ func BACnetProgramErrorParse(readBuffer utils.ReadBuffer) (BACnetProgramError, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetProgramError")
 	}
-	return BACnetProgramErrorByValue(val), nil
+	if enum, ok := BACnetProgramErrorByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetProgramError", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetProgramError) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetDaysOfWeekByValue(value uint8) BACnetDaysOfWeek {
+func BACnetDaysOfWeekByValue(value uint8) (enum BACnetDaysOfWeek, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDaysOfWeek_MONDAY
+		return BACnetDaysOfWeek_MONDAY, true
 	case 1:
-		return BACnetDaysOfWeek_TUESDAY
+		return BACnetDaysOfWeek_TUESDAY, true
 	case 2:
-		return BACnetDaysOfWeek_WEDNESDAY
+		return BACnetDaysOfWeek_WEDNESDAY, true
 	case 3:
-		return BACnetDaysOfWeek_THURSDAY
+		return BACnetDaysOfWeek_THURSDAY, true
 	case 4:
-		return BACnetDaysOfWeek_FRIDAY
+		return BACnetDaysOfWeek_FRIDAY, true
 	case 5:
-		return BACnetDaysOfWeek_SATURDAY
+		return BACnetDaysOfWeek_SATURDAY, true
 	case 6:
-		return BACnetDaysOfWeek_SUNDAY
+		return BACnetDaysOfWeek_SUNDAY, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDaysOfWeekByName(value string) (enum BACnetDaysOfWeek, ok bool) {
-	ok = true
 	switch value {
 	case "MONDAY":
-		enum = BACnetDaysOfWeek_MONDAY
+		return BACnetDaysOfWeek_MONDAY, true
 	case "TUESDAY":
-		enum = BACnetDaysOfWeek_TUESDAY
+		return BACnetDaysOfWeek_TUESDAY, true
 	case "WEDNESDAY":
-		enum = BACnetDaysOfWeek_WEDNESDAY
+		return BACnetDaysOfWeek_WEDNESDAY, true
 	case "THURSDAY":
-		enum = BACnetDaysOfWeek_THURSDAY
+		return BACnetDaysOfWeek_THURSDAY, true
 	case "FRIDAY":
-		enum = BACnetDaysOfWeek_FRIDAY
+		return BACnetDaysOfWeek_FRIDAY, true
 	case "SATURDAY":
-		enum = BACnetDaysOfWeek_SATURDAY
+		return BACnetDaysOfWeek_SATURDAY, true
 	case "SUNDAY":
-		enum = BACnetDaysOfWeek_SUNDAY
-	default:
-		enum = 0
-		ok = false
+		return BACnetDaysOfWeek_SUNDAY, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetDaysOfWeekKnows(value uint8) bool {
@@ -134,7 +130,11 @@ func BACnetDaysOfWeekParse(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDaysOfWeek")
 	}
-	return BACnetDaysOfWeekByValue(val), nil
+	if enum, ok := BACnetDaysOfWeekByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetDaysOfWeek", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetDaysOfWeek) Serialize(writeBuffer utils.WriteBuffer) error {

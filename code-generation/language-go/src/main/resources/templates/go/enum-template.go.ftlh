@@ -126,28 +126,24 @@ func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLa
 }
 	</#list>
 </#if>
-func ${type.name}ByValue(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>) ${type.name} {
+func ${type.name}ByValue(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>) (enum ${type.name}, ok bool) {
 	switch value {
 <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 		case <#if type.type.orElseThrow().isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>:
-			return ${type.name}_${enumValue.name}
+			return ${type.name}_${enumValue.name}, true
 </#list>
 	}
-	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, false
 }
 
 func ${type.name}ByName(value string) (enum ${type.name}, ok bool) {
-	ok = true
 	switch value {
 	<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 	case "${enumValue.name}":
-		enum = ${type.name}_${enumValue.name}
+		return ${type.name}_${enumValue.name}, true
 	</#list>
-	default:
-		enum = <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
-		ok = false
 	}
-	return
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, false
 }
 
 func ${type.name}Knows(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>)  bool {
@@ -186,7 +182,11 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	if err != nil {
 		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")
 	}
-	return ${type.name}ByValue(val), nil
+	if enum, ok := ${type.name}ByValue(val); !ok {
+		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Errorf("no value %v found for ${type.name}", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {

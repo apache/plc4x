@@ -960,1852 +960,1848 @@ func init() {
 	}
 }
 
-func BACnetPropertyIdentifierByValue(value uint32) BACnetPropertyIdentifier {
+func BACnetPropertyIdentifierByValue(value uint32) (enum BACnetPropertyIdentifier, ok bool) {
 	switch value {
 	case 0:
-		return BACnetPropertyIdentifier_ACKED_TRANSITIONS
+		return BACnetPropertyIdentifier_ACKED_TRANSITIONS, true
 	case 1:
-		return BACnetPropertyIdentifier_ACK_REQUIRED
+		return BACnetPropertyIdentifier_ACK_REQUIRED, true
 	case 10:
-		return BACnetPropertyIdentifier_APDU_SEGMENT_TIMEOUT
+		return BACnetPropertyIdentifier_APDU_SEGMENT_TIMEOUT, true
 	case 100:
-		return BACnetPropertyIdentifier_REASON_FOR_HALT
+		return BACnetPropertyIdentifier_REASON_FOR_HALT, true
 	case 102:
-		return BACnetPropertyIdentifier_RECIPIENT_LIST
+		return BACnetPropertyIdentifier_RECIPIENT_LIST, true
 	case 103:
-		return BACnetPropertyIdentifier_RELIABILITY
+		return BACnetPropertyIdentifier_RELIABILITY, true
 	case 104:
-		return BACnetPropertyIdentifier_RELINQUISH_DEFAULT
+		return BACnetPropertyIdentifier_RELINQUISH_DEFAULT, true
 	case 105:
-		return BACnetPropertyIdentifier_REQUIRED
+		return BACnetPropertyIdentifier_REQUIRED, true
 	case 106:
-		return BACnetPropertyIdentifier_RESOLUTION
+		return BACnetPropertyIdentifier_RESOLUTION, true
 	case 107:
-		return BACnetPropertyIdentifier_SEGMENTATION_SUPPORTED
+		return BACnetPropertyIdentifier_SEGMENTATION_SUPPORTED, true
 	case 108:
-		return BACnetPropertyIdentifier_SETPOINT
+		return BACnetPropertyIdentifier_SETPOINT, true
 	case 109:
-		return BACnetPropertyIdentifier_SETPOINT_REFERENCE
+		return BACnetPropertyIdentifier_SETPOINT_REFERENCE, true
 	case 11:
-		return BACnetPropertyIdentifier_APDU_TIMEOUT
+		return BACnetPropertyIdentifier_APDU_TIMEOUT, true
 	case 110:
-		return BACnetPropertyIdentifier_STATE_TEXT
+		return BACnetPropertyIdentifier_STATE_TEXT, true
 	case 111:
-		return BACnetPropertyIdentifier_STATUS_FLAGS
+		return BACnetPropertyIdentifier_STATUS_FLAGS, true
 	case 112:
-		return BACnetPropertyIdentifier_SYSTEM_STATUS
+		return BACnetPropertyIdentifier_SYSTEM_STATUS, true
 	case 113:
-		return BACnetPropertyIdentifier_TIME_DELAY
+		return BACnetPropertyIdentifier_TIME_DELAY, true
 	case 114:
-		return BACnetPropertyIdentifier_TIME_OF_ACTIVE_TIME_RESET
+		return BACnetPropertyIdentifier_TIME_OF_ACTIVE_TIME_RESET, true
 	case 115:
-		return BACnetPropertyIdentifier_TIME_OF_STATE_COUNT_RESET
+		return BACnetPropertyIdentifier_TIME_OF_STATE_COUNT_RESET, true
 	case 116:
-		return BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_RECIPIENTS
+		return BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_RECIPIENTS, true
 	case 117:
-		return BACnetPropertyIdentifier_UNITS
+		return BACnetPropertyIdentifier_UNITS, true
 	case 118:
-		return BACnetPropertyIdentifier_UPDATE_INTERVAL
+		return BACnetPropertyIdentifier_UPDATE_INTERVAL, true
 	case 119:
-		return BACnetPropertyIdentifier_UTC_OFFSET
+		return BACnetPropertyIdentifier_UTC_OFFSET, true
 	case 12:
-		return BACnetPropertyIdentifier_APPLICATION_SOFTWARE_VERSION
+		return BACnetPropertyIdentifier_APPLICATION_SOFTWARE_VERSION, true
 	case 120:
-		return BACnetPropertyIdentifier_VENDOR_IDENTIFIER
+		return BACnetPropertyIdentifier_VENDOR_IDENTIFIER, true
 	case 121:
-		return BACnetPropertyIdentifier_VENDOR_NAME
+		return BACnetPropertyIdentifier_VENDOR_NAME, true
 	case 122:
-		return BACnetPropertyIdentifier_VT_CLASSES_SUPPORTED
+		return BACnetPropertyIdentifier_VT_CLASSES_SUPPORTED, true
 	case 123:
-		return BACnetPropertyIdentifier_WEEKLY_SCHEDULE
+		return BACnetPropertyIdentifier_WEEKLY_SCHEDULE, true
 	case 124:
-		return BACnetPropertyIdentifier_ATTEMPTED_SAMPLES
+		return BACnetPropertyIdentifier_ATTEMPTED_SAMPLES, true
 	case 125:
-		return BACnetPropertyIdentifier_AVERAGE_VALUE
+		return BACnetPropertyIdentifier_AVERAGE_VALUE, true
 	case 126:
-		return BACnetPropertyIdentifier_BUFFER_SIZE
+		return BACnetPropertyIdentifier_BUFFER_SIZE, true
 	case 127:
-		return BACnetPropertyIdentifier_CLIENT_COV_INCREMENT
+		return BACnetPropertyIdentifier_CLIENT_COV_INCREMENT, true
 	case 128:
-		return BACnetPropertyIdentifier_COV_RESUBSCRIPTION_INTERVAL
+		return BACnetPropertyIdentifier_COV_RESUBSCRIPTION_INTERVAL, true
 	case 13:
-		return BACnetPropertyIdentifier_ARCHIVE
+		return BACnetPropertyIdentifier_ARCHIVE, true
 	case 130:
-		return BACnetPropertyIdentifier_EVENT_TIME_STAMPS
+		return BACnetPropertyIdentifier_EVENT_TIME_STAMPS, true
 	case 131:
-		return BACnetPropertyIdentifier_LOG_BUFFER
+		return BACnetPropertyIdentifier_LOG_BUFFER, true
 	case 132:
-		return BACnetPropertyIdentifier_LOG_DEVICE_OBJECT_PROPERTY
+		return BACnetPropertyIdentifier_LOG_DEVICE_OBJECT_PROPERTY, true
 	case 133:
-		return BACnetPropertyIdentifier_ENABLE
+		return BACnetPropertyIdentifier_ENABLE, true
 	case 134:
-		return BACnetPropertyIdentifier_LOG_INTERVAL
+		return BACnetPropertyIdentifier_LOG_INTERVAL, true
 	case 135:
-		return BACnetPropertyIdentifier_MAXIMUM_VALUE
+		return BACnetPropertyIdentifier_MAXIMUM_VALUE, true
 	case 136:
-		return BACnetPropertyIdentifier_MINIMUM_VALUE
+		return BACnetPropertyIdentifier_MINIMUM_VALUE, true
 	case 137:
-		return BACnetPropertyIdentifier_NOTIFICATION_THRESHOLD
+		return BACnetPropertyIdentifier_NOTIFICATION_THRESHOLD, true
 	case 139:
-		return BACnetPropertyIdentifier_PROTOCOL_REVISION
+		return BACnetPropertyIdentifier_PROTOCOL_REVISION, true
 	case 14:
-		return BACnetPropertyIdentifier_BIAS
+		return BACnetPropertyIdentifier_BIAS, true
 	case 140:
-		return BACnetPropertyIdentifier_RECORDS_SINCE_NOTIFICATION
+		return BACnetPropertyIdentifier_RECORDS_SINCE_NOTIFICATION, true
 	case 141:
-		return BACnetPropertyIdentifier_RECORD_COUNT
+		return BACnetPropertyIdentifier_RECORD_COUNT, true
 	case 142:
-		return BACnetPropertyIdentifier_START_TIME
+		return BACnetPropertyIdentifier_START_TIME, true
 	case 143:
-		return BACnetPropertyIdentifier_STOP_TIME
+		return BACnetPropertyIdentifier_STOP_TIME, true
 	case 144:
-		return BACnetPropertyIdentifier_STOP_WHEN_FULL
+		return BACnetPropertyIdentifier_STOP_WHEN_FULL, true
 	case 145:
-		return BACnetPropertyIdentifier_TOTAL_RECORD_COUNT
+		return BACnetPropertyIdentifier_TOTAL_RECORD_COUNT, true
 	case 146:
-		return BACnetPropertyIdentifier_VALID_SAMPLES
+		return BACnetPropertyIdentifier_VALID_SAMPLES, true
 	case 147:
-		return BACnetPropertyIdentifier_WINDOW_INTERVAL
+		return BACnetPropertyIdentifier_WINDOW_INTERVAL, true
 	case 148:
-		return BACnetPropertyIdentifier_WINDOW_SAMPLES
+		return BACnetPropertyIdentifier_WINDOW_SAMPLES, true
 	case 149:
-		return BACnetPropertyIdentifier_MAXIMUM_VALUE_TIMESTAMP
+		return BACnetPropertyIdentifier_MAXIMUM_VALUE_TIMESTAMP, true
 	case 15:
-		return BACnetPropertyIdentifier_CHANGE_OF_STATE_COUNT
+		return BACnetPropertyIdentifier_CHANGE_OF_STATE_COUNT, true
 	case 150:
-		return BACnetPropertyIdentifier_MINIMUM_VALUE_TIMESTAMP
+		return BACnetPropertyIdentifier_MINIMUM_VALUE_TIMESTAMP, true
 	case 151:
-		return BACnetPropertyIdentifier_VARIANCE_VALUE
+		return BACnetPropertyIdentifier_VARIANCE_VALUE, true
 	case 152:
-		return BACnetPropertyIdentifier_ACTIVE_COV_SUBSCRIPTIONS
+		return BACnetPropertyIdentifier_ACTIVE_COV_SUBSCRIPTIONS, true
 	case 153:
-		return BACnetPropertyIdentifier_BACKUP_FAILURE_TIMEOUT
+		return BACnetPropertyIdentifier_BACKUP_FAILURE_TIMEOUT, true
 	case 154:
-		return BACnetPropertyIdentifier_CONFIGURATION_FILES
+		return BACnetPropertyIdentifier_CONFIGURATION_FILES, true
 	case 155:
-		return BACnetPropertyIdentifier_DATABASE_REVISION
+		return BACnetPropertyIdentifier_DATABASE_REVISION, true
 	case 156:
-		return BACnetPropertyIdentifier_DIRECT_READING
+		return BACnetPropertyIdentifier_DIRECT_READING, true
 	case 157:
-		return BACnetPropertyIdentifier_LAST_RESTORE_TIME
+		return BACnetPropertyIdentifier_LAST_RESTORE_TIME, true
 	case 158:
-		return BACnetPropertyIdentifier_MAINTENANCE_REQUIRED
+		return BACnetPropertyIdentifier_MAINTENANCE_REQUIRED, true
 	case 159:
-		return BACnetPropertyIdentifier_MEMBER_OF
+		return BACnetPropertyIdentifier_MEMBER_OF, true
 	case 16:
-		return BACnetPropertyIdentifier_CHANGE_OF_STATE_TIME
+		return BACnetPropertyIdentifier_CHANGE_OF_STATE_TIME, true
 	case 160:
-		return BACnetPropertyIdentifier_MODE
+		return BACnetPropertyIdentifier_MODE, true
 	case 161:
-		return BACnetPropertyIdentifier_OPERATION_EXPECTED
+		return BACnetPropertyIdentifier_OPERATION_EXPECTED, true
 	case 162:
-		return BACnetPropertyIdentifier_SETTING
+		return BACnetPropertyIdentifier_SETTING, true
 	case 163:
-		return BACnetPropertyIdentifier_SILENCED
+		return BACnetPropertyIdentifier_SILENCED, true
 	case 164:
-		return BACnetPropertyIdentifier_TRACKING_VALUE
+		return BACnetPropertyIdentifier_TRACKING_VALUE, true
 	case 165:
-		return BACnetPropertyIdentifier_ZONE_MEMBERS
+		return BACnetPropertyIdentifier_ZONE_MEMBERS, true
 	case 166:
-		return BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES
+		return BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES, true
 	case 167:
-		return BACnetPropertyIdentifier_MAX_SEGMENTS_ACCEPTED
+		return BACnetPropertyIdentifier_MAX_SEGMENTS_ACCEPTED, true
 	case 168:
-		return BACnetPropertyIdentifier_PROFILE_NAME
+		return BACnetPropertyIdentifier_PROFILE_NAME, true
 	case 169:
-		return BACnetPropertyIdentifier_AUTO_SLAVE_DISCOVERY
+		return BACnetPropertyIdentifier_AUTO_SLAVE_DISCOVERY, true
 	case 17:
-		return BACnetPropertyIdentifier_NOTIFICATION_CLASS
+		return BACnetPropertyIdentifier_NOTIFICATION_CLASS, true
 	case 170:
-		return BACnetPropertyIdentifier_MANUAL_SLAVE_ADDRESS_BINDING
+		return BACnetPropertyIdentifier_MANUAL_SLAVE_ADDRESS_BINDING, true
 	case 171:
-		return BACnetPropertyIdentifier_SLAVE_ADDRESS_BINDING
+		return BACnetPropertyIdentifier_SLAVE_ADDRESS_BINDING, true
 	case 172:
-		return BACnetPropertyIdentifier_SLAVE_PROXY_ENABLE
+		return BACnetPropertyIdentifier_SLAVE_PROXY_ENABLE, true
 	case 173:
-		return BACnetPropertyIdentifier_LAST_NOTIFY_RECORD
+		return BACnetPropertyIdentifier_LAST_NOTIFY_RECORD, true
 	case 174:
-		return BACnetPropertyIdentifier_SCHEDULE_DEFAULT
+		return BACnetPropertyIdentifier_SCHEDULE_DEFAULT, true
 	case 175:
-		return BACnetPropertyIdentifier_ACCEPTED_MODES
+		return BACnetPropertyIdentifier_ACCEPTED_MODES, true
 	case 176:
-		return BACnetPropertyIdentifier_ADJUST_VALUE
+		return BACnetPropertyIdentifier_ADJUST_VALUE, true
 	case 177:
-		return BACnetPropertyIdentifier_COUNT
+		return BACnetPropertyIdentifier_COUNT, true
 	case 178:
-		return BACnetPropertyIdentifier_COUNT_BEFORE_CHANGE
+		return BACnetPropertyIdentifier_COUNT_BEFORE_CHANGE, true
 	case 179:
-		return BACnetPropertyIdentifier_COUNT_CHANGE_TIME
+		return BACnetPropertyIdentifier_COUNT_CHANGE_TIME, true
 	case 180:
-		return BACnetPropertyIdentifier_COV_PERIOD
+		return BACnetPropertyIdentifier_COV_PERIOD, true
 	case 181:
-		return BACnetPropertyIdentifier_INPUT_REFERENCE
+		return BACnetPropertyIdentifier_INPUT_REFERENCE, true
 	case 182:
-		return BACnetPropertyIdentifier_LIMIT_MONITORING_INTERVAL
+		return BACnetPropertyIdentifier_LIMIT_MONITORING_INTERVAL, true
 	case 183:
-		return BACnetPropertyIdentifier_LOGGING_OBJECT
+		return BACnetPropertyIdentifier_LOGGING_OBJECT, true
 	case 184:
-		return BACnetPropertyIdentifier_LOGGING_RECORD
+		return BACnetPropertyIdentifier_LOGGING_RECORD, true
 	case 185:
-		return BACnetPropertyIdentifier_PRESCALE
+		return BACnetPropertyIdentifier_PRESCALE, true
 	case 186:
-		return BACnetPropertyIdentifier_PULSE_RATE
+		return BACnetPropertyIdentifier_PULSE_RATE, true
 	case 187:
-		return BACnetPropertyIdentifier_SCALE
+		return BACnetPropertyIdentifier_SCALE, true
 	case 188:
-		return BACnetPropertyIdentifier_SCALE_FACTOR
+		return BACnetPropertyIdentifier_SCALE_FACTOR, true
 	case 189:
-		return BACnetPropertyIdentifier_UPDATE_TIME
+		return BACnetPropertyIdentifier_UPDATE_TIME, true
 	case 19:
-		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_REFERENCE
+		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_REFERENCE, true
 	case 190:
-		return BACnetPropertyIdentifier_VALUE_BEFORE_CHANGE
+		return BACnetPropertyIdentifier_VALUE_BEFORE_CHANGE, true
 	case 191:
-		return BACnetPropertyIdentifier_VALUE_SET
+		return BACnetPropertyIdentifier_VALUE_SET, true
 	case 192:
-		return BACnetPropertyIdentifier_VALUE_CHANGE_TIME
+		return BACnetPropertyIdentifier_VALUE_CHANGE_TIME, true
 	case 193:
-		return BACnetPropertyIdentifier_ALIGN_INTERVALS
+		return BACnetPropertyIdentifier_ALIGN_INTERVALS, true
 	case 195:
-		return BACnetPropertyIdentifier_INTERVAL_OFFSET
+		return BACnetPropertyIdentifier_INTERVAL_OFFSET, true
 	case 196:
-		return BACnetPropertyIdentifier_LAST_RESTART_REASON
+		return BACnetPropertyIdentifier_LAST_RESTART_REASON, true
 	case 197:
-		return BACnetPropertyIdentifier_LOGGING_TYPE
+		return BACnetPropertyIdentifier_LOGGING_TYPE, true
 	case 2:
-		return BACnetPropertyIdentifier_ACTION
+		return BACnetPropertyIdentifier_ACTION, true
 	case 20:
-		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_UNITS
+		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_UNITS, true
 	case 202:
-		return BACnetPropertyIdentifier_RESTART_NOTIFICATION_RECIPIENTS
+		return BACnetPropertyIdentifier_RESTART_NOTIFICATION_RECIPIENTS, true
 	case 203:
-		return BACnetPropertyIdentifier_TIME_OF_DEVICE_RESTART
+		return BACnetPropertyIdentifier_TIME_OF_DEVICE_RESTART, true
 	case 204:
-		return BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_INTERVAL
+		return BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_INTERVAL, true
 	case 205:
-		return BACnetPropertyIdentifier_TRIGGER
+		return BACnetPropertyIdentifier_TRIGGER, true
 	case 206:
-		return BACnetPropertyIdentifier_UTC_TIME_SYNCHRONIZATION_RECIPIENTS
+		return BACnetPropertyIdentifier_UTC_TIME_SYNCHRONIZATION_RECIPIENTS, true
 	case 207:
-		return BACnetPropertyIdentifier_NODE_SUBTYPE
+		return BACnetPropertyIdentifier_NODE_SUBTYPE, true
 	case 208:
-		return BACnetPropertyIdentifier_NODE_TYPE
+		return BACnetPropertyIdentifier_NODE_TYPE, true
 	case 209:
-		return BACnetPropertyIdentifier_STRUCTURED_OBJECT_LIST
+		return BACnetPropertyIdentifier_STRUCTURED_OBJECT_LIST, true
 	case 21:
-		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_VALUE
+		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_VALUE, true
 	case 210:
-		return BACnetPropertyIdentifier_SUBORDINATE_ANNOTATIONS
+		return BACnetPropertyIdentifier_SUBORDINATE_ANNOTATIONS, true
 	case 211:
-		return BACnetPropertyIdentifier_SUBORDINATE_LIST
+		return BACnetPropertyIdentifier_SUBORDINATE_LIST, true
 	case 212:
-		return BACnetPropertyIdentifier_ACTUAL_SHED_LEVEL
+		return BACnetPropertyIdentifier_ACTUAL_SHED_LEVEL, true
 	case 213:
-		return BACnetPropertyIdentifier_DUTY_WINDOW
+		return BACnetPropertyIdentifier_DUTY_WINDOW, true
 	case 214:
-		return BACnetPropertyIdentifier_EXPECTED_SHED_LEVEL
+		return BACnetPropertyIdentifier_EXPECTED_SHED_LEVEL, true
 	case 215:
-		return BACnetPropertyIdentifier_FULL_DUTY_BASELINE
+		return BACnetPropertyIdentifier_FULL_DUTY_BASELINE, true
 	case 218:
-		return BACnetPropertyIdentifier_REQUESTED_SHED_LEVEL
+		return BACnetPropertyIdentifier_REQUESTED_SHED_LEVEL, true
 	case 219:
-		return BACnetPropertyIdentifier_SHED_DURATION
+		return BACnetPropertyIdentifier_SHED_DURATION, true
 	case 22:
-		return BACnetPropertyIdentifier_COV_INCREMENT
+		return BACnetPropertyIdentifier_COV_INCREMENT, true
 	case 220:
-		return BACnetPropertyIdentifier_SHED_LEVEL_DESCRIPTIONS
+		return BACnetPropertyIdentifier_SHED_LEVEL_DESCRIPTIONS, true
 	case 221:
-		return BACnetPropertyIdentifier_SHED_LEVELS
+		return BACnetPropertyIdentifier_SHED_LEVELS, true
 	case 222:
-		return BACnetPropertyIdentifier_STATE_DESCRIPTION
+		return BACnetPropertyIdentifier_STATE_DESCRIPTION, true
 	case 226:
-		return BACnetPropertyIdentifier_DOOR_ALARM_STATE
+		return BACnetPropertyIdentifier_DOOR_ALARM_STATE, true
 	case 227:
-		return BACnetPropertyIdentifier_DOOR_EXTENDED_PULSE_TIME
+		return BACnetPropertyIdentifier_DOOR_EXTENDED_PULSE_TIME, true
 	case 228:
-		return BACnetPropertyIdentifier_DOOR_MEMBERS
+		return BACnetPropertyIdentifier_DOOR_MEMBERS, true
 	case 229:
-		return BACnetPropertyIdentifier_DOOR_OPEN_TOO_LONG_TIME
+		return BACnetPropertyIdentifier_DOOR_OPEN_TOO_LONG_TIME, true
 	case 23:
-		return BACnetPropertyIdentifier_DATE_LIST
+		return BACnetPropertyIdentifier_DATE_LIST, true
 	case 230:
-		return BACnetPropertyIdentifier_DOOR_PULSE_TIME
+		return BACnetPropertyIdentifier_DOOR_PULSE_TIME, true
 	case 231:
-		return BACnetPropertyIdentifier_DOOR_STATUS
+		return BACnetPropertyIdentifier_DOOR_STATUS, true
 	case 232:
-		return BACnetPropertyIdentifier_DOOR_UNLOCK_DELAY_TIME
+		return BACnetPropertyIdentifier_DOOR_UNLOCK_DELAY_TIME, true
 	case 233:
-		return BACnetPropertyIdentifier_LOCK_STATUS
+		return BACnetPropertyIdentifier_LOCK_STATUS, true
 	case 234:
-		return BACnetPropertyIdentifier_MASKED_ALARM_VALUES
+		return BACnetPropertyIdentifier_MASKED_ALARM_VALUES, true
 	case 235:
-		return BACnetPropertyIdentifier_SECURED_STATUS
+		return BACnetPropertyIdentifier_SECURED_STATUS, true
 	case 24:
-		return BACnetPropertyIdentifier_DAYLIGHT_SAVINGS_STATUS
+		return BACnetPropertyIdentifier_DAYLIGHT_SAVINGS_STATUS, true
 	case 244:
-		return BACnetPropertyIdentifier_ABSENTEE_LIMIT
+		return BACnetPropertyIdentifier_ABSENTEE_LIMIT, true
 	case 245:
-		return BACnetPropertyIdentifier_ACCESS_ALARM_EVENTS
+		return BACnetPropertyIdentifier_ACCESS_ALARM_EVENTS, true
 	case 246:
-		return BACnetPropertyIdentifier_ACCESS_DOORS
+		return BACnetPropertyIdentifier_ACCESS_DOORS, true
 	case 247:
-		return BACnetPropertyIdentifier_ACCESS_EVENT
+		return BACnetPropertyIdentifier_ACCESS_EVENT, true
 	case 248:
-		return BACnetPropertyIdentifier_ACCESS_EVENT_AUTHENTICATION_FACTOR
+		return BACnetPropertyIdentifier_ACCESS_EVENT_AUTHENTICATION_FACTOR, true
 	case 249:
-		return BACnetPropertyIdentifier_ACCESS_EVENT_CREDENTIAL
+		return BACnetPropertyIdentifier_ACCESS_EVENT_CREDENTIAL, true
 	case 25:
-		return BACnetPropertyIdentifier_DEADBAND
+		return BACnetPropertyIdentifier_DEADBAND, true
 	case 250:
-		return BACnetPropertyIdentifier_ACCESS_EVENT_TIME
+		return BACnetPropertyIdentifier_ACCESS_EVENT_TIME, true
 	case 251:
-		return BACnetPropertyIdentifier_ACCESS_TRANSACTION_EVENTS
+		return BACnetPropertyIdentifier_ACCESS_TRANSACTION_EVENTS, true
 	case 252:
-		return BACnetPropertyIdentifier_ACCOMPANIMENT
+		return BACnetPropertyIdentifier_ACCOMPANIMENT, true
 	case 253:
-		return BACnetPropertyIdentifier_ACCOMPANIMENT_TIME
+		return BACnetPropertyIdentifier_ACCOMPANIMENT_TIME, true
 	case 254:
-		return BACnetPropertyIdentifier_ACTIVATION_TIME
+		return BACnetPropertyIdentifier_ACTIVATION_TIME, true
 	case 255:
-		return BACnetPropertyIdentifier_ACTIVE_AUTHENTICATION_POLICY
+		return BACnetPropertyIdentifier_ACTIVE_AUTHENTICATION_POLICY, true
 	case 256:
-		return BACnetPropertyIdentifier_ASSIGNED_ACCESS_RIGHTS
+		return BACnetPropertyIdentifier_ASSIGNED_ACCESS_RIGHTS, true
 	case 257:
-		return BACnetPropertyIdentifier_AUTHENTICATION_FACTORS
+		return BACnetPropertyIdentifier_AUTHENTICATION_FACTORS, true
 	case 258:
-		return BACnetPropertyIdentifier_AUTHENTICATION_POLICY_LIST
+		return BACnetPropertyIdentifier_AUTHENTICATION_POLICY_LIST, true
 	case 259:
-		return BACnetPropertyIdentifier_AUTHENTICATION_POLICY_NAMES
+		return BACnetPropertyIdentifier_AUTHENTICATION_POLICY_NAMES, true
 	case 26:
-		return BACnetPropertyIdentifier_DERIVATIVE_CONSTANT
+		return BACnetPropertyIdentifier_DERIVATIVE_CONSTANT, true
 	case 260:
-		return BACnetPropertyIdentifier_AUTHENTICATION_STATUS
+		return BACnetPropertyIdentifier_AUTHENTICATION_STATUS, true
 	case 261:
-		return BACnetPropertyIdentifier_AUTHORIZATION_MODE
+		return BACnetPropertyIdentifier_AUTHORIZATION_MODE, true
 	case 262:
-		return BACnetPropertyIdentifier_BELONGS_TO
+		return BACnetPropertyIdentifier_BELONGS_TO, true
 	case 263:
-		return BACnetPropertyIdentifier_CREDENTIAL_DISABLE
+		return BACnetPropertyIdentifier_CREDENTIAL_DISABLE, true
 	case 264:
-		return BACnetPropertyIdentifier_CREDENTIAL_STATUS
+		return BACnetPropertyIdentifier_CREDENTIAL_STATUS, true
 	case 265:
-		return BACnetPropertyIdentifier_CREDENTIALS
+		return BACnetPropertyIdentifier_CREDENTIALS, true
 	case 266:
-		return BACnetPropertyIdentifier_CREDENTIALS_IN_ZONE
+		return BACnetPropertyIdentifier_CREDENTIALS_IN_ZONE, true
 	case 267:
-		return BACnetPropertyIdentifier_DAYS_REMAINING
+		return BACnetPropertyIdentifier_DAYS_REMAINING, true
 	case 268:
-		return BACnetPropertyIdentifier_ENTRY_POINTS
+		return BACnetPropertyIdentifier_ENTRY_POINTS, true
 	case 269:
-		return BACnetPropertyIdentifier_EXIT_POINTS
+		return BACnetPropertyIdentifier_EXIT_POINTS, true
 	case 27:
-		return BACnetPropertyIdentifier_DERIVATIVE_CONSTANT_UNITS
+		return BACnetPropertyIdentifier_DERIVATIVE_CONSTANT_UNITS, true
 	case 270:
-		return BACnetPropertyIdentifier_EXPIRATION_TIME
+		return BACnetPropertyIdentifier_EXPIRATION_TIME, true
 	case 271:
-		return BACnetPropertyIdentifier_EXTENDED_TIME_ENABLE
+		return BACnetPropertyIdentifier_EXTENDED_TIME_ENABLE, true
 	case 272:
-		return BACnetPropertyIdentifier_FAILED_ATTEMPT_EVENTS
+		return BACnetPropertyIdentifier_FAILED_ATTEMPT_EVENTS, true
 	case 273:
-		return BACnetPropertyIdentifier_FAILED_ATTEMPTS
+		return BACnetPropertyIdentifier_FAILED_ATTEMPTS, true
 	case 274:
-		return BACnetPropertyIdentifier_FAILED_ATTEMPTS_TIME
+		return BACnetPropertyIdentifier_FAILED_ATTEMPTS_TIME, true
 	case 275:
-		return BACnetPropertyIdentifier_LAST_ACCESS_EVENT
+		return BACnetPropertyIdentifier_LAST_ACCESS_EVENT, true
 	case 276:
-		return BACnetPropertyIdentifier_LAST_ACCESS_POINT
+		return BACnetPropertyIdentifier_LAST_ACCESS_POINT, true
 	case 277:
-		return BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED, true
 	case 278:
-		return BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED_TIME
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED_TIME, true
 	case 279:
-		return BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED, true
 	case 28:
-		return BACnetPropertyIdentifier_DESCRIPTION
+		return BACnetPropertyIdentifier_DESCRIPTION, true
 	case 280:
-		return BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED_TIME
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED_TIME, true
 	case 281:
-		return BACnetPropertyIdentifier_LAST_USE_TIME
+		return BACnetPropertyIdentifier_LAST_USE_TIME, true
 	case 282:
-		return BACnetPropertyIdentifier_LOCKOUT
+		return BACnetPropertyIdentifier_LOCKOUT, true
 	case 283:
-		return BACnetPropertyIdentifier_LOCKOUT_RELINQUISH_TIME
+		return BACnetPropertyIdentifier_LOCKOUT_RELINQUISH_TIME, true
 	case 285:
-		return BACnetPropertyIdentifier_MAX_FAILED_ATTEMPTS
+		return BACnetPropertyIdentifier_MAX_FAILED_ATTEMPTS, true
 	case 286:
-		return BACnetPropertyIdentifier_MEMBERS
+		return BACnetPropertyIdentifier_MEMBERS, true
 	case 287:
-		return BACnetPropertyIdentifier_MUSTER_POINT
+		return BACnetPropertyIdentifier_MUSTER_POINT, true
 	case 288:
-		return BACnetPropertyIdentifier_NEGATIVE_ACCESS_RULES
+		return BACnetPropertyIdentifier_NEGATIVE_ACCESS_RULES, true
 	case 289:
-		return BACnetPropertyIdentifier_NUMBER_OF_AUTHENTICATION_POLICIES
+		return BACnetPropertyIdentifier_NUMBER_OF_AUTHENTICATION_POLICIES, true
 	case 29:
-		return BACnetPropertyIdentifier_DESCRIPTION_OF_HALT
+		return BACnetPropertyIdentifier_DESCRIPTION_OF_HALT, true
 	case 290:
-		return BACnetPropertyIdentifier_OCCUPANCY_COUNT
+		return BACnetPropertyIdentifier_OCCUPANCY_COUNT, true
 	case 291:
-		return BACnetPropertyIdentifier_OCCUPANCY_COUNT_ADJUST
+		return BACnetPropertyIdentifier_OCCUPANCY_COUNT_ADJUST, true
 	case 292:
-		return BACnetPropertyIdentifier_OCCUPANCY_COUNT_ENABLE
+		return BACnetPropertyIdentifier_OCCUPANCY_COUNT_ENABLE, true
 	case 294:
-		return BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT
+		return BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT, true
 	case 295:
-		return BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT_ENFORCED
+		return BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT_ENFORCED, true
 	case 296:
-		return BACnetPropertyIdentifier_OCCUPANCY_STATE
+		return BACnetPropertyIdentifier_OCCUPANCY_STATE, true
 	case 297:
-		return BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT
+		return BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT, true
 	case 298:
-		return BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT_ENFORCED
+		return BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT_ENFORCED, true
 	case 3:
-		return BACnetPropertyIdentifier_ACTION_TEXT
+		return BACnetPropertyIdentifier_ACTION_TEXT, true
 	case 30:
-		return BACnetPropertyIdentifier_DEVICE_ADDRESS_BINDING
+		return BACnetPropertyIdentifier_DEVICE_ADDRESS_BINDING, true
 	case 300:
-		return BACnetPropertyIdentifier_PASSBACK_MODE
+		return BACnetPropertyIdentifier_PASSBACK_MODE, true
 	case 301:
-		return BACnetPropertyIdentifier_PASSBACK_TIMEOUT
+		return BACnetPropertyIdentifier_PASSBACK_TIMEOUT, true
 	case 302:
-		return BACnetPropertyIdentifier_POSITIVE_ACCESS_RULES
+		return BACnetPropertyIdentifier_POSITIVE_ACCESS_RULES, true
 	case 303:
-		return BACnetPropertyIdentifier_REASON_FOR_DISABLE
+		return BACnetPropertyIdentifier_REASON_FOR_DISABLE, true
 	case 304:
-		return BACnetPropertyIdentifier_SUPPORTED_FORMATS
+		return BACnetPropertyIdentifier_SUPPORTED_FORMATS, true
 	case 305:
-		return BACnetPropertyIdentifier_SUPPORTED_FORMAT_CLASSES
+		return BACnetPropertyIdentifier_SUPPORTED_FORMAT_CLASSES, true
 	case 306:
-		return BACnetPropertyIdentifier_THREAT_AUTHORITY
+		return BACnetPropertyIdentifier_THREAT_AUTHORITY, true
 	case 307:
-		return BACnetPropertyIdentifier_THREAT_LEVEL
+		return BACnetPropertyIdentifier_THREAT_LEVEL, true
 	case 308:
-		return BACnetPropertyIdentifier_TRACE_FLAG
+		return BACnetPropertyIdentifier_TRACE_FLAG, true
 	case 309:
-		return BACnetPropertyIdentifier_TRANSACTION_NOTIFICATION_CLASS
+		return BACnetPropertyIdentifier_TRANSACTION_NOTIFICATION_CLASS, true
 	case 31:
-		return BACnetPropertyIdentifier_DEVICE_TYPE
+		return BACnetPropertyIdentifier_DEVICE_TYPE, true
 	case 310:
-		return BACnetPropertyIdentifier_USER_EXTERNAL_IDENTIFIER
+		return BACnetPropertyIdentifier_USER_EXTERNAL_IDENTIFIER, true
 	case 311:
-		return BACnetPropertyIdentifier_USER_INFORMATION_REFERENCE
+		return BACnetPropertyIdentifier_USER_INFORMATION_REFERENCE, true
 	case 317:
-		return BACnetPropertyIdentifier_USER_NAME
+		return BACnetPropertyIdentifier_USER_NAME, true
 	case 318:
-		return BACnetPropertyIdentifier_USER_TYPE
+		return BACnetPropertyIdentifier_USER_TYPE, true
 	case 319:
-		return BACnetPropertyIdentifier_USES_REMAINING
+		return BACnetPropertyIdentifier_USES_REMAINING, true
 	case 32:
-		return BACnetPropertyIdentifier_EFFECTIVE_PERIOD
+		return BACnetPropertyIdentifier_EFFECTIVE_PERIOD, true
 	case 320:
-		return BACnetPropertyIdentifier_ZONE_FROM
+		return BACnetPropertyIdentifier_ZONE_FROM, true
 	case 321:
-		return BACnetPropertyIdentifier_ZONE_TO
+		return BACnetPropertyIdentifier_ZONE_TO, true
 	case 322:
-		return BACnetPropertyIdentifier_ACCESS_EVENT_TAG
+		return BACnetPropertyIdentifier_ACCESS_EVENT_TAG, true
 	case 323:
-		return BACnetPropertyIdentifier_GLOBAL_IDENTIFIER
+		return BACnetPropertyIdentifier_GLOBAL_IDENTIFIER, true
 	case 326:
-		return BACnetPropertyIdentifier_VERIFICATION_TIME
+		return BACnetPropertyIdentifier_VERIFICATION_TIME, true
 	case 327:
-		return BACnetPropertyIdentifier_BASE_DEVICE_SECURITY_POLICY
+		return BACnetPropertyIdentifier_BASE_DEVICE_SECURITY_POLICY, true
 	case 328:
-		return BACnetPropertyIdentifier_DISTRIBUTION_KEY_REVISION
+		return BACnetPropertyIdentifier_DISTRIBUTION_KEY_REVISION, true
 	case 329:
-		return BACnetPropertyIdentifier_DO_NOT_HIDE
+		return BACnetPropertyIdentifier_DO_NOT_HIDE, true
 	case 33:
-		return BACnetPropertyIdentifier_ELAPSED_ACTIVE_TIME
+		return BACnetPropertyIdentifier_ELAPSED_ACTIVE_TIME, true
 	case 330:
-		return BACnetPropertyIdentifier_KEY_SETS
+		return BACnetPropertyIdentifier_KEY_SETS, true
 	case 331:
-		return BACnetPropertyIdentifier_LAST_KEY_SERVER
+		return BACnetPropertyIdentifier_LAST_KEY_SERVER, true
 	case 332:
-		return BACnetPropertyIdentifier_NETWORK_ACCESS_SECURITY_POLICIES
+		return BACnetPropertyIdentifier_NETWORK_ACCESS_SECURITY_POLICIES, true
 	case 333:
-		return BACnetPropertyIdentifier_PACKET_REORDER_TIME
+		return BACnetPropertyIdentifier_PACKET_REORDER_TIME, true
 	case 334:
-		return BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT
+		return BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT, true
 	case 335:
-		return BACnetPropertyIdentifier_SECURITY_TIME_WINDOW
+		return BACnetPropertyIdentifier_SECURITY_TIME_WINDOW, true
 	case 336:
-		return BACnetPropertyIdentifier_SUPPORTED_SECURITY_ALGORITHMS
+		return BACnetPropertyIdentifier_SUPPORTED_SECURITY_ALGORITHMS, true
 	case 337:
-		return BACnetPropertyIdentifier_UPDATE_KEY_SET_TIMEOUT
+		return BACnetPropertyIdentifier_UPDATE_KEY_SET_TIMEOUT, true
 	case 338:
-		return BACnetPropertyIdentifier_BACKUP_AND_RESTORE_STATE
+		return BACnetPropertyIdentifier_BACKUP_AND_RESTORE_STATE, true
 	case 339:
-		return BACnetPropertyIdentifier_BACKUP_PREPARATION_TIME
+		return BACnetPropertyIdentifier_BACKUP_PREPARATION_TIME, true
 	case 34:
-		return BACnetPropertyIdentifier_ERROR_LIMIT
+		return BACnetPropertyIdentifier_ERROR_LIMIT, true
 	case 340:
-		return BACnetPropertyIdentifier_RESTORE_COMPLETION_TIME
+		return BACnetPropertyIdentifier_RESTORE_COMPLETION_TIME, true
 	case 341:
-		return BACnetPropertyIdentifier_RESTORE_PREPARATION_TIME
+		return BACnetPropertyIdentifier_RESTORE_PREPARATION_TIME, true
 	case 342:
-		return BACnetPropertyIdentifier_BIT_MASK
+		return BACnetPropertyIdentifier_BIT_MASK, true
 	case 343:
-		return BACnetPropertyIdentifier_BIT_TEXT
+		return BACnetPropertyIdentifier_BIT_TEXT, true
 	case 344:
-		return BACnetPropertyIdentifier_IS_UTC
+		return BACnetPropertyIdentifier_IS_UTC, true
 	case 345:
-		return BACnetPropertyIdentifier_GROUP_MEMBERS
+		return BACnetPropertyIdentifier_GROUP_MEMBERS, true
 	case 346:
-		return BACnetPropertyIdentifier_GROUP_MEMBER_NAMES
+		return BACnetPropertyIdentifier_GROUP_MEMBER_NAMES, true
 	case 347:
-		return BACnetPropertyIdentifier_MEMBER_STATUS_FLAGS
+		return BACnetPropertyIdentifier_MEMBER_STATUS_FLAGS, true
 	case 348:
-		return BACnetPropertyIdentifier_REQUESTED_UPDATE_INTERVAL
+		return BACnetPropertyIdentifier_REQUESTED_UPDATE_INTERVAL, true
 	case 349:
-		return BACnetPropertyIdentifier_COVU_PERIOD
+		return BACnetPropertyIdentifier_COVU_PERIOD, true
 	case 35:
-		return BACnetPropertyIdentifier_EVENT_ENABLE
+		return BACnetPropertyIdentifier_EVENT_ENABLE, true
 	case 350:
-		return BACnetPropertyIdentifier_COVU_RECIPIENTS
+		return BACnetPropertyIdentifier_COVU_RECIPIENTS, true
 	case 351:
-		return BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS
+		return BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS, true
 	case 352:
-		return BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS_CONFIG
+		return BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS_CONFIG, true
 	case 353:
-		return BACnetPropertyIdentifier_EVENT_DETECTION_ENABLE
+		return BACnetPropertyIdentifier_EVENT_DETECTION_ENABLE, true
 	case 354:
-		return BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT
+		return BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT, true
 	case 355:
-		return BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT_REF
+		return BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT_REF, true
 	case 356:
-		return BACnetPropertyIdentifier_TIME_DELAY_NORMAL
+		return BACnetPropertyIdentifier_TIME_DELAY_NORMAL, true
 	case 357:
-		return BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT
+		return BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT, true
 	case 358:
-		return BACnetPropertyIdentifier_FAULT_PARAMETERS
+		return BACnetPropertyIdentifier_FAULT_PARAMETERS, true
 	case 359:
-		return BACnetPropertyIdentifier_FAULT_TYPE
+		return BACnetPropertyIdentifier_FAULT_TYPE, true
 	case 36:
-		return BACnetPropertyIdentifier_EVENT_STATE
+		return BACnetPropertyIdentifier_EVENT_STATE, true
 	case 360:
-		return BACnetPropertyIdentifier_LOCAL_FORWARDING_ONLY
+		return BACnetPropertyIdentifier_LOCAL_FORWARDING_ONLY, true
 	case 361:
-		return BACnetPropertyIdentifier_PROCESS_IDENTIFIER_FILTER
+		return BACnetPropertyIdentifier_PROCESS_IDENTIFIER_FILTER, true
 	case 362:
-		return BACnetPropertyIdentifier_SUBSCRIBED_RECIPIENTS
+		return BACnetPropertyIdentifier_SUBSCRIBED_RECIPIENTS, true
 	case 363:
-		return BACnetPropertyIdentifier_PORT_FILTER
+		return BACnetPropertyIdentifier_PORT_FILTER, true
 	case 364:
-		return BACnetPropertyIdentifier_AUTHORIZATION_EXEMPTIONS
+		return BACnetPropertyIdentifier_AUTHORIZATION_EXEMPTIONS, true
 	case 365:
-		return BACnetPropertyIdentifier_ALLOW_GROUP_DELAY_INHIBIT
+		return BACnetPropertyIdentifier_ALLOW_GROUP_DELAY_INHIBIT, true
 	case 366:
-		return BACnetPropertyIdentifier_CHANNEL_NUMBER
+		return BACnetPropertyIdentifier_CHANNEL_NUMBER, true
 	case 367:
-		return BACnetPropertyIdentifier_CONTROL_GROUPS
+		return BACnetPropertyIdentifier_CONTROL_GROUPS, true
 	case 368:
-		return BACnetPropertyIdentifier_EXECUTION_DELAY
+		return BACnetPropertyIdentifier_EXECUTION_DELAY, true
 	case 369:
-		return BACnetPropertyIdentifier_LAST_PRIORITY
+		return BACnetPropertyIdentifier_LAST_PRIORITY, true
 	case 37:
-		return BACnetPropertyIdentifier_EVENT_TYPE
+		return BACnetPropertyIdentifier_EVENT_TYPE, true
 	case 370:
-		return BACnetPropertyIdentifier_WRITE_STATUS
+		return BACnetPropertyIdentifier_WRITE_STATUS, true
 	case 371:
-		return BACnetPropertyIdentifier_PROPERTY_LIST
+		return BACnetPropertyIdentifier_PROPERTY_LIST, true
 	case 372:
-		return BACnetPropertyIdentifier_SERIAL_NUMBER
+		return BACnetPropertyIdentifier_SERIAL_NUMBER, true
 	case 373:
-		return BACnetPropertyIdentifier_BLINK_WARN_ENABLE
+		return BACnetPropertyIdentifier_BLINK_WARN_ENABLE, true
 	case 374:
-		return BACnetPropertyIdentifier_DEFAULT_FADE_TIME
+		return BACnetPropertyIdentifier_DEFAULT_FADE_TIME, true
 	case 375:
-		return BACnetPropertyIdentifier_DEFAULT_RAMP_RATE
+		return BACnetPropertyIdentifier_DEFAULT_RAMP_RATE, true
 	case 376:
-		return BACnetPropertyIdentifier_DEFAULT_STEP_INCREMENT
+		return BACnetPropertyIdentifier_DEFAULT_STEP_INCREMENT, true
 	case 377:
-		return BACnetPropertyIdentifier_EGRESS_TIME
+		return BACnetPropertyIdentifier_EGRESS_TIME, true
 	case 378:
-		return BACnetPropertyIdentifier_IN_PROGRESS
+		return BACnetPropertyIdentifier_IN_PROGRESS, true
 	case 379:
-		return BACnetPropertyIdentifier_INSTANTANEOUS_POWER
+		return BACnetPropertyIdentifier_INSTANTANEOUS_POWER, true
 	case 38:
-		return BACnetPropertyIdentifier_EXCEPTION_SCHEDULE
+		return BACnetPropertyIdentifier_EXCEPTION_SCHEDULE, true
 	case 380:
-		return BACnetPropertyIdentifier_LIGHTING_COMMAND
+		return BACnetPropertyIdentifier_LIGHTING_COMMAND, true
 	case 381:
-		return BACnetPropertyIdentifier_LIGHTING_COMMAND_DEFAULT_PRIORITY
+		return BACnetPropertyIdentifier_LIGHTING_COMMAND_DEFAULT_PRIORITY, true
 	case 382:
-		return BACnetPropertyIdentifier_MAX_ACTUAL_VALUE
+		return BACnetPropertyIdentifier_MAX_ACTUAL_VALUE, true
 	case 383:
-		return BACnetPropertyIdentifier_MIN_ACTUAL_VALUE
+		return BACnetPropertyIdentifier_MIN_ACTUAL_VALUE, true
 	case 384:
-		return BACnetPropertyIdentifier_POWER
+		return BACnetPropertyIdentifier_POWER, true
 	case 385:
-		return BACnetPropertyIdentifier_TRANSITION
+		return BACnetPropertyIdentifier_TRANSITION, true
 	case 386:
-		return BACnetPropertyIdentifier_EGRESS_ACTIVE
+		return BACnetPropertyIdentifier_EGRESS_ACTIVE, true
 	case 387:
-		return BACnetPropertyIdentifier_INTERFACE_VALUE
+		return BACnetPropertyIdentifier_INTERFACE_VALUE, true
 	case 388:
-		return BACnetPropertyIdentifier_FAULT_HIGH_LIMIT
+		return BACnetPropertyIdentifier_FAULT_HIGH_LIMIT, true
 	case 389:
-		return BACnetPropertyIdentifier_FAULT_LOW_LIMIT
+		return BACnetPropertyIdentifier_FAULT_LOW_LIMIT, true
 	case 39:
-		return BACnetPropertyIdentifier_FAULT_VALUES
+		return BACnetPropertyIdentifier_FAULT_VALUES, true
 	case 390:
-		return BACnetPropertyIdentifier_LOW_DIFF_LIMIT
+		return BACnetPropertyIdentifier_LOW_DIFF_LIMIT, true
 	case 391:
-		return BACnetPropertyIdentifier_STRIKE_COUNT
+		return BACnetPropertyIdentifier_STRIKE_COUNT, true
 	case 392:
-		return BACnetPropertyIdentifier_TIME_OF_STRIKE_COUNT_RESET
+		return BACnetPropertyIdentifier_TIME_OF_STRIKE_COUNT_RESET, true
 	case 393:
-		return BACnetPropertyIdentifier_DEFAULT_TIMEOUT
+		return BACnetPropertyIdentifier_DEFAULT_TIMEOUT, true
 	case 394:
-		return BACnetPropertyIdentifier_INITIAL_TIMEOUT
+		return BACnetPropertyIdentifier_INITIAL_TIMEOUT, true
 	case 395:
-		return BACnetPropertyIdentifier_LAST_STATE_CHANGE
+		return BACnetPropertyIdentifier_LAST_STATE_CHANGE, true
 	case 396:
-		return BACnetPropertyIdentifier_STATE_CHANGE_VALUES
+		return BACnetPropertyIdentifier_STATE_CHANGE_VALUES, true
 	case 397:
-		return BACnetPropertyIdentifier_TIMER_RUNNING
+		return BACnetPropertyIdentifier_TIMER_RUNNING, true
 	case 398:
-		return BACnetPropertyIdentifier_TIMER_STATE
+		return BACnetPropertyIdentifier_TIMER_STATE, true
 	case 399:
-		return BACnetPropertyIdentifier_APDU_LENGTH
+		return BACnetPropertyIdentifier_APDU_LENGTH, true
 	case 4:
-		return BACnetPropertyIdentifier_ACTIVE_TEXT
+		return BACnetPropertyIdentifier_ACTIVE_TEXT, true
 	case 40:
-		return BACnetPropertyIdentifier_FEEDBACK_VALUE
+		return BACnetPropertyIdentifier_FEEDBACK_VALUE, true
 	case 400:
-		return BACnetPropertyIdentifier_IP_ADDRESS
+		return BACnetPropertyIdentifier_IP_ADDRESS, true
 	case 401:
-		return BACnetPropertyIdentifier_IP_DEFAULT_GATEWAY
+		return BACnetPropertyIdentifier_IP_DEFAULT_GATEWAY, true
 	case 402:
-		return BACnetPropertyIdentifier_IP_DHCP_ENABLE
+		return BACnetPropertyIdentifier_IP_DHCP_ENABLE, true
 	case 403:
-		return BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME
+		return BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME, true
 	case 404:
-		return BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME_REMAINING
+		return BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME_REMAINING, true
 	case 405:
-		return BACnetPropertyIdentifier_IP_DHCP_SERVER
+		return BACnetPropertyIdentifier_IP_DHCP_SERVER, true
 	case 406:
-		return BACnetPropertyIdentifier_IP_DNS_SERVER
+		return BACnetPropertyIdentifier_IP_DNS_SERVER, true
 	case 407:
-		return BACnetPropertyIdentifier_BACNET_IP_GLOBAL_ADDRESS
+		return BACnetPropertyIdentifier_BACNET_IP_GLOBAL_ADDRESS, true
 	case 408:
-		return BACnetPropertyIdentifier_BACNET_IP_MODE
+		return BACnetPropertyIdentifier_BACNET_IP_MODE, true
 	case 409:
-		return BACnetPropertyIdentifier_BACNET_IP_MULTICAST_ADDRESS
+		return BACnetPropertyIdentifier_BACNET_IP_MULTICAST_ADDRESS, true
 	case 41:
-		return BACnetPropertyIdentifier_FILE_ACCESS_METHOD
+		return BACnetPropertyIdentifier_FILE_ACCESS_METHOD, true
 	case 410:
-		return BACnetPropertyIdentifier_BACNET_IP_NAT_TRAVERSAL
+		return BACnetPropertyIdentifier_BACNET_IP_NAT_TRAVERSAL, true
 	case 411:
-		return BACnetPropertyIdentifier_IP_SUBNET_MASK
+		return BACnetPropertyIdentifier_IP_SUBNET_MASK, true
 	case 412:
-		return BACnetPropertyIdentifier_BACNET_IP_UDP_PORT
+		return BACnetPropertyIdentifier_BACNET_IP_UDP_PORT, true
 	case 413:
-		return BACnetPropertyIdentifier_BBMD_ACCEPT_FD_REGISTRATIONS
+		return BACnetPropertyIdentifier_BBMD_ACCEPT_FD_REGISTRATIONS, true
 	case 414:
-		return BACnetPropertyIdentifier_BBMD_BROADCAST_DISTRIBUTION_TABLE
+		return BACnetPropertyIdentifier_BBMD_BROADCAST_DISTRIBUTION_TABLE, true
 	case 415:
-		return BACnetPropertyIdentifier_BBMD_FOREIGN_DEVICE_TABLE
+		return BACnetPropertyIdentifier_BBMD_FOREIGN_DEVICE_TABLE, true
 	case 416:
-		return BACnetPropertyIdentifier_CHANGES_PENDING
+		return BACnetPropertyIdentifier_CHANGES_PENDING, true
 	case 417:
-		return BACnetPropertyIdentifier_COMMAND
+		return BACnetPropertyIdentifier_COMMAND, true
 	case 418:
-		return BACnetPropertyIdentifier_FD_BBMD_ADDRESS
+		return BACnetPropertyIdentifier_FD_BBMD_ADDRESS, true
 	case 419:
-		return BACnetPropertyIdentifier_FD_SUBSCRIPTION_LIFETIME
+		return BACnetPropertyIdentifier_FD_SUBSCRIPTION_LIFETIME, true
 	case 42:
-		return BACnetPropertyIdentifier_FILE_SIZE
+		return BACnetPropertyIdentifier_FILE_SIZE, true
 	case 420:
-		return BACnetPropertyIdentifier_LINK_SPEED
+		return BACnetPropertyIdentifier_LINK_SPEED, true
 	case 421:
-		return BACnetPropertyIdentifier_LINK_SPEEDS
+		return BACnetPropertyIdentifier_LINK_SPEEDS, true
 	case 422:
-		return BACnetPropertyIdentifier_LINK_SPEED_AUTONEGOTIATE
+		return BACnetPropertyIdentifier_LINK_SPEED_AUTONEGOTIATE, true
 	case 423:
-		return BACnetPropertyIdentifier_MAC_ADDRESS
+		return BACnetPropertyIdentifier_MAC_ADDRESS, true
 	case 424:
-		return BACnetPropertyIdentifier_NETWORK_INTERFACE_NAME
+		return BACnetPropertyIdentifier_NETWORK_INTERFACE_NAME, true
 	case 425:
-		return BACnetPropertyIdentifier_NETWORK_NUMBER
+		return BACnetPropertyIdentifier_NETWORK_NUMBER, true
 	case 426:
-		return BACnetPropertyIdentifier_NETWORK_NUMBER_QUALITY
+		return BACnetPropertyIdentifier_NETWORK_NUMBER_QUALITY, true
 	case 427:
-		return BACnetPropertyIdentifier_NETWORK_TYPE
+		return BACnetPropertyIdentifier_NETWORK_TYPE, true
 	case 428:
-		return BACnetPropertyIdentifier_ROUTING_TABLE
+		return BACnetPropertyIdentifier_ROUTING_TABLE, true
 	case 429:
-		return BACnetPropertyIdentifier_VIRTUAL_MAC_ADDRESS_TABLE
+		return BACnetPropertyIdentifier_VIRTUAL_MAC_ADDRESS_TABLE, true
 	case 43:
-		return BACnetPropertyIdentifier_FILE_TYPE
+		return BACnetPropertyIdentifier_FILE_TYPE, true
 	case 430:
-		return BACnetPropertyIdentifier_COMMAND_TIME_ARRAY
+		return BACnetPropertyIdentifier_COMMAND_TIME_ARRAY, true
 	case 431:
-		return BACnetPropertyIdentifier_CURRENT_COMMAND_PRIORITY
+		return BACnetPropertyIdentifier_CURRENT_COMMAND_PRIORITY, true
 	case 432:
-		return BACnetPropertyIdentifier_LAST_COMMAND_TIME
+		return BACnetPropertyIdentifier_LAST_COMMAND_TIME, true
 	case 433:
-		return BACnetPropertyIdentifier_VALUE_SOURCE
+		return BACnetPropertyIdentifier_VALUE_SOURCE, true
 	case 434:
-		return BACnetPropertyIdentifier_VALUE_SOURCE_ARRAY
+		return BACnetPropertyIdentifier_VALUE_SOURCE_ARRAY, true
 	case 435:
-		return BACnetPropertyIdentifier_BACNET_IPV6_MODE
+		return BACnetPropertyIdentifier_BACNET_IPV6_MODE, true
 	case 436:
-		return BACnetPropertyIdentifier_IPV6_ADDRESS
+		return BACnetPropertyIdentifier_IPV6_ADDRESS, true
 	case 437:
-		return BACnetPropertyIdentifier_IPV6_PREFIX_LENGTH
+		return BACnetPropertyIdentifier_IPV6_PREFIX_LENGTH, true
 	case 438:
-		return BACnetPropertyIdentifier_BACNET_IPV6_UDP_PORT
+		return BACnetPropertyIdentifier_BACNET_IPV6_UDP_PORT, true
 	case 439:
-		return BACnetPropertyIdentifier_IPV6_DEFAULT_GATEWAY
+		return BACnetPropertyIdentifier_IPV6_DEFAULT_GATEWAY, true
 	case 44:
-		return BACnetPropertyIdentifier_FIRMWARE_REVISION
+		return BACnetPropertyIdentifier_FIRMWARE_REVISION, true
 	case 440:
-		return BACnetPropertyIdentifier_BACNET_IPV6_MULTICAST_ADDRESS
+		return BACnetPropertyIdentifier_BACNET_IPV6_MULTICAST_ADDRESS, true
 	case 441:
-		return BACnetPropertyIdentifier_IPV6_DNS_SERVER
+		return BACnetPropertyIdentifier_IPV6_DNS_SERVER, true
 	case 442:
-		return BACnetPropertyIdentifier_IPV6_AUTO_ADDRESSING_ENABLE
+		return BACnetPropertyIdentifier_IPV6_AUTO_ADDRESSING_ENABLE, true
 	case 443:
-		return BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME
+		return BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME, true
 	case 444:
-		return BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME_REMAINING
+		return BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME_REMAINING, true
 	case 445:
-		return BACnetPropertyIdentifier_IPV6_DHCP_SERVER
+		return BACnetPropertyIdentifier_IPV6_DHCP_SERVER, true
 	case 446:
-		return BACnetPropertyIdentifier_IPV6_ZONE_INDEX
+		return BACnetPropertyIdentifier_IPV6_ZONE_INDEX, true
 	case 447:
-		return BACnetPropertyIdentifier_ASSIGNED_LANDING_CALLS
+		return BACnetPropertyIdentifier_ASSIGNED_LANDING_CALLS, true
 	case 448:
-		return BACnetPropertyIdentifier_CAR_ASSIGNED_DIRECTION
+		return BACnetPropertyIdentifier_CAR_ASSIGNED_DIRECTION, true
 	case 449:
-		return BACnetPropertyIdentifier_CAR_DOOR_COMMAND
+		return BACnetPropertyIdentifier_CAR_DOOR_COMMAND, true
 	case 45:
-		return BACnetPropertyIdentifier_HIGH_LIMIT
+		return BACnetPropertyIdentifier_HIGH_LIMIT, true
 	case 450:
-		return BACnetPropertyIdentifier_CAR_DOOR_STATUS
+		return BACnetPropertyIdentifier_CAR_DOOR_STATUS, true
 	case 451:
-		return BACnetPropertyIdentifier_CAR_DOOR_TEXT
+		return BACnetPropertyIdentifier_CAR_DOOR_TEXT, true
 	case 452:
-		return BACnetPropertyIdentifier_CAR_DOOR_ZONE
+		return BACnetPropertyIdentifier_CAR_DOOR_ZONE, true
 	case 453:
-		return BACnetPropertyIdentifier_CAR_DRIVE_STATUS
+		return BACnetPropertyIdentifier_CAR_DRIVE_STATUS, true
 	case 454:
-		return BACnetPropertyIdentifier_CAR_LOAD
+		return BACnetPropertyIdentifier_CAR_LOAD, true
 	case 455:
-		return BACnetPropertyIdentifier_CAR_LOAD_UNITS
+		return BACnetPropertyIdentifier_CAR_LOAD_UNITS, true
 	case 456:
-		return BACnetPropertyIdentifier_CAR_MODE
+		return BACnetPropertyIdentifier_CAR_MODE, true
 	case 457:
-		return BACnetPropertyIdentifier_CAR_MOVING_DIRECTION
+		return BACnetPropertyIdentifier_CAR_MOVING_DIRECTION, true
 	case 458:
-		return BACnetPropertyIdentifier_CAR_POSITION
+		return BACnetPropertyIdentifier_CAR_POSITION, true
 	case 459:
-		return BACnetPropertyIdentifier_ELEVATOR_GROUP
+		return BACnetPropertyIdentifier_ELEVATOR_GROUP, true
 	case 46:
-		return BACnetPropertyIdentifier_INACTIVE_TEXT
+		return BACnetPropertyIdentifier_INACTIVE_TEXT, true
 	case 460:
-		return BACnetPropertyIdentifier_ENERGY_METER
+		return BACnetPropertyIdentifier_ENERGY_METER, true
 	case 461:
-		return BACnetPropertyIdentifier_ENERGY_METER_REF
+		return BACnetPropertyIdentifier_ENERGY_METER_REF, true
 	case 462:
-		return BACnetPropertyIdentifier_ESCALATOR_MODE
+		return BACnetPropertyIdentifier_ESCALATOR_MODE, true
 	case 463:
-		return BACnetPropertyIdentifier_FAULT_SIGNALS
+		return BACnetPropertyIdentifier_FAULT_SIGNALS, true
 	case 464:
-		return BACnetPropertyIdentifier_FLOOR_TEXT
+		return BACnetPropertyIdentifier_FLOOR_TEXT, true
 	case 465:
-		return BACnetPropertyIdentifier_GROUP_ID
+		return BACnetPropertyIdentifier_GROUP_ID, true
 	case 467:
-		return BACnetPropertyIdentifier_GROUP_MODE
+		return BACnetPropertyIdentifier_GROUP_MODE, true
 	case 468:
-		return BACnetPropertyIdentifier_HIGHER_DECK
+		return BACnetPropertyIdentifier_HIGHER_DECK, true
 	case 469:
-		return BACnetPropertyIdentifier_INSTALLATION_ID
+		return BACnetPropertyIdentifier_INSTALLATION_ID, true
 	case 47:
-		return BACnetPropertyIdentifier_IN_PROCESS
+		return BACnetPropertyIdentifier_IN_PROCESS, true
 	case 470:
-		return BACnetPropertyIdentifier_LANDING_CALLS
+		return BACnetPropertyIdentifier_LANDING_CALLS, true
 	case 471:
-		return BACnetPropertyIdentifier_LANDING_CALL_CONTROL
+		return BACnetPropertyIdentifier_LANDING_CALL_CONTROL, true
 	case 472:
-		return BACnetPropertyIdentifier_LANDING_DOOR_STATUS
+		return BACnetPropertyIdentifier_LANDING_DOOR_STATUS, true
 	case 473:
-		return BACnetPropertyIdentifier_LOWER_DECK
+		return BACnetPropertyIdentifier_LOWER_DECK, true
 	case 474:
-		return BACnetPropertyIdentifier_MACHINE_ROOM_ID
+		return BACnetPropertyIdentifier_MACHINE_ROOM_ID, true
 	case 475:
-		return BACnetPropertyIdentifier_MAKING_CAR_CALL
+		return BACnetPropertyIdentifier_MAKING_CAR_CALL, true
 	case 476:
-		return BACnetPropertyIdentifier_NEXT_STOPPING_FLOOR
+		return BACnetPropertyIdentifier_NEXT_STOPPING_FLOOR, true
 	case 477:
-		return BACnetPropertyIdentifier_OPERATION_DIRECTION
+		return BACnetPropertyIdentifier_OPERATION_DIRECTION, true
 	case 478:
-		return BACnetPropertyIdentifier_PASSENGER_ALARM
+		return BACnetPropertyIdentifier_PASSENGER_ALARM, true
 	case 479:
-		return BACnetPropertyIdentifier_POWER_MODE
+		return BACnetPropertyIdentifier_POWER_MODE, true
 	case 48:
-		return BACnetPropertyIdentifier_INSTANCE_OF
+		return BACnetPropertyIdentifier_INSTANCE_OF, true
 	case 480:
-		return BACnetPropertyIdentifier_REGISTERED_CAR_CALL
+		return BACnetPropertyIdentifier_REGISTERED_CAR_CALL, true
 	case 481:
-		return BACnetPropertyIdentifier_ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS
+		return BACnetPropertyIdentifier_ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS, true
 	case 482:
-		return BACnetPropertyIdentifier_PROTOCOL_LEVEL
+		return BACnetPropertyIdentifier_PROTOCOL_LEVEL, true
 	case 483:
-		return BACnetPropertyIdentifier_REFERENCE_PORT
+		return BACnetPropertyIdentifier_REFERENCE_PORT, true
 	case 484:
-		return BACnetPropertyIdentifier_DEPLOYED_PROFILE_LOCATION
+		return BACnetPropertyIdentifier_DEPLOYED_PROFILE_LOCATION, true
 	case 485:
-		return BACnetPropertyIdentifier_PROFILE_LOCATION
+		return BACnetPropertyIdentifier_PROFILE_LOCATION, true
 	case 486:
-		return BACnetPropertyIdentifier_TAGS
+		return BACnetPropertyIdentifier_TAGS, true
 	case 487:
-		return BACnetPropertyIdentifier_SUBORDINATE_NODE_TYPES
+		return BACnetPropertyIdentifier_SUBORDINATE_NODE_TYPES, true
 	case 488:
-		return BACnetPropertyIdentifier_SUBORDINATE_TAGS
+		return BACnetPropertyIdentifier_SUBORDINATE_TAGS, true
 	case 489:
-		return BACnetPropertyIdentifier_SUBORDINATE_RELATIONSHIPS
+		return BACnetPropertyIdentifier_SUBORDINATE_RELATIONSHIPS, true
 	case 49:
-		return BACnetPropertyIdentifier_INTEGRAL_CONSTANT
+		return BACnetPropertyIdentifier_INTEGRAL_CONSTANT, true
 	case 490:
-		return BACnetPropertyIdentifier_DEFAULT_SUBORDINATE_RELATIONSHIP
+		return BACnetPropertyIdentifier_DEFAULT_SUBORDINATE_RELATIONSHIP, true
 	case 491:
-		return BACnetPropertyIdentifier_REPRESENTS
+		return BACnetPropertyIdentifier_REPRESENTS, true
 	case 5:
-		return BACnetPropertyIdentifier_ACTIVE_VT_SESSIONS
+		return BACnetPropertyIdentifier_ACTIVE_VT_SESSIONS, true
 	case 50:
-		return BACnetPropertyIdentifier_INTEGRAL_CONSTANT_UNITS
+		return BACnetPropertyIdentifier_INTEGRAL_CONSTANT_UNITS, true
 	case 52:
-		return BACnetPropertyIdentifier_LIMIT_ENABLE
+		return BACnetPropertyIdentifier_LIMIT_ENABLE, true
 	case 53:
-		return BACnetPropertyIdentifier_LIST_OF_GROUP_MEMBERS
+		return BACnetPropertyIdentifier_LIST_OF_GROUP_MEMBERS, true
 	case 54:
-		return BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES
+		return BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES, true
 	case 56:
-		return BACnetPropertyIdentifier_LOCAL_DATE
+		return BACnetPropertyIdentifier_LOCAL_DATE, true
 	case 57:
-		return BACnetPropertyIdentifier_LOCAL_TIME
+		return BACnetPropertyIdentifier_LOCAL_TIME, true
 	case 58:
-		return BACnetPropertyIdentifier_LOCATION
+		return BACnetPropertyIdentifier_LOCATION, true
 	case 59:
-		return BACnetPropertyIdentifier_LOW_LIMIT
+		return BACnetPropertyIdentifier_LOW_LIMIT, true
 	case 6:
-		return BACnetPropertyIdentifier_ALARM_VALUE
+		return BACnetPropertyIdentifier_ALARM_VALUE, true
 	case 60:
-		return BACnetPropertyIdentifier_MANIPULATED_VARIABLE_REFERENCE
+		return BACnetPropertyIdentifier_MANIPULATED_VARIABLE_REFERENCE, true
 	case 61:
-		return BACnetPropertyIdentifier_MAXIMUM_OUTPUT
+		return BACnetPropertyIdentifier_MAXIMUM_OUTPUT, true
 	case 62:
-		return BACnetPropertyIdentifier_MAX_APDU_LENGTH_ACCEPTED
+		return BACnetPropertyIdentifier_MAX_APDU_LENGTH_ACCEPTED, true
 	case 63:
-		return BACnetPropertyIdentifier_MAX_INFO_FRAMES
+		return BACnetPropertyIdentifier_MAX_INFO_FRAMES, true
 	case 64:
-		return BACnetPropertyIdentifier_MAX_MASTER
+		return BACnetPropertyIdentifier_MAX_MASTER, true
 	case 65:
-		return BACnetPropertyIdentifier_MAX_PRES_VALUE
+		return BACnetPropertyIdentifier_MAX_PRES_VALUE, true
 	case 66:
-		return BACnetPropertyIdentifier_MINIMUM_OFF_TIME
+		return BACnetPropertyIdentifier_MINIMUM_OFF_TIME, true
 	case 67:
-		return BACnetPropertyIdentifier_MINIMUM_ON_TIME
+		return BACnetPropertyIdentifier_MINIMUM_ON_TIME, true
 	case 68:
-		return BACnetPropertyIdentifier_MINIMUM_OUTPUT
+		return BACnetPropertyIdentifier_MINIMUM_OUTPUT, true
 	case 69:
-		return BACnetPropertyIdentifier_MIN_PRES_VALUE
+		return BACnetPropertyIdentifier_MIN_PRES_VALUE, true
 	case 7:
-		return BACnetPropertyIdentifier_ALARM_VALUES
+		return BACnetPropertyIdentifier_ALARM_VALUES, true
 	case 70:
-		return BACnetPropertyIdentifier_MODEL_NAME
+		return BACnetPropertyIdentifier_MODEL_NAME, true
 	case 71:
-		return BACnetPropertyIdentifier_MODIFICATION_DATE
+		return BACnetPropertyIdentifier_MODIFICATION_DATE, true
 	case 72:
-		return BACnetPropertyIdentifier_NOTIFY_TYPE
+		return BACnetPropertyIdentifier_NOTIFY_TYPE, true
 	case 73:
-		return BACnetPropertyIdentifier_NUMBER_OF_APDU_RETRIES
+		return BACnetPropertyIdentifier_NUMBER_OF_APDU_RETRIES, true
 	case 74:
-		return BACnetPropertyIdentifier_NUMBER_OF_STATES
+		return BACnetPropertyIdentifier_NUMBER_OF_STATES, true
 	case 75:
-		return BACnetPropertyIdentifier_OBJECT_IDENTIFIER
+		return BACnetPropertyIdentifier_OBJECT_IDENTIFIER, true
 	case 76:
-		return BACnetPropertyIdentifier_OBJECT_LIST
+		return BACnetPropertyIdentifier_OBJECT_LIST, true
 	case 77:
-		return BACnetPropertyIdentifier_OBJECT_NAME
+		return BACnetPropertyIdentifier_OBJECT_NAME, true
 	case 78:
-		return BACnetPropertyIdentifier_OBJECT_PROPERTY_REFERENCE
+		return BACnetPropertyIdentifier_OBJECT_PROPERTY_REFERENCE, true
 	case 79:
-		return BACnetPropertyIdentifier_OBJECT_TYPE
+		return BACnetPropertyIdentifier_OBJECT_TYPE, true
 	case 8:
-		return BACnetPropertyIdentifier_ALL
+		return BACnetPropertyIdentifier_ALL, true
 	case 80:
-		return BACnetPropertyIdentifier_OPTIONAL
+		return BACnetPropertyIdentifier_OPTIONAL, true
 	case 81:
-		return BACnetPropertyIdentifier_OUT_OF_SERVICE
+		return BACnetPropertyIdentifier_OUT_OF_SERVICE, true
 	case 82:
-		return BACnetPropertyIdentifier_OUTPUT_UNITS
+		return BACnetPropertyIdentifier_OUTPUT_UNITS, true
 	case 83:
-		return BACnetPropertyIdentifier_EVENT_PARAMETERS
+		return BACnetPropertyIdentifier_EVENT_PARAMETERS, true
 	case 84:
-		return BACnetPropertyIdentifier_POLARITY
+		return BACnetPropertyIdentifier_POLARITY, true
 	case 85:
-		return BACnetPropertyIdentifier_PRESENT_VALUE
+		return BACnetPropertyIdentifier_PRESENT_VALUE, true
 	case 86:
-		return BACnetPropertyIdentifier_PRIORITY
+		return BACnetPropertyIdentifier_PRIORITY, true
 	case 87:
-		return BACnetPropertyIdentifier_PRIORITY_ARRAY
+		return BACnetPropertyIdentifier_PRIORITY_ARRAY, true
 	case 88:
-		return BACnetPropertyIdentifier_PRIORITY_FOR_WRITING
+		return BACnetPropertyIdentifier_PRIORITY_FOR_WRITING, true
 	case 89:
-		return BACnetPropertyIdentifier_PROCESS_IDENTIFIER
+		return BACnetPropertyIdentifier_PROCESS_IDENTIFIER, true
 	case 9:
-		return BACnetPropertyIdentifier_ALL_WRITES_SUCCESSFUL
+		return BACnetPropertyIdentifier_ALL_WRITES_SUCCESSFUL, true
 	case 90:
-		return BACnetPropertyIdentifier_PROGRAM_CHANGE
+		return BACnetPropertyIdentifier_PROGRAM_CHANGE, true
 	case 91:
-		return BACnetPropertyIdentifier_PROGRAM_LOCATION
+		return BACnetPropertyIdentifier_PROGRAM_LOCATION, true
 	case 92:
-		return BACnetPropertyIdentifier_PROGRAM_STATE
+		return BACnetPropertyIdentifier_PROGRAM_STATE, true
 	case 93:
-		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT
+		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT, true
 	case 94:
-		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS
+		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS, true
 	case 95:
-		return BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS
+		return BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS, true
 	case 96:
-		return BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED
+		return BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED, true
 	case 97:
-		return BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED
+		return BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED, true
 	case 98:
-		return BACnetPropertyIdentifier_PROTOCOL_VERSION
+		return BACnetPropertyIdentifier_PROTOCOL_VERSION, true
 	case 99:
-		return BACnetPropertyIdentifier_READ_ONLY
+		return BACnetPropertyIdentifier_READ_ONLY, true
 	case 9999:
-		return BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
+		return BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetPropertyIdentifierByName(value string) (enum BACnetPropertyIdentifier, ok bool) {
-	ok = true
 	switch value {
 	case "ACKED_TRANSITIONS":
-		enum = BACnetPropertyIdentifier_ACKED_TRANSITIONS
+		return BACnetPropertyIdentifier_ACKED_TRANSITIONS, true
 	case "ACK_REQUIRED":
-		enum = BACnetPropertyIdentifier_ACK_REQUIRED
+		return BACnetPropertyIdentifier_ACK_REQUIRED, true
 	case "APDU_SEGMENT_TIMEOUT":
-		enum = BACnetPropertyIdentifier_APDU_SEGMENT_TIMEOUT
+		return BACnetPropertyIdentifier_APDU_SEGMENT_TIMEOUT, true
 	case "REASON_FOR_HALT":
-		enum = BACnetPropertyIdentifier_REASON_FOR_HALT
+		return BACnetPropertyIdentifier_REASON_FOR_HALT, true
 	case "RECIPIENT_LIST":
-		enum = BACnetPropertyIdentifier_RECIPIENT_LIST
+		return BACnetPropertyIdentifier_RECIPIENT_LIST, true
 	case "RELIABILITY":
-		enum = BACnetPropertyIdentifier_RELIABILITY
+		return BACnetPropertyIdentifier_RELIABILITY, true
 	case "RELINQUISH_DEFAULT":
-		enum = BACnetPropertyIdentifier_RELINQUISH_DEFAULT
+		return BACnetPropertyIdentifier_RELINQUISH_DEFAULT, true
 	case "REQUIRED":
-		enum = BACnetPropertyIdentifier_REQUIRED
+		return BACnetPropertyIdentifier_REQUIRED, true
 	case "RESOLUTION":
-		enum = BACnetPropertyIdentifier_RESOLUTION
+		return BACnetPropertyIdentifier_RESOLUTION, true
 	case "SEGMENTATION_SUPPORTED":
-		enum = BACnetPropertyIdentifier_SEGMENTATION_SUPPORTED
+		return BACnetPropertyIdentifier_SEGMENTATION_SUPPORTED, true
 	case "SETPOINT":
-		enum = BACnetPropertyIdentifier_SETPOINT
+		return BACnetPropertyIdentifier_SETPOINT, true
 	case "SETPOINT_REFERENCE":
-		enum = BACnetPropertyIdentifier_SETPOINT_REFERENCE
+		return BACnetPropertyIdentifier_SETPOINT_REFERENCE, true
 	case "APDU_TIMEOUT":
-		enum = BACnetPropertyIdentifier_APDU_TIMEOUT
+		return BACnetPropertyIdentifier_APDU_TIMEOUT, true
 	case "STATE_TEXT":
-		enum = BACnetPropertyIdentifier_STATE_TEXT
+		return BACnetPropertyIdentifier_STATE_TEXT, true
 	case "STATUS_FLAGS":
-		enum = BACnetPropertyIdentifier_STATUS_FLAGS
+		return BACnetPropertyIdentifier_STATUS_FLAGS, true
 	case "SYSTEM_STATUS":
-		enum = BACnetPropertyIdentifier_SYSTEM_STATUS
+		return BACnetPropertyIdentifier_SYSTEM_STATUS, true
 	case "TIME_DELAY":
-		enum = BACnetPropertyIdentifier_TIME_DELAY
+		return BACnetPropertyIdentifier_TIME_DELAY, true
 	case "TIME_OF_ACTIVE_TIME_RESET":
-		enum = BACnetPropertyIdentifier_TIME_OF_ACTIVE_TIME_RESET
+		return BACnetPropertyIdentifier_TIME_OF_ACTIVE_TIME_RESET, true
 	case "TIME_OF_STATE_COUNT_RESET":
-		enum = BACnetPropertyIdentifier_TIME_OF_STATE_COUNT_RESET
+		return BACnetPropertyIdentifier_TIME_OF_STATE_COUNT_RESET, true
 	case "TIME_SYNCHRONIZATION_RECIPIENTS":
-		enum = BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_RECIPIENTS
+		return BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_RECIPIENTS, true
 	case "UNITS":
-		enum = BACnetPropertyIdentifier_UNITS
+		return BACnetPropertyIdentifier_UNITS, true
 	case "UPDATE_INTERVAL":
-		enum = BACnetPropertyIdentifier_UPDATE_INTERVAL
+		return BACnetPropertyIdentifier_UPDATE_INTERVAL, true
 	case "UTC_OFFSET":
-		enum = BACnetPropertyIdentifier_UTC_OFFSET
+		return BACnetPropertyIdentifier_UTC_OFFSET, true
 	case "APPLICATION_SOFTWARE_VERSION":
-		enum = BACnetPropertyIdentifier_APPLICATION_SOFTWARE_VERSION
+		return BACnetPropertyIdentifier_APPLICATION_SOFTWARE_VERSION, true
 	case "VENDOR_IDENTIFIER":
-		enum = BACnetPropertyIdentifier_VENDOR_IDENTIFIER
+		return BACnetPropertyIdentifier_VENDOR_IDENTIFIER, true
 	case "VENDOR_NAME":
-		enum = BACnetPropertyIdentifier_VENDOR_NAME
+		return BACnetPropertyIdentifier_VENDOR_NAME, true
 	case "VT_CLASSES_SUPPORTED":
-		enum = BACnetPropertyIdentifier_VT_CLASSES_SUPPORTED
+		return BACnetPropertyIdentifier_VT_CLASSES_SUPPORTED, true
 	case "WEEKLY_SCHEDULE":
-		enum = BACnetPropertyIdentifier_WEEKLY_SCHEDULE
+		return BACnetPropertyIdentifier_WEEKLY_SCHEDULE, true
 	case "ATTEMPTED_SAMPLES":
-		enum = BACnetPropertyIdentifier_ATTEMPTED_SAMPLES
+		return BACnetPropertyIdentifier_ATTEMPTED_SAMPLES, true
 	case "AVERAGE_VALUE":
-		enum = BACnetPropertyIdentifier_AVERAGE_VALUE
+		return BACnetPropertyIdentifier_AVERAGE_VALUE, true
 	case "BUFFER_SIZE":
-		enum = BACnetPropertyIdentifier_BUFFER_SIZE
+		return BACnetPropertyIdentifier_BUFFER_SIZE, true
 	case "CLIENT_COV_INCREMENT":
-		enum = BACnetPropertyIdentifier_CLIENT_COV_INCREMENT
+		return BACnetPropertyIdentifier_CLIENT_COV_INCREMENT, true
 	case "COV_RESUBSCRIPTION_INTERVAL":
-		enum = BACnetPropertyIdentifier_COV_RESUBSCRIPTION_INTERVAL
+		return BACnetPropertyIdentifier_COV_RESUBSCRIPTION_INTERVAL, true
 	case "ARCHIVE":
-		enum = BACnetPropertyIdentifier_ARCHIVE
+		return BACnetPropertyIdentifier_ARCHIVE, true
 	case "EVENT_TIME_STAMPS":
-		enum = BACnetPropertyIdentifier_EVENT_TIME_STAMPS
+		return BACnetPropertyIdentifier_EVENT_TIME_STAMPS, true
 	case "LOG_BUFFER":
-		enum = BACnetPropertyIdentifier_LOG_BUFFER
+		return BACnetPropertyIdentifier_LOG_BUFFER, true
 	case "LOG_DEVICE_OBJECT_PROPERTY":
-		enum = BACnetPropertyIdentifier_LOG_DEVICE_OBJECT_PROPERTY
+		return BACnetPropertyIdentifier_LOG_DEVICE_OBJECT_PROPERTY, true
 	case "ENABLE":
-		enum = BACnetPropertyIdentifier_ENABLE
+		return BACnetPropertyIdentifier_ENABLE, true
 	case "LOG_INTERVAL":
-		enum = BACnetPropertyIdentifier_LOG_INTERVAL
+		return BACnetPropertyIdentifier_LOG_INTERVAL, true
 	case "MAXIMUM_VALUE":
-		enum = BACnetPropertyIdentifier_MAXIMUM_VALUE
+		return BACnetPropertyIdentifier_MAXIMUM_VALUE, true
 	case "MINIMUM_VALUE":
-		enum = BACnetPropertyIdentifier_MINIMUM_VALUE
+		return BACnetPropertyIdentifier_MINIMUM_VALUE, true
 	case "NOTIFICATION_THRESHOLD":
-		enum = BACnetPropertyIdentifier_NOTIFICATION_THRESHOLD
+		return BACnetPropertyIdentifier_NOTIFICATION_THRESHOLD, true
 	case "PROTOCOL_REVISION":
-		enum = BACnetPropertyIdentifier_PROTOCOL_REVISION
+		return BACnetPropertyIdentifier_PROTOCOL_REVISION, true
 	case "BIAS":
-		enum = BACnetPropertyIdentifier_BIAS
+		return BACnetPropertyIdentifier_BIAS, true
 	case "RECORDS_SINCE_NOTIFICATION":
-		enum = BACnetPropertyIdentifier_RECORDS_SINCE_NOTIFICATION
+		return BACnetPropertyIdentifier_RECORDS_SINCE_NOTIFICATION, true
 	case "RECORD_COUNT":
-		enum = BACnetPropertyIdentifier_RECORD_COUNT
+		return BACnetPropertyIdentifier_RECORD_COUNT, true
 	case "START_TIME":
-		enum = BACnetPropertyIdentifier_START_TIME
+		return BACnetPropertyIdentifier_START_TIME, true
 	case "STOP_TIME":
-		enum = BACnetPropertyIdentifier_STOP_TIME
+		return BACnetPropertyIdentifier_STOP_TIME, true
 	case "STOP_WHEN_FULL":
-		enum = BACnetPropertyIdentifier_STOP_WHEN_FULL
+		return BACnetPropertyIdentifier_STOP_WHEN_FULL, true
 	case "TOTAL_RECORD_COUNT":
-		enum = BACnetPropertyIdentifier_TOTAL_RECORD_COUNT
+		return BACnetPropertyIdentifier_TOTAL_RECORD_COUNT, true
 	case "VALID_SAMPLES":
-		enum = BACnetPropertyIdentifier_VALID_SAMPLES
+		return BACnetPropertyIdentifier_VALID_SAMPLES, true
 	case "WINDOW_INTERVAL":
-		enum = BACnetPropertyIdentifier_WINDOW_INTERVAL
+		return BACnetPropertyIdentifier_WINDOW_INTERVAL, true
 	case "WINDOW_SAMPLES":
-		enum = BACnetPropertyIdentifier_WINDOW_SAMPLES
+		return BACnetPropertyIdentifier_WINDOW_SAMPLES, true
 	case "MAXIMUM_VALUE_TIMESTAMP":
-		enum = BACnetPropertyIdentifier_MAXIMUM_VALUE_TIMESTAMP
+		return BACnetPropertyIdentifier_MAXIMUM_VALUE_TIMESTAMP, true
 	case "CHANGE_OF_STATE_COUNT":
-		enum = BACnetPropertyIdentifier_CHANGE_OF_STATE_COUNT
+		return BACnetPropertyIdentifier_CHANGE_OF_STATE_COUNT, true
 	case "MINIMUM_VALUE_TIMESTAMP":
-		enum = BACnetPropertyIdentifier_MINIMUM_VALUE_TIMESTAMP
+		return BACnetPropertyIdentifier_MINIMUM_VALUE_TIMESTAMP, true
 	case "VARIANCE_VALUE":
-		enum = BACnetPropertyIdentifier_VARIANCE_VALUE
+		return BACnetPropertyIdentifier_VARIANCE_VALUE, true
 	case "ACTIVE_COV_SUBSCRIPTIONS":
-		enum = BACnetPropertyIdentifier_ACTIVE_COV_SUBSCRIPTIONS
+		return BACnetPropertyIdentifier_ACTIVE_COV_SUBSCRIPTIONS, true
 	case "BACKUP_FAILURE_TIMEOUT":
-		enum = BACnetPropertyIdentifier_BACKUP_FAILURE_TIMEOUT
+		return BACnetPropertyIdentifier_BACKUP_FAILURE_TIMEOUT, true
 	case "CONFIGURATION_FILES":
-		enum = BACnetPropertyIdentifier_CONFIGURATION_FILES
+		return BACnetPropertyIdentifier_CONFIGURATION_FILES, true
 	case "DATABASE_REVISION":
-		enum = BACnetPropertyIdentifier_DATABASE_REVISION
+		return BACnetPropertyIdentifier_DATABASE_REVISION, true
 	case "DIRECT_READING":
-		enum = BACnetPropertyIdentifier_DIRECT_READING
+		return BACnetPropertyIdentifier_DIRECT_READING, true
 	case "LAST_RESTORE_TIME":
-		enum = BACnetPropertyIdentifier_LAST_RESTORE_TIME
+		return BACnetPropertyIdentifier_LAST_RESTORE_TIME, true
 	case "MAINTENANCE_REQUIRED":
-		enum = BACnetPropertyIdentifier_MAINTENANCE_REQUIRED
+		return BACnetPropertyIdentifier_MAINTENANCE_REQUIRED, true
 	case "MEMBER_OF":
-		enum = BACnetPropertyIdentifier_MEMBER_OF
+		return BACnetPropertyIdentifier_MEMBER_OF, true
 	case "CHANGE_OF_STATE_TIME":
-		enum = BACnetPropertyIdentifier_CHANGE_OF_STATE_TIME
+		return BACnetPropertyIdentifier_CHANGE_OF_STATE_TIME, true
 	case "MODE":
-		enum = BACnetPropertyIdentifier_MODE
+		return BACnetPropertyIdentifier_MODE, true
 	case "OPERATION_EXPECTED":
-		enum = BACnetPropertyIdentifier_OPERATION_EXPECTED
+		return BACnetPropertyIdentifier_OPERATION_EXPECTED, true
 	case "SETTING":
-		enum = BACnetPropertyIdentifier_SETTING
+		return BACnetPropertyIdentifier_SETTING, true
 	case "SILENCED":
-		enum = BACnetPropertyIdentifier_SILENCED
+		return BACnetPropertyIdentifier_SILENCED, true
 	case "TRACKING_VALUE":
-		enum = BACnetPropertyIdentifier_TRACKING_VALUE
+		return BACnetPropertyIdentifier_TRACKING_VALUE, true
 	case "ZONE_MEMBERS":
-		enum = BACnetPropertyIdentifier_ZONE_MEMBERS
+		return BACnetPropertyIdentifier_ZONE_MEMBERS, true
 	case "LIFE_SAFETY_ALARM_VALUES":
-		enum = BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES
+		return BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES, true
 	case "MAX_SEGMENTS_ACCEPTED":
-		enum = BACnetPropertyIdentifier_MAX_SEGMENTS_ACCEPTED
+		return BACnetPropertyIdentifier_MAX_SEGMENTS_ACCEPTED, true
 	case "PROFILE_NAME":
-		enum = BACnetPropertyIdentifier_PROFILE_NAME
+		return BACnetPropertyIdentifier_PROFILE_NAME, true
 	case "AUTO_SLAVE_DISCOVERY":
-		enum = BACnetPropertyIdentifier_AUTO_SLAVE_DISCOVERY
+		return BACnetPropertyIdentifier_AUTO_SLAVE_DISCOVERY, true
 	case "NOTIFICATION_CLASS":
-		enum = BACnetPropertyIdentifier_NOTIFICATION_CLASS
+		return BACnetPropertyIdentifier_NOTIFICATION_CLASS, true
 	case "MANUAL_SLAVE_ADDRESS_BINDING":
-		enum = BACnetPropertyIdentifier_MANUAL_SLAVE_ADDRESS_BINDING
+		return BACnetPropertyIdentifier_MANUAL_SLAVE_ADDRESS_BINDING, true
 	case "SLAVE_ADDRESS_BINDING":
-		enum = BACnetPropertyIdentifier_SLAVE_ADDRESS_BINDING
+		return BACnetPropertyIdentifier_SLAVE_ADDRESS_BINDING, true
 	case "SLAVE_PROXY_ENABLE":
-		enum = BACnetPropertyIdentifier_SLAVE_PROXY_ENABLE
+		return BACnetPropertyIdentifier_SLAVE_PROXY_ENABLE, true
 	case "LAST_NOTIFY_RECORD":
-		enum = BACnetPropertyIdentifier_LAST_NOTIFY_RECORD
+		return BACnetPropertyIdentifier_LAST_NOTIFY_RECORD, true
 	case "SCHEDULE_DEFAULT":
-		enum = BACnetPropertyIdentifier_SCHEDULE_DEFAULT
+		return BACnetPropertyIdentifier_SCHEDULE_DEFAULT, true
 	case "ACCEPTED_MODES":
-		enum = BACnetPropertyIdentifier_ACCEPTED_MODES
+		return BACnetPropertyIdentifier_ACCEPTED_MODES, true
 	case "ADJUST_VALUE":
-		enum = BACnetPropertyIdentifier_ADJUST_VALUE
+		return BACnetPropertyIdentifier_ADJUST_VALUE, true
 	case "COUNT":
-		enum = BACnetPropertyIdentifier_COUNT
+		return BACnetPropertyIdentifier_COUNT, true
 	case "COUNT_BEFORE_CHANGE":
-		enum = BACnetPropertyIdentifier_COUNT_BEFORE_CHANGE
+		return BACnetPropertyIdentifier_COUNT_BEFORE_CHANGE, true
 	case "COUNT_CHANGE_TIME":
-		enum = BACnetPropertyIdentifier_COUNT_CHANGE_TIME
+		return BACnetPropertyIdentifier_COUNT_CHANGE_TIME, true
 	case "COV_PERIOD":
-		enum = BACnetPropertyIdentifier_COV_PERIOD
+		return BACnetPropertyIdentifier_COV_PERIOD, true
 	case "INPUT_REFERENCE":
-		enum = BACnetPropertyIdentifier_INPUT_REFERENCE
+		return BACnetPropertyIdentifier_INPUT_REFERENCE, true
 	case "LIMIT_MONITORING_INTERVAL":
-		enum = BACnetPropertyIdentifier_LIMIT_MONITORING_INTERVAL
+		return BACnetPropertyIdentifier_LIMIT_MONITORING_INTERVAL, true
 	case "LOGGING_OBJECT":
-		enum = BACnetPropertyIdentifier_LOGGING_OBJECT
+		return BACnetPropertyIdentifier_LOGGING_OBJECT, true
 	case "LOGGING_RECORD":
-		enum = BACnetPropertyIdentifier_LOGGING_RECORD
+		return BACnetPropertyIdentifier_LOGGING_RECORD, true
 	case "PRESCALE":
-		enum = BACnetPropertyIdentifier_PRESCALE
+		return BACnetPropertyIdentifier_PRESCALE, true
 	case "PULSE_RATE":
-		enum = BACnetPropertyIdentifier_PULSE_RATE
+		return BACnetPropertyIdentifier_PULSE_RATE, true
 	case "SCALE":
-		enum = BACnetPropertyIdentifier_SCALE
+		return BACnetPropertyIdentifier_SCALE, true
 	case "SCALE_FACTOR":
-		enum = BACnetPropertyIdentifier_SCALE_FACTOR
+		return BACnetPropertyIdentifier_SCALE_FACTOR, true
 	case "UPDATE_TIME":
-		enum = BACnetPropertyIdentifier_UPDATE_TIME
+		return BACnetPropertyIdentifier_UPDATE_TIME, true
 	case "CONTROLLED_VARIABLE_REFERENCE":
-		enum = BACnetPropertyIdentifier_CONTROLLED_VARIABLE_REFERENCE
+		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_REFERENCE, true
 	case "VALUE_BEFORE_CHANGE":
-		enum = BACnetPropertyIdentifier_VALUE_BEFORE_CHANGE
+		return BACnetPropertyIdentifier_VALUE_BEFORE_CHANGE, true
 	case "VALUE_SET":
-		enum = BACnetPropertyIdentifier_VALUE_SET
+		return BACnetPropertyIdentifier_VALUE_SET, true
 	case "VALUE_CHANGE_TIME":
-		enum = BACnetPropertyIdentifier_VALUE_CHANGE_TIME
+		return BACnetPropertyIdentifier_VALUE_CHANGE_TIME, true
 	case "ALIGN_INTERVALS":
-		enum = BACnetPropertyIdentifier_ALIGN_INTERVALS
+		return BACnetPropertyIdentifier_ALIGN_INTERVALS, true
 	case "INTERVAL_OFFSET":
-		enum = BACnetPropertyIdentifier_INTERVAL_OFFSET
+		return BACnetPropertyIdentifier_INTERVAL_OFFSET, true
 	case "LAST_RESTART_REASON":
-		enum = BACnetPropertyIdentifier_LAST_RESTART_REASON
+		return BACnetPropertyIdentifier_LAST_RESTART_REASON, true
 	case "LOGGING_TYPE":
-		enum = BACnetPropertyIdentifier_LOGGING_TYPE
+		return BACnetPropertyIdentifier_LOGGING_TYPE, true
 	case "ACTION":
-		enum = BACnetPropertyIdentifier_ACTION
+		return BACnetPropertyIdentifier_ACTION, true
 	case "CONTROLLED_VARIABLE_UNITS":
-		enum = BACnetPropertyIdentifier_CONTROLLED_VARIABLE_UNITS
+		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_UNITS, true
 	case "RESTART_NOTIFICATION_RECIPIENTS":
-		enum = BACnetPropertyIdentifier_RESTART_NOTIFICATION_RECIPIENTS
+		return BACnetPropertyIdentifier_RESTART_NOTIFICATION_RECIPIENTS, true
 	case "TIME_OF_DEVICE_RESTART":
-		enum = BACnetPropertyIdentifier_TIME_OF_DEVICE_RESTART
+		return BACnetPropertyIdentifier_TIME_OF_DEVICE_RESTART, true
 	case "TIME_SYNCHRONIZATION_INTERVAL":
-		enum = BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_INTERVAL
+		return BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_INTERVAL, true
 	case "TRIGGER":
-		enum = BACnetPropertyIdentifier_TRIGGER
+		return BACnetPropertyIdentifier_TRIGGER, true
 	case "UTC_TIME_SYNCHRONIZATION_RECIPIENTS":
-		enum = BACnetPropertyIdentifier_UTC_TIME_SYNCHRONIZATION_RECIPIENTS
+		return BACnetPropertyIdentifier_UTC_TIME_SYNCHRONIZATION_RECIPIENTS, true
 	case "NODE_SUBTYPE":
-		enum = BACnetPropertyIdentifier_NODE_SUBTYPE
+		return BACnetPropertyIdentifier_NODE_SUBTYPE, true
 	case "NODE_TYPE":
-		enum = BACnetPropertyIdentifier_NODE_TYPE
+		return BACnetPropertyIdentifier_NODE_TYPE, true
 	case "STRUCTURED_OBJECT_LIST":
-		enum = BACnetPropertyIdentifier_STRUCTURED_OBJECT_LIST
+		return BACnetPropertyIdentifier_STRUCTURED_OBJECT_LIST, true
 	case "CONTROLLED_VARIABLE_VALUE":
-		enum = BACnetPropertyIdentifier_CONTROLLED_VARIABLE_VALUE
+		return BACnetPropertyIdentifier_CONTROLLED_VARIABLE_VALUE, true
 	case "SUBORDINATE_ANNOTATIONS":
-		enum = BACnetPropertyIdentifier_SUBORDINATE_ANNOTATIONS
+		return BACnetPropertyIdentifier_SUBORDINATE_ANNOTATIONS, true
 	case "SUBORDINATE_LIST":
-		enum = BACnetPropertyIdentifier_SUBORDINATE_LIST
+		return BACnetPropertyIdentifier_SUBORDINATE_LIST, true
 	case "ACTUAL_SHED_LEVEL":
-		enum = BACnetPropertyIdentifier_ACTUAL_SHED_LEVEL
+		return BACnetPropertyIdentifier_ACTUAL_SHED_LEVEL, true
 	case "DUTY_WINDOW":
-		enum = BACnetPropertyIdentifier_DUTY_WINDOW
+		return BACnetPropertyIdentifier_DUTY_WINDOW, true
 	case "EXPECTED_SHED_LEVEL":
-		enum = BACnetPropertyIdentifier_EXPECTED_SHED_LEVEL
+		return BACnetPropertyIdentifier_EXPECTED_SHED_LEVEL, true
 	case "FULL_DUTY_BASELINE":
-		enum = BACnetPropertyIdentifier_FULL_DUTY_BASELINE
+		return BACnetPropertyIdentifier_FULL_DUTY_BASELINE, true
 	case "REQUESTED_SHED_LEVEL":
-		enum = BACnetPropertyIdentifier_REQUESTED_SHED_LEVEL
+		return BACnetPropertyIdentifier_REQUESTED_SHED_LEVEL, true
 	case "SHED_DURATION":
-		enum = BACnetPropertyIdentifier_SHED_DURATION
+		return BACnetPropertyIdentifier_SHED_DURATION, true
 	case "COV_INCREMENT":
-		enum = BACnetPropertyIdentifier_COV_INCREMENT
+		return BACnetPropertyIdentifier_COV_INCREMENT, true
 	case "SHED_LEVEL_DESCRIPTIONS":
-		enum = BACnetPropertyIdentifier_SHED_LEVEL_DESCRIPTIONS
+		return BACnetPropertyIdentifier_SHED_LEVEL_DESCRIPTIONS, true
 	case "SHED_LEVELS":
-		enum = BACnetPropertyIdentifier_SHED_LEVELS
+		return BACnetPropertyIdentifier_SHED_LEVELS, true
 	case "STATE_DESCRIPTION":
-		enum = BACnetPropertyIdentifier_STATE_DESCRIPTION
+		return BACnetPropertyIdentifier_STATE_DESCRIPTION, true
 	case "DOOR_ALARM_STATE":
-		enum = BACnetPropertyIdentifier_DOOR_ALARM_STATE
+		return BACnetPropertyIdentifier_DOOR_ALARM_STATE, true
 	case "DOOR_EXTENDED_PULSE_TIME":
-		enum = BACnetPropertyIdentifier_DOOR_EXTENDED_PULSE_TIME
+		return BACnetPropertyIdentifier_DOOR_EXTENDED_PULSE_TIME, true
 	case "DOOR_MEMBERS":
-		enum = BACnetPropertyIdentifier_DOOR_MEMBERS
+		return BACnetPropertyIdentifier_DOOR_MEMBERS, true
 	case "DOOR_OPEN_TOO_LONG_TIME":
-		enum = BACnetPropertyIdentifier_DOOR_OPEN_TOO_LONG_TIME
+		return BACnetPropertyIdentifier_DOOR_OPEN_TOO_LONG_TIME, true
 	case "DATE_LIST":
-		enum = BACnetPropertyIdentifier_DATE_LIST
+		return BACnetPropertyIdentifier_DATE_LIST, true
 	case "DOOR_PULSE_TIME":
-		enum = BACnetPropertyIdentifier_DOOR_PULSE_TIME
+		return BACnetPropertyIdentifier_DOOR_PULSE_TIME, true
 	case "DOOR_STATUS":
-		enum = BACnetPropertyIdentifier_DOOR_STATUS
+		return BACnetPropertyIdentifier_DOOR_STATUS, true
 	case "DOOR_UNLOCK_DELAY_TIME":
-		enum = BACnetPropertyIdentifier_DOOR_UNLOCK_DELAY_TIME
+		return BACnetPropertyIdentifier_DOOR_UNLOCK_DELAY_TIME, true
 	case "LOCK_STATUS":
-		enum = BACnetPropertyIdentifier_LOCK_STATUS
+		return BACnetPropertyIdentifier_LOCK_STATUS, true
 	case "MASKED_ALARM_VALUES":
-		enum = BACnetPropertyIdentifier_MASKED_ALARM_VALUES
+		return BACnetPropertyIdentifier_MASKED_ALARM_VALUES, true
 	case "SECURED_STATUS":
-		enum = BACnetPropertyIdentifier_SECURED_STATUS
+		return BACnetPropertyIdentifier_SECURED_STATUS, true
 	case "DAYLIGHT_SAVINGS_STATUS":
-		enum = BACnetPropertyIdentifier_DAYLIGHT_SAVINGS_STATUS
+		return BACnetPropertyIdentifier_DAYLIGHT_SAVINGS_STATUS, true
 	case "ABSENTEE_LIMIT":
-		enum = BACnetPropertyIdentifier_ABSENTEE_LIMIT
+		return BACnetPropertyIdentifier_ABSENTEE_LIMIT, true
 	case "ACCESS_ALARM_EVENTS":
-		enum = BACnetPropertyIdentifier_ACCESS_ALARM_EVENTS
+		return BACnetPropertyIdentifier_ACCESS_ALARM_EVENTS, true
 	case "ACCESS_DOORS":
-		enum = BACnetPropertyIdentifier_ACCESS_DOORS
+		return BACnetPropertyIdentifier_ACCESS_DOORS, true
 	case "ACCESS_EVENT":
-		enum = BACnetPropertyIdentifier_ACCESS_EVENT
+		return BACnetPropertyIdentifier_ACCESS_EVENT, true
 	case "ACCESS_EVENT_AUTHENTICATION_FACTOR":
-		enum = BACnetPropertyIdentifier_ACCESS_EVENT_AUTHENTICATION_FACTOR
+		return BACnetPropertyIdentifier_ACCESS_EVENT_AUTHENTICATION_FACTOR, true
 	case "ACCESS_EVENT_CREDENTIAL":
-		enum = BACnetPropertyIdentifier_ACCESS_EVENT_CREDENTIAL
+		return BACnetPropertyIdentifier_ACCESS_EVENT_CREDENTIAL, true
 	case "DEADBAND":
-		enum = BACnetPropertyIdentifier_DEADBAND
+		return BACnetPropertyIdentifier_DEADBAND, true
 	case "ACCESS_EVENT_TIME":
-		enum = BACnetPropertyIdentifier_ACCESS_EVENT_TIME
+		return BACnetPropertyIdentifier_ACCESS_EVENT_TIME, true
 	case "ACCESS_TRANSACTION_EVENTS":
-		enum = BACnetPropertyIdentifier_ACCESS_TRANSACTION_EVENTS
+		return BACnetPropertyIdentifier_ACCESS_TRANSACTION_EVENTS, true
 	case "ACCOMPANIMENT":
-		enum = BACnetPropertyIdentifier_ACCOMPANIMENT
+		return BACnetPropertyIdentifier_ACCOMPANIMENT, true
 	case "ACCOMPANIMENT_TIME":
-		enum = BACnetPropertyIdentifier_ACCOMPANIMENT_TIME
+		return BACnetPropertyIdentifier_ACCOMPANIMENT_TIME, true
 	case "ACTIVATION_TIME":
-		enum = BACnetPropertyIdentifier_ACTIVATION_TIME
+		return BACnetPropertyIdentifier_ACTIVATION_TIME, true
 	case "ACTIVE_AUTHENTICATION_POLICY":
-		enum = BACnetPropertyIdentifier_ACTIVE_AUTHENTICATION_POLICY
+		return BACnetPropertyIdentifier_ACTIVE_AUTHENTICATION_POLICY, true
 	case "ASSIGNED_ACCESS_RIGHTS":
-		enum = BACnetPropertyIdentifier_ASSIGNED_ACCESS_RIGHTS
+		return BACnetPropertyIdentifier_ASSIGNED_ACCESS_RIGHTS, true
 	case "AUTHENTICATION_FACTORS":
-		enum = BACnetPropertyIdentifier_AUTHENTICATION_FACTORS
+		return BACnetPropertyIdentifier_AUTHENTICATION_FACTORS, true
 	case "AUTHENTICATION_POLICY_LIST":
-		enum = BACnetPropertyIdentifier_AUTHENTICATION_POLICY_LIST
+		return BACnetPropertyIdentifier_AUTHENTICATION_POLICY_LIST, true
 	case "AUTHENTICATION_POLICY_NAMES":
-		enum = BACnetPropertyIdentifier_AUTHENTICATION_POLICY_NAMES
+		return BACnetPropertyIdentifier_AUTHENTICATION_POLICY_NAMES, true
 	case "DERIVATIVE_CONSTANT":
-		enum = BACnetPropertyIdentifier_DERIVATIVE_CONSTANT
+		return BACnetPropertyIdentifier_DERIVATIVE_CONSTANT, true
 	case "AUTHENTICATION_STATUS":
-		enum = BACnetPropertyIdentifier_AUTHENTICATION_STATUS
+		return BACnetPropertyIdentifier_AUTHENTICATION_STATUS, true
 	case "AUTHORIZATION_MODE":
-		enum = BACnetPropertyIdentifier_AUTHORIZATION_MODE
+		return BACnetPropertyIdentifier_AUTHORIZATION_MODE, true
 	case "BELONGS_TO":
-		enum = BACnetPropertyIdentifier_BELONGS_TO
+		return BACnetPropertyIdentifier_BELONGS_TO, true
 	case "CREDENTIAL_DISABLE":
-		enum = BACnetPropertyIdentifier_CREDENTIAL_DISABLE
+		return BACnetPropertyIdentifier_CREDENTIAL_DISABLE, true
 	case "CREDENTIAL_STATUS":
-		enum = BACnetPropertyIdentifier_CREDENTIAL_STATUS
+		return BACnetPropertyIdentifier_CREDENTIAL_STATUS, true
 	case "CREDENTIALS":
-		enum = BACnetPropertyIdentifier_CREDENTIALS
+		return BACnetPropertyIdentifier_CREDENTIALS, true
 	case "CREDENTIALS_IN_ZONE":
-		enum = BACnetPropertyIdentifier_CREDENTIALS_IN_ZONE
+		return BACnetPropertyIdentifier_CREDENTIALS_IN_ZONE, true
 	case "DAYS_REMAINING":
-		enum = BACnetPropertyIdentifier_DAYS_REMAINING
+		return BACnetPropertyIdentifier_DAYS_REMAINING, true
 	case "ENTRY_POINTS":
-		enum = BACnetPropertyIdentifier_ENTRY_POINTS
+		return BACnetPropertyIdentifier_ENTRY_POINTS, true
 	case "EXIT_POINTS":
-		enum = BACnetPropertyIdentifier_EXIT_POINTS
+		return BACnetPropertyIdentifier_EXIT_POINTS, true
 	case "DERIVATIVE_CONSTANT_UNITS":
-		enum = BACnetPropertyIdentifier_DERIVATIVE_CONSTANT_UNITS
+		return BACnetPropertyIdentifier_DERIVATIVE_CONSTANT_UNITS, true
 	case "EXPIRATION_TIME":
-		enum = BACnetPropertyIdentifier_EXPIRATION_TIME
+		return BACnetPropertyIdentifier_EXPIRATION_TIME, true
 	case "EXTENDED_TIME_ENABLE":
-		enum = BACnetPropertyIdentifier_EXTENDED_TIME_ENABLE
+		return BACnetPropertyIdentifier_EXTENDED_TIME_ENABLE, true
 	case "FAILED_ATTEMPT_EVENTS":
-		enum = BACnetPropertyIdentifier_FAILED_ATTEMPT_EVENTS
+		return BACnetPropertyIdentifier_FAILED_ATTEMPT_EVENTS, true
 	case "FAILED_ATTEMPTS":
-		enum = BACnetPropertyIdentifier_FAILED_ATTEMPTS
+		return BACnetPropertyIdentifier_FAILED_ATTEMPTS, true
 	case "FAILED_ATTEMPTS_TIME":
-		enum = BACnetPropertyIdentifier_FAILED_ATTEMPTS_TIME
+		return BACnetPropertyIdentifier_FAILED_ATTEMPTS_TIME, true
 	case "LAST_ACCESS_EVENT":
-		enum = BACnetPropertyIdentifier_LAST_ACCESS_EVENT
+		return BACnetPropertyIdentifier_LAST_ACCESS_EVENT, true
 	case "LAST_ACCESS_POINT":
-		enum = BACnetPropertyIdentifier_LAST_ACCESS_POINT
+		return BACnetPropertyIdentifier_LAST_ACCESS_POINT, true
 	case "LAST_CREDENTIAL_ADDED":
-		enum = BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED, true
 	case "LAST_CREDENTIAL_ADDED_TIME":
-		enum = BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED_TIME
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED_TIME, true
 	case "LAST_CREDENTIAL_REMOVED":
-		enum = BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED, true
 	case "DESCRIPTION":
-		enum = BACnetPropertyIdentifier_DESCRIPTION
+		return BACnetPropertyIdentifier_DESCRIPTION, true
 	case "LAST_CREDENTIAL_REMOVED_TIME":
-		enum = BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED_TIME
+		return BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED_TIME, true
 	case "LAST_USE_TIME":
-		enum = BACnetPropertyIdentifier_LAST_USE_TIME
+		return BACnetPropertyIdentifier_LAST_USE_TIME, true
 	case "LOCKOUT":
-		enum = BACnetPropertyIdentifier_LOCKOUT
+		return BACnetPropertyIdentifier_LOCKOUT, true
 	case "LOCKOUT_RELINQUISH_TIME":
-		enum = BACnetPropertyIdentifier_LOCKOUT_RELINQUISH_TIME
+		return BACnetPropertyIdentifier_LOCKOUT_RELINQUISH_TIME, true
 	case "MAX_FAILED_ATTEMPTS":
-		enum = BACnetPropertyIdentifier_MAX_FAILED_ATTEMPTS
+		return BACnetPropertyIdentifier_MAX_FAILED_ATTEMPTS, true
 	case "MEMBERS":
-		enum = BACnetPropertyIdentifier_MEMBERS
+		return BACnetPropertyIdentifier_MEMBERS, true
 	case "MUSTER_POINT":
-		enum = BACnetPropertyIdentifier_MUSTER_POINT
+		return BACnetPropertyIdentifier_MUSTER_POINT, true
 	case "NEGATIVE_ACCESS_RULES":
-		enum = BACnetPropertyIdentifier_NEGATIVE_ACCESS_RULES
+		return BACnetPropertyIdentifier_NEGATIVE_ACCESS_RULES, true
 	case "NUMBER_OF_AUTHENTICATION_POLICIES":
-		enum = BACnetPropertyIdentifier_NUMBER_OF_AUTHENTICATION_POLICIES
+		return BACnetPropertyIdentifier_NUMBER_OF_AUTHENTICATION_POLICIES, true
 	case "DESCRIPTION_OF_HALT":
-		enum = BACnetPropertyIdentifier_DESCRIPTION_OF_HALT
+		return BACnetPropertyIdentifier_DESCRIPTION_OF_HALT, true
 	case "OCCUPANCY_COUNT":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_COUNT
+		return BACnetPropertyIdentifier_OCCUPANCY_COUNT, true
 	case "OCCUPANCY_COUNT_ADJUST":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_COUNT_ADJUST
+		return BACnetPropertyIdentifier_OCCUPANCY_COUNT_ADJUST, true
 	case "OCCUPANCY_COUNT_ENABLE":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_COUNT_ENABLE
+		return BACnetPropertyIdentifier_OCCUPANCY_COUNT_ENABLE, true
 	case "OCCUPANCY_LOWER_LIMIT":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT
+		return BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT, true
 	case "OCCUPANCY_LOWER_LIMIT_ENFORCED":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT_ENFORCED
+		return BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT_ENFORCED, true
 	case "OCCUPANCY_STATE":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_STATE
+		return BACnetPropertyIdentifier_OCCUPANCY_STATE, true
 	case "OCCUPANCY_UPPER_LIMIT":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT
+		return BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT, true
 	case "OCCUPANCY_UPPER_LIMIT_ENFORCED":
-		enum = BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT_ENFORCED
+		return BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT_ENFORCED, true
 	case "ACTION_TEXT":
-		enum = BACnetPropertyIdentifier_ACTION_TEXT
+		return BACnetPropertyIdentifier_ACTION_TEXT, true
 	case "DEVICE_ADDRESS_BINDING":
-		enum = BACnetPropertyIdentifier_DEVICE_ADDRESS_BINDING
+		return BACnetPropertyIdentifier_DEVICE_ADDRESS_BINDING, true
 	case "PASSBACK_MODE":
-		enum = BACnetPropertyIdentifier_PASSBACK_MODE
+		return BACnetPropertyIdentifier_PASSBACK_MODE, true
 	case "PASSBACK_TIMEOUT":
-		enum = BACnetPropertyIdentifier_PASSBACK_TIMEOUT
+		return BACnetPropertyIdentifier_PASSBACK_TIMEOUT, true
 	case "POSITIVE_ACCESS_RULES":
-		enum = BACnetPropertyIdentifier_POSITIVE_ACCESS_RULES
+		return BACnetPropertyIdentifier_POSITIVE_ACCESS_RULES, true
 	case "REASON_FOR_DISABLE":
-		enum = BACnetPropertyIdentifier_REASON_FOR_DISABLE
+		return BACnetPropertyIdentifier_REASON_FOR_DISABLE, true
 	case "SUPPORTED_FORMATS":
-		enum = BACnetPropertyIdentifier_SUPPORTED_FORMATS
+		return BACnetPropertyIdentifier_SUPPORTED_FORMATS, true
 	case "SUPPORTED_FORMAT_CLASSES":
-		enum = BACnetPropertyIdentifier_SUPPORTED_FORMAT_CLASSES
+		return BACnetPropertyIdentifier_SUPPORTED_FORMAT_CLASSES, true
 	case "THREAT_AUTHORITY":
-		enum = BACnetPropertyIdentifier_THREAT_AUTHORITY
+		return BACnetPropertyIdentifier_THREAT_AUTHORITY, true
 	case "THREAT_LEVEL":
-		enum = BACnetPropertyIdentifier_THREAT_LEVEL
+		return BACnetPropertyIdentifier_THREAT_LEVEL, true
 	case "TRACE_FLAG":
-		enum = BACnetPropertyIdentifier_TRACE_FLAG
+		return BACnetPropertyIdentifier_TRACE_FLAG, true
 	case "TRANSACTION_NOTIFICATION_CLASS":
-		enum = BACnetPropertyIdentifier_TRANSACTION_NOTIFICATION_CLASS
+		return BACnetPropertyIdentifier_TRANSACTION_NOTIFICATION_CLASS, true
 	case "DEVICE_TYPE":
-		enum = BACnetPropertyIdentifier_DEVICE_TYPE
+		return BACnetPropertyIdentifier_DEVICE_TYPE, true
 	case "USER_EXTERNAL_IDENTIFIER":
-		enum = BACnetPropertyIdentifier_USER_EXTERNAL_IDENTIFIER
+		return BACnetPropertyIdentifier_USER_EXTERNAL_IDENTIFIER, true
 	case "USER_INFORMATION_REFERENCE":
-		enum = BACnetPropertyIdentifier_USER_INFORMATION_REFERENCE
+		return BACnetPropertyIdentifier_USER_INFORMATION_REFERENCE, true
 	case "USER_NAME":
-		enum = BACnetPropertyIdentifier_USER_NAME
+		return BACnetPropertyIdentifier_USER_NAME, true
 	case "USER_TYPE":
-		enum = BACnetPropertyIdentifier_USER_TYPE
+		return BACnetPropertyIdentifier_USER_TYPE, true
 	case "USES_REMAINING":
-		enum = BACnetPropertyIdentifier_USES_REMAINING
+		return BACnetPropertyIdentifier_USES_REMAINING, true
 	case "EFFECTIVE_PERIOD":
-		enum = BACnetPropertyIdentifier_EFFECTIVE_PERIOD
+		return BACnetPropertyIdentifier_EFFECTIVE_PERIOD, true
 	case "ZONE_FROM":
-		enum = BACnetPropertyIdentifier_ZONE_FROM
+		return BACnetPropertyIdentifier_ZONE_FROM, true
 	case "ZONE_TO":
-		enum = BACnetPropertyIdentifier_ZONE_TO
+		return BACnetPropertyIdentifier_ZONE_TO, true
 	case "ACCESS_EVENT_TAG":
-		enum = BACnetPropertyIdentifier_ACCESS_EVENT_TAG
+		return BACnetPropertyIdentifier_ACCESS_EVENT_TAG, true
 	case "GLOBAL_IDENTIFIER":
-		enum = BACnetPropertyIdentifier_GLOBAL_IDENTIFIER
+		return BACnetPropertyIdentifier_GLOBAL_IDENTIFIER, true
 	case "VERIFICATION_TIME":
-		enum = BACnetPropertyIdentifier_VERIFICATION_TIME
+		return BACnetPropertyIdentifier_VERIFICATION_TIME, true
 	case "BASE_DEVICE_SECURITY_POLICY":
-		enum = BACnetPropertyIdentifier_BASE_DEVICE_SECURITY_POLICY
+		return BACnetPropertyIdentifier_BASE_DEVICE_SECURITY_POLICY, true
 	case "DISTRIBUTION_KEY_REVISION":
-		enum = BACnetPropertyIdentifier_DISTRIBUTION_KEY_REVISION
+		return BACnetPropertyIdentifier_DISTRIBUTION_KEY_REVISION, true
 	case "DO_NOT_HIDE":
-		enum = BACnetPropertyIdentifier_DO_NOT_HIDE
+		return BACnetPropertyIdentifier_DO_NOT_HIDE, true
 	case "ELAPSED_ACTIVE_TIME":
-		enum = BACnetPropertyIdentifier_ELAPSED_ACTIVE_TIME
+		return BACnetPropertyIdentifier_ELAPSED_ACTIVE_TIME, true
 	case "KEY_SETS":
-		enum = BACnetPropertyIdentifier_KEY_SETS
+		return BACnetPropertyIdentifier_KEY_SETS, true
 	case "LAST_KEY_SERVER":
-		enum = BACnetPropertyIdentifier_LAST_KEY_SERVER
+		return BACnetPropertyIdentifier_LAST_KEY_SERVER, true
 	case "NETWORK_ACCESS_SECURITY_POLICIES":
-		enum = BACnetPropertyIdentifier_NETWORK_ACCESS_SECURITY_POLICIES
+		return BACnetPropertyIdentifier_NETWORK_ACCESS_SECURITY_POLICIES, true
 	case "PACKET_REORDER_TIME":
-		enum = BACnetPropertyIdentifier_PACKET_REORDER_TIME
+		return BACnetPropertyIdentifier_PACKET_REORDER_TIME, true
 	case "SECURITY_PDU_TIMEOUT":
-		enum = BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT
+		return BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT, true
 	case "SECURITY_TIME_WINDOW":
-		enum = BACnetPropertyIdentifier_SECURITY_TIME_WINDOW
+		return BACnetPropertyIdentifier_SECURITY_TIME_WINDOW, true
 	case "SUPPORTED_SECURITY_ALGORITHMS":
-		enum = BACnetPropertyIdentifier_SUPPORTED_SECURITY_ALGORITHMS
+		return BACnetPropertyIdentifier_SUPPORTED_SECURITY_ALGORITHMS, true
 	case "UPDATE_KEY_SET_TIMEOUT":
-		enum = BACnetPropertyIdentifier_UPDATE_KEY_SET_TIMEOUT
+		return BACnetPropertyIdentifier_UPDATE_KEY_SET_TIMEOUT, true
 	case "BACKUP_AND_RESTORE_STATE":
-		enum = BACnetPropertyIdentifier_BACKUP_AND_RESTORE_STATE
+		return BACnetPropertyIdentifier_BACKUP_AND_RESTORE_STATE, true
 	case "BACKUP_PREPARATION_TIME":
-		enum = BACnetPropertyIdentifier_BACKUP_PREPARATION_TIME
+		return BACnetPropertyIdentifier_BACKUP_PREPARATION_TIME, true
 	case "ERROR_LIMIT":
-		enum = BACnetPropertyIdentifier_ERROR_LIMIT
+		return BACnetPropertyIdentifier_ERROR_LIMIT, true
 	case "RESTORE_COMPLETION_TIME":
-		enum = BACnetPropertyIdentifier_RESTORE_COMPLETION_TIME
+		return BACnetPropertyIdentifier_RESTORE_COMPLETION_TIME, true
 	case "RESTORE_PREPARATION_TIME":
-		enum = BACnetPropertyIdentifier_RESTORE_PREPARATION_TIME
+		return BACnetPropertyIdentifier_RESTORE_PREPARATION_TIME, true
 	case "BIT_MASK":
-		enum = BACnetPropertyIdentifier_BIT_MASK
+		return BACnetPropertyIdentifier_BIT_MASK, true
 	case "BIT_TEXT":
-		enum = BACnetPropertyIdentifier_BIT_TEXT
+		return BACnetPropertyIdentifier_BIT_TEXT, true
 	case "IS_UTC":
-		enum = BACnetPropertyIdentifier_IS_UTC
+		return BACnetPropertyIdentifier_IS_UTC, true
 	case "GROUP_MEMBERS":
-		enum = BACnetPropertyIdentifier_GROUP_MEMBERS
+		return BACnetPropertyIdentifier_GROUP_MEMBERS, true
 	case "GROUP_MEMBER_NAMES":
-		enum = BACnetPropertyIdentifier_GROUP_MEMBER_NAMES
+		return BACnetPropertyIdentifier_GROUP_MEMBER_NAMES, true
 	case "MEMBER_STATUS_FLAGS":
-		enum = BACnetPropertyIdentifier_MEMBER_STATUS_FLAGS
+		return BACnetPropertyIdentifier_MEMBER_STATUS_FLAGS, true
 	case "REQUESTED_UPDATE_INTERVAL":
-		enum = BACnetPropertyIdentifier_REQUESTED_UPDATE_INTERVAL
+		return BACnetPropertyIdentifier_REQUESTED_UPDATE_INTERVAL, true
 	case "COVU_PERIOD":
-		enum = BACnetPropertyIdentifier_COVU_PERIOD
+		return BACnetPropertyIdentifier_COVU_PERIOD, true
 	case "EVENT_ENABLE":
-		enum = BACnetPropertyIdentifier_EVENT_ENABLE
+		return BACnetPropertyIdentifier_EVENT_ENABLE, true
 	case "COVU_RECIPIENTS":
-		enum = BACnetPropertyIdentifier_COVU_RECIPIENTS
+		return BACnetPropertyIdentifier_COVU_RECIPIENTS, true
 	case "EVENT_MESSAGE_TEXTS":
-		enum = BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS
+		return BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS, true
 	case "EVENT_MESSAGE_TEXTS_CONFIG":
-		enum = BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS_CONFIG
+		return BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS_CONFIG, true
 	case "EVENT_DETECTION_ENABLE":
-		enum = BACnetPropertyIdentifier_EVENT_DETECTION_ENABLE
+		return BACnetPropertyIdentifier_EVENT_DETECTION_ENABLE, true
 	case "EVENT_ALGORITHM_INHIBIT":
-		enum = BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT
+		return BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT, true
 	case "EVENT_ALGORITHM_INHIBIT_REF":
-		enum = BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT_REF
+		return BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT_REF, true
 	case "TIME_DELAY_NORMAL":
-		enum = BACnetPropertyIdentifier_TIME_DELAY_NORMAL
+		return BACnetPropertyIdentifier_TIME_DELAY_NORMAL, true
 	case "RELIABILITY_EVALUATION_INHIBIT":
-		enum = BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT
+		return BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT, true
 	case "FAULT_PARAMETERS":
-		enum = BACnetPropertyIdentifier_FAULT_PARAMETERS
+		return BACnetPropertyIdentifier_FAULT_PARAMETERS, true
 	case "FAULT_TYPE":
-		enum = BACnetPropertyIdentifier_FAULT_TYPE
+		return BACnetPropertyIdentifier_FAULT_TYPE, true
 	case "EVENT_STATE":
-		enum = BACnetPropertyIdentifier_EVENT_STATE
+		return BACnetPropertyIdentifier_EVENT_STATE, true
 	case "LOCAL_FORWARDING_ONLY":
-		enum = BACnetPropertyIdentifier_LOCAL_FORWARDING_ONLY
+		return BACnetPropertyIdentifier_LOCAL_FORWARDING_ONLY, true
 	case "PROCESS_IDENTIFIER_FILTER":
-		enum = BACnetPropertyIdentifier_PROCESS_IDENTIFIER_FILTER
+		return BACnetPropertyIdentifier_PROCESS_IDENTIFIER_FILTER, true
 	case "SUBSCRIBED_RECIPIENTS":
-		enum = BACnetPropertyIdentifier_SUBSCRIBED_RECIPIENTS
+		return BACnetPropertyIdentifier_SUBSCRIBED_RECIPIENTS, true
 	case "PORT_FILTER":
-		enum = BACnetPropertyIdentifier_PORT_FILTER
+		return BACnetPropertyIdentifier_PORT_FILTER, true
 	case "AUTHORIZATION_EXEMPTIONS":
-		enum = BACnetPropertyIdentifier_AUTHORIZATION_EXEMPTIONS
+		return BACnetPropertyIdentifier_AUTHORIZATION_EXEMPTIONS, true
 	case "ALLOW_GROUP_DELAY_INHIBIT":
-		enum = BACnetPropertyIdentifier_ALLOW_GROUP_DELAY_INHIBIT
+		return BACnetPropertyIdentifier_ALLOW_GROUP_DELAY_INHIBIT, true
 	case "CHANNEL_NUMBER":
-		enum = BACnetPropertyIdentifier_CHANNEL_NUMBER
+		return BACnetPropertyIdentifier_CHANNEL_NUMBER, true
 	case "CONTROL_GROUPS":
-		enum = BACnetPropertyIdentifier_CONTROL_GROUPS
+		return BACnetPropertyIdentifier_CONTROL_GROUPS, true
 	case "EXECUTION_DELAY":
-		enum = BACnetPropertyIdentifier_EXECUTION_DELAY
+		return BACnetPropertyIdentifier_EXECUTION_DELAY, true
 	case "LAST_PRIORITY":
-		enum = BACnetPropertyIdentifier_LAST_PRIORITY
+		return BACnetPropertyIdentifier_LAST_PRIORITY, true
 	case "EVENT_TYPE":
-		enum = BACnetPropertyIdentifier_EVENT_TYPE
+		return BACnetPropertyIdentifier_EVENT_TYPE, true
 	case "WRITE_STATUS":
-		enum = BACnetPropertyIdentifier_WRITE_STATUS
+		return BACnetPropertyIdentifier_WRITE_STATUS, true
 	case "PROPERTY_LIST":
-		enum = BACnetPropertyIdentifier_PROPERTY_LIST
+		return BACnetPropertyIdentifier_PROPERTY_LIST, true
 	case "SERIAL_NUMBER":
-		enum = BACnetPropertyIdentifier_SERIAL_NUMBER
+		return BACnetPropertyIdentifier_SERIAL_NUMBER, true
 	case "BLINK_WARN_ENABLE":
-		enum = BACnetPropertyIdentifier_BLINK_WARN_ENABLE
+		return BACnetPropertyIdentifier_BLINK_WARN_ENABLE, true
 	case "DEFAULT_FADE_TIME":
-		enum = BACnetPropertyIdentifier_DEFAULT_FADE_TIME
+		return BACnetPropertyIdentifier_DEFAULT_FADE_TIME, true
 	case "DEFAULT_RAMP_RATE":
-		enum = BACnetPropertyIdentifier_DEFAULT_RAMP_RATE
+		return BACnetPropertyIdentifier_DEFAULT_RAMP_RATE, true
 	case "DEFAULT_STEP_INCREMENT":
-		enum = BACnetPropertyIdentifier_DEFAULT_STEP_INCREMENT
+		return BACnetPropertyIdentifier_DEFAULT_STEP_INCREMENT, true
 	case "EGRESS_TIME":
-		enum = BACnetPropertyIdentifier_EGRESS_TIME
+		return BACnetPropertyIdentifier_EGRESS_TIME, true
 	case "IN_PROGRESS":
-		enum = BACnetPropertyIdentifier_IN_PROGRESS
+		return BACnetPropertyIdentifier_IN_PROGRESS, true
 	case "INSTANTANEOUS_POWER":
-		enum = BACnetPropertyIdentifier_INSTANTANEOUS_POWER
+		return BACnetPropertyIdentifier_INSTANTANEOUS_POWER, true
 	case "EXCEPTION_SCHEDULE":
-		enum = BACnetPropertyIdentifier_EXCEPTION_SCHEDULE
+		return BACnetPropertyIdentifier_EXCEPTION_SCHEDULE, true
 	case "LIGHTING_COMMAND":
-		enum = BACnetPropertyIdentifier_LIGHTING_COMMAND
+		return BACnetPropertyIdentifier_LIGHTING_COMMAND, true
 	case "LIGHTING_COMMAND_DEFAULT_PRIORITY":
-		enum = BACnetPropertyIdentifier_LIGHTING_COMMAND_DEFAULT_PRIORITY
+		return BACnetPropertyIdentifier_LIGHTING_COMMAND_DEFAULT_PRIORITY, true
 	case "MAX_ACTUAL_VALUE":
-		enum = BACnetPropertyIdentifier_MAX_ACTUAL_VALUE
+		return BACnetPropertyIdentifier_MAX_ACTUAL_VALUE, true
 	case "MIN_ACTUAL_VALUE":
-		enum = BACnetPropertyIdentifier_MIN_ACTUAL_VALUE
+		return BACnetPropertyIdentifier_MIN_ACTUAL_VALUE, true
 	case "POWER":
-		enum = BACnetPropertyIdentifier_POWER
+		return BACnetPropertyIdentifier_POWER, true
 	case "TRANSITION":
-		enum = BACnetPropertyIdentifier_TRANSITION
+		return BACnetPropertyIdentifier_TRANSITION, true
 	case "EGRESS_ACTIVE":
-		enum = BACnetPropertyIdentifier_EGRESS_ACTIVE
+		return BACnetPropertyIdentifier_EGRESS_ACTIVE, true
 	case "INTERFACE_VALUE":
-		enum = BACnetPropertyIdentifier_INTERFACE_VALUE
+		return BACnetPropertyIdentifier_INTERFACE_VALUE, true
 	case "FAULT_HIGH_LIMIT":
-		enum = BACnetPropertyIdentifier_FAULT_HIGH_LIMIT
+		return BACnetPropertyIdentifier_FAULT_HIGH_LIMIT, true
 	case "FAULT_LOW_LIMIT":
-		enum = BACnetPropertyIdentifier_FAULT_LOW_LIMIT
+		return BACnetPropertyIdentifier_FAULT_LOW_LIMIT, true
 	case "FAULT_VALUES":
-		enum = BACnetPropertyIdentifier_FAULT_VALUES
+		return BACnetPropertyIdentifier_FAULT_VALUES, true
 	case "LOW_DIFF_LIMIT":
-		enum = BACnetPropertyIdentifier_LOW_DIFF_LIMIT
+		return BACnetPropertyIdentifier_LOW_DIFF_LIMIT, true
 	case "STRIKE_COUNT":
-		enum = BACnetPropertyIdentifier_STRIKE_COUNT
+		return BACnetPropertyIdentifier_STRIKE_COUNT, true
 	case "TIME_OF_STRIKE_COUNT_RESET":
-		enum = BACnetPropertyIdentifier_TIME_OF_STRIKE_COUNT_RESET
+		return BACnetPropertyIdentifier_TIME_OF_STRIKE_COUNT_RESET, true
 	case "DEFAULT_TIMEOUT":
-		enum = BACnetPropertyIdentifier_DEFAULT_TIMEOUT
+		return BACnetPropertyIdentifier_DEFAULT_TIMEOUT, true
 	case "INITIAL_TIMEOUT":
-		enum = BACnetPropertyIdentifier_INITIAL_TIMEOUT
+		return BACnetPropertyIdentifier_INITIAL_TIMEOUT, true
 	case "LAST_STATE_CHANGE":
-		enum = BACnetPropertyIdentifier_LAST_STATE_CHANGE
+		return BACnetPropertyIdentifier_LAST_STATE_CHANGE, true
 	case "STATE_CHANGE_VALUES":
-		enum = BACnetPropertyIdentifier_STATE_CHANGE_VALUES
+		return BACnetPropertyIdentifier_STATE_CHANGE_VALUES, true
 	case "TIMER_RUNNING":
-		enum = BACnetPropertyIdentifier_TIMER_RUNNING
+		return BACnetPropertyIdentifier_TIMER_RUNNING, true
 	case "TIMER_STATE":
-		enum = BACnetPropertyIdentifier_TIMER_STATE
+		return BACnetPropertyIdentifier_TIMER_STATE, true
 	case "APDU_LENGTH":
-		enum = BACnetPropertyIdentifier_APDU_LENGTH
+		return BACnetPropertyIdentifier_APDU_LENGTH, true
 	case "ACTIVE_TEXT":
-		enum = BACnetPropertyIdentifier_ACTIVE_TEXT
+		return BACnetPropertyIdentifier_ACTIVE_TEXT, true
 	case "FEEDBACK_VALUE":
-		enum = BACnetPropertyIdentifier_FEEDBACK_VALUE
+		return BACnetPropertyIdentifier_FEEDBACK_VALUE, true
 	case "IP_ADDRESS":
-		enum = BACnetPropertyIdentifier_IP_ADDRESS
+		return BACnetPropertyIdentifier_IP_ADDRESS, true
 	case "IP_DEFAULT_GATEWAY":
-		enum = BACnetPropertyIdentifier_IP_DEFAULT_GATEWAY
+		return BACnetPropertyIdentifier_IP_DEFAULT_GATEWAY, true
 	case "IP_DHCP_ENABLE":
-		enum = BACnetPropertyIdentifier_IP_DHCP_ENABLE
+		return BACnetPropertyIdentifier_IP_DHCP_ENABLE, true
 	case "IP_DHCP_LEASE_TIME":
-		enum = BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME
+		return BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME, true
 	case "IP_DHCP_LEASE_TIME_REMAINING":
-		enum = BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME_REMAINING
+		return BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME_REMAINING, true
 	case "IP_DHCP_SERVER":
-		enum = BACnetPropertyIdentifier_IP_DHCP_SERVER
+		return BACnetPropertyIdentifier_IP_DHCP_SERVER, true
 	case "IP_DNS_SERVER":
-		enum = BACnetPropertyIdentifier_IP_DNS_SERVER
+		return BACnetPropertyIdentifier_IP_DNS_SERVER, true
 	case "BACNET_IP_GLOBAL_ADDRESS":
-		enum = BACnetPropertyIdentifier_BACNET_IP_GLOBAL_ADDRESS
+		return BACnetPropertyIdentifier_BACNET_IP_GLOBAL_ADDRESS, true
 	case "BACNET_IP_MODE":
-		enum = BACnetPropertyIdentifier_BACNET_IP_MODE
+		return BACnetPropertyIdentifier_BACNET_IP_MODE, true
 	case "BACNET_IP_MULTICAST_ADDRESS":
-		enum = BACnetPropertyIdentifier_BACNET_IP_MULTICAST_ADDRESS
+		return BACnetPropertyIdentifier_BACNET_IP_MULTICAST_ADDRESS, true
 	case "FILE_ACCESS_METHOD":
-		enum = BACnetPropertyIdentifier_FILE_ACCESS_METHOD
+		return BACnetPropertyIdentifier_FILE_ACCESS_METHOD, true
 	case "BACNET_IP_NAT_TRAVERSAL":
-		enum = BACnetPropertyIdentifier_BACNET_IP_NAT_TRAVERSAL
+		return BACnetPropertyIdentifier_BACNET_IP_NAT_TRAVERSAL, true
 	case "IP_SUBNET_MASK":
-		enum = BACnetPropertyIdentifier_IP_SUBNET_MASK
+		return BACnetPropertyIdentifier_IP_SUBNET_MASK, true
 	case "BACNET_IP_UDP_PORT":
-		enum = BACnetPropertyIdentifier_BACNET_IP_UDP_PORT
+		return BACnetPropertyIdentifier_BACNET_IP_UDP_PORT, true
 	case "BBMD_ACCEPT_FD_REGISTRATIONS":
-		enum = BACnetPropertyIdentifier_BBMD_ACCEPT_FD_REGISTRATIONS
+		return BACnetPropertyIdentifier_BBMD_ACCEPT_FD_REGISTRATIONS, true
 	case "BBMD_BROADCAST_DISTRIBUTION_TABLE":
-		enum = BACnetPropertyIdentifier_BBMD_BROADCAST_DISTRIBUTION_TABLE
+		return BACnetPropertyIdentifier_BBMD_BROADCAST_DISTRIBUTION_TABLE, true
 	case "BBMD_FOREIGN_DEVICE_TABLE":
-		enum = BACnetPropertyIdentifier_BBMD_FOREIGN_DEVICE_TABLE
+		return BACnetPropertyIdentifier_BBMD_FOREIGN_DEVICE_TABLE, true
 	case "CHANGES_PENDING":
-		enum = BACnetPropertyIdentifier_CHANGES_PENDING
+		return BACnetPropertyIdentifier_CHANGES_PENDING, true
 	case "COMMAND":
-		enum = BACnetPropertyIdentifier_COMMAND
+		return BACnetPropertyIdentifier_COMMAND, true
 	case "FD_BBMD_ADDRESS":
-		enum = BACnetPropertyIdentifier_FD_BBMD_ADDRESS
+		return BACnetPropertyIdentifier_FD_BBMD_ADDRESS, true
 	case "FD_SUBSCRIPTION_LIFETIME":
-		enum = BACnetPropertyIdentifier_FD_SUBSCRIPTION_LIFETIME
+		return BACnetPropertyIdentifier_FD_SUBSCRIPTION_LIFETIME, true
 	case "FILE_SIZE":
-		enum = BACnetPropertyIdentifier_FILE_SIZE
+		return BACnetPropertyIdentifier_FILE_SIZE, true
 	case "LINK_SPEED":
-		enum = BACnetPropertyIdentifier_LINK_SPEED
+		return BACnetPropertyIdentifier_LINK_SPEED, true
 	case "LINK_SPEEDS":
-		enum = BACnetPropertyIdentifier_LINK_SPEEDS
+		return BACnetPropertyIdentifier_LINK_SPEEDS, true
 	case "LINK_SPEED_AUTONEGOTIATE":
-		enum = BACnetPropertyIdentifier_LINK_SPEED_AUTONEGOTIATE
+		return BACnetPropertyIdentifier_LINK_SPEED_AUTONEGOTIATE, true
 	case "MAC_ADDRESS":
-		enum = BACnetPropertyIdentifier_MAC_ADDRESS
+		return BACnetPropertyIdentifier_MAC_ADDRESS, true
 	case "NETWORK_INTERFACE_NAME":
-		enum = BACnetPropertyIdentifier_NETWORK_INTERFACE_NAME
+		return BACnetPropertyIdentifier_NETWORK_INTERFACE_NAME, true
 	case "NETWORK_NUMBER":
-		enum = BACnetPropertyIdentifier_NETWORK_NUMBER
+		return BACnetPropertyIdentifier_NETWORK_NUMBER, true
 	case "NETWORK_NUMBER_QUALITY":
-		enum = BACnetPropertyIdentifier_NETWORK_NUMBER_QUALITY
+		return BACnetPropertyIdentifier_NETWORK_NUMBER_QUALITY, true
 	case "NETWORK_TYPE":
-		enum = BACnetPropertyIdentifier_NETWORK_TYPE
+		return BACnetPropertyIdentifier_NETWORK_TYPE, true
 	case "ROUTING_TABLE":
-		enum = BACnetPropertyIdentifier_ROUTING_TABLE
+		return BACnetPropertyIdentifier_ROUTING_TABLE, true
 	case "VIRTUAL_MAC_ADDRESS_TABLE":
-		enum = BACnetPropertyIdentifier_VIRTUAL_MAC_ADDRESS_TABLE
+		return BACnetPropertyIdentifier_VIRTUAL_MAC_ADDRESS_TABLE, true
 	case "FILE_TYPE":
-		enum = BACnetPropertyIdentifier_FILE_TYPE
+		return BACnetPropertyIdentifier_FILE_TYPE, true
 	case "COMMAND_TIME_ARRAY":
-		enum = BACnetPropertyIdentifier_COMMAND_TIME_ARRAY
+		return BACnetPropertyIdentifier_COMMAND_TIME_ARRAY, true
 	case "CURRENT_COMMAND_PRIORITY":
-		enum = BACnetPropertyIdentifier_CURRENT_COMMAND_PRIORITY
+		return BACnetPropertyIdentifier_CURRENT_COMMAND_PRIORITY, true
 	case "LAST_COMMAND_TIME":
-		enum = BACnetPropertyIdentifier_LAST_COMMAND_TIME
+		return BACnetPropertyIdentifier_LAST_COMMAND_TIME, true
 	case "VALUE_SOURCE":
-		enum = BACnetPropertyIdentifier_VALUE_SOURCE
+		return BACnetPropertyIdentifier_VALUE_SOURCE, true
 	case "VALUE_SOURCE_ARRAY":
-		enum = BACnetPropertyIdentifier_VALUE_SOURCE_ARRAY
+		return BACnetPropertyIdentifier_VALUE_SOURCE_ARRAY, true
 	case "BACNET_IPV6_MODE":
-		enum = BACnetPropertyIdentifier_BACNET_IPV6_MODE
+		return BACnetPropertyIdentifier_BACNET_IPV6_MODE, true
 	case "IPV6_ADDRESS":
-		enum = BACnetPropertyIdentifier_IPV6_ADDRESS
+		return BACnetPropertyIdentifier_IPV6_ADDRESS, true
 	case "IPV6_PREFIX_LENGTH":
-		enum = BACnetPropertyIdentifier_IPV6_PREFIX_LENGTH
+		return BACnetPropertyIdentifier_IPV6_PREFIX_LENGTH, true
 	case "BACNET_IPV6_UDP_PORT":
-		enum = BACnetPropertyIdentifier_BACNET_IPV6_UDP_PORT
+		return BACnetPropertyIdentifier_BACNET_IPV6_UDP_PORT, true
 	case "IPV6_DEFAULT_GATEWAY":
-		enum = BACnetPropertyIdentifier_IPV6_DEFAULT_GATEWAY
+		return BACnetPropertyIdentifier_IPV6_DEFAULT_GATEWAY, true
 	case "FIRMWARE_REVISION":
-		enum = BACnetPropertyIdentifier_FIRMWARE_REVISION
+		return BACnetPropertyIdentifier_FIRMWARE_REVISION, true
 	case "BACNET_IPV6_MULTICAST_ADDRESS":
-		enum = BACnetPropertyIdentifier_BACNET_IPV6_MULTICAST_ADDRESS
+		return BACnetPropertyIdentifier_BACNET_IPV6_MULTICAST_ADDRESS, true
 	case "IPV6_DNS_SERVER":
-		enum = BACnetPropertyIdentifier_IPV6_DNS_SERVER
+		return BACnetPropertyIdentifier_IPV6_DNS_SERVER, true
 	case "IPV6_AUTO_ADDRESSING_ENABLE":
-		enum = BACnetPropertyIdentifier_IPV6_AUTO_ADDRESSING_ENABLE
+		return BACnetPropertyIdentifier_IPV6_AUTO_ADDRESSING_ENABLE, true
 	case "IPV6_DHCP_LEASE_TIME":
-		enum = BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME
+		return BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME, true
 	case "IPV6_DHCP_LEASE_TIME_REMAINING":
-		enum = BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME_REMAINING
+		return BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME_REMAINING, true
 	case "IPV6_DHCP_SERVER":
-		enum = BACnetPropertyIdentifier_IPV6_DHCP_SERVER
+		return BACnetPropertyIdentifier_IPV6_DHCP_SERVER, true
 	case "IPV6_ZONE_INDEX":
-		enum = BACnetPropertyIdentifier_IPV6_ZONE_INDEX
+		return BACnetPropertyIdentifier_IPV6_ZONE_INDEX, true
 	case "ASSIGNED_LANDING_CALLS":
-		enum = BACnetPropertyIdentifier_ASSIGNED_LANDING_CALLS
+		return BACnetPropertyIdentifier_ASSIGNED_LANDING_CALLS, true
 	case "CAR_ASSIGNED_DIRECTION":
-		enum = BACnetPropertyIdentifier_CAR_ASSIGNED_DIRECTION
+		return BACnetPropertyIdentifier_CAR_ASSIGNED_DIRECTION, true
 	case "CAR_DOOR_COMMAND":
-		enum = BACnetPropertyIdentifier_CAR_DOOR_COMMAND
+		return BACnetPropertyIdentifier_CAR_DOOR_COMMAND, true
 	case "HIGH_LIMIT":
-		enum = BACnetPropertyIdentifier_HIGH_LIMIT
+		return BACnetPropertyIdentifier_HIGH_LIMIT, true
 	case "CAR_DOOR_STATUS":
-		enum = BACnetPropertyIdentifier_CAR_DOOR_STATUS
+		return BACnetPropertyIdentifier_CAR_DOOR_STATUS, true
 	case "CAR_DOOR_TEXT":
-		enum = BACnetPropertyIdentifier_CAR_DOOR_TEXT
+		return BACnetPropertyIdentifier_CAR_DOOR_TEXT, true
 	case "CAR_DOOR_ZONE":
-		enum = BACnetPropertyIdentifier_CAR_DOOR_ZONE
+		return BACnetPropertyIdentifier_CAR_DOOR_ZONE, true
 	case "CAR_DRIVE_STATUS":
-		enum = BACnetPropertyIdentifier_CAR_DRIVE_STATUS
+		return BACnetPropertyIdentifier_CAR_DRIVE_STATUS, true
 	case "CAR_LOAD":
-		enum = BACnetPropertyIdentifier_CAR_LOAD
+		return BACnetPropertyIdentifier_CAR_LOAD, true
 	case "CAR_LOAD_UNITS":
-		enum = BACnetPropertyIdentifier_CAR_LOAD_UNITS
+		return BACnetPropertyIdentifier_CAR_LOAD_UNITS, true
 	case "CAR_MODE":
-		enum = BACnetPropertyIdentifier_CAR_MODE
+		return BACnetPropertyIdentifier_CAR_MODE, true
 	case "CAR_MOVING_DIRECTION":
-		enum = BACnetPropertyIdentifier_CAR_MOVING_DIRECTION
+		return BACnetPropertyIdentifier_CAR_MOVING_DIRECTION, true
 	case "CAR_POSITION":
-		enum = BACnetPropertyIdentifier_CAR_POSITION
+		return BACnetPropertyIdentifier_CAR_POSITION, true
 	case "ELEVATOR_GROUP":
-		enum = BACnetPropertyIdentifier_ELEVATOR_GROUP
+		return BACnetPropertyIdentifier_ELEVATOR_GROUP, true
 	case "INACTIVE_TEXT":
-		enum = BACnetPropertyIdentifier_INACTIVE_TEXT
+		return BACnetPropertyIdentifier_INACTIVE_TEXT, true
 	case "ENERGY_METER":
-		enum = BACnetPropertyIdentifier_ENERGY_METER
+		return BACnetPropertyIdentifier_ENERGY_METER, true
 	case "ENERGY_METER_REF":
-		enum = BACnetPropertyIdentifier_ENERGY_METER_REF
+		return BACnetPropertyIdentifier_ENERGY_METER_REF, true
 	case "ESCALATOR_MODE":
-		enum = BACnetPropertyIdentifier_ESCALATOR_MODE
+		return BACnetPropertyIdentifier_ESCALATOR_MODE, true
 	case "FAULT_SIGNALS":
-		enum = BACnetPropertyIdentifier_FAULT_SIGNALS
+		return BACnetPropertyIdentifier_FAULT_SIGNALS, true
 	case "FLOOR_TEXT":
-		enum = BACnetPropertyIdentifier_FLOOR_TEXT
+		return BACnetPropertyIdentifier_FLOOR_TEXT, true
 	case "GROUP_ID":
-		enum = BACnetPropertyIdentifier_GROUP_ID
+		return BACnetPropertyIdentifier_GROUP_ID, true
 	case "GROUP_MODE":
-		enum = BACnetPropertyIdentifier_GROUP_MODE
+		return BACnetPropertyIdentifier_GROUP_MODE, true
 	case "HIGHER_DECK":
-		enum = BACnetPropertyIdentifier_HIGHER_DECK
+		return BACnetPropertyIdentifier_HIGHER_DECK, true
 	case "INSTALLATION_ID":
-		enum = BACnetPropertyIdentifier_INSTALLATION_ID
+		return BACnetPropertyIdentifier_INSTALLATION_ID, true
 	case "IN_PROCESS":
-		enum = BACnetPropertyIdentifier_IN_PROCESS
+		return BACnetPropertyIdentifier_IN_PROCESS, true
 	case "LANDING_CALLS":
-		enum = BACnetPropertyIdentifier_LANDING_CALLS
+		return BACnetPropertyIdentifier_LANDING_CALLS, true
 	case "LANDING_CALL_CONTROL":
-		enum = BACnetPropertyIdentifier_LANDING_CALL_CONTROL
+		return BACnetPropertyIdentifier_LANDING_CALL_CONTROL, true
 	case "LANDING_DOOR_STATUS":
-		enum = BACnetPropertyIdentifier_LANDING_DOOR_STATUS
+		return BACnetPropertyIdentifier_LANDING_DOOR_STATUS, true
 	case "LOWER_DECK":
-		enum = BACnetPropertyIdentifier_LOWER_DECK
+		return BACnetPropertyIdentifier_LOWER_DECK, true
 	case "MACHINE_ROOM_ID":
-		enum = BACnetPropertyIdentifier_MACHINE_ROOM_ID
+		return BACnetPropertyIdentifier_MACHINE_ROOM_ID, true
 	case "MAKING_CAR_CALL":
-		enum = BACnetPropertyIdentifier_MAKING_CAR_CALL
+		return BACnetPropertyIdentifier_MAKING_CAR_CALL, true
 	case "NEXT_STOPPING_FLOOR":
-		enum = BACnetPropertyIdentifier_NEXT_STOPPING_FLOOR
+		return BACnetPropertyIdentifier_NEXT_STOPPING_FLOOR, true
 	case "OPERATION_DIRECTION":
-		enum = BACnetPropertyIdentifier_OPERATION_DIRECTION
+		return BACnetPropertyIdentifier_OPERATION_DIRECTION, true
 	case "PASSENGER_ALARM":
-		enum = BACnetPropertyIdentifier_PASSENGER_ALARM
+		return BACnetPropertyIdentifier_PASSENGER_ALARM, true
 	case "POWER_MODE":
-		enum = BACnetPropertyIdentifier_POWER_MODE
+		return BACnetPropertyIdentifier_POWER_MODE, true
 	case "INSTANCE_OF":
-		enum = BACnetPropertyIdentifier_INSTANCE_OF
+		return BACnetPropertyIdentifier_INSTANCE_OF, true
 	case "REGISTERED_CAR_CALL":
-		enum = BACnetPropertyIdentifier_REGISTERED_CAR_CALL
+		return BACnetPropertyIdentifier_REGISTERED_CAR_CALL, true
 	case "ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS":
-		enum = BACnetPropertyIdentifier_ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS
+		return BACnetPropertyIdentifier_ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS, true
 	case "PROTOCOL_LEVEL":
-		enum = BACnetPropertyIdentifier_PROTOCOL_LEVEL
+		return BACnetPropertyIdentifier_PROTOCOL_LEVEL, true
 	case "REFERENCE_PORT":
-		enum = BACnetPropertyIdentifier_REFERENCE_PORT
+		return BACnetPropertyIdentifier_REFERENCE_PORT, true
 	case "DEPLOYED_PROFILE_LOCATION":
-		enum = BACnetPropertyIdentifier_DEPLOYED_PROFILE_LOCATION
+		return BACnetPropertyIdentifier_DEPLOYED_PROFILE_LOCATION, true
 	case "PROFILE_LOCATION":
-		enum = BACnetPropertyIdentifier_PROFILE_LOCATION
+		return BACnetPropertyIdentifier_PROFILE_LOCATION, true
 	case "TAGS":
-		enum = BACnetPropertyIdentifier_TAGS
+		return BACnetPropertyIdentifier_TAGS, true
 	case "SUBORDINATE_NODE_TYPES":
-		enum = BACnetPropertyIdentifier_SUBORDINATE_NODE_TYPES
+		return BACnetPropertyIdentifier_SUBORDINATE_NODE_TYPES, true
 	case "SUBORDINATE_TAGS":
-		enum = BACnetPropertyIdentifier_SUBORDINATE_TAGS
+		return BACnetPropertyIdentifier_SUBORDINATE_TAGS, true
 	case "SUBORDINATE_RELATIONSHIPS":
-		enum = BACnetPropertyIdentifier_SUBORDINATE_RELATIONSHIPS
+		return BACnetPropertyIdentifier_SUBORDINATE_RELATIONSHIPS, true
 	case "INTEGRAL_CONSTANT":
-		enum = BACnetPropertyIdentifier_INTEGRAL_CONSTANT
+		return BACnetPropertyIdentifier_INTEGRAL_CONSTANT, true
 	case "DEFAULT_SUBORDINATE_RELATIONSHIP":
-		enum = BACnetPropertyIdentifier_DEFAULT_SUBORDINATE_RELATIONSHIP
+		return BACnetPropertyIdentifier_DEFAULT_SUBORDINATE_RELATIONSHIP, true
 	case "REPRESENTS":
-		enum = BACnetPropertyIdentifier_REPRESENTS
+		return BACnetPropertyIdentifier_REPRESENTS, true
 	case "ACTIVE_VT_SESSIONS":
-		enum = BACnetPropertyIdentifier_ACTIVE_VT_SESSIONS
+		return BACnetPropertyIdentifier_ACTIVE_VT_SESSIONS, true
 	case "INTEGRAL_CONSTANT_UNITS":
-		enum = BACnetPropertyIdentifier_INTEGRAL_CONSTANT_UNITS
+		return BACnetPropertyIdentifier_INTEGRAL_CONSTANT_UNITS, true
 	case "LIMIT_ENABLE":
-		enum = BACnetPropertyIdentifier_LIMIT_ENABLE
+		return BACnetPropertyIdentifier_LIMIT_ENABLE, true
 	case "LIST_OF_GROUP_MEMBERS":
-		enum = BACnetPropertyIdentifier_LIST_OF_GROUP_MEMBERS
+		return BACnetPropertyIdentifier_LIST_OF_GROUP_MEMBERS, true
 	case "LIST_OF_OBJECT_PROPERTY_REFERENCES":
-		enum = BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES
+		return BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES, true
 	case "LOCAL_DATE":
-		enum = BACnetPropertyIdentifier_LOCAL_DATE
+		return BACnetPropertyIdentifier_LOCAL_DATE, true
 	case "LOCAL_TIME":
-		enum = BACnetPropertyIdentifier_LOCAL_TIME
+		return BACnetPropertyIdentifier_LOCAL_TIME, true
 	case "LOCATION":
-		enum = BACnetPropertyIdentifier_LOCATION
+		return BACnetPropertyIdentifier_LOCATION, true
 	case "LOW_LIMIT":
-		enum = BACnetPropertyIdentifier_LOW_LIMIT
+		return BACnetPropertyIdentifier_LOW_LIMIT, true
 	case "ALARM_VALUE":
-		enum = BACnetPropertyIdentifier_ALARM_VALUE
+		return BACnetPropertyIdentifier_ALARM_VALUE, true
 	case "MANIPULATED_VARIABLE_REFERENCE":
-		enum = BACnetPropertyIdentifier_MANIPULATED_VARIABLE_REFERENCE
+		return BACnetPropertyIdentifier_MANIPULATED_VARIABLE_REFERENCE, true
 	case "MAXIMUM_OUTPUT":
-		enum = BACnetPropertyIdentifier_MAXIMUM_OUTPUT
+		return BACnetPropertyIdentifier_MAXIMUM_OUTPUT, true
 	case "MAX_APDU_LENGTH_ACCEPTED":
-		enum = BACnetPropertyIdentifier_MAX_APDU_LENGTH_ACCEPTED
+		return BACnetPropertyIdentifier_MAX_APDU_LENGTH_ACCEPTED, true
 	case "MAX_INFO_FRAMES":
-		enum = BACnetPropertyIdentifier_MAX_INFO_FRAMES
+		return BACnetPropertyIdentifier_MAX_INFO_FRAMES, true
 	case "MAX_MASTER":
-		enum = BACnetPropertyIdentifier_MAX_MASTER
+		return BACnetPropertyIdentifier_MAX_MASTER, true
 	case "MAX_PRES_VALUE":
-		enum = BACnetPropertyIdentifier_MAX_PRES_VALUE
+		return BACnetPropertyIdentifier_MAX_PRES_VALUE, true
 	case "MINIMUM_OFF_TIME":
-		enum = BACnetPropertyIdentifier_MINIMUM_OFF_TIME
+		return BACnetPropertyIdentifier_MINIMUM_OFF_TIME, true
 	case "MINIMUM_ON_TIME":
-		enum = BACnetPropertyIdentifier_MINIMUM_ON_TIME
+		return BACnetPropertyIdentifier_MINIMUM_ON_TIME, true
 	case "MINIMUM_OUTPUT":
-		enum = BACnetPropertyIdentifier_MINIMUM_OUTPUT
+		return BACnetPropertyIdentifier_MINIMUM_OUTPUT, true
 	case "MIN_PRES_VALUE":
-		enum = BACnetPropertyIdentifier_MIN_PRES_VALUE
+		return BACnetPropertyIdentifier_MIN_PRES_VALUE, true
 	case "ALARM_VALUES":
-		enum = BACnetPropertyIdentifier_ALARM_VALUES
+		return BACnetPropertyIdentifier_ALARM_VALUES, true
 	case "MODEL_NAME":
-		enum = BACnetPropertyIdentifier_MODEL_NAME
+		return BACnetPropertyIdentifier_MODEL_NAME, true
 	case "MODIFICATION_DATE":
-		enum = BACnetPropertyIdentifier_MODIFICATION_DATE
+		return BACnetPropertyIdentifier_MODIFICATION_DATE, true
 	case "NOTIFY_TYPE":
-		enum = BACnetPropertyIdentifier_NOTIFY_TYPE
+		return BACnetPropertyIdentifier_NOTIFY_TYPE, true
 	case "NUMBER_OF_APDU_RETRIES":
-		enum = BACnetPropertyIdentifier_NUMBER_OF_APDU_RETRIES
+		return BACnetPropertyIdentifier_NUMBER_OF_APDU_RETRIES, true
 	case "NUMBER_OF_STATES":
-		enum = BACnetPropertyIdentifier_NUMBER_OF_STATES
+		return BACnetPropertyIdentifier_NUMBER_OF_STATES, true
 	case "OBJECT_IDENTIFIER":
-		enum = BACnetPropertyIdentifier_OBJECT_IDENTIFIER
+		return BACnetPropertyIdentifier_OBJECT_IDENTIFIER, true
 	case "OBJECT_LIST":
-		enum = BACnetPropertyIdentifier_OBJECT_LIST
+		return BACnetPropertyIdentifier_OBJECT_LIST, true
 	case "OBJECT_NAME":
-		enum = BACnetPropertyIdentifier_OBJECT_NAME
+		return BACnetPropertyIdentifier_OBJECT_NAME, true
 	case "OBJECT_PROPERTY_REFERENCE":
-		enum = BACnetPropertyIdentifier_OBJECT_PROPERTY_REFERENCE
+		return BACnetPropertyIdentifier_OBJECT_PROPERTY_REFERENCE, true
 	case "OBJECT_TYPE":
-		enum = BACnetPropertyIdentifier_OBJECT_TYPE
+		return BACnetPropertyIdentifier_OBJECT_TYPE, true
 	case "ALL":
-		enum = BACnetPropertyIdentifier_ALL
+		return BACnetPropertyIdentifier_ALL, true
 	case "OPTIONAL":
-		enum = BACnetPropertyIdentifier_OPTIONAL
+		return BACnetPropertyIdentifier_OPTIONAL, true
 	case "OUT_OF_SERVICE":
-		enum = BACnetPropertyIdentifier_OUT_OF_SERVICE
+		return BACnetPropertyIdentifier_OUT_OF_SERVICE, true
 	case "OUTPUT_UNITS":
-		enum = BACnetPropertyIdentifier_OUTPUT_UNITS
+		return BACnetPropertyIdentifier_OUTPUT_UNITS, true
 	case "EVENT_PARAMETERS":
-		enum = BACnetPropertyIdentifier_EVENT_PARAMETERS
+		return BACnetPropertyIdentifier_EVENT_PARAMETERS, true
 	case "POLARITY":
-		enum = BACnetPropertyIdentifier_POLARITY
+		return BACnetPropertyIdentifier_POLARITY, true
 	case "PRESENT_VALUE":
-		enum = BACnetPropertyIdentifier_PRESENT_VALUE
+		return BACnetPropertyIdentifier_PRESENT_VALUE, true
 	case "PRIORITY":
-		enum = BACnetPropertyIdentifier_PRIORITY
+		return BACnetPropertyIdentifier_PRIORITY, true
 	case "PRIORITY_ARRAY":
-		enum = BACnetPropertyIdentifier_PRIORITY_ARRAY
+		return BACnetPropertyIdentifier_PRIORITY_ARRAY, true
 	case "PRIORITY_FOR_WRITING":
-		enum = BACnetPropertyIdentifier_PRIORITY_FOR_WRITING
+		return BACnetPropertyIdentifier_PRIORITY_FOR_WRITING, true
 	case "PROCESS_IDENTIFIER":
-		enum = BACnetPropertyIdentifier_PROCESS_IDENTIFIER
+		return BACnetPropertyIdentifier_PROCESS_IDENTIFIER, true
 	case "ALL_WRITES_SUCCESSFUL":
-		enum = BACnetPropertyIdentifier_ALL_WRITES_SUCCESSFUL
+		return BACnetPropertyIdentifier_ALL_WRITES_SUCCESSFUL, true
 	case "PROGRAM_CHANGE":
-		enum = BACnetPropertyIdentifier_PROGRAM_CHANGE
+		return BACnetPropertyIdentifier_PROGRAM_CHANGE, true
 	case "PROGRAM_LOCATION":
-		enum = BACnetPropertyIdentifier_PROGRAM_LOCATION
+		return BACnetPropertyIdentifier_PROGRAM_LOCATION, true
 	case "PROGRAM_STATE":
-		enum = BACnetPropertyIdentifier_PROGRAM_STATE
+		return BACnetPropertyIdentifier_PROGRAM_STATE, true
 	case "PROPORTIONAL_CONSTANT":
-		enum = BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT
+		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT, true
 	case "PROPORTIONAL_CONSTANT_UNITS":
-		enum = BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS
+		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS, true
 	case "PROTOCOL_CONFORMANCE_CLASS":
-		enum = BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS
+		return BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS, true
 	case "PROTOCOL_OBJECT_TYPES_SUPPORTED":
-		enum = BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED
+		return BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED, true
 	case "PROTOCOL_SERVICES_SUPPORTED":
-		enum = BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED
+		return BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED, true
 	case "PROTOCOL_VERSION":
-		enum = BACnetPropertyIdentifier_PROTOCOL_VERSION
+		return BACnetPropertyIdentifier_PROTOCOL_VERSION, true
 	case "READ_ONLY":
-		enum = BACnetPropertyIdentifier_READ_ONLY
+		return BACnetPropertyIdentifier_READ_ONLY, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
-	default:
-		enum = 0
-		ok = false
+		return BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetPropertyIdentifierKnows(value uint32) bool {
@@ -2840,7 +2836,11 @@ func BACnetPropertyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetPropertyI
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPropertyIdentifier")
 	}
-	return BACnetPropertyIdentifierByValue(val), nil
+	if enum, ok := BACnetPropertyIdentifierByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetPropertyIdentifier", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetPropertyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {

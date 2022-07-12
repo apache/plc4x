@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetLogStatusByValue(value uint8) BACnetLogStatus {
+func BACnetLogStatusByValue(value uint8) (enum BACnetLogStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLogStatus_LOG_DISABLED
+		return BACnetLogStatus_LOG_DISABLED, true
 	case 1:
-		return BACnetLogStatus_BUFFER_PURGED
+		return BACnetLogStatus_BUFFER_PURGED, true
 	case 2:
-		return BACnetLogStatus_LOG_INTERRUPTED
+		return BACnetLogStatus_LOG_INTERRUPTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLogStatusByName(value string) (enum BACnetLogStatus, ok bool) {
-	ok = true
 	switch value {
 	case "LOG_DISABLED":
-		enum = BACnetLogStatus_LOG_DISABLED
+		return BACnetLogStatus_LOG_DISABLED, true
 	case "BUFFER_PURGED":
-		enum = BACnetLogStatus_BUFFER_PURGED
+		return BACnetLogStatus_BUFFER_PURGED, true
 	case "LOG_INTERRUPTED":
-		enum = BACnetLogStatus_LOG_INTERRUPTED
-	default:
-		enum = 0
-		ok = false
+		return BACnetLogStatus_LOG_INTERRUPTED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLogStatusKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetLogStatusParse(readBuffer utils.ReadBuffer) (BACnetLogStatus, error) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLogStatus")
 	}
-	return BACnetLogStatusByValue(val), nil
+	if enum, ok := BACnetLogStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLogStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLogStatus) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func UnitStatusByValue(value uint8) UnitStatus {
+func UnitStatusByValue(value uint8) (enum UnitStatus, ok bool) {
 	switch value {
 	case 0:
-		return UnitStatus_OK
+		return UnitStatus_OK, true
 	case 1:
-		return UnitStatus_NACK
+		return UnitStatus_NACK, true
 	case 2:
-		return UnitStatus_NO_RESPONSE
+		return UnitStatus_NO_RESPONSE, true
 	}
-	return 0
+	return 0, false
 }
 
 func UnitStatusByName(value string) (enum UnitStatus, ok bool) {
-	ok = true
 	switch value {
 	case "OK":
-		enum = UnitStatus_OK
+		return UnitStatus_OK, true
 	case "NACK":
-		enum = UnitStatus_NACK
+		return UnitStatus_NACK, true
 	case "NO_RESPONSE":
-		enum = UnitStatus_NO_RESPONSE
-	default:
-		enum = 0
-		ok = false
+		return UnitStatus_NO_RESPONSE, true
 	}
-	return
+	return 0, false
 }
 
 func UnitStatusKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func UnitStatusParse(readBuffer utils.ReadBuffer) (UnitStatus, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading UnitStatus")
 	}
-	return UnitStatusByValue(val), nil
+	if enum, ok := UnitStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for UnitStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e UnitStatus) Serialize(writeBuffer utils.WriteBuffer) error {

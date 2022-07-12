@@ -605,11 +605,11 @@ func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType 
 
 // Deprecated: use generic above
 func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
-	baCnetObjectType := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue()))
-	if baCnetObjectType == 0 {
+	if baCnetObjectType, ok := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue())); !ok {
 		return BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+	} else {
+		return baCnetObjectType
 	}
-	return baCnetObjectType
 }
 
 func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTerminate bool, expectedTagNumber byte) bool {
@@ -728,7 +728,7 @@ func CreateBACnetClosingTag(tagNum uint8) BACnetClosingTag {
 
 func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) BACnetApplicationTagObjectIdentifier {
 	header := NewBACnetTagHeader(uint8(BACnetDataType_BACNET_OBJECT_IDENTIFIER), TagClass_APPLICATION_TAGS, uint8(4), nil, nil, nil, nil)
-	objectTypeEnum := BACnetObjectTypeByValue(objectType)
+	objectTypeEnum, _ := BACnetObjectTypeByValue(objectType)
 	proprietaryValue := uint16(0)
 	if objectType >= 128 || !BACnetObjectTypeKnows(objectType) {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
@@ -740,7 +740,7 @@ func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint
 
 func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, instance uint32) BACnetContextTagObjectIdentifier {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(4), nil, nil, nil, nil)
-	objectTypeEnum := BACnetObjectTypeByValue(objectType)
+	objectTypeEnum, _ := BACnetObjectTypeByValue(objectType)
 	proprietaryValue := uint16(0)
 	if objectType >= 128 {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
@@ -752,7 +752,7 @@ func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, ins
 
 func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) BACnetPropertyIdentifierTagged {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(propertyType))), nil, nil, nil, nil)
-	propertyTypeEnum := BACnetPropertyIdentifierByValue(propertyType)
+	propertyTypeEnum, _ := BACnetPropertyIdentifierByValue(propertyType)
 	proprietaryValue := uint32(0)
 	if !BACnetPropertyIdentifierKnows(propertyType) {
 		propertyTypeEnum = BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
@@ -763,7 +763,7 @@ func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) BAC
 
 func CreateBACnetVendorIdApplicationTagged(vendorId uint16) BACnetVendorIdTagged {
 	header := NewBACnetTagHeader(0x2, TagClass_APPLICATION_TAGS, uint8(requiredLength(uint(vendorId))), nil, nil, nil, nil)
-	baCnetVendorId := BACnetVendorIdByValue(vendorId)
+	baCnetVendorId, _ := BACnetVendorIdByValue(vendorId)
 	unknownVendorId := uint32(0)
 	if !BACnetVendorIdKnows(vendorId) {
 		baCnetVendorId = BACnetVendorId_UNKNOWN_VENDOR
@@ -774,7 +774,7 @@ func CreateBACnetVendorIdApplicationTagged(vendorId uint16) BACnetVendorIdTagged
 
 func CreateBACnetVendorIdContextTagged(tagNum uint8, vendorId uint16) BACnetVendorIdTagged {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(vendorId))), nil, nil, nil, nil)
-	baCnetVendorId := BACnetVendorIdByValue(vendorId)
+	baCnetVendorId, _ := BACnetVendorIdByValue(vendorId)
 	unknownVendorId := uint32(0)
 	if !BACnetVendorIdKnows(vendorId) {
 		baCnetVendorId = BACnetVendorId_UNKNOWN_VENDOR

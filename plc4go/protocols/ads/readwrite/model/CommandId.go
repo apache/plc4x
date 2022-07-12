@@ -64,60 +64,56 @@ func init() {
 	}
 }
 
-func CommandIdByValue(value uint16) CommandId {
+func CommandIdByValue(value uint16) (enum CommandId, ok bool) {
 	switch value {
 	case 0x0000:
-		return CommandId_INVALID
+		return CommandId_INVALID, true
 	case 0x0001:
-		return CommandId_ADS_READ_DEVICE_INFO
+		return CommandId_ADS_READ_DEVICE_INFO, true
 	case 0x0002:
-		return CommandId_ADS_READ
+		return CommandId_ADS_READ, true
 	case 0x0003:
-		return CommandId_ADS_WRITE
+		return CommandId_ADS_WRITE, true
 	case 0x0004:
-		return CommandId_ADS_READ_STATE
+		return CommandId_ADS_READ_STATE, true
 	case 0x0005:
-		return CommandId_ADS_WRITE_CONTROL
+		return CommandId_ADS_WRITE_CONTROL, true
 	case 0x0006:
-		return CommandId_ADS_ADD_DEVICE_NOTIFICATION
+		return CommandId_ADS_ADD_DEVICE_NOTIFICATION, true
 	case 0x0007:
-		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION, true
 	case 0x0008:
-		return CommandId_ADS_DEVICE_NOTIFICATION
+		return CommandId_ADS_DEVICE_NOTIFICATION, true
 	case 0x0009:
-		return CommandId_ADS_READ_WRITE
+		return CommandId_ADS_READ_WRITE, true
 	}
-	return 0
+	return 0, false
 }
 
 func CommandIdByName(value string) (enum CommandId, ok bool) {
-	ok = true
 	switch value {
 	case "INVALID":
-		enum = CommandId_INVALID
+		return CommandId_INVALID, true
 	case "ADS_READ_DEVICE_INFO":
-		enum = CommandId_ADS_READ_DEVICE_INFO
+		return CommandId_ADS_READ_DEVICE_INFO, true
 	case "ADS_READ":
-		enum = CommandId_ADS_READ
+		return CommandId_ADS_READ, true
 	case "ADS_WRITE":
-		enum = CommandId_ADS_WRITE
+		return CommandId_ADS_WRITE, true
 	case "ADS_READ_STATE":
-		enum = CommandId_ADS_READ_STATE
+		return CommandId_ADS_READ_STATE, true
 	case "ADS_WRITE_CONTROL":
-		enum = CommandId_ADS_WRITE_CONTROL
+		return CommandId_ADS_WRITE_CONTROL, true
 	case "ADS_ADD_DEVICE_NOTIFICATION":
-		enum = CommandId_ADS_ADD_DEVICE_NOTIFICATION
+		return CommandId_ADS_ADD_DEVICE_NOTIFICATION, true
 	case "ADS_DELETE_DEVICE_NOTIFICATION":
-		enum = CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION, true
 	case "ADS_DEVICE_NOTIFICATION":
-		enum = CommandId_ADS_DEVICE_NOTIFICATION
+		return CommandId_ADS_DEVICE_NOTIFICATION, true
 	case "ADS_READ_WRITE":
-		enum = CommandId_ADS_READ_WRITE
-	default:
-		enum = 0
-		ok = false
+		return CommandId_ADS_READ_WRITE, true
 	}
-	return
+	return 0, false
 }
 
 func CommandIdKnows(value uint16) bool {
@@ -152,7 +148,11 @@ func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CommandId")
 	}
-	return CommandIdByValue(val), nil
+	if enum, ok := CommandIdByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for CommandId", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e CommandId) Serialize(writeBuffer utils.WriteBuffer) error {

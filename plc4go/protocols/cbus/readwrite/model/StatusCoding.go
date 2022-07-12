@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func StatusCodingByValue(value byte) StatusCoding {
+func StatusCodingByValue(value byte) (enum StatusCoding, ok bool) {
 	switch value {
 	case 0x00:
-		return StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE
+		return StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE, true
 	case 0x07:
-		return StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE
+		return StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE, true
 	case 0x40:
-		return StatusCoding_BINARY_BY_ELSEWHERE
+		return StatusCoding_BINARY_BY_ELSEWHERE, true
 	case 0x47:
-		return StatusCoding_LEVEL_BY_ELSEWHERE
+		return StatusCoding_LEVEL_BY_ELSEWHERE, true
 	}
-	return 0
+	return 0, false
 }
 
 func StatusCodingByName(value string) (enum StatusCoding, ok bool) {
-	ok = true
 	switch value {
 	case "BINARY_BY_THIS_SERIAL_INTERFACE":
-		enum = StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE
+		return StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE, true
 	case "LEVEL_BY_THIS_SERIAL_INTERFACE":
-		enum = StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE
+		return StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE, true
 	case "BINARY_BY_ELSEWHERE":
-		enum = StatusCoding_BINARY_BY_ELSEWHERE
+		return StatusCoding_BINARY_BY_ELSEWHERE, true
 	case "LEVEL_BY_ELSEWHERE":
-		enum = StatusCoding_LEVEL_BY_ELSEWHERE
-	default:
-		enum = 0
-		ok = false
+		return StatusCoding_LEVEL_BY_ELSEWHERE, true
 	}
-	return
+	return 0, false
 }
 
 func StatusCodingKnows(value byte) bool {
@@ -116,7 +112,11 @@ func StatusCodingParse(readBuffer utils.ReadBuffer) (StatusCoding, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading StatusCoding")
 	}
-	return StatusCodingByValue(val), nil
+	if enum, ok := StatusCodingByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for StatusCoding", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e StatusCoding) Serialize(writeBuffer utils.WriteBuffer) error {

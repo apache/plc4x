@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetSegmentationByValue(value uint8) BACnetSegmentation {
+func BACnetSegmentationByValue(value uint8) (enum BACnetSegmentation, ok bool) {
 	switch value {
 	case 0:
-		return BACnetSegmentation_SEGMENTED_BOTH
+		return BACnetSegmentation_SEGMENTED_BOTH, true
 	case 1:
-		return BACnetSegmentation_SEGMENTED_TRANSMIT
+		return BACnetSegmentation_SEGMENTED_TRANSMIT, true
 	case 2:
-		return BACnetSegmentation_SEGMENTED_RECEIVE
+		return BACnetSegmentation_SEGMENTED_RECEIVE, true
 	case 3:
-		return BACnetSegmentation_NO_SEGMENTATION
+		return BACnetSegmentation_NO_SEGMENTATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetSegmentationByName(value string) (enum BACnetSegmentation, ok bool) {
-	ok = true
 	switch value {
 	case "SEGMENTED_BOTH":
-		enum = BACnetSegmentation_SEGMENTED_BOTH
+		return BACnetSegmentation_SEGMENTED_BOTH, true
 	case "SEGMENTED_TRANSMIT":
-		enum = BACnetSegmentation_SEGMENTED_TRANSMIT
+		return BACnetSegmentation_SEGMENTED_TRANSMIT, true
 	case "SEGMENTED_RECEIVE":
-		enum = BACnetSegmentation_SEGMENTED_RECEIVE
+		return BACnetSegmentation_SEGMENTED_RECEIVE, true
 	case "NO_SEGMENTATION":
-		enum = BACnetSegmentation_NO_SEGMENTATION
-	default:
-		enum = 0
-		ok = false
+		return BACnetSegmentation_NO_SEGMENTATION, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetSegmentationKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (BACnetSegmentation, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSegmentation")
 	}
-	return BACnetSegmentationByValue(val), nil
+	if enum, ok := BACnetSegmentationByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetSegmentation", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetSegmentation) Serialize(writeBuffer utils.WriteBuffer) error {

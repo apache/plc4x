@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetPolarityByValue(value uint8) BACnetPolarity {
+func BACnetPolarityByValue(value uint8) (enum BACnetPolarity, ok bool) {
 	switch value {
 	case 0:
-		return BACnetPolarity_NORMAL
+		return BACnetPolarity_NORMAL, true
 	case 1:
-		return BACnetPolarity_REVERSE
+		return BACnetPolarity_REVERSE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetPolarityByName(value string) (enum BACnetPolarity, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetPolarity_NORMAL
+		return BACnetPolarity_NORMAL, true
 	case "REVERSE":
-		enum = BACnetPolarity_REVERSE
-	default:
-		enum = 0
-		ok = false
+		return BACnetPolarity_REVERSE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetPolarityKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetPolarityParse(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPolarity")
 	}
-	return BACnetPolarityByValue(val), nil
+	if enum, ok := BACnetPolarityByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetPolarity", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetPolarity) Serialize(writeBuffer utils.WriteBuffer) error {

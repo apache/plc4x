@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func SALCommandTypeByValue(value uint8) SALCommandType {
+func SALCommandTypeByValue(value uint8) (enum SALCommandType, ok bool) {
 	switch value {
 	case 0x00:
-		return SALCommandType_OFF
+		return SALCommandType_OFF, true
 	case 0x01:
-		return SALCommandType_ON
+		return SALCommandType_ON, true
 	case 0x02:
-		return SALCommandType_RAMP_TO_LEVEL
+		return SALCommandType_RAMP_TO_LEVEL, true
 	case 0x03:
-		return SALCommandType_TERMINATE_RAMP
+		return SALCommandType_TERMINATE_RAMP, true
 	}
-	return 0
+	return 0, false
 }
 
 func SALCommandTypeByName(value string) (enum SALCommandType, ok bool) {
-	ok = true
 	switch value {
 	case "OFF":
-		enum = SALCommandType_OFF
+		return SALCommandType_OFF, true
 	case "ON":
-		enum = SALCommandType_ON
+		return SALCommandType_ON, true
 	case "RAMP_TO_LEVEL":
-		enum = SALCommandType_RAMP_TO_LEVEL
+		return SALCommandType_RAMP_TO_LEVEL, true
 	case "TERMINATE_RAMP":
-		enum = SALCommandType_TERMINATE_RAMP
-	default:
-		enum = 0
-		ok = false
+		return SALCommandType_TERMINATE_RAMP, true
 	}
-	return
+	return 0, false
 }
 
 func SALCommandTypeKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func SALCommandTypeParse(readBuffer utils.ReadBuffer) (SALCommandType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SALCommandType")
 	}
-	return SALCommandTypeByValue(val), nil
+	if enum, ok := SALCommandTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for SALCommandType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e SALCommandType) Serialize(writeBuffer utils.WriteBuffer) error {

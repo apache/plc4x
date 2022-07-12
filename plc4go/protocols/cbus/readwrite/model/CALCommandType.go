@@ -60,52 +60,48 @@ func init() {
 	}
 }
 
-func CALCommandTypeByValue(value uint8) CALCommandType {
+func CALCommandTypeByValue(value uint8) (enum CALCommandType, ok bool) {
 	switch value {
 	case 0x0:
-		return CALCommandType_RESET
+		return CALCommandType_RESET, true
 	case 0x1:
-		return CALCommandType_RECALL
+		return CALCommandType_RECALL, true
 	case 0x2:
-		return CALCommandType_IDENTIFY
+		return CALCommandType_IDENTIFY, true
 	case 0x3:
-		return CALCommandType_GET_STATUS
+		return CALCommandType_GET_STATUS, true
 	case 0x4:
-		return CALCommandType_REPLY
+		return CALCommandType_REPLY, true
 	case 0x5:
-		return CALCommandType_ACKNOWLEDGE
+		return CALCommandType_ACKNOWLEDGE, true
 	case 0x6:
-		return CALCommandType_STATUS
+		return CALCommandType_STATUS, true
 	case 0x7:
-		return CALCommandType_STATUS_EXTENDED
+		return CALCommandType_STATUS_EXTENDED, true
 	}
-	return 0
+	return 0, false
 }
 
 func CALCommandTypeByName(value string) (enum CALCommandType, ok bool) {
-	ok = true
 	switch value {
 	case "RESET":
-		enum = CALCommandType_RESET
+		return CALCommandType_RESET, true
 	case "RECALL":
-		enum = CALCommandType_RECALL
+		return CALCommandType_RECALL, true
 	case "IDENTIFY":
-		enum = CALCommandType_IDENTIFY
+		return CALCommandType_IDENTIFY, true
 	case "GET_STATUS":
-		enum = CALCommandType_GET_STATUS
+		return CALCommandType_GET_STATUS, true
 	case "REPLY":
-		enum = CALCommandType_REPLY
+		return CALCommandType_REPLY, true
 	case "ACKNOWLEDGE":
-		enum = CALCommandType_ACKNOWLEDGE
+		return CALCommandType_ACKNOWLEDGE, true
 	case "STATUS":
-		enum = CALCommandType_STATUS
+		return CALCommandType_STATUS, true
 	case "STATUS_EXTENDED":
-		enum = CALCommandType_STATUS_EXTENDED
-	default:
-		enum = 0
-		ok = false
+		return CALCommandType_STATUS_EXTENDED, true
 	}
-	return
+	return 0, false
 }
 
 func CALCommandTypeKnows(value uint8) bool {
@@ -140,7 +136,11 @@ func CALCommandTypeParse(readBuffer utils.ReadBuffer) (CALCommandType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CALCommandType")
 	}
-	return CALCommandTypeByValue(val), nil
+	if enum, ok := CALCommandTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for CALCommandType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e CALCommandType) Serialize(writeBuffer utils.WriteBuffer) error {

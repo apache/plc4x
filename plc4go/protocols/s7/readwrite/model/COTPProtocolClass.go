@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func COTPProtocolClassByValue(value uint8) COTPProtocolClass {
+func COTPProtocolClassByValue(value uint8) (enum COTPProtocolClass, ok bool) {
 	switch value {
 	case 0x00:
-		return COTPProtocolClass_CLASS_0
+		return COTPProtocolClass_CLASS_0, true
 	case 0x10:
-		return COTPProtocolClass_CLASS_1
+		return COTPProtocolClass_CLASS_1, true
 	case 0x20:
-		return COTPProtocolClass_CLASS_2
+		return COTPProtocolClass_CLASS_2, true
 	case 0x30:
-		return COTPProtocolClass_CLASS_3
+		return COTPProtocolClass_CLASS_3, true
 	case 0x40:
-		return COTPProtocolClass_CLASS_4
+		return COTPProtocolClass_CLASS_4, true
 	}
-	return 0
+	return 0, false
 }
 
 func COTPProtocolClassByName(value string) (enum COTPProtocolClass, ok bool) {
-	ok = true
 	switch value {
 	case "CLASS_0":
-		enum = COTPProtocolClass_CLASS_0
+		return COTPProtocolClass_CLASS_0, true
 	case "CLASS_1":
-		enum = COTPProtocolClass_CLASS_1
+		return COTPProtocolClass_CLASS_1, true
 	case "CLASS_2":
-		enum = COTPProtocolClass_CLASS_2
+		return COTPProtocolClass_CLASS_2, true
 	case "CLASS_3":
-		enum = COTPProtocolClass_CLASS_3
+		return COTPProtocolClass_CLASS_3, true
 	case "CLASS_4":
-		enum = COTPProtocolClass_CLASS_4
-	default:
-		enum = 0
-		ok = false
+		return COTPProtocolClass_CLASS_4, true
 	}
-	return
+	return 0, false
 }
 
 func COTPProtocolClassKnows(value uint8) bool {
@@ -122,7 +118,11 @@ func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPProtocolClass")
 	}
-	return COTPProtocolClassByValue(val), nil
+	if enum, ok := COTPProtocolClassByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for COTPProtocolClass", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e COTPProtocolClass) Serialize(writeBuffer utils.WriteBuffer) error {

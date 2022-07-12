@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func EventTypeByValue(value uint8) EventType {
+func EventTypeByValue(value uint8) (enum EventType, ok bool) {
 	switch value {
 	case 0x01:
-		return EventType_MODE
+		return EventType_MODE, true
 	case 0x02:
-		return EventType_SYS
+		return EventType_SYS, true
 	case 0x04:
-		return EventType_USR
+		return EventType_USR, true
 	case 0x80:
-		return EventType_ALM
+		return EventType_ALM, true
 	}
-	return 0
+	return 0, false
 }
 
 func EventTypeByName(value string) (enum EventType, ok bool) {
-	ok = true
 	switch value {
 	case "MODE":
-		enum = EventType_MODE
+		return EventType_MODE, true
 	case "SYS":
-		enum = EventType_SYS
+		return EventType_SYS, true
 	case "USR":
-		enum = EventType_USR
+		return EventType_USR, true
 	case "ALM":
-		enum = EventType_ALM
-	default:
-		enum = 0
-		ok = false
+		return EventType_ALM, true
 	}
-	return
+	return 0, false
 }
 
 func EventTypeKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func EventTypeParse(readBuffer utils.ReadBuffer) (EventType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EventType")
 	}
-	return EventTypeByValue(val), nil
+	if enum, ok := EventTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for EventType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e EventType) Serialize(writeBuffer utils.WriteBuffer) error {

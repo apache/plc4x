@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func BACnetAccessCredentialDisableByValue(value uint16) BACnetAccessCredentialDisable {
+func BACnetAccessCredentialDisableByValue(value uint16) (enum BACnetAccessCredentialDisable, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessCredentialDisable_NONE
+		return BACnetAccessCredentialDisable_NONE, true
 	case 0xFFFF:
-		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessCredentialDisable_DISABLE
+		return BACnetAccessCredentialDisable_DISABLE, true
 	case 2:
-		return BACnetAccessCredentialDisable_DISABLE_MANUAL
+		return BACnetAccessCredentialDisable_DISABLE_MANUAL, true
 	case 3:
-		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT
+		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessCredentialDisableByName(value string) (enum BACnetAccessCredentialDisable, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetAccessCredentialDisable_NONE
+		return BACnetAccessCredentialDisable_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE, true
 	case "DISABLE":
-		enum = BACnetAccessCredentialDisable_DISABLE
+		return BACnetAccessCredentialDisable_DISABLE, true
 	case "DISABLE_MANUAL":
-		enum = BACnetAccessCredentialDisable_DISABLE_MANUAL
+		return BACnetAccessCredentialDisable_DISABLE_MANUAL, true
 	case "DISABLE_LOCKOUT":
-		enum = BACnetAccessCredentialDisable_DISABLE_LOCKOUT
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessCredentialDisableKnows(value uint16) bool {
@@ -122,7 +118,11 @@ func BACnetAccessCredentialDisableParse(readBuffer utils.ReadBuffer) (BACnetAcce
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisable")
 	}
-	return BACnetAccessCredentialDisableByValue(val), nil
+	if enum, ok := BACnetAccessCredentialDisableByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessCredentialDisable", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessCredentialDisable) Serialize(writeBuffer utils.WriteBuffer) error {

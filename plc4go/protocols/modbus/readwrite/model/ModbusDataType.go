@@ -224,128 +224,124 @@ func ModbusDataTypeFirstEnumForFieldDataTypeSize(value uint8) (ModbusDataType, e
 	}
 	return 0, errors.Errorf("enum for %v describing DataTypeSize not found", value)
 }
-func ModbusDataTypeByValue(value uint8) ModbusDataType {
+func ModbusDataTypeByValue(value uint8) (enum ModbusDataType, ok bool) {
 	switch value {
 	case 1:
-		return ModbusDataType_BOOL
+		return ModbusDataType_BOOL, true
 	case 10:
-		return ModbusDataType_USINT
+		return ModbusDataType_USINT, true
 	case 11:
-		return ModbusDataType_UINT
+		return ModbusDataType_UINT, true
 	case 12:
-		return ModbusDataType_UDINT
+		return ModbusDataType_UDINT, true
 	case 13:
-		return ModbusDataType_ULINT
+		return ModbusDataType_ULINT, true
 	case 14:
-		return ModbusDataType_REAL
+		return ModbusDataType_REAL, true
 	case 15:
-		return ModbusDataType_LREAL
+		return ModbusDataType_LREAL, true
 	case 16:
-		return ModbusDataType_TIME
+		return ModbusDataType_TIME, true
 	case 17:
-		return ModbusDataType_LTIME
+		return ModbusDataType_LTIME, true
 	case 18:
-		return ModbusDataType_DATE
+		return ModbusDataType_DATE, true
 	case 19:
-		return ModbusDataType_LDATE
+		return ModbusDataType_LDATE, true
 	case 2:
-		return ModbusDataType_BYTE
+		return ModbusDataType_BYTE, true
 	case 20:
-		return ModbusDataType_TIME_OF_DAY
+		return ModbusDataType_TIME_OF_DAY, true
 	case 21:
-		return ModbusDataType_LTIME_OF_DAY
+		return ModbusDataType_LTIME_OF_DAY, true
 	case 22:
-		return ModbusDataType_DATE_AND_TIME
+		return ModbusDataType_DATE_AND_TIME, true
 	case 23:
-		return ModbusDataType_LDATE_AND_TIME
+		return ModbusDataType_LDATE_AND_TIME, true
 	case 24:
-		return ModbusDataType_CHAR
+		return ModbusDataType_CHAR, true
 	case 25:
-		return ModbusDataType_WCHAR
+		return ModbusDataType_WCHAR, true
 	case 26:
-		return ModbusDataType_STRING
+		return ModbusDataType_STRING, true
 	case 27:
-		return ModbusDataType_WSTRING
+		return ModbusDataType_WSTRING, true
 	case 3:
-		return ModbusDataType_WORD
+		return ModbusDataType_WORD, true
 	case 4:
-		return ModbusDataType_DWORD
+		return ModbusDataType_DWORD, true
 	case 5:
-		return ModbusDataType_LWORD
+		return ModbusDataType_LWORD, true
 	case 6:
-		return ModbusDataType_SINT
+		return ModbusDataType_SINT, true
 	case 7:
-		return ModbusDataType_INT
+		return ModbusDataType_INT, true
 	case 8:
-		return ModbusDataType_DINT
+		return ModbusDataType_DINT, true
 	case 9:
-		return ModbusDataType_LINT
+		return ModbusDataType_LINT, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusDataTypeByName(value string) (enum ModbusDataType, ok bool) {
-	ok = true
 	switch value {
 	case "BOOL":
-		enum = ModbusDataType_BOOL
+		return ModbusDataType_BOOL, true
 	case "USINT":
-		enum = ModbusDataType_USINT
+		return ModbusDataType_USINT, true
 	case "UINT":
-		enum = ModbusDataType_UINT
+		return ModbusDataType_UINT, true
 	case "UDINT":
-		enum = ModbusDataType_UDINT
+		return ModbusDataType_UDINT, true
 	case "ULINT":
-		enum = ModbusDataType_ULINT
+		return ModbusDataType_ULINT, true
 	case "REAL":
-		enum = ModbusDataType_REAL
+		return ModbusDataType_REAL, true
 	case "LREAL":
-		enum = ModbusDataType_LREAL
+		return ModbusDataType_LREAL, true
 	case "TIME":
-		enum = ModbusDataType_TIME
+		return ModbusDataType_TIME, true
 	case "LTIME":
-		enum = ModbusDataType_LTIME
+		return ModbusDataType_LTIME, true
 	case "DATE":
-		enum = ModbusDataType_DATE
+		return ModbusDataType_DATE, true
 	case "LDATE":
-		enum = ModbusDataType_LDATE
+		return ModbusDataType_LDATE, true
 	case "BYTE":
-		enum = ModbusDataType_BYTE
+		return ModbusDataType_BYTE, true
 	case "TIME_OF_DAY":
-		enum = ModbusDataType_TIME_OF_DAY
+		return ModbusDataType_TIME_OF_DAY, true
 	case "LTIME_OF_DAY":
-		enum = ModbusDataType_LTIME_OF_DAY
+		return ModbusDataType_LTIME_OF_DAY, true
 	case "DATE_AND_TIME":
-		enum = ModbusDataType_DATE_AND_TIME
+		return ModbusDataType_DATE_AND_TIME, true
 	case "LDATE_AND_TIME":
-		enum = ModbusDataType_LDATE_AND_TIME
+		return ModbusDataType_LDATE_AND_TIME, true
 	case "CHAR":
-		enum = ModbusDataType_CHAR
+		return ModbusDataType_CHAR, true
 	case "WCHAR":
-		enum = ModbusDataType_WCHAR
+		return ModbusDataType_WCHAR, true
 	case "STRING":
-		enum = ModbusDataType_STRING
+		return ModbusDataType_STRING, true
 	case "WSTRING":
-		enum = ModbusDataType_WSTRING
+		return ModbusDataType_WSTRING, true
 	case "WORD":
-		enum = ModbusDataType_WORD
+		return ModbusDataType_WORD, true
 	case "DWORD":
-		enum = ModbusDataType_DWORD
+		return ModbusDataType_DWORD, true
 	case "LWORD":
-		enum = ModbusDataType_LWORD
+		return ModbusDataType_LWORD, true
 	case "SINT":
-		enum = ModbusDataType_SINT
+		return ModbusDataType_SINT, true
 	case "INT":
-		enum = ModbusDataType_INT
+		return ModbusDataType_INT, true
 	case "DINT":
-		enum = ModbusDataType_DINT
+		return ModbusDataType_DINT, true
 	case "LINT":
-		enum = ModbusDataType_LINT
-	default:
-		enum = 0
-		ok = false
+		return ModbusDataType_LINT, true
 	}
-	return
+	return 0, false
 }
 
 func ModbusDataTypeKnows(value uint8) bool {
@@ -380,7 +376,11 @@ func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDataType")
 	}
-	return ModbusDataTypeByValue(val), nil
+	if enum, ok := ModbusDataTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ModbusDataType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ModbusDataType) Serialize(writeBuffer utils.WriteBuffer) error {

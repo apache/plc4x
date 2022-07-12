@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(value uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(value uint8) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL, true
 	case 1:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT, true
 	case 2:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL, true
 	case 3:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL, true
 	case 4:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByName(value string) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, ok bool) {
-	ok = true
 	switch value {
 	case "OFFNORMAL":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL, true
 	case "FAULT":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT, true
 	case "NORMAL":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL, true
 	case "ALL":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL, true
 	case "ACTIVE":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE
-	default:
-		enum = 0
-		ok = false
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterKnows(value uint8) bool {
@@ -122,7 +118,11 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(read
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
 	}
-	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Serialize(writeBuffer utils.WriteBuffer) error {

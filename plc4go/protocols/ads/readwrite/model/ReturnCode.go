@@ -288,508 +288,504 @@ func init() {
 	}
 }
 
-func ReturnCodeByValue(value uint32) ReturnCode {
+func ReturnCodeByValue(value uint32) (enum ReturnCode, ok bool) {
 	switch value {
 	case 0x00:
-		return ReturnCode_OK
+		return ReturnCode_OK, true
 	case 0x01:
-		return ReturnCode_INTERNAL_ERROR
+		return ReturnCode_INTERNAL_ERROR, true
 	case 0x02:
-		return ReturnCode_NO_REALTIME
+		return ReturnCode_NO_REALTIME, true
 	case 0x03:
-		return ReturnCode_SAVE_ERROR
+		return ReturnCode_SAVE_ERROR, true
 	case 0x04:
-		return ReturnCode_MAILBOX_FULL
+		return ReturnCode_MAILBOX_FULL, true
 	case 0x05:
-		return ReturnCode_WRONG_HMSG
+		return ReturnCode_WRONG_HMSG, true
 	case 0x06:
-		return ReturnCode_TARGET_PORT_NOT_FOUND
+		return ReturnCode_TARGET_PORT_NOT_FOUND, true
 	case 0x07:
-		return ReturnCode_TARGET_HOST_NOT_FOUND
+		return ReturnCode_TARGET_HOST_NOT_FOUND, true
 	case 0x08:
-		return ReturnCode_UNKNOWN_COMMAND_ID
+		return ReturnCode_UNKNOWN_COMMAND_ID, true
 	case 0x09:
-		return ReturnCode_UNKNOWN_TASK_ID
+		return ReturnCode_UNKNOWN_TASK_ID, true
 	case 0x0A:
-		return ReturnCode_NO_IO
+		return ReturnCode_NO_IO, true
 	case 0x0B:
-		return ReturnCode_UNKNOWN_ADS_COMMAND
+		return ReturnCode_UNKNOWN_ADS_COMMAND, true
 	case 0x0C:
-		return ReturnCode_WIN32_ERROR
+		return ReturnCode_WIN32_ERROR, true
 	case 0x0D:
-		return ReturnCode_PORT_NOT_CONNECTED
+		return ReturnCode_PORT_NOT_CONNECTED, true
 	case 0x0E:
-		return ReturnCode_INVALID_ADS_LENGTH
+		return ReturnCode_INVALID_ADS_LENGTH, true
 	case 0x0F:
-		return ReturnCode_INVALID_AMS_NET_ID
+		return ReturnCode_INVALID_AMS_NET_ID, true
 	case 0x10:
-		return ReturnCode_LOW_INSTALLATION_LEVEL
+		return ReturnCode_LOW_INSTALLATION_LEVEL, true
 	case 0x1000:
-		return ReturnCode_RTERR_INTERNAL
+		return ReturnCode_RTERR_INTERNAL, true
 	case 0x1001:
-		return ReturnCode_RTERR_BADTIMERPERIODS
+		return ReturnCode_RTERR_BADTIMERPERIODS, true
 	case 0x1002:
-		return ReturnCode_RTERR_INVALIDTASKPTR
+		return ReturnCode_RTERR_INVALIDTASKPTR, true
 	case 0x1003:
-		return ReturnCode_RTERR_INVALIDSTACKPTR
+		return ReturnCode_RTERR_INVALIDSTACKPTR, true
 	case 0x1004:
-		return ReturnCode_RTERR_PRIOEXISTS
+		return ReturnCode_RTERR_PRIOEXISTS, true
 	case 0x1005:
-		return ReturnCode_RTERR_NOMORETCB
+		return ReturnCode_RTERR_NOMORETCB, true
 	case 0x1006:
-		return ReturnCode_RTERR_NOMORESEMAS
+		return ReturnCode_RTERR_NOMORESEMAS, true
 	case 0x1007:
-		return ReturnCode_RTERR_NOMOREQUEUES
+		return ReturnCode_RTERR_NOMOREQUEUES, true
 	case 0x100D:
-		return ReturnCode_RTERR_EXTIRQALREADYDEF
+		return ReturnCode_RTERR_EXTIRQALREADYDEF, true
 	case 0x100E:
-		return ReturnCode_RTERR_EXTIRQNOTDEF
+		return ReturnCode_RTERR_EXTIRQNOTDEF, true
 	case 0x100F:
-		return ReturnCode_RTERR_EXTIRQINSTALLFAILED
+		return ReturnCode_RTERR_EXTIRQINSTALLFAILED, true
 	case 0x1010:
-		return ReturnCode_RTERR_IRQLNOTLESSOREQUAL
+		return ReturnCode_RTERR_IRQLNOTLESSOREQUAL, true
 	case 0x1017:
-		return ReturnCode_RTERR_VMXNOTSUPPORTED
+		return ReturnCode_RTERR_VMXNOTSUPPORTED, true
 	case 0x1018:
-		return ReturnCode_RTERR_VMXDISABLED
+		return ReturnCode_RTERR_VMXDISABLED, true
 	case 0x1019:
-		return ReturnCode_RTERR_VMXCONTROLSMISSING
+		return ReturnCode_RTERR_VMXCONTROLSMISSING, true
 	case 0x101A:
-		return ReturnCode_RTERR_VMXENABLEFAILS
+		return ReturnCode_RTERR_VMXENABLEFAILS, true
 	case 0x11:
-		return ReturnCode_NO_DEBUGGING_AVAILABLE
+		return ReturnCode_NO_DEBUGGING_AVAILABLE, true
 	case 0x12:
-		return ReturnCode_PORT_DEACTIVATED
+		return ReturnCode_PORT_DEACTIVATED, true
 	case 0x13:
-		return ReturnCode_PORT_ALREADY_CONNECTED
+		return ReturnCode_PORT_ALREADY_CONNECTED, true
 	case 0x14:
-		return ReturnCode_ADS_SYNC_WIN32_ERROR
+		return ReturnCode_ADS_SYNC_WIN32_ERROR, true
 	case 0x15:
-		return ReturnCode_ADS_SYNC_TIMEOUT
+		return ReturnCode_ADS_SYNC_TIMEOUT, true
 	case 0x16:
-		return ReturnCode_ADS_SYNC_AMS_ERROR
+		return ReturnCode_ADS_SYNC_AMS_ERROR, true
 	case 0x17:
-		return ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE
+		return ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE, true
 	case 0x18:
-		return ReturnCode_INVALID_ADS_PORT
+		return ReturnCode_INVALID_ADS_PORT, true
 	case 0x19:
-		return ReturnCode_NO_MEMORY
+		return ReturnCode_NO_MEMORY, true
 	case 0x1A:
-		return ReturnCode_TCP_SENDING_ERROR
+		return ReturnCode_TCP_SENDING_ERROR, true
 	case 0x1B:
-		return ReturnCode_HOST_NOT_REACHABLE
+		return ReturnCode_HOST_NOT_REACHABLE, true
 	case 0x1C:
-		return ReturnCode_INVALID_AMS_FRAGMENT
+		return ReturnCode_INVALID_AMS_FRAGMENT, true
 	case 0x274C:
-		return ReturnCode_WSAETIMEDOUT
+		return ReturnCode_WSAETIMEDOUT, true
 	case 0x274D:
-		return ReturnCode_WSAECONNREFUSED
+		return ReturnCode_WSAECONNREFUSED, true
 	case 0x2751:
-		return ReturnCode_WSAEHOSTUNREACH
+		return ReturnCode_WSAEHOSTUNREACH, true
 	case 0x500:
-		return ReturnCode_ROUTERERR_NOLOCKEDMEMORY
+		return ReturnCode_ROUTERERR_NOLOCKEDMEMORY, true
 	case 0x501:
-		return ReturnCode_ROUTERERR_RESIZEMEMORY
+		return ReturnCode_ROUTERERR_RESIZEMEMORY, true
 	case 0x502:
-		return ReturnCode_ROUTERERR_MAILBOXFULL
+		return ReturnCode_ROUTERERR_MAILBOXFULL, true
 	case 0x503:
-		return ReturnCode_ROUTERERR_DEBUGBOXFULL
+		return ReturnCode_ROUTERERR_DEBUGBOXFULL, true
 	case 0x504:
-		return ReturnCode_ROUTERERR_UNKNOWNPORTTYPE
+		return ReturnCode_ROUTERERR_UNKNOWNPORTTYPE, true
 	case 0x505:
-		return ReturnCode_ROUTERERR_NOTINITIALIZED
+		return ReturnCode_ROUTERERR_NOTINITIALIZED, true
 	case 0x506:
-		return ReturnCode_ROUTERERR_PORTALREADYINUSE
+		return ReturnCode_ROUTERERR_PORTALREADYINUSE, true
 	case 0x507:
-		return ReturnCode_ROUTERERR_NOTREGISTERED
+		return ReturnCode_ROUTERERR_NOTREGISTERED, true
 	case 0x508:
-		return ReturnCode_ROUTERERR_NOMOREQUEUES
+		return ReturnCode_ROUTERERR_NOMOREQUEUES, true
 	case 0x509:
-		return ReturnCode_ROUTERERR_INVALIDPORT
+		return ReturnCode_ROUTERERR_INVALIDPORT, true
 	case 0x50A:
-		return ReturnCode_ROUTERERR_NOTACTIVATED
+		return ReturnCode_ROUTERERR_NOTACTIVATED, true
 	case 0x700:
-		return ReturnCode_ADSERR_DEVICE_ERROR
+		return ReturnCode_ADSERR_DEVICE_ERROR, true
 	case 0x701:
-		return ReturnCode_ADSERR_DEVICE_SRVNOTSUPP
+		return ReturnCode_ADSERR_DEVICE_SRVNOTSUPP, true
 	case 0x702:
-		return ReturnCode_ADSERR_DEVICE_INVALIDGRP
+		return ReturnCode_ADSERR_DEVICE_INVALIDGRP, true
 	case 0x703:
-		return ReturnCode_ADSERR_DEVICE_INVALIDOFFSET
+		return ReturnCode_ADSERR_DEVICE_INVALIDOFFSET, true
 	case 0x704:
-		return ReturnCode_ADSERR_DEVICE_INVALIDACCESS
+		return ReturnCode_ADSERR_DEVICE_INVALIDACCESS, true
 	case 0x705:
-		return ReturnCode_ADSERR_DEVICE_INVALIDSIZE
+		return ReturnCode_ADSERR_DEVICE_INVALIDSIZE, true
 	case 0x706:
-		return ReturnCode_ADSERR_DEVICE_INVALIDDATA
+		return ReturnCode_ADSERR_DEVICE_INVALIDDATA, true
 	case 0x707:
-		return ReturnCode_ADSERR_DEVICE_NOTREADY
+		return ReturnCode_ADSERR_DEVICE_NOTREADY, true
 	case 0x708:
-		return ReturnCode_ADSERR_DEVICE_BUSY
+		return ReturnCode_ADSERR_DEVICE_BUSY, true
 	case 0x709:
-		return ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT
+		return ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT, true
 	case 0x70A:
-		return ReturnCode_ADSERR_DEVICE_NOMEMORY
+		return ReturnCode_ADSERR_DEVICE_NOMEMORY, true
 	case 0x70B:
-		return ReturnCode_ADSERR_DEVICE_INVALIDPARM
+		return ReturnCode_ADSERR_DEVICE_INVALIDPARM, true
 	case 0x70C:
-		return ReturnCode_ADSERR_DEVICE_NOTFOUND
+		return ReturnCode_ADSERR_DEVICE_NOTFOUND, true
 	case 0x70D:
-		return ReturnCode_ADSERR_DEVICE_SYNTAX
+		return ReturnCode_ADSERR_DEVICE_SYNTAX, true
 	case 0x70E:
-		return ReturnCode_ADSERR_DEVICE_INCOMPATIBLE
+		return ReturnCode_ADSERR_DEVICE_INCOMPATIBLE, true
 	case 0x70F:
-		return ReturnCode_ADSERR_DEVICE_EXISTS
+		return ReturnCode_ADSERR_DEVICE_EXISTS, true
 	case 0x710:
-		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND
+		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND, true
 	case 0x711:
-		return ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID
+		return ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID, true
 	case 0x712:
-		return ReturnCode_ADSERR_DEVICE_INVALIDSTATE
+		return ReturnCode_ADSERR_DEVICE_INVALIDSTATE, true
 	case 0x713:
-		return ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP
+		return ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP, true
 	case 0x714:
-		return ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID
+		return ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID, true
 	case 0x715:
-		return ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN
+		return ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN, true
 	case 0x716:
-		return ReturnCode_ADSERR_DEVICE_NOMOREHDLS
+		return ReturnCode_ADSERR_DEVICE_NOMOREHDLS, true
 	case 0x717:
-		return ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE
+		return ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE, true
 	case 0x718:
-		return ReturnCode_ADSERR_DEVICE_NOTINIT
+		return ReturnCode_ADSERR_DEVICE_NOTINIT, true
 	case 0x719:
-		return ReturnCode_ADSERR_DEVICE_TIMEOUT
+		return ReturnCode_ADSERR_DEVICE_TIMEOUT, true
 	case 0x71A:
-		return ReturnCode_ADSERR_DEVICE_NOINTERFACE
+		return ReturnCode_ADSERR_DEVICE_NOINTERFACE, true
 	case 0x71B:
-		return ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE
+		return ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE, true
 	case 0x71C:
-		return ReturnCode_ADSERR_DEVICE_INVALIDCLSID
+		return ReturnCode_ADSERR_DEVICE_INVALIDCLSID, true
 	case 0x71D:
-		return ReturnCode_ADSERR_DEVICE_INVALIDOBJID
+		return ReturnCode_ADSERR_DEVICE_INVALIDOBJID, true
 	case 0x71E:
-		return ReturnCode_ADSERR_DEVICE_PENDING
+		return ReturnCode_ADSERR_DEVICE_PENDING, true
 	case 0x71F:
-		return ReturnCode_ADSERR_DEVICE_ABORTED
+		return ReturnCode_ADSERR_DEVICE_ABORTED, true
 	case 0x720:
-		return ReturnCode_ADSERR_DEVICE_WARNING
+		return ReturnCode_ADSERR_DEVICE_WARNING, true
 	case 0x721:
-		return ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX
+		return ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX, true
 	case 0x722:
-		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE
+		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE, true
 	case 0x723:
-		return ReturnCode_ADSERR_DEVICE_ACCESSDENIED
+		return ReturnCode_ADSERR_DEVICE_ACCESSDENIED, true
 	case 0x724:
-		return ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND
+		return ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND, true
 	case 0x725:
-		return ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED
+		return ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED, true
 	case 0x726:
-		return ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED
+		return ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED, true
 	case 0x727:
-		return ReturnCode_ADSERR_DEVICE_LICENSEINVALID
+		return ReturnCode_ADSERR_DEVICE_LICENSEINVALID, true
 	case 0x728:
-		return ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID
+		return ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID, true
 	case 0x729:
-		return ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT
+		return ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT, true
 	case 0x72A:
-		return ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE
+		return ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE, true
 	case 0x72B:
-		return ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG
+		return ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG, true
 	case 0x72D:
-		return ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED
+		return ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED, true
 	case 0x72E:
-		return ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID
+		return ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID, true
 	case 0x72F:
-		return ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID
+		return ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID, true
 	case 0x72c:
-		return ReturnCode_ADSERR_DEVICE_EXCEPTION
+		return ReturnCode_ADSERR_DEVICE_EXCEPTION, true
 	case 0x740:
-		return ReturnCode_ADSERR_CLIENT_ERROR
+		return ReturnCode_ADSERR_CLIENT_ERROR, true
 	case 0x741:
-		return ReturnCode_ADSERR_CLIENT_INVALIDPARM
+		return ReturnCode_ADSERR_CLIENT_INVALIDPARM, true
 	case 0x742:
-		return ReturnCode_ADSERR_CLIENT_LISTEMPTY
+		return ReturnCode_ADSERR_CLIENT_LISTEMPTY, true
 	case 0x743:
-		return ReturnCode_ADSERR_CLIENT_VARUSED
+		return ReturnCode_ADSERR_CLIENT_VARUSED, true
 	case 0x744:
-		return ReturnCode_ADSERR_CLIENT_DUPLINVOKEID
+		return ReturnCode_ADSERR_CLIENT_DUPLINVOKEID, true
 	case 0x745:
-		return ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT
+		return ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT, true
 	case 0x746:
-		return ReturnCode_ADSERR_CLIENT_W32ERROR
+		return ReturnCode_ADSERR_CLIENT_W32ERROR, true
 	case 0x747:
-		return ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID
+		return ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID, true
 	case 0x748:
-		return ReturnCode_ADSERR_CLIENT_PORTNOTOPEN
+		return ReturnCode_ADSERR_CLIENT_PORTNOTOPEN, true
 	case 0x750:
-		return ReturnCode_ADSERR_CLIENT_NOAMSADDR
+		return ReturnCode_ADSERR_CLIENT_NOAMSADDR, true
 	case 0x751:
-		return ReturnCode_ADSERR_CLIENT_SYNCINTERNAL
+		return ReturnCode_ADSERR_CLIENT_SYNCINTERNAL, true
 	case 0x752:
-		return ReturnCode_ADSERR_CLIENT_ADDHASH
+		return ReturnCode_ADSERR_CLIENT_ADDHASH, true
 	case 0x753:
-		return ReturnCode_ADSERR_CLIENT_REMOVEHASH
+		return ReturnCode_ADSERR_CLIENT_REMOVEHASH, true
 	case 0x754:
-		return ReturnCode_ADSERR_CLIENT_NOMORESYM
+		return ReturnCode_ADSERR_CLIENT_NOMORESYM, true
 	case 0x755:
-		return ReturnCode_ADSERR_CLIENT_SYNCRESINVALID
+		return ReturnCode_ADSERR_CLIENT_SYNCRESINVALID, true
 	}
-	return 0
+	return 0, false
 }
 
 func ReturnCodeByName(value string) (enum ReturnCode, ok bool) {
-	ok = true
 	switch value {
 	case "OK":
-		enum = ReturnCode_OK
+		return ReturnCode_OK, true
 	case "INTERNAL_ERROR":
-		enum = ReturnCode_INTERNAL_ERROR
+		return ReturnCode_INTERNAL_ERROR, true
 	case "NO_REALTIME":
-		enum = ReturnCode_NO_REALTIME
+		return ReturnCode_NO_REALTIME, true
 	case "SAVE_ERROR":
-		enum = ReturnCode_SAVE_ERROR
+		return ReturnCode_SAVE_ERROR, true
 	case "MAILBOX_FULL":
-		enum = ReturnCode_MAILBOX_FULL
+		return ReturnCode_MAILBOX_FULL, true
 	case "WRONG_HMSG":
-		enum = ReturnCode_WRONG_HMSG
+		return ReturnCode_WRONG_HMSG, true
 	case "TARGET_PORT_NOT_FOUND":
-		enum = ReturnCode_TARGET_PORT_NOT_FOUND
+		return ReturnCode_TARGET_PORT_NOT_FOUND, true
 	case "TARGET_HOST_NOT_FOUND":
-		enum = ReturnCode_TARGET_HOST_NOT_FOUND
+		return ReturnCode_TARGET_HOST_NOT_FOUND, true
 	case "UNKNOWN_COMMAND_ID":
-		enum = ReturnCode_UNKNOWN_COMMAND_ID
+		return ReturnCode_UNKNOWN_COMMAND_ID, true
 	case "UNKNOWN_TASK_ID":
-		enum = ReturnCode_UNKNOWN_TASK_ID
+		return ReturnCode_UNKNOWN_TASK_ID, true
 	case "NO_IO":
-		enum = ReturnCode_NO_IO
+		return ReturnCode_NO_IO, true
 	case "UNKNOWN_ADS_COMMAND":
-		enum = ReturnCode_UNKNOWN_ADS_COMMAND
+		return ReturnCode_UNKNOWN_ADS_COMMAND, true
 	case "WIN32_ERROR":
-		enum = ReturnCode_WIN32_ERROR
+		return ReturnCode_WIN32_ERROR, true
 	case "PORT_NOT_CONNECTED":
-		enum = ReturnCode_PORT_NOT_CONNECTED
+		return ReturnCode_PORT_NOT_CONNECTED, true
 	case "INVALID_ADS_LENGTH":
-		enum = ReturnCode_INVALID_ADS_LENGTH
+		return ReturnCode_INVALID_ADS_LENGTH, true
 	case "INVALID_AMS_NET_ID":
-		enum = ReturnCode_INVALID_AMS_NET_ID
+		return ReturnCode_INVALID_AMS_NET_ID, true
 	case "LOW_INSTALLATION_LEVEL":
-		enum = ReturnCode_LOW_INSTALLATION_LEVEL
+		return ReturnCode_LOW_INSTALLATION_LEVEL, true
 	case "RTERR_INTERNAL":
-		enum = ReturnCode_RTERR_INTERNAL
+		return ReturnCode_RTERR_INTERNAL, true
 	case "RTERR_BADTIMERPERIODS":
-		enum = ReturnCode_RTERR_BADTIMERPERIODS
+		return ReturnCode_RTERR_BADTIMERPERIODS, true
 	case "RTERR_INVALIDTASKPTR":
-		enum = ReturnCode_RTERR_INVALIDTASKPTR
+		return ReturnCode_RTERR_INVALIDTASKPTR, true
 	case "RTERR_INVALIDSTACKPTR":
-		enum = ReturnCode_RTERR_INVALIDSTACKPTR
+		return ReturnCode_RTERR_INVALIDSTACKPTR, true
 	case "RTERR_PRIOEXISTS":
-		enum = ReturnCode_RTERR_PRIOEXISTS
+		return ReturnCode_RTERR_PRIOEXISTS, true
 	case "RTERR_NOMORETCB":
-		enum = ReturnCode_RTERR_NOMORETCB
+		return ReturnCode_RTERR_NOMORETCB, true
 	case "RTERR_NOMORESEMAS":
-		enum = ReturnCode_RTERR_NOMORESEMAS
+		return ReturnCode_RTERR_NOMORESEMAS, true
 	case "RTERR_NOMOREQUEUES":
-		enum = ReturnCode_RTERR_NOMOREQUEUES
+		return ReturnCode_RTERR_NOMOREQUEUES, true
 	case "RTERR_EXTIRQALREADYDEF":
-		enum = ReturnCode_RTERR_EXTIRQALREADYDEF
+		return ReturnCode_RTERR_EXTIRQALREADYDEF, true
 	case "RTERR_EXTIRQNOTDEF":
-		enum = ReturnCode_RTERR_EXTIRQNOTDEF
+		return ReturnCode_RTERR_EXTIRQNOTDEF, true
 	case "RTERR_EXTIRQINSTALLFAILED":
-		enum = ReturnCode_RTERR_EXTIRQINSTALLFAILED
+		return ReturnCode_RTERR_EXTIRQINSTALLFAILED, true
 	case "RTERR_IRQLNOTLESSOREQUAL":
-		enum = ReturnCode_RTERR_IRQLNOTLESSOREQUAL
+		return ReturnCode_RTERR_IRQLNOTLESSOREQUAL, true
 	case "RTERR_VMXNOTSUPPORTED":
-		enum = ReturnCode_RTERR_VMXNOTSUPPORTED
+		return ReturnCode_RTERR_VMXNOTSUPPORTED, true
 	case "RTERR_VMXDISABLED":
-		enum = ReturnCode_RTERR_VMXDISABLED
+		return ReturnCode_RTERR_VMXDISABLED, true
 	case "RTERR_VMXCONTROLSMISSING":
-		enum = ReturnCode_RTERR_VMXCONTROLSMISSING
+		return ReturnCode_RTERR_VMXCONTROLSMISSING, true
 	case "RTERR_VMXENABLEFAILS":
-		enum = ReturnCode_RTERR_VMXENABLEFAILS
+		return ReturnCode_RTERR_VMXENABLEFAILS, true
 	case "NO_DEBUGGING_AVAILABLE":
-		enum = ReturnCode_NO_DEBUGGING_AVAILABLE
+		return ReturnCode_NO_DEBUGGING_AVAILABLE, true
 	case "PORT_DEACTIVATED":
-		enum = ReturnCode_PORT_DEACTIVATED
+		return ReturnCode_PORT_DEACTIVATED, true
 	case "PORT_ALREADY_CONNECTED":
-		enum = ReturnCode_PORT_ALREADY_CONNECTED
+		return ReturnCode_PORT_ALREADY_CONNECTED, true
 	case "ADS_SYNC_WIN32_ERROR":
-		enum = ReturnCode_ADS_SYNC_WIN32_ERROR
+		return ReturnCode_ADS_SYNC_WIN32_ERROR, true
 	case "ADS_SYNC_TIMEOUT":
-		enum = ReturnCode_ADS_SYNC_TIMEOUT
+		return ReturnCode_ADS_SYNC_TIMEOUT, true
 	case "ADS_SYNC_AMS_ERROR":
-		enum = ReturnCode_ADS_SYNC_AMS_ERROR
+		return ReturnCode_ADS_SYNC_AMS_ERROR, true
 	case "NO_INDEX_MAP_FOR_ADS_AVAILABLE":
-		enum = ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE
+		return ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE, true
 	case "INVALID_ADS_PORT":
-		enum = ReturnCode_INVALID_ADS_PORT
+		return ReturnCode_INVALID_ADS_PORT, true
 	case "NO_MEMORY":
-		enum = ReturnCode_NO_MEMORY
+		return ReturnCode_NO_MEMORY, true
 	case "TCP_SENDING_ERROR":
-		enum = ReturnCode_TCP_SENDING_ERROR
+		return ReturnCode_TCP_SENDING_ERROR, true
 	case "HOST_NOT_REACHABLE":
-		enum = ReturnCode_HOST_NOT_REACHABLE
+		return ReturnCode_HOST_NOT_REACHABLE, true
 	case "INVALID_AMS_FRAGMENT":
-		enum = ReturnCode_INVALID_AMS_FRAGMENT
+		return ReturnCode_INVALID_AMS_FRAGMENT, true
 	case "WSAETIMEDOUT":
-		enum = ReturnCode_WSAETIMEDOUT
+		return ReturnCode_WSAETIMEDOUT, true
 	case "WSAECONNREFUSED":
-		enum = ReturnCode_WSAECONNREFUSED
+		return ReturnCode_WSAECONNREFUSED, true
 	case "WSAEHOSTUNREACH":
-		enum = ReturnCode_WSAEHOSTUNREACH
+		return ReturnCode_WSAEHOSTUNREACH, true
 	case "ROUTERERR_NOLOCKEDMEMORY":
-		enum = ReturnCode_ROUTERERR_NOLOCKEDMEMORY
+		return ReturnCode_ROUTERERR_NOLOCKEDMEMORY, true
 	case "ROUTERERR_RESIZEMEMORY":
-		enum = ReturnCode_ROUTERERR_RESIZEMEMORY
+		return ReturnCode_ROUTERERR_RESIZEMEMORY, true
 	case "ROUTERERR_MAILBOXFULL":
-		enum = ReturnCode_ROUTERERR_MAILBOXFULL
+		return ReturnCode_ROUTERERR_MAILBOXFULL, true
 	case "ROUTERERR_DEBUGBOXFULL":
-		enum = ReturnCode_ROUTERERR_DEBUGBOXFULL
+		return ReturnCode_ROUTERERR_DEBUGBOXFULL, true
 	case "ROUTERERR_UNKNOWNPORTTYPE":
-		enum = ReturnCode_ROUTERERR_UNKNOWNPORTTYPE
+		return ReturnCode_ROUTERERR_UNKNOWNPORTTYPE, true
 	case "ROUTERERR_NOTINITIALIZED":
-		enum = ReturnCode_ROUTERERR_NOTINITIALIZED
+		return ReturnCode_ROUTERERR_NOTINITIALIZED, true
 	case "ROUTERERR_PORTALREADYINUSE":
-		enum = ReturnCode_ROUTERERR_PORTALREADYINUSE
+		return ReturnCode_ROUTERERR_PORTALREADYINUSE, true
 	case "ROUTERERR_NOTREGISTERED":
-		enum = ReturnCode_ROUTERERR_NOTREGISTERED
+		return ReturnCode_ROUTERERR_NOTREGISTERED, true
 	case "ROUTERERR_NOMOREQUEUES":
-		enum = ReturnCode_ROUTERERR_NOMOREQUEUES
+		return ReturnCode_ROUTERERR_NOMOREQUEUES, true
 	case "ROUTERERR_INVALIDPORT":
-		enum = ReturnCode_ROUTERERR_INVALIDPORT
+		return ReturnCode_ROUTERERR_INVALIDPORT, true
 	case "ROUTERERR_NOTACTIVATED":
-		enum = ReturnCode_ROUTERERR_NOTACTIVATED
+		return ReturnCode_ROUTERERR_NOTACTIVATED, true
 	case "ADSERR_DEVICE_ERROR":
-		enum = ReturnCode_ADSERR_DEVICE_ERROR
+		return ReturnCode_ADSERR_DEVICE_ERROR, true
 	case "ADSERR_DEVICE_SRVNOTSUPP":
-		enum = ReturnCode_ADSERR_DEVICE_SRVNOTSUPP
+		return ReturnCode_ADSERR_DEVICE_SRVNOTSUPP, true
 	case "ADSERR_DEVICE_INVALIDGRP":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDGRP
+		return ReturnCode_ADSERR_DEVICE_INVALIDGRP, true
 	case "ADSERR_DEVICE_INVALIDOFFSET":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDOFFSET
+		return ReturnCode_ADSERR_DEVICE_INVALIDOFFSET, true
 	case "ADSERR_DEVICE_INVALIDACCESS":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDACCESS
+		return ReturnCode_ADSERR_DEVICE_INVALIDACCESS, true
 	case "ADSERR_DEVICE_INVALIDSIZE":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDSIZE
+		return ReturnCode_ADSERR_DEVICE_INVALIDSIZE, true
 	case "ADSERR_DEVICE_INVALIDDATA":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDDATA
+		return ReturnCode_ADSERR_DEVICE_INVALIDDATA, true
 	case "ADSERR_DEVICE_NOTREADY":
-		enum = ReturnCode_ADSERR_DEVICE_NOTREADY
+		return ReturnCode_ADSERR_DEVICE_NOTREADY, true
 	case "ADSERR_DEVICE_BUSY":
-		enum = ReturnCode_ADSERR_DEVICE_BUSY
+		return ReturnCode_ADSERR_DEVICE_BUSY, true
 	case "ADSERR_DEVICE_INVALIDCONTEXT":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT
+		return ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT, true
 	case "ADSERR_DEVICE_NOMEMORY":
-		enum = ReturnCode_ADSERR_DEVICE_NOMEMORY
+		return ReturnCode_ADSERR_DEVICE_NOMEMORY, true
 	case "ADSERR_DEVICE_INVALIDPARM":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDPARM
+		return ReturnCode_ADSERR_DEVICE_INVALIDPARM, true
 	case "ADSERR_DEVICE_NOTFOUND":
-		enum = ReturnCode_ADSERR_DEVICE_NOTFOUND
+		return ReturnCode_ADSERR_DEVICE_NOTFOUND, true
 	case "ADSERR_DEVICE_SYNTAX":
-		enum = ReturnCode_ADSERR_DEVICE_SYNTAX
+		return ReturnCode_ADSERR_DEVICE_SYNTAX, true
 	case "ADSERR_DEVICE_INCOMPATIBLE":
-		enum = ReturnCode_ADSERR_DEVICE_INCOMPATIBLE
+		return ReturnCode_ADSERR_DEVICE_INCOMPATIBLE, true
 	case "ADSERR_DEVICE_EXISTS":
-		enum = ReturnCode_ADSERR_DEVICE_EXISTS
+		return ReturnCode_ADSERR_DEVICE_EXISTS, true
 	case "ADSERR_DEVICE_SYMBOLNOTFOUND":
-		enum = ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND
+		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND, true
 	case "ADSERR_DEVICE_SYMBOLVERSIONINVALID":
-		enum = ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID
+		return ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID, true
 	case "ADSERR_DEVICE_INVALIDSTATE":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDSTATE
+		return ReturnCode_ADSERR_DEVICE_INVALIDSTATE, true
 	case "ADSERR_DEVICE_TRANSMODENOTSUPP":
-		enum = ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP
+		return ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP, true
 	case "ADSERR_DEVICE_NOTIFYHNDINVALID":
-		enum = ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID
+		return ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID, true
 	case "ADSERR_DEVICE_CLIENTUNKNOWN":
-		enum = ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN
+		return ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN, true
 	case "ADSERR_DEVICE_NOMOREHDLS":
-		enum = ReturnCode_ADSERR_DEVICE_NOMOREHDLS
+		return ReturnCode_ADSERR_DEVICE_NOMOREHDLS, true
 	case "ADSERR_DEVICE_INVALIDWATCHSIZE":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE
+		return ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE, true
 	case "ADSERR_DEVICE_NOTINIT":
-		enum = ReturnCode_ADSERR_DEVICE_NOTINIT
+		return ReturnCode_ADSERR_DEVICE_NOTINIT, true
 	case "ADSERR_DEVICE_TIMEOUT":
-		enum = ReturnCode_ADSERR_DEVICE_TIMEOUT
+		return ReturnCode_ADSERR_DEVICE_TIMEOUT, true
 	case "ADSERR_DEVICE_NOINTERFACE":
-		enum = ReturnCode_ADSERR_DEVICE_NOINTERFACE
+		return ReturnCode_ADSERR_DEVICE_NOINTERFACE, true
 	case "ADSERR_DEVICE_INVALIDINTERFACE":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE
+		return ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE, true
 	case "ADSERR_DEVICE_INVALIDCLSID":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDCLSID
+		return ReturnCode_ADSERR_DEVICE_INVALIDCLSID, true
 	case "ADSERR_DEVICE_INVALIDOBJID":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDOBJID
+		return ReturnCode_ADSERR_DEVICE_INVALIDOBJID, true
 	case "ADSERR_DEVICE_PENDING":
-		enum = ReturnCode_ADSERR_DEVICE_PENDING
+		return ReturnCode_ADSERR_DEVICE_PENDING, true
 	case "ADSERR_DEVICE_ABORTED":
-		enum = ReturnCode_ADSERR_DEVICE_ABORTED
+		return ReturnCode_ADSERR_DEVICE_ABORTED, true
 	case "ADSERR_DEVICE_WARNING":
-		enum = ReturnCode_ADSERR_DEVICE_WARNING
+		return ReturnCode_ADSERR_DEVICE_WARNING, true
 	case "ADSERR_DEVICE_INVALIDARRAYIDX":
-		enum = ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX
+		return ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX, true
 	case "ADSERR_DEVICE_SYMBOLNOTACTIVE":
-		enum = ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE
+		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE, true
 	case "ADSERR_DEVICE_ACCESSDENIED":
-		enum = ReturnCode_ADSERR_DEVICE_ACCESSDENIED
+		return ReturnCode_ADSERR_DEVICE_ACCESSDENIED, true
 	case "ADSERR_DEVICE_LICENSENOTFOUND":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND
+		return ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND, true
 	case "ADSERR_DEVICE_LICENSEEXPIRED":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED
+		return ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED, true
 	case "ADSERR_DEVICE_LICENSEEXCEEDED":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED
+		return ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED, true
 	case "ADSERR_DEVICE_LICENSEINVALID":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSEINVALID
+		return ReturnCode_ADSERR_DEVICE_LICENSEINVALID, true
 	case "ADSERR_DEVICE_LICENSESYSTEMID":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID
+		return ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID, true
 	case "ADSERR_DEVICE_LICENSENOTIMELIMIT":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT
+		return ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT, true
 	case "ADSERR_DEVICE_LICENSEFUTUREISSUE":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE
+		return ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE, true
 	case "ADSERR_DEVICE_LICENSETIMETOLONG":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG
+		return ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG, true
 	case "ADSERR_DEVICE_LICENSEDUPLICATED":
-		enum = ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED
+		return ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED, true
 	case "ADSERR_DEVICE_SIGNATUREINVALID":
-		enum = ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID
+		return ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID, true
 	case "ADSERR_DEVICE_CERTIFICATEINVALID":
-		enum = ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID
+		return ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID, true
 	case "ADSERR_DEVICE_EXCEPTION":
-		enum = ReturnCode_ADSERR_DEVICE_EXCEPTION
+		return ReturnCode_ADSERR_DEVICE_EXCEPTION, true
 	case "ADSERR_CLIENT_ERROR":
-		enum = ReturnCode_ADSERR_CLIENT_ERROR
+		return ReturnCode_ADSERR_CLIENT_ERROR, true
 	case "ADSERR_CLIENT_INVALIDPARM":
-		enum = ReturnCode_ADSERR_CLIENT_INVALIDPARM
+		return ReturnCode_ADSERR_CLIENT_INVALIDPARM, true
 	case "ADSERR_CLIENT_LISTEMPTY":
-		enum = ReturnCode_ADSERR_CLIENT_LISTEMPTY
+		return ReturnCode_ADSERR_CLIENT_LISTEMPTY, true
 	case "ADSERR_CLIENT_VARUSED":
-		enum = ReturnCode_ADSERR_CLIENT_VARUSED
+		return ReturnCode_ADSERR_CLIENT_VARUSED, true
 	case "ADSERR_CLIENT_DUPLINVOKEID":
-		enum = ReturnCode_ADSERR_CLIENT_DUPLINVOKEID
+		return ReturnCode_ADSERR_CLIENT_DUPLINVOKEID, true
 	case "ADSERR_CLIENT_SYNCTIMEOUT":
-		enum = ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT
+		return ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT, true
 	case "ADSERR_CLIENT_W32ERROR":
-		enum = ReturnCode_ADSERR_CLIENT_W32ERROR
+		return ReturnCode_ADSERR_CLIENT_W32ERROR, true
 	case "ADSERR_CLIENT_TIMEOUTINVALID":
-		enum = ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID
+		return ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID, true
 	case "ADSERR_CLIENT_PORTNOTOPEN":
-		enum = ReturnCode_ADSERR_CLIENT_PORTNOTOPEN
+		return ReturnCode_ADSERR_CLIENT_PORTNOTOPEN, true
 	case "ADSERR_CLIENT_NOAMSADDR":
-		enum = ReturnCode_ADSERR_CLIENT_NOAMSADDR
+		return ReturnCode_ADSERR_CLIENT_NOAMSADDR, true
 	case "ADSERR_CLIENT_SYNCINTERNAL":
-		enum = ReturnCode_ADSERR_CLIENT_SYNCINTERNAL
+		return ReturnCode_ADSERR_CLIENT_SYNCINTERNAL, true
 	case "ADSERR_CLIENT_ADDHASH":
-		enum = ReturnCode_ADSERR_CLIENT_ADDHASH
+		return ReturnCode_ADSERR_CLIENT_ADDHASH, true
 	case "ADSERR_CLIENT_REMOVEHASH":
-		enum = ReturnCode_ADSERR_CLIENT_REMOVEHASH
+		return ReturnCode_ADSERR_CLIENT_REMOVEHASH, true
 	case "ADSERR_CLIENT_NOMORESYM":
-		enum = ReturnCode_ADSERR_CLIENT_NOMORESYM
+		return ReturnCode_ADSERR_CLIENT_NOMORESYM, true
 	case "ADSERR_CLIENT_SYNCRESINVALID":
-		enum = ReturnCode_ADSERR_CLIENT_SYNCRESINVALID
-	default:
-		enum = 0
-		ok = false
+		return ReturnCode_ADSERR_CLIENT_SYNCRESINVALID, true
 	}
-	return
+	return 0, false
 }
 
 func ReturnCodeKnows(value uint32) bool {
@@ -824,7 +820,11 @@ func ReturnCodeParse(readBuffer utils.ReadBuffer) (ReturnCode, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ReturnCode")
 	}
-	return ReturnCodeByValue(val), nil
+	if enum, ok := ReturnCodeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ReturnCode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ReturnCode) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetResultFlagsByValue(value uint8) BACnetResultFlags {
+func BACnetResultFlagsByValue(value uint8) (enum BACnetResultFlags, ok bool) {
 	switch value {
 	case 0:
-		return BACnetResultFlags_FIRST_ITEM
+		return BACnetResultFlags_FIRST_ITEM, true
 	case 1:
-		return BACnetResultFlags_LAST_ITEM
+		return BACnetResultFlags_LAST_ITEM, true
 	case 2:
-		return BACnetResultFlags_MORE_ITEMS
+		return BACnetResultFlags_MORE_ITEMS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetResultFlagsByName(value string) (enum BACnetResultFlags, ok bool) {
-	ok = true
 	switch value {
 	case "FIRST_ITEM":
-		enum = BACnetResultFlags_FIRST_ITEM
+		return BACnetResultFlags_FIRST_ITEM, true
 	case "LAST_ITEM":
-		enum = BACnetResultFlags_LAST_ITEM
+		return BACnetResultFlags_LAST_ITEM, true
 	case "MORE_ITEMS":
-		enum = BACnetResultFlags_MORE_ITEMS
-	default:
-		enum = 0
-		ok = false
+		return BACnetResultFlags_MORE_ITEMS, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetResultFlagsKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetResultFlagsParse(readBuffer utils.ReadBuffer) (BACnetResultFlags, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetResultFlags")
 	}
-	return BACnetResultFlagsByValue(val), nil
+	if enum, ok := BACnetResultFlagsByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetResultFlags", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetResultFlags) Serialize(writeBuffer utils.WriteBuffer) error {

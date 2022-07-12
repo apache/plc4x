@@ -152,80 +152,76 @@ func ComObjectValueTypeFirstEnumForFieldSizeInBytes(value uint8) (ComObjectValue
 	}
 	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
 }
-func ComObjectValueTypeByValue(value uint8) ComObjectValueType {
+func ComObjectValueTypeByValue(value uint8) (enum ComObjectValueType, ok bool) {
 	switch value {
 	case 0x00:
-		return ComObjectValueType_BIT1
+		return ComObjectValueType_BIT1, true
 	case 0x01:
-		return ComObjectValueType_BIT2
+		return ComObjectValueType_BIT2, true
 	case 0x02:
-		return ComObjectValueType_BIT3
+		return ComObjectValueType_BIT3, true
 	case 0x03:
-		return ComObjectValueType_BIT4
+		return ComObjectValueType_BIT4, true
 	case 0x04:
-		return ComObjectValueType_BIT5
+		return ComObjectValueType_BIT5, true
 	case 0x05:
-		return ComObjectValueType_BIT6
+		return ComObjectValueType_BIT6, true
 	case 0x06:
-		return ComObjectValueType_BIT7
+		return ComObjectValueType_BIT7, true
 	case 0x07:
-		return ComObjectValueType_BYTE1
+		return ComObjectValueType_BYTE1, true
 	case 0x08:
-		return ComObjectValueType_BYTE2
+		return ComObjectValueType_BYTE2, true
 	case 0x09:
-		return ComObjectValueType_BYTE3
+		return ComObjectValueType_BYTE3, true
 	case 0x0A:
-		return ComObjectValueType_BYTE4
+		return ComObjectValueType_BYTE4, true
 	case 0x0B:
-		return ComObjectValueType_BYTE6
+		return ComObjectValueType_BYTE6, true
 	case 0x0C:
-		return ComObjectValueType_BYTE8
+		return ComObjectValueType_BYTE8, true
 	case 0x0D:
-		return ComObjectValueType_BYTE10
+		return ComObjectValueType_BYTE10, true
 	case 0x0E:
-		return ComObjectValueType_BYTE14
+		return ComObjectValueType_BYTE14, true
 	}
-	return 0
+	return 0, false
 }
 
 func ComObjectValueTypeByName(value string) (enum ComObjectValueType, ok bool) {
-	ok = true
 	switch value {
 	case "BIT1":
-		enum = ComObjectValueType_BIT1
+		return ComObjectValueType_BIT1, true
 	case "BIT2":
-		enum = ComObjectValueType_BIT2
+		return ComObjectValueType_BIT2, true
 	case "BIT3":
-		enum = ComObjectValueType_BIT3
+		return ComObjectValueType_BIT3, true
 	case "BIT4":
-		enum = ComObjectValueType_BIT4
+		return ComObjectValueType_BIT4, true
 	case "BIT5":
-		enum = ComObjectValueType_BIT5
+		return ComObjectValueType_BIT5, true
 	case "BIT6":
-		enum = ComObjectValueType_BIT6
+		return ComObjectValueType_BIT6, true
 	case "BIT7":
-		enum = ComObjectValueType_BIT7
+		return ComObjectValueType_BIT7, true
 	case "BYTE1":
-		enum = ComObjectValueType_BYTE1
+		return ComObjectValueType_BYTE1, true
 	case "BYTE2":
-		enum = ComObjectValueType_BYTE2
+		return ComObjectValueType_BYTE2, true
 	case "BYTE3":
-		enum = ComObjectValueType_BYTE3
+		return ComObjectValueType_BYTE3, true
 	case "BYTE4":
-		enum = ComObjectValueType_BYTE4
+		return ComObjectValueType_BYTE4, true
 	case "BYTE6":
-		enum = ComObjectValueType_BYTE6
+		return ComObjectValueType_BYTE6, true
 	case "BYTE8":
-		enum = ComObjectValueType_BYTE8
+		return ComObjectValueType_BYTE8, true
 	case "BYTE10":
-		enum = ComObjectValueType_BYTE10
+		return ComObjectValueType_BYTE10, true
 	case "BYTE14":
-		enum = ComObjectValueType_BYTE14
-	default:
-		enum = 0
-		ok = false
+		return ComObjectValueType_BYTE14, true
 	}
-	return
+	return 0, false
 }
 
 func ComObjectValueTypeKnows(value uint8) bool {
@@ -260,7 +256,11 @@ func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ComObjectValueType")
 	}
-	return ComObjectValueTypeByValue(val), nil
+	if enum, ok := ComObjectValueTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ComObjectValueType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ComObjectValueType) Serialize(writeBuffer utils.WriteBuffer) error {

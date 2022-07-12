@@ -106,144 +106,140 @@ func init() {
 	}
 }
 
-func BACnetRelationshipByValue(value uint16) BACnetRelationship {
+func BACnetRelationshipByValue(value uint16) (enum BACnetRelationship, ok bool) {
 	switch value {
 	case 0:
-		return BACnetRelationship_UNKNOWN
+		return BACnetRelationship_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE
+		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetRelationship_DEFAULT
+		return BACnetRelationship_DEFAULT, true
 	case 10:
-		return BACnetRelationship_INGRESS
+		return BACnetRelationship_INGRESS, true
 	case 11:
-		return BACnetRelationship_EGRESS
+		return BACnetRelationship_EGRESS, true
 	case 12:
-		return BACnetRelationship_SUPPLIES_AIR
+		return BACnetRelationship_SUPPLIES_AIR, true
 	case 13:
-		return BACnetRelationship_RECEIVES_AIR
+		return BACnetRelationship_RECEIVES_AIR, true
 	case 14:
-		return BACnetRelationship_SUPPLIES_HOT_AIR
+		return BACnetRelationship_SUPPLIES_HOT_AIR, true
 	case 15:
-		return BACnetRelationship_RECEIVES_HOT_AIR
+		return BACnetRelationship_RECEIVES_HOT_AIR, true
 	case 16:
-		return BACnetRelationship_SUPPLIES_COOL_AIR
+		return BACnetRelationship_SUPPLIES_COOL_AIR, true
 	case 17:
-		return BACnetRelationship_RECEIVES_COOL_AIR
+		return BACnetRelationship_RECEIVES_COOL_AIR, true
 	case 18:
-		return BACnetRelationship_SUPPLIES_POWER
+		return BACnetRelationship_SUPPLIES_POWER, true
 	case 19:
-		return BACnetRelationship_RECEIVES_POWER
+		return BACnetRelationship_RECEIVES_POWER, true
 	case 2:
-		return BACnetRelationship_CONTAINS
+		return BACnetRelationship_CONTAINS, true
 	case 20:
-		return BACnetRelationship_SUPPLIES_GAS
+		return BACnetRelationship_SUPPLIES_GAS, true
 	case 21:
-		return BACnetRelationship_RECEIVES_GAS
+		return BACnetRelationship_RECEIVES_GAS, true
 	case 22:
-		return BACnetRelationship_SUPPLIES_WATER
+		return BACnetRelationship_SUPPLIES_WATER, true
 	case 23:
-		return BACnetRelationship_RECEIVES_WATER
+		return BACnetRelationship_RECEIVES_WATER, true
 	case 24:
-		return BACnetRelationship_SUPPLIES_HOT_WATER
+		return BACnetRelationship_SUPPLIES_HOT_WATER, true
 	case 25:
-		return BACnetRelationship_RECEIVES_HOT_WATER
+		return BACnetRelationship_RECEIVES_HOT_WATER, true
 	case 26:
-		return BACnetRelationship_SUPPLIES_COOL_WATER
+		return BACnetRelationship_SUPPLIES_COOL_WATER, true
 	case 27:
-		return BACnetRelationship_RECEIVES_COOL_WATER
+		return BACnetRelationship_RECEIVES_COOL_WATER, true
 	case 28:
-		return BACnetRelationship_SUPPLIES_STEAM
+		return BACnetRelationship_SUPPLIES_STEAM, true
 	case 29:
-		return BACnetRelationship_RECEIVES_STEAM
+		return BACnetRelationship_RECEIVES_STEAM, true
 	case 3:
-		return BACnetRelationship_CONTAINED_BY
+		return BACnetRelationship_CONTAINED_BY, true
 	case 4:
-		return BACnetRelationship_USES
+		return BACnetRelationship_USES, true
 	case 5:
-		return BACnetRelationship_USED_BY
+		return BACnetRelationship_USED_BY, true
 	case 6:
-		return BACnetRelationship_COMMANDS
+		return BACnetRelationship_COMMANDS, true
 	case 7:
-		return BACnetRelationship_COMMANDED_BY
+		return BACnetRelationship_COMMANDED_BY, true
 	case 8:
-		return BACnetRelationship_ADJUSTS
+		return BACnetRelationship_ADJUSTS, true
 	case 9:
-		return BACnetRelationship_ADJUSTED_BY
+		return BACnetRelationship_ADJUSTED_BY, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetRelationshipByName(value string) (enum BACnetRelationship, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetRelationship_UNKNOWN
+		return BACnetRelationship_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetRelationship_VENDOR_PROPRIETARY_VALUE
+		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE, true
 	case "DEFAULT":
-		enum = BACnetRelationship_DEFAULT
+		return BACnetRelationship_DEFAULT, true
 	case "INGRESS":
-		enum = BACnetRelationship_INGRESS
+		return BACnetRelationship_INGRESS, true
 	case "EGRESS":
-		enum = BACnetRelationship_EGRESS
+		return BACnetRelationship_EGRESS, true
 	case "SUPPLIES_AIR":
-		enum = BACnetRelationship_SUPPLIES_AIR
+		return BACnetRelationship_SUPPLIES_AIR, true
 	case "RECEIVES_AIR":
-		enum = BACnetRelationship_RECEIVES_AIR
+		return BACnetRelationship_RECEIVES_AIR, true
 	case "SUPPLIES_HOT_AIR":
-		enum = BACnetRelationship_SUPPLIES_HOT_AIR
+		return BACnetRelationship_SUPPLIES_HOT_AIR, true
 	case "RECEIVES_HOT_AIR":
-		enum = BACnetRelationship_RECEIVES_HOT_AIR
+		return BACnetRelationship_RECEIVES_HOT_AIR, true
 	case "SUPPLIES_COOL_AIR":
-		enum = BACnetRelationship_SUPPLIES_COOL_AIR
+		return BACnetRelationship_SUPPLIES_COOL_AIR, true
 	case "RECEIVES_COOL_AIR":
-		enum = BACnetRelationship_RECEIVES_COOL_AIR
+		return BACnetRelationship_RECEIVES_COOL_AIR, true
 	case "SUPPLIES_POWER":
-		enum = BACnetRelationship_SUPPLIES_POWER
+		return BACnetRelationship_SUPPLIES_POWER, true
 	case "RECEIVES_POWER":
-		enum = BACnetRelationship_RECEIVES_POWER
+		return BACnetRelationship_RECEIVES_POWER, true
 	case "CONTAINS":
-		enum = BACnetRelationship_CONTAINS
+		return BACnetRelationship_CONTAINS, true
 	case "SUPPLIES_GAS":
-		enum = BACnetRelationship_SUPPLIES_GAS
+		return BACnetRelationship_SUPPLIES_GAS, true
 	case "RECEIVES_GAS":
-		enum = BACnetRelationship_RECEIVES_GAS
+		return BACnetRelationship_RECEIVES_GAS, true
 	case "SUPPLIES_WATER":
-		enum = BACnetRelationship_SUPPLIES_WATER
+		return BACnetRelationship_SUPPLIES_WATER, true
 	case "RECEIVES_WATER":
-		enum = BACnetRelationship_RECEIVES_WATER
+		return BACnetRelationship_RECEIVES_WATER, true
 	case "SUPPLIES_HOT_WATER":
-		enum = BACnetRelationship_SUPPLIES_HOT_WATER
+		return BACnetRelationship_SUPPLIES_HOT_WATER, true
 	case "RECEIVES_HOT_WATER":
-		enum = BACnetRelationship_RECEIVES_HOT_WATER
+		return BACnetRelationship_RECEIVES_HOT_WATER, true
 	case "SUPPLIES_COOL_WATER":
-		enum = BACnetRelationship_SUPPLIES_COOL_WATER
+		return BACnetRelationship_SUPPLIES_COOL_WATER, true
 	case "RECEIVES_COOL_WATER":
-		enum = BACnetRelationship_RECEIVES_COOL_WATER
+		return BACnetRelationship_RECEIVES_COOL_WATER, true
 	case "SUPPLIES_STEAM":
-		enum = BACnetRelationship_SUPPLIES_STEAM
+		return BACnetRelationship_SUPPLIES_STEAM, true
 	case "RECEIVES_STEAM":
-		enum = BACnetRelationship_RECEIVES_STEAM
+		return BACnetRelationship_RECEIVES_STEAM, true
 	case "CONTAINED_BY":
-		enum = BACnetRelationship_CONTAINED_BY
+		return BACnetRelationship_CONTAINED_BY, true
 	case "USES":
-		enum = BACnetRelationship_USES
+		return BACnetRelationship_USES, true
 	case "USED_BY":
-		enum = BACnetRelationship_USED_BY
+		return BACnetRelationship_USED_BY, true
 	case "COMMANDS":
-		enum = BACnetRelationship_COMMANDS
+		return BACnetRelationship_COMMANDS, true
 	case "COMMANDED_BY":
-		enum = BACnetRelationship_COMMANDED_BY
+		return BACnetRelationship_COMMANDED_BY, true
 	case "ADJUSTS":
-		enum = BACnetRelationship_ADJUSTS
+		return BACnetRelationship_ADJUSTS, true
 	case "ADJUSTED_BY":
-		enum = BACnetRelationship_ADJUSTED_BY
-	default:
-		enum = 0
-		ok = false
+		return BACnetRelationship_ADJUSTED_BY, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetRelationshipKnows(value uint16) bool {
@@ -278,7 +274,11 @@ func BACnetRelationshipParse(readBuffer utils.ReadBuffer) (BACnetRelationship, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRelationship")
 	}
-	return BACnetRelationshipByValue(val), nil
+	if enum, ok := BACnetRelationshipByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetRelationship", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetRelationship) Serialize(writeBuffer utils.WriteBuffer) error {

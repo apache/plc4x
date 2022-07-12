@@ -104,48 +104,44 @@ func DataTransportSizeFirstEnumForFieldSizeInBits(value bool) (DataTransportSize
 	}
 	return 0, errors.Errorf("enum for %v describing SizeInBits not found", value)
 }
-func DataTransportSizeByValue(value uint8) DataTransportSize {
+func DataTransportSizeByValue(value uint8) (enum DataTransportSize, ok bool) {
 	switch value {
 	case 0x00:
-		return DataTransportSize_NULL
+		return DataTransportSize_NULL, true
 	case 0x03:
-		return DataTransportSize_BIT
+		return DataTransportSize_BIT, true
 	case 0x04:
-		return DataTransportSize_BYTE_WORD_DWORD
+		return DataTransportSize_BYTE_WORD_DWORD, true
 	case 0x05:
-		return DataTransportSize_INTEGER
+		return DataTransportSize_INTEGER, true
 	case 0x06:
-		return DataTransportSize_DINTEGER
+		return DataTransportSize_DINTEGER, true
 	case 0x07:
-		return DataTransportSize_REAL
+		return DataTransportSize_REAL, true
 	case 0x09:
-		return DataTransportSize_OCTET_STRING
+		return DataTransportSize_OCTET_STRING, true
 	}
-	return 0
+	return 0, false
 }
 
 func DataTransportSizeByName(value string) (enum DataTransportSize, ok bool) {
-	ok = true
 	switch value {
 	case "NULL":
-		enum = DataTransportSize_NULL
+		return DataTransportSize_NULL, true
 	case "BIT":
-		enum = DataTransportSize_BIT
+		return DataTransportSize_BIT, true
 	case "BYTE_WORD_DWORD":
-		enum = DataTransportSize_BYTE_WORD_DWORD
+		return DataTransportSize_BYTE_WORD_DWORD, true
 	case "INTEGER":
-		enum = DataTransportSize_INTEGER
+		return DataTransportSize_INTEGER, true
 	case "DINTEGER":
-		enum = DataTransportSize_DINTEGER
+		return DataTransportSize_DINTEGER, true
 	case "REAL":
-		enum = DataTransportSize_REAL
+		return DataTransportSize_REAL, true
 	case "OCTET_STRING":
-		enum = DataTransportSize_OCTET_STRING
-	default:
-		enum = 0
-		ok = false
+		return DataTransportSize_OCTET_STRING, true
 	}
-	return
+	return 0, false
 }
 
 func DataTransportSizeKnows(value uint8) bool {
@@ -180,7 +176,11 @@ func DataTransportSizeParse(readBuffer utils.ReadBuffer) (DataTransportSize, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportSize")
 	}
-	return DataTransportSizeByValue(val), nil
+	if enum, ok := DataTransportSizeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for DataTransportSize", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e DataTransportSize) Serialize(writeBuffer utils.WriteBuffer) error {

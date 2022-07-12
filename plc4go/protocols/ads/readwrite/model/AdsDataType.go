@@ -481,180 +481,176 @@ func AdsDataTypeFirstEnumForFieldDataFormatName(value string) (AdsDataType, erro
 	}
 	return 0, errors.Errorf("enum for %v describing DataFormatName not found", value)
 }
-func AdsDataTypeByValue(value int8) AdsDataType {
+func AdsDataTypeByValue(value int8) (enum AdsDataType, ok bool) {
 	switch value {
 	case 0x01:
-		return AdsDataType_BOOL
+		return AdsDataType_BOOL, true
 	case 0x02:
-		return AdsDataType_BIT
+		return AdsDataType_BIT, true
 	case 0x03:
-		return AdsDataType_BIT8
+		return AdsDataType_BIT8, true
 	case 0x04:
-		return AdsDataType_BYTE
+		return AdsDataType_BYTE, true
 	case 0x05:
-		return AdsDataType_BITARR8
+		return AdsDataType_BITARR8, true
 	case 0x06:
-		return AdsDataType_WORD
+		return AdsDataType_WORD, true
 	case 0x07:
-		return AdsDataType_BITARR16
+		return AdsDataType_BITARR16, true
 	case 0x08:
-		return AdsDataType_DWORD
+		return AdsDataType_DWORD, true
 	case 0x09:
-		return AdsDataType_BITARR32
+		return AdsDataType_BITARR32, true
 	case 0x0A:
-		return AdsDataType_SINT
+		return AdsDataType_SINT, true
 	case 0x0B:
-		return AdsDataType_INT8
+		return AdsDataType_INT8, true
 	case 0x0C:
-		return AdsDataType_USINT
+		return AdsDataType_USINT, true
 	case 0x0D:
-		return AdsDataType_UINT8
+		return AdsDataType_UINT8, true
 	case 0x0E:
-		return AdsDataType_INT
+		return AdsDataType_INT, true
 	case 0x0F:
-		return AdsDataType_INT16
+		return AdsDataType_INT16, true
 	case 0x10:
-		return AdsDataType_UINT
+		return AdsDataType_UINT, true
 	case 0x11:
-		return AdsDataType_UINT16
+		return AdsDataType_UINT16, true
 	case 0x12:
-		return AdsDataType_DINT
+		return AdsDataType_DINT, true
 	case 0x13:
-		return AdsDataType_INT32
+		return AdsDataType_INT32, true
 	case 0x14:
-		return AdsDataType_UDINT
+		return AdsDataType_UDINT, true
 	case 0x15:
-		return AdsDataType_UINT32
+		return AdsDataType_UINT32, true
 	case 0x16:
-		return AdsDataType_LINT
+		return AdsDataType_LINT, true
 	case 0x17:
-		return AdsDataType_INT64
+		return AdsDataType_INT64, true
 	case 0x18:
-		return AdsDataType_ULINT
+		return AdsDataType_ULINT, true
 	case 0x19:
-		return AdsDataType_UINT64
+		return AdsDataType_UINT64, true
 	case 0x1A:
-		return AdsDataType_REAL
+		return AdsDataType_REAL, true
 	case 0x1B:
-		return AdsDataType_FLOAT
+		return AdsDataType_FLOAT, true
 	case 0x1C:
-		return AdsDataType_LREAL
+		return AdsDataType_LREAL, true
 	case 0x1D:
-		return AdsDataType_DOUBLE
+		return AdsDataType_DOUBLE, true
 	case 0x1E:
-		return AdsDataType_CHAR
+		return AdsDataType_CHAR, true
 	case 0x1F:
-		return AdsDataType_WCHAR
+		return AdsDataType_WCHAR, true
 	case 0x20:
-		return AdsDataType_STRING
+		return AdsDataType_STRING, true
 	case 0x21:
-		return AdsDataType_WSTRING
+		return AdsDataType_WSTRING, true
 	case 0x22:
-		return AdsDataType_TIME
+		return AdsDataType_TIME, true
 	case 0x23:
-		return AdsDataType_LTIME
+		return AdsDataType_LTIME, true
 	case 0x24:
-		return AdsDataType_DATE
+		return AdsDataType_DATE, true
 	case 0x25:
-		return AdsDataType_TIME_OF_DAY
+		return AdsDataType_TIME_OF_DAY, true
 	case 0x26:
-		return AdsDataType_TOD
+		return AdsDataType_TOD, true
 	case 0x27:
-		return AdsDataType_DATE_AND_TIME
+		return AdsDataType_DATE_AND_TIME, true
 	case 0x28:
-		return AdsDataType_DT
+		return AdsDataType_DT, true
 	}
-	return 0
+	return 0, false
 }
 
 func AdsDataTypeByName(value string) (enum AdsDataType, ok bool) {
-	ok = true
 	switch value {
 	case "BOOL":
-		enum = AdsDataType_BOOL
+		return AdsDataType_BOOL, true
 	case "BIT":
-		enum = AdsDataType_BIT
+		return AdsDataType_BIT, true
 	case "BIT8":
-		enum = AdsDataType_BIT8
+		return AdsDataType_BIT8, true
 	case "BYTE":
-		enum = AdsDataType_BYTE
+		return AdsDataType_BYTE, true
 	case "BITARR8":
-		enum = AdsDataType_BITARR8
+		return AdsDataType_BITARR8, true
 	case "WORD":
-		enum = AdsDataType_WORD
+		return AdsDataType_WORD, true
 	case "BITARR16":
-		enum = AdsDataType_BITARR16
+		return AdsDataType_BITARR16, true
 	case "DWORD":
-		enum = AdsDataType_DWORD
+		return AdsDataType_DWORD, true
 	case "BITARR32":
-		enum = AdsDataType_BITARR32
+		return AdsDataType_BITARR32, true
 	case "SINT":
-		enum = AdsDataType_SINT
+		return AdsDataType_SINT, true
 	case "INT8":
-		enum = AdsDataType_INT8
+		return AdsDataType_INT8, true
 	case "USINT":
-		enum = AdsDataType_USINT
+		return AdsDataType_USINT, true
 	case "UINT8":
-		enum = AdsDataType_UINT8
+		return AdsDataType_UINT8, true
 	case "INT":
-		enum = AdsDataType_INT
+		return AdsDataType_INT, true
 	case "INT16":
-		enum = AdsDataType_INT16
+		return AdsDataType_INT16, true
 	case "UINT":
-		enum = AdsDataType_UINT
+		return AdsDataType_UINT, true
 	case "UINT16":
-		enum = AdsDataType_UINT16
+		return AdsDataType_UINT16, true
 	case "DINT":
-		enum = AdsDataType_DINT
+		return AdsDataType_DINT, true
 	case "INT32":
-		enum = AdsDataType_INT32
+		return AdsDataType_INT32, true
 	case "UDINT":
-		enum = AdsDataType_UDINT
+		return AdsDataType_UDINT, true
 	case "UINT32":
-		enum = AdsDataType_UINT32
+		return AdsDataType_UINT32, true
 	case "LINT":
-		enum = AdsDataType_LINT
+		return AdsDataType_LINT, true
 	case "INT64":
-		enum = AdsDataType_INT64
+		return AdsDataType_INT64, true
 	case "ULINT":
-		enum = AdsDataType_ULINT
+		return AdsDataType_ULINT, true
 	case "UINT64":
-		enum = AdsDataType_UINT64
+		return AdsDataType_UINT64, true
 	case "REAL":
-		enum = AdsDataType_REAL
+		return AdsDataType_REAL, true
 	case "FLOAT":
-		enum = AdsDataType_FLOAT
+		return AdsDataType_FLOAT, true
 	case "LREAL":
-		enum = AdsDataType_LREAL
+		return AdsDataType_LREAL, true
 	case "DOUBLE":
-		enum = AdsDataType_DOUBLE
+		return AdsDataType_DOUBLE, true
 	case "CHAR":
-		enum = AdsDataType_CHAR
+		return AdsDataType_CHAR, true
 	case "WCHAR":
-		enum = AdsDataType_WCHAR
+		return AdsDataType_WCHAR, true
 	case "STRING":
-		enum = AdsDataType_STRING
+		return AdsDataType_STRING, true
 	case "WSTRING":
-		enum = AdsDataType_WSTRING
+		return AdsDataType_WSTRING, true
 	case "TIME":
-		enum = AdsDataType_TIME
+		return AdsDataType_TIME, true
 	case "LTIME":
-		enum = AdsDataType_LTIME
+		return AdsDataType_LTIME, true
 	case "DATE":
-		enum = AdsDataType_DATE
+		return AdsDataType_DATE, true
 	case "TIME_OF_DAY":
-		enum = AdsDataType_TIME_OF_DAY
+		return AdsDataType_TIME_OF_DAY, true
 	case "TOD":
-		enum = AdsDataType_TOD
+		return AdsDataType_TOD, true
 	case "DATE_AND_TIME":
-		enum = AdsDataType_DATE_AND_TIME
+		return AdsDataType_DATE_AND_TIME, true
 	case "DT":
-		enum = AdsDataType_DT
-	default:
-		enum = 0
-		ok = false
+		return AdsDataType_DT, true
 	}
-	return
+	return 0, false
 }
 
 func AdsDataTypeKnows(value int8) bool {
@@ -689,7 +685,11 @@ func AdsDataTypeParse(readBuffer utils.ReadBuffer) (AdsDataType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AdsDataType")
 	}
-	return AdsDataTypeByValue(val), nil
+	if enum, ok := AdsDataTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for AdsDataType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e AdsDataType) Serialize(writeBuffer utils.WriteBuffer) error {

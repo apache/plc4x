@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetIPModeByValue(value uint8) BACnetIPMode {
+func BACnetIPModeByValue(value uint8) (enum BACnetIPMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetIPMode_NORMAL
+		return BACnetIPMode_NORMAL, true
 	case 1:
-		return BACnetIPMode_FOREIGN
+		return BACnetIPMode_FOREIGN, true
 	case 2:
-		return BACnetIPMode_BBMD
+		return BACnetIPMode_BBMD, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetIPModeByName(value string) (enum BACnetIPMode, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetIPMode_NORMAL
+		return BACnetIPMode_NORMAL, true
 	case "FOREIGN":
-		enum = BACnetIPMode_FOREIGN
+		return BACnetIPMode_FOREIGN, true
 	case "BBMD":
-		enum = BACnetIPMode_BBMD
-	default:
-		enum = 0
-		ok = false
+		return BACnetIPMode_BBMD, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetIPModeKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetIPModeParse(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetIPMode")
 	}
-	return BACnetIPModeByValue(val), nil
+	if enum, ok := BACnetIPModeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetIPMode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetIPMode) Serialize(writeBuffer utils.WriteBuffer) error {

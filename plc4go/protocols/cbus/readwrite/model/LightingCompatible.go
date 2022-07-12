@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func LightingCompatibleByValue(value uint8) LightingCompatible {
+func LightingCompatibleByValue(value uint8) (enum LightingCompatible, ok bool) {
 	switch value {
 	case 0x0:
-		return LightingCompatible_NO
+		return LightingCompatible_NO, true
 	case 0x1:
-		return LightingCompatible_YES
+		return LightingCompatible_YES, true
 	case 0x2:
-		return LightingCompatible_YES_BUT_RESTRICTIONS
+		return LightingCompatible_YES_BUT_RESTRICTIONS, true
 	case 0x3:
-		return LightingCompatible_NA
+		return LightingCompatible_NA, true
 	}
-	return 0
+	return 0, false
 }
 
 func LightingCompatibleByName(value string) (enum LightingCompatible, ok bool) {
-	ok = true
 	switch value {
 	case "NO":
-		enum = LightingCompatible_NO
+		return LightingCompatible_NO, true
 	case "YES":
-		enum = LightingCompatible_YES
+		return LightingCompatible_YES, true
 	case "YES_BUT_RESTRICTIONS":
-		enum = LightingCompatible_YES_BUT_RESTRICTIONS
+		return LightingCompatible_YES_BUT_RESTRICTIONS, true
 	case "NA":
-		enum = LightingCompatible_NA
-	default:
-		enum = 0
-		ok = false
+		return LightingCompatible_NA, true
 	}
-	return
+	return 0, false
 }
 
 func LightingCompatibleKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func LightingCompatibleParse(readBuffer utils.ReadBuffer) (LightingCompatible, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingCompatible")
 	}
-	return LightingCompatibleByValue(val), nil
+	if enum, ok := LightingCompatibleByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for LightingCompatible", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e LightingCompatible) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -104,48 +104,44 @@ func RequestTypeFirstEnumForFieldControlChar(value uint8) (RequestType, error) {
 	}
 	return 0, errors.Errorf("enum for %v describing ControlChar not found", value)
 }
-func RequestTypeByValue(value uint8) RequestType {
+func RequestTypeByValue(value uint8) (enum RequestType, ok bool) {
 	switch value {
 	case 0x00:
-		return RequestType_UNKNOWN
+		return RequestType_UNKNOWN, true
 	case 0x0D:
-		return RequestType_EMPTY
+		return RequestType_EMPTY, true
 	case 0x40:
-		return RequestType_DIRECT_COMMAND
+		return RequestType_DIRECT_COMMAND, true
 	case 0x5C:
-		return RequestType_REQUEST_COMMAND
+		return RequestType_REQUEST_COMMAND, true
 	case 0x6E:
-		return RequestType_NULL
+		return RequestType_NULL, true
 	case 0x7C:
-		return RequestType_SMART_CONNECT_SHORTCUT
+		return RequestType_SMART_CONNECT_SHORTCUT, true
 	case 0x7E:
-		return RequestType_RESET
+		return RequestType_RESET, true
 	}
-	return 0
+	return 0, false
 }
 
 func RequestTypeByName(value string) (enum RequestType, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = RequestType_UNKNOWN
+		return RequestType_UNKNOWN, true
 	case "EMPTY":
-		enum = RequestType_EMPTY
+		return RequestType_EMPTY, true
 	case "DIRECT_COMMAND":
-		enum = RequestType_DIRECT_COMMAND
+		return RequestType_DIRECT_COMMAND, true
 	case "REQUEST_COMMAND":
-		enum = RequestType_REQUEST_COMMAND
+		return RequestType_REQUEST_COMMAND, true
 	case "NULL":
-		enum = RequestType_NULL
+		return RequestType_NULL, true
 	case "SMART_CONNECT_SHORTCUT":
-		enum = RequestType_SMART_CONNECT_SHORTCUT
+		return RequestType_SMART_CONNECT_SHORTCUT, true
 	case "RESET":
-		enum = RequestType_RESET
-	default:
-		enum = 0
-		ok = false
+		return RequestType_RESET, true
 	}
-	return
+	return 0, false
 }
 
 func RequestTypeKnows(value uint8) bool {
@@ -180,7 +176,11 @@ func RequestTypeParse(readBuffer utils.ReadBuffer) (RequestType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading RequestType")
 	}
-	return RequestTypeByValue(val), nil
+	if enum, ok := RequestTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for RequestType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e RequestType) Serialize(writeBuffer utils.WriteBuffer) error {

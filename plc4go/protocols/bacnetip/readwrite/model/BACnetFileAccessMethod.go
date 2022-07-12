@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetFileAccessMethodByValue(value uint8) BACnetFileAccessMethod {
+func BACnetFileAccessMethodByValue(value uint8) (enum BACnetFileAccessMethod, ok bool) {
 	switch value {
 	case 0:
-		return BACnetFileAccessMethod_RECORD_ACCESS
+		return BACnetFileAccessMethod_RECORD_ACCESS, true
 	case 1:
-		return BACnetFileAccessMethod_STREAM_ACCESS
+		return BACnetFileAccessMethod_STREAM_ACCESS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetFileAccessMethodByName(value string) (enum BACnetFileAccessMethod, ok bool) {
-	ok = true
 	switch value {
 	case "RECORD_ACCESS":
-		enum = BACnetFileAccessMethod_RECORD_ACCESS
+		return BACnetFileAccessMethod_RECORD_ACCESS, true
 	case "STREAM_ACCESS":
-		enum = BACnetFileAccessMethod_STREAM_ACCESS
-	default:
-		enum = 0
-		ok = false
+		return BACnetFileAccessMethod_STREAM_ACCESS, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetFileAccessMethodKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetFileAccessMethodParse(readBuffer utils.ReadBuffer) (BACnetFileAccessM
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetFileAccessMethod")
 	}
-	return BACnetFileAccessMethodByValue(val), nil
+	if enum, ok := BACnetFileAccessMethodByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetFileAccessMethod", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetFileAccessMethod) Serialize(writeBuffer utils.WriteBuffer) error {

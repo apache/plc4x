@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetSecurityPolicyByValue(value uint8) BACnetSecurityPolicy {
+func BACnetSecurityPolicyByValue(value uint8) (enum BACnetSecurityPolicy, ok bool) {
 	switch value {
 	case 0:
-		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED, true
 	case 1:
-		return BACnetSecurityPolicy_PLAIN_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_TRUSTED, true
 	case 2:
-		return BACnetSecurityPolicy_SIGNED_TRUSTED
+		return BACnetSecurityPolicy_SIGNED_TRUSTED, true
 	case 3:
-		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED
+		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetSecurityPolicyByName(value string) (enum BACnetSecurityPolicy, ok bool) {
-	ok = true
 	switch value {
 	case "PLAIN_NON_TRUSTED":
-		enum = BACnetSecurityPolicy_PLAIN_NON_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED, true
 	case "PLAIN_TRUSTED":
-		enum = BACnetSecurityPolicy_PLAIN_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_TRUSTED, true
 	case "SIGNED_TRUSTED":
-		enum = BACnetSecurityPolicy_SIGNED_TRUSTED
+		return BACnetSecurityPolicy_SIGNED_TRUSTED, true
 	case "ENCRYPTED_TRUSTED":
-		enum = BACnetSecurityPolicy_ENCRYPTED_TRUSTED
-	default:
-		enum = 0
-		ok = false
+		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetSecurityPolicyKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetSecurityPolic
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSecurityPolicy")
 	}
-	return BACnetSecurityPolicyByValue(val), nil
+	if enum, ok := BACnetSecurityPolicyByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetSecurityPolicy", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) error {

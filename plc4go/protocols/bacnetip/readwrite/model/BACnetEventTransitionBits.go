@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetEventTransitionBitsByValue(value uint8) BACnetEventTransitionBits {
+func BACnetEventTransitionBitsByValue(value uint8) (enum BACnetEventTransitionBits, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEventTransitionBits_TO_OFFNORMAL
+		return BACnetEventTransitionBits_TO_OFFNORMAL, true
 	case 1:
-		return BACnetEventTransitionBits_TO_FAULT
+		return BACnetEventTransitionBits_TO_FAULT, true
 	case 2:
-		return BACnetEventTransitionBits_TO_NORMAL
+		return BACnetEventTransitionBits_TO_NORMAL, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEventTransitionBitsByName(value string) (enum BACnetEventTransitionBits, ok bool) {
-	ok = true
 	switch value {
 	case "TO_OFFNORMAL":
-		enum = BACnetEventTransitionBits_TO_OFFNORMAL
+		return BACnetEventTransitionBits_TO_OFFNORMAL, true
 	case "TO_FAULT":
-		enum = BACnetEventTransitionBits_TO_FAULT
+		return BACnetEventTransitionBits_TO_FAULT, true
 	case "TO_NORMAL":
-		enum = BACnetEventTransitionBits_TO_NORMAL
-	default:
-		enum = 0
-		ok = false
+		return BACnetEventTransitionBits_TO_NORMAL, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetEventTransitionBitsKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer) (BACnetEventTra
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEventTransitionBits")
 	}
-	return BACnetEventTransitionBitsByValue(val), nil
+	if enum, ok := BACnetEventTransitionBitsByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetEventTransitionBits", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetEventTransitionBits) Serialize(writeBuffer utils.WriteBuffer) error {

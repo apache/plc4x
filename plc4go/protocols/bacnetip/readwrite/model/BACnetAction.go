@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetActionByValue(value uint8) BACnetAction {
+func BACnetActionByValue(value uint8) (enum BACnetAction, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAction_DIRECT
+		return BACnetAction_DIRECT, true
 	case 1:
-		return BACnetAction_REVERSE
+		return BACnetAction_REVERSE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetActionByName(value string) (enum BACnetAction, ok bool) {
-	ok = true
 	switch value {
 	case "DIRECT":
-		enum = BACnetAction_DIRECT
+		return BACnetAction_DIRECT, true
 	case "REVERSE":
-		enum = BACnetAction_REVERSE
-	default:
-		enum = 0
-		ok = false
+		return BACnetAction_REVERSE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetActionKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetActionParse(readBuffer utils.ReadBuffer) (BACnetAction, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAction")
 	}
-	return BACnetActionByValue(val), nil
+	if enum, ok := BACnetActionByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAction", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAction) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -60,52 +60,48 @@ func init() {
 	}
 }
 
-func BACnetVTClassByValue(value uint16) BACnetVTClass {
+func BACnetVTClassByValue(value uint16) (enum BACnetVTClass, ok bool) {
 	switch value {
 	case 0:
-		return BACnetVTClass_DEFAULT_TERMINAL
+		return BACnetVTClass_DEFAULT_TERMINAL, true
 	case 0xFFFF:
-		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE
+		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetVTClass_ANSI_X3_64
+		return BACnetVTClass_ANSI_X3_64, true
 	case 2:
-		return BACnetVTClass_DEC_VT52
+		return BACnetVTClass_DEC_VT52, true
 	case 3:
-		return BACnetVTClass_DEC_VT100
+		return BACnetVTClass_DEC_VT100, true
 	case 4:
-		return BACnetVTClass_DEC_VT220
+		return BACnetVTClass_DEC_VT220, true
 	case 5:
-		return BACnetVTClass_HP_700_94
+		return BACnetVTClass_HP_700_94, true
 	case 6:
-		return BACnetVTClass_IBM_3130
+		return BACnetVTClass_IBM_3130, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetVTClassByName(value string) (enum BACnetVTClass, ok bool) {
-	ok = true
 	switch value {
 	case "DEFAULT_TERMINAL":
-		enum = BACnetVTClass_DEFAULT_TERMINAL
+		return BACnetVTClass_DEFAULT_TERMINAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetVTClass_VENDOR_PROPRIETARY_VALUE
+		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE, true
 	case "ANSI_X3_64":
-		enum = BACnetVTClass_ANSI_X3_64
+		return BACnetVTClass_ANSI_X3_64, true
 	case "DEC_VT52":
-		enum = BACnetVTClass_DEC_VT52
+		return BACnetVTClass_DEC_VT52, true
 	case "DEC_VT100":
-		enum = BACnetVTClass_DEC_VT100
+		return BACnetVTClass_DEC_VT100, true
 	case "DEC_VT220":
-		enum = BACnetVTClass_DEC_VT220
+		return BACnetVTClass_DEC_VT220, true
 	case "HP_700_94":
-		enum = BACnetVTClass_HP_700_94
+		return BACnetVTClass_HP_700_94, true
 	case "IBM_3130":
-		enum = BACnetVTClass_IBM_3130
-	default:
-		enum = 0
-		ok = false
+		return BACnetVTClass_IBM_3130, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetVTClassKnows(value uint16) bool {
@@ -140,7 +136,11 @@ func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVTClass")
 	}
-	return BACnetVTClassByValue(val), nil
+	if enum, ok := BACnetVTClassByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetVTClass", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetVTClass) Serialize(writeBuffer utils.WriteBuffer) error {

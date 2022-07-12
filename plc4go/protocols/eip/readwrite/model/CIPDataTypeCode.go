@@ -114,52 +114,48 @@ func CIPDataTypeCodeFirstEnumForFieldSize(value uint8) (CIPDataTypeCode, error) 
 	}
 	return 0, errors.Errorf("enum for %v describing Size not found", value)
 }
-func CIPDataTypeCodeByValue(value uint16) CIPDataTypeCode {
+func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 	switch value {
 	case 0x00C1:
-		return CIPDataTypeCode_BOOL
+		return CIPDataTypeCode_BOOL, true
 	case 0x00C2:
-		return CIPDataTypeCode_SINT
+		return CIPDataTypeCode_SINT, true
 	case 0x00C3:
-		return CIPDataTypeCode_INT
+		return CIPDataTypeCode_INT, true
 	case 0x00C4:
-		return CIPDataTypeCode_DINT
+		return CIPDataTypeCode_DINT, true
 	case 0x00C5:
-		return CIPDataTypeCode_LINT
+		return CIPDataTypeCode_LINT, true
 	case 0x00CA:
-		return CIPDataTypeCode_REAL
+		return CIPDataTypeCode_REAL, true
 	case 0x00D3:
-		return CIPDataTypeCode_DWORD
+		return CIPDataTypeCode_DWORD, true
 	case 0x02A0:
-		return CIPDataTypeCode_STRUCTURED
+		return CIPDataTypeCode_STRUCTURED, true
 	}
-	return 0
+	return 0, false
 }
 
 func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
-	ok = true
 	switch value {
 	case "BOOL":
-		enum = CIPDataTypeCode_BOOL
+		return CIPDataTypeCode_BOOL, true
 	case "SINT":
-		enum = CIPDataTypeCode_SINT
+		return CIPDataTypeCode_SINT, true
 	case "INT":
-		enum = CIPDataTypeCode_INT
+		return CIPDataTypeCode_INT, true
 	case "DINT":
-		enum = CIPDataTypeCode_DINT
+		return CIPDataTypeCode_DINT, true
 	case "LINT":
-		enum = CIPDataTypeCode_LINT
+		return CIPDataTypeCode_LINT, true
 	case "REAL":
-		enum = CIPDataTypeCode_REAL
+		return CIPDataTypeCode_REAL, true
 	case "DWORD":
-		enum = CIPDataTypeCode_DWORD
+		return CIPDataTypeCode_DWORD, true
 	case "STRUCTURED":
-		enum = CIPDataTypeCode_STRUCTURED
-	default:
-		enum = 0
-		ok = false
+		return CIPDataTypeCode_STRUCTURED, true
 	}
-	return
+	return 0, false
 }
 
 func CIPDataTypeCodeKnows(value uint16) bool {
@@ -194,7 +190,11 @@ func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CIPDataTypeCode")
 	}
-	return CIPDataTypeCodeByValue(val), nil
+	if enum, ok := CIPDataTypeCodeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for CIPDataTypeCode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e CIPDataTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {

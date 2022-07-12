@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetShedStateByValue(value uint8) BACnetShedState {
+func BACnetShedStateByValue(value uint8) (enum BACnetShedState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetShedState_SHED_INACTIVE
+		return BACnetShedState_SHED_INACTIVE, true
 	case 1:
-		return BACnetShedState_SHED_REQUEST_PENDING
+		return BACnetShedState_SHED_REQUEST_PENDING, true
 	case 2:
-		return BACnetShedState_SHED_COMPLIANT
+		return BACnetShedState_SHED_COMPLIANT, true
 	case 3:
-		return BACnetShedState_SHED_NON_COMPLIANT
+		return BACnetShedState_SHED_NON_COMPLIANT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetShedStateByName(value string) (enum BACnetShedState, ok bool) {
-	ok = true
 	switch value {
 	case "SHED_INACTIVE":
-		enum = BACnetShedState_SHED_INACTIVE
+		return BACnetShedState_SHED_INACTIVE, true
 	case "SHED_REQUEST_PENDING":
-		enum = BACnetShedState_SHED_REQUEST_PENDING
+		return BACnetShedState_SHED_REQUEST_PENDING, true
 	case "SHED_COMPLIANT":
-		enum = BACnetShedState_SHED_COMPLIANT
+		return BACnetShedState_SHED_COMPLIANT, true
 	case "SHED_NON_COMPLIANT":
-		enum = BACnetShedState_SHED_NON_COMPLIANT
-	default:
-		enum = 0
-		ok = false
+		return BACnetShedState_SHED_NON_COMPLIANT, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetShedStateKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetShedStateParse(readBuffer utils.ReadBuffer) (BACnetShedState, error) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetShedState")
 	}
-	return BACnetShedStateByValue(val), nil
+	if enum, ok := BACnetShedStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetShedState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetShedState) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetAccessPassbackModeByValue(value uint8) BACnetAccessPassbackMode {
+func BACnetAccessPassbackModeByValue(value uint8) (enum BACnetAccessPassbackMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessPassbackMode_PASSBACK_OFF
+		return BACnetAccessPassbackMode_PASSBACK_OFF, true
 	case 1:
-		return BACnetAccessPassbackMode_HARD_PASSBACK
+		return BACnetAccessPassbackMode_HARD_PASSBACK, true
 	case 2:
-		return BACnetAccessPassbackMode_SOFT_PASSBACK
+		return BACnetAccessPassbackMode_SOFT_PASSBACK, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessPassbackModeByName(value string) (enum BACnetAccessPassbackMode, ok bool) {
-	ok = true
 	switch value {
 	case "PASSBACK_OFF":
-		enum = BACnetAccessPassbackMode_PASSBACK_OFF
+		return BACnetAccessPassbackMode_PASSBACK_OFF, true
 	case "HARD_PASSBACK":
-		enum = BACnetAccessPassbackMode_HARD_PASSBACK
+		return BACnetAccessPassbackMode_HARD_PASSBACK, true
 	case "SOFT_PASSBACK":
-		enum = BACnetAccessPassbackMode_SOFT_PASSBACK
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessPassbackMode_SOFT_PASSBACK, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessPassbackModeKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetAccessPassbackModeParse(readBuffer utils.ReadBuffer) (BACnetAccessPas
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessPassbackMode")
 	}
-	return BACnetAccessPassbackModeByValue(val), nil
+	if enum, ok := BACnetAccessPassbackModeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessPassbackMode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessPassbackMode) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func KnxMediumByValue(value uint8) KnxMedium {
+func KnxMediumByValue(value uint8) (enum KnxMedium, ok bool) {
 	switch value {
 	case 0x01:
-		return KnxMedium_MEDIUM_RESERVED_1
+		return KnxMedium_MEDIUM_RESERVED_1, true
 	case 0x02:
-		return KnxMedium_MEDIUM_TP1
+		return KnxMedium_MEDIUM_TP1, true
 	case 0x04:
-		return KnxMedium_MEDIUM_PL110
+		return KnxMedium_MEDIUM_PL110, true
 	case 0x08:
-		return KnxMedium_MEDIUM_RESERVED_2
+		return KnxMedium_MEDIUM_RESERVED_2, true
 	case 0x10:
-		return KnxMedium_MEDIUM_RF
+		return KnxMedium_MEDIUM_RF, true
 	case 0x20:
-		return KnxMedium_MEDIUM_KNX_IP
+		return KnxMedium_MEDIUM_KNX_IP, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxMediumByName(value string) (enum KnxMedium, ok bool) {
-	ok = true
 	switch value {
 	case "MEDIUM_RESERVED_1":
-		enum = KnxMedium_MEDIUM_RESERVED_1
+		return KnxMedium_MEDIUM_RESERVED_1, true
 	case "MEDIUM_TP1":
-		enum = KnxMedium_MEDIUM_TP1
+		return KnxMedium_MEDIUM_TP1, true
 	case "MEDIUM_PL110":
-		enum = KnxMedium_MEDIUM_PL110
+		return KnxMedium_MEDIUM_PL110, true
 	case "MEDIUM_RESERVED_2":
-		enum = KnxMedium_MEDIUM_RESERVED_2
+		return KnxMedium_MEDIUM_RESERVED_2, true
 	case "MEDIUM_RF":
-		enum = KnxMedium_MEDIUM_RF
+		return KnxMedium_MEDIUM_RF, true
 	case "MEDIUM_KNX_IP":
-		enum = KnxMedium_MEDIUM_KNX_IP
-	default:
-		enum = 0
-		ok = false
+		return KnxMedium_MEDIUM_KNX_IP, true
 	}
-	return
+	return 0, false
 }
 
 func KnxMediumKnows(value uint8) bool {
@@ -128,7 +124,11 @@ func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxMedium")
 	}
-	return KnxMediumByValue(val), nil
+	if enum, ok := KnxMediumByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for KnxMedium", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e KnxMedium) Serialize(writeBuffer utils.WriteBuffer) error {

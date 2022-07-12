@@ -94,120 +94,116 @@ func init() {
 	}
 }
 
-func BACnetReliabilityByValue(value uint16) BACnetReliability {
+func BACnetReliabilityByValue(value uint16) (enum BACnetReliability, ok bool) {
 	switch value {
 	case 0:
-		return BACnetReliability_NO_FAULT_DETECTED
+		return BACnetReliability_NO_FAULT_DETECTED, true
 	case 0xFFFF:
-		return BACnetReliability_VENDOR_PROPRIETARY_VALUE
+		return BACnetReliability_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetReliability_NO_SENSOR
+		return BACnetReliability_NO_SENSOR, true
 	case 10:
-		return BACnetReliability_CONFIGURATION_ERROR
+		return BACnetReliability_CONFIGURATION_ERROR, true
 	case 12:
-		return BACnetReliability_COMMUNICATION_FAILURE
+		return BACnetReliability_COMMUNICATION_FAILURE, true
 	case 13:
-		return BACnetReliability_MEMBER_FAULT
+		return BACnetReliability_MEMBER_FAULT, true
 	case 14:
-		return BACnetReliability_MONITORED_OBJECT_FAULT
+		return BACnetReliability_MONITORED_OBJECT_FAULT, true
 	case 15:
-		return BACnetReliability_TRIPPED
+		return BACnetReliability_TRIPPED, true
 	case 16:
-		return BACnetReliability_LAMP_FAILURE
+		return BACnetReliability_LAMP_FAILURE, true
 	case 17:
-		return BACnetReliability_ACTIVATION_FAILURE
+		return BACnetReliability_ACTIVATION_FAILURE, true
 	case 18:
-		return BACnetReliability_RENEW_DHCP_FAILURE
+		return BACnetReliability_RENEW_DHCP_FAILURE, true
 	case 19:
-		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE
+		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE, true
 	case 2:
-		return BACnetReliability_OVER_RANGE
+		return BACnetReliability_OVER_RANGE, true
 	case 20:
-		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE
+		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE, true
 	case 21:
-		return BACnetReliability_RESTART_FAILURE
+		return BACnetReliability_RESTART_FAILURE, true
 	case 22:
-		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE
+		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE, true
 	case 23:
-		return BACnetReliability_FAULTS_LISTED
+		return BACnetReliability_FAULTS_LISTED, true
 	case 24:
-		return BACnetReliability_REFERENCED_OBJECT_FAULT
+		return BACnetReliability_REFERENCED_OBJECT_FAULT, true
 	case 3:
-		return BACnetReliability_UNDER_RANGE
+		return BACnetReliability_UNDER_RANGE, true
 	case 4:
-		return BACnetReliability_OPEN_LOOP
+		return BACnetReliability_OPEN_LOOP, true
 	case 5:
-		return BACnetReliability_SHORTED_LOOP
+		return BACnetReliability_SHORTED_LOOP, true
 	case 6:
-		return BACnetReliability_NO_OUTPUT
+		return BACnetReliability_NO_OUTPUT, true
 	case 7:
-		return BACnetReliability_UNRELIABLE_OTHER
+		return BACnetReliability_UNRELIABLE_OTHER, true
 	case 8:
-		return BACnetReliability_PROCESS_ERROR
+		return BACnetReliability_PROCESS_ERROR, true
 	case 9:
-		return BACnetReliability_MULTI_STATE_FAULT
+		return BACnetReliability_MULTI_STATE_FAULT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetReliabilityByName(value string) (enum BACnetReliability, ok bool) {
-	ok = true
 	switch value {
 	case "NO_FAULT_DETECTED":
-		enum = BACnetReliability_NO_FAULT_DETECTED
+		return BACnetReliability_NO_FAULT_DETECTED, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetReliability_VENDOR_PROPRIETARY_VALUE
+		return BACnetReliability_VENDOR_PROPRIETARY_VALUE, true
 	case "NO_SENSOR":
-		enum = BACnetReliability_NO_SENSOR
+		return BACnetReliability_NO_SENSOR, true
 	case "CONFIGURATION_ERROR":
-		enum = BACnetReliability_CONFIGURATION_ERROR
+		return BACnetReliability_CONFIGURATION_ERROR, true
 	case "COMMUNICATION_FAILURE":
-		enum = BACnetReliability_COMMUNICATION_FAILURE
+		return BACnetReliability_COMMUNICATION_FAILURE, true
 	case "MEMBER_FAULT":
-		enum = BACnetReliability_MEMBER_FAULT
+		return BACnetReliability_MEMBER_FAULT, true
 	case "MONITORED_OBJECT_FAULT":
-		enum = BACnetReliability_MONITORED_OBJECT_FAULT
+		return BACnetReliability_MONITORED_OBJECT_FAULT, true
 	case "TRIPPED":
-		enum = BACnetReliability_TRIPPED
+		return BACnetReliability_TRIPPED, true
 	case "LAMP_FAILURE":
-		enum = BACnetReliability_LAMP_FAILURE
+		return BACnetReliability_LAMP_FAILURE, true
 	case "ACTIVATION_FAILURE":
-		enum = BACnetReliability_ACTIVATION_FAILURE
+		return BACnetReliability_ACTIVATION_FAILURE, true
 	case "RENEW_DHCP_FAILURE":
-		enum = BACnetReliability_RENEW_DHCP_FAILURE
+		return BACnetReliability_RENEW_DHCP_FAILURE, true
 	case "RENEW_FD_REGISTRATION_FAILURE":
-		enum = BACnetReliability_RENEW_FD_REGISTRATION_FAILURE
+		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE, true
 	case "OVER_RANGE":
-		enum = BACnetReliability_OVER_RANGE
+		return BACnetReliability_OVER_RANGE, true
 	case "RESTART_AUTO_NEGOTIATION_FAILURE":
-		enum = BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE
+		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE, true
 	case "RESTART_FAILURE":
-		enum = BACnetReliability_RESTART_FAILURE
+		return BACnetReliability_RESTART_FAILURE, true
 	case "PROPRIETARY_COMMAND_FAILURE":
-		enum = BACnetReliability_PROPRIETARY_COMMAND_FAILURE
+		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE, true
 	case "FAULTS_LISTED":
-		enum = BACnetReliability_FAULTS_LISTED
+		return BACnetReliability_FAULTS_LISTED, true
 	case "REFERENCED_OBJECT_FAULT":
-		enum = BACnetReliability_REFERENCED_OBJECT_FAULT
+		return BACnetReliability_REFERENCED_OBJECT_FAULT, true
 	case "UNDER_RANGE":
-		enum = BACnetReliability_UNDER_RANGE
+		return BACnetReliability_UNDER_RANGE, true
 	case "OPEN_LOOP":
-		enum = BACnetReliability_OPEN_LOOP
+		return BACnetReliability_OPEN_LOOP, true
 	case "SHORTED_LOOP":
-		enum = BACnetReliability_SHORTED_LOOP
+		return BACnetReliability_SHORTED_LOOP, true
 	case "NO_OUTPUT":
-		enum = BACnetReliability_NO_OUTPUT
+		return BACnetReliability_NO_OUTPUT, true
 	case "UNRELIABLE_OTHER":
-		enum = BACnetReliability_UNRELIABLE_OTHER
+		return BACnetReliability_UNRELIABLE_OTHER, true
 	case "PROCESS_ERROR":
-		enum = BACnetReliability_PROCESS_ERROR
+		return BACnetReliability_PROCESS_ERROR, true
 	case "MULTI_STATE_FAULT":
-		enum = BACnetReliability_MULTI_STATE_FAULT
-	default:
-		enum = 0
-		ok = false
+		return BACnetReliability_MULTI_STATE_FAULT, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetReliabilityKnows(value uint16) bool {
@@ -242,7 +238,11 @@ func BACnetReliabilityParse(readBuffer utils.ReadBuffer) (BACnetReliability, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetReliability")
 	}
-	return BACnetReliabilityByValue(val), nil
+	if enum, ok := BACnetReliabilityByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetReliability", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetReliability) Serialize(writeBuffer utils.WriteBuffer) error {

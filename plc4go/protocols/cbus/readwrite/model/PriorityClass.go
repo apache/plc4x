@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func PriorityClassByValue(value uint8) PriorityClass {
+func PriorityClassByValue(value uint8) (enum PriorityClass, ok bool) {
 	switch value {
 	case 0x00:
-		return PriorityClass_Class4
+		return PriorityClass_Class4, true
 	case 0x01:
-		return PriorityClass_Class3
+		return PriorityClass_Class3, true
 	case 0x02:
-		return PriorityClass_Class2
+		return PriorityClass_Class2, true
 	case 0x03:
-		return PriorityClass_Class1
+		return PriorityClass_Class1, true
 	}
-	return 0
+	return 0, false
 }
 
 func PriorityClassByName(value string) (enum PriorityClass, ok bool) {
-	ok = true
 	switch value {
 	case "Class4":
-		enum = PriorityClass_Class4
+		return PriorityClass_Class4, true
 	case "Class3":
-		enum = PriorityClass_Class3
+		return PriorityClass_Class3, true
 	case "Class2":
-		enum = PriorityClass_Class2
+		return PriorityClass_Class2, true
 	case "Class1":
-		enum = PriorityClass_Class1
-	default:
-		enum = 0
-		ok = false
+		return PriorityClass_Class1, true
 	}
-	return
+	return 0, false
 }
 
 func PriorityClassKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func PriorityClassParse(readBuffer utils.ReadBuffer) (PriorityClass, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PriorityClass")
 	}
-	return PriorityClassByValue(val), nil
+	if enum, ok := PriorityClassByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for PriorityClass", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e PriorityClass) Serialize(writeBuffer utils.WriteBuffer) error {

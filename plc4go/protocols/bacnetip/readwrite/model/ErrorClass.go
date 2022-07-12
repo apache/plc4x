@@ -62,56 +62,52 @@ func init() {
 	}
 }
 
-func ErrorClassByValue(value uint16) ErrorClass {
+func ErrorClassByValue(value uint16) (enum ErrorClass, ok bool) {
 	switch value {
 	case 0xFFFF:
-		return ErrorClass_VENDOR_PROPRIETARY_VALUE
+		return ErrorClass_VENDOR_PROPRIETARY_VALUE, true
 	case 0x0000:
-		return ErrorClass_DEVICE
+		return ErrorClass_DEVICE, true
 	case 0x0001:
-		return ErrorClass_OBJECT
+		return ErrorClass_OBJECT, true
 	case 0x0002:
-		return ErrorClass_PROPERTY
+		return ErrorClass_PROPERTY, true
 	case 0x0003:
-		return ErrorClass_RESOURCES
+		return ErrorClass_RESOURCES, true
 	case 0x0004:
-		return ErrorClass_SECURITY
+		return ErrorClass_SECURITY, true
 	case 0x0005:
-		return ErrorClass_SERVICES
+		return ErrorClass_SERVICES, true
 	case 0x0006:
-		return ErrorClass_VT
+		return ErrorClass_VT, true
 	case 0x0007:
-		return ErrorClass_COMMUNICATION
+		return ErrorClass_COMMUNICATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func ErrorClassByName(value string) (enum ErrorClass, ok bool) {
-	ok = true
 	switch value {
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = ErrorClass_VENDOR_PROPRIETARY_VALUE
+		return ErrorClass_VENDOR_PROPRIETARY_VALUE, true
 	case "DEVICE":
-		enum = ErrorClass_DEVICE
+		return ErrorClass_DEVICE, true
 	case "OBJECT":
-		enum = ErrorClass_OBJECT
+		return ErrorClass_OBJECT, true
 	case "PROPERTY":
-		enum = ErrorClass_PROPERTY
+		return ErrorClass_PROPERTY, true
 	case "RESOURCES":
-		enum = ErrorClass_RESOURCES
+		return ErrorClass_RESOURCES, true
 	case "SECURITY":
-		enum = ErrorClass_SECURITY
+		return ErrorClass_SECURITY, true
 	case "SERVICES":
-		enum = ErrorClass_SERVICES
+		return ErrorClass_SERVICES, true
 	case "VT":
-		enum = ErrorClass_VT
+		return ErrorClass_VT, true
 	case "COMMUNICATION":
-		enum = ErrorClass_COMMUNICATION
-	default:
-		enum = 0
-		ok = false
+		return ErrorClass_COMMUNICATION, true
 	}
-	return
+	return 0, false
 }
 
 func ErrorClassKnows(value uint16) bool {
@@ -146,7 +142,11 @@ func ErrorClassParse(readBuffer utils.ReadBuffer) (ErrorClass, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorClass")
 	}
-	return ErrorClassByValue(val), nil
+	if enum, ok := ErrorClassByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ErrorClass", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ErrorClass) Serialize(writeBuffer utils.WriteBuffer) error {

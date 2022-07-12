@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetDeviceStatusByValue(value uint16) BACnetDeviceStatus {
+func BACnetDeviceStatusByValue(value uint16) (enum BACnetDeviceStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDeviceStatus_OPERATIONAL
+		return BACnetDeviceStatus_OPERATIONAL, true
 	case 0xFFFF:
-		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY
+		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY, true
 	case 2:
-		return BACnetDeviceStatus_DOWNLOAD_REQUIRED
+		return BACnetDeviceStatus_DOWNLOAD_REQUIRED, true
 	case 3:
-		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
+		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS, true
 	case 4:
-		return BACnetDeviceStatus_NON_OPERATIONAL
+		return BACnetDeviceStatus_NON_OPERATIONAL, true
 	case 5:
-		return BACnetDeviceStatus_BACKUP_IN_PROGRESS
+		return BACnetDeviceStatus_BACKUP_IN_PROGRESS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDeviceStatusByName(value string) (enum BACnetDeviceStatus, ok bool) {
-	ok = true
 	switch value {
 	case "OPERATIONAL":
-		enum = BACnetDeviceStatus_OPERATIONAL
+		return BACnetDeviceStatus_OPERATIONAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE, true
 	case "OPERATIONAL_READ_ONLY":
-		enum = BACnetDeviceStatus_OPERATIONAL_READ_ONLY
+		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY, true
 	case "DOWNLOAD_REQUIRED":
-		enum = BACnetDeviceStatus_DOWNLOAD_REQUIRED
+		return BACnetDeviceStatus_DOWNLOAD_REQUIRED, true
 	case "DOWNLOAD_IN_PROGRESS":
-		enum = BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
+		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS, true
 	case "NON_OPERATIONAL":
-		enum = BACnetDeviceStatus_NON_OPERATIONAL
+		return BACnetDeviceStatus_NON_OPERATIONAL, true
 	case "BACKUP_IN_PROGRESS":
-		enum = BACnetDeviceStatus_BACKUP_IN_PROGRESS
-	default:
-		enum = 0
-		ok = false
+		return BACnetDeviceStatus_BACKUP_IN_PROGRESS, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetDeviceStatusKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BACnetDeviceStatusParse(readBuffer utils.ReadBuffer) (BACnetDeviceStatus, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDeviceStatus")
 	}
-	return BACnetDeviceStatusByValue(val), nil
+	if enum, ok := BACnetDeviceStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetDeviceStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetDeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {

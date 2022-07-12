@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetStatusFlagsByValue(value uint8) BACnetStatusFlags {
+func BACnetStatusFlagsByValue(value uint8) (enum BACnetStatusFlags, ok bool) {
 	switch value {
 	case 0:
-		return BACnetStatusFlags_IN_ALARM
+		return BACnetStatusFlags_IN_ALARM, true
 	case 1:
-		return BACnetStatusFlags_FAULT
+		return BACnetStatusFlags_FAULT, true
 	case 2:
-		return BACnetStatusFlags_OVERRIDDEN
+		return BACnetStatusFlags_OVERRIDDEN, true
 	case 3:
-		return BACnetStatusFlags_OUT_OF_SERVICE
+		return BACnetStatusFlags_OUT_OF_SERVICE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetStatusFlagsByName(value string) (enum BACnetStatusFlags, ok bool) {
-	ok = true
 	switch value {
 	case "IN_ALARM":
-		enum = BACnetStatusFlags_IN_ALARM
+		return BACnetStatusFlags_IN_ALARM, true
 	case "FAULT":
-		enum = BACnetStatusFlags_FAULT
+		return BACnetStatusFlags_FAULT, true
 	case "OVERRIDDEN":
-		enum = BACnetStatusFlags_OVERRIDDEN
+		return BACnetStatusFlags_OVERRIDDEN, true
 	case "OUT_OF_SERVICE":
-		enum = BACnetStatusFlags_OUT_OF_SERVICE
-	default:
-		enum = 0
-		ok = false
+		return BACnetStatusFlags_OUT_OF_SERVICE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetStatusFlagsKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer) (BACnetStatusFlags, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetStatusFlags")
 	}
-	return BACnetStatusFlagsByValue(val), nil
+	if enum, ok := BACnetStatusFlagsByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetStatusFlags", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {

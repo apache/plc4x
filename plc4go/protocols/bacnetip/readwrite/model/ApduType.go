@@ -76,84 +76,80 @@ func init() {
 	}
 }
 
-func ApduTypeByValue(value uint8) ApduType {
+func ApduTypeByValue(value uint8) (enum ApduType, ok bool) {
 	switch value {
 	case 0x0:
-		return ApduType_CONFIRMED_REQUEST_PDU
+		return ApduType_CONFIRMED_REQUEST_PDU, true
 	case 0x1:
-		return ApduType_UNCONFIRMED_REQUEST_PDU
+		return ApduType_UNCONFIRMED_REQUEST_PDU, true
 	case 0x2:
-		return ApduType_SIMPLE_ACK_PDU
+		return ApduType_SIMPLE_ACK_PDU, true
 	case 0x3:
-		return ApduType_COMPLEX_ACK_PDU
+		return ApduType_COMPLEX_ACK_PDU, true
 	case 0x4:
-		return ApduType_SEGMENT_ACK_PDU
+		return ApduType_SEGMENT_ACK_PDU, true
 	case 0x5:
-		return ApduType_ERROR_PDU
+		return ApduType_ERROR_PDU, true
 	case 0x6:
-		return ApduType_REJECT_PDU
+		return ApduType_REJECT_PDU, true
 	case 0x7:
-		return ApduType_ABORT_PDU
+		return ApduType_ABORT_PDU, true
 	case 0x8:
-		return ApduType_APDU_UNKNOWN_8
+		return ApduType_APDU_UNKNOWN_8, true
 	case 0x9:
-		return ApduType_APDU_UNKNOWN_9
+		return ApduType_APDU_UNKNOWN_9, true
 	case 0xA:
-		return ApduType_APDU_UNKNOWN_A
+		return ApduType_APDU_UNKNOWN_A, true
 	case 0xB:
-		return ApduType_APDU_UNKNOWN_B
+		return ApduType_APDU_UNKNOWN_B, true
 	case 0xC:
-		return ApduType_APDU_UNKNOWN_C
+		return ApduType_APDU_UNKNOWN_C, true
 	case 0xD:
-		return ApduType_APDU_UNKNOWN_D
+		return ApduType_APDU_UNKNOWN_D, true
 	case 0xE:
-		return ApduType_APDU_UNKNOWN_E
+		return ApduType_APDU_UNKNOWN_E, true
 	case 0xF:
-		return ApduType_APDU_UNKNOWN_F
+		return ApduType_APDU_UNKNOWN_F, true
 	}
-	return 0
+	return 0, false
 }
 
 func ApduTypeByName(value string) (enum ApduType, ok bool) {
-	ok = true
 	switch value {
 	case "CONFIRMED_REQUEST_PDU":
-		enum = ApduType_CONFIRMED_REQUEST_PDU
+		return ApduType_CONFIRMED_REQUEST_PDU, true
 	case "UNCONFIRMED_REQUEST_PDU":
-		enum = ApduType_UNCONFIRMED_REQUEST_PDU
+		return ApduType_UNCONFIRMED_REQUEST_PDU, true
 	case "SIMPLE_ACK_PDU":
-		enum = ApduType_SIMPLE_ACK_PDU
+		return ApduType_SIMPLE_ACK_PDU, true
 	case "COMPLEX_ACK_PDU":
-		enum = ApduType_COMPLEX_ACK_PDU
+		return ApduType_COMPLEX_ACK_PDU, true
 	case "SEGMENT_ACK_PDU":
-		enum = ApduType_SEGMENT_ACK_PDU
+		return ApduType_SEGMENT_ACK_PDU, true
 	case "ERROR_PDU":
-		enum = ApduType_ERROR_PDU
+		return ApduType_ERROR_PDU, true
 	case "REJECT_PDU":
-		enum = ApduType_REJECT_PDU
+		return ApduType_REJECT_PDU, true
 	case "ABORT_PDU":
-		enum = ApduType_ABORT_PDU
+		return ApduType_ABORT_PDU, true
 	case "APDU_UNKNOWN_8":
-		enum = ApduType_APDU_UNKNOWN_8
+		return ApduType_APDU_UNKNOWN_8, true
 	case "APDU_UNKNOWN_9":
-		enum = ApduType_APDU_UNKNOWN_9
+		return ApduType_APDU_UNKNOWN_9, true
 	case "APDU_UNKNOWN_A":
-		enum = ApduType_APDU_UNKNOWN_A
+		return ApduType_APDU_UNKNOWN_A, true
 	case "APDU_UNKNOWN_B":
-		enum = ApduType_APDU_UNKNOWN_B
+		return ApduType_APDU_UNKNOWN_B, true
 	case "APDU_UNKNOWN_C":
-		enum = ApduType_APDU_UNKNOWN_C
+		return ApduType_APDU_UNKNOWN_C, true
 	case "APDU_UNKNOWN_D":
-		enum = ApduType_APDU_UNKNOWN_D
+		return ApduType_APDU_UNKNOWN_D, true
 	case "APDU_UNKNOWN_E":
-		enum = ApduType_APDU_UNKNOWN_E
+		return ApduType_APDU_UNKNOWN_E, true
 	case "APDU_UNKNOWN_F":
-		enum = ApduType_APDU_UNKNOWN_F
-	default:
-		enum = 0
-		ok = false
+		return ApduType_APDU_UNKNOWN_F, true
 	}
-	return
+	return 0, false
 }
 
 func ApduTypeKnows(value uint8) bool {
@@ -188,7 +184,11 @@ func ApduTypeParse(readBuffer utils.ReadBuffer) (ApduType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ApduType")
 	}
-	return ApduTypeByValue(val), nil
+	if enum, ok := ApduTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ApduType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ApduType) Serialize(writeBuffer utils.WriteBuffer) error {

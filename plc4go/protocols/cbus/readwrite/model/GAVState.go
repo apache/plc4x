@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func GAVStateByValue(value uint8) GAVState {
+func GAVStateByValue(value uint8) (enum GAVState, ok bool) {
 	switch value {
 	case 0:
-		return GAVState_DOES_NOT_EXIST
+		return GAVState_DOES_NOT_EXIST, true
 	case 1:
-		return GAVState_ON
+		return GAVState_ON, true
 	case 2:
-		return GAVState_OFF
+		return GAVState_OFF, true
 	case 3:
-		return GAVState_ERROR
+		return GAVState_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
 func GAVStateByName(value string) (enum GAVState, ok bool) {
-	ok = true
 	switch value {
 	case "DOES_NOT_EXIST":
-		enum = GAVState_DOES_NOT_EXIST
+		return GAVState_DOES_NOT_EXIST, true
 	case "ON":
-		enum = GAVState_ON
+		return GAVState_ON, true
 	case "OFF":
-		enum = GAVState_OFF
+		return GAVState_OFF, true
 	case "ERROR":
-		enum = GAVState_ERROR
-	default:
-		enum = 0
-		ok = false
+		return GAVState_ERROR, true
 	}
-	return
+	return 0, false
 }
 
 func GAVStateKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func GAVStateParse(readBuffer utils.ReadBuffer) (GAVState, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading GAVState")
 	}
-	return GAVStateByValue(val), nil
+	if enum, ok := GAVStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for GAVState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e GAVState) Serialize(writeBuffer utils.WriteBuffer) error {

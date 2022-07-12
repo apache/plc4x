@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func TagClassByValue(value uint8) TagClass {
+func TagClassByValue(value uint8) (enum TagClass, ok bool) {
 	switch value {
 	case 0x0:
-		return TagClass_APPLICATION_TAGS
+		return TagClass_APPLICATION_TAGS, true
 	case 0x1:
-		return TagClass_CONTEXT_SPECIFIC_TAGS
+		return TagClass_CONTEXT_SPECIFIC_TAGS, true
 	}
-	return 0
+	return 0, false
 }
 
 func TagClassByName(value string) (enum TagClass, ok bool) {
-	ok = true
 	switch value {
 	case "APPLICATION_TAGS":
-		enum = TagClass_APPLICATION_TAGS
+		return TagClass_APPLICATION_TAGS, true
 	case "CONTEXT_SPECIFIC_TAGS":
-		enum = TagClass_CONTEXT_SPECIFIC_TAGS
-	default:
-		enum = 0
-		ok = false
+		return TagClass_CONTEXT_SPECIFIC_TAGS, true
 	}
-	return
+	return 0, false
 }
 
 func TagClassKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TagClass")
 	}
-	return TagClassByValue(val), nil
+	if enum, ok := TagClassByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for TagClass", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e TagClass) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func AlarmTypeByValue(value uint8) AlarmType {
+func AlarmTypeByValue(value uint8) (enum AlarmType, ok bool) {
 	switch value {
 	case 0x01:
-		return AlarmType_SCAN
+		return AlarmType_SCAN, true
 	case 0x02:
-		return AlarmType_ALARM_8
+		return AlarmType_ALARM_8, true
 	case 0x04:
-		return AlarmType_ALARM_S
+		return AlarmType_ALARM_S, true
 	}
-	return 0
+	return 0, false
 }
 
 func AlarmTypeByName(value string) (enum AlarmType, ok bool) {
-	ok = true
 	switch value {
 	case "SCAN":
-		enum = AlarmType_SCAN
+		return AlarmType_SCAN, true
 	case "ALARM_8":
-		enum = AlarmType_ALARM_8
+		return AlarmType_ALARM_8, true
 	case "ALARM_S":
-		enum = AlarmType_ALARM_S
-	default:
-		enum = 0
-		ok = false
+		return AlarmType_ALARM_S, true
 	}
-	return
+	return 0, false
 }
 
 func AlarmTypeKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func AlarmTypeParse(readBuffer utils.ReadBuffer) (AlarmType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AlarmType")
 	}
-	return AlarmTypeByValue(val), nil
+	if enum, ok := AlarmTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for AlarmType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e AlarmType) Serialize(writeBuffer utils.WriteBuffer) error {

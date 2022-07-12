@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetAccessAuthenticationFactorDisableByValue(value uint16) BACnetAccessAuthenticationFactorDisable {
+func BACnetAccessAuthenticationFactorDisableByValue(value uint16) (enum BACnetAccessAuthenticationFactorDisable, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessAuthenticationFactorDisable_NONE
+		return BACnetAccessAuthenticationFactorDisable_NONE, true
 	case 0xFFFF:
-		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED, true
 	case 2:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST, true
 	case 3:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN, true
 	case 4:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED, true
 	case 5:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessAuthenticationFactorDisableByName(value string) (enum BACnetAccessAuthenticationFactorDisable, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetAccessAuthenticationFactorDisable_NONE
+		return BACnetAccessAuthenticationFactorDisable_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE, true
 	case "DISABLED":
-		enum = BACnetAccessAuthenticationFactorDisable_DISABLED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED, true
 	case "DISABLED_LOST":
-		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST, true
 	case "DISABLED_STOLEN":
-		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN, true
 	case "DISABLED_DAMAGED":
-		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED, true
 	case "DISABLED_DESTROYED":
-		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessAuthenticationFactorDisableKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BACnetAccessAuthenticationFactorDisableParse(readBuffer utils.ReadBuffer) (
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessAuthenticationFactorDisable")
 	}
-	return BACnetAccessAuthenticationFactorDisableByValue(val), nil
+	if enum, ok := BACnetAccessAuthenticationFactorDisableByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessAuthenticationFactorDisable", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessAuthenticationFactorDisable) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetLimitEnableByValue(value uint8) BACnetLimitEnable {
+func BACnetLimitEnableByValue(value uint8) (enum BACnetLimitEnable, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLimitEnable_LOW_LIMIT_ENABLE
+		return BACnetLimitEnable_LOW_LIMIT_ENABLE, true
 	case 1:
-		return BACnetLimitEnable_HIGH_LIMIT_ENABLE
+		return BACnetLimitEnable_HIGH_LIMIT_ENABLE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLimitEnableByName(value string) (enum BACnetLimitEnable, ok bool) {
-	ok = true
 	switch value {
 	case "LOW_LIMIT_ENABLE":
-		enum = BACnetLimitEnable_LOW_LIMIT_ENABLE
+		return BACnetLimitEnable_LOW_LIMIT_ENABLE, true
 	case "HIGH_LIMIT_ENABLE":
-		enum = BACnetLimitEnable_HIGH_LIMIT_ENABLE
-	default:
-		enum = 0
-		ok = false
+		return BACnetLimitEnable_HIGH_LIMIT_ENABLE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLimitEnableKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetLimitEnableParse(readBuffer utils.ReadBuffer) (BACnetLimitEnable, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLimitEnable")
 	}
-	return BACnetLimitEnableByValue(val), nil
+	if enum, ok := BACnetLimitEnableByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLimitEnable", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLimitEnable) Serialize(writeBuffer utils.WriteBuffer) error {

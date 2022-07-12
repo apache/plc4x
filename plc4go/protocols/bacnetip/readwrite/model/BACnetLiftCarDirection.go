@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetLiftCarDirectionByValue(value uint16) BACnetLiftCarDirection {
+func BACnetLiftCarDirectionByValue(value uint16) (enum BACnetLiftCarDirection, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLiftCarDirection_UNKNOWN
+		return BACnetLiftCarDirection_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLiftCarDirection_NONE
+		return BACnetLiftCarDirection_NONE, true
 	case 2:
-		return BACnetLiftCarDirection_STOPPED
+		return BACnetLiftCarDirection_STOPPED, true
 	case 3:
-		return BACnetLiftCarDirection_UP
+		return BACnetLiftCarDirection_UP, true
 	case 4:
-		return BACnetLiftCarDirection_DOWN
+		return BACnetLiftCarDirection_DOWN, true
 	case 5:
-		return BACnetLiftCarDirection_UP_AND_DOWN
+		return BACnetLiftCarDirection_UP_AND_DOWN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLiftCarDirectionByName(value string) (enum BACnetLiftCarDirection, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetLiftCarDirection_UNKNOWN
+		return BACnetLiftCarDirection_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE, true
 	case "NONE":
-		enum = BACnetLiftCarDirection_NONE
+		return BACnetLiftCarDirection_NONE, true
 	case "STOPPED":
-		enum = BACnetLiftCarDirection_STOPPED
+		return BACnetLiftCarDirection_STOPPED, true
 	case "UP":
-		enum = BACnetLiftCarDirection_UP
+		return BACnetLiftCarDirection_UP, true
 	case "DOWN":
-		enum = BACnetLiftCarDirection_DOWN
+		return BACnetLiftCarDirection_DOWN, true
 	case "UP_AND_DOWN":
-		enum = BACnetLiftCarDirection_UP_AND_DOWN
-	default:
-		enum = 0
-		ok = false
+		return BACnetLiftCarDirection_UP_AND_DOWN, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLiftCarDirectionKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BACnetLiftCarDirectionParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDire
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDirection")
 	}
-	return BACnetLiftCarDirectionByValue(val), nil
+	if enum, ok := BACnetLiftCarDirectionByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLiftCarDirection", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLiftCarDirection) Serialize(writeBuffer utils.WriteBuffer) error {

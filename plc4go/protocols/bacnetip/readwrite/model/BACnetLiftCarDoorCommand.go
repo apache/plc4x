@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetLiftCarDoorCommandByValue(value uint8) BACnetLiftCarDoorCommand {
+func BACnetLiftCarDoorCommandByValue(value uint8) (enum BACnetLiftCarDoorCommand, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLiftCarDoorCommand_NONE
+		return BACnetLiftCarDoorCommand_NONE, true
 	case 1:
-		return BACnetLiftCarDoorCommand_OPEN
+		return BACnetLiftCarDoorCommand_OPEN, true
 	case 2:
-		return BACnetLiftCarDoorCommand_CLOSE
+		return BACnetLiftCarDoorCommand_CLOSE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLiftCarDoorCommandByName(value string) (enum BACnetLiftCarDoorCommand, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetLiftCarDoorCommand_NONE
+		return BACnetLiftCarDoorCommand_NONE, true
 	case "OPEN":
-		enum = BACnetLiftCarDoorCommand_OPEN
+		return BACnetLiftCarDoorCommand_OPEN, true
 	case "CLOSE":
-		enum = BACnetLiftCarDoorCommand_CLOSE
-	default:
-		enum = 0
-		ok = false
+		return BACnetLiftCarDoorCommand_CLOSE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLiftCarDoorCommandKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetLiftCarDoorCommandParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDo
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDoorCommand")
 	}
-	return BACnetLiftCarDoorCommandByValue(val), nil
+	if enum, ok := BACnetLiftCarDoorCommandByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLiftCarDoorCommand", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLiftCarDoorCommand) Serialize(writeBuffer utils.WriteBuffer) error {

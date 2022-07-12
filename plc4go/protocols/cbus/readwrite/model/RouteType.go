@@ -110,52 +110,48 @@ func RouteTypeFirstEnumForFieldAdditionalBridges(value uint8) (RouteType, error)
 	}
 	return 0, errors.Errorf("enum for %v describing AdditionalBridges not found", value)
 }
-func RouteTypeByValue(value uint8) RouteType {
+func RouteTypeByValue(value uint8) (enum RouteType, ok bool) {
 	switch value {
 	case 0x0:
-		return RouteType_NoBridgeAtAll
+		return RouteType_NoBridgeAtAll, true
 	case 0x1:
-		return RouteType_NoAdditionalBridge
+		return RouteType_NoAdditionalBridge, true
 	case 0x2:
-		return RouteType_OneAdditionalBridge
+		return RouteType_OneAdditionalBridge, true
 	case 0x3:
-		return RouteType_TwoAdditionalBridge
+		return RouteType_TwoAdditionalBridge, true
 	case 0x4:
-		return RouteType_ThreeAdditionalBridge
+		return RouteType_ThreeAdditionalBridge, true
 	case 0x5:
-		return RouteType_FourAdditionalBridge
+		return RouteType_FourAdditionalBridge, true
 	case 0x6:
-		return RouteType_FiveAdditionalBridge
+		return RouteType_FiveAdditionalBridge, true
 	case 0x7:
-		return RouteType_SixAdditionalBridge
+		return RouteType_SixAdditionalBridge, true
 	}
-	return 0
+	return 0, false
 }
 
 func RouteTypeByName(value string) (enum RouteType, ok bool) {
-	ok = true
 	switch value {
 	case "NoBridgeAtAll":
-		enum = RouteType_NoBridgeAtAll
+		return RouteType_NoBridgeAtAll, true
 	case "NoAdditionalBridge":
-		enum = RouteType_NoAdditionalBridge
+		return RouteType_NoAdditionalBridge, true
 	case "OneAdditionalBridge":
-		enum = RouteType_OneAdditionalBridge
+		return RouteType_OneAdditionalBridge, true
 	case "TwoAdditionalBridge":
-		enum = RouteType_TwoAdditionalBridge
+		return RouteType_TwoAdditionalBridge, true
 	case "ThreeAdditionalBridge":
-		enum = RouteType_ThreeAdditionalBridge
+		return RouteType_ThreeAdditionalBridge, true
 	case "FourAdditionalBridge":
-		enum = RouteType_FourAdditionalBridge
+		return RouteType_FourAdditionalBridge, true
 	case "FiveAdditionalBridge":
-		enum = RouteType_FiveAdditionalBridge
+		return RouteType_FiveAdditionalBridge, true
 	case "SixAdditionalBridge":
-		enum = RouteType_SixAdditionalBridge
-	default:
-		enum = 0
-		ok = false
+		return RouteType_SixAdditionalBridge, true
 	}
-	return
+	return 0, false
 }
 
 func RouteTypeKnows(value uint8) bool {
@@ -190,7 +186,11 @@ func RouteTypeParse(readBuffer utils.ReadBuffer) (RouteType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading RouteType")
 	}
-	return RouteTypeByValue(val), nil
+	if enum, ok := RouteTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for RouteType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e RouteType) Serialize(writeBuffer utils.WriteBuffer) error {

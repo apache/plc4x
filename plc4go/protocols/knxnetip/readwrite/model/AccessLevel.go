@@ -131,40 +131,36 @@ func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (AccessLevel, e
 	}
 	return 0, errors.Errorf("enum for %v describing NeedsAuthentication not found", value)
 }
-func AccessLevelByValue(value uint8) AccessLevel {
+func AccessLevelByValue(value uint8) (enum AccessLevel, ok bool) {
 	switch value {
 	case 0x0:
-		return AccessLevel_Level0
+		return AccessLevel_Level0, true
 	case 0x1:
-		return AccessLevel_Level1
+		return AccessLevel_Level1, true
 	case 0x2:
-		return AccessLevel_Level2
+		return AccessLevel_Level2, true
 	case 0x3:
-		return AccessLevel_Level3
+		return AccessLevel_Level3, true
 	case 0xF:
-		return AccessLevel_Level15
+		return AccessLevel_Level15, true
 	}
-	return 0
+	return 0, false
 }
 
 func AccessLevelByName(value string) (enum AccessLevel, ok bool) {
-	ok = true
 	switch value {
 	case "Level0":
-		enum = AccessLevel_Level0
+		return AccessLevel_Level0, true
 	case "Level1":
-		enum = AccessLevel_Level1
+		return AccessLevel_Level1, true
 	case "Level2":
-		enum = AccessLevel_Level2
+		return AccessLevel_Level2, true
 	case "Level3":
-		enum = AccessLevel_Level3
+		return AccessLevel_Level3, true
 	case "Level15":
-		enum = AccessLevel_Level15
-	default:
-		enum = 0
-		ok = false
+		return AccessLevel_Level15, true
 	}
-	return
+	return 0, false
 }
 
 func AccessLevelKnows(value uint8) bool {
@@ -199,7 +195,11 @@ func AccessLevelParse(readBuffer utils.ReadBuffer) (AccessLevel, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessLevel")
 	}
-	return AccessLevelByValue(val), nil
+	if enum, ok := AccessLevelByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for AccessLevel", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e AccessLevel) Serialize(writeBuffer utils.WriteBuffer) error {

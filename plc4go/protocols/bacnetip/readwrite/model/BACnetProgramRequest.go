@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func BACnetProgramRequestByValue(value uint8) BACnetProgramRequest {
+func BACnetProgramRequestByValue(value uint8) (enum BACnetProgramRequest, ok bool) {
 	switch value {
 	case 0:
-		return BACnetProgramRequest_READY
+		return BACnetProgramRequest_READY, true
 	case 1:
-		return BACnetProgramRequest_LOAD
+		return BACnetProgramRequest_LOAD, true
 	case 2:
-		return BACnetProgramRequest_RUN
+		return BACnetProgramRequest_RUN, true
 	case 3:
-		return BACnetProgramRequest_HALT
+		return BACnetProgramRequest_HALT, true
 	case 4:
-		return BACnetProgramRequest_RESTART
+		return BACnetProgramRequest_RESTART, true
 	case 5:
-		return BACnetProgramRequest_UNLOAD
+		return BACnetProgramRequest_UNLOAD, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetProgramRequestByName(value string) (enum BACnetProgramRequest, ok bool) {
-	ok = true
 	switch value {
 	case "READY":
-		enum = BACnetProgramRequest_READY
+		return BACnetProgramRequest_READY, true
 	case "LOAD":
-		enum = BACnetProgramRequest_LOAD
+		return BACnetProgramRequest_LOAD, true
 	case "RUN":
-		enum = BACnetProgramRequest_RUN
+		return BACnetProgramRequest_RUN, true
 	case "HALT":
-		enum = BACnetProgramRequest_HALT
+		return BACnetProgramRequest_HALT, true
 	case "RESTART":
-		enum = BACnetProgramRequest_RESTART
+		return BACnetProgramRequest_RESTART, true
 	case "UNLOAD":
-		enum = BACnetProgramRequest_UNLOAD
-	default:
-		enum = 0
-		ok = false
+		return BACnetProgramRequest_UNLOAD, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetProgramRequestKnows(value uint8) bool {
@@ -128,7 +124,11 @@ func BACnetProgramRequestParse(readBuffer utils.ReadBuffer) (BACnetProgramReques
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetProgramRequest")
 	}
-	return BACnetProgramRequestByValue(val), nil
+	if enum, ok := BACnetProgramRequestByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetProgramRequest", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetProgramRequest) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetBinaryPVByValue(value uint8) BACnetBinaryPV {
+func BACnetBinaryPVByValue(value uint8) (enum BACnetBinaryPV, ok bool) {
 	switch value {
 	case 0:
-		return BACnetBinaryPV_INACTIVE
+		return BACnetBinaryPV_INACTIVE, true
 	case 1:
-		return BACnetBinaryPV_ACTIVE
+		return BACnetBinaryPV_ACTIVE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetBinaryPVByName(value string) (enum BACnetBinaryPV, ok bool) {
-	ok = true
 	switch value {
 	case "INACTIVE":
-		enum = BACnetBinaryPV_INACTIVE
+		return BACnetBinaryPV_INACTIVE, true
 	case "ACTIVE":
-		enum = BACnetBinaryPV_ACTIVE
-	default:
-		enum = 0
-		ok = false
+		return BACnetBinaryPV_ACTIVE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetBinaryPVKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetBinaryPV")
 	}
-	return BACnetBinaryPVByValue(val), nil
+	if enum, ok := BACnetBinaryPVByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetBinaryPV", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetBinaryPV) Serialize(writeBuffer utils.WriteBuffer) error {

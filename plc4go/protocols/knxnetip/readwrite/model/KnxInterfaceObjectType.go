@@ -331,120 +331,116 @@ func KnxInterfaceObjectTypeFirstEnumForFieldName(value string) (KnxInterfaceObje
 	}
 	return 0, errors.Errorf("enum for %v describing Name not found", value)
 }
-func KnxInterfaceObjectTypeByValue(value uint16) KnxInterfaceObjectType {
+func KnxInterfaceObjectTypeByValue(value uint16) (enum KnxInterfaceObjectType, ok bool) {
 	switch value {
 	case 0:
-		return KnxInterfaceObjectType_OT_UNKNOWN
+		return KnxInterfaceObjectType_OT_UNKNOWN, true
 	case 1:
-		return KnxInterfaceObjectType_OT_GENERAL
+		return KnxInterfaceObjectType_OT_GENERAL, true
 	case 10:
-		return KnxInterfaceObjectType_OT_CEMI_SERVER
+		return KnxInterfaceObjectType_OT_CEMI_SERVER, true
 	case 11:
-		return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
+		return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE, true
 	case 12:
-		return KnxInterfaceObjectType_OT_POLLING_MASTER
+		return KnxInterfaceObjectType_OT_POLLING_MASTER, true
 	case 13:
-		return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+		return KnxInterfaceObjectType_OT_KNXIP_PARAMETER, true
 	case 14:
-		return KnxInterfaceObjectType_OT_FILE_SERVER
+		return KnxInterfaceObjectType_OT_FILE_SERVER, true
 	case 15:
-		return KnxInterfaceObjectType_OT_SECURITY
+		return KnxInterfaceObjectType_OT_SECURITY, true
 	case 16:
-		return KnxInterfaceObjectType_OT_RF_MEDIUM
+		return KnxInterfaceObjectType_OT_RF_MEDIUM, true
 	case 17:
-		return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
+		return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR, true
 	case 18:
-		return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
+		return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR, true
 	case 19:
-		return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+		return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC, true
 	case 2:
-		return KnxInterfaceObjectType_OT_DEVICE
+		return KnxInterfaceObjectType_OT_DEVICE, true
 	case 20:
-		return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+		return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC, true
 	case 21:
-		return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
+		return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC, true
 	case 22:
-		return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
+		return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC, true
 	case 23:
-		return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+		return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC, true
 	case 24:
-		return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
+		return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC, true
 	case 3:
-		return KnxInterfaceObjectType_OT_ADDRESS_TABLE
+		return KnxInterfaceObjectType_OT_ADDRESS_TABLE, true
 	case 4:
-		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE
+		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE, true
 	case 5:
-		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM
+		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM, true
 	case 6:
-		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM
+		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM, true
 	case 7:
-		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE
+		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE, true
 	case 8:
-		return KnxInterfaceObjectType_OT_ROUTER
+		return KnxInterfaceObjectType_OT_ROUTER, true
 	case 9:
-		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE
+		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxInterfaceObjectTypeByName(value string) (enum KnxInterfaceObjectType, ok bool) {
-	ok = true
 	switch value {
 	case "OT_UNKNOWN":
-		enum = KnxInterfaceObjectType_OT_UNKNOWN
+		return KnxInterfaceObjectType_OT_UNKNOWN, true
 	case "OT_GENERAL":
-		enum = KnxInterfaceObjectType_OT_GENERAL
+		return KnxInterfaceObjectType_OT_GENERAL, true
 	case "OT_CEMI_SERVER":
-		enum = KnxInterfaceObjectType_OT_CEMI_SERVER
+		return KnxInterfaceObjectType_OT_CEMI_SERVER, true
 	case "OT_GROUP_OBJECT_TABLE":
-		enum = KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
+		return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE, true
 	case "OT_POLLING_MASTER":
-		enum = KnxInterfaceObjectType_OT_POLLING_MASTER
+		return KnxInterfaceObjectType_OT_POLLING_MASTER, true
 	case "OT_KNXIP_PARAMETER":
-		enum = KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+		return KnxInterfaceObjectType_OT_KNXIP_PARAMETER, true
 	case "OT_FILE_SERVER":
-		enum = KnxInterfaceObjectType_OT_FILE_SERVER
+		return KnxInterfaceObjectType_OT_FILE_SERVER, true
 	case "OT_SECURITY":
-		enum = KnxInterfaceObjectType_OT_SECURITY
+		return KnxInterfaceObjectType_OT_SECURITY, true
 	case "OT_RF_MEDIUM":
-		enum = KnxInterfaceObjectType_OT_RF_MEDIUM
+		return KnxInterfaceObjectType_OT_RF_MEDIUM, true
 	case "OT_INDOOR_BRIGHTNESS_SENSOR":
-		enum = KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
+		return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR, true
 	case "OT_INDOOR_LUMINANCE_SENSOR":
-		enum = KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
+		return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR, true
 	case "OT_LIGHT_SWITCHING_ACTUATOR_BASIC":
-		enum = KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+		return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC, true
 	case "OT_DEVICE":
-		enum = KnxInterfaceObjectType_OT_DEVICE
+		return KnxInterfaceObjectType_OT_DEVICE, true
 	case "OT_DIMMING_ACTUATOR_BASIC":
-		enum = KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+		return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC, true
 	case "OT_DIMMING_SENSOR_BASIC":
-		enum = KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
+		return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC, true
 	case "OT_SWITCHING_SENSOR_BASIC":
-		enum = KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
+		return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC, true
 	case "OT_SUNBLIND_ACTUATOR_BASIC":
-		enum = KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+		return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC, true
 	case "OT_SUNBLIND_SENSOR_BASIC":
-		enum = KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
+		return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC, true
 	case "OT_ADDRESS_TABLE":
-		enum = KnxInterfaceObjectType_OT_ADDRESS_TABLE
+		return KnxInterfaceObjectType_OT_ADDRESS_TABLE, true
 	case "OT_ASSOCIATION_TABLE":
-		enum = KnxInterfaceObjectType_OT_ASSOCIATION_TABLE
+		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE, true
 	case "OT_APPLICATION_PROGRAM":
-		enum = KnxInterfaceObjectType_OT_APPLICATION_PROGRAM
+		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM, true
 	case "OT_INTERACE_PROGRAM":
-		enum = KnxInterfaceObjectType_OT_INTERACE_PROGRAM
+		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM, true
 	case "OT_EIBOBJECT_ASSOCIATATION_TABLE":
-		enum = KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE
+		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE, true
 	case "OT_ROUTER":
-		enum = KnxInterfaceObjectType_OT_ROUTER
+		return KnxInterfaceObjectType_OT_ROUTER, true
 	case "OT_LTE_ADDRESS_ROUTING_TABLE":
-		enum = KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE
-	default:
-		enum = 0
-		ok = false
+		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE, true
 	}
-	return
+	return 0, false
 }
 
 func KnxInterfaceObjectTypeKnows(value uint16) bool {
@@ -479,7 +475,11 @@ func KnxInterfaceObjectTypeParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjec
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectType")
 	}
-	return KnxInterfaceObjectTypeByValue(val), nil
+	if enum, ok := KnxInterfaceObjectTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for KnxInterfaceObjectType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e KnxInterfaceObjectType) Serialize(writeBuffer utils.WriteBuffer) error {

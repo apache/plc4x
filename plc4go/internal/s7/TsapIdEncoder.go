@@ -29,7 +29,8 @@ func encodeS7TsapId(deviceGroup model.DeviceGroup, rack int32, slot int32) uint1
 
 func decodeDeviceGroup(tsapId int32) model.DeviceGroup {
 	deviceGroupCode := uint8((tsapId >> 8) & (0xFF))
-	return model.DeviceGroupByValue(deviceGroupCode)
+	value, _ := model.DeviceGroupByValue(deviceGroupCode)
+	return value
 }
 
 func decodeRack(tsapId int32) int64 {

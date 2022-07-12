@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func DeviceGroupByValue(value uint8) DeviceGroup {
+func DeviceGroupByValue(value uint8) (enum DeviceGroup, ok bool) {
 	switch value {
 	case 0x01:
-		return DeviceGroup_PG_OR_PC
+		return DeviceGroup_PG_OR_PC, true
 	case 0x02:
-		return DeviceGroup_OS
+		return DeviceGroup_OS, true
 	case 0x03:
-		return DeviceGroup_OTHERS
+		return DeviceGroup_OTHERS, true
 	}
-	return 0
+	return 0, false
 }
 
 func DeviceGroupByName(value string) (enum DeviceGroup, ok bool) {
-	ok = true
 	switch value {
 	case "PG_OR_PC":
-		enum = DeviceGroup_PG_OR_PC
+		return DeviceGroup_PG_OR_PC, true
 	case "OS":
-		enum = DeviceGroup_OS
+		return DeviceGroup_OS, true
 	case "OTHERS":
-		enum = DeviceGroup_OTHERS
-	default:
-		enum = 0
-		ok = false
+		return DeviceGroup_OTHERS, true
 	}
-	return
+	return 0, false
 }
 
 func DeviceGroupKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceGroup")
 	}
-	return DeviceGroupByValue(val), nil
+	if enum, ok := DeviceGroupByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for DeviceGroup", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e DeviceGroup) Serialize(writeBuffer utils.WriteBuffer) error {

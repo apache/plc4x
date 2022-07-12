@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetLoggingTypeByValue(value uint8) BACnetLoggingType {
+func BACnetLoggingTypeByValue(value uint8) (enum BACnetLoggingType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLoggingType_POLLED
+		return BACnetLoggingType_POLLED, true
 	case 0xFF:
-		return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE
+		return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLoggingType_COV
+		return BACnetLoggingType_COV, true
 	case 2:
-		return BACnetLoggingType_TRIGGERED
+		return BACnetLoggingType_TRIGGERED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLoggingTypeByName(value string) (enum BACnetLoggingType, ok bool) {
-	ok = true
 	switch value {
 	case "POLLED":
-		enum = BACnetLoggingType_POLLED
+		return BACnetLoggingType_POLLED, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetLoggingType_VENDOR_PROPRIETARY_VALUE
+		return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE, true
 	case "COV":
-		enum = BACnetLoggingType_COV
+		return BACnetLoggingType_COV, true
 	case "TRIGGERED":
-		enum = BACnetLoggingType_TRIGGERED
-	default:
-		enum = 0
-		ok = false
+		return BACnetLoggingType_TRIGGERED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLoggingTypeKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetLoggingTypeParse(readBuffer utils.ReadBuffer) (BACnetLoggingType, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLoggingType")
 	}
-	return BACnetLoggingTypeByValue(val), nil
+	if enum, ok := BACnetLoggingTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLoggingType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLoggingType) Serialize(writeBuffer utils.WriteBuffer) error {

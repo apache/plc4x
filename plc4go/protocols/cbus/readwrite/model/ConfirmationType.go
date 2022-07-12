@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func ConfirmationTypeByValue(value byte) ConfirmationType {
+func ConfirmationTypeByValue(value byte) (enum ConfirmationType, ok bool) {
 	switch value {
 	case 0x23:
-		return ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS
+		return ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS, true
 	case 0x24:
-		return ConfirmationType_NOT_TRANSMITTED_CORRUPTION
+		return ConfirmationType_NOT_TRANSMITTED_CORRUPTION, true
 	case 0x25:
-		return ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS
+		return ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS, true
 	case 0x27:
-		return ConfirmationType_NOT_TRANSMITTED_TOO_LONG
+		return ConfirmationType_NOT_TRANSMITTED_TOO_LONG, true
 	case 0x2E:
-		return ConfirmationType_CONFIRMATION_SUCCESSFUL
+		return ConfirmationType_CONFIRMATION_SUCCESSFUL, true
 	}
-	return 0
+	return 0, false
 }
 
 func ConfirmationTypeByName(value string) (enum ConfirmationType, ok bool) {
-	ok = true
 	switch value {
 	case "NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS":
-		enum = ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS
+		return ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS, true
 	case "NOT_TRANSMITTED_CORRUPTION":
-		enum = ConfirmationType_NOT_TRANSMITTED_CORRUPTION
+		return ConfirmationType_NOT_TRANSMITTED_CORRUPTION, true
 	case "NOT_TRANSMITTED_SYNC_LOSS":
-		enum = ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS
+		return ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS, true
 	case "NOT_TRANSMITTED_TOO_LONG":
-		enum = ConfirmationType_NOT_TRANSMITTED_TOO_LONG
+		return ConfirmationType_NOT_TRANSMITTED_TOO_LONG, true
 	case "CONFIRMATION_SUCCESSFUL":
-		enum = ConfirmationType_CONFIRMATION_SUCCESSFUL
-	default:
-		enum = 0
-		ok = false
+		return ConfirmationType_CONFIRMATION_SUCCESSFUL, true
 	}
-	return
+	return 0, false
 }
 
 func ConfirmationTypeKnows(value byte) bool {
@@ -122,7 +118,11 @@ func ConfirmationTypeParse(readBuffer utils.ReadBuffer) (ConfirmationType, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ConfirmationType")
 	}
-	return ConfirmationTypeByValue(val), nil
+	if enum, ok := ConfirmationTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ConfirmationType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ConfirmationType) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetLiftGroupModeByValue(value uint8) BACnetLiftGroupMode {
+func BACnetLiftGroupModeByValue(value uint8) (enum BACnetLiftGroupMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLiftGroupMode_UNKNOWN
+		return BACnetLiftGroupMode_UNKNOWN, true
 	case 1:
-		return BACnetLiftGroupMode_NORMAL
+		return BACnetLiftGroupMode_NORMAL, true
 	case 2:
-		return BACnetLiftGroupMode_DOWN_PEAK
+		return BACnetLiftGroupMode_DOWN_PEAK, true
 	case 3:
-		return BACnetLiftGroupMode_TWO_WAY
+		return BACnetLiftGroupMode_TWO_WAY, true
 	case 4:
-		return BACnetLiftGroupMode_FOUR_WAY
+		return BACnetLiftGroupMode_FOUR_WAY, true
 	case 5:
-		return BACnetLiftGroupMode_EMERGENCY_POWER
+		return BACnetLiftGroupMode_EMERGENCY_POWER, true
 	case 6:
-		return BACnetLiftGroupMode_UP_PEAK
+		return BACnetLiftGroupMode_UP_PEAK, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLiftGroupModeByName(value string) (enum BACnetLiftGroupMode, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetLiftGroupMode_UNKNOWN
+		return BACnetLiftGroupMode_UNKNOWN, true
 	case "NORMAL":
-		enum = BACnetLiftGroupMode_NORMAL
+		return BACnetLiftGroupMode_NORMAL, true
 	case "DOWN_PEAK":
-		enum = BACnetLiftGroupMode_DOWN_PEAK
+		return BACnetLiftGroupMode_DOWN_PEAK, true
 	case "TWO_WAY":
-		enum = BACnetLiftGroupMode_TWO_WAY
+		return BACnetLiftGroupMode_TWO_WAY, true
 	case "FOUR_WAY":
-		enum = BACnetLiftGroupMode_FOUR_WAY
+		return BACnetLiftGroupMode_FOUR_WAY, true
 	case "EMERGENCY_POWER":
-		enum = BACnetLiftGroupMode_EMERGENCY_POWER
+		return BACnetLiftGroupMode_EMERGENCY_POWER, true
 	case "UP_PEAK":
-		enum = BACnetLiftGroupMode_UP_PEAK
-	default:
-		enum = 0
-		ok = false
+		return BACnetLiftGroupMode_UP_PEAK, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLiftGroupModeKnows(value uint8) bool {
@@ -134,7 +130,11 @@ func BACnetLiftGroupModeParse(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftGroupMode")
 	}
-	return BACnetLiftGroupModeByValue(val), nil
+	if enum, ok := BACnetLiftGroupModeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLiftGroupMode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLiftGroupMode) Serialize(writeBuffer utils.WriteBuffer) error {

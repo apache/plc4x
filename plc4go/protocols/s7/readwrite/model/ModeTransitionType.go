@@ -62,56 +62,52 @@ func init() {
 	}
 }
 
-func ModeTransitionTypeByValue(value uint8) ModeTransitionType {
+func ModeTransitionTypeByValue(value uint8) (enum ModeTransitionType, ok bool) {
 	switch value {
 	case 0x00:
-		return ModeTransitionType_STOP
+		return ModeTransitionType_STOP, true
 	case 0x01:
-		return ModeTransitionType_WARM_RESTART
+		return ModeTransitionType_WARM_RESTART, true
 	case 0x02:
-		return ModeTransitionType_RUN
+		return ModeTransitionType_RUN, true
 	case 0x03:
-		return ModeTransitionType_HOT_RESTART
+		return ModeTransitionType_HOT_RESTART, true
 	case 0x04:
-		return ModeTransitionType_HOLD
+		return ModeTransitionType_HOLD, true
 	case 0x06:
-		return ModeTransitionType_COLD_RESTART
+		return ModeTransitionType_COLD_RESTART, true
 	case 0x09:
-		return ModeTransitionType_RUN_R
+		return ModeTransitionType_RUN_R, true
 	case 0x11:
-		return ModeTransitionType_LINK_UP
+		return ModeTransitionType_LINK_UP, true
 	case 0x12:
-		return ModeTransitionType_UPDATE
+		return ModeTransitionType_UPDATE, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModeTransitionTypeByName(value string) (enum ModeTransitionType, ok bool) {
-	ok = true
 	switch value {
 	case "STOP":
-		enum = ModeTransitionType_STOP
+		return ModeTransitionType_STOP, true
 	case "WARM_RESTART":
-		enum = ModeTransitionType_WARM_RESTART
+		return ModeTransitionType_WARM_RESTART, true
 	case "RUN":
-		enum = ModeTransitionType_RUN
+		return ModeTransitionType_RUN, true
 	case "HOT_RESTART":
-		enum = ModeTransitionType_HOT_RESTART
+		return ModeTransitionType_HOT_RESTART, true
 	case "HOLD":
-		enum = ModeTransitionType_HOLD
+		return ModeTransitionType_HOLD, true
 	case "COLD_RESTART":
-		enum = ModeTransitionType_COLD_RESTART
+		return ModeTransitionType_COLD_RESTART, true
 	case "RUN_R":
-		enum = ModeTransitionType_RUN_R
+		return ModeTransitionType_RUN_R, true
 	case "LINK_UP":
-		enum = ModeTransitionType_LINK_UP
+		return ModeTransitionType_LINK_UP, true
 	case "UPDATE":
-		enum = ModeTransitionType_UPDATE
-	default:
-		enum = 0
-		ok = false
+		return ModeTransitionType_UPDATE, true
 	}
-	return
+	return 0, false
 }
 
 func ModeTransitionTypeKnows(value uint8) bool {
@@ -146,7 +142,11 @@ func ModeTransitionTypeParse(readBuffer utils.ReadBuffer) (ModeTransitionType, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModeTransitionType")
 	}
-	return ModeTransitionTypeByValue(val), nil
+	if enum, ok := ModeTransitionTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ModeTransitionType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ModeTransitionType) Serialize(writeBuffer utils.WriteBuffer) error {

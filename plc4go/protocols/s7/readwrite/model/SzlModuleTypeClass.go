@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func SzlModuleTypeClassByValue(value uint8) SzlModuleTypeClass {
+func SzlModuleTypeClassByValue(value uint8) (enum SzlModuleTypeClass, ok bool) {
 	switch value {
 	case 0x0:
-		return SzlModuleTypeClass_CPU
+		return SzlModuleTypeClass_CPU, true
 	case 0x4:
-		return SzlModuleTypeClass_IM
+		return SzlModuleTypeClass_IM, true
 	case 0x8:
-		return SzlModuleTypeClass_FM
+		return SzlModuleTypeClass_FM, true
 	case 0xC:
-		return SzlModuleTypeClass_CP
+		return SzlModuleTypeClass_CP, true
 	}
-	return 0
+	return 0, false
 }
 
 func SzlModuleTypeClassByName(value string) (enum SzlModuleTypeClass, ok bool) {
-	ok = true
 	switch value {
 	case "CPU":
-		enum = SzlModuleTypeClass_CPU
+		return SzlModuleTypeClass_CPU, true
 	case "IM":
-		enum = SzlModuleTypeClass_IM
+		return SzlModuleTypeClass_IM, true
 	case "FM":
-		enum = SzlModuleTypeClass_FM
+		return SzlModuleTypeClass_FM, true
 	case "CP":
-		enum = SzlModuleTypeClass_CP
-	default:
-		enum = 0
-		ok = false
+		return SzlModuleTypeClass_CP, true
 	}
-	return
+	return 0, false
 }
 
 func SzlModuleTypeClassKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SzlModuleTypeClass")
 	}
-	return SzlModuleTypeClassByValue(val), nil
+	if enum, ok := SzlModuleTypeClassByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for SzlModuleTypeClass", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e SzlModuleTypeClass) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -60,52 +60,48 @@ func init() {
 	}
 }
 
-func BACnetTimerTransitionByValue(value uint8) BACnetTimerTransition {
+func BACnetTimerTransitionByValue(value uint8) (enum BACnetTimerTransition, ok bool) {
 	switch value {
 	case 0:
-		return BACnetTimerTransition_NONE
+		return BACnetTimerTransition_NONE, true
 	case 1:
-		return BACnetTimerTransition_IDLE_TO_RUNNING
+		return BACnetTimerTransition_IDLE_TO_RUNNING, true
 	case 2:
-		return BACnetTimerTransition_RUNNING_TO_IDLE
+		return BACnetTimerTransition_RUNNING_TO_IDLE, true
 	case 3:
-		return BACnetTimerTransition_RUNNING_TO_RUNNING
+		return BACnetTimerTransition_RUNNING_TO_RUNNING, true
 	case 4:
-		return BACnetTimerTransition_RUNNING_TO_EXPIRED
+		return BACnetTimerTransition_RUNNING_TO_EXPIRED, true
 	case 5:
-		return BACnetTimerTransition_FORCED_TO_EXPIRED
+		return BACnetTimerTransition_FORCED_TO_EXPIRED, true
 	case 6:
-		return BACnetTimerTransition_EXPIRED_TO_IDLE
+		return BACnetTimerTransition_EXPIRED_TO_IDLE, true
 	case 7:
-		return BACnetTimerTransition_EXPIRED_TO_RUNNING
+		return BACnetTimerTransition_EXPIRED_TO_RUNNING, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetTimerTransitionByName(value string) (enum BACnetTimerTransition, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetTimerTransition_NONE
+		return BACnetTimerTransition_NONE, true
 	case "IDLE_TO_RUNNING":
-		enum = BACnetTimerTransition_IDLE_TO_RUNNING
+		return BACnetTimerTransition_IDLE_TO_RUNNING, true
 	case "RUNNING_TO_IDLE":
-		enum = BACnetTimerTransition_RUNNING_TO_IDLE
+		return BACnetTimerTransition_RUNNING_TO_IDLE, true
 	case "RUNNING_TO_RUNNING":
-		enum = BACnetTimerTransition_RUNNING_TO_RUNNING
+		return BACnetTimerTransition_RUNNING_TO_RUNNING, true
 	case "RUNNING_TO_EXPIRED":
-		enum = BACnetTimerTransition_RUNNING_TO_EXPIRED
+		return BACnetTimerTransition_RUNNING_TO_EXPIRED, true
 	case "FORCED_TO_EXPIRED":
-		enum = BACnetTimerTransition_FORCED_TO_EXPIRED
+		return BACnetTimerTransition_FORCED_TO_EXPIRED, true
 	case "EXPIRED_TO_IDLE":
-		enum = BACnetTimerTransition_EXPIRED_TO_IDLE
+		return BACnetTimerTransition_EXPIRED_TO_IDLE, true
 	case "EXPIRED_TO_RUNNING":
-		enum = BACnetTimerTransition_EXPIRED_TO_RUNNING
-	default:
-		enum = 0
-		ok = false
+		return BACnetTimerTransition_EXPIRED_TO_RUNNING, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetTimerTransitionKnows(value uint8) bool {
@@ -140,7 +136,11 @@ func BACnetTimerTransitionParse(readBuffer utils.ReadBuffer) (BACnetTimerTransit
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetTimerTransition")
 	}
-	return BACnetTimerTransitionByValue(val), nil
+	if enum, ok := BACnetTimerTransitionByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetTimerTransition", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetTimerTransition) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -68,68 +68,64 @@ func init() {
 	}
 }
 
-func StatusByValue(value uint8) Status {
+func StatusByValue(value uint8) (enum Status, ok bool) {
 	switch value {
 	case 0x00:
-		return Status_NO_ERROR
+		return Status_NO_ERROR, true
 	case 0x01:
-		return Status_PROTOCOL_TYPE_NOT_SUPPORTED
+		return Status_PROTOCOL_TYPE_NOT_SUPPORTED, true
 	case 0x02:
-		return Status_UNSUPPORTED_PROTOCOL_VERSION
+		return Status_UNSUPPORTED_PROTOCOL_VERSION, true
 	case 0x04:
-		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER
+		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER, true
 	case 0x21:
-		return Status_INVALID_CONNECTION_ID
+		return Status_INVALID_CONNECTION_ID, true
 	case 0x22:
-		return Status_CONNECTION_TYPE_NOT_SUPPORTED
+		return Status_CONNECTION_TYPE_NOT_SUPPORTED, true
 	case 0x23:
-		return Status_CONNECTION_OPTION_NOT_SUPPORTED
+		return Status_CONNECTION_OPTION_NOT_SUPPORTED, true
 	case 0x24:
-		return Status_NO_MORE_CONNECTIONS
+		return Status_NO_MORE_CONNECTIONS, true
 	case 0x25:
-		return Status_NO_MORE_UNIQUE_CONNECTIONS
+		return Status_NO_MORE_UNIQUE_CONNECTIONS, true
 	case 0x26:
-		return Status_DATA_CONNECTION
+		return Status_DATA_CONNECTION, true
 	case 0x27:
-		return Status_KNX_CONNECTION
+		return Status_KNX_CONNECTION, true
 	case 0x29:
-		return Status_TUNNELLING_LAYER_NOT_SUPPORTED
+		return Status_TUNNELLING_LAYER_NOT_SUPPORTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func StatusByName(value string) (enum Status, ok bool) {
-	ok = true
 	switch value {
 	case "NO_ERROR":
-		enum = Status_NO_ERROR
+		return Status_NO_ERROR, true
 	case "PROTOCOL_TYPE_NOT_SUPPORTED":
-		enum = Status_PROTOCOL_TYPE_NOT_SUPPORTED
+		return Status_PROTOCOL_TYPE_NOT_SUPPORTED, true
 	case "UNSUPPORTED_PROTOCOL_VERSION":
-		enum = Status_UNSUPPORTED_PROTOCOL_VERSION
+		return Status_UNSUPPORTED_PROTOCOL_VERSION, true
 	case "OUT_OF_ORDER_SEQUENCE_NUMBER":
-		enum = Status_OUT_OF_ORDER_SEQUENCE_NUMBER
+		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER, true
 	case "INVALID_CONNECTION_ID":
-		enum = Status_INVALID_CONNECTION_ID
+		return Status_INVALID_CONNECTION_ID, true
 	case "CONNECTION_TYPE_NOT_SUPPORTED":
-		enum = Status_CONNECTION_TYPE_NOT_SUPPORTED
+		return Status_CONNECTION_TYPE_NOT_SUPPORTED, true
 	case "CONNECTION_OPTION_NOT_SUPPORTED":
-		enum = Status_CONNECTION_OPTION_NOT_SUPPORTED
+		return Status_CONNECTION_OPTION_NOT_SUPPORTED, true
 	case "NO_MORE_CONNECTIONS":
-		enum = Status_NO_MORE_CONNECTIONS
+		return Status_NO_MORE_CONNECTIONS, true
 	case "NO_MORE_UNIQUE_CONNECTIONS":
-		enum = Status_NO_MORE_UNIQUE_CONNECTIONS
+		return Status_NO_MORE_UNIQUE_CONNECTIONS, true
 	case "DATA_CONNECTION":
-		enum = Status_DATA_CONNECTION
+		return Status_DATA_CONNECTION, true
 	case "KNX_CONNECTION":
-		enum = Status_KNX_CONNECTION
+		return Status_KNX_CONNECTION, true
 	case "TUNNELLING_LAYER_NOT_SUPPORTED":
-		enum = Status_TUNNELLING_LAYER_NOT_SUPPORTED
-	default:
-		enum = 0
-		ok = false
+		return Status_TUNNELLING_LAYER_NOT_SUPPORTED, true
 	}
-	return
+	return 0, false
 }
 
 func StatusKnows(value uint8) bool {
@@ -164,7 +160,11 @@ func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Status")
 	}
-	return StatusByValue(val), nil
+	if enum, ok := StatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for Status", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e Status) Serialize(writeBuffer utils.WriteBuffer) error {

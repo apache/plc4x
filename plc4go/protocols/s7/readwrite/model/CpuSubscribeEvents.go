@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func CpuSubscribeEventsByValue(value uint8) CpuSubscribeEvents {
+func CpuSubscribeEventsByValue(value uint8) (enum CpuSubscribeEvents, ok bool) {
 	switch value {
 	case 0x01:
-		return CpuSubscribeEvents_CPU
+		return CpuSubscribeEvents_CPU, true
 	case 0x02:
-		return CpuSubscribeEvents_IM
+		return CpuSubscribeEvents_IM, true
 	case 0x04:
-		return CpuSubscribeEvents_FM
+		return CpuSubscribeEvents_FM, true
 	case 0x80:
-		return CpuSubscribeEvents_CP
+		return CpuSubscribeEvents_CP, true
 	}
-	return 0
+	return 0, false
 }
 
 func CpuSubscribeEventsByName(value string) (enum CpuSubscribeEvents, ok bool) {
-	ok = true
 	switch value {
 	case "CPU":
-		enum = CpuSubscribeEvents_CPU
+		return CpuSubscribeEvents_CPU, true
 	case "IM":
-		enum = CpuSubscribeEvents_IM
+		return CpuSubscribeEvents_IM, true
 	case "FM":
-		enum = CpuSubscribeEvents_FM
+		return CpuSubscribeEvents_FM, true
 	case "CP":
-		enum = CpuSubscribeEvents_CP
-	default:
-		enum = 0
-		ok = false
+		return CpuSubscribeEvents_CP, true
 	}
-	return
+	return 0, false
 }
 
 func CpuSubscribeEventsKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func CpuSubscribeEventsParse(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CpuSubscribeEvents")
 	}
-	return CpuSubscribeEventsByValue(val), nil
+	if enum, ok := CpuSubscribeEventsByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for CpuSubscribeEvents", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e CpuSubscribeEvents) Serialize(writeBuffer utils.WriteBuffer) error {

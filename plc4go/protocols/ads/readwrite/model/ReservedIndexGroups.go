@@ -104,140 +104,136 @@ func init() {
 	}
 }
 
-func ReservedIndexGroupsByValue(value uint32) ReservedIndexGroups {
+func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool) {
 	switch value {
 	case 0x00000000:
-		return ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE
+		return ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE, true
 	case 0x00000002:
-		return ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE
+		return ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE, true
 	case 0x0000F000:
-		return ReservedIndexGroups_ADSIGRP_SYMTAB
+		return ReservedIndexGroups_ADSIGRP_SYMTAB, true
 	case 0x0000F001:
-		return ReservedIndexGroups_ADSIGRP_SYMNAME
+		return ReservedIndexGroups_ADSIGRP_SYMNAME, true
 	case 0x0000F002:
-		return ReservedIndexGroups_ADSIGRP_SYMVAL
+		return ReservedIndexGroups_ADSIGRP_SYMVAL, true
 	case 0x0000F003:
-		return ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME
+		return ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME, true
 	case 0x0000F004:
-		return ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME, true
 	case 0x0000F005:
-		return ReservedIndexGroups_ADSIGRP_SYM_VALBYHND
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYHND, true
 	case 0x0000F006:
-		return ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND
+		return ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND, true
 	case 0x0000F007:
-		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME, true
 	case 0x0000F008:
-		return ReservedIndexGroups_ADSIGRP_SYM_VERSION
+		return ReservedIndexGroups_ADSIGRP_SYM_VERSION, true
 	case 0x0000F009:
-		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX, true
 	case 0x0000F00A:
-		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD
+		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD, true
 	case 0x0000F00B:
-		return ReservedIndexGroups_ADSIGRP_SYM_UPLOAD
+		return ReservedIndexGroups_ADSIGRP_SYM_UPLOAD, true
 	case 0x0000F00C:
-		return ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO
+		return ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO, true
 	case 0x0000F010:
-		return ReservedIndexGroups_ADSIGRP_SYMNOTE
+		return ReservedIndexGroups_ADSIGRP_SYMNOTE, true
 	case 0x0000F020:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB, true
 	case 0x0000F021:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX, true
 	case 0x0000F025:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE, true
 	case 0x0000F030:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB, true
 	case 0x0000F031:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX, true
 	case 0x0000F035:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE, true
 	case 0x0000F040:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI, true
 	case 0x0000F050:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO, true
 	case 0x0000F060:
-		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB, true
 	case 0x0000F080:
-		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ, true
 	case 0x0000F081:
-		return ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE, true
 	case 0x0000F082:
-		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE, true
 	case 0x0000F083:
-		return ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE, true
 	case 0x0000F100:
-		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA
+		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
 	}
-	return 0
+	return 0, false
 }
 
 func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool) {
-	ok = true
 	switch value {
 	case "ADSIOFFS_DEVDATA_ADSSTATE":
-		enum = ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE
+		return ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE, true
 	case "ADSIOFFS_DEVDATA_DEVSTATE":
-		enum = ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE
+		return ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE, true
 	case "ADSIGRP_SYMTAB":
-		enum = ReservedIndexGroups_ADSIGRP_SYMTAB
+		return ReservedIndexGroups_ADSIGRP_SYMTAB, true
 	case "ADSIGRP_SYMNAME":
-		enum = ReservedIndexGroups_ADSIGRP_SYMNAME
+		return ReservedIndexGroups_ADSIGRP_SYMNAME, true
 	case "ADSIGRP_SYMVAL":
-		enum = ReservedIndexGroups_ADSIGRP_SYMVAL
+		return ReservedIndexGroups_ADSIGRP_SYMVAL, true
 	case "ADSIGRP_SYM_HNDBYNAME":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME
+		return ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME, true
 	case "ADSIGRP_SYM_VALBYNAME":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME, true
 	case "ADSIGRP_SYM_VALBYHND":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_VALBYHND
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYHND, true
 	case "ADSIGRP_SYM_RELEASEHND":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND
+		return ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND, true
 	case "ADSIGRP_SYM_INFOBYNAME":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME, true
 	case "ADSIGRP_SYM_VERSION":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_VERSION
+		return ReservedIndexGroups_ADSIGRP_SYM_VERSION, true
 	case "ADSIGRP_SYM_INFOBYNAMEEX":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX, true
 	case "ADSIGRP_SYM_DOWNLOAD":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD
+		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD, true
 	case "ADSIGRP_SYM_UPLOAD":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_UPLOAD
+		return ReservedIndexGroups_ADSIGRP_SYM_UPLOAD, true
 	case "ADSIGRP_SYM_UPLOADINFO":
-		enum = ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO
+		return ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO, true
 	case "ADSIGRP_SYMNOTE":
-		enum = ReservedIndexGroups_ADSIGRP_SYMNOTE
+		return ReservedIndexGroups_ADSIGRP_SYMNOTE, true
 	case "ADSIGRP_IOIMAGE_RWIB":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB, true
 	case "ADSIGRP_IOIMAGE_RWIX":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX, true
 	case "ADSIGRP_IOIMAGE_RISIZE":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE, true
 	case "ADSIGRP_IOIMAGE_RWOB":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB, true
 	case "ADSIGRP_IOIMAGE_RWOX":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX, true
 	case "ADSIGRP_IOIMAGE_RWOSIZE":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE, true
 	case "ADSIGRP_IOIMAGE_CLEARI":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI, true
 	case "ADSIGRP_IOIMAGE_CLEARO":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO, true
 	case "ADSIGRP_IOIMAGE_RWIOB":
-		enum = ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB, true
 	case "ADSIGRP_MULTIPLE_READ":
-		enum = ReservedIndexGroups_ADSIGRP_MULTIPLE_READ
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ, true
 	case "ADSIGRP_MULTIPLE_WRITE":
-		enum = ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE, true
 	case "ADSIGRP_MULTIPLE_READ_WRITE":
-		enum = ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE, true
 	case "ADSIGRP_MULTIPLE_RELEASE_HANDLE":
-		enum = ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE, true
 	case "ADSIGRP_DEVICE_DATA":
-		enum = ReservedIndexGroups_ADSIGRP_DEVICE_DATA
-	default:
-		enum = 0
-		ok = false
+		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
 	}
-	return
+	return 0, false
 }
 
 func ReservedIndexGroupsKnows(value uint32) bool {
@@ -272,7 +268,11 @@ func ReservedIndexGroupsParse(readBuffer utils.ReadBuffer) (ReservedIndexGroups,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")
 	}
-	return ReservedIndexGroupsByValue(val), nil
+	if enum, ok := ReservedIndexGroupsByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ReservedIndexGroups", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ReservedIndexGroups) Serialize(writeBuffer utils.WriteBuffer) error {

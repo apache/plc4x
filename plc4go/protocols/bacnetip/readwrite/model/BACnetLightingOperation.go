@@ -68,68 +68,64 @@ func init() {
 	}
 }
 
-func BACnetLightingOperationByValue(value uint16) BACnetLightingOperation {
+func BACnetLightingOperationByValue(value uint16) (enum BACnetLightingOperation, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLightingOperation_NONE
+		return BACnetLightingOperation_NONE, true
 	case 0xFFFF:
-		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLightingOperation_FADE_TO
+		return BACnetLightingOperation_FADE_TO, true
 	case 10:
-		return BACnetLightingOperation_STOP
+		return BACnetLightingOperation_STOP, true
 	case 2:
-		return BACnetLightingOperation_RAMP_TO
+		return BACnetLightingOperation_RAMP_TO, true
 	case 3:
-		return BACnetLightingOperation_STEP_UP
+		return BACnetLightingOperation_STEP_UP, true
 	case 4:
-		return BACnetLightingOperation_STEP_DOWN
+		return BACnetLightingOperation_STEP_DOWN, true
 	case 5:
-		return BACnetLightingOperation_STEP_ON
+		return BACnetLightingOperation_STEP_ON, true
 	case 6:
-		return BACnetLightingOperation_STEP_OFF
+		return BACnetLightingOperation_STEP_OFF, true
 	case 7:
-		return BACnetLightingOperation_WARN
+		return BACnetLightingOperation_WARN, true
 	case 8:
-		return BACnetLightingOperation_WARN_OFF
+		return BACnetLightingOperation_WARN_OFF, true
 	case 9:
-		return BACnetLightingOperation_WARN_RELINQUISH
+		return BACnetLightingOperation_WARN_RELINQUISH, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLightingOperationByName(value string) (enum BACnetLightingOperation, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetLightingOperation_NONE
+		return BACnetLightingOperation_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE, true
 	case "FADE_TO":
-		enum = BACnetLightingOperation_FADE_TO
+		return BACnetLightingOperation_FADE_TO, true
 	case "STOP":
-		enum = BACnetLightingOperation_STOP
+		return BACnetLightingOperation_STOP, true
 	case "RAMP_TO":
-		enum = BACnetLightingOperation_RAMP_TO
+		return BACnetLightingOperation_RAMP_TO, true
 	case "STEP_UP":
-		enum = BACnetLightingOperation_STEP_UP
+		return BACnetLightingOperation_STEP_UP, true
 	case "STEP_DOWN":
-		enum = BACnetLightingOperation_STEP_DOWN
+		return BACnetLightingOperation_STEP_DOWN, true
 	case "STEP_ON":
-		enum = BACnetLightingOperation_STEP_ON
+		return BACnetLightingOperation_STEP_ON, true
 	case "STEP_OFF":
-		enum = BACnetLightingOperation_STEP_OFF
+		return BACnetLightingOperation_STEP_OFF, true
 	case "WARN":
-		enum = BACnetLightingOperation_WARN
+		return BACnetLightingOperation_WARN, true
 	case "WARN_OFF":
-		enum = BACnetLightingOperation_WARN_OFF
+		return BACnetLightingOperation_WARN_OFF, true
 	case "WARN_RELINQUISH":
-		enum = BACnetLightingOperation_WARN_RELINQUISH
-	default:
-		enum = 0
-		ok = false
+		return BACnetLightingOperation_WARN_RELINQUISH, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLightingOperationKnows(value uint16) bool {
@@ -164,7 +160,11 @@ func BACnetLightingOperationParse(readBuffer utils.ReadBuffer) (BACnetLightingOp
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingOperation")
 	}
-	return BACnetLightingOperationByValue(val), nil
+	if enum, ok := BACnetLightingOperationByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLightingOperation", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLightingOperation) Serialize(writeBuffer utils.WriteBuffer) error {

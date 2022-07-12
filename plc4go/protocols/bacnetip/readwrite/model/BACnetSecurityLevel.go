@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func BACnetSecurityLevelByValue(value uint8) BACnetSecurityLevel {
+func BACnetSecurityLevelByValue(value uint8) (enum BACnetSecurityLevel, ok bool) {
 	switch value {
 	case 0:
-		return BACnetSecurityLevel_INCAPABLE
+		return BACnetSecurityLevel_INCAPABLE, true
 	case 1:
-		return BACnetSecurityLevel_PLAIN
+		return BACnetSecurityLevel_PLAIN, true
 	case 2:
-		return BACnetSecurityLevel_SIGNED
+		return BACnetSecurityLevel_SIGNED, true
 	case 3:
-		return BACnetSecurityLevel_ENCRYPTED
+		return BACnetSecurityLevel_ENCRYPTED, true
 	case 4:
-		return BACnetSecurityLevel_SIGNED_END_TO_END
+		return BACnetSecurityLevel_SIGNED_END_TO_END, true
 	case 5:
-		return BACnetSecurityLevel_ENCRYPTED_END_TO_END
+		return BACnetSecurityLevel_ENCRYPTED_END_TO_END, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetSecurityLevelByName(value string) (enum BACnetSecurityLevel, ok bool) {
-	ok = true
 	switch value {
 	case "INCAPABLE":
-		enum = BACnetSecurityLevel_INCAPABLE
+		return BACnetSecurityLevel_INCAPABLE, true
 	case "PLAIN":
-		enum = BACnetSecurityLevel_PLAIN
+		return BACnetSecurityLevel_PLAIN, true
 	case "SIGNED":
-		enum = BACnetSecurityLevel_SIGNED
+		return BACnetSecurityLevel_SIGNED, true
 	case "ENCRYPTED":
-		enum = BACnetSecurityLevel_ENCRYPTED
+		return BACnetSecurityLevel_ENCRYPTED, true
 	case "SIGNED_END_TO_END":
-		enum = BACnetSecurityLevel_SIGNED_END_TO_END
+		return BACnetSecurityLevel_SIGNED_END_TO_END, true
 	case "ENCRYPTED_END_TO_END":
-		enum = BACnetSecurityLevel_ENCRYPTED_END_TO_END
-	default:
-		enum = 0
-		ok = false
+		return BACnetSecurityLevel_ENCRYPTED_END_TO_END, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetSecurityLevelKnows(value uint8) bool {
@@ -128,7 +124,11 @@ func BACnetSecurityLevelParse(readBuffer utils.ReadBuffer) (BACnetSecurityLevel,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSecurityLevel")
 	}
-	return BACnetSecurityLevelByValue(val), nil
+	if enum, ok := BACnetSecurityLevelByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetSecurityLevel", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetSecurityLevel) Serialize(writeBuffer utils.WriteBuffer) error {

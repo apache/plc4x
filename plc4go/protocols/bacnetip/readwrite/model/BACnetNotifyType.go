@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetNotifyTypeByValue(value uint8) BACnetNotifyType {
+func BACnetNotifyTypeByValue(value uint8) (enum BACnetNotifyType, ok bool) {
 	switch value {
 	case 0x0:
-		return BACnetNotifyType_ALARM
+		return BACnetNotifyType_ALARM, true
 	case 0x1:
-		return BACnetNotifyType_EVENT
+		return BACnetNotifyType_EVENT, true
 	case 0x2:
-		return BACnetNotifyType_ACK_NOTIFICATION
+		return BACnetNotifyType_ACK_NOTIFICATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNotifyTypeByName(value string) (enum BACnetNotifyType, ok bool) {
-	ok = true
 	switch value {
 	case "ALARM":
-		enum = BACnetNotifyType_ALARM
+		return BACnetNotifyType_ALARM, true
 	case "EVENT":
-		enum = BACnetNotifyType_EVENT
+		return BACnetNotifyType_EVENT, true
 	case "ACK_NOTIFICATION":
-		enum = BACnetNotifyType_ACK_NOTIFICATION
-	default:
-		enum = 0
-		ok = false
+		return BACnetNotifyType_ACK_NOTIFICATION, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetNotifyTypeKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNotifyType")
 	}
-	return BACnetNotifyTypeByValue(val), nil
+	if enum, ok := BACnetNotifyTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetNotifyType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetNotifyType) Serialize(writeBuffer utils.WriteBuffer) error {

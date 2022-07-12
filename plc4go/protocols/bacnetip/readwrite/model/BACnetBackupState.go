@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetBackupStateByValue(value uint8) BACnetBackupState {
+func BACnetBackupStateByValue(value uint8) (enum BACnetBackupState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetBackupState_IDLE
+		return BACnetBackupState_IDLE, true
 	case 1:
-		return BACnetBackupState_PREPARING_FOR_BACKUP
+		return BACnetBackupState_PREPARING_FOR_BACKUP, true
 	case 2:
-		return BACnetBackupState_PREPARING_FOR_RESTORE
+		return BACnetBackupState_PREPARING_FOR_RESTORE, true
 	case 3:
-		return BACnetBackupState_PERFORMING_A_BACKUP
+		return BACnetBackupState_PERFORMING_A_BACKUP, true
 	case 4:
-		return BACnetBackupState_PERFORMING_A_RESTORE
+		return BACnetBackupState_PERFORMING_A_RESTORE, true
 	case 5:
-		return BACnetBackupState_BACKUP_FAILURE
+		return BACnetBackupState_BACKUP_FAILURE, true
 	case 6:
-		return BACnetBackupState_RESTORE_FAILURE
+		return BACnetBackupState_RESTORE_FAILURE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetBackupStateByName(value string) (enum BACnetBackupState, ok bool) {
-	ok = true
 	switch value {
 	case "IDLE":
-		enum = BACnetBackupState_IDLE
+		return BACnetBackupState_IDLE, true
 	case "PREPARING_FOR_BACKUP":
-		enum = BACnetBackupState_PREPARING_FOR_BACKUP
+		return BACnetBackupState_PREPARING_FOR_BACKUP, true
 	case "PREPARING_FOR_RESTORE":
-		enum = BACnetBackupState_PREPARING_FOR_RESTORE
+		return BACnetBackupState_PREPARING_FOR_RESTORE, true
 	case "PERFORMING_A_BACKUP":
-		enum = BACnetBackupState_PERFORMING_A_BACKUP
+		return BACnetBackupState_PERFORMING_A_BACKUP, true
 	case "PERFORMING_A_RESTORE":
-		enum = BACnetBackupState_PERFORMING_A_RESTORE
+		return BACnetBackupState_PERFORMING_A_RESTORE, true
 	case "BACKUP_FAILURE":
-		enum = BACnetBackupState_BACKUP_FAILURE
+		return BACnetBackupState_BACKUP_FAILURE, true
 	case "RESTORE_FAILURE":
-		enum = BACnetBackupState_RESTORE_FAILURE
-	default:
-		enum = 0
-		ok = false
+		return BACnetBackupState_RESTORE_FAILURE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetBackupStateKnows(value uint8) bool {
@@ -134,7 +130,11 @@ func BACnetBackupStateParse(readBuffer utils.ReadBuffer) (BACnetBackupState, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetBackupState")
 	}
-	return BACnetBackupStateByValue(val), nil
+	if enum, ok := BACnetBackupStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetBackupState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetBackupState) Serialize(writeBuffer utils.WriteBuffer) error {

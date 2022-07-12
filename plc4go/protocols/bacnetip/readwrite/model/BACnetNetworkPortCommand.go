@@ -62,56 +62,52 @@ func init() {
 	}
 }
 
-func BACnetNetworkPortCommandByValue(value uint8) BACnetNetworkPortCommand {
+func BACnetNetworkPortCommandByValue(value uint8) (enum BACnetNetworkPortCommand, ok bool) {
 	switch value {
 	case 0:
-		return BACnetNetworkPortCommand_IDLE
+		return BACnetNetworkPortCommand_IDLE, true
 	case 0xFF:
-		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
+		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetNetworkPortCommand_DISCARD_CHANGES
+		return BACnetNetworkPortCommand_DISCARD_CHANGES, true
 	case 2:
-		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
+		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION, true
 	case 3:
-		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
+		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY, true
 	case 4:
-		return BACnetNetworkPortCommand_RENEW_DHCP
+		return BACnetNetworkPortCommand_RENEW_DHCP, true
 	case 5:
-		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
+		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION, true
 	case 6:
-		return BACnetNetworkPortCommand_DISCONNECT
+		return BACnetNetworkPortCommand_DISCONNECT, true
 	case 7:
-		return BACnetNetworkPortCommand_RESTART_PORT
+		return BACnetNetworkPortCommand_RESTART_PORT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNetworkPortCommandByName(value string) (enum BACnetNetworkPortCommand, ok bool) {
-	ok = true
 	switch value {
 	case "IDLE":
-		enum = BACnetNetworkPortCommand_IDLE
+		return BACnetNetworkPortCommand_IDLE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
+		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE, true
 	case "DISCARD_CHANGES":
-		enum = BACnetNetworkPortCommand_DISCARD_CHANGES
+		return BACnetNetworkPortCommand_DISCARD_CHANGES, true
 	case "RENEW_FD_REGISTRATION":
-		enum = BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
+		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION, true
 	case "RESTART_SLAVE_DISCOVERY":
-		enum = BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
+		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY, true
 	case "RENEW_DHCP":
-		enum = BACnetNetworkPortCommand_RENEW_DHCP
+		return BACnetNetworkPortCommand_RENEW_DHCP, true
 	case "RESTART_AUTONEGOTIATION":
-		enum = BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
+		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION, true
 	case "DISCONNECT":
-		enum = BACnetNetworkPortCommand_DISCONNECT
+		return BACnetNetworkPortCommand_DISCONNECT, true
 	case "RESTART_PORT":
-		enum = BACnetNetworkPortCommand_RESTART_PORT
-	default:
-		enum = 0
-		ok = false
+		return BACnetNetworkPortCommand_RESTART_PORT, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetNetworkPortCommandKnows(value uint8) bool {
@@ -146,7 +142,11 @@ func BACnetNetworkPortCommandParse(readBuffer utils.ReadBuffer) (BACnetNetworkPo
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNetworkPortCommand")
 	}
-	return BACnetNetworkPortCommandByValue(val), nil
+	if enum, ok := BACnetNetworkPortCommandByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetNetworkPortCommand", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetNetworkPortCommand) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -396,12 +396,13 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
 				continue
 			}
-			switch readWriteModel.ReturnCodeByValue(responseCode) {
+			val, _ := readWriteModel.ReturnCodeByValue(responseCode)
+			switch val {
 			case readWriteModel.ReturnCode_OK:
 				responseCodes[fieldName] = model.PlcResponseCode_OK
 			default:
 				// TODO: Implement this a little more ...
-				log.Error().Stringer("adsReturnCode", readWriteModel.ReturnCodeByValue(responseCode)).Msgf("Unmapped return code for %s", fieldName)
+				log.Error().Stringer("adsReturnCode", val).Msgf("Unmapped return code for %s", fieldName)
 				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
 			}
 		}

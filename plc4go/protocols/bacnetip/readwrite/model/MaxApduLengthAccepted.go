@@ -76,84 +76,80 @@ func init() {
 	}
 }
 
-func MaxApduLengthAcceptedByValue(value uint8) MaxApduLengthAccepted {
+func MaxApduLengthAcceptedByValue(value uint8) (enum MaxApduLengthAccepted, ok bool) {
 	switch value {
 	case 0x0:
-		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE
+		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE, true
 	case 0x1:
-		return MaxApduLengthAccepted_NUM_OCTETS_128
+		return MaxApduLengthAccepted_NUM_OCTETS_128, true
 	case 0x2:
-		return MaxApduLengthAccepted_NUM_OCTETS_206
+		return MaxApduLengthAccepted_NUM_OCTETS_206, true
 	case 0x3:
-		return MaxApduLengthAccepted_NUM_OCTETS_480
+		return MaxApduLengthAccepted_NUM_OCTETS_480, true
 	case 0x4:
-		return MaxApduLengthAccepted_NUM_OCTETS_1024
+		return MaxApduLengthAccepted_NUM_OCTETS_1024, true
 	case 0x5:
-		return MaxApduLengthAccepted_NUM_OCTETS_1476
+		return MaxApduLengthAccepted_NUM_OCTETS_1476, true
 	case 0x6:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01, true
 	case 0x7:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02, true
 	case 0x8:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03, true
 	case 0x9:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04, true
 	case 0xA:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05, true
 	case 0xB:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06, true
 	case 0xC:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07, true
 	case 0xD:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08, true
 	case 0xE:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09, true
 	case 0xF:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10, true
 	}
-	return 0
+	return 0, false
 }
 
 func MaxApduLengthAcceptedByName(value string) (enum MaxApduLengthAccepted, ok bool) {
-	ok = true
 	switch value {
 	case "MINIMUM_MESSAGE_SIZE":
-		enum = MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE
+		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE, true
 	case "NUM_OCTETS_128":
-		enum = MaxApduLengthAccepted_NUM_OCTETS_128
+		return MaxApduLengthAccepted_NUM_OCTETS_128, true
 	case "NUM_OCTETS_206":
-		enum = MaxApduLengthAccepted_NUM_OCTETS_206
+		return MaxApduLengthAccepted_NUM_OCTETS_206, true
 	case "NUM_OCTETS_480":
-		enum = MaxApduLengthAccepted_NUM_OCTETS_480
+		return MaxApduLengthAccepted_NUM_OCTETS_480, true
 	case "NUM_OCTETS_1024":
-		enum = MaxApduLengthAccepted_NUM_OCTETS_1024
+		return MaxApduLengthAccepted_NUM_OCTETS_1024, true
 	case "NUM_OCTETS_1476":
-		enum = MaxApduLengthAccepted_NUM_OCTETS_1476
+		return MaxApduLengthAccepted_NUM_OCTETS_1476, true
 	case "RESERVED_BY_ASHRAE_01":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01, true
 	case "RESERVED_BY_ASHRAE_02":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02, true
 	case "RESERVED_BY_ASHRAE_03":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03, true
 	case "RESERVED_BY_ASHRAE_04":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04, true
 	case "RESERVED_BY_ASHRAE_05":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05, true
 	case "RESERVED_BY_ASHRAE_06":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06, true
 	case "RESERVED_BY_ASHRAE_07":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07, true
 	case "RESERVED_BY_ASHRAE_08":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08, true
 	case "RESERVED_BY_ASHRAE_09":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09, true
 	case "RESERVED_BY_ASHRAE_10":
-		enum = MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10
-	default:
-		enum = 0
-		ok = false
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10, true
 	}
-	return
+	return 0, false
 }
 
 func MaxApduLengthAcceptedKnows(value uint8) bool {
@@ -188,7 +184,11 @@ func MaxApduLengthAcceptedParse(readBuffer utils.ReadBuffer) (MaxApduLengthAccep
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MaxApduLengthAccepted")
 	}
-	return MaxApduLengthAcceptedByValue(val), nil
+	if enum, ok := MaxApduLengthAcceptedByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for MaxApduLengthAccepted", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e MaxApduLengthAccepted) Serialize(writeBuffer utils.WriteBuffer) error {

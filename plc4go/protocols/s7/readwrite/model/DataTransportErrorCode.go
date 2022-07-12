@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func DataTransportErrorCodeByValue(value uint8) DataTransportErrorCode {
+func DataTransportErrorCodeByValue(value uint8) (enum DataTransportErrorCode, ok bool) {
 	switch value {
 	case 0x00:
-		return DataTransportErrorCode_RESERVED
+		return DataTransportErrorCode_RESERVED, true
 	case 0x03:
-		return DataTransportErrorCode_ACCESS_DENIED
+		return DataTransportErrorCode_ACCESS_DENIED, true
 	case 0x05:
-		return DataTransportErrorCode_INVALID_ADDRESS
+		return DataTransportErrorCode_INVALID_ADDRESS, true
 	case 0x06:
-		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED, true
 	case 0x0A:
-		return DataTransportErrorCode_NOT_FOUND
+		return DataTransportErrorCode_NOT_FOUND, true
 	case 0xFF:
-		return DataTransportErrorCode_OK
+		return DataTransportErrorCode_OK, true
 	}
-	return 0
+	return 0, false
 }
 
 func DataTransportErrorCodeByName(value string) (enum DataTransportErrorCode, ok bool) {
-	ok = true
 	switch value {
 	case "RESERVED":
-		enum = DataTransportErrorCode_RESERVED
+		return DataTransportErrorCode_RESERVED, true
 	case "ACCESS_DENIED":
-		enum = DataTransportErrorCode_ACCESS_DENIED
+		return DataTransportErrorCode_ACCESS_DENIED, true
 	case "INVALID_ADDRESS":
-		enum = DataTransportErrorCode_INVALID_ADDRESS
+		return DataTransportErrorCode_INVALID_ADDRESS, true
 	case "DATA_TYPE_NOT_SUPPORTED":
-		enum = DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED, true
 	case "NOT_FOUND":
-		enum = DataTransportErrorCode_NOT_FOUND
+		return DataTransportErrorCode_NOT_FOUND, true
 	case "OK":
-		enum = DataTransportErrorCode_OK
-	default:
-		enum = 0
-		ok = false
+		return DataTransportErrorCode_OK, true
 	}
-	return
+	return 0, false
 }
 
 func DataTransportErrorCodeKnows(value uint8) bool {
@@ -128,7 +124,11 @@ func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErro
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
 	}
-	return DataTransportErrorCodeByValue(val), nil
+	if enum, ok := DataTransportErrorCodeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for DataTransportErrorCode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e DataTransportErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func BACnetMaintenanceByValue(value uint8) BACnetMaintenance {
+func BACnetMaintenanceByValue(value uint8) (enum BACnetMaintenance, ok bool) {
 	switch value {
 	case 0:
-		return BACnetMaintenance_NONE
+		return BACnetMaintenance_NONE, true
 	case 0xFF:
-		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
+		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetMaintenance_PERIODIC_TEST
+		return BACnetMaintenance_PERIODIC_TEST, true
 	case 2:
-		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL
+		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL, true
 	case 3:
-		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE
+		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetMaintenanceByName(value string) (enum BACnetMaintenance, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetMaintenance_NONE
+		return BACnetMaintenance_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
+		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE, true
 	case "PERIODIC_TEST":
-		enum = BACnetMaintenance_PERIODIC_TEST
+		return BACnetMaintenance_PERIODIC_TEST, true
 	case "NEED_SERVICE_OPERATIONAL":
-		enum = BACnetMaintenance_NEED_SERVICE_OPERATIONAL
+		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL, true
 	case "NEED_SERVICE_INOPERATIVE":
-		enum = BACnetMaintenance_NEED_SERVICE_INOPERATIVE
-	default:
-		enum = 0
-		ok = false
+		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetMaintenanceKnows(value uint8) bool {
@@ -122,7 +118,11 @@ func BACnetMaintenanceParse(readBuffer utils.ReadBuffer) (BACnetMaintenance, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetMaintenance")
 	}
-	return BACnetMaintenanceByValue(val), nil
+	if enum, ok := BACnetMaintenanceByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetMaintenance", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetMaintenance) Serialize(writeBuffer utils.WriteBuffer) error {

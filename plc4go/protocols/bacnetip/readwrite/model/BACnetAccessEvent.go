@@ -154,240 +154,236 @@ func init() {
 	}
 }
 
-func BACnetAccessEventByValue(value uint16) BACnetAccessEvent {
+func BACnetAccessEventByValue(value uint16) (enum BACnetAccessEvent, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessEvent_NONE
+		return BACnetAccessEvent_NONE, true
 	case 0xFFFF:
-		return BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessEvent_GRANTED
+		return BACnetAccessEvent_GRANTED, true
 	case 10:
-		return BACnetAccessEvent_OUT_OF_SERVICE
+		return BACnetAccessEvent_OUT_OF_SERVICE, true
 	case 11:
-		return BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED
+		return BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED, true
 	case 12:
-		return BACnetAccessEvent_ACCOMPANIMENT_BY
+		return BACnetAccessEvent_ACCOMPANIMENT_BY, true
 	case 128:
-		return BACnetAccessEvent_DENIED_DENY_ALL
+		return BACnetAccessEvent_DENIED_DENY_ALL, true
 	case 129:
-		return BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL
+		return BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL, true
 	case 13:
-		return BACnetAccessEvent_AUTHENTICATION_FACTOR_READ
+		return BACnetAccessEvent_AUTHENTICATION_FACTOR_READ, true
 	case 130:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE, true
 	case 131:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT, true
 	case 132:
-		return BACnetAccessEvent_DENIED_INCORRECT_AUTHENTICATION_FACTOR
+		return BACnetAccessEvent_DENIED_INCORRECT_AUTHENTICATION_FACTOR, true
 	case 133:
-		return BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS
+		return BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS, true
 	case 134:
-		return BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS
+		return BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS, true
 	case 135:
-		return BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS
+		return BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS, true
 	case 136:
-		return BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE
+		return BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE, true
 	case 137:
-		return BACnetAccessEvent_DENIED_THREAT_LEVEL
+		return BACnetAccessEvent_DENIED_THREAT_LEVEL, true
 	case 138:
-		return BACnetAccessEvent_DENIED_PASSBACK
+		return BACnetAccessEvent_DENIED_PASSBACK, true
 	case 139:
-		return BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE
+		return BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE, true
 	case 14:
-		return BACnetAccessEvent_AUTHORIZATION_DELAYED
+		return BACnetAccessEvent_AUTHORIZATION_DELAYED, true
 	case 140:
-		return BACnetAccessEvent_DENIED_MAX_ATTEMPTS
+		return BACnetAccessEvent_DENIED_MAX_ATTEMPTS, true
 	case 141:
-		return BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT
+		return BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT, true
 	case 142:
-		return BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT
+		return BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT, true
 	case 143:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST, true
 	case 144:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN, true
 	case 145:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED, true
 	case 146:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DESTROYED
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DESTROYED, true
 	case 147:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED, true
 	case 148:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR, true
 	case 149:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED, true
 	case 15:
-		return BACnetAccessEvent_VERIFICATION_REQUIRED
+		return BACnetAccessEvent_VERIFICATION_REQUIRED, true
 	case 150:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED, true
 	case 151:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE
+		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE, true
 	case 152:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED, true
 	case 153:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE
+		return BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE, true
 	case 154:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT
+		return BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT, true
 	case 155:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS
+		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS, true
 	case 156:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES
+		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES, true
 	case 157:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY
+		return BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY, true
 	case 158:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED, true
 	case 159:
-		return BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT
+		return BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT, true
 	case 16:
-		return BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED
+		return BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED, true
 	case 160:
-		return BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT
+		return BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT, true
 	case 161:
-		return BACnetAccessEvent_DENIED_LOCKOUT
+		return BACnetAccessEvent_DENIED_LOCKOUT, true
 	case 162:
-		return BACnetAccessEvent_DENIED_VERIFICATION_FAILED
+		return BACnetAccessEvent_DENIED_VERIFICATION_FAILED, true
 	case 163:
-		return BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT
+		return BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT, true
 	case 164:
-		return BACnetAccessEvent_DENIED_OTHER
+		return BACnetAccessEvent_DENIED_OTHER, true
 	case 2:
-		return BACnetAccessEvent_MUSTER
+		return BACnetAccessEvent_MUSTER, true
 	case 3:
-		return BACnetAccessEvent_PASSBACK_DETECTED
+		return BACnetAccessEvent_PASSBACK_DETECTED, true
 	case 4:
-		return BACnetAccessEvent_DURESS
+		return BACnetAccessEvent_DURESS, true
 	case 5:
-		return BACnetAccessEvent_TRACE
+		return BACnetAccessEvent_TRACE, true
 	case 6:
-		return BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS
+		return BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS, true
 	case 7:
-		return BACnetAccessEvent_LOCKOUT_OTHER
+		return BACnetAccessEvent_LOCKOUT_OTHER, true
 	case 8:
-		return BACnetAccessEvent_LOCKOUT_RELINQUISHED
+		return BACnetAccessEvent_LOCKOUT_RELINQUISHED, true
 	case 9:
-		return BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY
+		return BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessEventByName(value string) (enum BACnetAccessEvent, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetAccessEvent_NONE
+		return BACnetAccessEvent_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE, true
 	case "GRANTED":
-		enum = BACnetAccessEvent_GRANTED
+		return BACnetAccessEvent_GRANTED, true
 	case "OUT_OF_SERVICE":
-		enum = BACnetAccessEvent_OUT_OF_SERVICE
+		return BACnetAccessEvent_OUT_OF_SERVICE, true
 	case "OUT_OF_SERVICE_RELINQUISHED":
-		enum = BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED
+		return BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED, true
 	case "ACCOMPANIMENT_BY":
-		enum = BACnetAccessEvent_ACCOMPANIMENT_BY
+		return BACnetAccessEvent_ACCOMPANIMENT_BY, true
 	case "DENIED_DENY_ALL":
-		enum = BACnetAccessEvent_DENIED_DENY_ALL
+		return BACnetAccessEvent_DENIED_DENY_ALL, true
 	case "DENIED_UNKNOWN_CREDENTIAL":
-		enum = BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL
+		return BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL, true
 	case "AUTHENTICATION_FACTOR_READ":
-		enum = BACnetAccessEvent_AUTHENTICATION_FACTOR_READ
+		return BACnetAccessEvent_AUTHENTICATION_FACTOR_READ, true
 	case "DENIED_AUTHENTICATION_UNAVAILABLE":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE, true
 	case "DENIED_AUTHENTICATION_FACTOR_TIMEOUT":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT, true
 	case "DENIED_INCORRECT_AUTHENTICATION_FACTOR":
-		enum = BACnetAccessEvent_DENIED_INCORRECT_AUTHENTICATION_FACTOR
+		return BACnetAccessEvent_DENIED_INCORRECT_AUTHENTICATION_FACTOR, true
 	case "DENIED_ZONE_NO_ACCESS_RIGHTS":
-		enum = BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS
+		return BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS, true
 	case "DENIED_POINT_NO_ACCESS_RIGHTS":
-		enum = BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS
+		return BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS, true
 	case "DENIED_NO_ACCESS_RIGHTS":
-		enum = BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS
+		return BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS, true
 	case "DENIED_OUT_OF_TIME_RANGE":
-		enum = BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE
+		return BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE, true
 	case "DENIED_THREAT_LEVEL":
-		enum = BACnetAccessEvent_DENIED_THREAT_LEVEL
+		return BACnetAccessEvent_DENIED_THREAT_LEVEL, true
 	case "DENIED_PASSBACK":
-		enum = BACnetAccessEvent_DENIED_PASSBACK
+		return BACnetAccessEvent_DENIED_PASSBACK, true
 	case "DENIED_UNEXPECTED_LOCATION_USAGE":
-		enum = BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE
+		return BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE, true
 	case "AUTHORIZATION_DELAYED":
-		enum = BACnetAccessEvent_AUTHORIZATION_DELAYED
+		return BACnetAccessEvent_AUTHORIZATION_DELAYED, true
 	case "DENIED_MAX_ATTEMPTS":
-		enum = BACnetAccessEvent_DENIED_MAX_ATTEMPTS
+		return BACnetAccessEvent_DENIED_MAX_ATTEMPTS, true
 	case "DENIED_LOWER_OCCUPANCY_LIMIT":
-		enum = BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT
+		return BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT, true
 	case "DENIED_UPPER_OCCUPANCY_LIMIT":
-		enum = BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT
+		return BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT, true
 	case "DENIED_AUTHENTICATION_FACTOR_LOST":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST, true
 	case "DENIED_AUTHENTICATION_FACTOR_STOLEN":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN, true
 	case "DENIED_AUTHENTICATION_FACTOR_DAMAGED":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED, true
 	case "DENIED_AUTHENTICATION_FACTOR_DESTROYED":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DESTROYED
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DESTROYED, true
 	case "DENIED_AUTHENTICATION_FACTOR_DISABLED":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED, true
 	case "DENIED_AUTHENTICATION_FACTOR_ERROR":
-		enum = BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR
+		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR, true
 	case "DENIED_CREDENTIAL_UNASSIGNED":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED, true
 	case "VERIFICATION_REQUIRED":
-		enum = BACnetAccessEvent_VERIFICATION_REQUIRED
+		return BACnetAccessEvent_VERIFICATION_REQUIRED, true
 	case "DENIED_CREDENTIAL_NOT_PROVISIONED":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED, true
 	case "DENIED_CREDENTIAL_NOT_YET_ACTIVE":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE
+		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE, true
 	case "DENIED_CREDENTIAL_EXPIRED":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED, true
 	case "DENIED_CREDENTIAL_MANUAL_DISABLE":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE
+		return BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE, true
 	case "DENIED_CREDENTIAL_LOCKOUT":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT
+		return BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT, true
 	case "DENIED_CREDENTIAL_MAX_DAYS":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS
+		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS, true
 	case "DENIED_CREDENTIAL_MAX_USES":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES
+		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES, true
 	case "DENIED_CREDENTIAL_INACTIVITY":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY
+		return BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY, true
 	case "DENIED_CREDENTIAL_DISABLED":
-		enum = BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED
+		return BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED, true
 	case "DENIED_NO_ACCOMPANIMENT":
-		enum = BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT
+		return BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT, true
 	case "NO_ENTRY_AFTER_GRANTED":
-		enum = BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED
+		return BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED, true
 	case "DENIED_INCORRECT_ACCOMPANIMENT":
-		enum = BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT
+		return BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT, true
 	case "DENIED_LOCKOUT":
-		enum = BACnetAccessEvent_DENIED_LOCKOUT
+		return BACnetAccessEvent_DENIED_LOCKOUT, true
 	case "DENIED_VERIFICATION_FAILED":
-		enum = BACnetAccessEvent_DENIED_VERIFICATION_FAILED
+		return BACnetAccessEvent_DENIED_VERIFICATION_FAILED, true
 	case "DENIED_VERIFICATION_TIMEOUT":
-		enum = BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT
+		return BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT, true
 	case "DENIED_OTHER":
-		enum = BACnetAccessEvent_DENIED_OTHER
+		return BACnetAccessEvent_DENIED_OTHER, true
 	case "MUSTER":
-		enum = BACnetAccessEvent_MUSTER
+		return BACnetAccessEvent_MUSTER, true
 	case "PASSBACK_DETECTED":
-		enum = BACnetAccessEvent_PASSBACK_DETECTED
+		return BACnetAccessEvent_PASSBACK_DETECTED, true
 	case "DURESS":
-		enum = BACnetAccessEvent_DURESS
+		return BACnetAccessEvent_DURESS, true
 	case "TRACE":
-		enum = BACnetAccessEvent_TRACE
+		return BACnetAccessEvent_TRACE, true
 	case "LOCKOUT_MAX_ATTEMPTS":
-		enum = BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS
+		return BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS, true
 	case "LOCKOUT_OTHER":
-		enum = BACnetAccessEvent_LOCKOUT_OTHER
+		return BACnetAccessEvent_LOCKOUT_OTHER, true
 	case "LOCKOUT_RELINQUISHED":
-		enum = BACnetAccessEvent_LOCKOUT_RELINQUISHED
+		return BACnetAccessEvent_LOCKOUT_RELINQUISHED, true
 	case "LOCKED_BY_HIGHER_PRIORITY":
-		enum = BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessEventKnows(value uint16) bool {
@@ -422,7 +418,11 @@ func BACnetAccessEventParse(readBuffer utils.ReadBuffer) (BACnetAccessEvent, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessEvent")
 	}
-	return BACnetAccessEventByValue(val), nil
+	if enum, ok := BACnetAccessEventByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessEvent", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessEvent) Serialize(writeBuffer utils.WriteBuffer) error {

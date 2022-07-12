@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func NPDUNetworkPriorityByValue(value uint8) NPDUNetworkPriority {
+func NPDUNetworkPriorityByValue(value uint8) (enum NPDUNetworkPriority, ok bool) {
 	switch value {
 	case 0:
-		return NPDUNetworkPriority_NORMAL_MESSAGE
+		return NPDUNetworkPriority_NORMAL_MESSAGE, true
 	case 1:
-		return NPDUNetworkPriority_URGENT_MESSAGE
+		return NPDUNetworkPriority_URGENT_MESSAGE, true
 	case 2:
-		return NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE
+		return NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE, true
 	case 3:
-		return NPDUNetworkPriority_LIFE_SAVETY_MESSAGE
+		return NPDUNetworkPriority_LIFE_SAVETY_MESSAGE, true
 	}
-	return 0
+	return 0, false
 }
 
 func NPDUNetworkPriorityByName(value string) (enum NPDUNetworkPriority, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL_MESSAGE":
-		enum = NPDUNetworkPriority_NORMAL_MESSAGE
+		return NPDUNetworkPriority_NORMAL_MESSAGE, true
 	case "URGENT_MESSAGE":
-		enum = NPDUNetworkPriority_URGENT_MESSAGE
+		return NPDUNetworkPriority_URGENT_MESSAGE, true
 	case "CRITICAL_EQUIPMENT_MESSAGE":
-		enum = NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE
+		return NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE, true
 	case "LIFE_SAVETY_MESSAGE":
-		enum = NPDUNetworkPriority_LIFE_SAVETY_MESSAGE
-	default:
-		enum = 0
-		ok = false
+		return NPDUNetworkPriority_LIFE_SAVETY_MESSAGE, true
 	}
-	return
+	return 0, false
 }
 
 func NPDUNetworkPriorityKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func NPDUNetworkPriorityParse(readBuffer utils.ReadBuffer) (NPDUNetworkPriority,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading NPDUNetworkPriority")
 	}
-	return NPDUNetworkPriorityByValue(val), nil
+	if enum, ok := NPDUNetworkPriorityByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for NPDUNetworkPriority", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e NPDUNetworkPriority) Serialize(writeBuffer utils.WriteBuffer) error {

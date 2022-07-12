@@ -66,64 +66,60 @@ func init() {
 	}
 }
 
-func BACnetRejectReasonByValue(value uint8) BACnetRejectReason {
+func BACnetRejectReasonByValue(value uint8) (enum BACnetRejectReason, ok bool) {
 	switch value {
 	case 0x0:
-		return BACnetRejectReason_OTHER
+		return BACnetRejectReason_OTHER, true
 	case 0x1:
-		return BACnetRejectReason_BUFFER_OVERFLOW
+		return BACnetRejectReason_BUFFER_OVERFLOW, true
 	case 0x2:
-		return BACnetRejectReason_INCONSISTENT_PARAMETERS
+		return BACnetRejectReason_INCONSISTENT_PARAMETERS, true
 	case 0x3:
-		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE
+		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE, true
 	case 0x4:
-		return BACnetRejectReason_INVALID_TAG
+		return BACnetRejectReason_INVALID_TAG, true
 	case 0x5:
-		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER
+		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER, true
 	case 0x6:
-		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE
+		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE, true
 	case 0x7:
-		return BACnetRejectReason_TOO_MANY_ARGUMENTS
+		return BACnetRejectReason_TOO_MANY_ARGUMENTS, true
 	case 0x8:
-		return BACnetRejectReason_UNDEFINED_ENUMERATION
+		return BACnetRejectReason_UNDEFINED_ENUMERATION, true
 	case 0x9:
-		return BACnetRejectReason_UNRECOGNIZED_SERVICE
+		return BACnetRejectReason_UNRECOGNIZED_SERVICE, true
 	case 0xFF:
-		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetRejectReasonByName(value string) (enum BACnetRejectReason, ok bool) {
-	ok = true
 	switch value {
 	case "OTHER":
-		enum = BACnetRejectReason_OTHER
+		return BACnetRejectReason_OTHER, true
 	case "BUFFER_OVERFLOW":
-		enum = BACnetRejectReason_BUFFER_OVERFLOW
+		return BACnetRejectReason_BUFFER_OVERFLOW, true
 	case "INCONSISTENT_PARAMETERS":
-		enum = BACnetRejectReason_INCONSISTENT_PARAMETERS
+		return BACnetRejectReason_INCONSISTENT_PARAMETERS, true
 	case "INVALID_PARAMETER_DATA_TYPE":
-		enum = BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE
+		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE, true
 	case "INVALID_TAG":
-		enum = BACnetRejectReason_INVALID_TAG
+		return BACnetRejectReason_INVALID_TAG, true
 	case "MISSING_REQUIRED_PARAMETER":
-		enum = BACnetRejectReason_MISSING_REQUIRED_PARAMETER
+		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER, true
 	case "PARAMETER_OUT_OF_RANGE":
-		enum = BACnetRejectReason_PARAMETER_OUT_OF_RANGE
+		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE, true
 	case "TOO_MANY_ARGUMENTS":
-		enum = BACnetRejectReason_TOO_MANY_ARGUMENTS
+		return BACnetRejectReason_TOO_MANY_ARGUMENTS, true
 	case "UNDEFINED_ENUMERATION":
-		enum = BACnetRejectReason_UNDEFINED_ENUMERATION
+		return BACnetRejectReason_UNDEFINED_ENUMERATION, true
 	case "UNRECOGNIZED_SERVICE":
-		enum = BACnetRejectReason_UNRECOGNIZED_SERVICE
+		return BACnetRejectReason_UNRECOGNIZED_SERVICE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetRejectReason_VENDOR_PROPRIETARY_VALUE
-	default:
-		enum = 0
-		ok = false
+		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetRejectReasonKnows(value uint8) bool {
@@ -158,7 +154,11 @@ func BACnetRejectReasonParse(readBuffer utils.ReadBuffer) (BACnetRejectReason, e
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRejectReason")
 	}
-	return BACnetRejectReasonByValue(val), nil
+	if enum, ok := BACnetRejectReasonByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetRejectReason", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetRejectReason) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -72,76 +72,72 @@ func init() {
 	}
 }
 
-func BACnetDataTypeByValue(value uint8) BACnetDataType {
+func BACnetDataTypeByValue(value uint8) (enum BACnetDataType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDataType_NULL
+		return BACnetDataType_NULL, true
 	case 1:
-		return BACnetDataType_BOOLEAN
+		return BACnetDataType_BOOLEAN, true
 	case 10:
-		return BACnetDataType_DATE
+		return BACnetDataType_DATE, true
 	case 11:
-		return BACnetDataType_TIME
+		return BACnetDataType_TIME, true
 	case 12:
-		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
+		return BACnetDataType_BACNET_OBJECT_IDENTIFIER, true
 	case 2:
-		return BACnetDataType_UNSIGNED_INTEGER
+		return BACnetDataType_UNSIGNED_INTEGER, true
 	case 3:
-		return BACnetDataType_SIGNED_INTEGER
+		return BACnetDataType_SIGNED_INTEGER, true
 	case 33:
-		return BACnetDataType_UNKNOWN
+		return BACnetDataType_UNKNOWN, true
 	case 4:
-		return BACnetDataType_REAL
+		return BACnetDataType_REAL, true
 	case 5:
-		return BACnetDataType_DOUBLE
+		return BACnetDataType_DOUBLE, true
 	case 6:
-		return BACnetDataType_OCTET_STRING
+		return BACnetDataType_OCTET_STRING, true
 	case 7:
-		return BACnetDataType_CHARACTER_STRING
+		return BACnetDataType_CHARACTER_STRING, true
 	case 8:
-		return BACnetDataType_BIT_STRING
+		return BACnetDataType_BIT_STRING, true
 	case 9:
-		return BACnetDataType_ENUMERATED
+		return BACnetDataType_ENUMERATED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDataTypeByName(value string) (enum BACnetDataType, ok bool) {
-	ok = true
 	switch value {
 	case "NULL":
-		enum = BACnetDataType_NULL
+		return BACnetDataType_NULL, true
 	case "BOOLEAN":
-		enum = BACnetDataType_BOOLEAN
+		return BACnetDataType_BOOLEAN, true
 	case "DATE":
-		enum = BACnetDataType_DATE
+		return BACnetDataType_DATE, true
 	case "TIME":
-		enum = BACnetDataType_TIME
+		return BACnetDataType_TIME, true
 	case "BACNET_OBJECT_IDENTIFIER":
-		enum = BACnetDataType_BACNET_OBJECT_IDENTIFIER
+		return BACnetDataType_BACNET_OBJECT_IDENTIFIER, true
 	case "UNSIGNED_INTEGER":
-		enum = BACnetDataType_UNSIGNED_INTEGER
+		return BACnetDataType_UNSIGNED_INTEGER, true
 	case "SIGNED_INTEGER":
-		enum = BACnetDataType_SIGNED_INTEGER
+		return BACnetDataType_SIGNED_INTEGER, true
 	case "UNKNOWN":
-		enum = BACnetDataType_UNKNOWN
+		return BACnetDataType_UNKNOWN, true
 	case "REAL":
-		enum = BACnetDataType_REAL
+		return BACnetDataType_REAL, true
 	case "DOUBLE":
-		enum = BACnetDataType_DOUBLE
+		return BACnetDataType_DOUBLE, true
 	case "OCTET_STRING":
-		enum = BACnetDataType_OCTET_STRING
+		return BACnetDataType_OCTET_STRING, true
 	case "CHARACTER_STRING":
-		enum = BACnetDataType_CHARACTER_STRING
+		return BACnetDataType_CHARACTER_STRING, true
 	case "BIT_STRING":
-		enum = BACnetDataType_BIT_STRING
+		return BACnetDataType_BIT_STRING, true
 	case "ENUMERATED":
-		enum = BACnetDataType_ENUMERATED
-	default:
-		enum = 0
-		ok = false
+		return BACnetDataType_ENUMERATED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetDataTypeKnows(value uint8) bool {
@@ -176,7 +172,11 @@ func BACnetDataTypeParse(readBuffer utils.ReadBuffer) (BACnetDataType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDataType")
 	}
-	return BACnetDataTypeByValue(val), nil
+	if enum, ok := BACnetDataTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetDataType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetDataType) Serialize(writeBuffer utils.WriteBuffer) error {

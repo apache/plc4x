@@ -104,48 +104,44 @@ func COTPTpduSizeFirstEnumForFieldSizeInBytes(value uint16) (COTPTpduSize, error
 	}
 	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
 }
-func COTPTpduSizeByValue(value uint8) COTPTpduSize {
+func COTPTpduSizeByValue(value uint8) (enum COTPTpduSize, ok bool) {
 	switch value {
 	case 0x07:
-		return COTPTpduSize_SIZE_128
+		return COTPTpduSize_SIZE_128, true
 	case 0x08:
-		return COTPTpduSize_SIZE_256
+		return COTPTpduSize_SIZE_256, true
 	case 0x09:
-		return COTPTpduSize_SIZE_512
+		return COTPTpduSize_SIZE_512, true
 	case 0x0a:
-		return COTPTpduSize_SIZE_1024
+		return COTPTpduSize_SIZE_1024, true
 	case 0x0b:
-		return COTPTpduSize_SIZE_2048
+		return COTPTpduSize_SIZE_2048, true
 	case 0x0c:
-		return COTPTpduSize_SIZE_4096
+		return COTPTpduSize_SIZE_4096, true
 	case 0x0d:
-		return COTPTpduSize_SIZE_8192
+		return COTPTpduSize_SIZE_8192, true
 	}
-	return 0
+	return 0, false
 }
 
 func COTPTpduSizeByName(value string) (enum COTPTpduSize, ok bool) {
-	ok = true
 	switch value {
 	case "SIZE_128":
-		enum = COTPTpduSize_SIZE_128
+		return COTPTpduSize_SIZE_128, true
 	case "SIZE_256":
-		enum = COTPTpduSize_SIZE_256
+		return COTPTpduSize_SIZE_256, true
 	case "SIZE_512":
-		enum = COTPTpduSize_SIZE_512
+		return COTPTpduSize_SIZE_512, true
 	case "SIZE_1024":
-		enum = COTPTpduSize_SIZE_1024
+		return COTPTpduSize_SIZE_1024, true
 	case "SIZE_2048":
-		enum = COTPTpduSize_SIZE_2048
+		return COTPTpduSize_SIZE_2048, true
 	case "SIZE_4096":
-		enum = COTPTpduSize_SIZE_4096
+		return COTPTpduSize_SIZE_4096, true
 	case "SIZE_8192":
-		enum = COTPTpduSize_SIZE_8192
-	default:
-		enum = 0
-		ok = false
+		return COTPTpduSize_SIZE_8192, true
 	}
-	return
+	return 0, false
 }
 
 func COTPTpduSizeKnows(value uint8) bool {
@@ -180,7 +176,11 @@ func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPTpduSize")
 	}
-	return COTPTpduSizeByValue(val), nil
+	if enum, ok := COTPTpduSizeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for COTPTpduSize", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e COTPTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {

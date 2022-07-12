@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetProtocolLevelByValue(value uint8) BACnetProtocolLevel {
+func BACnetProtocolLevelByValue(value uint8) (enum BACnetProtocolLevel, ok bool) {
 	switch value {
 	case 0:
-		return BACnetProtocolLevel_PHYSICAL
+		return BACnetProtocolLevel_PHYSICAL, true
 	case 1:
-		return BACnetProtocolLevel_PROTOCOL
+		return BACnetProtocolLevel_PROTOCOL, true
 	case 2:
-		return BACnetProtocolLevel_BACNET_APPLICATION
+		return BACnetProtocolLevel_BACNET_APPLICATION, true
 	case 3:
-		return BACnetProtocolLevel_NON_BACNET_APPLICATION
+		return BACnetProtocolLevel_NON_BACNET_APPLICATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetProtocolLevelByName(value string) (enum BACnetProtocolLevel, ok bool) {
-	ok = true
 	switch value {
 	case "PHYSICAL":
-		enum = BACnetProtocolLevel_PHYSICAL
+		return BACnetProtocolLevel_PHYSICAL, true
 	case "PROTOCOL":
-		enum = BACnetProtocolLevel_PROTOCOL
+		return BACnetProtocolLevel_PROTOCOL, true
 	case "BACNET_APPLICATION":
-		enum = BACnetProtocolLevel_BACNET_APPLICATION
+		return BACnetProtocolLevel_BACNET_APPLICATION, true
 	case "NON_BACNET_APPLICATION":
-		enum = BACnetProtocolLevel_NON_BACNET_APPLICATION
-	default:
-		enum = 0
-		ok = false
+		return BACnetProtocolLevel_NON_BACNET_APPLICATION, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetProtocolLevelKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetProtocolLevelParse(readBuffer utils.ReadBuffer) (BACnetProtocolLevel,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetProtocolLevel")
 	}
-	return BACnetProtocolLevelByValue(val), nil
+	if enum, ok := BACnetProtocolLevelByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetProtocolLevel", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetProtocolLevel) Serialize(writeBuffer utils.WriteBuffer) error {

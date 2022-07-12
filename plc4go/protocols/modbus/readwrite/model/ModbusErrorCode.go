@@ -64,60 +64,56 @@ func init() {
 	}
 }
 
-func ModbusErrorCodeByValue(value uint8) ModbusErrorCode {
+func ModbusErrorCodeByValue(value uint8) (enum ModbusErrorCode, ok bool) {
 	switch value {
 	case 1:
-		return ModbusErrorCode_ILLEGAL_FUNCTION
+		return ModbusErrorCode_ILLEGAL_FUNCTION, true
 	case 10:
-		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
+		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE, true
 	case 11:
-		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
+		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND, true
 	case 2:
-		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS
+		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS, true
 	case 3:
-		return ModbusErrorCode_ILLEGAL_DATA_VALUE
+		return ModbusErrorCode_ILLEGAL_DATA_VALUE, true
 	case 4:
-		return ModbusErrorCode_SLAVE_DEVICE_FAILURE
+		return ModbusErrorCode_SLAVE_DEVICE_FAILURE, true
 	case 5:
-		return ModbusErrorCode_ACKNOWLEDGE
+		return ModbusErrorCode_ACKNOWLEDGE, true
 	case 6:
-		return ModbusErrorCode_SLAVE_DEVICE_BUSY
+		return ModbusErrorCode_SLAVE_DEVICE_BUSY, true
 	case 7:
-		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
+		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE, true
 	case 8:
-		return ModbusErrorCode_MEMORY_PARITY_ERROR
+		return ModbusErrorCode_MEMORY_PARITY_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusErrorCodeByName(value string) (enum ModbusErrorCode, ok bool) {
-	ok = true
 	switch value {
 	case "ILLEGAL_FUNCTION":
-		enum = ModbusErrorCode_ILLEGAL_FUNCTION
+		return ModbusErrorCode_ILLEGAL_FUNCTION, true
 	case "GATEWAY_PATH_UNAVAILABLE":
-		enum = ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
+		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE, true
 	case "GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND":
-		enum = ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
+		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND, true
 	case "ILLEGAL_DATA_ADDRESS":
-		enum = ModbusErrorCode_ILLEGAL_DATA_ADDRESS
+		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS, true
 	case "ILLEGAL_DATA_VALUE":
-		enum = ModbusErrorCode_ILLEGAL_DATA_VALUE
+		return ModbusErrorCode_ILLEGAL_DATA_VALUE, true
 	case "SLAVE_DEVICE_FAILURE":
-		enum = ModbusErrorCode_SLAVE_DEVICE_FAILURE
+		return ModbusErrorCode_SLAVE_DEVICE_FAILURE, true
 	case "ACKNOWLEDGE":
-		enum = ModbusErrorCode_ACKNOWLEDGE
+		return ModbusErrorCode_ACKNOWLEDGE, true
 	case "SLAVE_DEVICE_BUSY":
-		enum = ModbusErrorCode_SLAVE_DEVICE_BUSY
+		return ModbusErrorCode_SLAVE_DEVICE_BUSY, true
 	case "NEGATIVE_ACKNOWLEDGE":
-		enum = ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
+		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE, true
 	case "MEMORY_PARITY_ERROR":
-		enum = ModbusErrorCode_MEMORY_PARITY_ERROR
-	default:
-		enum = 0
-		ok = false
+		return ModbusErrorCode_MEMORY_PARITY_ERROR, true
 	}
-	return
+	return 0, false
 }
 
 func ModbusErrorCodeKnows(value uint8) bool {
@@ -152,7 +148,11 @@ func ModbusErrorCodeParse(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusErrorCode")
 	}
-	return ModbusErrorCodeByValue(val), nil
+	if enum, ok := ModbusErrorCodeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ModbusErrorCode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ModbusErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {

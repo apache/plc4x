@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func ModbusDeviceInformationMoreFollowsByValue(value uint8) ModbusDeviceInformationMoreFollows {
+func ModbusDeviceInformationMoreFollowsByValue(value uint8) (enum ModbusDeviceInformationMoreFollows, ok bool) {
 	switch value {
 	case 0x00:
-		return ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE
+		return ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE, true
 	case 0xFF:
-		return ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE
+		return ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusDeviceInformationMoreFollowsByName(value string) (enum ModbusDeviceInformationMoreFollows, ok bool) {
-	ok = true
 	switch value {
 	case "NO_MORE_OBJECTS_AVAILABLE":
-		enum = ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE
+		return ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE, true
 	case "MORE_OBJECTS_AVAILABLE":
-		enum = ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE
-	default:
-		enum = 0
-		ok = false
+		return ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE, true
 	}
-	return
+	return 0, false
 }
 
 func ModbusDeviceInformationMoreFollowsKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func ModbusDeviceInformationMoreFollowsParse(readBuffer utils.ReadBuffer) (Modbu
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationMoreFollows")
 	}
-	return ModbusDeviceInformationMoreFollowsByValue(val), nil
+	if enum, ok := ModbusDeviceInformationMoreFollowsByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ModbusDeviceInformationMoreFollows", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ModbusDeviceInformationMoreFollows) Serialize(writeBuffer utils.WriteBuffer) error {

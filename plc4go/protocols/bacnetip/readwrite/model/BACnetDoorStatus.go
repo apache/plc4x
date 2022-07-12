@@ -66,64 +66,60 @@ func init() {
 	}
 }
 
-func BACnetDoorStatusByValue(value uint16) BACnetDoorStatus {
+func BACnetDoorStatusByValue(value uint16) (enum BACnetDoorStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDoorStatus_CLOSED
+		return BACnetDoorStatus_CLOSED, true
 	case 0xFFFF:
-		return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetDoorStatus_OPENED
+		return BACnetDoorStatus_OPENED, true
 	case 2:
-		return BACnetDoorStatus_UNKNOWN
+		return BACnetDoorStatus_UNKNOWN, true
 	case 3:
-		return BACnetDoorStatus_DOOR_FAULT
+		return BACnetDoorStatus_DOOR_FAULT, true
 	case 4:
-		return BACnetDoorStatus_UNUSED
+		return BACnetDoorStatus_UNUSED, true
 	case 5:
-		return BACnetDoorStatus_NONE
+		return BACnetDoorStatus_NONE, true
 	case 6:
-		return BACnetDoorStatus_CLOSING
+		return BACnetDoorStatus_CLOSING, true
 	case 7:
-		return BACnetDoorStatus_OPENING
+		return BACnetDoorStatus_OPENING, true
 	case 8:
-		return BACnetDoorStatus_SAFETY_LOCKED
+		return BACnetDoorStatus_SAFETY_LOCKED, true
 	case 9:
-		return BACnetDoorStatus_LIMITED_OPENED
+		return BACnetDoorStatus_LIMITED_OPENED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDoorStatusByName(value string) (enum BACnetDoorStatus, ok bool) {
-	ok = true
 	switch value {
 	case "CLOSED":
-		enum = BACnetDoorStatus_CLOSED
+		return BACnetDoorStatus_CLOSED, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE, true
 	case "OPENED":
-		enum = BACnetDoorStatus_OPENED
+		return BACnetDoorStatus_OPENED, true
 	case "UNKNOWN":
-		enum = BACnetDoorStatus_UNKNOWN
+		return BACnetDoorStatus_UNKNOWN, true
 	case "DOOR_FAULT":
-		enum = BACnetDoorStatus_DOOR_FAULT
+		return BACnetDoorStatus_DOOR_FAULT, true
 	case "UNUSED":
-		enum = BACnetDoorStatus_UNUSED
+		return BACnetDoorStatus_UNUSED, true
 	case "NONE":
-		enum = BACnetDoorStatus_NONE
+		return BACnetDoorStatus_NONE, true
 	case "CLOSING":
-		enum = BACnetDoorStatus_CLOSING
+		return BACnetDoorStatus_CLOSING, true
 	case "OPENING":
-		enum = BACnetDoorStatus_OPENING
+		return BACnetDoorStatus_OPENING, true
 	case "SAFETY_LOCKED":
-		enum = BACnetDoorStatus_SAFETY_LOCKED
+		return BACnetDoorStatus_SAFETY_LOCKED, true
 	case "LIMITED_OPENED":
-		enum = BACnetDoorStatus_LIMITED_OPENED
-	default:
-		enum = 0
-		ok = false
+		return BACnetDoorStatus_LIMITED_OPENED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetDoorStatusKnows(value uint16) bool {
@@ -158,7 +154,11 @@ func BACnetDoorStatusParse(readBuffer utils.ReadBuffer) (BACnetDoorStatus, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorStatus")
 	}
-	return BACnetDoorStatusByValue(val), nil
+	if enum, ok := BACnetDoorStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetDoorStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetDoorStatus) Serialize(writeBuffer utils.WriteBuffer) error {

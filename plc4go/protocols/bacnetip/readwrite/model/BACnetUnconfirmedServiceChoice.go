@@ -68,68 +68,64 @@ func init() {
 	}
 }
 
-func BACnetUnconfirmedServiceChoiceByValue(value uint8) BACnetUnconfirmedServiceChoice {
+func BACnetUnconfirmedServiceChoiceByValue(value uint8) (enum BACnetUnconfirmedServiceChoice, ok bool) {
 	switch value {
 	case 0x00:
-		return BACnetUnconfirmedServiceChoice_I_AM
+		return BACnetUnconfirmedServiceChoice_I_AM, true
 	case 0x01:
-		return BACnetUnconfirmedServiceChoice_I_HAVE
+		return BACnetUnconfirmedServiceChoice_I_HAVE, true
 	case 0x02:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION, true
 	case 0x03:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION, true
 	case 0x04:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER, true
 	case 0x05:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE, true
 	case 0x06:
-		return BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION
+		return BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION, true
 	case 0x07:
-		return BACnetUnconfirmedServiceChoice_WHO_HAS
+		return BACnetUnconfirmedServiceChoice_WHO_HAS, true
 	case 0x08:
-		return BACnetUnconfirmedServiceChoice_WHO_IS
+		return BACnetUnconfirmedServiceChoice_WHO_IS, true
 	case 0x09:
-		return BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION
+		return BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION, true
 	case 0x0A:
-		return BACnetUnconfirmedServiceChoice_WRITE_GROUP
+		return BACnetUnconfirmedServiceChoice_WRITE_GROUP, true
 	case 0x0B:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetUnconfirmedServiceChoiceByName(value string) (enum BACnetUnconfirmedServiceChoice, ok bool) {
-	ok = true
 	switch value {
 	case "I_AM":
-		enum = BACnetUnconfirmedServiceChoice_I_AM
+		return BACnetUnconfirmedServiceChoice_I_AM, true
 	case "I_HAVE":
-		enum = BACnetUnconfirmedServiceChoice_I_HAVE
+		return BACnetUnconfirmedServiceChoice_I_HAVE, true
 	case "UNCONFIRMED_COV_NOTIFICATION":
-		enum = BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION, true
 	case "UNCONFIRMED_EVENT_NOTIFICATION":
-		enum = BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION, true
 	case "UNCONFIRMED_PRIVATE_TRANSFER":
-		enum = BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER, true
 	case "UNCONFIRMED_TEXT_MESSAGE":
-		enum = BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE, true
 	case "TIME_SYNCHRONIZATION":
-		enum = BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION
+		return BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION, true
 	case "WHO_HAS":
-		enum = BACnetUnconfirmedServiceChoice_WHO_HAS
+		return BACnetUnconfirmedServiceChoice_WHO_HAS, true
 	case "WHO_IS":
-		enum = BACnetUnconfirmedServiceChoice_WHO_IS
+		return BACnetUnconfirmedServiceChoice_WHO_IS, true
 	case "UTC_TIME_SYNCHRONIZATION":
-		enum = BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION
+		return BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION, true
 	case "WRITE_GROUP":
-		enum = BACnetUnconfirmedServiceChoice_WRITE_GROUP
+		return BACnetUnconfirmedServiceChoice_WRITE_GROUP, true
 	case "UNCONFIRMED_COV_NOTIFICATION_MULTIPLE":
-		enum = BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE
-	default:
-		enum = 0
-		ok = false
+		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetUnconfirmedServiceChoiceKnows(value uint8) bool {
@@ -164,7 +160,11 @@ func BACnetUnconfirmedServiceChoiceParse(readBuffer utils.ReadBuffer) (BACnetUnc
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetUnconfirmedServiceChoice")
 	}
-	return BACnetUnconfirmedServiceChoiceByValue(val), nil
+	if enum, ok := BACnetUnconfirmedServiceChoiceByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetUnconfirmedServiceChoice", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetUnconfirmedServiceChoice) Serialize(writeBuffer utils.WriteBuffer) error {

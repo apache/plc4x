@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(value uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(value uint8) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL, true
 	case 1:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED, true
 	case 2:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByName(value string) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, ok bool) {
-	ok = true
 	switch value {
 	case "ALL":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL, true
 	case "ACKED":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED, true
 	case "NOT_ACKED":
-		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED
-	default:
-		enum = 0
-		ok = false
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter")
 	}
-	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) Serialize(writeBuffer utils.WriteBuffer) error {

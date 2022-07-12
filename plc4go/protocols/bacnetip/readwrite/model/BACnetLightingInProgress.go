@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func BACnetLightingInProgressByValue(value uint8) BACnetLightingInProgress {
+func BACnetLightingInProgressByValue(value uint8) (enum BACnetLightingInProgress, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLightingInProgress_IDLE
+		return BACnetLightingInProgress_IDLE, true
 	case 1:
-		return BACnetLightingInProgress_FADE_ACTIVE
+		return BACnetLightingInProgress_FADE_ACTIVE, true
 	case 2:
-		return BACnetLightingInProgress_RAMP_ACTIVE
+		return BACnetLightingInProgress_RAMP_ACTIVE, true
 	case 3:
-		return BACnetLightingInProgress_NOT_CONTROLLED
+		return BACnetLightingInProgress_NOT_CONTROLLED, true
 	case 4:
-		return BACnetLightingInProgress_OTHER
+		return BACnetLightingInProgress_OTHER, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLightingInProgressByName(value string) (enum BACnetLightingInProgress, ok bool) {
-	ok = true
 	switch value {
 	case "IDLE":
-		enum = BACnetLightingInProgress_IDLE
+		return BACnetLightingInProgress_IDLE, true
 	case "FADE_ACTIVE":
-		enum = BACnetLightingInProgress_FADE_ACTIVE
+		return BACnetLightingInProgress_FADE_ACTIVE, true
 	case "RAMP_ACTIVE":
-		enum = BACnetLightingInProgress_RAMP_ACTIVE
+		return BACnetLightingInProgress_RAMP_ACTIVE, true
 	case "NOT_CONTROLLED":
-		enum = BACnetLightingInProgress_NOT_CONTROLLED
+		return BACnetLightingInProgress_NOT_CONTROLLED, true
 	case "OTHER":
-		enum = BACnetLightingInProgress_OTHER
-	default:
-		enum = 0
-		ok = false
+		return BACnetLightingInProgress_OTHER, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLightingInProgressKnows(value uint8) bool {
@@ -122,7 +118,11 @@ func BACnetLightingInProgressParse(readBuffer utils.ReadBuffer) (BACnetLightingI
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingInProgress")
 	}
-	return BACnetLightingInProgressByValue(val), nil
+	if enum, ok := BACnetLightingInProgressByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLightingInProgress", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLightingInProgress) Serialize(writeBuffer utils.WriteBuffer) error {

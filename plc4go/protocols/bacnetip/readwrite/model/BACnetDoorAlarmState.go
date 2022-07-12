@@ -64,60 +64,56 @@ func init() {
 	}
 }
 
-func BACnetDoorAlarmStateByValue(value uint8) BACnetDoorAlarmState {
+func BACnetDoorAlarmStateByValue(value uint8) (enum BACnetDoorAlarmState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDoorAlarmState_NORMAL
+		return BACnetDoorAlarmState_NORMAL, true
 	case 0xFF:
-		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
+		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetDoorAlarmState_ALARM
+		return BACnetDoorAlarmState_ALARM, true
 	case 2:
-		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
+		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG, true
 	case 3:
-		return BACnetDoorAlarmState_FORCED_OPEN
+		return BACnetDoorAlarmState_FORCED_OPEN, true
 	case 4:
-		return BACnetDoorAlarmState_TAMPER
+		return BACnetDoorAlarmState_TAMPER, true
 	case 5:
-		return BACnetDoorAlarmState_DOOR_FAULT
+		return BACnetDoorAlarmState_DOOR_FAULT, true
 	case 6:
-		return BACnetDoorAlarmState_LOCK_DOWN
+		return BACnetDoorAlarmState_LOCK_DOWN, true
 	case 7:
-		return BACnetDoorAlarmState_FREE_ACCESS
+		return BACnetDoorAlarmState_FREE_ACCESS, true
 	case 8:
-		return BACnetDoorAlarmState_EGRESS_OPEN
+		return BACnetDoorAlarmState_EGRESS_OPEN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDoorAlarmStateByName(value string) (enum BACnetDoorAlarmState, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetDoorAlarmState_NORMAL
+		return BACnetDoorAlarmState_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
+		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE, true
 	case "ALARM":
-		enum = BACnetDoorAlarmState_ALARM
+		return BACnetDoorAlarmState_ALARM, true
 	case "DOOR_OPEN_TOO_LONG":
-		enum = BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
+		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG, true
 	case "FORCED_OPEN":
-		enum = BACnetDoorAlarmState_FORCED_OPEN
+		return BACnetDoorAlarmState_FORCED_OPEN, true
 	case "TAMPER":
-		enum = BACnetDoorAlarmState_TAMPER
+		return BACnetDoorAlarmState_TAMPER, true
 	case "DOOR_FAULT":
-		enum = BACnetDoorAlarmState_DOOR_FAULT
+		return BACnetDoorAlarmState_DOOR_FAULT, true
 	case "LOCK_DOWN":
-		enum = BACnetDoorAlarmState_LOCK_DOWN
+		return BACnetDoorAlarmState_LOCK_DOWN, true
 	case "FREE_ACCESS":
-		enum = BACnetDoorAlarmState_FREE_ACCESS
+		return BACnetDoorAlarmState_FREE_ACCESS, true
 	case "EGRESS_OPEN":
-		enum = BACnetDoorAlarmState_EGRESS_OPEN
-	default:
-		enum = 0
-		ok = false
+		return BACnetDoorAlarmState_EGRESS_OPEN, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetDoorAlarmStateKnows(value uint8) bool {
@@ -152,7 +148,11 @@ func BACnetDoorAlarmStateParse(readBuffer utils.ReadBuffer) (BACnetDoorAlarmStat
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorAlarmState")
 	}
-	return BACnetDoorAlarmStateByValue(val), nil
+	if enum, ok := BACnetDoorAlarmStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetDoorAlarmState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetDoorAlarmState) Serialize(writeBuffer utils.WriteBuffer) error {

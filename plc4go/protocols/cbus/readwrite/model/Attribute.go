@@ -170,92 +170,88 @@ func AttributeFirstEnumForFieldBytesReturned(value uint8) (Attribute, error) {
 	}
 	return 0, errors.Errorf("enum for %v describing BytesReturned not found", value)
 }
-func AttributeByValue(value uint8) Attribute {
+func AttributeByValue(value uint8) (enum Attribute, ok bool) {
 	switch value {
 	case 0x00:
-		return Attribute_Manufacturer
+		return Attribute_Manufacturer, true
 	case 0x01:
-		return Attribute_Type
+		return Attribute_Type, true
 	case 0x02:
-		return Attribute_FirmwareVersion
+		return Attribute_FirmwareVersion, true
 	case 0x03:
-		return Attribute_Summary
+		return Attribute_Summary, true
 	case 0x04:
-		return Attribute_ExtendedDiagnosticSummary
+		return Attribute_ExtendedDiagnosticSummary, true
 	case 0x05:
-		return Attribute_NetworkTerminalLevels
+		return Attribute_NetworkTerminalLevels, true
 	case 0x06:
-		return Attribute_TerminalLevel
+		return Attribute_TerminalLevel, true
 	case 0x07:
-		return Attribute_NetworkVoltage
+		return Attribute_NetworkVoltage, true
 	case 0x08:
-		return Attribute_GAVValuesCurrent
+		return Attribute_GAVValuesCurrent, true
 	case 0x09:
-		return Attribute_GAVValuesStored
+		return Attribute_GAVValuesStored, true
 	case 0x0A:
-		return Attribute_GAVPhysicalAddresses
+		return Attribute_GAVPhysicalAddresses, true
 	case 0x0B:
-		return Attribute_LogicalAssignment
+		return Attribute_LogicalAssignment, true
 	case 0x0C:
-		return Attribute_Delays
+		return Attribute_Delays, true
 	case 0x0D:
-		return Attribute_MinimumLevels
+		return Attribute_MinimumLevels, true
 	case 0x0E:
-		return Attribute_MaximumLevels
+		return Attribute_MaximumLevels, true
 	case 0x0F:
-		return Attribute_CurrentSenseLevels
+		return Attribute_CurrentSenseLevels, true
 	case 0x10:
-		return Attribute_OutputUnitSummary
+		return Attribute_OutputUnitSummary, true
 	case 0x11:
-		return Attribute_DSIStatus
+		return Attribute_DSIStatus, true
 	}
-	return 0
+	return 0, false
 }
 
 func AttributeByName(value string) (enum Attribute, ok bool) {
-	ok = true
 	switch value {
 	case "Manufacturer":
-		enum = Attribute_Manufacturer
+		return Attribute_Manufacturer, true
 	case "Type":
-		enum = Attribute_Type
+		return Attribute_Type, true
 	case "FirmwareVersion":
-		enum = Attribute_FirmwareVersion
+		return Attribute_FirmwareVersion, true
 	case "Summary":
-		enum = Attribute_Summary
+		return Attribute_Summary, true
 	case "ExtendedDiagnosticSummary":
-		enum = Attribute_ExtendedDiagnosticSummary
+		return Attribute_ExtendedDiagnosticSummary, true
 	case "NetworkTerminalLevels":
-		enum = Attribute_NetworkTerminalLevels
+		return Attribute_NetworkTerminalLevels, true
 	case "TerminalLevel":
-		enum = Attribute_TerminalLevel
+		return Attribute_TerminalLevel, true
 	case "NetworkVoltage":
-		enum = Attribute_NetworkVoltage
+		return Attribute_NetworkVoltage, true
 	case "GAVValuesCurrent":
-		enum = Attribute_GAVValuesCurrent
+		return Attribute_GAVValuesCurrent, true
 	case "GAVValuesStored":
-		enum = Attribute_GAVValuesStored
+		return Attribute_GAVValuesStored, true
 	case "GAVPhysicalAddresses":
-		enum = Attribute_GAVPhysicalAddresses
+		return Attribute_GAVPhysicalAddresses, true
 	case "LogicalAssignment":
-		enum = Attribute_LogicalAssignment
+		return Attribute_LogicalAssignment, true
 	case "Delays":
-		enum = Attribute_Delays
+		return Attribute_Delays, true
 	case "MinimumLevels":
-		enum = Attribute_MinimumLevels
+		return Attribute_MinimumLevels, true
 	case "MaximumLevels":
-		enum = Attribute_MaximumLevels
+		return Attribute_MaximumLevels, true
 	case "CurrentSenseLevels":
-		enum = Attribute_CurrentSenseLevels
+		return Attribute_CurrentSenseLevels, true
 	case "OutputUnitSummary":
-		enum = Attribute_OutputUnitSummary
+		return Attribute_OutputUnitSummary, true
 	case "DSIStatus":
-		enum = Attribute_DSIStatus
-	default:
-		enum = 0
-		ok = false
+		return Attribute_DSIStatus, true
 	}
-	return
+	return 0, false
 }
 
 func AttributeKnows(value uint8) bool {
@@ -290,7 +286,11 @@ func AttributeParse(readBuffer utils.ReadBuffer) (Attribute, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Attribute")
 	}
-	return AttributeByValue(val), nil
+	if enum, ok := AttributeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for Attribute", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e Attribute) Serialize(writeBuffer utils.WriteBuffer) error {

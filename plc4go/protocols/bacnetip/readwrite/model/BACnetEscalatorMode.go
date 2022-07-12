@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetEscalatorModeByValue(value uint16) BACnetEscalatorMode {
+func BACnetEscalatorModeByValue(value uint16) (enum BACnetEscalatorMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEscalatorMode_UNKNOWN
+		return BACnetEscalatorMode_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetEscalatorMode_STOP
+		return BACnetEscalatorMode_STOP, true
 	case 2:
-		return BACnetEscalatorMode_UP
+		return BACnetEscalatorMode_UP, true
 	case 3:
-		return BACnetEscalatorMode_DOWN
+		return BACnetEscalatorMode_DOWN, true
 	case 4:
-		return BACnetEscalatorMode_INSPECTION
+		return BACnetEscalatorMode_INSPECTION, true
 	case 5:
-		return BACnetEscalatorMode_OUT_OF_SERVICE
+		return BACnetEscalatorMode_OUT_OF_SERVICE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEscalatorModeByName(value string) (enum BACnetEscalatorMode, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetEscalatorMode_UNKNOWN
+		return BACnetEscalatorMode_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE, true
 	case "STOP":
-		enum = BACnetEscalatorMode_STOP
+		return BACnetEscalatorMode_STOP, true
 	case "UP":
-		enum = BACnetEscalatorMode_UP
+		return BACnetEscalatorMode_UP, true
 	case "DOWN":
-		enum = BACnetEscalatorMode_DOWN
+		return BACnetEscalatorMode_DOWN, true
 	case "INSPECTION":
-		enum = BACnetEscalatorMode_INSPECTION
+		return BACnetEscalatorMode_INSPECTION, true
 	case "OUT_OF_SERVICE":
-		enum = BACnetEscalatorMode_OUT_OF_SERVICE
-	default:
-		enum = 0
-		ok = false
+		return BACnetEscalatorMode_OUT_OF_SERVICE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetEscalatorModeKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BACnetEscalatorModeParse(readBuffer utils.ReadBuffer) (BACnetEscalatorMode,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorMode")
 	}
-	return BACnetEscalatorModeByValue(val), nil
+	if enum, ok := BACnetEscalatorModeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetEscalatorMode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetEscalatorMode) Serialize(writeBuffer utils.WriteBuffer) error {

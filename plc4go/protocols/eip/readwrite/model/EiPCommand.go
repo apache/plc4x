@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func EiPCommandByValue(value uint16) EiPCommand {
+func EiPCommandByValue(value uint16) (enum EiPCommand, ok bool) {
 	switch value {
 	case 0x0065:
-		return EiPCommand_RegisterSession
+		return EiPCommand_RegisterSession, true
 	case 0x0066:
-		return EiPCommand_UnregisterSession
+		return EiPCommand_UnregisterSession, true
 	case 0x006F:
-		return EiPCommand_SendRRData
+		return EiPCommand_SendRRData, true
 	}
-	return 0
+	return 0, false
 }
 
 func EiPCommandByName(value string) (enum EiPCommand, ok bool) {
-	ok = true
 	switch value {
 	case "RegisterSession":
-		enum = EiPCommand_RegisterSession
+		return EiPCommand_RegisterSession, true
 	case "UnregisterSession":
-		enum = EiPCommand_UnregisterSession
+		return EiPCommand_UnregisterSession, true
 	case "SendRRData":
-		enum = EiPCommand_SendRRData
-	default:
-		enum = 0
-		ok = false
+		return EiPCommand_SendRRData, true
 	}
-	return
+	return 0, false
 }
 
 func EiPCommandKnows(value uint16) bool {
@@ -110,7 +106,11 @@ func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EiPCommand")
 	}
-	return EiPCommandByValue(val), nil
+	if enum, ok := EiPCommandByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for EiPCommand", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e EiPCommand) Serialize(writeBuffer utils.WriteBuffer) error {

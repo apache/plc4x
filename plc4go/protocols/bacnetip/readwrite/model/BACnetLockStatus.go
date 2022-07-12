@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func BACnetLockStatusByValue(value uint8) BACnetLockStatus {
+func BACnetLockStatusByValue(value uint8) (enum BACnetLockStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLockStatus_LOCKED
+		return BACnetLockStatus_LOCKED, true
 	case 1:
-		return BACnetLockStatus_UNLOCKED
+		return BACnetLockStatus_UNLOCKED, true
 	case 2:
-		return BACnetLockStatus_LOCK_FAULT
+		return BACnetLockStatus_LOCK_FAULT, true
 	case 3:
-		return BACnetLockStatus_UNUSED
+		return BACnetLockStatus_UNUSED, true
 	case 4:
-		return BACnetLockStatus_UNKNOWN
+		return BACnetLockStatus_UNKNOWN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLockStatusByName(value string) (enum BACnetLockStatus, ok bool) {
-	ok = true
 	switch value {
 	case "LOCKED":
-		enum = BACnetLockStatus_LOCKED
+		return BACnetLockStatus_LOCKED, true
 	case "UNLOCKED":
-		enum = BACnetLockStatus_UNLOCKED
+		return BACnetLockStatus_UNLOCKED, true
 	case "LOCK_FAULT":
-		enum = BACnetLockStatus_LOCK_FAULT
+		return BACnetLockStatus_LOCK_FAULT, true
 	case "UNUSED":
-		enum = BACnetLockStatus_UNUSED
+		return BACnetLockStatus_UNUSED, true
 	case "UNKNOWN":
-		enum = BACnetLockStatus_UNKNOWN
-	default:
-		enum = 0
-		ok = false
+		return BACnetLockStatus_UNKNOWN, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLockStatusKnows(value uint8) bool {
@@ -122,7 +118,11 @@ func BACnetLockStatusParse(readBuffer utils.ReadBuffer) (BACnetLockStatus, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLockStatus")
 	}
-	return BACnetLockStatusByValue(val), nil
+	if enum, ok := BACnetLockStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLockStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLockStatus) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -66,64 +66,60 @@ func init() {
 	}
 }
 
-func BACnetLiftCarDriveStatusByValue(value uint16) BACnetLiftCarDriveStatus {
+func BACnetLiftCarDriveStatusByValue(value uint16) (enum BACnetLiftCarDriveStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLiftCarDriveStatus_UNKNOWN
+		return BACnetLiftCarDriveStatus_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLiftCarDriveStatus_STATIONARY
+		return BACnetLiftCarDriveStatus_STATIONARY, true
 	case 2:
-		return BACnetLiftCarDriveStatus_BRAKING
+		return BACnetLiftCarDriveStatus_BRAKING, true
 	case 3:
-		return BACnetLiftCarDriveStatus_ACCELERATE
+		return BACnetLiftCarDriveStatus_ACCELERATE, true
 	case 4:
-		return BACnetLiftCarDriveStatus_DECELERATE
+		return BACnetLiftCarDriveStatus_DECELERATE, true
 	case 5:
-		return BACnetLiftCarDriveStatus_RATED_SPEED
+		return BACnetLiftCarDriveStatus_RATED_SPEED, true
 	case 6:
-		return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP
+		return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP, true
 	case 7:
-		return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP
+		return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP, true
 	case 8:
-		return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP
+		return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP, true
 	case 9:
-		return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP
+		return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLiftCarDriveStatusByName(value string) (enum BACnetLiftCarDriveStatus, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetLiftCarDriveStatus_UNKNOWN
+		return BACnetLiftCarDriveStatus_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE, true
 	case "STATIONARY":
-		enum = BACnetLiftCarDriveStatus_STATIONARY
+		return BACnetLiftCarDriveStatus_STATIONARY, true
 	case "BRAKING":
-		enum = BACnetLiftCarDriveStatus_BRAKING
+		return BACnetLiftCarDriveStatus_BRAKING, true
 	case "ACCELERATE":
-		enum = BACnetLiftCarDriveStatus_ACCELERATE
+		return BACnetLiftCarDriveStatus_ACCELERATE, true
 	case "DECELERATE":
-		enum = BACnetLiftCarDriveStatus_DECELERATE
+		return BACnetLiftCarDriveStatus_DECELERATE, true
 	case "RATED_SPEED":
-		enum = BACnetLiftCarDriveStatus_RATED_SPEED
+		return BACnetLiftCarDriveStatus_RATED_SPEED, true
 	case "SINGLE_FLOOR_JUMP":
-		enum = BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP
+		return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP, true
 	case "TWO_FLOOR_JUMP":
-		enum = BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP
+		return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP, true
 	case "THREE_FLOOR_JUMP":
-		enum = BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP
+		return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP, true
 	case "MULTI_FLOOR_JUMP":
-		enum = BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP
-	default:
-		enum = 0
-		ok = false
+		return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLiftCarDriveStatusKnows(value uint16) bool {
@@ -158,7 +154,11 @@ func BACnetLiftCarDriveStatusParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDr
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDriveStatus")
 	}
-	return BACnetLiftCarDriveStatusByValue(val), nil
+	if enum, ok := BACnetLiftCarDriveStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLiftCarDriveStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLiftCarDriveStatus) Serialize(writeBuffer utils.WriteBuffer) error {

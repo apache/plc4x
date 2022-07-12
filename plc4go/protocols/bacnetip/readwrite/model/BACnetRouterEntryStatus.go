@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetRouterEntryStatusByValue(value uint8) BACnetRouterEntryStatus {
+func BACnetRouterEntryStatusByValue(value uint8) (enum BACnetRouterEntryStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetRouterEntryStatus_AVAILABLE
+		return BACnetRouterEntryStatus_AVAILABLE, true
 	case 1:
-		return BACnetRouterEntryStatus_BUSY
+		return BACnetRouterEntryStatus_BUSY, true
 	case 2:
-		return BACnetRouterEntryStatus_DISCONNECTED
+		return BACnetRouterEntryStatus_DISCONNECTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetRouterEntryStatusByName(value string) (enum BACnetRouterEntryStatus, ok bool) {
-	ok = true
 	switch value {
 	case "AVAILABLE":
-		enum = BACnetRouterEntryStatus_AVAILABLE
+		return BACnetRouterEntryStatus_AVAILABLE, true
 	case "BUSY":
-		enum = BACnetRouterEntryStatus_BUSY
+		return BACnetRouterEntryStatus_BUSY, true
 	case "DISCONNECTED":
-		enum = BACnetRouterEntryStatus_DISCONNECTED
-	default:
-		enum = 0
-		ok = false
+		return BACnetRouterEntryStatus_DISCONNECTED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetRouterEntryStatusKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetRouterEntryStatusParse(readBuffer utils.ReadBuffer) (BACnetRouterEntr
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRouterEntryStatus")
 	}
-	return BACnetRouterEntryStatusByValue(val), nil
+	if enum, ok := BACnetRouterEntryStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetRouterEntryStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetRouterEntryStatus) Serialize(writeBuffer utils.WriteBuffer) error {

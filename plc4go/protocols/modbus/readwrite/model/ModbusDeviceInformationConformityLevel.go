@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func ModbusDeviceInformationConformityLevelByValue(value uint8) ModbusDeviceInformationConformityLevel {
+func ModbusDeviceInformationConformityLevelByValue(value uint8) (enum ModbusDeviceInformationConformityLevel, ok bool) {
 	switch value {
 	case 0x01:
-		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY, true
 	case 0x02:
-		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY, true
 	case 0x03:
-		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusDeviceInformationConformityLevelByName(value string) (enum ModbusDeviceInformationConformityLevel, ok bool) {
-	ok = true
 	switch value {
 	case "BASIC_STREAM_ONLY":
-		enum = ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY, true
 	case "REGULAR_STREAM_ONLY":
-		enum = ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY, true
 	case "EXTENDED_STREAM_ONLY":
-		enum = ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY
-	default:
-		enum = 0
-		ok = false
+		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY, true
 	}
-	return
+	return 0, false
 }
 
 func ModbusDeviceInformationConformityLevelKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func ModbusDeviceInformationConformityLevelParse(readBuffer utils.ReadBuffer) (M
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationConformityLevel")
 	}
-	return ModbusDeviceInformationConformityLevelByValue(val), nil
+	if enum, ok := ModbusDeviceInformationConformityLevelByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ModbusDeviceInformationConformityLevel", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ModbusDeviceInformationConformityLevel) Serialize(writeBuffer utils.WriteBuffer) error {

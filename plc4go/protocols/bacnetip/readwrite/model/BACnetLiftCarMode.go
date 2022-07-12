@@ -74,80 +74,76 @@ func init() {
 	}
 }
 
-func BACnetLiftCarModeByValue(value uint16) BACnetLiftCarMode {
+func BACnetLiftCarModeByValue(value uint16) (enum BACnetLiftCarMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLiftCarMode_UNKNOWN
+		return BACnetLiftCarMode_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLiftCarMode_NORMAL
+		return BACnetLiftCarMode_NORMAL, true
 	case 10:
-		return BACnetLiftCarMode_EARTHQUAKE_OPERATION
+		return BACnetLiftCarMode_EARTHQUAKE_OPERATION, true
 	case 11:
-		return BACnetLiftCarMode_FIRE_OPERATION
+		return BACnetLiftCarMode_FIRE_OPERATION, true
 	case 12:
-		return BACnetLiftCarMode_OUT_OF_SERVICE
+		return BACnetLiftCarMode_OUT_OF_SERVICE, true
 	case 13:
-		return BACnetLiftCarMode_OCCUPANT_EVACUATION
+		return BACnetLiftCarMode_OCCUPANT_EVACUATION, true
 	case 2:
-		return BACnetLiftCarMode_VIP
+		return BACnetLiftCarMode_VIP, true
 	case 3:
-		return BACnetLiftCarMode_HOMING
+		return BACnetLiftCarMode_HOMING, true
 	case 4:
-		return BACnetLiftCarMode_PARKING
+		return BACnetLiftCarMode_PARKING, true
 	case 5:
-		return BACnetLiftCarMode_ATTENDANT_CONTROL
+		return BACnetLiftCarMode_ATTENDANT_CONTROL, true
 	case 6:
-		return BACnetLiftCarMode_FIREFIGHTER_CONTROL
+		return BACnetLiftCarMode_FIREFIGHTER_CONTROL, true
 	case 7:
-		return BACnetLiftCarMode_EMERGENCY_POWER
+		return BACnetLiftCarMode_EMERGENCY_POWER, true
 	case 8:
-		return BACnetLiftCarMode_INSPECTION
+		return BACnetLiftCarMode_INSPECTION, true
 	case 9:
-		return BACnetLiftCarMode_CABINET_RECALL
+		return BACnetLiftCarMode_CABINET_RECALL, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLiftCarModeByName(value string) (enum BACnetLiftCarMode, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetLiftCarMode_UNKNOWN
+		return BACnetLiftCarMode_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE, true
 	case "NORMAL":
-		enum = BACnetLiftCarMode_NORMAL
+		return BACnetLiftCarMode_NORMAL, true
 	case "EARTHQUAKE_OPERATION":
-		enum = BACnetLiftCarMode_EARTHQUAKE_OPERATION
+		return BACnetLiftCarMode_EARTHQUAKE_OPERATION, true
 	case "FIRE_OPERATION":
-		enum = BACnetLiftCarMode_FIRE_OPERATION
+		return BACnetLiftCarMode_FIRE_OPERATION, true
 	case "OUT_OF_SERVICE":
-		enum = BACnetLiftCarMode_OUT_OF_SERVICE
+		return BACnetLiftCarMode_OUT_OF_SERVICE, true
 	case "OCCUPANT_EVACUATION":
-		enum = BACnetLiftCarMode_OCCUPANT_EVACUATION
+		return BACnetLiftCarMode_OCCUPANT_EVACUATION, true
 	case "VIP":
-		enum = BACnetLiftCarMode_VIP
+		return BACnetLiftCarMode_VIP, true
 	case "HOMING":
-		enum = BACnetLiftCarMode_HOMING
+		return BACnetLiftCarMode_HOMING, true
 	case "PARKING":
-		enum = BACnetLiftCarMode_PARKING
+		return BACnetLiftCarMode_PARKING, true
 	case "ATTENDANT_CONTROL":
-		enum = BACnetLiftCarMode_ATTENDANT_CONTROL
+		return BACnetLiftCarMode_ATTENDANT_CONTROL, true
 	case "FIREFIGHTER_CONTROL":
-		enum = BACnetLiftCarMode_FIREFIGHTER_CONTROL
+		return BACnetLiftCarMode_FIREFIGHTER_CONTROL, true
 	case "EMERGENCY_POWER":
-		enum = BACnetLiftCarMode_EMERGENCY_POWER
+		return BACnetLiftCarMode_EMERGENCY_POWER, true
 	case "INSPECTION":
-		enum = BACnetLiftCarMode_INSPECTION
+		return BACnetLiftCarMode_INSPECTION, true
 	case "CABINET_RECALL":
-		enum = BACnetLiftCarMode_CABINET_RECALL
-	default:
-		enum = 0
-		ok = false
+		return BACnetLiftCarMode_CABINET_RECALL, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLiftCarModeKnows(value uint16) bool {
@@ -182,7 +178,11 @@ func BACnetLiftCarModeParse(readBuffer utils.ReadBuffer) (BACnetLiftCarMode, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarMode")
 	}
-	return BACnetLiftCarModeByValue(val), nil
+	if enum, ok := BACnetLiftCarModeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLiftCarMode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLiftCarMode) Serialize(writeBuffer utils.WriteBuffer) error {

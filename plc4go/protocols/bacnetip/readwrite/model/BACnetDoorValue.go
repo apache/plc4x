@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetDoorValueByValue(value uint8) BACnetDoorValue {
+func BACnetDoorValueByValue(value uint8) (enum BACnetDoorValue, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDoorValue_LOCK
+		return BACnetDoorValue_LOCK, true
 	case 1:
-		return BACnetDoorValue_UNLOCK
+		return BACnetDoorValue_UNLOCK, true
 	case 2:
-		return BACnetDoorValue_PULSE_UNLOCK
+		return BACnetDoorValue_PULSE_UNLOCK, true
 	case 3:
-		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK
+		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDoorValueByName(value string) (enum BACnetDoorValue, ok bool) {
-	ok = true
 	switch value {
 	case "LOCK":
-		enum = BACnetDoorValue_LOCK
+		return BACnetDoorValue_LOCK, true
 	case "UNLOCK":
-		enum = BACnetDoorValue_UNLOCK
+		return BACnetDoorValue_UNLOCK, true
 	case "PULSE_UNLOCK":
-		enum = BACnetDoorValue_PULSE_UNLOCK
+		return BACnetDoorValue_PULSE_UNLOCK, true
 	case "EXTENDED_PULSE_UNLOCK":
-		enum = BACnetDoorValue_EXTENDED_PULSE_UNLOCK
-	default:
-		enum = 0
-		ok = false
+		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetDoorValueKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetDoorValueParse(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorValue")
 	}
-	return BACnetDoorValueByValue(val), nil
+	if enum, ok := BACnetDoorValueByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetDoorValue", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetDoorValue) Serialize(writeBuffer utils.WriteBuffer) error {

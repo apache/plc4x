@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetDoorSecuredStatusByValue(value uint8) BACnetDoorSecuredStatus {
+func BACnetDoorSecuredStatusByValue(value uint8) (enum BACnetDoorSecuredStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDoorSecuredStatus_SECURED
+		return BACnetDoorSecuredStatus_SECURED, true
 	case 1:
-		return BACnetDoorSecuredStatus_UNSECURED
+		return BACnetDoorSecuredStatus_UNSECURED, true
 	case 2:
-		return BACnetDoorSecuredStatus_UNKNOWN
+		return BACnetDoorSecuredStatus_UNKNOWN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDoorSecuredStatusByName(value string) (enum BACnetDoorSecuredStatus, ok bool) {
-	ok = true
 	switch value {
 	case "SECURED":
-		enum = BACnetDoorSecuredStatus_SECURED
+		return BACnetDoorSecuredStatus_SECURED, true
 	case "UNSECURED":
-		enum = BACnetDoorSecuredStatus_UNSECURED
+		return BACnetDoorSecuredStatus_UNSECURED, true
 	case "UNKNOWN":
-		enum = BACnetDoorSecuredStatus_UNKNOWN
-	default:
-		enum = 0
-		ok = false
+		return BACnetDoorSecuredStatus_UNKNOWN, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetDoorSecuredStatusKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetDoorSecuredStatusParse(readBuffer utils.ReadBuffer) (BACnetDoorSecure
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorSecuredStatus")
 	}
-	return BACnetDoorSecuredStatusByValue(val), nil
+	if enum, ok := BACnetDoorSecuredStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetDoorSecuredStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetDoorSecuredStatus) Serialize(writeBuffer utils.WriteBuffer) error {

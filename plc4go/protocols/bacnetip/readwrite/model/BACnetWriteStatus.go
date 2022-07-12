@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetWriteStatusByValue(value uint8) BACnetWriteStatus {
+func BACnetWriteStatusByValue(value uint8) (enum BACnetWriteStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetWriteStatus_IDLE
+		return BACnetWriteStatus_IDLE, true
 	case 1:
-		return BACnetWriteStatus_IN_PROGRESS
+		return BACnetWriteStatus_IN_PROGRESS, true
 	case 2:
-		return BACnetWriteStatus_SUCCESSFUL
+		return BACnetWriteStatus_SUCCESSFUL, true
 	case 3:
-		return BACnetWriteStatus_FAILED
+		return BACnetWriteStatus_FAILED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetWriteStatusByName(value string) (enum BACnetWriteStatus, ok bool) {
-	ok = true
 	switch value {
 	case "IDLE":
-		enum = BACnetWriteStatus_IDLE
+		return BACnetWriteStatus_IDLE, true
 	case "IN_PROGRESS":
-		enum = BACnetWriteStatus_IN_PROGRESS
+		return BACnetWriteStatus_IN_PROGRESS, true
 	case "SUCCESSFUL":
-		enum = BACnetWriteStatus_SUCCESSFUL
+		return BACnetWriteStatus_SUCCESSFUL, true
 	case "FAILED":
-		enum = BACnetWriteStatus_FAILED
-	default:
-		enum = 0
-		ok = false
+		return BACnetWriteStatus_FAILED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetWriteStatusKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetWriteStatusParse(readBuffer utils.ReadBuffer) (BACnetWriteStatus, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetWriteStatus")
 	}
-	return BACnetWriteStatusByValue(val), nil
+	if enum, ok := BACnetWriteStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetWriteStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetWriteStatus) Serialize(writeBuffer utils.WriteBuffer) error {

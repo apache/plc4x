@@ -108,148 +108,144 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceChoiceByValue(value uint8) BACnetConfirmedServiceChoice {
+func BACnetConfirmedServiceChoiceByValue(value uint8) (enum BACnetConfirmedServiceChoice, ok bool) {
 	switch value {
 	case 0x00:
-		return BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM
+		return BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM, true
 	case 0x01:
-		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION
+		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION, true
 	case 0x02:
-		return BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION
+		return BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION, true
 	case 0x03:
-		return BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY
+		return BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY, true
 	case 0x04:
-		return BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY
+		return BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY, true
 	case 0x05:
-		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV
+		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV, true
 	case 0x06:
-		return BACnetConfirmedServiceChoice_ATOMIC_READ_FILE
+		return BACnetConfirmedServiceChoice_ATOMIC_READ_FILE, true
 	case 0x07:
-		return BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE
+		return BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE, true
 	case 0x08:
-		return BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT
+		return BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT, true
 	case 0x09:
-		return BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT
+		return BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT, true
 	case 0x0A:
-		return BACnetConfirmedServiceChoice_CREATE_OBJECT
+		return BACnetConfirmedServiceChoice_CREATE_OBJECT, true
 	case 0x0B:
-		return BACnetConfirmedServiceChoice_DELETE_OBJECT
+		return BACnetConfirmedServiceChoice_DELETE_OBJECT, true
 	case 0x0C:
-		return BACnetConfirmedServiceChoice_READ_PROPERTY
+		return BACnetConfirmedServiceChoice_READ_PROPERTY, true
 	case 0x0D:
-		return BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL
+		return BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL, true
 	case 0x0E:
-		return BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE
+		return BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE, true
 	case 0x0F:
-		return BACnetConfirmedServiceChoice_WRITE_PROPERTY
+		return BACnetConfirmedServiceChoice_WRITE_PROPERTY, true
 	case 0x10:
-		return BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE
+		return BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE, true
 	case 0x11:
-		return BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL
+		return BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL, true
 	case 0x12:
-		return BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER
+		return BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER, true
 	case 0x13:
-		return BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE
+		return BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE, true
 	case 0x14:
-		return BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE
+		return BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE, true
 	case 0x15:
-		return BACnetConfirmedServiceChoice_VT_OPEN
+		return BACnetConfirmedServiceChoice_VT_OPEN, true
 	case 0x16:
-		return BACnetConfirmedServiceChoice_VT_CLOSE
+		return BACnetConfirmedServiceChoice_VT_CLOSE, true
 	case 0x17:
-		return BACnetConfirmedServiceChoice_VT_DATA
+		return BACnetConfirmedServiceChoice_VT_DATA, true
 	case 0x18:
-		return BACnetConfirmedServiceChoice_AUTHENTICATE
+		return BACnetConfirmedServiceChoice_AUTHENTICATE, true
 	case 0x19:
-		return BACnetConfirmedServiceChoice_REQUEST_KEY
+		return BACnetConfirmedServiceChoice_REQUEST_KEY, true
 	case 0x1A:
-		return BACnetConfirmedServiceChoice_READ_RANGE
+		return BACnetConfirmedServiceChoice_READ_RANGE, true
 	case 0x1B:
-		return BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION
+		return BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION, true
 	case 0x1C:
-		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY
+		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY, true
 	case 0x1D:
-		return BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION
+		return BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION, true
 	case 0x1E:
-		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE
+		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE, true
 	case 0x1F:
-		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE
+		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceChoiceByName(value string) (enum BACnetConfirmedServiceChoice, ok bool) {
-	ok = true
 	switch value {
 	case "ACKNOWLEDGE_ALARM":
-		enum = BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM
+		return BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM, true
 	case "CONFIRMED_COV_NOTIFICATION":
-		enum = BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION
+		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION, true
 	case "CONFIRMED_EVENT_NOTIFICATION":
-		enum = BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION
+		return BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION, true
 	case "GET_ALARM_SUMMARY":
-		enum = BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY
+		return BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY, true
 	case "GET_ENROLLMENT_SUMMARY":
-		enum = BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY
+		return BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY, true
 	case "SUBSCRIBE_COV":
-		enum = BACnetConfirmedServiceChoice_SUBSCRIBE_COV
+		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV, true
 	case "ATOMIC_READ_FILE":
-		enum = BACnetConfirmedServiceChoice_ATOMIC_READ_FILE
+		return BACnetConfirmedServiceChoice_ATOMIC_READ_FILE, true
 	case "ATOMIC_WRITE_FILE":
-		enum = BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE
+		return BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE, true
 	case "ADD_LIST_ELEMENT":
-		enum = BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT
+		return BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT, true
 	case "REMOVE_LIST_ELEMENT":
-		enum = BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT
+		return BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT, true
 	case "CREATE_OBJECT":
-		enum = BACnetConfirmedServiceChoice_CREATE_OBJECT
+		return BACnetConfirmedServiceChoice_CREATE_OBJECT, true
 	case "DELETE_OBJECT":
-		enum = BACnetConfirmedServiceChoice_DELETE_OBJECT
+		return BACnetConfirmedServiceChoice_DELETE_OBJECT, true
 	case "READ_PROPERTY":
-		enum = BACnetConfirmedServiceChoice_READ_PROPERTY
+		return BACnetConfirmedServiceChoice_READ_PROPERTY, true
 	case "READ_PROPERTY_CONDITIONAL":
-		enum = BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL
+		return BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL, true
 	case "READ_PROPERTY_MULTIPLE":
-		enum = BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE
+		return BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE, true
 	case "WRITE_PROPERTY":
-		enum = BACnetConfirmedServiceChoice_WRITE_PROPERTY
+		return BACnetConfirmedServiceChoice_WRITE_PROPERTY, true
 	case "WRITE_PROPERTY_MULTIPLE":
-		enum = BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE
+		return BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE, true
 	case "DEVICE_COMMUNICATION_CONTROL":
-		enum = BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL
+		return BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL, true
 	case "CONFIRMED_PRIVATE_TRANSFER":
-		enum = BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER
+		return BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER, true
 	case "CONFIRMED_TEXT_MESSAGE":
-		enum = BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE
+		return BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE, true
 	case "REINITIALIZE_DEVICE":
-		enum = BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE
+		return BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE, true
 	case "VT_OPEN":
-		enum = BACnetConfirmedServiceChoice_VT_OPEN
+		return BACnetConfirmedServiceChoice_VT_OPEN, true
 	case "VT_CLOSE":
-		enum = BACnetConfirmedServiceChoice_VT_CLOSE
+		return BACnetConfirmedServiceChoice_VT_CLOSE, true
 	case "VT_DATA":
-		enum = BACnetConfirmedServiceChoice_VT_DATA
+		return BACnetConfirmedServiceChoice_VT_DATA, true
 	case "AUTHENTICATE":
-		enum = BACnetConfirmedServiceChoice_AUTHENTICATE
+		return BACnetConfirmedServiceChoice_AUTHENTICATE, true
 	case "REQUEST_KEY":
-		enum = BACnetConfirmedServiceChoice_REQUEST_KEY
+		return BACnetConfirmedServiceChoice_REQUEST_KEY, true
 	case "READ_RANGE":
-		enum = BACnetConfirmedServiceChoice_READ_RANGE
+		return BACnetConfirmedServiceChoice_READ_RANGE, true
 	case "LIFE_SAFETY_OPERATION":
-		enum = BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION
+		return BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION, true
 	case "SUBSCRIBE_COV_PROPERTY":
-		enum = BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY
+		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY, true
 	case "GET_EVENT_INFORMATION":
-		enum = BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION
+		return BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION, true
 	case "SUBSCRIBE_COV_PROPERTY_MULTIPLE":
-		enum = BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE
+		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE, true
 	case "CONFIRMED_COV_NOTIFICATION_MULTIPLE":
-		enum = BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE
-	default:
-		enum = 0
-		ok = false
+		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetConfirmedServiceChoiceKnows(value uint8) bool {
@@ -284,7 +280,11 @@ func BACnetConfirmedServiceChoiceParse(readBuffer utils.ReadBuffer) (BACnetConfi
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceChoice")
 	}
-	return BACnetConfirmedServiceChoiceByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceChoiceByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetConfirmedServiceChoice", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetConfirmedServiceChoice) Serialize(writeBuffer utils.WriteBuffer) error {

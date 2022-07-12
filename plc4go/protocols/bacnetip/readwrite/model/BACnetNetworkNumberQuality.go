@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetNetworkNumberQualityByValue(value uint8) BACnetNetworkNumberQuality {
+func BACnetNetworkNumberQualityByValue(value uint8) (enum BACnetNetworkNumberQuality, ok bool) {
 	switch value {
 	case 0:
-		return BACnetNetworkNumberQuality_UNKNOWN
+		return BACnetNetworkNumberQuality_UNKNOWN, true
 	case 1:
-		return BACnetNetworkNumberQuality_LEARNED
+		return BACnetNetworkNumberQuality_LEARNED, true
 	case 2:
-		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED
+		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED, true
 	case 3:
-		return BACnetNetworkNumberQuality_CONFIGURED
+		return BACnetNetworkNumberQuality_CONFIGURED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNetworkNumberQualityByName(value string) (enum BACnetNetworkNumberQuality, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetNetworkNumberQuality_UNKNOWN
+		return BACnetNetworkNumberQuality_UNKNOWN, true
 	case "LEARNED":
-		enum = BACnetNetworkNumberQuality_LEARNED
+		return BACnetNetworkNumberQuality_LEARNED, true
 	case "LEARNED_CONFIGURED":
-		enum = BACnetNetworkNumberQuality_LEARNED_CONFIGURED
+		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED, true
 	case "CONFIGURED":
-		enum = BACnetNetworkNumberQuality_CONFIGURED
-	default:
-		enum = 0
-		ok = false
+		return BACnetNetworkNumberQuality_CONFIGURED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetNetworkNumberQualityKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetNetworkNumberQualityParse(readBuffer utils.ReadBuffer) (BACnetNetwork
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNetworkNumberQuality")
 	}
-	return BACnetNetworkNumberQualityByValue(val), nil
+	if enum, ok := BACnetNetworkNumberQualityByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetNetworkNumberQuality", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetNetworkNumberQuality) Serialize(writeBuffer utils.WriteBuffer) error {

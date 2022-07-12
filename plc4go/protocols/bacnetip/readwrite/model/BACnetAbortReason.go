@@ -70,72 +70,68 @@ func init() {
 	}
 }
 
-func BACnetAbortReasonByValue(value uint8) BACnetAbortReason {
+func BACnetAbortReasonByValue(value uint8) (enum BACnetAbortReason, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAbortReason_OTHER
+		return BACnetAbortReason_OTHER, true
 	case 0xFF:
-		return BACnetAbortReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetAbortReason_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAbortReason_BUFFER_OVERFLOW
+		return BACnetAbortReason_BUFFER_OVERFLOW, true
 	case 10:
-		return BACnetAbortReason_TSM_TIMEOUT
+		return BACnetAbortReason_TSM_TIMEOUT, true
 	case 11:
-		return BACnetAbortReason_APDU_TOO_LONG
+		return BACnetAbortReason_APDU_TOO_LONG, true
 	case 2:
-		return BACnetAbortReason_INVALID_APDU_IN_THIS_STATE
+		return BACnetAbortReason_INVALID_APDU_IN_THIS_STATE, true
 	case 3:
-		return BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK
+		return BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
 	case 4:
-		return BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED
+		return BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED, true
 	case 5:
-		return BACnetAbortReason_SECURITY_ERROR
+		return BACnetAbortReason_SECURITY_ERROR, true
 	case 6:
-		return BACnetAbortReason_INSUFFICIENT_SECURITY
+		return BACnetAbortReason_INSUFFICIENT_SECURITY, true
 	case 7:
-		return BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE
+		return BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE, true
 	case 8:
-		return BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME
+		return BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME, true
 	case 9:
-		return BACnetAbortReason_OUT_OF_RESOURCES
+		return BACnetAbortReason_OUT_OF_RESOURCES, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAbortReasonByName(value string) (enum BACnetAbortReason, ok bool) {
-	ok = true
 	switch value {
 	case "OTHER":
-		enum = BACnetAbortReason_OTHER
+		return BACnetAbortReason_OTHER, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAbortReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetAbortReason_VENDOR_PROPRIETARY_VALUE, true
 	case "BUFFER_OVERFLOW":
-		enum = BACnetAbortReason_BUFFER_OVERFLOW
+		return BACnetAbortReason_BUFFER_OVERFLOW, true
 	case "TSM_TIMEOUT":
-		enum = BACnetAbortReason_TSM_TIMEOUT
+		return BACnetAbortReason_TSM_TIMEOUT, true
 	case "APDU_TOO_LONG":
-		enum = BACnetAbortReason_APDU_TOO_LONG
+		return BACnetAbortReason_APDU_TOO_LONG, true
 	case "INVALID_APDU_IN_THIS_STATE":
-		enum = BACnetAbortReason_INVALID_APDU_IN_THIS_STATE
+		return BACnetAbortReason_INVALID_APDU_IN_THIS_STATE, true
 	case "PREEMPTED_BY_HIGHER_PRIORITY_TASK":
-		enum = BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK
+		return BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
 	case "SEGMENTATION_NOT_SUPPORTED":
-		enum = BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED
+		return BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED, true
 	case "SECURITY_ERROR":
-		enum = BACnetAbortReason_SECURITY_ERROR
+		return BACnetAbortReason_SECURITY_ERROR, true
 	case "INSUFFICIENT_SECURITY":
-		enum = BACnetAbortReason_INSUFFICIENT_SECURITY
+		return BACnetAbortReason_INSUFFICIENT_SECURITY, true
 	case "WINDOW_SIZE_OUT_OF_RANGE":
-		enum = BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE
+		return BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE, true
 	case "APPLICATION_EXCEEDED_REPLY_TIME":
-		enum = BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME
+		return BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME, true
 	case "OUT_OF_RESOURCES":
-		enum = BACnetAbortReason_OUT_OF_RESOURCES
-	default:
-		enum = 0
-		ok = false
+		return BACnetAbortReason_OUT_OF_RESOURCES, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAbortReasonKnows(value uint8) bool {
@@ -170,7 +166,11 @@ func BACnetAbortReasonParse(readBuffer utils.ReadBuffer) (BACnetAbortReason, err
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAbortReason")
 	}
-	return BACnetAbortReasonByValue(val), nil
+	if enum, ok := BACnetAbortReasonByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAbortReason", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAbortReason) Serialize(writeBuffer utils.WriteBuffer) error {

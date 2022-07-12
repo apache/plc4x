@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func ChannelStatusByValue(value uint8) ChannelStatus {
+func ChannelStatusByValue(value uint8) (enum ChannelStatus, ok bool) {
 	switch value {
 	case 0:
-		return ChannelStatus_OK
+		return ChannelStatus_OK, true
 	case 2:
-		return ChannelStatus_LAMP_FAULT
+		return ChannelStatus_LAMP_FAULT, true
 	case 3:
-		return ChannelStatus_CURRENT_LIMIT_OR_SHORT
+		return ChannelStatus_CURRENT_LIMIT_OR_SHORT, true
 	}
-	return 0
+	return 0, false
 }
 
 func ChannelStatusByName(value string) (enum ChannelStatus, ok bool) {
-	ok = true
 	switch value {
 	case "OK":
-		enum = ChannelStatus_OK
+		return ChannelStatus_OK, true
 	case "LAMP_FAULT":
-		enum = ChannelStatus_LAMP_FAULT
+		return ChannelStatus_LAMP_FAULT, true
 	case "CURRENT_LIMIT_OR_SHORT":
-		enum = ChannelStatus_CURRENT_LIMIT_OR_SHORT
-	default:
-		enum = 0
-		ok = false
+		return ChannelStatus_CURRENT_LIMIT_OR_SHORT, true
 	}
-	return
+	return 0, false
 }
 
 func ChannelStatusKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func ChannelStatusParse(readBuffer utils.ReadBuffer) (ChannelStatus, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ChannelStatus")
 	}
-	return ChannelStatusByValue(val), nil
+	if enum, ok := ChannelStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ChannelStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ChannelStatus) Serialize(writeBuffer utils.WriteBuffer) error {

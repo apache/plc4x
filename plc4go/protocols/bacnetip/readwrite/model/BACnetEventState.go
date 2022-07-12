@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetEventStateByValue(value uint16) BACnetEventState {
+func BACnetEventStateByValue(value uint16) (enum BACnetEventState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEventState_NORMAL
+		return BACnetEventState_NORMAL, true
 	case 0xFFFF:
-		return BACnetEventState_VENDOR_PROPRIETARY_VALUE
+		return BACnetEventState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetEventState_FAULT
+		return BACnetEventState_FAULT, true
 	case 2:
-		return BACnetEventState_OFFNORMAL
+		return BACnetEventState_OFFNORMAL, true
 	case 3:
-		return BACnetEventState_HIGH_LIMIT
+		return BACnetEventState_HIGH_LIMIT, true
 	case 4:
-		return BACnetEventState_LOW_LIMIT
+		return BACnetEventState_LOW_LIMIT, true
 	case 5:
-		return BACnetEventState_LIFE_SAVETY_ALARM
+		return BACnetEventState_LIFE_SAVETY_ALARM, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEventStateByName(value string) (enum BACnetEventState, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetEventState_NORMAL
+		return BACnetEventState_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetEventState_VENDOR_PROPRIETARY_VALUE
+		return BACnetEventState_VENDOR_PROPRIETARY_VALUE, true
 	case "FAULT":
-		enum = BACnetEventState_FAULT
+		return BACnetEventState_FAULT, true
 	case "OFFNORMAL":
-		enum = BACnetEventState_OFFNORMAL
+		return BACnetEventState_OFFNORMAL, true
 	case "HIGH_LIMIT":
-		enum = BACnetEventState_HIGH_LIMIT
+		return BACnetEventState_HIGH_LIMIT, true
 	case "LOW_LIMIT":
-		enum = BACnetEventState_LOW_LIMIT
+		return BACnetEventState_LOW_LIMIT, true
 	case "LIFE_SAVETY_ALARM":
-		enum = BACnetEventState_LIFE_SAVETY_ALARM
-	default:
-		enum = 0
-		ok = false
+		return BACnetEventState_LIFE_SAVETY_ALARM, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetEventStateKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BACnetEventStateParse(readBuffer utils.ReadBuffer) (BACnetEventState, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEventState")
 	}
-	return BACnetEventStateByValue(val), nil
+	if enum, ok := BACnetEventStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetEventState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetEventState) Serialize(writeBuffer utils.WriteBuffer) error {

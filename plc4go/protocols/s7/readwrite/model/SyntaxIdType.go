@@ -70,72 +70,68 @@ func init() {
 	}
 }
 
-func SyntaxIdTypeByValue(value uint8) SyntaxIdType {
+func SyntaxIdTypeByValue(value uint8) (enum SyntaxIdType, ok bool) {
 	switch value {
 	case 0x01:
-		return SyntaxIdType_S7ANY
+		return SyntaxIdType_S7ANY, true
 	case 0x13:
-		return SyntaxIdType_PBC_ID
+		return SyntaxIdType_PBC_ID, true
 	case 0x15:
-		return SyntaxIdType_ALARM_LOCKFREESET
+		return SyntaxIdType_ALARM_LOCKFREESET, true
 	case 0x16:
-		return SyntaxIdType_ALARM_INDSET
+		return SyntaxIdType_ALARM_INDSET, true
 	case 0x19:
-		return SyntaxIdType_ALARM_ACKSET
+		return SyntaxIdType_ALARM_ACKSET, true
 	case 0x1A:
-		return SyntaxIdType_ALARM_QUERYREQSET
+		return SyntaxIdType_ALARM_QUERYREQSET, true
 	case 0x1C:
-		return SyntaxIdType_NOTIFY_INDSET
+		return SyntaxIdType_NOTIFY_INDSET, true
 	case 0x82:
-		return SyntaxIdType_NCK
+		return SyntaxIdType_NCK, true
 	case 0x83:
-		return SyntaxIdType_NCK_METRIC
+		return SyntaxIdType_NCK_METRIC, true
 	case 0x84:
-		return SyntaxIdType_NCK_INCH
+		return SyntaxIdType_NCK_INCH, true
 	case 0xA2:
-		return SyntaxIdType_DRIVEESANY
+		return SyntaxIdType_DRIVEESANY, true
 	case 0xB0:
-		return SyntaxIdType_DBREAD
+		return SyntaxIdType_DBREAD, true
 	case 0xB2:
-		return SyntaxIdType_SYM1200
+		return SyntaxIdType_SYM1200, true
 	}
-	return 0
+	return 0, false
 }
 
 func SyntaxIdTypeByName(value string) (enum SyntaxIdType, ok bool) {
-	ok = true
 	switch value {
 	case "S7ANY":
-		enum = SyntaxIdType_S7ANY
+		return SyntaxIdType_S7ANY, true
 	case "PBC_ID":
-		enum = SyntaxIdType_PBC_ID
+		return SyntaxIdType_PBC_ID, true
 	case "ALARM_LOCKFREESET":
-		enum = SyntaxIdType_ALARM_LOCKFREESET
+		return SyntaxIdType_ALARM_LOCKFREESET, true
 	case "ALARM_INDSET":
-		enum = SyntaxIdType_ALARM_INDSET
+		return SyntaxIdType_ALARM_INDSET, true
 	case "ALARM_ACKSET":
-		enum = SyntaxIdType_ALARM_ACKSET
+		return SyntaxIdType_ALARM_ACKSET, true
 	case "ALARM_QUERYREQSET":
-		enum = SyntaxIdType_ALARM_QUERYREQSET
+		return SyntaxIdType_ALARM_QUERYREQSET, true
 	case "NOTIFY_INDSET":
-		enum = SyntaxIdType_NOTIFY_INDSET
+		return SyntaxIdType_NOTIFY_INDSET, true
 	case "NCK":
-		enum = SyntaxIdType_NCK
+		return SyntaxIdType_NCK, true
 	case "NCK_METRIC":
-		enum = SyntaxIdType_NCK_METRIC
+		return SyntaxIdType_NCK_METRIC, true
 	case "NCK_INCH":
-		enum = SyntaxIdType_NCK_INCH
+		return SyntaxIdType_NCK_INCH, true
 	case "DRIVEESANY":
-		enum = SyntaxIdType_DRIVEESANY
+		return SyntaxIdType_DRIVEESANY, true
 	case "DBREAD":
-		enum = SyntaxIdType_DBREAD
+		return SyntaxIdType_DBREAD, true
 	case "SYM1200":
-		enum = SyntaxIdType_SYM1200
-	default:
-		enum = 0
-		ok = false
+		return SyntaxIdType_SYM1200, true
 	}
-	return
+	return 0, false
 }
 
 func SyntaxIdTypeKnows(value uint8) bool {
@@ -170,7 +166,11 @@ func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SyntaxIdType")
 	}
-	return SyntaxIdTypeByValue(val), nil
+	if enum, ok := SyntaxIdTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for SyntaxIdType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e SyntaxIdType) Serialize(writeBuffer utils.WriteBuffer) error {

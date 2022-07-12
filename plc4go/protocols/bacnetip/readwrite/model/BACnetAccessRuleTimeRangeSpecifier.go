@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetAccessRuleTimeRangeSpecifierByValue(value uint8) BACnetAccessRuleTimeRangeSpecifier {
+func BACnetAccessRuleTimeRangeSpecifierByValue(value uint8) (enum BACnetAccessRuleTimeRangeSpecifier, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessRuleTimeRangeSpecifier_SPECIFIED
+		return BACnetAccessRuleTimeRangeSpecifier_SPECIFIED, true
 	case 1:
-		return BACnetAccessRuleTimeRangeSpecifier_ALWAYS
+		return BACnetAccessRuleTimeRangeSpecifier_ALWAYS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessRuleTimeRangeSpecifierByName(value string) (enum BACnetAccessRuleTimeRangeSpecifier, ok bool) {
-	ok = true
 	switch value {
 	case "SPECIFIED":
-		enum = BACnetAccessRuleTimeRangeSpecifier_SPECIFIED
+		return BACnetAccessRuleTimeRangeSpecifier_SPECIFIED, true
 	case "ALWAYS":
-		enum = BACnetAccessRuleTimeRangeSpecifier_ALWAYS
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessRuleTimeRangeSpecifier_ALWAYS, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessRuleTimeRangeSpecifierKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetAccessRuleTimeRangeSpecifierParse(readBuffer utils.ReadBuffer) (BACne
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleTimeRangeSpecifier")
 	}
-	return BACnetAccessRuleTimeRangeSpecifierByValue(val), nil
+	if enum, ok := BACnetAccessRuleTimeRangeSpecifierByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessRuleTimeRangeSpecifier", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessRuleTimeRangeSpecifier) Serialize(writeBuffer utils.WriteBuffer) error {

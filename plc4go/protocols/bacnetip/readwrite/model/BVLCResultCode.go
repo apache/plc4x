@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BVLCResultCodeByValue(value uint16) BVLCResultCode {
+func BVLCResultCodeByValue(value uint16) (enum BVLCResultCode, ok bool) {
 	switch value {
 	case 0x0000:
-		return BVLCResultCode_SUCCESSFUL_COMPLETION
+		return BVLCResultCode_SUCCESSFUL_COMPLETION, true
 	case 0x0010:
-		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case 0x0020:
-		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case 0x0030:
-		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK
+		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, true
 	case 0x0040:
-		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK
+		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK, true
 	case 0x0050:
-		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK
+		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK, true
 	case 0x0060:
-		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK
+		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK, true
 	}
-	return 0
+	return 0, false
 }
 
 func BVLCResultCodeByName(value string) (enum BVLCResultCode, ok bool) {
-	ok = true
 	switch value {
 	case "SUCCESSFUL_COMPLETION":
-		enum = BVLCResultCode_SUCCESSFUL_COMPLETION
+		return BVLCResultCode_SUCCESSFUL_COMPLETION, true
 	case "WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK":
-		enum = BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case "READ_BROADCAST_DISTRIBUTION_TABLE_NAK":
-		enum = BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case "REGISTER_FOREIGN_DEVICE_NAK":
-		enum = BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK
+		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, true
 	case "READ_FOREIGN_DEVICE_TABLE_NAK":
-		enum = BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK
+		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK, true
 	case "DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK":
-		enum = BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK
+		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK, true
 	case "DISTRIBUTE_BROADCAST_TO_NETWORK_NAK":
-		enum = BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK
-	default:
-		enum = 0
-		ok = false
+		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK, true
 	}
-	return
+	return 0, false
 }
 
 func BVLCResultCodeKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BVLCResultCodeParse(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BVLCResultCode")
 	}
-	return BVLCResultCodeByValue(val), nil
+	if enum, ok := BVLCResultCodeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BVLCResultCode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BVLCResultCode) Serialize(writeBuffer utils.WriteBuffer) error {

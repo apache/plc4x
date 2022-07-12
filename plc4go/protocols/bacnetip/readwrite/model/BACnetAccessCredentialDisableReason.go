@@ -66,64 +66,60 @@ func init() {
 	}
 }
 
-func BACnetAccessCredentialDisableReasonByValue(value uint16) BACnetAccessCredentialDisableReason {
+func BACnetAccessCredentialDisableReasonByValue(value uint16) (enum BACnetAccessCredentialDisableReason, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessCredentialDisableReason_DISABLED
+		return BACnetAccessCredentialDisableReason_DISABLED, true
 	case 0xFFFF:
-		return BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING
+		return BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING, true
 	case 2:
-		return BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED
+		return BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED, true
 	case 3:
-		return BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE
+		return BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE, true
 	case 4:
-		return BACnetAccessCredentialDisableReason_DISABLED_EXPIRED
+		return BACnetAccessCredentialDisableReason_DISABLED_EXPIRED, true
 	case 5:
-		return BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT
+		return BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT, true
 	case 6:
-		return BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS
+		return BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS, true
 	case 7:
-		return BACnetAccessCredentialDisableReason_DISABLED_MAX_USES
+		return BACnetAccessCredentialDisableReason_DISABLED_MAX_USES, true
 	case 8:
-		return BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY
+		return BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY, true
 	case 9:
-		return BACnetAccessCredentialDisableReason_DISABLED_MANUAL
+		return BACnetAccessCredentialDisableReason_DISABLED_MANUAL, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessCredentialDisableReasonByName(value string) (enum BACnetAccessCredentialDisableReason, ok bool) {
-	ok = true
 	switch value {
 	case "DISABLED":
-		enum = BACnetAccessCredentialDisableReason_DISABLED
+		return BACnetAccessCredentialDisableReason_DISABLED, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE, true
 	case "DISABLED_NEEDS_PROVISIONING":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING
+		return BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING, true
 	case "DISABLED_UNASSIGNED":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED
+		return BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED, true
 	case "DISABLED_NOT_YET_ACTIVE":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE
+		return BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE, true
 	case "DISABLED_EXPIRED":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_EXPIRED
+		return BACnetAccessCredentialDisableReason_DISABLED_EXPIRED, true
 	case "DISABLED_LOCKOUT":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT
+		return BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT, true
 	case "DISABLED_MAX_DAYS":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS
+		return BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS, true
 	case "DISABLED_MAX_USES":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_MAX_USES
+		return BACnetAccessCredentialDisableReason_DISABLED_MAX_USES, true
 	case "DISABLED_INACTIVITY":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY
+		return BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY, true
 	case "DISABLED_MANUAL":
-		enum = BACnetAccessCredentialDisableReason_DISABLED_MANUAL
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessCredentialDisableReason_DISABLED_MANUAL, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessCredentialDisableReasonKnows(value uint16) bool {
@@ -158,7 +154,11 @@ func BACnetAccessCredentialDisableReasonParse(readBuffer utils.ReadBuffer) (BACn
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisableReason")
 	}
-	return BACnetAccessCredentialDisableReasonByValue(val), nil
+	if enum, ok := BACnetAccessCredentialDisableReasonByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessCredentialDisableReason", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessCredentialDisableReason) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -116,56 +116,52 @@ func MemoryAreaFirstEnumForFieldShortName(value string) (MemoryArea, error) {
 	}
 	return 0, errors.Errorf("enum for %v describing ShortName not found", value)
 }
-func MemoryAreaByValue(value uint8) MemoryArea {
+func MemoryAreaByValue(value uint8) (enum MemoryArea, ok bool) {
 	switch value {
 	case 0x1C:
-		return MemoryArea_COUNTERS
+		return MemoryArea_COUNTERS, true
 	case 0x1D:
-		return MemoryArea_TIMERS
+		return MemoryArea_TIMERS, true
 	case 0x80:
-		return MemoryArea_DIRECT_PERIPHERAL_ACCESS
+		return MemoryArea_DIRECT_PERIPHERAL_ACCESS, true
 	case 0x81:
-		return MemoryArea_INPUTS
+		return MemoryArea_INPUTS, true
 	case 0x82:
-		return MemoryArea_OUTPUTS
+		return MemoryArea_OUTPUTS, true
 	case 0x83:
-		return MemoryArea_FLAGS_MARKERS
+		return MemoryArea_FLAGS_MARKERS, true
 	case 0x84:
-		return MemoryArea_DATA_BLOCKS
+		return MemoryArea_DATA_BLOCKS, true
 	case 0x85:
-		return MemoryArea_INSTANCE_DATA_BLOCKS
+		return MemoryArea_INSTANCE_DATA_BLOCKS, true
 	case 0x86:
-		return MemoryArea_LOCAL_DATA
+		return MemoryArea_LOCAL_DATA, true
 	}
-	return 0
+	return 0, false
 }
 
 func MemoryAreaByName(value string) (enum MemoryArea, ok bool) {
-	ok = true
 	switch value {
 	case "COUNTERS":
-		enum = MemoryArea_COUNTERS
+		return MemoryArea_COUNTERS, true
 	case "TIMERS":
-		enum = MemoryArea_TIMERS
+		return MemoryArea_TIMERS, true
 	case "DIRECT_PERIPHERAL_ACCESS":
-		enum = MemoryArea_DIRECT_PERIPHERAL_ACCESS
+		return MemoryArea_DIRECT_PERIPHERAL_ACCESS, true
 	case "INPUTS":
-		enum = MemoryArea_INPUTS
+		return MemoryArea_INPUTS, true
 	case "OUTPUTS":
-		enum = MemoryArea_OUTPUTS
+		return MemoryArea_OUTPUTS, true
 	case "FLAGS_MARKERS":
-		enum = MemoryArea_FLAGS_MARKERS
+		return MemoryArea_FLAGS_MARKERS, true
 	case "DATA_BLOCKS":
-		enum = MemoryArea_DATA_BLOCKS
+		return MemoryArea_DATA_BLOCKS, true
 	case "INSTANCE_DATA_BLOCKS":
-		enum = MemoryArea_INSTANCE_DATA_BLOCKS
+		return MemoryArea_INSTANCE_DATA_BLOCKS, true
 	case "LOCAL_DATA":
-		enum = MemoryArea_LOCAL_DATA
-	default:
-		enum = 0
-		ok = false
+		return MemoryArea_LOCAL_DATA, true
 	}
-	return
+	return 0, false
 }
 
 func MemoryAreaKnows(value uint8) bool {
@@ -200,7 +196,11 @@ func MemoryAreaParse(readBuffer utils.ReadBuffer) (MemoryArea, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MemoryArea")
 	}
-	return MemoryAreaByValue(val), nil
+	if enum, ok := MemoryAreaByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for MemoryArea", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e MemoryArea) Serialize(writeBuffer utils.WriteBuffer) error {

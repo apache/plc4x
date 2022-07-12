@@ -64,60 +64,56 @@ func init() {
 	}
 }
 
-func BACnetRestartReasonByValue(value uint8) BACnetRestartReason {
+func BACnetRestartReasonByValue(value uint8) (enum BACnetRestartReason, ok bool) {
 	switch value {
 	case 0:
-		return BACnetRestartReason_UNKNOWN
+		return BACnetRestartReason_UNKNOWN, true
 	case 0xFF:
-		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetRestartReason_COLDSTART
+		return BACnetRestartReason_COLDSTART, true
 	case 2:
-		return BACnetRestartReason_WARMSTART
+		return BACnetRestartReason_WARMSTART, true
 	case 3:
-		return BACnetRestartReason_DETECTED_POWER_LOST
+		return BACnetRestartReason_DETECTED_POWER_LOST, true
 	case 4:
-		return BACnetRestartReason_DETECTED_POWERED_OFF
+		return BACnetRestartReason_DETECTED_POWERED_OFF, true
 	case 5:
-		return BACnetRestartReason_HARDWARE_WATCHDOG
+		return BACnetRestartReason_HARDWARE_WATCHDOG, true
 	case 6:
-		return BACnetRestartReason_SOFTWARE_WATCHDOG
+		return BACnetRestartReason_SOFTWARE_WATCHDOG, true
 	case 7:
-		return BACnetRestartReason_SUSPENDED
+		return BACnetRestartReason_SUSPENDED, true
 	case 8:
-		return BACnetRestartReason_ACTIVATE_CHANGES
+		return BACnetRestartReason_ACTIVATE_CHANGES, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetRestartReasonByName(value string) (enum BACnetRestartReason, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetRestartReason_UNKNOWN
+		return BACnetRestartReason_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE, true
 	case "COLDSTART":
-		enum = BACnetRestartReason_COLDSTART
+		return BACnetRestartReason_COLDSTART, true
 	case "WARMSTART":
-		enum = BACnetRestartReason_WARMSTART
+		return BACnetRestartReason_WARMSTART, true
 	case "DETECTED_POWER_LOST":
-		enum = BACnetRestartReason_DETECTED_POWER_LOST
+		return BACnetRestartReason_DETECTED_POWER_LOST, true
 	case "DETECTED_POWERED_OFF":
-		enum = BACnetRestartReason_DETECTED_POWERED_OFF
+		return BACnetRestartReason_DETECTED_POWERED_OFF, true
 	case "HARDWARE_WATCHDOG":
-		enum = BACnetRestartReason_HARDWARE_WATCHDOG
+		return BACnetRestartReason_HARDWARE_WATCHDOG, true
 	case "SOFTWARE_WATCHDOG":
-		enum = BACnetRestartReason_SOFTWARE_WATCHDOG
+		return BACnetRestartReason_SOFTWARE_WATCHDOG, true
 	case "SUSPENDED":
-		enum = BACnetRestartReason_SUSPENDED
+		return BACnetRestartReason_SUSPENDED, true
 	case "ACTIVATE_CHANGES":
-		enum = BACnetRestartReason_ACTIVATE_CHANGES
-	default:
-		enum = 0
-		ok = false
+		return BACnetRestartReason_ACTIVATE_CHANGES, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetRestartReasonKnows(value uint8) bool {
@@ -152,7 +148,11 @@ func BACnetRestartReasonParse(readBuffer utils.ReadBuffer) (BACnetRestartReason,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRestartReason")
 	}
-	return BACnetRestartReasonByValue(val), nil
+	if enum, ok := BACnetRestartReasonByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetRestartReason", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetRestartReason) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func ModbusDeviceInformationLevelByValue(value uint8) ModbusDeviceInformationLevel {
+func ModbusDeviceInformationLevelByValue(value uint8) (enum ModbusDeviceInformationLevel, ok bool) {
 	switch value {
 	case 0x01:
-		return ModbusDeviceInformationLevel_BASIC
+		return ModbusDeviceInformationLevel_BASIC, true
 	case 0x02:
-		return ModbusDeviceInformationLevel_REGULAR
+		return ModbusDeviceInformationLevel_REGULAR, true
 	case 0x03:
-		return ModbusDeviceInformationLevel_EXTENDED
+		return ModbusDeviceInformationLevel_EXTENDED, true
 	case 0x04:
-		return ModbusDeviceInformationLevel_INDIVIDUAL
+		return ModbusDeviceInformationLevel_INDIVIDUAL, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusDeviceInformationLevelByName(value string) (enum ModbusDeviceInformationLevel, ok bool) {
-	ok = true
 	switch value {
 	case "BASIC":
-		enum = ModbusDeviceInformationLevel_BASIC
+		return ModbusDeviceInformationLevel_BASIC, true
 	case "REGULAR":
-		enum = ModbusDeviceInformationLevel_REGULAR
+		return ModbusDeviceInformationLevel_REGULAR, true
 	case "EXTENDED":
-		enum = ModbusDeviceInformationLevel_EXTENDED
+		return ModbusDeviceInformationLevel_EXTENDED, true
 	case "INDIVIDUAL":
-		enum = ModbusDeviceInformationLevel_INDIVIDUAL
-	default:
-		enum = 0
-		ok = false
+		return ModbusDeviceInformationLevel_INDIVIDUAL, true
 	}
-	return
+	return 0, false
 }
 
 func ModbusDeviceInformationLevelKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func ModbusDeviceInformationLevelParse(readBuffer utils.ReadBuffer) (ModbusDevic
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationLevel")
 	}
-	return ModbusDeviceInformationLevelByValue(val), nil
+	if enum, ok := ModbusDeviceInformationLevelByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ModbusDeviceInformationLevel", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ModbusDeviceInformationLevel) Serialize(writeBuffer utils.WriteBuffer) error {

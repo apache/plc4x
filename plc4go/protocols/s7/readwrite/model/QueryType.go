@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func QueryTypeByValue(value uint8) QueryType {
+func QueryTypeByValue(value uint8) (enum QueryType, ok bool) {
 	switch value {
 	case 0x01:
-		return QueryType_BYALARMTYPE
+		return QueryType_BYALARMTYPE, true
 	case 0x02:
-		return QueryType_ALARM_8
+		return QueryType_ALARM_8, true
 	case 0x04:
-		return QueryType_ALARM_S
+		return QueryType_ALARM_S, true
 	}
-	return 0
+	return 0, false
 }
 
 func QueryTypeByName(value string) (enum QueryType, ok bool) {
-	ok = true
 	switch value {
 	case "BYALARMTYPE":
-		enum = QueryType_BYALARMTYPE
+		return QueryType_BYALARMTYPE, true
 	case "ALARM_8":
-		enum = QueryType_ALARM_8
+		return QueryType_ALARM_8, true
 	case "ALARM_S":
-		enum = QueryType_ALARM_S
-	default:
-		enum = 0
-		ok = false
+		return QueryType_ALARM_S, true
 	}
-	return
+	return 0, false
 }
 
 func QueryTypeKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading QueryType")
 	}
-	return QueryTypeByValue(val), nil
+	if enum, ok := QueryTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for QueryType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e QueryType) Serialize(writeBuffer utils.WriteBuffer) error {

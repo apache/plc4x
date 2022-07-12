@@ -60,52 +60,48 @@ func init() {
 	}
 }
 
-func MaxSegmentsAcceptedByValue(value uint8) MaxSegmentsAccepted {
+func MaxSegmentsAcceptedByValue(value uint8) (enum MaxSegmentsAccepted, ok bool) {
 	switch value {
 	case 0x0:
-		return MaxSegmentsAccepted_UNSPECIFIED
+		return MaxSegmentsAccepted_UNSPECIFIED, true
 	case 0x1:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_02
+		return MaxSegmentsAccepted_NUM_SEGMENTS_02, true
 	case 0x2:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_04
+		return MaxSegmentsAccepted_NUM_SEGMENTS_04, true
 	case 0x3:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_08
+		return MaxSegmentsAccepted_NUM_SEGMENTS_08, true
 	case 0x4:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_16
+		return MaxSegmentsAccepted_NUM_SEGMENTS_16, true
 	case 0x5:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_32
+		return MaxSegmentsAccepted_NUM_SEGMENTS_32, true
 	case 0x6:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_64
+		return MaxSegmentsAccepted_NUM_SEGMENTS_64, true
 	case 0x7:
-		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS
+		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, true
 	}
-	return 0
+	return 0, false
 }
 
 func MaxSegmentsAcceptedByName(value string) (enum MaxSegmentsAccepted, ok bool) {
-	ok = true
 	switch value {
 	case "UNSPECIFIED":
-		enum = MaxSegmentsAccepted_UNSPECIFIED
+		return MaxSegmentsAccepted_UNSPECIFIED, true
 	case "NUM_SEGMENTS_02":
-		enum = MaxSegmentsAccepted_NUM_SEGMENTS_02
+		return MaxSegmentsAccepted_NUM_SEGMENTS_02, true
 	case "NUM_SEGMENTS_04":
-		enum = MaxSegmentsAccepted_NUM_SEGMENTS_04
+		return MaxSegmentsAccepted_NUM_SEGMENTS_04, true
 	case "NUM_SEGMENTS_08":
-		enum = MaxSegmentsAccepted_NUM_SEGMENTS_08
+		return MaxSegmentsAccepted_NUM_SEGMENTS_08, true
 	case "NUM_SEGMENTS_16":
-		enum = MaxSegmentsAccepted_NUM_SEGMENTS_16
+		return MaxSegmentsAccepted_NUM_SEGMENTS_16, true
 	case "NUM_SEGMENTS_32":
-		enum = MaxSegmentsAccepted_NUM_SEGMENTS_32
+		return MaxSegmentsAccepted_NUM_SEGMENTS_32, true
 	case "NUM_SEGMENTS_64":
-		enum = MaxSegmentsAccepted_NUM_SEGMENTS_64
+		return MaxSegmentsAccepted_NUM_SEGMENTS_64, true
 	case "MORE_THAN_64_SEGMENTS":
-		enum = MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS
-	default:
-		enum = 0
-		ok = false
+		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, true
 	}
-	return
+	return 0, false
 }
 
 func MaxSegmentsAcceptedKnows(value uint8) bool {
@@ -140,7 +136,11 @@ func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
 	}
-	return MaxSegmentsAcceptedByValue(val), nil
+	if enum, ok := MaxSegmentsAcceptedByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for MaxSegmentsAccepted", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e MaxSegmentsAccepted) Serialize(writeBuffer utils.WriteBuffer) error {

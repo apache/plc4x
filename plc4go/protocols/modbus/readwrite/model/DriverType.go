@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func DriverTypeByValue(value uint32) DriverType {
+func DriverTypeByValue(value uint32) (enum DriverType, ok bool) {
 	switch value {
 	case 0x01:
-		return DriverType_MODBUS_TCP
+		return DriverType_MODBUS_TCP, true
 	case 0x02:
-		return DriverType_MODBUS_RTU
+		return DriverType_MODBUS_RTU, true
 	case 0x03:
-		return DriverType_MODBUS_ASCII
+		return DriverType_MODBUS_ASCII, true
 	}
-	return 0
+	return 0, false
 }
 
 func DriverTypeByName(value string) (enum DriverType, ok bool) {
-	ok = true
 	switch value {
 	case "MODBUS_TCP":
-		enum = DriverType_MODBUS_TCP
+		return DriverType_MODBUS_TCP, true
 	case "MODBUS_RTU":
-		enum = DriverType_MODBUS_RTU
+		return DriverType_MODBUS_RTU, true
 	case "MODBUS_ASCII":
-		enum = DriverType_MODBUS_ASCII
-	default:
-		enum = 0
-		ok = false
+		return DriverType_MODBUS_ASCII, true
 	}
-	return
+	return 0, false
 }
 
 func DriverTypeKnows(value uint32) bool {
@@ -110,7 +106,11 @@ func DriverTypeParse(readBuffer utils.ReadBuffer) (DriverType, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DriverType")
 	}
-	return DriverTypeByValue(val), nil
+	if enum, ok := DriverTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for DriverType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e DriverType) Serialize(writeBuffer utils.WriteBuffer) error {

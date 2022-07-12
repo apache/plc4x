@@ -60,52 +60,48 @@ func init() {
 	}
 }
 
-func BACnetAuthorizationExemptionByValue(value uint8) BACnetAuthorizationExemption {
+func BACnetAuthorizationExemptionByValue(value uint8) (enum BACnetAuthorizationExemption, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAuthorizationExemption_PASSBACK
+		return BACnetAuthorizationExemption_PASSBACK, true
 	case 0xFF:
-		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAuthorizationExemption_OCCUPANCY_CHECK
+		return BACnetAuthorizationExemption_OCCUPANCY_CHECK, true
 	case 2:
-		return BACnetAuthorizationExemption_ACCESS_RIGHTS
+		return BACnetAuthorizationExemption_ACCESS_RIGHTS, true
 	case 3:
-		return BACnetAuthorizationExemption_LOCKOUT
+		return BACnetAuthorizationExemption_LOCKOUT, true
 	case 4:
-		return BACnetAuthorizationExemption_DENY
+		return BACnetAuthorizationExemption_DENY, true
 	case 5:
-		return BACnetAuthorizationExemption_VERIFICATION
+		return BACnetAuthorizationExemption_VERIFICATION, true
 	case 6:
-		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY
+		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAuthorizationExemptionByName(value string) (enum BACnetAuthorizationExemption, ok bool) {
-	ok = true
 	switch value {
 	case "PASSBACK":
-		enum = BACnetAuthorizationExemption_PASSBACK
+		return BACnetAuthorizationExemption_PASSBACK, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE, true
 	case "OCCUPANCY_CHECK":
-		enum = BACnetAuthorizationExemption_OCCUPANCY_CHECK
+		return BACnetAuthorizationExemption_OCCUPANCY_CHECK, true
 	case "ACCESS_RIGHTS":
-		enum = BACnetAuthorizationExemption_ACCESS_RIGHTS
+		return BACnetAuthorizationExemption_ACCESS_RIGHTS, true
 	case "LOCKOUT":
-		enum = BACnetAuthorizationExemption_LOCKOUT
+		return BACnetAuthorizationExemption_LOCKOUT, true
 	case "DENY":
-		enum = BACnetAuthorizationExemption_DENY
+		return BACnetAuthorizationExemption_DENY, true
 	case "VERIFICATION":
-		enum = BACnetAuthorizationExemption_VERIFICATION
+		return BACnetAuthorizationExemption_VERIFICATION, true
 	case "AUTHORIZATION_DELAY":
-		enum = BACnetAuthorizationExemption_AUTHORIZATION_DELAY
-	default:
-		enum = 0
-		ok = false
+		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAuthorizationExemptionKnows(value uint8) bool {
@@ -140,7 +136,11 @@ func BACnetAuthorizationExemptionParse(readBuffer utils.ReadBuffer) (BACnetAutho
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationExemption")
 	}
-	return BACnetAuthorizationExemptionByValue(val), nil
+	if enum, ok := BACnetAuthorizationExemptionByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAuthorizationExemption", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAuthorizationExemption) Serialize(writeBuffer utils.WriteBuffer) error {

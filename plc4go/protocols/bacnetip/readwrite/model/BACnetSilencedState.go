@@ -54,40 +54,36 @@ func init() {
 	}
 }
 
-func BACnetSilencedStateByValue(value uint16) BACnetSilencedState {
+func BACnetSilencedStateByValue(value uint16) (enum BACnetSilencedState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetSilencedState_UNSILENCED
+		return BACnetSilencedState_UNSILENCED, true
 	case 0xFFFF:
-		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
+		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetSilencedState_AUDIBLE_SILENCED
+		return BACnetSilencedState_AUDIBLE_SILENCED, true
 	case 2:
-		return BACnetSilencedState_VISIBLE_SILENCED
+		return BACnetSilencedState_VISIBLE_SILENCED, true
 	case 3:
-		return BACnetSilencedState_ALL_SILENCED
+		return BACnetSilencedState_ALL_SILENCED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetSilencedStateByName(value string) (enum BACnetSilencedState, ok bool) {
-	ok = true
 	switch value {
 	case "UNSILENCED":
-		enum = BACnetSilencedState_UNSILENCED
+		return BACnetSilencedState_UNSILENCED, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
+		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE, true
 	case "AUDIBLE_SILENCED":
-		enum = BACnetSilencedState_AUDIBLE_SILENCED
+		return BACnetSilencedState_AUDIBLE_SILENCED, true
 	case "VISIBLE_SILENCED":
-		enum = BACnetSilencedState_VISIBLE_SILENCED
+		return BACnetSilencedState_VISIBLE_SILENCED, true
 	case "ALL_SILENCED":
-		enum = BACnetSilencedState_ALL_SILENCED
-	default:
-		enum = 0
-		ok = false
+		return BACnetSilencedState_ALL_SILENCED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetSilencedStateKnows(value uint16) bool {
@@ -122,7 +118,11 @@ func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState,
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
 	}
-	return BACnetSilencedStateByValue(val), nil
+	if enum, ok := BACnetSilencedStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetSilencedState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetSilencedState) Serialize(writeBuffer utils.WriteBuffer) error {

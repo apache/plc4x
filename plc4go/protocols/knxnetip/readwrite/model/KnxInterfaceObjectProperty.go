@@ -4007,884 +4007,880 @@ func KnxInterfaceObjectPropertyFirstEnumForFieldObjectType(value KnxInterfaceObj
 	}
 	return 0, errors.Errorf("enum for %v describing ObjectType not found", value)
 }
-func KnxInterfaceObjectPropertyByValue(value uint32) KnxInterfaceObjectProperty {
+func KnxInterfaceObjectPropertyByValue(value uint32) (enum KnxInterfaceObjectProperty, ok bool) {
 	switch value {
 	case 0:
-		return KnxInterfaceObjectProperty_PID_UNKNOWN
+		return KnxInterfaceObjectProperty_PID_UNKNOWN, true
 	case 1:
-		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_TYPE
+		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_TYPE, true
 	case 10:
-		return KnxInterfaceObjectProperty_PID_GENERAL_SERVICES_SUPPORTED
+		return KnxInterfaceObjectProperty_PID_GENERAL_SERVICES_SUPPORTED, true
 	case 100:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PRIORITY_FIFO_ENABLED
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PRIORITY_FIFO_ENABLED, true
 	case 101:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_IP
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_IP, true
 	case 102:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_KNX
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_KNX, true
 	case 103:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_IP
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_IP, true
 	case 104:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_KNX
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_KNX, true
 	case 105:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_FRIENDLY_NAME
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_FRIENDLY_NAME, true
 	case 106:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_BACKBONE_KEY
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_BACKBONE_KEY, true
 	case 107:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEVICE_AUTHENTICATION_CODE
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEVICE_AUTHENTICATION_CODE, true
 	case 108:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PASSWORD_HASHES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PASSWORD_HASHES, true
 	case 109:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SECURED_SERVICE_FAMILIES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SECURED_SERVICE_FAMILIES, true
 	case 11:
-		return KnxInterfaceObjectProperty_PID_GENERAL_SERIAL_NUMBER
+		return KnxInterfaceObjectProperty_PID_GENERAL_SERIAL_NUMBER, true
 	case 110:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MULTICAST_LATENCY_TOLERANCE
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MULTICAST_LATENCY_TOLERANCE, true
 	case 111:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYNC_LATENCY_FRACTION
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYNC_LATENCY_FRACTION, true
 	case 112:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TUNNELLING_USERS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TUNNELLING_USERS, true
 	case 113:
-		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_MODE
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_MODE, true
 	case 114:
-		return KnxInterfaceObjectProperty_PID_SECURITY_P2P_KEY_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_P2P_KEY_TABLE, true
 	case 115:
-		return KnxInterfaceObjectProperty_PID_SECURITY_GRP_KEY_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_GRP_KEY_TABLE, true
 	case 116:
-		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_INDIVIDUAL_ADDRESS_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_INDIVIDUAL_ADDRESS_TABLE, true
 	case 117:
-		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_FAILURES_LOG
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_FAILURES_LOG, true
 	case 118:
-		return KnxInterfaceObjectProperty_PID_SECURITY_SKI_TOOL
+		return KnxInterfaceObjectProperty_PID_SECURITY_SKI_TOOL, true
 	case 119:
-		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT, true
 	case 12:
-		return KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_ID
+		return KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_ID, true
 	case 120:
-		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT_CONTROL
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT_CONTROL, true
 	case 121:
-		return KnxInterfaceObjectProperty_PID_SECURITY_SEQUENCE_NUMBER_SENDING
+		return KnxInterfaceObjectProperty_PID_SECURITY_SEQUENCE_NUMBER_SENDING, true
 	case 122:
-		return KnxInterfaceObjectProperty_PID_SECURITY_ZONE_KEYS_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_ZONE_KEYS_TABLE, true
 	case 123:
-		return KnxInterfaceObjectProperty_PID_SECURITY_GO_SECURITY_FLAGS
+		return KnxInterfaceObjectProperty_PID_SECURITY_GO_SECURITY_FLAGS, true
 	case 124:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_MULTI_TYPE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_MULTI_TYPE, true
 	case 125:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DOMAIN_ADDRESS
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DOMAIN_ADDRESS, true
 	case 126:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_RETRANSMITTER
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_RETRANSMITTER, true
 	case 127:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_SECURITY_REPORT_CONTROL
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_SECURITY_REPORT_CONTROL, true
 	case 128:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_FILTERING_MODE_SELECT
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_FILTERING_MODE_SELECT, true
 	case 129:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_BIDIR_TIMEOUT
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_BIDIR_TIMEOUT, true
 	case 13:
-		return KnxInterfaceObjectProperty_PID_GENERAL_PROGRAM_VERSION
+		return KnxInterfaceObjectProperty_PID_GENERAL_PROGRAM_VERSION, true
 	case 130:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_SA_FILTER_TABLE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_SA_FILTER_TABLE, true
 	case 131:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_QUALITY_TABLE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_QUALITY_TABLE, true
 	case 132:
-		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_PROBE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_PROBE, true
 	case 133:
-		return KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_CHANGE_OF_VALUE
+		return KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_CHANGE_OF_VALUE, true
 	case 134:
-		return KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_REPETITION_TIME
+		return KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_REPETITION_TIME, true
 	case 135:
-		return KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_CHANGE_OF_VALUE
+		return KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_CHANGE_OF_VALUE, true
 	case 136:
-		return KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_REPETITION_TIME
+		return KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_REPETITION_TIME, true
 	case 137:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_ON_DELAY
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_ON_DELAY, true
 	case 138:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_OFF_DELAY
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_OFF_DELAY, true
 	case 139:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_DURATION
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_DURATION, true
 	case 14:
-		return KnxInterfaceObjectProperty_PID_GENERAL_DEVICE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_DEVICE_CONTROL, true
 	case 140:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_PREWARNING_DURATION
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_PREWARNING_DURATION, true
 	case 141:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME, true
 	case 142:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY, true
 	case 143:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING, true
 	case 144:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING, true
 	case 145:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP, true
 	case 146:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN, true
 	case 147:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_OUTPUT_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_OUTPUT_STATE, true
 	case 148:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION, true
 	case 149:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE, true
 	case 15:
-		return KnxInterfaceObjectProperty_PID_GENERAL_ORDER_INFO
+		return KnxInterfaceObjectProperty_PID_GENERAL_ORDER_INFO, true
 	case 150:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE, true
 	case 151:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_LOCK_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_LOCK_STATE, true
 	case 152:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_UNLOCK_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_UNLOCK_STATE, true
 	case 153:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STATE_FOR_SCENE_NUMBER
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STATE_FOR_SCENE_NUMBER, true
 	case 154:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE, true
 	case 155:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_STATE, true
 	case 156:
-		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_2
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_2, true
 	case 157:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_ON_DELAY
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_ON_DELAY, true
 	case 158:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_OFF_DELAY
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_OFF_DELAY, true
 	case 159:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_OFF_BRIGHTNESS_DELAY_TIME
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_OFF_BRIGHTNESS_DELAY_TIME, true
 	case 16:
-		return KnxInterfaceObjectProperty_PID_GENERAL_PEI_TYPE
+		return KnxInterfaceObjectProperty_PID_GENERAL_PEI_TYPE, true
 	case 160:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_DURATION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_DURATION, true
 	case 161:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_PREWARNING_DURATION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_PREWARNING_DURATION, true
 	case 162:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME, true
 	case 163:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY, true
 	case 164:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED, true
 	case 165:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME, true
 	case 166:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_ON_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_ON_SET_VALUE, true
 	case 167:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_OFF
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_OFF, true
 	case 168:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_ON_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_ON_SET_VALUE, true
 	case 169:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_OFF
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_OFF, true
 	case 17:
-		return KnxInterfaceObjectProperty_PID_GENERAL_PORT_CONFIGURATION
+		return KnxInterfaceObjectProperty_PID_GENERAL_PORT_CONFIGURATION, true
 	case 170:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCFH_OFF_BRIGHTNESS
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCFH_OFF_BRIGHTNESS, true
 	case 171:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MINIMUM_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MINIMUM_SET_VALUE, true
 	case 172:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MAXIMUM_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MAXIMUM_SET_VALUE, true
 	case 173:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_ON_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_ON_SET_VALUE, true
 	case 174:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMM_MODE_SELECTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMM_MODE_SELECTION, true
 	case 175:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_RELATIV_OFF_ENABLE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_RELATIV_OFF_ENABLE, true
 	case 176:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MEMORY_FUNCTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MEMORY_FUNCTION, true
 	case 177:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION, true
 	case 178:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE, true
 	case 179:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE, true
 	case 18:
-		return KnxInterfaceObjectProperty_PID_GENERAL_POLL_GROUP_SETTINGS
+		return KnxInterfaceObjectProperty_PID_GENERAL_POLL_GROUP_SETTINGS, true
 	case 180:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING, true
 	case 181:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING, true
 	case 182:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_LOCK_SETVALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_LOCK_SETVALUE, true
 	case 183:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_UNLOCK_SETVALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_UNLOCK_SETVALUE, true
 	case 184:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BIGHTNESS_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BIGHTNESS_FOR_SCENE, true
 	case 185:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE, true
 	case 186:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DELTA_DIMMING_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DELTA_DIMMING_VALUE, true
 	case 187:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP, true
 	case 188:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_SET_VALUE, true
 	case 189:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN, true
 	case 19:
-		return KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_DATA
+		return KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_DATA, true
 	case 190:
-		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_DOWN_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_DOWN_SET_VALUE, true
 	case 191:
-		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ON_OFF_ACTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ON_OFF_ACTION, true
 	case 192:
-		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ENABLE_TOGGLE_MODE
+		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ENABLE_TOGGLE_MODE, true
 	case 193:
-		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ABSOLUTE_SETVALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ABSOLUTE_SETVALUE, true
 	case 194:
-		return KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ON_OFF_ACTION
+		return KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ON_OFF_ACTION, true
 	case 195:
-		return KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ENABLE_TOGGLE_MODE
+		return KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ENABLE_TOGGLE_MODE, true
 	case 196:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REVERSION_PAUSE_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REVERSION_PAUSE_TIME, true
 	case 197:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_UP_DOWN_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_UP_DOWN_TIME, true
 	case 198:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_SLAT_STEP_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_SLAT_STEP_TIME, true
 	case 199:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_PRESET_POSITION_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_PRESET_POSITION_TIME, true
 	case 2:
-		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_NAME
+		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_NAME, true
 	case 20:
-		return KnxInterfaceObjectProperty_PID_GENERAL_ENABLE
+		return KnxInterfaceObjectProperty_PID_GENERAL_ENABLE, true
 	case 200:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_IN_PERCENT
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_IN_PERCENT, true
 	case 201:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_LENGTH
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_LENGTH, true
 	case 202:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_PERCENT
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_PERCENT, true
 	case 203:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_ANGLE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_ANGLE, true
 	case 204:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_WIND_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_WIND_ALARM, true
 	case 205:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_WIND_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_WIND_ALARM, true
 	case 206:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_ON_RAIN_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_ON_RAIN_ALARM, true
 	case 207:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_RAIN_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_RAIN_ALARM, true
 	case 208:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_FROST_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_FROST_ALARM, true
 	case 209:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_FROST_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_FROST_ALARM, true
 	case 21:
-		return KnxInterfaceObjectProperty_PID_GENERAL_DESCRIPTION
+		return KnxInterfaceObjectProperty_PID_GENERAL_DESCRIPTION, true
 	case 210:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MAX_SLAT_MOVE_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MAX_SLAT_MOVE_TIME, true
 	case 211:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_ENABLE_BLINDS_MODE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_ENABLE_BLINDS_MODE, true
 	case 212:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_STORAGE_FUNCTIONS_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_STORAGE_FUNCTIONS_FOR_SCENE, true
 	case 213:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_BLINDS_MODE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_BLINDS_MODE, true
 	case 214:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_UP_DOWN_ACTION
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_UP_DOWN_ACTION, true
 	case 215:
-		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE, true
 	case 22:
-		return KnxInterfaceObjectProperty_PID_GENERAL_FILE
+		return KnxInterfaceObjectProperty_PID_GENERAL_FILE, true
 	case 23:
-		return KnxInterfaceObjectProperty_PID_GENERAL_TABLE
+		return KnxInterfaceObjectProperty_PID_GENERAL_TABLE, true
 	case 24:
-		return KnxInterfaceObjectProperty_PID_GENERAL_ENROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_ENROL, true
 	case 25:
-		return KnxInterfaceObjectProperty_PID_GENERAL_VERSION
+		return KnxInterfaceObjectProperty_PID_GENERAL_VERSION, true
 	case 26:
-		return KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_LINK
+		return KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_LINK, true
 	case 27:
-		return KnxInterfaceObjectProperty_PID_GENERAL_MCB_TABLE
+		return KnxInterfaceObjectProperty_PID_GENERAL_MCB_TABLE, true
 	case 28:
-		return KnxInterfaceObjectProperty_PID_GENERAL_ERROR_CODE
+		return KnxInterfaceObjectProperty_PID_GENERAL_ERROR_CODE, true
 	case 29:
-		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_INDEX
+		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_INDEX, true
 	case 3:
-		return KnxInterfaceObjectProperty_PID_GENERAL_SEMAPHOR
+		return KnxInterfaceObjectProperty_PID_GENERAL_SEMAPHOR, true
 	case 30:
-		return KnxInterfaceObjectProperty_PID_GENERAL_DOWNLOAD_COUNTER
+		return KnxInterfaceObjectProperty_PID_GENERAL_DOWNLOAD_COUNTER, true
 	case 31:
-		return KnxInterfaceObjectProperty_PID_DEVICE_ROUTING_COUNT
+		return KnxInterfaceObjectProperty_PID_DEVICE_ROUTING_COUNT, true
 	case 32:
-		return KnxInterfaceObjectProperty_PID_DEVICE_MAX_RETRY_COUNT
+		return KnxInterfaceObjectProperty_PID_DEVICE_MAX_RETRY_COUNT, true
 	case 33:
-		return KnxInterfaceObjectProperty_PID_DEVICE_ERROR_FLAGS
+		return KnxInterfaceObjectProperty_PID_DEVICE_ERROR_FLAGS, true
 	case 34:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PROGMODE
+		return KnxInterfaceObjectProperty_PID_DEVICE_PROGMODE, true
 	case 35:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PRODUCT_ID
+		return KnxInterfaceObjectProperty_PID_DEVICE_PRODUCT_ID, true
 	case 36:
-		return KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH
+		return KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH, true
 	case 37:
-		return KnxInterfaceObjectProperty_PID_DEVICE_SUBNET_ADDR
+		return KnxInterfaceObjectProperty_PID_DEVICE_SUBNET_ADDR, true
 	case 38:
-		return KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_ADDR
+		return KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_ADDR, true
 	case 39:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PB_CONFIG
+		return KnxInterfaceObjectProperty_PID_DEVICE_PB_CONFIG, true
 	case 4:
-		return KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_REFERENCE
+		return KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_REFERENCE, true
 	case 40:
-		return KnxInterfaceObjectProperty_PID_DEVICE_ADDR_REPORT
+		return KnxInterfaceObjectProperty_PID_DEVICE_ADDR_REPORT, true
 	case 41:
-		return KnxInterfaceObjectProperty_PID_DEVICE_ADDR_CHECK
+		return KnxInterfaceObjectProperty_PID_DEVICE_ADDR_CHECK, true
 	case 42:
-		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECT_VALUE
+		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECT_VALUE, true
 	case 43:
-		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECTLINK
+		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECTLINK, true
 	case 44:
-		return KnxInterfaceObjectProperty_PID_DEVICE_APPLICATION
+		return KnxInterfaceObjectProperty_PID_DEVICE_APPLICATION, true
 	case 45:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PARAMETER
+		return KnxInterfaceObjectProperty_PID_DEVICE_PARAMETER, true
 	case 46:
-		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECTADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECTADDRESS, true
 	case 47:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_TYPE
+		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_TYPE, true
 	case 48:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_STATUS
+		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_STATUS, true
 	case 49:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_ENABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_ENABLE, true
 	case 5:
-		return KnxInterfaceObjectProperty_PID_GENERAL_LOAD_STATE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_LOAD_STATE_CONTROL, true
 	case 50:
-		return KnxInterfaceObjectProperty_PID_DEVICE_DOMAIN_ADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_DOMAIN_ADDRESS, true
 	case 51:
-		return KnxInterfaceObjectProperty_PID_DEVICE_IO_LIST
+		return KnxInterfaceObjectProperty_PID_DEVICE_IO_LIST, true
 	case 52:
-		return KnxInterfaceObjectProperty_PID_DEVICE_MGT_DESCRIPTOR_01
+		return KnxInterfaceObjectProperty_PID_DEVICE_MGT_DESCRIPTOR_01, true
 	case 53:
-		return KnxInterfaceObjectProperty_PID_DEVICE_PL110_PARAM
+		return KnxInterfaceObjectProperty_PID_DEVICE_PL110_PARAM, true
 	case 54:
-		return KnxInterfaceObjectProperty_PID_DEVICE_RF_REPEAT_COUNTER
+		return KnxInterfaceObjectProperty_PID_DEVICE_RF_REPEAT_COUNTER, true
 	case 55:
-		return KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_TABLE, true
 	case 56:
-		return KnxInterfaceObjectProperty_PID_DEVICE_RANDOM_PAUSE_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_RANDOM_PAUSE_TABLE, true
 	case 57:
-		return KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_NR
+		return KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_NR, true
 	case 58:
-		return KnxInterfaceObjectProperty_PID_DEVICE_HARDWARE_TYPE
+		return KnxInterfaceObjectProperty_PID_DEVICE_HARDWARE_TYPE, true
 	case 59:
-		return KnxInterfaceObjectProperty_PID_DEVICE_RETRANSMITTER_NUMBER
+		return KnxInterfaceObjectProperty_PID_DEVICE_RETRANSMITTER_NUMBER, true
 	case 6:
-		return KnxInterfaceObjectProperty_PID_GENERAL_RUN_STATE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_RUN_STATE_CONTROL, true
 	case 60:
-		return KnxInterfaceObjectProperty_PID_DEVICE_SERIAL_NR_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_SERIAL_NR_TABLE, true
 	case 61:
-		return KnxInterfaceObjectProperty_PID_DEVICE_BIBATMASTER_ADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_BIBATMASTER_ADDRESS, true
 	case 62:
-		return KnxInterfaceObjectProperty_PID_DEVICE_RF_DOMAIN_ADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_RF_DOMAIN_ADDRESS, true
 	case 63:
-		return KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_DESCRIPTOR
+		return KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_DESCRIPTOR, true
 	case 64:
-		return KnxInterfaceObjectProperty_PID_DEVICE_METERING_FILTER_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_METERING_FILTER_TABLE, true
 	case 65:
-		return KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_TIME_BASE
+		return KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_TIME_BASE, true
 	case 66:
-		return KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_NO_OF_TELEGR
+		return KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_NO_OF_TELEGR, true
 	case 67:
-		return KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_GRPOBJTABLE
+		return KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_GRPOBJTABLE, true
 	case 68:
-		return KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_EXT_GRPOBJREFERENCE
+		return KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_EXT_GRPOBJREFERENCE, true
 	case 69:
-		return KnxInterfaceObjectProperty_PID_ROUTER_LINE_STATUS
+		return KnxInterfaceObjectProperty_PID_ROUTER_LINE_STATUS, true
 	case 7:
-		return KnxInterfaceObjectProperty_PID_GENERAL_TABLE_REFERENCE
+		return KnxInterfaceObjectProperty_PID_GENERAL_TABLE_REFERENCE, true
 	case 70:
-		return KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCCONFIG, true
 	case 71:
-		return KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCCONFIG, true
 	case 72:
-		return KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCGRPCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCGRPCONFIG, true
 	case 73:
-		return KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCGRPCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCGRPCONFIG, true
 	case 74:
-		return KnxInterfaceObjectProperty_PID_ROUTER_ROUTETABLE_CONTROL
+		return KnxInterfaceObjectProperty_PID_ROUTER_ROUTETABLE_CONTROL, true
 	case 75:
-		return KnxInterfaceObjectProperty_PID_ROUTER_COUPL_SERV_CONTROL
+		return KnxInterfaceObjectProperty_PID_ROUTER_COUPL_SERV_CONTROL, true
 	case 76:
-		return KnxInterfaceObjectProperty_PID_ROUTER_MAX_ROUTER_APDU_LENGTH
+		return KnxInterfaceObjectProperty_PID_ROUTER_MAX_ROUTER_APDU_LENGTH, true
 	case 77:
-		return KnxInterfaceObjectProperty_PID_ROUTER_MEDIUM
+		return KnxInterfaceObjectProperty_PID_ROUTER_MEDIUM, true
 	case 78:
-		return KnxInterfaceObjectProperty_PID_ROUTER_FILTER_TABLE_USE
+		return KnxInterfaceObjectProperty_PID_ROUTER_FILTER_TABLE_USE, true
 	case 79:
-		return KnxInterfaceObjectProperty_PID_ROUTER_RF_ENABLE_SBC
+		return KnxInterfaceObjectProperty_PID_ROUTER_RF_ENABLE_SBC, true
 	case 8:
-		return KnxInterfaceObjectProperty_PID_GENERAL_SERVICE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_SERVICE_CONTROL, true
 	case 80:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PROJECT_INSTALLATION_ID
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PROJECT_INSTALLATION_ID, true
 	case 81:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNX_INDIVIDUAL_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNX_INDIVIDUAL_ADDRESS, true
 	case 82:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ADDITIONAL_INDIVIDUAL_ADDRESSES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ADDITIONAL_INDIVIDUAL_ADDRESSES, true
 	case 83:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ASSIGNMENT_METHOD
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ASSIGNMENT_METHOD, true
 	case 84:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ASSIGNMENT_METHOD
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ASSIGNMENT_METHOD, true
 	case 85:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_CAPABILITIES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_CAPABILITIES, true
 	case 86:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ADDRESS, true
 	case 87:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_SUBNET_MASK
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_SUBNET_MASK, true
 	case 88:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_DEFAULT_GATEWAY
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_DEFAULT_GATEWAY, true
 	case 89:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ADDRESS, true
 	case 9:
-		return KnxInterfaceObjectProperty_PID_GENERAL_FIRMWARE_REVISION
+		return KnxInterfaceObjectProperty_PID_GENERAL_FIRMWARE_REVISION, true
 	case 90:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SUBNET_MASK
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SUBNET_MASK, true
 	case 91:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEFAULT_GATEWAY
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEFAULT_GATEWAY, true
 	case 92:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DHCP_BOOTP_SERVER
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DHCP_BOOTP_SERVER, true
 	case 93:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MAC_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MAC_ADDRESS, true
 	case 94:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYSTEM_SETUP_MULTICAST_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYSTEM_SETUP_MULTICAST_ADDRESS, true
 	case 95:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ROUTING_MULTICAST_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ROUTING_MULTICAST_ADDRESS, true
 	case 96:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TTL
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TTL, true
 	case 97:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_CAPABILITIES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_CAPABILITIES, true
 	case 98:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_STATE
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_STATE, true
 	case 99:
-		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxInterfaceObjectPropertyByName(value string) (enum KnxInterfaceObjectProperty, ok bool) {
-	ok = true
 	switch value {
 	case "PID_UNKNOWN":
-		enum = KnxInterfaceObjectProperty_PID_UNKNOWN
+		return KnxInterfaceObjectProperty_PID_UNKNOWN, true
 	case "PID_GENERAL_OBJECT_TYPE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_TYPE
+		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_TYPE, true
 	case "PID_GENERAL_SERVICES_SUPPORTED":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_SERVICES_SUPPORTED
+		return KnxInterfaceObjectProperty_PID_GENERAL_SERVICES_SUPPORTED, true
 	case "PID_KNXIP_PARAMETER_PRIORITY_FIFO_ENABLED":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PRIORITY_FIFO_ENABLED
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PRIORITY_FIFO_ENABLED, true
 	case "PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_IP":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_IP
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_IP, true
 	case "PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_KNX":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_KNX
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_QUEUE_OVERFLOW_TO_KNX, true
 	case "PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_IP":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_IP
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_IP, true
 	case "PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_KNX":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_KNX
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MSG_TRANSMIT_TO_KNX, true
 	case "PID_KNXIP_PARAMETER_FRIENDLY_NAME":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_FRIENDLY_NAME
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_FRIENDLY_NAME, true
 	case "PID_KNXIP_PARAMETER_BACKBONE_KEY":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_BACKBONE_KEY
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_BACKBONE_KEY, true
 	case "PID_KNXIP_PARAMETER_DEVICE_AUTHENTICATION_CODE":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEVICE_AUTHENTICATION_CODE
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEVICE_AUTHENTICATION_CODE, true
 	case "PID_KNXIP_PARAMETER_PASSWORD_HASHES":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PASSWORD_HASHES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PASSWORD_HASHES, true
 	case "PID_KNXIP_PARAMETER_SECURED_SERVICE_FAMILIES":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SECURED_SERVICE_FAMILIES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SECURED_SERVICE_FAMILIES, true
 	case "PID_GENERAL_SERIAL_NUMBER":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_SERIAL_NUMBER
+		return KnxInterfaceObjectProperty_PID_GENERAL_SERIAL_NUMBER, true
 	case "PID_KNXIP_PARAMETER_MULTICAST_LATENCY_TOLERANCE":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MULTICAST_LATENCY_TOLERANCE
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MULTICAST_LATENCY_TOLERANCE, true
 	case "PID_KNXIP_PARAMETER_SYNC_LATENCY_FRACTION":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYNC_LATENCY_FRACTION
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYNC_LATENCY_FRACTION, true
 	case "PID_KNXIP_PARAMETER_TUNNELLING_USERS":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TUNNELLING_USERS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TUNNELLING_USERS, true
 	case "PID_SECURITY_SECURITY_MODE":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_MODE
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_MODE, true
 	case "PID_SECURITY_P2P_KEY_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_P2P_KEY_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_P2P_KEY_TABLE, true
 	case "PID_SECURITY_GRP_KEY_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_GRP_KEY_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_GRP_KEY_TABLE, true
 	case "PID_SECURITY_SECURITY_INDIVIDUAL_ADDRESS_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_INDIVIDUAL_ADDRESS_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_INDIVIDUAL_ADDRESS_TABLE, true
 	case "PID_SECURITY_SECURITY_FAILURES_LOG":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_FAILURES_LOG
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_FAILURES_LOG, true
 	case "PID_SECURITY_SKI_TOOL":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_SKI_TOOL
+		return KnxInterfaceObjectProperty_PID_SECURITY_SKI_TOOL, true
 	case "PID_SECURITY_SECURITY_REPORT":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT, true
 	case "PID_GENERAL_MANUFACTURER_ID":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_ID
+		return KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_ID, true
 	case "PID_SECURITY_SECURITY_REPORT_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT_CONTROL
+		return KnxInterfaceObjectProperty_PID_SECURITY_SECURITY_REPORT_CONTROL, true
 	case "PID_SECURITY_SEQUENCE_NUMBER_SENDING":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_SEQUENCE_NUMBER_SENDING
+		return KnxInterfaceObjectProperty_PID_SECURITY_SEQUENCE_NUMBER_SENDING, true
 	case "PID_SECURITY_ZONE_KEYS_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_ZONE_KEYS_TABLE
+		return KnxInterfaceObjectProperty_PID_SECURITY_ZONE_KEYS_TABLE, true
 	case "PID_SECURITY_GO_SECURITY_FLAGS":
-		enum = KnxInterfaceObjectProperty_PID_SECURITY_GO_SECURITY_FLAGS
+		return KnxInterfaceObjectProperty_PID_SECURITY_GO_SECURITY_FLAGS, true
 	case "PID_RF_MEDIUM_RF_MULTI_TYPE":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_MULTI_TYPE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_MULTI_TYPE, true
 	case "PID_RF_MEDIUM_RF_DOMAIN_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DOMAIN_ADDRESS
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DOMAIN_ADDRESS, true
 	case "PID_RF_MEDIUM_RF_RETRANSMITTER":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_RETRANSMITTER
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_RETRANSMITTER, true
 	case "PID_RF_MEDIUM_SECURITY_REPORT_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_SECURITY_REPORT_CONTROL
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_SECURITY_REPORT_CONTROL, true
 	case "PID_RF_MEDIUM_RF_FILTERING_MODE_SELECT":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_FILTERING_MODE_SELECT
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_FILTERING_MODE_SELECT, true
 	case "PID_RF_MEDIUM_RF_BIDIR_TIMEOUT":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_BIDIR_TIMEOUT
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_BIDIR_TIMEOUT, true
 	case "PID_GENERAL_PROGRAM_VERSION":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_PROGRAM_VERSION
+		return KnxInterfaceObjectProperty_PID_GENERAL_PROGRAM_VERSION, true
 	case "PID_RF_MEDIUM_RF_DIAG_SA_FILTER_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_SA_FILTER_TABLE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_SA_FILTER_TABLE, true
 	case "PID_RF_MEDIUM_RF_DIAG_QUALITY_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_QUALITY_TABLE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_QUALITY_TABLE, true
 	case "PID_RF_MEDIUM_RF_DIAG_PROBE":
-		enum = KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_PROBE
+		return KnxInterfaceObjectProperty_PID_RF_MEDIUM_RF_DIAG_PROBE, true
 	case "PID_INDOOR_BRIGHTNESS_SENSOR_CHANGE_OF_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_CHANGE_OF_VALUE
+		return KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_CHANGE_OF_VALUE, true
 	case "PID_INDOOR_BRIGHTNESS_SENSOR_REPETITION_TIME":
-		enum = KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_REPETITION_TIME
+		return KnxInterfaceObjectProperty_PID_INDOOR_BRIGHTNESS_SENSOR_REPETITION_TIME, true
 	case "PID_INDOOR_LUMINANCE_SENSOR_CHANGE_OF_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_CHANGE_OF_VALUE
+		return KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_CHANGE_OF_VALUE, true
 	case "PID_INDOOR_LUMINANCE_SENSOR_REPETITION_TIME":
-		enum = KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_REPETITION_TIME
+		return KnxInterfaceObjectProperty_PID_INDOOR_LUMINANCE_SENSOR_REPETITION_TIME, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_ON_DELAY":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_ON_DELAY
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_ON_DELAY, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_OFF_DELAY":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_OFF_DELAY
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_OFF_DELAY, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_DURATION":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_DURATION
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_DURATION, true
 	case "PID_GENERAL_DEVICE_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_DEVICE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_DEVICE_CONTROL, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_PREWARNING_DURATION":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_PREWARNING_DURATION
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_PREWARNING_DURATION, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_OUTPUT_STATE":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_OUTPUT_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_OUTPUT_STATE, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE, true
 	case "PID_GENERAL_ORDER_INFO":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_ORDER_INFO
+		return KnxInterfaceObjectProperty_PID_GENERAL_ORDER_INFO, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_LOCK_STATE":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_LOCK_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_LOCK_STATE, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_UNLOCK_STATE":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_UNLOCK_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_UNLOCK_STATE, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STATE_FOR_SCENE_NUMBER":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STATE_FOR_SCENE_NUMBER
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STATE_FOR_SCENE_NUMBER, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_STATE":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_STATE
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BUS_POWER_UP_STATE, true
 	case "PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_2":
-		enum = KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_2
+		return KnxInterfaceObjectProperty_PID_LIGHT_SWITCHING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_2, true
 	case "PID_DIMMING_ACTUATOR_BASIC_ON_DELAY":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_ON_DELAY
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_ON_DELAY, true
 	case "PID_DIMMING_ACTUATOR_BASIC_OFF_DELAY":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_OFF_DELAY
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_OFF_DELAY, true
 	case "PID_DIMMING_ACTUATOR_BASIC_SWITCH_OFF_BRIGHTNESS_DELAY_TIME":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_OFF_BRIGHTNESS_DELAY_TIME
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_OFF_BRIGHTNESS_DELAY_TIME, true
 	case "PID_GENERAL_PEI_TYPE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_PEI_TYPE
+		return KnxInterfaceObjectProperty_PID_GENERAL_PEI_TYPE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_DURATION":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_DURATION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_DURATION, true
 	case "PID_DIMMING_ACTUATOR_BASIC_PREWARNING_DURATION":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_PREWARNING_DURATION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_PREWARNING_DURATION, true
 	case "PID_DIMMING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TRANSMISSION_CYCLE_TIME, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_UP_MESSAGE_DELAY, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_ON_SET_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_ON_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_ON_SET_VALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_OFF":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_OFF
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_SPEED_FOR_SWITCH_OFF, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_ON_SET_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_ON_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_ON_SET_VALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_OFF":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_OFF
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMMING_STEP_TIME_FOR_SWITCH_OFF, true
 	case "PID_GENERAL_PORT_CONFIGURATION":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_PORT_CONFIGURATION
+		return KnxInterfaceObjectProperty_PID_GENERAL_PORT_CONFIGURATION, true
 	case "PID_DIMMING_ACTUATOR_BASIC_SWITCFH_OFF_BRIGHTNESS":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCFH_OFF_BRIGHTNESS
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCFH_OFF_BRIGHTNESS, true
 	case "PID_DIMMING_ACTUATOR_BASIC_MINIMUM_SET_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MINIMUM_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MINIMUM_SET_VALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_MAXIMUM_SET_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MAXIMUM_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MAXIMUM_SET_VALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_SWITCH_ON_SET_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_ON_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_SWITCH_ON_SET_VALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DIMM_MODE_SELECTION":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMM_MODE_SELECTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DIMM_MODE_SELECTION, true
 	case "PID_DIMMING_ACTUATOR_BASIC_RELATIV_OFF_ENABLE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_RELATIV_OFF_ENABLE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_RELATIV_OFF_ENABLE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_MEMORY_FUNCTION":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MEMORY_FUNCTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MEMORY_FUNCTION, true
 	case "PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_TIMED_ON_RETRIGGER_FUNCTION, true
 	case "PID_DIMMING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_MANUAL_OFF_ENABLE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_INVERT_LOCK_DEVICE, true
 	case "PID_GENERAL_POLL_GROUP_SETTINGS":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_POLL_GROUP_SETTINGS
+		return KnxInterfaceObjectProperty_PID_GENERAL_POLL_GROUP_SETTINGS, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_LOCKING, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_AT_UNLOCKING, true
 	case "PID_DIMMING_ACTUATOR_BASIC_LOCK_SETVALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_LOCK_SETVALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_LOCK_SETVALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_UNLOCK_SETVALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_UNLOCK_SETVALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_UNLOCK_SETVALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BIGHTNESS_FOR_SCENE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BIGHTNESS_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BIGHTNESS_FOR_SCENE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_STORAGE_FUNCTION_FOR_SCENE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_DELTA_DIMMING_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DELTA_DIMMING_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_DELTA_DIMMING_VALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_SET_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_UP_SET_VALUE, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BEHAVIOUR_BUS_POWER_DOWN, true
 	case "PID_GENERAL_MANUFACTURER_DATA":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_DATA
+		return KnxInterfaceObjectProperty_PID_GENERAL_MANUFACTURER_DATA, true
 	case "PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_DOWN_SET_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_DOWN_SET_VALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_ACTUATOR_BASIC_BUS_POWER_DOWN_SET_VALUE, true
 	case "PID_DIMMING_SENSOR_BASIC_ON_OFF_ACTION":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ON_OFF_ACTION
+		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ON_OFF_ACTION, true
 	case "PID_DIMMING_SENSOR_BASIC_ENABLE_TOGGLE_MODE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ENABLE_TOGGLE_MODE
+		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ENABLE_TOGGLE_MODE, true
 	case "PID_DIMMING_SENSOR_BASIC_ABSOLUTE_SETVALUE":
-		enum = KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ABSOLUTE_SETVALUE
+		return KnxInterfaceObjectProperty_PID_DIMMING_SENSOR_BASIC_ABSOLUTE_SETVALUE, true
 	case "PID_SWITCHING_SENSOR_BASIC_ON_OFF_ACTION":
-		enum = KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ON_OFF_ACTION
+		return KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ON_OFF_ACTION, true
 	case "PID_SWITCHING_SENSOR_BASIC_ENABLE_TOGGLE_MODE":
-		enum = KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ENABLE_TOGGLE_MODE
+		return KnxInterfaceObjectProperty_PID_SWITCHING_SENSOR_BASIC_ENABLE_TOGGLE_MODE, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_REVERSION_PAUSE_TIME":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REVERSION_PAUSE_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REVERSION_PAUSE_TIME, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_MOVE_UP_DOWN_TIME":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_UP_DOWN_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_UP_DOWN_TIME, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_SLAT_STEP_TIME":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_SLAT_STEP_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_SLAT_STEP_TIME, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_MOVE_PRESET_POSITION_TIME":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_PRESET_POSITION_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_PRESET_POSITION_TIME, true
 	case "PID_GENERAL_OBJECT_NAME":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_NAME
+		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_NAME, true
 	case "PID_GENERAL_ENABLE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_ENABLE
+		return KnxInterfaceObjectProperty_PID_GENERAL_ENABLE, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_IN_PERCENT":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_IN_PERCENT
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_IN_PERCENT, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_LENGTH":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_LENGTH
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MOVE_TO_PRESET_POSITION_LENGTH, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_PERCENT":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_PERCENT
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_PERCENT, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_ANGLE":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_ANGLE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_PRESET_SLAT_POSITION_ANGLE, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_REACTION_WIND_ALARM":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_WIND_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_WIND_ALARM, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_WIND_ALARM":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_WIND_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_WIND_ALARM, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_REACTION_ON_RAIN_ALARM":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_ON_RAIN_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_ON_RAIN_ALARM, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_RAIN_ALARM":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_RAIN_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_RAIN_ALARM, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_REACTION_FROST_ALARM":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_FROST_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_REACTION_FROST_ALARM, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_FROST_ALARM":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_FROST_ALARM
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_HEARTBEAT_FROST_ALARM, true
 	case "PID_GENERAL_DESCRIPTION":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_DESCRIPTION
+		return KnxInterfaceObjectProperty_PID_GENERAL_DESCRIPTION, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_MAX_SLAT_MOVE_TIME":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MAX_SLAT_MOVE_TIME
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_MAX_SLAT_MOVE_TIME, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_ENABLE_BLINDS_MODE":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_ENABLE_BLINDS_MODE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_ENABLE_BLINDS_MODE, true
 	case "PID_SUNBLIND_ACTUATOR_BASIC_STORAGE_FUNCTIONS_FOR_SCENE":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_STORAGE_FUNCTIONS_FOR_SCENE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_ACTUATOR_BASIC_STORAGE_FUNCTIONS_FOR_SCENE, true
 	case "PID_SUNBLIND_SENSOR_BASIC_ENABLE_BLINDS_MODE":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_BLINDS_MODE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_BLINDS_MODE, true
 	case "PID_SUNBLIND_SENSOR_BASIC_UP_DOWN_ACTION":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_UP_DOWN_ACTION
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_UP_DOWN_ACTION, true
 	case "PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE":
-		enum = KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE
+		return KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE, true
 	case "PID_GENERAL_FILE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_FILE
+		return KnxInterfaceObjectProperty_PID_GENERAL_FILE, true
 	case "PID_GENERAL_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_TABLE
+		return KnxInterfaceObjectProperty_PID_GENERAL_TABLE, true
 	case "PID_GENERAL_ENROL":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_ENROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_ENROL, true
 	case "PID_GENERAL_VERSION":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_VERSION
+		return KnxInterfaceObjectProperty_PID_GENERAL_VERSION, true
 	case "PID_GENERAL_GROUP_OBJECT_LINK":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_LINK
+		return KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_LINK, true
 	case "PID_GENERAL_MCB_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_MCB_TABLE
+		return KnxInterfaceObjectProperty_PID_GENERAL_MCB_TABLE, true
 	case "PID_GENERAL_ERROR_CODE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_ERROR_CODE
+		return KnxInterfaceObjectProperty_PID_GENERAL_ERROR_CODE, true
 	case "PID_GENERAL_OBJECT_INDEX":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_INDEX
+		return KnxInterfaceObjectProperty_PID_GENERAL_OBJECT_INDEX, true
 	case "PID_GENERAL_SEMAPHOR":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_SEMAPHOR
+		return KnxInterfaceObjectProperty_PID_GENERAL_SEMAPHOR, true
 	case "PID_GENERAL_DOWNLOAD_COUNTER":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_DOWNLOAD_COUNTER
+		return KnxInterfaceObjectProperty_PID_GENERAL_DOWNLOAD_COUNTER, true
 	case "PID_DEVICE_ROUTING_COUNT":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_ROUTING_COUNT
+		return KnxInterfaceObjectProperty_PID_DEVICE_ROUTING_COUNT, true
 	case "PID_DEVICE_MAX_RETRY_COUNT":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_MAX_RETRY_COUNT
+		return KnxInterfaceObjectProperty_PID_DEVICE_MAX_RETRY_COUNT, true
 	case "PID_DEVICE_ERROR_FLAGS":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_ERROR_FLAGS
+		return KnxInterfaceObjectProperty_PID_DEVICE_ERROR_FLAGS, true
 	case "PID_DEVICE_PROGMODE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PROGMODE
+		return KnxInterfaceObjectProperty_PID_DEVICE_PROGMODE, true
 	case "PID_DEVICE_PRODUCT_ID":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PRODUCT_ID
+		return KnxInterfaceObjectProperty_PID_DEVICE_PRODUCT_ID, true
 	case "PID_DEVICE_MAX_APDULENGTH":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH
+		return KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH, true
 	case "PID_DEVICE_SUBNET_ADDR":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_SUBNET_ADDR
+		return KnxInterfaceObjectProperty_PID_DEVICE_SUBNET_ADDR, true
 	case "PID_DEVICE_DEVICE_ADDR":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_ADDR
+		return KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_ADDR, true
 	case "PID_DEVICE_PB_CONFIG":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PB_CONFIG
+		return KnxInterfaceObjectProperty_PID_DEVICE_PB_CONFIG, true
 	case "PID_GENERAL_GROUP_OBJECT_REFERENCE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_REFERENCE
+		return KnxInterfaceObjectProperty_PID_GENERAL_GROUP_OBJECT_REFERENCE, true
 	case "PID_DEVICE_ADDR_REPORT":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_ADDR_REPORT
+		return KnxInterfaceObjectProperty_PID_DEVICE_ADDR_REPORT, true
 	case "PID_DEVICE_ADDR_CHECK":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_ADDR_CHECK
+		return KnxInterfaceObjectProperty_PID_DEVICE_ADDR_CHECK, true
 	case "PID_DEVICE_OBJECT_VALUE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_OBJECT_VALUE
+		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECT_VALUE, true
 	case "PID_DEVICE_OBJECTLINK":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_OBJECTLINK
+		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECTLINK, true
 	case "PID_DEVICE_APPLICATION":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_APPLICATION
+		return KnxInterfaceObjectProperty_PID_DEVICE_APPLICATION, true
 	case "PID_DEVICE_PARAMETER":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PARAMETER
+		return KnxInterfaceObjectProperty_PID_DEVICE_PARAMETER, true
 	case "PID_DEVICE_OBJECTADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_OBJECTADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_OBJECTADDRESS, true
 	case "PID_DEVICE_PSU_TYPE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PSU_TYPE
+		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_TYPE, true
 	case "PID_DEVICE_PSU_STATUS":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PSU_STATUS
+		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_STATUS, true
 	case "PID_DEVICE_PSU_ENABLE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PSU_ENABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_PSU_ENABLE, true
 	case "PID_GENERAL_LOAD_STATE_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_LOAD_STATE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_LOAD_STATE_CONTROL, true
 	case "PID_DEVICE_DOMAIN_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_DOMAIN_ADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_DOMAIN_ADDRESS, true
 	case "PID_DEVICE_IO_LIST":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_IO_LIST
+		return KnxInterfaceObjectProperty_PID_DEVICE_IO_LIST, true
 	case "PID_DEVICE_MGT_DESCRIPTOR_01":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_MGT_DESCRIPTOR_01
+		return KnxInterfaceObjectProperty_PID_DEVICE_MGT_DESCRIPTOR_01, true
 	case "PID_DEVICE_PL110_PARAM":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_PL110_PARAM
+		return KnxInterfaceObjectProperty_PID_DEVICE_PL110_PARAM, true
 	case "PID_DEVICE_RF_REPEAT_COUNTER":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_RF_REPEAT_COUNTER
+		return KnxInterfaceObjectProperty_PID_DEVICE_RF_REPEAT_COUNTER, true
 	case "PID_DEVICE_RECEIVE_BLOCK_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_TABLE, true
 	case "PID_DEVICE_RANDOM_PAUSE_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_RANDOM_PAUSE_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_RANDOM_PAUSE_TABLE, true
 	case "PID_DEVICE_RECEIVE_BLOCK_NR":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_NR
+		return KnxInterfaceObjectProperty_PID_DEVICE_RECEIVE_BLOCK_NR, true
 	case "PID_DEVICE_HARDWARE_TYPE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_HARDWARE_TYPE
+		return KnxInterfaceObjectProperty_PID_DEVICE_HARDWARE_TYPE, true
 	case "PID_DEVICE_RETRANSMITTER_NUMBER":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_RETRANSMITTER_NUMBER
+		return KnxInterfaceObjectProperty_PID_DEVICE_RETRANSMITTER_NUMBER, true
 	case "PID_GENERAL_RUN_STATE_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_RUN_STATE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_RUN_STATE_CONTROL, true
 	case "PID_DEVICE_SERIAL_NR_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_SERIAL_NR_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_SERIAL_NR_TABLE, true
 	case "PID_DEVICE_BIBATMASTER_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_BIBATMASTER_ADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_BIBATMASTER_ADDRESS, true
 	case "PID_DEVICE_RF_DOMAIN_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_RF_DOMAIN_ADDRESS
+		return KnxInterfaceObjectProperty_PID_DEVICE_RF_DOMAIN_ADDRESS, true
 	case "PID_DEVICE_DEVICE_DESCRIPTOR":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_DESCRIPTOR
+		return KnxInterfaceObjectProperty_PID_DEVICE_DEVICE_DESCRIPTOR, true
 	case "PID_DEVICE_METERING_FILTER_TABLE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_METERING_FILTER_TABLE
+		return KnxInterfaceObjectProperty_PID_DEVICE_METERING_FILTER_TABLE, true
 	case "PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_TIME_BASE":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_TIME_BASE
+		return KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_TIME_BASE, true
 	case "PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_NO_OF_TELEGR":
-		enum = KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_NO_OF_TELEGR
+		return KnxInterfaceObjectProperty_PID_DEVICE_GROUP_TELEGR_RATE_LIMIT_NO_OF_TELEGR, true
 	case "PID_GROUP_OBJECT_TABLE_GRPOBJTABLE":
-		enum = KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_GRPOBJTABLE
+		return KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_GRPOBJTABLE, true
 	case "PID_GROUP_OBJECT_TABLE_EXT_GRPOBJREFERENCE":
-		enum = KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_EXT_GRPOBJREFERENCE
+		return KnxInterfaceObjectProperty_PID_GROUP_OBJECT_TABLE_EXT_GRPOBJREFERENCE, true
 	case "PID_ROUTER_LINE_STATUS":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_LINE_STATUS
+		return KnxInterfaceObjectProperty_PID_ROUTER_LINE_STATUS, true
 	case "PID_GENERAL_TABLE_REFERENCE":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_TABLE_REFERENCE
+		return KnxInterfaceObjectProperty_PID_GENERAL_TABLE_REFERENCE, true
 	case "PID_ROUTER_MAIN_LCCONFIG":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCCONFIG, true
 	case "PID_ROUTER_SUB_LCCONFIG":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCCONFIG, true
 	case "PID_ROUTER_MAIN_LCGRPCONFIG":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCGRPCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_MAIN_LCGRPCONFIG, true
 	case "PID_ROUTER_SUB_LCGRPCONFIG":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCGRPCONFIG
+		return KnxInterfaceObjectProperty_PID_ROUTER_SUB_LCGRPCONFIG, true
 	case "PID_ROUTER_ROUTETABLE_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_ROUTETABLE_CONTROL
+		return KnxInterfaceObjectProperty_PID_ROUTER_ROUTETABLE_CONTROL, true
 	case "PID_ROUTER_COUPL_SERV_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_COUPL_SERV_CONTROL
+		return KnxInterfaceObjectProperty_PID_ROUTER_COUPL_SERV_CONTROL, true
 	case "PID_ROUTER_MAX_ROUTER_APDU_LENGTH":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_MAX_ROUTER_APDU_LENGTH
+		return KnxInterfaceObjectProperty_PID_ROUTER_MAX_ROUTER_APDU_LENGTH, true
 	case "PID_ROUTER_MEDIUM":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_MEDIUM
+		return KnxInterfaceObjectProperty_PID_ROUTER_MEDIUM, true
 	case "PID_ROUTER_FILTER_TABLE_USE":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_FILTER_TABLE_USE
+		return KnxInterfaceObjectProperty_PID_ROUTER_FILTER_TABLE_USE, true
 	case "PID_ROUTER_RF_ENABLE_SBC":
-		enum = KnxInterfaceObjectProperty_PID_ROUTER_RF_ENABLE_SBC
+		return KnxInterfaceObjectProperty_PID_ROUTER_RF_ENABLE_SBC, true
 	case "PID_GENERAL_SERVICE_CONTROL":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_SERVICE_CONTROL
+		return KnxInterfaceObjectProperty_PID_GENERAL_SERVICE_CONTROL, true
 	case "PID_KNXIP_PARAMETER_PROJECT_INSTALLATION_ID":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PROJECT_INSTALLATION_ID
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_PROJECT_INSTALLATION_ID, true
 	case "PID_KNXIP_PARAMETER_KNX_INDIVIDUAL_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNX_INDIVIDUAL_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNX_INDIVIDUAL_ADDRESS, true
 	case "PID_KNXIP_PARAMETER_ADDITIONAL_INDIVIDUAL_ADDRESSES":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ADDITIONAL_INDIVIDUAL_ADDRESSES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ADDITIONAL_INDIVIDUAL_ADDRESSES, true
 	case "PID_KNXIP_PARAMETER_CURRENT_IP_ASSIGNMENT_METHOD":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ASSIGNMENT_METHOD
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ASSIGNMENT_METHOD, true
 	case "PID_KNXIP_PARAMETER_IP_ASSIGNMENT_METHOD":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ASSIGNMENT_METHOD
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ASSIGNMENT_METHOD, true
 	case "PID_KNXIP_PARAMETER_IP_CAPABILITIES":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_CAPABILITIES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_CAPABILITIES, true
 	case "PID_KNXIP_PARAMETER_CURRENT_IP_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_IP_ADDRESS, true
 	case "PID_KNXIP_PARAMETER_CURRENT_SUBNET_MASK":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_SUBNET_MASK
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_SUBNET_MASK, true
 	case "PID_KNXIP_PARAMETER_CURRENT_DEFAULT_GATEWAY":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_DEFAULT_GATEWAY
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_CURRENT_DEFAULT_GATEWAY, true
 	case "PID_KNXIP_PARAMETER_IP_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_IP_ADDRESS, true
 	case "PID_GENERAL_FIRMWARE_REVISION":
-		enum = KnxInterfaceObjectProperty_PID_GENERAL_FIRMWARE_REVISION
+		return KnxInterfaceObjectProperty_PID_GENERAL_FIRMWARE_REVISION, true
 	case "PID_KNXIP_PARAMETER_SUBNET_MASK":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SUBNET_MASK
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SUBNET_MASK, true
 	case "PID_KNXIP_PARAMETER_DEFAULT_GATEWAY":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEFAULT_GATEWAY
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DEFAULT_GATEWAY, true
 	case "PID_KNXIP_PARAMETER_DHCP_BOOTP_SERVER":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DHCP_BOOTP_SERVER
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_DHCP_BOOTP_SERVER, true
 	case "PID_KNXIP_PARAMETER_MAC_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MAC_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_MAC_ADDRESS, true
 	case "PID_KNXIP_PARAMETER_SYSTEM_SETUP_MULTICAST_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYSTEM_SETUP_MULTICAST_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_SYSTEM_SETUP_MULTICAST_ADDRESS, true
 	case "PID_KNXIP_PARAMETER_ROUTING_MULTICAST_ADDRESS":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ROUTING_MULTICAST_ADDRESS
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_ROUTING_MULTICAST_ADDRESS, true
 	case "PID_KNXIP_PARAMETER_TTL":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TTL
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_TTL, true
 	case "PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_CAPABILITIES":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_CAPABILITIES
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_CAPABILITIES, true
 	case "PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_STATE":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_STATE
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_DEVICE_STATE, true
 	case "PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES":
-		enum = KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES
-	default:
-		enum = 0
-		ok = false
+		return KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES, true
 	}
-	return
+	return 0, false
 }
 
 func KnxInterfaceObjectPropertyKnows(value uint32) bool {
@@ -4919,7 +4915,11 @@ func KnxInterfaceObjectPropertyParse(readBuffer utils.ReadBuffer) (KnxInterfaceO
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectProperty")
 	}
-	return KnxInterfaceObjectPropertyByValue(val), nil
+	if enum, ok := KnxInterfaceObjectPropertyByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for KnxInterfaceObjectProperty", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e KnxInterfaceObjectProperty) Serialize(writeBuffer utils.WriteBuffer) error {

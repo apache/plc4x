@@ -68,68 +68,64 @@ func init() {
 	}
 }
 
-func PinModeByValue(value uint8) PinMode {
+func PinModeByValue(value uint8) (enum PinMode, ok bool) {
 	switch value {
 	case 0x0:
-		return PinMode_PinModeInput
+		return PinMode_PinModeInput, true
 	case 0x1:
-		return PinMode_PinModeOutput
+		return PinMode_PinModeOutput, true
 	case 0x2:
-		return PinMode_PinModeAnalog
+		return PinMode_PinModeAnalog, true
 	case 0x3:
-		return PinMode_PinModePwm
+		return PinMode_PinModePwm, true
 	case 0x4:
-		return PinMode_PinModeServo
+		return PinMode_PinModeServo, true
 	case 0x5:
-		return PinMode_PinModeShift
+		return PinMode_PinModeShift, true
 	case 0x6:
-		return PinMode_PinModeI2C
+		return PinMode_PinModeI2C, true
 	case 0x7:
-		return PinMode_PinModeOneWire
+		return PinMode_PinModeOneWire, true
 	case 0x8:
-		return PinMode_PinModeStepper
+		return PinMode_PinModeStepper, true
 	case 0x9:
-		return PinMode_PinModeEncoder
+		return PinMode_PinModeEncoder, true
 	case 0xA:
-		return PinMode_PinModeSerial
+		return PinMode_PinModeSerial, true
 	case 0xB:
-		return PinMode_PinModePullup
+		return PinMode_PinModePullup, true
 	}
-	return 0
+	return 0, false
 }
 
 func PinModeByName(value string) (enum PinMode, ok bool) {
-	ok = true
 	switch value {
 	case "PinModeInput":
-		enum = PinMode_PinModeInput
+		return PinMode_PinModeInput, true
 	case "PinModeOutput":
-		enum = PinMode_PinModeOutput
+		return PinMode_PinModeOutput, true
 	case "PinModeAnalog":
-		enum = PinMode_PinModeAnalog
+		return PinMode_PinModeAnalog, true
 	case "PinModePwm":
-		enum = PinMode_PinModePwm
+		return PinMode_PinModePwm, true
 	case "PinModeServo":
-		enum = PinMode_PinModeServo
+		return PinMode_PinModeServo, true
 	case "PinModeShift":
-		enum = PinMode_PinModeShift
+		return PinMode_PinModeShift, true
 	case "PinModeI2C":
-		enum = PinMode_PinModeI2C
+		return PinMode_PinModeI2C, true
 	case "PinModeOneWire":
-		enum = PinMode_PinModeOneWire
+		return PinMode_PinModeOneWire, true
 	case "PinModeStepper":
-		enum = PinMode_PinModeStepper
+		return PinMode_PinModeStepper, true
 	case "PinModeEncoder":
-		enum = PinMode_PinModeEncoder
+		return PinMode_PinModeEncoder, true
 	case "PinModeSerial":
-		enum = PinMode_PinModeSerial
+		return PinMode_PinModeSerial, true
 	case "PinModePullup":
-		enum = PinMode_PinModePullup
-	default:
-		enum = 0
-		ok = false
+		return PinMode_PinModePullup, true
 	}
-	return
+	return 0, false
 }
 
 func PinModeKnows(value uint8) bool {
@@ -164,7 +160,11 @@ func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PinMode")
 	}
-	return PinModeByValue(val), nil
+	if enum, ok := PinModeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for PinMode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e PinMode) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -56,44 +56,40 @@ func init() {
 	}
 }
 
-func DeviceDescriptorMediumTypeByValue(value uint8) DeviceDescriptorMediumType {
+func DeviceDescriptorMediumTypeByValue(value uint8) (enum DeviceDescriptorMediumType, ok bool) {
 	switch value {
 	case 0x0:
-		return DeviceDescriptorMediumType_TP1
+		return DeviceDescriptorMediumType_TP1, true
 	case 0x1:
-		return DeviceDescriptorMediumType_PL110
+		return DeviceDescriptorMediumType_PL110, true
 	case 0x2:
-		return DeviceDescriptorMediumType_RF
+		return DeviceDescriptorMediumType_RF, true
 	case 0x3:
-		return DeviceDescriptorMediumType_TP0
+		return DeviceDescriptorMediumType_TP0, true
 	case 0x4:
-		return DeviceDescriptorMediumType_PL132
+		return DeviceDescriptorMediumType_PL132, true
 	case 0x5:
-		return DeviceDescriptorMediumType_KNX_IP
+		return DeviceDescriptorMediumType_KNX_IP, true
 	}
-	return 0
+	return 0, false
 }
 
 func DeviceDescriptorMediumTypeByName(value string) (enum DeviceDescriptorMediumType, ok bool) {
-	ok = true
 	switch value {
 	case "TP1":
-		enum = DeviceDescriptorMediumType_TP1
+		return DeviceDescriptorMediumType_TP1, true
 	case "PL110":
-		enum = DeviceDescriptorMediumType_PL110
+		return DeviceDescriptorMediumType_PL110, true
 	case "RF":
-		enum = DeviceDescriptorMediumType_RF
+		return DeviceDescriptorMediumType_RF, true
 	case "TP0":
-		enum = DeviceDescriptorMediumType_TP0
+		return DeviceDescriptorMediumType_TP0, true
 	case "PL132":
-		enum = DeviceDescriptorMediumType_PL132
+		return DeviceDescriptorMediumType_PL132, true
 	case "KNX_IP":
-		enum = DeviceDescriptorMediumType_KNX_IP
-	default:
-		enum = 0
-		ok = false
+		return DeviceDescriptorMediumType_KNX_IP, true
 	}
-	return
+	return 0, false
 }
 
 func DeviceDescriptorMediumTypeKnows(value uint8) bool {
@@ -128,7 +124,11 @@ func DeviceDescriptorMediumTypeParse(readBuffer utils.ReadBuffer) (DeviceDescrip
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceDescriptorMediumType")
 	}
-	return DeviceDescriptorMediumTypeByValue(val), nil
+	if enum, ok := DeviceDescriptorMediumTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for DeviceDescriptorMediumType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e DeviceDescriptorMediumType) Serialize(writeBuffer utils.WriteBuffer) error {

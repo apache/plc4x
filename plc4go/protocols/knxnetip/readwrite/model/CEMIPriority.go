@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func CEMIPriorityByValue(value uint8) CEMIPriority {
+func CEMIPriorityByValue(value uint8) (enum CEMIPriority, ok bool) {
 	switch value {
 	case 0x0:
-		return CEMIPriority_SYSTEM
+		return CEMIPriority_SYSTEM, true
 	case 0x1:
-		return CEMIPriority_NORMAL
+		return CEMIPriority_NORMAL, true
 	case 0x2:
-		return CEMIPriority_URGENT
+		return CEMIPriority_URGENT, true
 	case 0x3:
-		return CEMIPriority_LOW
+		return CEMIPriority_LOW, true
 	}
-	return 0
+	return 0, false
 }
 
 func CEMIPriorityByName(value string) (enum CEMIPriority, ok bool) {
-	ok = true
 	switch value {
 	case "SYSTEM":
-		enum = CEMIPriority_SYSTEM
+		return CEMIPriority_SYSTEM, true
 	case "NORMAL":
-		enum = CEMIPriority_NORMAL
+		return CEMIPriority_NORMAL, true
 	case "URGENT":
-		enum = CEMIPriority_URGENT
+		return CEMIPriority_URGENT, true
 	case "LOW":
-		enum = CEMIPriority_LOW
-	default:
-		enum = 0
-		ok = false
+		return CEMIPriority_LOW, true
 	}
-	return
+	return 0, false
 }
 
 func CEMIPriorityKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CEMIPriority")
 	}
-	return CEMIPriorityByValue(val), nil
+	if enum, ok := CEMIPriorityByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for CEMIPriority", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e CEMIPriority) Serialize(writeBuffer utils.WriteBuffer) error {

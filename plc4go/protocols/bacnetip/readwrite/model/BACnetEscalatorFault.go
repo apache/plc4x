@@ -64,60 +64,56 @@ func init() {
 	}
 }
 
-func BACnetEscalatorFaultByValue(value uint16) BACnetEscalatorFault {
+func BACnetEscalatorFaultByValue(value uint16) (enum BACnetEscalatorFault, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEscalatorFault_CONTROLLER_FAULT
+		return BACnetEscalatorFault_CONTROLLER_FAULT, true
 	case 0xFFFF:
-		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
+		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT, true
 	case 2:
-		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
+		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT, true
 	case 3:
-		return BACnetEscalatorFault_OVERSPEED_FAULT
+		return BACnetEscalatorFault_OVERSPEED_FAULT, true
 	case 4:
-		return BACnetEscalatorFault_POWER_SUPPLY_FAULT
+		return BACnetEscalatorFault_POWER_SUPPLY_FAULT, true
 	case 5:
-		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT
+		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT, true
 	case 6:
-		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
+		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT, true
 	case 7:
-		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
+		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED, true
 	case 8:
-		return BACnetEscalatorFault_COMB_PLATE_FAULT
+		return BACnetEscalatorFault_COMB_PLATE_FAULT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEscalatorFaultByName(value string) (enum BACnetEscalatorFault, ok bool) {
-	ok = true
 	switch value {
 	case "CONTROLLER_FAULT":
-		enum = BACnetEscalatorFault_CONTROLLER_FAULT
+		return BACnetEscalatorFault_CONTROLLER_FAULT, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE, true
 	case "DRIVE_AND_MOTOR_FAULT":
-		enum = BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
+		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT, true
 	case "MECHANICAL_COMPONENT_FAULT":
-		enum = BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
+		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT, true
 	case "OVERSPEED_FAULT":
-		enum = BACnetEscalatorFault_OVERSPEED_FAULT
+		return BACnetEscalatorFault_OVERSPEED_FAULT, true
 	case "POWER_SUPPLY_FAULT":
-		enum = BACnetEscalatorFault_POWER_SUPPLY_FAULT
+		return BACnetEscalatorFault_POWER_SUPPLY_FAULT, true
 	case "SAFETY_DEVICE_FAULT":
-		enum = BACnetEscalatorFault_SAFETY_DEVICE_FAULT
+		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT, true
 	case "CONTROLLER_SUPPLY_FAULT":
-		enum = BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
+		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT, true
 	case "DRIVE_TEMPERATURE_EXCEEDED":
-		enum = BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
+		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED, true
 	case "COMB_PLATE_FAULT":
-		enum = BACnetEscalatorFault_COMB_PLATE_FAULT
-	default:
-		enum = 0
-		ok = false
+		return BACnetEscalatorFault_COMB_PLATE_FAULT, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetEscalatorFaultKnows(value uint16) bool {
@@ -152,7 +148,11 @@ func BACnetEscalatorFaultParse(readBuffer utils.ReadBuffer) (BACnetEscalatorFaul
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorFault")
 	}
-	return BACnetEscalatorFaultByValue(val), nil
+	if enum, ok := BACnetEscalatorFaultByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetEscalatorFault", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetEscalatorFault) Serialize(writeBuffer utils.WriteBuffer) error {

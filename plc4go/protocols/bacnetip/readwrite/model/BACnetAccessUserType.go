@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetAccessUserTypeByValue(value uint16) BACnetAccessUserType {
+func BACnetAccessUserTypeByValue(value uint16) (enum BACnetAccessUserType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessUserType_ASSET
+		return BACnetAccessUserType_ASSET, true
 	case 0xFFFF:
-		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessUserType_GROUP
+		return BACnetAccessUserType_GROUP, true
 	case 2:
-		return BACnetAccessUserType_PERSON
+		return BACnetAccessUserType_PERSON, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessUserTypeByName(value string) (enum BACnetAccessUserType, ok bool) {
-	ok = true
 	switch value {
 	case "ASSET":
-		enum = BACnetAccessUserType_ASSET
+		return BACnetAccessUserType_ASSET, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE, true
 	case "GROUP":
-		enum = BACnetAccessUserType_GROUP
+		return BACnetAccessUserType_GROUP, true
 	case "PERSON":
-		enum = BACnetAccessUserType_PERSON
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessUserType_PERSON, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessUserTypeKnows(value uint16) bool {
@@ -116,7 +112,11 @@ func BACnetAccessUserTypeParse(readBuffer utils.ReadBuffer) (BACnetAccessUserTyp
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessUserType")
 	}
-	return BACnetAccessUserTypeByValue(val), nil
+	if enum, ok := BACnetAccessUserTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessUserType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessUserType) Serialize(writeBuffer utils.WriteBuffer) error {

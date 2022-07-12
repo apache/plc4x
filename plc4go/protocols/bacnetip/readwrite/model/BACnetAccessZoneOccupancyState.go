@@ -60,52 +60,48 @@ func init() {
 	}
 }
 
-func BACnetAccessZoneOccupancyStateByValue(value uint16) BACnetAccessZoneOccupancyState {
+func BACnetAccessZoneOccupancyStateByValue(value uint16) (enum BACnetAccessZoneOccupancyState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessZoneOccupancyState_NORMAL
+		return BACnetAccessZoneOccupancyState_NORMAL, true
 	case 0xFFFF:
-		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT, true
 	case 2:
-		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT, true
 	case 3:
-		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT, true
 	case 4:
-		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT, true
 	case 5:
-		return BACnetAccessZoneOccupancyState_DISABLED
+		return BACnetAccessZoneOccupancyState_DISABLED, true
 	case 6:
-		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED
+		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessZoneOccupancyStateByName(value string) (enum BACnetAccessZoneOccupancyState, ok bool) {
-	ok = true
 	switch value {
 	case "NORMAL":
-		enum = BACnetAccessZoneOccupancyState_NORMAL
+		return BACnetAccessZoneOccupancyState_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE, true
 	case "BELOW_LOWER_LIMIT":
-		enum = BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT, true
 	case "AT_LOWER_LIMIT":
-		enum = BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT, true
 	case "AT_UPPER_LIMIT":
-		enum = BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT, true
 	case "ABOVE_UPPER_LIMIT":
-		enum = BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT, true
 	case "DISABLED":
-		enum = BACnetAccessZoneOccupancyState_DISABLED
+		return BACnetAccessZoneOccupancyState_DISABLED, true
 	case "NOT_SUPPORTED":
-		enum = BACnetAccessZoneOccupancyState_NOT_SUPPORTED
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessZoneOccupancyStateKnows(value uint16) bool {
@@ -140,7 +136,11 @@ func BACnetAccessZoneOccupancyStateParse(readBuffer utils.ReadBuffer) (BACnetAcc
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")
 	}
-	return BACnetAccessZoneOccupancyStateByValue(val), nil
+	if enum, ok := BACnetAccessZoneOccupancyStateByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessZoneOccupancyState", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessZoneOccupancyState) Serialize(writeBuffer utils.WriteBuffer) error {

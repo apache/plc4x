@@ -6031,2400 +6031,2396 @@ func KnxManufacturerFirstEnumForFieldName(value string) (KnxManufacturer, error)
 	}
 	return 0, errors.Errorf("enum for %v describing Name not found", value)
 }
-func KnxManufacturerByValue(value uint16) KnxManufacturer {
+func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	switch value {
 	case 0:
-		return KnxManufacturer_M_UNKNOWN
+		return KnxManufacturer_M_UNKNOWN, true
 	case 1:
-		return KnxManufacturer_M_SIEMENS
+		return KnxManufacturer_M_SIEMENS, true
 	case 10:
-		return KnxManufacturer_M_LEGRAND_APPAREILLAGE_ELECTRIQUE
+		return KnxManufacturer_M_LEGRAND_APPAREILLAGE_ELECTRIQUE, true
 	case 100:
-		return KnxManufacturer_M_PULSE_TECHNOLOGIES
+		return KnxManufacturer_M_PULSE_TECHNOLOGIES, true
 	case 101:
-		return KnxManufacturer_M_CRESTRON
+		return KnxManufacturer_M_CRESTRON, true
 	case 102:
-		return KnxManufacturer_M_STEINEL_PROFESSIONAL
+		return KnxManufacturer_M_STEINEL_PROFESSIONAL, true
 	case 103:
-		return KnxManufacturer_M_BILTON_LED_LIGHTING
+		return KnxManufacturer_M_BILTON_LED_LIGHTING, true
 	case 104:
-		return KnxManufacturer_M_DENRO_AG
+		return KnxManufacturer_M_DENRO_AG, true
 	case 105:
-		return KnxManufacturer_M_GEPRO
+		return KnxManufacturer_M_GEPRO, true
 	case 106:
-		return KnxManufacturer_M_PREUSSEN_AUTOMATION
+		return KnxManufacturer_M_PREUSSEN_AUTOMATION, true
 	case 107:
-		return KnxManufacturer_M_ZOPPAS_INDUSTRIES
+		return KnxManufacturer_M_ZOPPAS_INDUSTRIES, true
 	case 108:
-		return KnxManufacturer_M_MACTECH
+		return KnxManufacturer_M_MACTECH, true
 	case 109:
-		return KnxManufacturer_M_TECHNO_TREND
+		return KnxManufacturer_M_TECHNO_TREND, true
 	case 11:
-		return KnxManufacturer_M_MERTEN
+		return KnxManufacturer_M_MERTEN, true
 	case 110:
-		return KnxManufacturer_M_FS_CABLES
+		return KnxManufacturer_M_FS_CABLES, true
 	case 111:
-		return KnxManufacturer_M_DELTA_DORE
+		return KnxManufacturer_M_DELTA_DORE, true
 	case 112:
-		return KnxManufacturer_M_EISSOUND
+		return KnxManufacturer_M_EISSOUND, true
 	case 113:
-		return KnxManufacturer_M_CISCO
+		return KnxManufacturer_M_CISCO, true
 	case 114:
-		return KnxManufacturer_M_DINUY
+		return KnxManufacturer_M_DINUY, true
 	case 115:
-		return KnxManufacturer_M_IKNIX
+		return KnxManufacturer_M_IKNIX, true
 	case 116:
-		return KnxManufacturer_M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH
+		return KnxManufacturer_M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH, true
 	case 117:
-		return KnxManufacturer_M_EGI_ELECTROACUSTICA_GENERAL_IBERICA
+		return KnxManufacturer_M_EGI_ELECTROACUSTICA_GENERAL_IBERICA, true
 	case 118:
-		return KnxManufacturer_M_BES___INGENIUM
+		return KnxManufacturer_M_BES___INGENIUM, true
 	case 119:
-		return KnxManufacturer_M_ELABNET
+		return KnxManufacturer_M_ELABNET, true
 	case 12:
-		return KnxManufacturer_M_ABB_SPA_SACE_DIVISION
+		return KnxManufacturer_M_ABB_SPA_SACE_DIVISION, true
 	case 120:
-		return KnxManufacturer_M_BLUMOTIX
+		return KnxManufacturer_M_BLUMOTIX, true
 	case 121:
-		return KnxManufacturer_M_HUNTER_DOUGLAS
+		return KnxManufacturer_M_HUNTER_DOUGLAS, true
 	case 122:
-		return KnxManufacturer_M_APRICUM
+		return KnxManufacturer_M_APRICUM, true
 	case 123:
-		return KnxManufacturer_M_TIANSU_AUTOMATION
+		return KnxManufacturer_M_TIANSU_AUTOMATION, true
 	case 124:
-		return KnxManufacturer_M_BUBENDORFF
+		return KnxManufacturer_M_BUBENDORFF, true
 	case 125:
-		return KnxManufacturer_M_MBS_GMBH
+		return KnxManufacturer_M_MBS_GMBH, true
 	case 126:
-		return KnxManufacturer_M_ENERTEX_BAYERN_GMBH
+		return KnxManufacturer_M_ENERTEX_BAYERN_GMBH, true
 	case 127:
-		return KnxManufacturer_M_BMS
+		return KnxManufacturer_M_BMS, true
 	case 128:
-		return KnxManufacturer_M_SINAPSI
+		return KnxManufacturer_M_SINAPSI, true
 	case 129:
-		return KnxManufacturer_M_EMBEDDED_SYSTEMS_SIA
+		return KnxManufacturer_M_EMBEDDED_SYSTEMS_SIA, true
 	case 13:
-		return KnxManufacturer_M_SIEDLE_AND_SOEHNE
+		return KnxManufacturer_M_SIEDLE_AND_SOEHNE, true
 	case 130:
-		return KnxManufacturer_M_KNX1
+		return KnxManufacturer_M_KNX1, true
 	case 131:
-		return KnxManufacturer_M_TOKKA
+		return KnxManufacturer_M_TOKKA, true
 	case 132:
-		return KnxManufacturer_M_NANOSENSE
+		return KnxManufacturer_M_NANOSENSE, true
 	case 133:
-		return KnxManufacturer_M_PEAR_AUTOMATION_GMBH
+		return KnxManufacturer_M_PEAR_AUTOMATION_GMBH, true
 	case 134:
-		return KnxManufacturer_M_DGA
+		return KnxManufacturer_M_DGA, true
 	case 135:
-		return KnxManufacturer_M_LUTRON
+		return KnxManufacturer_M_LUTRON, true
 	case 136:
-		return KnxManufacturer_M_AIRZONE___ALTRA
+		return KnxManufacturer_M_AIRZONE___ALTRA, true
 	case 137:
-		return KnxManufacturer_M_LITHOSS_DESIGN_SWITCHES
+		return KnxManufacturer_M_LITHOSS_DESIGN_SWITCHES, true
 	case 138:
-		return KnxManufacturer_M_THREEATEL
+		return KnxManufacturer_M_THREEATEL, true
 	case 139:
-		return KnxManufacturer_M_PHILIPS_CONTROLS
+		return KnxManufacturer_M_PHILIPS_CONTROLS, true
 	case 14:
-		return KnxManufacturer_M_EBERLE
+		return KnxManufacturer_M_EBERLE, true
 	case 140:
-		return KnxManufacturer_M_VELUX_AS
+		return KnxManufacturer_M_VELUX_AS, true
 	case 141:
-		return KnxManufacturer_M_LOYTEC
+		return KnxManufacturer_M_LOYTEC, true
 	case 142:
-		return KnxManufacturer_M_EKINEX_S_P_A_
+		return KnxManufacturer_M_EKINEX_S_P_A_, true
 	case 143:
-		return KnxManufacturer_M_SIRLAN_TECHNOLOGIES
+		return KnxManufacturer_M_SIRLAN_TECHNOLOGIES, true
 	case 144:
-		return KnxManufacturer_M_PROKNX_SAS
+		return KnxManufacturer_M_PROKNX_SAS, true
 	case 145:
-		return KnxManufacturer_M_IT_GMBH
+		return KnxManufacturer_M_IT_GMBH, true
 	case 146:
-		return KnxManufacturer_M_RENSON
+		return KnxManufacturer_M_RENSON, true
 	case 147:
-		return KnxManufacturer_M_HEP_GROUP
+		return KnxManufacturer_M_HEP_GROUP, true
 	case 148:
-		return KnxManufacturer_M_BALMART
+		return KnxManufacturer_M_BALMART, true
 	case 149:
-		return KnxManufacturer_M_GFS_GMBH
+		return KnxManufacturer_M_GFS_GMBH, true
 	case 15:
-		return KnxManufacturer_M_GEWISS
+		return KnxManufacturer_M_GEWISS, true
 	case 150:
-		return KnxManufacturer_M_SCHENKER_STOREN_AG
+		return KnxManufacturer_M_SCHENKER_STOREN_AG, true
 	case 151:
-		return KnxManufacturer_M_ALGODUE_ELETTRONICA_S_R_L_
+		return KnxManufacturer_M_ALGODUE_ELETTRONICA_S_R_L_, true
 	case 152:
-		return KnxManufacturer_M_ABB_FRANCE
+		return KnxManufacturer_M_ABB_FRANCE, true
 	case 153:
-		return KnxManufacturer_M_MAINTRONIC
+		return KnxManufacturer_M_MAINTRONIC, true
 	case 154:
-		return KnxManufacturer_M_VANTAGE
+		return KnxManufacturer_M_VANTAGE, true
 	case 155:
-		return KnxManufacturer_M_FORESIS
+		return KnxManufacturer_M_FORESIS, true
 	case 156:
-		return KnxManufacturer_M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM
+		return KnxManufacturer_M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM, true
 	case 157:
-		return KnxManufacturer_M_WEINZIERL_ENGINEERING_GMBH
+		return KnxManufacturer_M_WEINZIERL_ENGINEERING_GMBH, true
 	case 158:
-		return KnxManufacturer_M_MOEHLENHOFF_WAERMETECHNIK_GMBH
+		return KnxManufacturer_M_MOEHLENHOFF_WAERMETECHNIK_GMBH, true
 	case 159:
-		return KnxManufacturer_M_PKC_GROUP_OYJ
+		return KnxManufacturer_M_PKC_GROUP_OYJ, true
 	case 16:
-		return KnxManufacturer_M_ALBERT_ACKERMANN
+		return KnxManufacturer_M_ALBERT_ACKERMANN, true
 	case 160:
-		return KnxManufacturer_M_B_E_G_
+		return KnxManufacturer_M_B_E_G_, true
 	case 161:
-		return KnxManufacturer_M_ELSNER_ELEKTRONIK_GMBH
+		return KnxManufacturer_M_ELSNER_ELEKTRONIK_GMBH, true
 	case 162:
-		return KnxManufacturer_M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_
+		return KnxManufacturer_M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_, true
 	case 163:
-		return KnxManufacturer_M_EUTRAC
+		return KnxManufacturer_M_EUTRAC, true
 	case 164:
-		return KnxManufacturer_M_GUSTAV_HENSEL_GMBH_AND_CO__KG
+		return KnxManufacturer_M_GUSTAV_HENSEL_GMBH_AND_CO__KG, true
 	case 165:
-		return KnxManufacturer_M_GARO_AB
+		return KnxManufacturer_M_GARO_AB, true
 	case 166:
-		return KnxManufacturer_M_WALDMANN_LICHTTECHNIK
+		return KnxManufacturer_M_WALDMANN_LICHTTECHNIK, true
 	case 167:
-		return KnxManufacturer_M_SCHUECO
+		return KnxManufacturer_M_SCHUECO, true
 	case 168:
-		return KnxManufacturer_M_EMU
+		return KnxManufacturer_M_EMU, true
 	case 169:
-		return KnxManufacturer_M_JNET_SYSTEMS_AG
+		return KnxManufacturer_M_JNET_SYSTEMS_AG, true
 	case 17:
-		return KnxManufacturer_M_SCHUPA_GMBH
+		return KnxManufacturer_M_SCHUPA_GMBH, true
 	case 170:
-		return KnxManufacturer_M_TOTAL_SOLUTION_GMBH
+		return KnxManufacturer_M_TOTAL_SOLUTION_GMBH, true
 	case 171:
-		return KnxManufacturer_M_O_Y_L__ELECTRONICS
+		return KnxManufacturer_M_O_Y_L__ELECTRONICS, true
 	case 172:
-		return KnxManufacturer_M_GALAX_SYSTEM
+		return KnxManufacturer_M_GALAX_SYSTEM, true
 	case 173:
-		return KnxManufacturer_M_DISCH
+		return KnxManufacturer_M_DISCH, true
 	case 174:
-		return KnxManufacturer_M_AUCOTEAM
+		return KnxManufacturer_M_AUCOTEAM, true
 	case 175:
-		return KnxManufacturer_M_LUXMATE_CONTROLS
+		return KnxManufacturer_M_LUXMATE_CONTROLS, true
 	case 176:
-		return KnxManufacturer_M_DANFOSS
+		return KnxManufacturer_M_DANFOSS, true
 	case 177:
-		return KnxManufacturer_M_AST_GMBH
+		return KnxManufacturer_M_AST_GMBH, true
 	case 178:
-		return KnxManufacturer_M_WILA_LEUCHTEN
+		return KnxManufacturer_M_WILA_LEUCHTEN, true
 	case 179:
-		return KnxManufacturer_M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK
+		return KnxManufacturer_M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK, true
 	case 18:
-		return KnxManufacturer_M_ABB_SCHWEIZ
+		return KnxManufacturer_M_ABB_SCHWEIZ, true
 	case 180:
-		return KnxManufacturer_M_LINGG_AND_JANKE
+		return KnxManufacturer_M_LINGG_AND_JANKE, true
 	case 181:
-		return KnxManufacturer_M_SAUTER
+		return KnxManufacturer_M_SAUTER, true
 	case 182:
-		return KnxManufacturer_M_SIMU
+		return KnxManufacturer_M_SIMU, true
 	case 183:
-		return KnxManufacturer_M_THEBEN_HTS_AG
+		return KnxManufacturer_M_THEBEN_HTS_AG, true
 	case 184:
-		return KnxManufacturer_M_AMANN_GMBH
+		return KnxManufacturer_M_AMANN_GMBH, true
 	case 185:
-		return KnxManufacturer_M_BERG_ENERGIEKONTROLLSYSTEME_GMBH
+		return KnxManufacturer_M_BERG_ENERGIEKONTROLLSYSTEME_GMBH, true
 	case 186:
-		return KnxManufacturer_M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH
+		return KnxManufacturer_M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH, true
 	case 187:
-		return KnxManufacturer_M_OVENTROP_KG
+		return KnxManufacturer_M_OVENTROP_KG, true
 	case 188:
-		return KnxManufacturer_M_GRIESSER_AG
+		return KnxManufacturer_M_GRIESSER_AG, true
 	case 189:
-		return KnxManufacturer_M_IPAS_GMBH
+		return KnxManufacturer_M_IPAS_GMBH, true
 	case 19:
-		return KnxManufacturer_M_FELLER
+		return KnxManufacturer_M_FELLER, true
 	case 190:
-		return KnxManufacturer_M_ELERO_GMBH
+		return KnxManufacturer_M_ELERO_GMBH, true
 	case 191:
-		return KnxManufacturer_M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_
+		return KnxManufacturer_M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_, true
 	case 192:
-		return KnxManufacturer_M_METEC_MESSTECHNIK_GMBH
+		return KnxManufacturer_M_METEC_MESSTECHNIK_GMBH, true
 	case 193:
-		return KnxManufacturer_M_ELKA_ELEKTRONIK_GMBH
+		return KnxManufacturer_M_ELKA_ELEKTRONIK_GMBH, true
 	case 194:
-		return KnxManufacturer_M_ELEKTROANLAGEN_D__NAGEL
+		return KnxManufacturer_M_ELEKTROANLAGEN_D__NAGEL, true
 	case 195:
-		return KnxManufacturer_M_TRIDONIC_BAUELEMENTE_GMBH
+		return KnxManufacturer_M_TRIDONIC_BAUELEMENTE_GMBH, true
 	case 196:
-		return KnxManufacturer_M_STENGLER_GESELLSCHAFT
+		return KnxManufacturer_M_STENGLER_GESELLSCHAFT, true
 	case 197:
-		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_MG
+		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_MG, true
 	case 198:
-		return KnxManufacturer_M_KNX_ASSOCIATION
+		return KnxManufacturer_M_KNX_ASSOCIATION, true
 	case 199:
-		return KnxManufacturer_M_VIVO
+		return KnxManufacturer_M_VIVO, true
 	case 2:
-		return KnxManufacturer_M_ABB
+		return KnxManufacturer_M_ABB, true
 	case 20:
-		return KnxManufacturer_M_GLAMOX_AS
+		return KnxManufacturer_M_GLAMOX_AS, true
 	case 200:
-		return KnxManufacturer_M_HUGO_MUELLER_GMBH_AND_CO_KG
+		return KnxManufacturer_M_HUGO_MUELLER_GMBH_AND_CO_KG, true
 	case 201:
-		return KnxManufacturer_M_SIEMENS_HVAC
+		return KnxManufacturer_M_SIEMENS_HVAC, true
 	case 202:
-		return KnxManufacturer_M_APT
+		return KnxManufacturer_M_APT, true
 	case 203:
-		return KnxManufacturer_M_HIGHDOM
+		return KnxManufacturer_M_HIGHDOM, true
 	case 204:
-		return KnxManufacturer_M_TOP_SERVICES
+		return KnxManufacturer_M_TOP_SERVICES, true
 	case 205:
-		return KnxManufacturer_M_AMBIHOME
+		return KnxManufacturer_M_AMBIHOME, true
 	case 206:
-		return KnxManufacturer_M_DATEC_ELECTRONIC_AG
+		return KnxManufacturer_M_DATEC_ELECTRONIC_AG, true
 	case 207:
-		return KnxManufacturer_M_ABUS_SECURITY_CENTER
+		return KnxManufacturer_M_ABUS_SECURITY_CENTER, true
 	case 208:
-		return KnxManufacturer_M_LITE_PUTER
+		return KnxManufacturer_M_LITE_PUTER, true
 	case 209:
-		return KnxManufacturer_M_TANTRON_ELECTRONIC
+		return KnxManufacturer_M_TANTRON_ELECTRONIC, true
 	case 21:
-		return KnxManufacturer_M_DEHN_AND_SOEHNE
+		return KnxManufacturer_M_DEHN_AND_SOEHNE, true
 	case 210:
-		return KnxManufacturer_M_INTERRA
+		return KnxManufacturer_M_INTERRA, true
 	case 211:
-		return KnxManufacturer_M_DKX_TECH
+		return KnxManufacturer_M_DKX_TECH, true
 	case 212:
-		return KnxManufacturer_M_VIATRON
+		return KnxManufacturer_M_VIATRON, true
 	case 213:
-		return KnxManufacturer_M_NAUTIBUS
+		return KnxManufacturer_M_NAUTIBUS, true
 	case 214:
-		return KnxManufacturer_M_ON_SEMICONDUCTOR
+		return KnxManufacturer_M_ON_SEMICONDUCTOR, true
 	case 215:
-		return KnxManufacturer_M_LONGCHUANG
+		return KnxManufacturer_M_LONGCHUANG, true
 	case 216:
-		return KnxManufacturer_M_AIR_ON_AG
+		return KnxManufacturer_M_AIR_ON_AG, true
 	case 217:
-		return KnxManufacturer_M_IB_COMPANY_GMBH
+		return KnxManufacturer_M_IB_COMPANY_GMBH, true
 	case 218:
-		return KnxManufacturer_M_SATION_FACTORY
+		return KnxManufacturer_M_SATION_FACTORY, true
 	case 219:
-		return KnxManufacturer_M_AGENTILO_GMBH
+		return KnxManufacturer_M_AGENTILO_GMBH, true
 	case 22:
-		return KnxManufacturer_M_CRABTREE
+		return KnxManufacturer_M_CRABTREE, true
 	case 220:
-		return KnxManufacturer_M_MAKEL_ELEKTRIK
+		return KnxManufacturer_M_MAKEL_ELEKTRIK, true
 	case 221:
-		return KnxManufacturer_M_HELIOS_VENTILATOREN
+		return KnxManufacturer_M_HELIOS_VENTILATOREN, true
 	case 222:
-		return KnxManufacturer_M_OTTO_SOLUTIONS_PTE_LTD
+		return KnxManufacturer_M_OTTO_SOLUTIONS_PTE_LTD, true
 	case 223:
-		return KnxManufacturer_M_AIRMASTER
+		return KnxManufacturer_M_AIRMASTER, true
 	case 224:
-		return KnxManufacturer_M_VALLOX_GMBH
+		return KnxManufacturer_M_VALLOX_GMBH, true
 	case 225:
-		return KnxManufacturer_M_DALITEK
+		return KnxManufacturer_M_DALITEK, true
 	case 226:
-		return KnxManufacturer_M_ASIN
+		return KnxManufacturer_M_ASIN, true
 	case 227:
-		return KnxManufacturer_M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_
+		return KnxManufacturer_M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_, true
 	case 228:
-		return KnxManufacturer_M_ARBONIA
+		return KnxManufacturer_M_ARBONIA, true
 	case 229:
-		return KnxManufacturer_M_KERMI
+		return KnxManufacturer_M_KERMI, true
 	case 23:
-		return KnxManufacturer_M_EVOKNX
+		return KnxManufacturer_M_EVOKNX, true
 	case 230:
-		return KnxManufacturer_M_PROLUX
+		return KnxManufacturer_M_PROLUX, true
 	case 231:
-		return KnxManufacturer_M_CLICHOME
+		return KnxManufacturer_M_CLICHOME, true
 	case 232:
-		return KnxManufacturer_M_COMMAX
+		return KnxManufacturer_M_COMMAX, true
 	case 233:
-		return KnxManufacturer_M_EAE
+		return KnxManufacturer_M_EAE, true
 	case 234:
-		return KnxManufacturer_M_TENSE
+		return KnxManufacturer_M_TENSE, true
 	case 235:
-		return KnxManufacturer_M_SEYOUNG_ELECTRONICS
+		return KnxManufacturer_M_SEYOUNG_ELECTRONICS, true
 	case 236:
-		return KnxManufacturer_M_LIFEDOMUS
+		return KnxManufacturer_M_LIFEDOMUS, true
 	case 237:
-		return KnxManufacturer_M_EUROTRONIC_TECHNOLOGY_GMBH
+		return KnxManufacturer_M_EUROTRONIC_TECHNOLOGY_GMBH, true
 	case 238:
-		return KnxManufacturer_M_TCI
+		return KnxManufacturer_M_TCI, true
 	case 239:
-		return KnxManufacturer_M_RISHUN_ELECTRONIC
+		return KnxManufacturer_M_RISHUN_ELECTRONIC, true
 	case 24:
-		return KnxManufacturer_M_PAUL_HOCHKOEPPER
+		return KnxManufacturer_M_PAUL_HOCHKOEPPER, true
 	case 240:
-		return KnxManufacturer_M_ZIPATO
+		return KnxManufacturer_M_ZIPATO, true
 	case 241:
-		return KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG
+		return KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG, true
 	case 242:
-		return KnxManufacturer_M_QING_CABLES
+		return KnxManufacturer_M_QING_CABLES, true
 	case 243:
-		return KnxManufacturer_M_LABIO
+		return KnxManufacturer_M_LABIO, true
 	case 244:
-		return KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_
+		return KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_, true
 	case 245:
-		return KnxManufacturer_M_E_G_E
+		return KnxManufacturer_M_E_G_E, true
 	case 246:
-		return KnxManufacturer_M_NETXAUTOMATION
+		return KnxManufacturer_M_NETXAUTOMATION, true
 	case 247:
-		return KnxManufacturer_M_TECALOR
+		return KnxManufacturer_M_TECALOR, true
 	case 248:
-		return KnxManufacturer_M_URMET_ELECTRONICS_HUIZHOU_LTD_
+		return KnxManufacturer_M_URMET_ELECTRONICS_HUIZHOU_LTD_, true
 	case 249:
-		return KnxManufacturer_M_PEIYING_BUILDING_CONTROL
+		return KnxManufacturer_M_PEIYING_BUILDING_CONTROL, true
 	case 25:
-		return KnxManufacturer_M_ALTENBURGER_ELECTRONIC
+		return KnxManufacturer_M_ALTENBURGER_ELECTRONIC, true
 	case 250:
-		return KnxManufacturer_M_BPT_S_P_A__A_SOCIO_UNICO
+		return KnxManufacturer_M_BPT_S_P_A__A_SOCIO_UNICO, true
 	case 251:
-		return KnxManufacturer_M_KANONTEC___KANONBUS
+		return KnxManufacturer_M_KANONTEC___KANONBUS, true
 	case 252:
-		return KnxManufacturer_M_ISER_TECH
+		return KnxManufacturer_M_ISER_TECH, true
 	case 253:
-		return KnxManufacturer_M_FINELINE
+		return KnxManufacturer_M_FINELINE, true
 	case 254:
-		return KnxManufacturer_M_CP_ELECTRONICS_LTD
+		return KnxManufacturer_M_CP_ELECTRONICS_LTD, true
 	case 255:
-		return KnxManufacturer_M_NIKO_SERVODAN_AS
+		return KnxManufacturer_M_NIKO_SERVODAN_AS, true
 	case 256:
-		return KnxManufacturer_M_SIMON_309
+		return KnxManufacturer_M_SIMON_309, true
 	case 257:
-		return KnxManufacturer_M_GM_MODULAR_PVT__LTD_
+		return KnxManufacturer_M_GM_MODULAR_PVT__LTD_, true
 	case 258:
-		return KnxManufacturer_M_FU_CHENG_INTELLIGENCE
+		return KnxManufacturer_M_FU_CHENG_INTELLIGENCE, true
 	case 259:
-		return KnxManufacturer_M_NEXKON
+		return KnxManufacturer_M_NEXKON, true
 	case 26:
-		return KnxManufacturer_M_GRAESSLIN
+		return KnxManufacturer_M_GRAESSLIN, true
 	case 260:
-		return KnxManufacturer_M_FEEL_S_R_L
+		return KnxManufacturer_M_FEEL_S_R_L, true
 	case 261:
-		return KnxManufacturer_M_NOT_ASSIGNED_314
+		return KnxManufacturer_M_NOT_ASSIGNED_314, true
 	case 262:
-		return KnxManufacturer_M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_
+		return KnxManufacturer_M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_, true
 	case 263:
-		return KnxManufacturer_M_JIUZHOU_GREEBLE
+		return KnxManufacturer_M_JIUZHOU_GREEBLE, true
 	case 264:
-		return KnxManufacturer_M_AUMUELLER_AUMATIC_GMBH
+		return KnxManufacturer_M_AUMUELLER_AUMATIC_GMBH, true
 	case 265:
-		return KnxManufacturer_M_ETMAN_ELECTRIC
+		return KnxManufacturer_M_ETMAN_ELECTRIC, true
 	case 266:
-		return KnxManufacturer_M_BLACK_NOVA
+		return KnxManufacturer_M_BLACK_NOVA, true
 	case 267:
-		return KnxManufacturer_M_ZIDATECH_AG
+		return KnxManufacturer_M_ZIDATECH_AG, true
 	case 268:
-		return KnxManufacturer_M_IDGS_BVBA
+		return KnxManufacturer_M_IDGS_BVBA, true
 	case 269:
-		return KnxManufacturer_M_DAKANIMO
+		return KnxManufacturer_M_DAKANIMO, true
 	case 27:
-		return KnxManufacturer_M_SIMON_42
+		return KnxManufacturer_M_SIMON_42, true
 	case 270:
-		return KnxManufacturer_M_TREBOR_AUTOMATION_AB
+		return KnxManufacturer_M_TREBOR_AUTOMATION_AB, true
 	case 271:
-		return KnxManufacturer_M_SATEL_SP__Z_O_O_
+		return KnxManufacturer_M_SATEL_SP__Z_O_O_, true
 	case 272:
-		return KnxManufacturer_M_RUSSOUND__INC_
+		return KnxManufacturer_M_RUSSOUND__INC_, true
 	case 273:
-		return KnxManufacturer_M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD
+		return KnxManufacturer_M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD, true
 	case 274:
-		return KnxManufacturer_M_CONSORZIO_TERRANUOVA
+		return KnxManufacturer_M_CONSORZIO_TERRANUOVA, true
 	case 275:
-		return KnxManufacturer_M_WOLF_HEIZTECHNIK_GMBH
+		return KnxManufacturer_M_WOLF_HEIZTECHNIK_GMBH, true
 	case 276:
-		return KnxManufacturer_M_SONTEC
+		return KnxManufacturer_M_SONTEC, true
 	case 277:
-		return KnxManufacturer_M_BELCOM_CABLES_LTD_
+		return KnxManufacturer_M_BELCOM_CABLES_LTD_, true
 	case 278:
-		return KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_
+		return KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_, true
 	case 279:
-		return KnxManufacturer_M_ACREL
+		return KnxManufacturer_M_ACREL, true
 	case 28:
-		return KnxManufacturer_M_VIMAR
+		return KnxManufacturer_M_VIMAR, true
 	case 280:
-		return KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH
+		return KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH, true
 	case 281:
-		return KnxManufacturer_M_ORION_SYSTEMS
+		return KnxManufacturer_M_ORION_SYSTEMS, true
 	case 282:
-		return KnxManufacturer_M_SCHRACK_TECHNIK_GMBH
+		return KnxManufacturer_M_SCHRACK_TECHNIK_GMBH, true
 	case 283:
-		return KnxManufacturer_M_INSPRID
+		return KnxManufacturer_M_INSPRID, true
 	case 284:
-		return KnxManufacturer_M_SUNRICHER
+		return KnxManufacturer_M_SUNRICHER, true
 	case 285:
-		return KnxManufacturer_M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_
+		return KnxManufacturer_M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_, true
 	case 286:
-		return KnxManufacturer_M_AUREX
+		return KnxManufacturer_M_AUREX, true
 	case 287:
-		return KnxManufacturer_M_JOSEF_BARTHELME_GMBH_AND_CO__KG
+		return KnxManufacturer_M_JOSEF_BARTHELME_GMBH_AND_CO__KG, true
 	case 288:
-		return KnxManufacturer_M_ARCHITECTURE_NUMERIQUE
+		return KnxManufacturer_M_ARCHITECTURE_NUMERIQUE, true
 	case 289:
-		return KnxManufacturer_M_UP_GROUP
+		return KnxManufacturer_M_UP_GROUP, true
 	case 29:
-		return KnxManufacturer_M_MOELLER_GEBAEUDEAUTOMATION_KG
+		return KnxManufacturer_M_MOELLER_GEBAEUDEAUTOMATION_KG, true
 	case 290:
-		return KnxManufacturer_M_TEKNOS_AVINNO
+		return KnxManufacturer_M_TEKNOS_AVINNO, true
 	case 291:
-		return KnxManufacturer_M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY
+		return KnxManufacturer_M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY, true
 	case 292:
-		return KnxManufacturer_M_THERMOKON_SENSORTECHNIK_GMBH
+		return KnxManufacturer_M_THERMOKON_SENSORTECHNIK_GMBH, true
 	case 293:
-		return KnxManufacturer_M_BELIMO_AUTOMATION_AG
+		return KnxManufacturer_M_BELIMO_AUTOMATION_AG, true
 	case 294:
-		return KnxManufacturer_M_ZEHNDER_GROUP_INTERNATIONAL_AG
+		return KnxManufacturer_M_ZEHNDER_GROUP_INTERNATIONAL_AG, true
 	case 295:
-		return KnxManufacturer_M_SKS_KINKEL_ELEKTRONIK
+		return KnxManufacturer_M_SKS_KINKEL_ELEKTRONIK, true
 	case 296:
-		return KnxManufacturer_M_ECE_WURMITZER_GMBH
+		return KnxManufacturer_M_ECE_WURMITZER_GMBH, true
 	case 297:
-		return KnxManufacturer_M_LARS
+		return KnxManufacturer_M_LARS, true
 	case 298:
-		return KnxManufacturer_M_URC
+		return KnxManufacturer_M_URC, true
 	case 299:
-		return KnxManufacturer_M_LIGHTCONTROL
+		return KnxManufacturer_M_LIGHTCONTROL, true
 	case 3:
-		return KnxManufacturer_M_ALBRECHT_JUNG
+		return KnxManufacturer_M_ALBRECHT_JUNG, true
 	case 30:
-		return KnxManufacturer_M_ELTAKO
+		return KnxManufacturer_M_ELTAKO, true
 	case 300:
-		return KnxManufacturer_M_SHENZHEN_YM
+		return KnxManufacturer_M_SHENZHEN_YM, true
 	case 301:
-		return KnxManufacturer_M_MEAN_WELL_ENTERPRISES_CO__LTD_
+		return KnxManufacturer_M_MEAN_WELL_ENTERPRISES_CO__LTD_, true
 	case 302:
-		return KnxManufacturer_M_OSIX
+		return KnxManufacturer_M_OSIX, true
 	case 303:
-		return KnxManufacturer_M_AYPRO_TECHNOLOGY
+		return KnxManufacturer_M_AYPRO_TECHNOLOGY, true
 	case 304:
-		return KnxManufacturer_M_HEFEI_ECOLITE_SOFTWARE
+		return KnxManufacturer_M_HEFEI_ECOLITE_SOFTWARE, true
 	case 305:
-		return KnxManufacturer_M_ENNO
+		return KnxManufacturer_M_ENNO, true
 	case 306:
-		return KnxManufacturer_M_OHOSURE
+		return KnxManufacturer_M_OHOSURE, true
 	case 307:
-		return KnxManufacturer_M_GAREFOWL
+		return KnxManufacturer_M_GAREFOWL, true
 	case 308:
-		return KnxManufacturer_M_GEZE
+		return KnxManufacturer_M_GEZE, true
 	case 309:
-		return KnxManufacturer_M_LG_ELECTRONICS_INC_
+		return KnxManufacturer_M_LG_ELECTRONICS_INC_, true
 	case 31:
-		return KnxManufacturer_M_BOSCH_SIEMENS_HAUSHALTSGERAETE
+		return KnxManufacturer_M_BOSCH_SIEMENS_HAUSHALTSGERAETE, true
 	case 310:
-		return KnxManufacturer_M_SMC_INTERIORS
+		return KnxManufacturer_M_SMC_INTERIORS, true
 	case 311:
-		return KnxManufacturer_M_NOT_ASSIGNED_364
+		return KnxManufacturer_M_NOT_ASSIGNED_364, true
 	case 312:
-		return KnxManufacturer_M_SCS_CABLE
+		return KnxManufacturer_M_SCS_CABLE, true
 	case 313:
-		return KnxManufacturer_M_HOVAL
+		return KnxManufacturer_M_HOVAL, true
 	case 314:
-		return KnxManufacturer_M_CANST
+		return KnxManufacturer_M_CANST, true
 	case 315:
-		return KnxManufacturer_M_HANGZHOU_BERLIN
+		return KnxManufacturer_M_HANGZHOU_BERLIN, true
 	case 316:
-		return KnxManufacturer_M_EVN_LICHTTECHNIK
+		return KnxManufacturer_M_EVN_LICHTTECHNIK, true
 	case 317:
-		return KnxManufacturer_M_RUTEC
+		return KnxManufacturer_M_RUTEC, true
 	case 318:
-		return KnxManufacturer_M_FINDER
+		return KnxManufacturer_M_FINDER, true
 	case 319:
-		return KnxManufacturer_M_FUJITSU_GENERAL_LIMITED
+		return KnxManufacturer_M_FUJITSU_GENERAL_LIMITED, true
 	case 32:
-		return KnxManufacturer_M_RITTO_GMBHANDCO_KG
+		return KnxManufacturer_M_RITTO_GMBHANDCO_KG, true
 	case 320:
-		return KnxManufacturer_M_ZF_FRIEDRICHSHAFEN_AG
+		return KnxManufacturer_M_ZF_FRIEDRICHSHAFEN_AG, true
 	case 321:
-		return KnxManufacturer_M_CREALED
+		return KnxManufacturer_M_CREALED, true
 	case 322:
-		return KnxManufacturer_M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED
+		return KnxManufacturer_M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED, true
 	case 323:
-		return KnxManufacturer_M_EPlus
+		return KnxManufacturer_M_EPlus, true
 	case 324:
-		return KnxManufacturer_M_ITALCOND
+		return KnxManufacturer_M_ITALCOND, true
 	case 325:
-		return KnxManufacturer_M_SATION
+		return KnxManufacturer_M_SATION, true
 	case 326:
-		return KnxManufacturer_M_NEWBEST
+		return KnxManufacturer_M_NEWBEST, true
 	case 327:
-		return KnxManufacturer_M_GDS_DIGITAL_SYSTEMS
+		return KnxManufacturer_M_GDS_DIGITAL_SYSTEMS, true
 	case 328:
-		return KnxManufacturer_M_IDDERO
+		return KnxManufacturer_M_IDDERO, true
 	case 329:
-		return KnxManufacturer_M_MBNLED
+		return KnxManufacturer_M_MBNLED, true
 	case 33:
-		return KnxManufacturer_M_POWER_CONTROLS
+		return KnxManufacturer_M_POWER_CONTROLS, true
 	case 330:
-		return KnxManufacturer_M_VITRUM
+		return KnxManufacturer_M_VITRUM, true
 	case 331:
-		return KnxManufacturer_M_EKEY_BIOMETRIC_SYSTEMS_GMBH
+		return KnxManufacturer_M_EKEY_BIOMETRIC_SYSTEMS_GMBH, true
 	case 332:
-		return KnxManufacturer_M_AMC
+		return KnxManufacturer_M_AMC, true
 	case 333:
-		return KnxManufacturer_M_TRILUX_GMBH_AND_CO__KG
+		return KnxManufacturer_M_TRILUX_GMBH_AND_CO__KG, true
 	case 334:
-		return KnxManufacturer_M_WEXCEDO
+		return KnxManufacturer_M_WEXCEDO, true
 	case 335:
-		return KnxManufacturer_M_VEMER_SPA
+		return KnxManufacturer_M_VEMER_SPA, true
 	case 336:
-		return KnxManufacturer_M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG
+		return KnxManufacturer_M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG, true
 	case 337:
-		return KnxManufacturer_M_CITRON
+		return KnxManufacturer_M_CITRON, true
 	case 338:
-		return KnxManufacturer_M_SHENZHEN_HEGUANG
+		return KnxManufacturer_M_SHENZHEN_HEGUANG, true
 	case 339:
-		return KnxManufacturer_M_NOT_ASSIGNED_392
+		return KnxManufacturer_M_NOT_ASSIGNED_392, true
 	case 34:
-		return KnxManufacturer_M_ZUMTOBEL
+		return KnxManufacturer_M_ZUMTOBEL, true
 	case 340:
-		return KnxManufacturer_M_TRANE_B_V_B_A
+		return KnxManufacturer_M_TRANE_B_V_B_A, true
 	case 341:
-		return KnxManufacturer_M_CAREL
+		return KnxManufacturer_M_CAREL, true
 	case 342:
-		return KnxManufacturer_M_PROLITE_CONTROLS
+		return KnxManufacturer_M_PROLITE_CONTROLS, true
 	case 343:
-		return KnxManufacturer_M_BOSMER
+		return KnxManufacturer_M_BOSMER, true
 	case 344:
-		return KnxManufacturer_M_EUCHIPS
+		return KnxManufacturer_M_EUCHIPS, true
 	case 345:
-		return KnxManufacturer_M_CONNECT_THINKA_CONNECT
+		return KnxManufacturer_M_CONNECT_THINKA_CONNECT, true
 	case 346:
-		return KnxManufacturer_M_PEAKNX_A_DOGAWIST_COMPANY
+		return KnxManufacturer_M_PEAKNX_A_DOGAWIST_COMPANY, true
 	case 347:
-		return KnxManufacturer_M_ACEMATIC
+		return KnxManufacturer_M_ACEMATIC, true
 	case 348:
-		return KnxManufacturer_M_ELAUSYS
+		return KnxManufacturer_M_ELAUSYS, true
 	case 349:
-		return KnxManufacturer_M_ITK_ENGINEERING_AG
+		return KnxManufacturer_M_ITK_ENGINEERING_AG, true
 	case 35:
-		return KnxManufacturer_M_PHOENIX_CONTACT
+		return KnxManufacturer_M_PHOENIX_CONTACT, true
 	case 350:
-		return KnxManufacturer_M_INTEGRA_METERING_AG
+		return KnxManufacturer_M_INTEGRA_METERING_AG, true
 	case 351:
-		return KnxManufacturer_M_FMS_HOSPITALITY_PTE_LTD
+		return KnxManufacturer_M_FMS_HOSPITALITY_PTE_LTD, true
 	case 352:
-		return KnxManufacturer_M_NUVO
+		return KnxManufacturer_M_NUVO, true
 	case 353:
-		return KnxManufacturer_M_U__LUX_GMBH
+		return KnxManufacturer_M_U__LUX_GMBH, true
 	case 354:
-		return KnxManufacturer_M_BRUMBERG_LEUCHTEN
+		return KnxManufacturer_M_BRUMBERG_LEUCHTEN, true
 	case 355:
-		return KnxManufacturer_M_LIME
+		return KnxManufacturer_M_LIME, true
 	case 356:
-		return KnxManufacturer_M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_
+		return KnxManufacturer_M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_, true
 	case 357:
-		return KnxManufacturer_M_KAVOSHPISHRO_ASIA
+		return KnxManufacturer_M_KAVOSHPISHRO_ASIA, true
 	case 358:
-		return KnxManufacturer_M_V2_SPA
+		return KnxManufacturer_M_V2_SPA, true
 	case 359:
-		return KnxManufacturer_M_JOHNSON_CONTROLS
+		return KnxManufacturer_M_JOHNSON_CONTROLS, true
 	case 36:
-		return KnxManufacturer_M_WAGO_KONTAKTTECHNIK
+		return KnxManufacturer_M_WAGO_KONTAKTTECHNIK, true
 	case 360:
-		return KnxManufacturer_M_ARKUD
+		return KnxManufacturer_M_ARKUD, true
 	case 361:
-		return KnxManufacturer_M_IRIDIUM_LTD_
+		return KnxManufacturer_M_IRIDIUM_LTD_, true
 	case 362:
-		return KnxManufacturer_M_BSMART
+		return KnxManufacturer_M_BSMART, true
 	case 363:
-		return KnxManufacturer_M_BAB_TECHNOLOGIE_GMBH
+		return KnxManufacturer_M_BAB_TECHNOLOGIE_GMBH, true
 	case 364:
-		return KnxManufacturer_M_NICE_SPA
+		return KnxManufacturer_M_NICE_SPA, true
 	case 365:
-		return KnxManufacturer_M_REDFISH_GROUP_PTY_LTD
+		return KnxManufacturer_M_REDFISH_GROUP_PTY_LTD, true
 	case 366:
-		return KnxManufacturer_M_SABIANA_SPA
+		return KnxManufacturer_M_SABIANA_SPA, true
 	case 367:
-		return KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE
+		return KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE, true
 	case 368:
-		return KnxManufacturer_M_REXEL
+		return KnxManufacturer_M_REXEL, true
 	case 369:
-		return KnxManufacturer_M_GES_TEKNIK_A_S_
+		return KnxManufacturer_M_GES_TEKNIK_A_S_, true
 	case 37:
-		return KnxManufacturer_M_KNXPRESSO
+		return KnxManufacturer_M_KNXPRESSO, true
 	case 370:
-		return KnxManufacturer_M_AVE_S_P_A_
+		return KnxManufacturer_M_AVE_S_P_A_, true
 	case 371:
-		return KnxManufacturer_M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_, true
 	case 372:
-		return KnxManufacturer_M_ARCOM
+		return KnxManufacturer_M_ARCOM, true
 	case 373:
-		return KnxManufacturer_M_VIA_TECHNOLOGIES__INC_
+		return KnxManufacturer_M_VIA_TECHNOLOGIES__INC_, true
 	case 374:
-		return KnxManufacturer_M_FEELSMART_
+		return KnxManufacturer_M_FEELSMART_, true
 	case 375:
-		return KnxManufacturer_M_SUPCON
+		return KnxManufacturer_M_SUPCON, true
 	case 376:
-		return KnxManufacturer_M_MANIC
+		return KnxManufacturer_M_MANIC, true
 	case 377:
-		return KnxManufacturer_M_TDE_GMBH
+		return KnxManufacturer_M_TDE_GMBH, true
 	case 378:
-		return KnxManufacturer_M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_
+		return KnxManufacturer_M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_, true
 	case 379:
-		return KnxManufacturer_M_EWTECH
+		return KnxManufacturer_M_EWTECH, true
 	case 38:
-		return KnxManufacturer_M_WIELAND_ELECTRIC
+		return KnxManufacturer_M_WIELAND_ELECTRIC, true
 	case 380:
-		return KnxManufacturer_M_KLUGER_AUTOMATION_GMBH
+		return KnxManufacturer_M_KLUGER_AUTOMATION_GMBH, true
 	case 381:
-		return KnxManufacturer_M_JOONGANG_CONTROL
+		return KnxManufacturer_M_JOONGANG_CONTROL, true
 	case 382:
-		return KnxManufacturer_M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_
+		return KnxManufacturer_M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_, true
 	case 383:
-		return KnxManufacturer_M_IME_S_P_A_
+		return KnxManufacturer_M_IME_S_P_A_, true
 	case 384:
-		return KnxManufacturer_M_SICHUAN_HAODING
+		return KnxManufacturer_M_SICHUAN_HAODING, true
 	case 385:
-		return KnxManufacturer_M_MINDJAGA_LTD_
+		return KnxManufacturer_M_MINDJAGA_LTD_, true
 	case 386:
-		return KnxManufacturer_M_RUILI_SMART_CONTROL
+		return KnxManufacturer_M_RUILI_SMART_CONTROL, true
 	case 387:
-		return KnxManufacturer_M_CODESYS_GMBH
+		return KnxManufacturer_M_CODESYS_GMBH, true
 	case 388:
-		return KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH
+		return KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH, true
 	case 389:
-		return KnxManufacturer_M_CULLMANN_TECH
+		return KnxManufacturer_M_CULLMANN_TECH, true
 	case 39:
-		return KnxManufacturer_M_HERMANN_KLEINHUIS
+		return KnxManufacturer_M_HERMANN_KLEINHUIS, true
 	case 390:
-		return KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_
+		return KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_, true
 	case 391:
-		return KnxManufacturer_M_ABEGO
+		return KnxManufacturer_M_ABEGO, true
 	case 392:
-		return KnxManufacturer_M_MYGEKKO
+		return KnxManufacturer_M_MYGEKKO, true
 	case 393:
-		return KnxManufacturer_M_ERGO3_SARL
+		return KnxManufacturer_M_ERGO3_SARL, true
 	case 394:
-		return KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_
+		return KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_, true
 	case 395:
-		return KnxManufacturer_M_CJC_SYSTEMS
+		return KnxManufacturer_M_CJC_SYSTEMS, true
 	case 396:
-		return KnxManufacturer_M_SUDOKU
+		return KnxManufacturer_M_SUDOKU, true
 	case 397:
-		return KnxManufacturer_M_AZ_E_LITE_PTE_LTD
+		return KnxManufacturer_M_AZ_E_LITE_PTE_LTD, true
 	case 398:
-		return KnxManufacturer_M_ARLIGHT
+		return KnxManufacturer_M_ARLIGHT, true
 	case 399:
-		return KnxManufacturer_M_GRUENBECK_WASSERAUFBEREITUNG_GMBH
+		return KnxManufacturer_M_GRUENBECK_WASSERAUFBEREITUNG_GMBH, true
 	case 4:
-		return KnxManufacturer_M_BTICINO
+		return KnxManufacturer_M_BTICINO, true
 	case 40:
-		return KnxManufacturer_M_STIEBEL_ELTRON
+		return KnxManufacturer_M_STIEBEL_ELTRON, true
 	case 400:
-		return KnxManufacturer_M_MODULE_ELECTRONIC
+		return KnxManufacturer_M_MODULE_ELECTRONIC, true
 	case 401:
-		return KnxManufacturer_M_KOPLAT
+		return KnxManufacturer_M_KOPLAT, true
 	case 402:
-		return KnxManufacturer_M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD, true
 	case 403:
-		return KnxManufacturer_M_ILEVIA
+		return KnxManufacturer_M_ILEVIA, true
 	case 404:
-		return KnxManufacturer_M_LN_SYSTEMTEQ
+		return KnxManufacturer_M_LN_SYSTEMTEQ, true
 	case 405:
-		return KnxManufacturer_M_HISENSE_SMARTHOME
+		return KnxManufacturer_M_HISENSE_SMARTHOME, true
 	case 406:
-		return KnxManufacturer_M_FLINK_AUTOMATION_SYSTEM
+		return KnxManufacturer_M_FLINK_AUTOMATION_SYSTEM, true
 	case 407:
-		return KnxManufacturer_M_XXTER_BV
+		return KnxManufacturer_M_XXTER_BV, true
 	case 408:
-		return KnxManufacturer_M_LYNXUS_TECHNOLOGY
+		return KnxManufacturer_M_LYNXUS_TECHNOLOGY, true
 	case 409:
-		return KnxManufacturer_M_ROBOT_S_A_
+		return KnxManufacturer_M_ROBOT_S_A_, true
 	case 41:
-		return KnxManufacturer_M_TEHALIT
+		return KnxManufacturer_M_TEHALIT, true
 	case 410:
-		return KnxManufacturer_M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_
+		return KnxManufacturer_M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_, true
 	case 411:
-		return KnxManufacturer_M_NOBLESSE
+		return KnxManufacturer_M_NOBLESSE, true
 	case 412:
-		return KnxManufacturer_M_ADVANCED_DEVICES
+		return KnxManufacturer_M_ADVANCED_DEVICES, true
 	case 413:
-		return KnxManufacturer_M_ATRINA_BUILDING_AUTOMATION_CO__LTD
+		return KnxManufacturer_M_ATRINA_BUILDING_AUTOMATION_CO__LTD, true
 	case 414:
-		return KnxManufacturer_M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_
+		return KnxManufacturer_M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_, true
 	case 415:
-		return KnxManufacturer_M_WESTERSTRAND_URFABRIK_AB
+		return KnxManufacturer_M_WESTERSTRAND_URFABRIK_AB, true
 	case 416:
-		return KnxManufacturer_M_CONTROL4_CORPORATE
+		return KnxManufacturer_M_CONTROL4_CORPORATE, true
 	case 417:
-		return KnxManufacturer_M_ONTROL
+		return KnxManufacturer_M_ONTROL, true
 	case 418:
-		return KnxManufacturer_M_STARNET
+		return KnxManufacturer_M_STARNET, true
 	case 419:
-		return KnxManufacturer_M_BETA_CAVI
+		return KnxManufacturer_M_BETA_CAVI, true
 	case 42:
-		return KnxManufacturer_M_THEBEN_AG
+		return KnxManufacturer_M_THEBEN_AG, true
 	case 420:
-		return KnxManufacturer_M_EASEMORE
+		return KnxManufacturer_M_EASEMORE, true
 	case 421:
-		return KnxManufacturer_M_VIVALDI_SRL
+		return KnxManufacturer_M_VIVALDI_SRL, true
 	case 422:
-		return KnxManufacturer_M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI
+		return KnxManufacturer_M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI, true
 	case 423:
-		return KnxManufacturer_M_HWISCON
+		return KnxManufacturer_M_HWISCON, true
 	case 424:
-		return KnxManufacturer_M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_, true
 	case 425:
-		return KnxManufacturer_M_KAMPMANN
+		return KnxManufacturer_M_KAMPMANN, true
 	case 426:
-		return KnxManufacturer_M_IMPOLUX_GMBH_LEDIMAX
+		return KnxManufacturer_M_IMPOLUX_GMBH_LEDIMAX, true
 	case 427:
-		return KnxManufacturer_M_EVAUX
+		return KnxManufacturer_M_EVAUX, true
 	case 428:
-		return KnxManufacturer_M_WEBRO_CABLES_AND_CONNECTORS_LIMITED
+		return KnxManufacturer_M_WEBRO_CABLES_AND_CONNECTORS_LIMITED, true
 	case 429:
-		return KnxManufacturer_M_SHANGHAI_E_TECH_SOLUTION
+		return KnxManufacturer_M_SHANGHAI_E_TECH_SOLUTION, true
 	case 43:
-		return KnxManufacturer_M_WILHELM_RUTENBECK
+		return KnxManufacturer_M_WILHELM_RUTENBECK, true
 	case 430:
-		return KnxManufacturer_M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_
+		return KnxManufacturer_M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_, true
 	case 431:
-		return KnxManufacturer_M_LAMMIN_HIGH_TECH_CO__LTD
+		return KnxManufacturer_M_LAMMIN_HIGH_TECH_CO__LTD, true
 	case 432:
-		return KnxManufacturer_M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD, true
 	case 433:
-		return KnxManufacturer_M_I_LUXUS
+		return KnxManufacturer_M_I_LUXUS, true
 	case 434:
-		return KnxManufacturer_M_ELMOS_SEMICONDUCTOR_AG
+		return KnxManufacturer_M_ELMOS_SEMICONDUCTOR_AG, true
 	case 435:
-		return KnxManufacturer_M_EMCOM_TECHNOLOGY_INC
+		return KnxManufacturer_M_EMCOM_TECHNOLOGY_INC, true
 	case 436:
-		return KnxManufacturer_M_PROJECT_INNOVATIONS_GMBH
+		return KnxManufacturer_M_PROJECT_INNOVATIONS_GMBH, true
 	case 437:
-		return KnxManufacturer_M_ITC
+		return KnxManufacturer_M_ITC, true
 	case 438:
-		return KnxManufacturer_M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING
+		return KnxManufacturer_M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING, true
 	case 439:
-		return KnxManufacturer_M_MAICO
+		return KnxManufacturer_M_MAICO, true
 	case 44:
-		return KnxManufacturer_M_WINKHAUS
+		return KnxManufacturer_M_WINKHAUS, true
 	case 440:
-		return KnxManufacturer_M_ELAN_SRL
+		return KnxManufacturer_M_ELAN_SRL, true
 	case 441:
-		return KnxManufacturer_M_MINHHA_TECHNOLOGY_CO__LTD
+		return KnxManufacturer_M_MINHHA_TECHNOLOGY_CO__LTD, true
 	case 442:
-		return KnxManufacturer_M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_
+		return KnxManufacturer_M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_, true
 	case 443:
-		return KnxManufacturer_M_IAUTOMATION_PTY_LIMITED
+		return KnxManufacturer_M_IAUTOMATION_PTY_LIMITED, true
 	case 444:
-		return KnxManufacturer_M_EXTRON
+		return KnxManufacturer_M_EXTRON, true
 	case 445:
-		return KnxManufacturer_M_FREEDOMPRO
+		return KnxManufacturer_M_FREEDOMPRO, true
 	case 446:
-		return KnxManufacturer_M_ONEHOME
+		return KnxManufacturer_M_ONEHOME, true
 	case 447:
-		return KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH
+		return KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH, true
 	case 448:
-		return KnxManufacturer_M_KUSATEK_GMBH
+		return KnxManufacturer_M_KUSATEK_GMBH, true
 	case 449:
-		return KnxManufacturer_M_EISBAER_SCADA
+		return KnxManufacturer_M_EISBAER_SCADA, true
 	case 45:
-		return KnxManufacturer_M_ROBERT_BOSCH
+		return KnxManufacturer_M_ROBERT_BOSCH, true
 	case 450:
-		return KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_
+		return KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_, true
 	case 451:
-		return KnxManufacturer_M_BLENDOM
+		return KnxManufacturer_M_BLENDOM, true
 	case 452:
-		return KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION
+		return KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION, true
 	case 453:
-		return KnxManufacturer_M_NIKO
+		return KnxManufacturer_M_NIKO, true
 	case 454:
-		return KnxManufacturer_M_BOSCH_REXROTH_AG
+		return KnxManufacturer_M_BOSCH_REXROTH_AG, true
 	case 455:
-		return KnxManufacturer_M_CANDM_PRODUCTS
+		return KnxManufacturer_M_CANDM_PRODUCTS, true
 	case 456:
-		return KnxManufacturer_M_HOERMANN_KG_VERKAUFSGESELLSCHAFT
+		return KnxManufacturer_M_HOERMANN_KG_VERKAUFSGESELLSCHAFT, true
 	case 457:
-		return KnxManufacturer_M_SHANGHAI_RAJAYASA_CO__LTD
+		return KnxManufacturer_M_SHANGHAI_RAJAYASA_CO__LTD, true
 	case 458:
-		return KnxManufacturer_M_SUZUKI
+		return KnxManufacturer_M_SUZUKI, true
 	case 459:
-		return KnxManufacturer_M_SILENT_GLISS_INTERNATIONAL_LTD_
+		return KnxManufacturer_M_SILENT_GLISS_INTERNATIONAL_LTD_, true
 	case 46:
-		return KnxManufacturer_M_SOMFY
+		return KnxManufacturer_M_SOMFY, true
 	case 460:
-		return KnxManufacturer_M_BEE_CONTROLS_ADGSC_GROUP
+		return KnxManufacturer_M_BEE_CONTROLS_ADGSC_GROUP, true
 	case 461:
-		return KnxManufacturer_M_XDTECGMBH
+		return KnxManufacturer_M_XDTECGMBH, true
 	case 462:
-		return KnxManufacturer_M_OSRAM
+		return KnxManufacturer_M_OSRAM, true
 	case 463:
-		return KnxManufacturer_M_LEBENOR
+		return KnxManufacturer_M_LEBENOR, true
 	case 464:
-		return KnxManufacturer_M_AUTOMANENG
+		return KnxManufacturer_M_AUTOMANENG, true
 	case 465:
-		return KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA
+		return KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA, true
 	case 466:
-		return KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD
+		return KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD, true
 	case 467:
-		return KnxManufacturer_M_ETA_HEIZTECHNIK
+		return KnxManufacturer_M_ETA_HEIZTECHNIK, true
 	case 468:
-		return KnxManufacturer_M_DIVUS_GMBH
+		return KnxManufacturer_M_DIVUS_GMBH, true
 	case 469:
-		return KnxManufacturer_M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_
+		return KnxManufacturer_M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_, true
 	case 47:
-		return KnxManufacturer_M_WOERTZ
+		return KnxManufacturer_M_WOERTZ, true
 	case 470:
-		return KnxManufacturer_M_LUNATONE
+		return KnxManufacturer_M_LUNATONE, true
 	case 471:
-		return KnxManufacturer_M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT
+		return KnxManufacturer_M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT, true
 	case 472:
-		return KnxManufacturer_M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_, true
 	case 473:
-		return KnxManufacturer_M_NOKE
+		return KnxManufacturer_M_NOKE, true
 	case 474:
-		return KnxManufacturer_M_LANDCOM
+		return KnxManufacturer_M_LANDCOM, true
 	case 475:
-		return KnxManufacturer_M_STORK_AS
+		return KnxManufacturer_M_STORK_AS, true
 	case 476:
-		return KnxManufacturer_M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_, true
 	case 477:
-		return KnxManufacturer_M_COOLAUTOMATION
+		return KnxManufacturer_M_COOLAUTOMATION, true
 	case 478:
-		return KnxManufacturer_M_APRSTERN
+		return KnxManufacturer_M_APRSTERN, true
 	case 479:
-		return KnxManufacturer_M_SONNEN
+		return KnxManufacturer_M_SONNEN, true
 	case 48:
-		return KnxManufacturer_M_VIESSMANN_WERKE
+		return KnxManufacturer_M_VIESSMANN_WERKE, true
 	case 480:
-		return KnxManufacturer_M_DNAKE
+		return KnxManufacturer_M_DNAKE, true
 	case 481:
-		return KnxManufacturer_M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH
+		return KnxManufacturer_M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH, true
 	case 482:
-		return KnxManufacturer_M_STILIGER
+		return KnxManufacturer_M_STILIGER, true
 	case 483:
-		return KnxManufacturer_M_BERGHOF_AUTOMATION_GMBH
+		return KnxManufacturer_M_BERGHOF_AUTOMATION_GMBH, true
 	case 484:
-		return KnxManufacturer_M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH
+		return KnxManufacturer_M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH, true
 	case 485:
-		return KnxManufacturer_M_DOVIT
+		return KnxManufacturer_M_DOVIT, true
 	case 486:
-		return KnxManufacturer_M_INSTALIGHTING_GMBH
+		return KnxManufacturer_M_INSTALIGHTING_GMBH, true
 	case 487:
-		return KnxManufacturer_M_UNI_TEC
+		return KnxManufacturer_M_UNI_TEC, true
 	case 488:
-		return KnxManufacturer_M_CASATUNES
+		return KnxManufacturer_M_CASATUNES, true
 	case 489:
-		return KnxManufacturer_M_EMT
+		return KnxManufacturer_M_EMT, true
 	case 49:
-		return KnxManufacturer_M_IMI_HYDRONIC_ENGINEERING
+		return KnxManufacturer_M_IMI_HYDRONIC_ENGINEERING, true
 	case 490:
-		return KnxManufacturer_M_SENFFICIENT
+		return KnxManufacturer_M_SENFFICIENT, true
 	case 491:
-		return KnxManufacturer_M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED
+		return KnxManufacturer_M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED, true
 	case 492:
-		return KnxManufacturer_M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_, true
 	case 493:
-		return KnxManufacturer_M_SAMSON_ELECTRIC_WIRE
+		return KnxManufacturer_M_SAMSON_ELECTRIC_WIRE, true
 	case 494:
-		return KnxManufacturer_M_T_TOUCHING
+		return KnxManufacturer_M_T_TOUCHING, true
 	case 495:
-		return KnxManufacturer_M_CORE_SMART_HOME
+		return KnxManufacturer_M_CORE_SMART_HOME, true
 	case 496:
-		return KnxManufacturer_M_GREENCONNECT_SOLUTIONS_SA
+		return KnxManufacturer_M_GREENCONNECT_SOLUTIONS_SA, true
 	case 497:
-		return KnxManufacturer_M_ELETTRONICA_CONDUTTORI
+		return KnxManufacturer_M_ELETTRONICA_CONDUTTORI, true
 	case 498:
-		return KnxManufacturer_M_MKFC
+		return KnxManufacturer_M_MKFC, true
 	case 499:
-		return KnxManufacturer_M_AUTOMATIONPlus
+		return KnxManufacturer_M_AUTOMATIONPlus, true
 	case 5:
-		return KnxManufacturer_M_BERKER
+		return KnxManufacturer_M_BERKER, true
 	case 50:
-		return KnxManufacturer_M_JOH__VAILLANT
+		return KnxManufacturer_M_JOH__VAILLANT, true
 	case 500:
-		return KnxManufacturer_M_BLUE_AND_RED
+		return KnxManufacturer_M_BLUE_AND_RED, true
 	case 501:
-		return KnxManufacturer_M_FROGBLUE
+		return KnxManufacturer_M_FROGBLUE, true
 	case 502:
-		return KnxManufacturer_M_SAVESOR
+		return KnxManufacturer_M_SAVESOR, true
 	case 503:
-		return KnxManufacturer_M_APP_TECH
+		return KnxManufacturer_M_APP_TECH, true
 	case 504:
-		return KnxManufacturer_M_SENSORTEC_AG
+		return KnxManufacturer_M_SENSORTEC_AG, true
 	case 505:
-		return KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS
+		return KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS, true
 	case 506:
-		return KnxManufacturer_M_FARADITE
+		return KnxManufacturer_M_FARADITE, true
 	case 507:
-		return KnxManufacturer_M_OPTIMUS
+		return KnxManufacturer_M_OPTIMUS, true
 	case 508:
-		return KnxManufacturer_M_KTS_S_R_L_
+		return KnxManufacturer_M_KTS_S_R_L_, true
 	case 509:
-		return KnxManufacturer_M_RAMCRO_SPA
+		return KnxManufacturer_M_RAMCRO_SPA, true
 	case 51:
-		return KnxManufacturer_M_AMP_DEUTSCHLAND
+		return KnxManufacturer_M_AMP_DEUTSCHLAND, true
 	case 510:
-		return KnxManufacturer_M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD, true
 	case 511:
-		return KnxManufacturer_M_BEMI_SMART_HOME_LTD
+		return KnxManufacturer_M_BEMI_SMART_HOME_LTD, true
 	case 512:
-		return KnxManufacturer_M_ARDOMUS
+		return KnxManufacturer_M_ARDOMUS, true
 	case 513:
-		return KnxManufacturer_M_CHANGXING
+		return KnxManufacturer_M_CHANGXING, true
 	case 514:
-		return KnxManufacturer_M_E_CONTROLS
+		return KnxManufacturer_M_E_CONTROLS, true
 	case 515:
-		return KnxManufacturer_M_AIB_TECHNOLOGY
+		return KnxManufacturer_M_AIB_TECHNOLOGY, true
 	case 516:
-		return KnxManufacturer_M_NVC
+		return KnxManufacturer_M_NVC, true
 	case 517:
-		return KnxManufacturer_M_KBOX
+		return KnxManufacturer_M_KBOX, true
 	case 518:
-		return KnxManufacturer_M_CNS
+		return KnxManufacturer_M_CNS, true
 	case 519:
-		return KnxManufacturer_M_TYBA
+		return KnxManufacturer_M_TYBA, true
 	case 52:
-		return KnxManufacturer_M_BOSCH_THERMOTECHNIK_GMBH
+		return KnxManufacturer_M_BOSCH_THERMOTECHNIK_GMBH, true
 	case 520:
-		return KnxManufacturer_M_ATREL
+		return KnxManufacturer_M_ATREL, true
 	case 521:
-		return KnxManufacturer_M_SIMON_ELECTRIC_CHINA_CO___LTD
+		return KnxManufacturer_M_SIMON_ELECTRIC_CHINA_CO___LTD, true
 	case 522:
-		return KnxManufacturer_M_KORDZ_GROUP
+		return KnxManufacturer_M_KORDZ_GROUP, true
 	case 523:
-		return KnxManufacturer_M_ND_ELECTRIC
+		return KnxManufacturer_M_ND_ELECTRIC, true
 	case 524:
-		return KnxManufacturer_M_CONTROLIUM
+		return KnxManufacturer_M_CONTROLIUM, true
 	case 525:
-		return KnxManufacturer_M_FAMO_GMBH_AND_CO__KG
+		return KnxManufacturer_M_FAMO_GMBH_AND_CO__KG, true
 	case 526:
-		return KnxManufacturer_M_CDN_SMART
+		return KnxManufacturer_M_CDN_SMART, true
 	case 527:
-		return KnxManufacturer_M_HESTON
+		return KnxManufacturer_M_HESTON, true
 	case 528:
-		return KnxManufacturer_M_ESLA_CONEXIONES_S_L_
+		return KnxManufacturer_M_ESLA_CONEXIONES_S_L_, true
 	case 529:
-		return KnxManufacturer_M_WEISHAUPT
+		return KnxManufacturer_M_WEISHAUPT, true
 	case 53:
-		return KnxManufacturer_M_SEF___ECOTEC
+		return KnxManufacturer_M_SEF___ECOTEC, true
 	case 530:
-		return KnxManufacturer_M_ASTRUM_TECHNOLOGY
+		return KnxManufacturer_M_ASTRUM_TECHNOLOGY, true
 	case 531:
-		return KnxManufacturer_M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_
+		return KnxManufacturer_M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_, true
 	case 532:
-		return KnxManufacturer_M_NANOTECO_CORPORATION
+		return KnxManufacturer_M_NANOTECO_CORPORATION, true
 	case 533:
-		return KnxManufacturer_M_NIETIAN
+		return KnxManufacturer_M_NIETIAN, true
 	case 534:
-		return KnxManufacturer_M_SUMSIR
+		return KnxManufacturer_M_SUMSIR, true
 	case 535:
-		return KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA
+		return KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA, true
 	case 536:
-		return KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_, true
 	case 537:
-		return KnxManufacturer_M_ANLIPS
+		return KnxManufacturer_M_ANLIPS, true
 	case 538:
-		return KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD
+		return KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD, true
 	case 539:
-		return KnxManufacturer_M_BVK_TECHNOLOGY
+		return KnxManufacturer_M_BVK_TECHNOLOGY, true
 	case 54:
-		return KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG
+		return KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG, true
 	case 540:
-		return KnxManufacturer_M_SOLOMIO_SRL
+		return KnxManufacturer_M_SOLOMIO_SRL, true
 	case 541:
-		return KnxManufacturer_M_DOMOTICA_LABS
+		return KnxManufacturer_M_DOMOTICA_LABS, true
 	case 542:
-		return KnxManufacturer_M_NVC_INTERNATIONAL
+		return KnxManufacturer_M_NVC_INTERNATIONAL, true
 	case 543:
-		return KnxManufacturer_M_BA
+		return KnxManufacturer_M_BA, true
 	case 544:
-		return KnxManufacturer_M_IRIS_CERAMICA_GROUP
+		return KnxManufacturer_M_IRIS_CERAMICA_GROUP, true
 	case 545:
-		return KnxManufacturer_M_WIREEO
+		return KnxManufacturer_M_WIREEO, true
 	case 546:
-		return KnxManufacturer_M_NVCLIGHTING
+		return KnxManufacturer_M_NVCLIGHTING, true
 	case 547:
-		return KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_
+		return KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_, true
 	case 548:
-		return KnxManufacturer_M_ARMITI_TRADING
+		return KnxManufacturer_M_ARMITI_TRADING, true
 	case 549:
-		return KnxManufacturer_M_ELEK
+		return KnxManufacturer_M_ELEK, true
 	case 55:
-		return KnxManufacturer_M_WINDOWMASTER_AS
+		return KnxManufacturer_M_WINDOWMASTER_AS, true
 	case 550:
-		return KnxManufacturer_M_ACCORDIA_SA
+		return KnxManufacturer_M_ACCORDIA_SA, true
 	case 551:
-		return KnxManufacturer_M_OURICAN
+		return KnxManufacturer_M_OURICAN, true
 	case 552:
-		return KnxManufacturer_M_INLIWOSE
+		return KnxManufacturer_M_INLIWOSE, true
 	case 553:
-		return KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_
+		return KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_, true
 	case 554:
-		return KnxManufacturer_M_SHK_KNX
+		return KnxManufacturer_M_SHK_KNX, true
 	case 555:
-		return KnxManufacturer_M_AMPIO
+		return KnxManufacturer_M_AMPIO, true
 	case 556:
-		return KnxManufacturer_M_MINGXING_WISDOM
+		return KnxManufacturer_M_MINGXING_WISDOM, true
 	case 557:
-		return KnxManufacturer_M_ALTEN_SW_GMBH
+		return KnxManufacturer_M_ALTEN_SW_GMBH, true
 	case 558:
-		return KnxManufacturer_M_V_Y_C_SRL
+		return KnxManufacturer_M_V_Y_C_SRL, true
 	case 559:
-		return KnxManufacturer_M_TERMINUS_GROUP
+		return KnxManufacturer_M_TERMINUS_GROUP, true
 	case 56:
-		return KnxManufacturer_M_WALTHER_WERKE
+		return KnxManufacturer_M_WALTHER_WERKE, true
 	case 560:
-		return KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY
+		return KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY, true
 	case 561:
-		return KnxManufacturer_M_QBICTECHNOLOGY
+		return KnxManufacturer_M_QBICTECHNOLOGY, true
 	case 562:
-		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED
+		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED, true
 	case 563:
-		return KnxManufacturer_M_ONEWORK
+		return KnxManufacturer_M_ONEWORK, true
 	case 564:
-		return KnxManufacturer_M_PL_LINK
+		return KnxManufacturer_M_PL_LINK, true
 	case 565:
-		return KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK
+		return KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK, true
 	case 566:
-		return KnxManufacturer_M_GOLDENHOME_SMART
+		return KnxManufacturer_M_GOLDENHOME_SMART, true
 	case 567:
-		return KnxManufacturer_M_GOLDMEDAL
+		return KnxManufacturer_M_GOLDMEDAL, true
 	case 568:
-		return KnxManufacturer_M_CannX
+		return KnxManufacturer_M_CannX, true
 	case 569:
-		return KnxManufacturer_M_EGI___EARTH_GOODNESS
+		return KnxManufacturer_M_EGI___EARTH_GOODNESS, true
 	case 57:
-		return KnxManufacturer_M_ORAS
+		return KnxManufacturer_M_ORAS, true
 	case 570:
-		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
+		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG, true
 	case 571:
-		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
+		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS, true
 	case 572:
-		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
+		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_, true
 	case 573:
-		return KnxManufacturer_M_ACE_TECHNOLOGY
+		return KnxManufacturer_M_ACE_TECHNOLOGY, true
 	case 574:
-		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD
+		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD, true
 	case 575:
-		return KnxManufacturer_M_SUMAMO
+		return KnxManufacturer_M_SUMAMO, true
 	case 576:
-		return KnxManufacturer_M_SVIT
+		return KnxManufacturer_M_SVIT, true
 	case 577:
-		return KnxManufacturer_M_TECGET
+		return KnxManufacturer_M_TECGET, true
 	case 578:
-		return KnxManufacturer_M_XEROPOINT
+		return KnxManufacturer_M_XEROPOINT, true
 	case 579:
-		return KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES
+		return KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES, true
 	case 58:
-		return KnxManufacturer_M_DAETWYLER
+		return KnxManufacturer_M_DAETWYLER, true
 	case 580:
-		return KnxManufacturer_M_COMFORTCLICK
+		return KnxManufacturer_M_COMFORTCLICK, true
 	case 581:
-		return KnxManufacturer_M_DORBAS_ELECTRIC
+		return KnxManufacturer_M_DORBAS_ELECTRIC, true
 	case 582:
-		return KnxManufacturer_M_REMKO_GMBH_AND_CO__KG
+		return KnxManufacturer_M_REMKO_GMBH_AND_CO__KG, true
 	case 583:
-		return KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD, true
 	case 584:
-		return KnxManufacturer_M_ANDAS
+		return KnxManufacturer_M_ANDAS, true
 	case 585:
-		return KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD
+		return KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD, true
 	case 586:
-		return KnxManufacturer_M_LARFE
+		return KnxManufacturer_M_LARFE, true
 	case 587:
-		return KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL
+		return KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL, true
 	case 588:
-		return KnxManufacturer_M_STEC
+		return KnxManufacturer_M_STEC, true
 	case 589:
-		return KnxManufacturer_M_ARIGO_SOFTWARE_GMBH
+		return KnxManufacturer_M_ARIGO_SOFTWARE_GMBH, true
 	case 59:
-		return KnxManufacturer_M_ELECTRAK
+		return KnxManufacturer_M_ELECTRAK, true
 	case 590:
-		return KnxManufacturer_M_FEISHELEC
+		return KnxManufacturer_M_FEISHELEC, true
 	case 591:
-		return KnxManufacturer_M_GORDIC
+		return KnxManufacturer_M_GORDIC, true
 	case 592:
-		return KnxManufacturer_M_DELTA_ELECTRONICS
+		return KnxManufacturer_M_DELTA_ELECTRONICS, true
 	case 593:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 594:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 6:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO, true
 	case 60:
-		return KnxManufacturer_M_TECHEM
+		return KnxManufacturer_M_TECHEM, true
 	case 61:
-		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS
+		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
 	case 62:
-		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE
+		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE, true
 	case 63:
-		return KnxManufacturer_M_BISCHOFF_ELEKTRONIK
+		return KnxManufacturer_M_BISCHOFF_ELEKTRONIK, true
 	case 64:
-		return KnxManufacturer_M_JEPAZ
+		return KnxManufacturer_M_JEPAZ, true
 	case 65:
-		return KnxManufacturer_M_RTS_AUTOMATION
+		return KnxManufacturer_M_RTS_AUTOMATION, true
 	case 66:
-		return KnxManufacturer_M_EIBMARKT_GMBH
+		return KnxManufacturer_M_EIBMARKT_GMBH, true
 	case 67:
-		return KnxManufacturer_M_WAREMA_RENKHOFF_SE
+		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
 	case 68:
-		return KnxManufacturer_M_EELECTRON
+		return KnxManufacturer_M_EELECTRON, true
 	case 69:
-		return KnxManufacturer_M_BELDEN_WIRE_AND_CABLE_B_V_
+		return KnxManufacturer_M_BELDEN_WIRE_AND_CABLE_B_V_, true
 	case 7:
-		return KnxManufacturer_M_GIRA_GIERSIEPEN
+		return KnxManufacturer_M_GIRA_GIERSIEPEN, true
 	case 70:
-		return KnxManufacturer_M_BECKER_ANTRIEBE_GMBH
+		return KnxManufacturer_M_BECKER_ANTRIEBE_GMBH, true
 	case 71:
-		return KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH
+		return KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH, true
 	case 72:
-		return KnxManufacturer_M_AGFEO
+		return KnxManufacturer_M_AGFEO, true
 	case 73:
-		return KnxManufacturer_M_ZENNIO
+		return KnxManufacturer_M_ZENNIO, true
 	case 74:
-		return KnxManufacturer_M_TAPKO_TECHNOLOGIES
+		return KnxManufacturer_M_TAPKO_TECHNOLOGIES, true
 	case 75:
-		return KnxManufacturer_M_HDL
+		return KnxManufacturer_M_HDL, true
 	case 76:
-		return KnxManufacturer_M_UPONOR
+		return KnxManufacturer_M_UPONOR, true
 	case 77:
-		return KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG
+		return KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG, true
 	case 78:
-		return KnxManufacturer_M_ARCUS_EDS
+		return KnxManufacturer_M_ARCUS_EDS, true
 	case 79:
-		return KnxManufacturer_M_INTESIS
+		return KnxManufacturer_M_INTESIS, true
 	case 8:
-		return KnxManufacturer_M_HAGER_ELECTRO
+		return KnxManufacturer_M_HAGER_ELECTRO, true
 	case 80:
-		return KnxManufacturer_M_HERHOLDT_CONTROLS_SRL
+		return KnxManufacturer_M_HERHOLDT_CONTROLS_SRL, true
 	case 81:
-		return KnxManufacturer_M_NIKO_ZUBLIN
+		return KnxManufacturer_M_NIKO_ZUBLIN, true
 	case 82:
-		return KnxManufacturer_M_DURABLE_TECHNOLOGIES
+		return KnxManufacturer_M_DURABLE_TECHNOLOGIES, true
 	case 83:
-		return KnxManufacturer_M_INNOTEAM
+		return KnxManufacturer_M_INNOTEAM, true
 	case 84:
-		return KnxManufacturer_M_ISE_GMBH
+		return KnxManufacturer_M_ISE_GMBH, true
 	case 85:
-		return KnxManufacturer_M_TEAM_FOR_TRONICS
+		return KnxManufacturer_M_TEAM_FOR_TRONICS, true
 	case 86:
-		return KnxManufacturer_M_CIAT
+		return KnxManufacturer_M_CIAT, true
 	case 87:
-		return KnxManufacturer_M_REMEHA_BV
+		return KnxManufacturer_M_REMEHA_BV, true
 	case 88:
-		return KnxManufacturer_M_ESYLUX
+		return KnxManufacturer_M_ESYLUX, true
 	case 89:
-		return KnxManufacturer_M_BASALTE
+		return KnxManufacturer_M_BASALTE, true
 	case 9:
-		return KnxManufacturer_M_INSTA_GMBH
+		return KnxManufacturer_M_INSTA_GMBH, true
 	case 90:
-		return KnxManufacturer_M_VESTAMATIC
+		return KnxManufacturer_M_VESTAMATIC, true
 	case 91:
-		return KnxManufacturer_M_MDT_TECHNOLOGIES
+		return KnxManufacturer_M_MDT_TECHNOLOGIES, true
 	case 92:
-		return KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH
+		return KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH, true
 	case 93:
-		return KnxManufacturer_M_VIDEO_STAR
+		return KnxManufacturer_M_VIDEO_STAR, true
 	case 94:
-		return KnxManufacturer_M_SITEK
+		return KnxManufacturer_M_SITEK, true
 	case 95:
-		return KnxManufacturer_M_CONTROLTRONIC
+		return KnxManufacturer_M_CONTROLTRONIC, true
 	case 96:
-		return KnxManufacturer_M_FUNCTION_TECHNOLOGY
+		return KnxManufacturer_M_FUNCTION_TECHNOLOGY, true
 	case 97:
-		return KnxManufacturer_M_AMX
+		return KnxManufacturer_M_AMX, true
 	case 98:
-		return KnxManufacturer_M_ELDAT
+		return KnxManufacturer_M_ELDAT, true
 	case 99:
-		return KnxManufacturer_M_PANASONIC
+		return KnxManufacturer_M_PANASONIC, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
-	ok = true
 	switch value {
 	case "M_UNKNOWN":
-		enum = KnxManufacturer_M_UNKNOWN
+		return KnxManufacturer_M_UNKNOWN, true
 	case "M_SIEMENS":
-		enum = KnxManufacturer_M_SIEMENS
+		return KnxManufacturer_M_SIEMENS, true
 	case "M_LEGRAND_APPAREILLAGE_ELECTRIQUE":
-		enum = KnxManufacturer_M_LEGRAND_APPAREILLAGE_ELECTRIQUE
+		return KnxManufacturer_M_LEGRAND_APPAREILLAGE_ELECTRIQUE, true
 	case "M_PULSE_TECHNOLOGIES":
-		enum = KnxManufacturer_M_PULSE_TECHNOLOGIES
+		return KnxManufacturer_M_PULSE_TECHNOLOGIES, true
 	case "M_CRESTRON":
-		enum = KnxManufacturer_M_CRESTRON
+		return KnxManufacturer_M_CRESTRON, true
 	case "M_STEINEL_PROFESSIONAL":
-		enum = KnxManufacturer_M_STEINEL_PROFESSIONAL
+		return KnxManufacturer_M_STEINEL_PROFESSIONAL, true
 	case "M_BILTON_LED_LIGHTING":
-		enum = KnxManufacturer_M_BILTON_LED_LIGHTING
+		return KnxManufacturer_M_BILTON_LED_LIGHTING, true
 	case "M_DENRO_AG":
-		enum = KnxManufacturer_M_DENRO_AG
+		return KnxManufacturer_M_DENRO_AG, true
 	case "M_GEPRO":
-		enum = KnxManufacturer_M_GEPRO
+		return KnxManufacturer_M_GEPRO, true
 	case "M_PREUSSEN_AUTOMATION":
-		enum = KnxManufacturer_M_PREUSSEN_AUTOMATION
+		return KnxManufacturer_M_PREUSSEN_AUTOMATION, true
 	case "M_ZOPPAS_INDUSTRIES":
-		enum = KnxManufacturer_M_ZOPPAS_INDUSTRIES
+		return KnxManufacturer_M_ZOPPAS_INDUSTRIES, true
 	case "M_MACTECH":
-		enum = KnxManufacturer_M_MACTECH
+		return KnxManufacturer_M_MACTECH, true
 	case "M_TECHNO_TREND":
-		enum = KnxManufacturer_M_TECHNO_TREND
+		return KnxManufacturer_M_TECHNO_TREND, true
 	case "M_MERTEN":
-		enum = KnxManufacturer_M_MERTEN
+		return KnxManufacturer_M_MERTEN, true
 	case "M_FS_CABLES":
-		enum = KnxManufacturer_M_FS_CABLES
+		return KnxManufacturer_M_FS_CABLES, true
 	case "M_DELTA_DORE":
-		enum = KnxManufacturer_M_DELTA_DORE
+		return KnxManufacturer_M_DELTA_DORE, true
 	case "M_EISSOUND":
-		enum = KnxManufacturer_M_EISSOUND
+		return KnxManufacturer_M_EISSOUND, true
 	case "M_CISCO":
-		enum = KnxManufacturer_M_CISCO
+		return KnxManufacturer_M_CISCO, true
 	case "M_DINUY":
-		enum = KnxManufacturer_M_DINUY
+		return KnxManufacturer_M_DINUY, true
 	case "M_IKNIX":
-		enum = KnxManufacturer_M_IKNIX
+		return KnxManufacturer_M_IKNIX, true
 	case "M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH":
-		enum = KnxManufacturer_M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH
+		return KnxManufacturer_M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH, true
 	case "M_EGI_ELECTROACUSTICA_GENERAL_IBERICA":
-		enum = KnxManufacturer_M_EGI_ELECTROACUSTICA_GENERAL_IBERICA
+		return KnxManufacturer_M_EGI_ELECTROACUSTICA_GENERAL_IBERICA, true
 	case "M_BES___INGENIUM":
-		enum = KnxManufacturer_M_BES___INGENIUM
+		return KnxManufacturer_M_BES___INGENIUM, true
 	case "M_ELABNET":
-		enum = KnxManufacturer_M_ELABNET
+		return KnxManufacturer_M_ELABNET, true
 	case "M_ABB_SPA_SACE_DIVISION":
-		enum = KnxManufacturer_M_ABB_SPA_SACE_DIVISION
+		return KnxManufacturer_M_ABB_SPA_SACE_DIVISION, true
 	case "M_BLUMOTIX":
-		enum = KnxManufacturer_M_BLUMOTIX
+		return KnxManufacturer_M_BLUMOTIX, true
 	case "M_HUNTER_DOUGLAS":
-		enum = KnxManufacturer_M_HUNTER_DOUGLAS
+		return KnxManufacturer_M_HUNTER_DOUGLAS, true
 	case "M_APRICUM":
-		enum = KnxManufacturer_M_APRICUM
+		return KnxManufacturer_M_APRICUM, true
 	case "M_TIANSU_AUTOMATION":
-		enum = KnxManufacturer_M_TIANSU_AUTOMATION
+		return KnxManufacturer_M_TIANSU_AUTOMATION, true
 	case "M_BUBENDORFF":
-		enum = KnxManufacturer_M_BUBENDORFF
+		return KnxManufacturer_M_BUBENDORFF, true
 	case "M_MBS_GMBH":
-		enum = KnxManufacturer_M_MBS_GMBH
+		return KnxManufacturer_M_MBS_GMBH, true
 	case "M_ENERTEX_BAYERN_GMBH":
-		enum = KnxManufacturer_M_ENERTEX_BAYERN_GMBH
+		return KnxManufacturer_M_ENERTEX_BAYERN_GMBH, true
 	case "M_BMS":
-		enum = KnxManufacturer_M_BMS
+		return KnxManufacturer_M_BMS, true
 	case "M_SINAPSI":
-		enum = KnxManufacturer_M_SINAPSI
+		return KnxManufacturer_M_SINAPSI, true
 	case "M_EMBEDDED_SYSTEMS_SIA":
-		enum = KnxManufacturer_M_EMBEDDED_SYSTEMS_SIA
+		return KnxManufacturer_M_EMBEDDED_SYSTEMS_SIA, true
 	case "M_SIEDLE_AND_SOEHNE":
-		enum = KnxManufacturer_M_SIEDLE_AND_SOEHNE
+		return KnxManufacturer_M_SIEDLE_AND_SOEHNE, true
 	case "M_KNX1":
-		enum = KnxManufacturer_M_KNX1
+		return KnxManufacturer_M_KNX1, true
 	case "M_TOKKA":
-		enum = KnxManufacturer_M_TOKKA
+		return KnxManufacturer_M_TOKKA, true
 	case "M_NANOSENSE":
-		enum = KnxManufacturer_M_NANOSENSE
+		return KnxManufacturer_M_NANOSENSE, true
 	case "M_PEAR_AUTOMATION_GMBH":
-		enum = KnxManufacturer_M_PEAR_AUTOMATION_GMBH
+		return KnxManufacturer_M_PEAR_AUTOMATION_GMBH, true
 	case "M_DGA":
-		enum = KnxManufacturer_M_DGA
+		return KnxManufacturer_M_DGA, true
 	case "M_LUTRON":
-		enum = KnxManufacturer_M_LUTRON
+		return KnxManufacturer_M_LUTRON, true
 	case "M_AIRZONE___ALTRA":
-		enum = KnxManufacturer_M_AIRZONE___ALTRA
+		return KnxManufacturer_M_AIRZONE___ALTRA, true
 	case "M_LITHOSS_DESIGN_SWITCHES":
-		enum = KnxManufacturer_M_LITHOSS_DESIGN_SWITCHES
+		return KnxManufacturer_M_LITHOSS_DESIGN_SWITCHES, true
 	case "M_THREEATEL":
-		enum = KnxManufacturer_M_THREEATEL
+		return KnxManufacturer_M_THREEATEL, true
 	case "M_PHILIPS_CONTROLS":
-		enum = KnxManufacturer_M_PHILIPS_CONTROLS
+		return KnxManufacturer_M_PHILIPS_CONTROLS, true
 	case "M_EBERLE":
-		enum = KnxManufacturer_M_EBERLE
+		return KnxManufacturer_M_EBERLE, true
 	case "M_VELUX_AS":
-		enum = KnxManufacturer_M_VELUX_AS
+		return KnxManufacturer_M_VELUX_AS, true
 	case "M_LOYTEC":
-		enum = KnxManufacturer_M_LOYTEC
+		return KnxManufacturer_M_LOYTEC, true
 	case "M_EKINEX_S_P_A_":
-		enum = KnxManufacturer_M_EKINEX_S_P_A_
+		return KnxManufacturer_M_EKINEX_S_P_A_, true
 	case "M_SIRLAN_TECHNOLOGIES":
-		enum = KnxManufacturer_M_SIRLAN_TECHNOLOGIES
+		return KnxManufacturer_M_SIRLAN_TECHNOLOGIES, true
 	case "M_PROKNX_SAS":
-		enum = KnxManufacturer_M_PROKNX_SAS
+		return KnxManufacturer_M_PROKNX_SAS, true
 	case "M_IT_GMBH":
-		enum = KnxManufacturer_M_IT_GMBH
+		return KnxManufacturer_M_IT_GMBH, true
 	case "M_RENSON":
-		enum = KnxManufacturer_M_RENSON
+		return KnxManufacturer_M_RENSON, true
 	case "M_HEP_GROUP":
-		enum = KnxManufacturer_M_HEP_GROUP
+		return KnxManufacturer_M_HEP_GROUP, true
 	case "M_BALMART":
-		enum = KnxManufacturer_M_BALMART
+		return KnxManufacturer_M_BALMART, true
 	case "M_GFS_GMBH":
-		enum = KnxManufacturer_M_GFS_GMBH
+		return KnxManufacturer_M_GFS_GMBH, true
 	case "M_GEWISS":
-		enum = KnxManufacturer_M_GEWISS
+		return KnxManufacturer_M_GEWISS, true
 	case "M_SCHENKER_STOREN_AG":
-		enum = KnxManufacturer_M_SCHENKER_STOREN_AG
+		return KnxManufacturer_M_SCHENKER_STOREN_AG, true
 	case "M_ALGODUE_ELETTRONICA_S_R_L_":
-		enum = KnxManufacturer_M_ALGODUE_ELETTRONICA_S_R_L_
+		return KnxManufacturer_M_ALGODUE_ELETTRONICA_S_R_L_, true
 	case "M_ABB_FRANCE":
-		enum = KnxManufacturer_M_ABB_FRANCE
+		return KnxManufacturer_M_ABB_FRANCE, true
 	case "M_MAINTRONIC":
-		enum = KnxManufacturer_M_MAINTRONIC
+		return KnxManufacturer_M_MAINTRONIC, true
 	case "M_VANTAGE":
-		enum = KnxManufacturer_M_VANTAGE
+		return KnxManufacturer_M_VANTAGE, true
 	case "M_FORESIS":
-		enum = KnxManufacturer_M_FORESIS
+		return KnxManufacturer_M_FORESIS, true
 	case "M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM":
-		enum = KnxManufacturer_M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM
+		return KnxManufacturer_M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM, true
 	case "M_WEINZIERL_ENGINEERING_GMBH":
-		enum = KnxManufacturer_M_WEINZIERL_ENGINEERING_GMBH
+		return KnxManufacturer_M_WEINZIERL_ENGINEERING_GMBH, true
 	case "M_MOEHLENHOFF_WAERMETECHNIK_GMBH":
-		enum = KnxManufacturer_M_MOEHLENHOFF_WAERMETECHNIK_GMBH
+		return KnxManufacturer_M_MOEHLENHOFF_WAERMETECHNIK_GMBH, true
 	case "M_PKC_GROUP_OYJ":
-		enum = KnxManufacturer_M_PKC_GROUP_OYJ
+		return KnxManufacturer_M_PKC_GROUP_OYJ, true
 	case "M_ALBERT_ACKERMANN":
-		enum = KnxManufacturer_M_ALBERT_ACKERMANN
+		return KnxManufacturer_M_ALBERT_ACKERMANN, true
 	case "M_B_E_G_":
-		enum = KnxManufacturer_M_B_E_G_
+		return KnxManufacturer_M_B_E_G_, true
 	case "M_ELSNER_ELEKTRONIK_GMBH":
-		enum = KnxManufacturer_M_ELSNER_ELEKTRONIK_GMBH
+		return KnxManufacturer_M_ELSNER_ELEKTRONIK_GMBH, true
 	case "M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_":
-		enum = KnxManufacturer_M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_
+		return KnxManufacturer_M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_, true
 	case "M_EUTRAC":
-		enum = KnxManufacturer_M_EUTRAC
+		return KnxManufacturer_M_EUTRAC, true
 	case "M_GUSTAV_HENSEL_GMBH_AND_CO__KG":
-		enum = KnxManufacturer_M_GUSTAV_HENSEL_GMBH_AND_CO__KG
+		return KnxManufacturer_M_GUSTAV_HENSEL_GMBH_AND_CO__KG, true
 	case "M_GARO_AB":
-		enum = KnxManufacturer_M_GARO_AB
+		return KnxManufacturer_M_GARO_AB, true
 	case "M_WALDMANN_LICHTTECHNIK":
-		enum = KnxManufacturer_M_WALDMANN_LICHTTECHNIK
+		return KnxManufacturer_M_WALDMANN_LICHTTECHNIK, true
 	case "M_SCHUECO":
-		enum = KnxManufacturer_M_SCHUECO
+		return KnxManufacturer_M_SCHUECO, true
 	case "M_EMU":
-		enum = KnxManufacturer_M_EMU
+		return KnxManufacturer_M_EMU, true
 	case "M_JNET_SYSTEMS_AG":
-		enum = KnxManufacturer_M_JNET_SYSTEMS_AG
+		return KnxManufacturer_M_JNET_SYSTEMS_AG, true
 	case "M_SCHUPA_GMBH":
-		enum = KnxManufacturer_M_SCHUPA_GMBH
+		return KnxManufacturer_M_SCHUPA_GMBH, true
 	case "M_TOTAL_SOLUTION_GMBH":
-		enum = KnxManufacturer_M_TOTAL_SOLUTION_GMBH
+		return KnxManufacturer_M_TOTAL_SOLUTION_GMBH, true
 	case "M_O_Y_L__ELECTRONICS":
-		enum = KnxManufacturer_M_O_Y_L__ELECTRONICS
+		return KnxManufacturer_M_O_Y_L__ELECTRONICS, true
 	case "M_GALAX_SYSTEM":
-		enum = KnxManufacturer_M_GALAX_SYSTEM
+		return KnxManufacturer_M_GALAX_SYSTEM, true
 	case "M_DISCH":
-		enum = KnxManufacturer_M_DISCH
+		return KnxManufacturer_M_DISCH, true
 	case "M_AUCOTEAM":
-		enum = KnxManufacturer_M_AUCOTEAM
+		return KnxManufacturer_M_AUCOTEAM, true
 	case "M_LUXMATE_CONTROLS":
-		enum = KnxManufacturer_M_LUXMATE_CONTROLS
+		return KnxManufacturer_M_LUXMATE_CONTROLS, true
 	case "M_DANFOSS":
-		enum = KnxManufacturer_M_DANFOSS
+		return KnxManufacturer_M_DANFOSS, true
 	case "M_AST_GMBH":
-		enum = KnxManufacturer_M_AST_GMBH
+		return KnxManufacturer_M_AST_GMBH, true
 	case "M_WILA_LEUCHTEN":
-		enum = KnxManufacturer_M_WILA_LEUCHTEN
+		return KnxManufacturer_M_WILA_LEUCHTEN, true
 	case "M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK":
-		enum = KnxManufacturer_M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK
+		return KnxManufacturer_M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK, true
 	case "M_ABB_SCHWEIZ":
-		enum = KnxManufacturer_M_ABB_SCHWEIZ
+		return KnxManufacturer_M_ABB_SCHWEIZ, true
 	case "M_LINGG_AND_JANKE":
-		enum = KnxManufacturer_M_LINGG_AND_JANKE
+		return KnxManufacturer_M_LINGG_AND_JANKE, true
 	case "M_SAUTER":
-		enum = KnxManufacturer_M_SAUTER
+		return KnxManufacturer_M_SAUTER, true
 	case "M_SIMU":
-		enum = KnxManufacturer_M_SIMU
+		return KnxManufacturer_M_SIMU, true
 	case "M_THEBEN_HTS_AG":
-		enum = KnxManufacturer_M_THEBEN_HTS_AG
+		return KnxManufacturer_M_THEBEN_HTS_AG, true
 	case "M_AMANN_GMBH":
-		enum = KnxManufacturer_M_AMANN_GMBH
+		return KnxManufacturer_M_AMANN_GMBH, true
 	case "M_BERG_ENERGIEKONTROLLSYSTEME_GMBH":
-		enum = KnxManufacturer_M_BERG_ENERGIEKONTROLLSYSTEME_GMBH
+		return KnxManufacturer_M_BERG_ENERGIEKONTROLLSYSTEME_GMBH, true
 	case "M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH":
-		enum = KnxManufacturer_M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH
+		return KnxManufacturer_M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH, true
 	case "M_OVENTROP_KG":
-		enum = KnxManufacturer_M_OVENTROP_KG
+		return KnxManufacturer_M_OVENTROP_KG, true
 	case "M_GRIESSER_AG":
-		enum = KnxManufacturer_M_GRIESSER_AG
+		return KnxManufacturer_M_GRIESSER_AG, true
 	case "M_IPAS_GMBH":
-		enum = KnxManufacturer_M_IPAS_GMBH
+		return KnxManufacturer_M_IPAS_GMBH, true
 	case "M_FELLER":
-		enum = KnxManufacturer_M_FELLER
+		return KnxManufacturer_M_FELLER, true
 	case "M_ELERO_GMBH":
-		enum = KnxManufacturer_M_ELERO_GMBH
+		return KnxManufacturer_M_ELERO_GMBH, true
 	case "M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_":
-		enum = KnxManufacturer_M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_
+		return KnxManufacturer_M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_, true
 	case "M_METEC_MESSTECHNIK_GMBH":
-		enum = KnxManufacturer_M_METEC_MESSTECHNIK_GMBH
+		return KnxManufacturer_M_METEC_MESSTECHNIK_GMBH, true
 	case "M_ELKA_ELEKTRONIK_GMBH":
-		enum = KnxManufacturer_M_ELKA_ELEKTRONIK_GMBH
+		return KnxManufacturer_M_ELKA_ELEKTRONIK_GMBH, true
 	case "M_ELEKTROANLAGEN_D__NAGEL":
-		enum = KnxManufacturer_M_ELEKTROANLAGEN_D__NAGEL
+		return KnxManufacturer_M_ELEKTROANLAGEN_D__NAGEL, true
 	case "M_TRIDONIC_BAUELEMENTE_GMBH":
-		enum = KnxManufacturer_M_TRIDONIC_BAUELEMENTE_GMBH
+		return KnxManufacturer_M_TRIDONIC_BAUELEMENTE_GMBH, true
 	case "M_STENGLER_GESELLSCHAFT":
-		enum = KnxManufacturer_M_STENGLER_GESELLSCHAFT
+		return KnxManufacturer_M_STENGLER_GESELLSCHAFT, true
 	case "M_SCHNEIDER_ELECTRIC_MG":
-		enum = KnxManufacturer_M_SCHNEIDER_ELECTRIC_MG
+		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_MG, true
 	case "M_KNX_ASSOCIATION":
-		enum = KnxManufacturer_M_KNX_ASSOCIATION
+		return KnxManufacturer_M_KNX_ASSOCIATION, true
 	case "M_VIVO":
-		enum = KnxManufacturer_M_VIVO
+		return KnxManufacturer_M_VIVO, true
 	case "M_ABB":
-		enum = KnxManufacturer_M_ABB
+		return KnxManufacturer_M_ABB, true
 	case "M_GLAMOX_AS":
-		enum = KnxManufacturer_M_GLAMOX_AS
+		return KnxManufacturer_M_GLAMOX_AS, true
 	case "M_HUGO_MUELLER_GMBH_AND_CO_KG":
-		enum = KnxManufacturer_M_HUGO_MUELLER_GMBH_AND_CO_KG
+		return KnxManufacturer_M_HUGO_MUELLER_GMBH_AND_CO_KG, true
 	case "M_SIEMENS_HVAC":
-		enum = KnxManufacturer_M_SIEMENS_HVAC
+		return KnxManufacturer_M_SIEMENS_HVAC, true
 	case "M_APT":
-		enum = KnxManufacturer_M_APT
+		return KnxManufacturer_M_APT, true
 	case "M_HIGHDOM":
-		enum = KnxManufacturer_M_HIGHDOM
+		return KnxManufacturer_M_HIGHDOM, true
 	case "M_TOP_SERVICES":
-		enum = KnxManufacturer_M_TOP_SERVICES
+		return KnxManufacturer_M_TOP_SERVICES, true
 	case "M_AMBIHOME":
-		enum = KnxManufacturer_M_AMBIHOME
+		return KnxManufacturer_M_AMBIHOME, true
 	case "M_DATEC_ELECTRONIC_AG":
-		enum = KnxManufacturer_M_DATEC_ELECTRONIC_AG
+		return KnxManufacturer_M_DATEC_ELECTRONIC_AG, true
 	case "M_ABUS_SECURITY_CENTER":
-		enum = KnxManufacturer_M_ABUS_SECURITY_CENTER
+		return KnxManufacturer_M_ABUS_SECURITY_CENTER, true
 	case "M_LITE_PUTER":
-		enum = KnxManufacturer_M_LITE_PUTER
+		return KnxManufacturer_M_LITE_PUTER, true
 	case "M_TANTRON_ELECTRONIC":
-		enum = KnxManufacturer_M_TANTRON_ELECTRONIC
+		return KnxManufacturer_M_TANTRON_ELECTRONIC, true
 	case "M_DEHN_AND_SOEHNE":
-		enum = KnxManufacturer_M_DEHN_AND_SOEHNE
+		return KnxManufacturer_M_DEHN_AND_SOEHNE, true
 	case "M_INTERRA":
-		enum = KnxManufacturer_M_INTERRA
+		return KnxManufacturer_M_INTERRA, true
 	case "M_DKX_TECH":
-		enum = KnxManufacturer_M_DKX_TECH
+		return KnxManufacturer_M_DKX_TECH, true
 	case "M_VIATRON":
-		enum = KnxManufacturer_M_VIATRON
+		return KnxManufacturer_M_VIATRON, true
 	case "M_NAUTIBUS":
-		enum = KnxManufacturer_M_NAUTIBUS
+		return KnxManufacturer_M_NAUTIBUS, true
 	case "M_ON_SEMICONDUCTOR":
-		enum = KnxManufacturer_M_ON_SEMICONDUCTOR
+		return KnxManufacturer_M_ON_SEMICONDUCTOR, true
 	case "M_LONGCHUANG":
-		enum = KnxManufacturer_M_LONGCHUANG
+		return KnxManufacturer_M_LONGCHUANG, true
 	case "M_AIR_ON_AG":
-		enum = KnxManufacturer_M_AIR_ON_AG
+		return KnxManufacturer_M_AIR_ON_AG, true
 	case "M_IB_COMPANY_GMBH":
-		enum = KnxManufacturer_M_IB_COMPANY_GMBH
+		return KnxManufacturer_M_IB_COMPANY_GMBH, true
 	case "M_SATION_FACTORY":
-		enum = KnxManufacturer_M_SATION_FACTORY
+		return KnxManufacturer_M_SATION_FACTORY, true
 	case "M_AGENTILO_GMBH":
-		enum = KnxManufacturer_M_AGENTILO_GMBH
+		return KnxManufacturer_M_AGENTILO_GMBH, true
 	case "M_CRABTREE":
-		enum = KnxManufacturer_M_CRABTREE
+		return KnxManufacturer_M_CRABTREE, true
 	case "M_MAKEL_ELEKTRIK":
-		enum = KnxManufacturer_M_MAKEL_ELEKTRIK
+		return KnxManufacturer_M_MAKEL_ELEKTRIK, true
 	case "M_HELIOS_VENTILATOREN":
-		enum = KnxManufacturer_M_HELIOS_VENTILATOREN
+		return KnxManufacturer_M_HELIOS_VENTILATOREN, true
 	case "M_OTTO_SOLUTIONS_PTE_LTD":
-		enum = KnxManufacturer_M_OTTO_SOLUTIONS_PTE_LTD
+		return KnxManufacturer_M_OTTO_SOLUTIONS_PTE_LTD, true
 	case "M_AIRMASTER":
-		enum = KnxManufacturer_M_AIRMASTER
+		return KnxManufacturer_M_AIRMASTER, true
 	case "M_VALLOX_GMBH":
-		enum = KnxManufacturer_M_VALLOX_GMBH
+		return KnxManufacturer_M_VALLOX_GMBH, true
 	case "M_DALITEK":
-		enum = KnxManufacturer_M_DALITEK
+		return KnxManufacturer_M_DALITEK, true
 	case "M_ASIN":
-		enum = KnxManufacturer_M_ASIN
+		return KnxManufacturer_M_ASIN, true
 	case "M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_":
-		enum = KnxManufacturer_M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_
+		return KnxManufacturer_M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_, true
 	case "M_ARBONIA":
-		enum = KnxManufacturer_M_ARBONIA
+		return KnxManufacturer_M_ARBONIA, true
 	case "M_KERMI":
-		enum = KnxManufacturer_M_KERMI
+		return KnxManufacturer_M_KERMI, true
 	case "M_EVOKNX":
-		enum = KnxManufacturer_M_EVOKNX
+		return KnxManufacturer_M_EVOKNX, true
 	case "M_PROLUX":
-		enum = KnxManufacturer_M_PROLUX
+		return KnxManufacturer_M_PROLUX, true
 	case "M_CLICHOME":
-		enum = KnxManufacturer_M_CLICHOME
+		return KnxManufacturer_M_CLICHOME, true
 	case "M_COMMAX":
-		enum = KnxManufacturer_M_COMMAX
+		return KnxManufacturer_M_COMMAX, true
 	case "M_EAE":
-		enum = KnxManufacturer_M_EAE
+		return KnxManufacturer_M_EAE, true
 	case "M_TENSE":
-		enum = KnxManufacturer_M_TENSE
+		return KnxManufacturer_M_TENSE, true
 	case "M_SEYOUNG_ELECTRONICS":
-		enum = KnxManufacturer_M_SEYOUNG_ELECTRONICS
+		return KnxManufacturer_M_SEYOUNG_ELECTRONICS, true
 	case "M_LIFEDOMUS":
-		enum = KnxManufacturer_M_LIFEDOMUS
+		return KnxManufacturer_M_LIFEDOMUS, true
 	case "M_EUROTRONIC_TECHNOLOGY_GMBH":
-		enum = KnxManufacturer_M_EUROTRONIC_TECHNOLOGY_GMBH
+		return KnxManufacturer_M_EUROTRONIC_TECHNOLOGY_GMBH, true
 	case "M_TCI":
-		enum = KnxManufacturer_M_TCI
+		return KnxManufacturer_M_TCI, true
 	case "M_RISHUN_ELECTRONIC":
-		enum = KnxManufacturer_M_RISHUN_ELECTRONIC
+		return KnxManufacturer_M_RISHUN_ELECTRONIC, true
 	case "M_PAUL_HOCHKOEPPER":
-		enum = KnxManufacturer_M_PAUL_HOCHKOEPPER
+		return KnxManufacturer_M_PAUL_HOCHKOEPPER, true
 	case "M_ZIPATO":
-		enum = KnxManufacturer_M_ZIPATO
+		return KnxManufacturer_M_ZIPATO, true
 	case "M_CM_SECURITY_GMBH_AND_CO_KG":
-		enum = KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG
+		return KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG, true
 	case "M_QING_CABLES":
-		enum = KnxManufacturer_M_QING_CABLES
+		return KnxManufacturer_M_QING_CABLES, true
 	case "M_LABIO":
-		enum = KnxManufacturer_M_LABIO
+		return KnxManufacturer_M_LABIO, true
 	case "M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_":
-		enum = KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_
+		return KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_, true
 	case "M_E_G_E":
-		enum = KnxManufacturer_M_E_G_E
+		return KnxManufacturer_M_E_G_E, true
 	case "M_NETXAUTOMATION":
-		enum = KnxManufacturer_M_NETXAUTOMATION
+		return KnxManufacturer_M_NETXAUTOMATION, true
 	case "M_TECALOR":
-		enum = KnxManufacturer_M_TECALOR
+		return KnxManufacturer_M_TECALOR, true
 	case "M_URMET_ELECTRONICS_HUIZHOU_LTD_":
-		enum = KnxManufacturer_M_URMET_ELECTRONICS_HUIZHOU_LTD_
+		return KnxManufacturer_M_URMET_ELECTRONICS_HUIZHOU_LTD_, true
 	case "M_PEIYING_BUILDING_CONTROL":
-		enum = KnxManufacturer_M_PEIYING_BUILDING_CONTROL
+		return KnxManufacturer_M_PEIYING_BUILDING_CONTROL, true
 	case "M_ALTENBURGER_ELECTRONIC":
-		enum = KnxManufacturer_M_ALTENBURGER_ELECTRONIC
+		return KnxManufacturer_M_ALTENBURGER_ELECTRONIC, true
 	case "M_BPT_S_P_A__A_SOCIO_UNICO":
-		enum = KnxManufacturer_M_BPT_S_P_A__A_SOCIO_UNICO
+		return KnxManufacturer_M_BPT_S_P_A__A_SOCIO_UNICO, true
 	case "M_KANONTEC___KANONBUS":
-		enum = KnxManufacturer_M_KANONTEC___KANONBUS
+		return KnxManufacturer_M_KANONTEC___KANONBUS, true
 	case "M_ISER_TECH":
-		enum = KnxManufacturer_M_ISER_TECH
+		return KnxManufacturer_M_ISER_TECH, true
 	case "M_FINELINE":
-		enum = KnxManufacturer_M_FINELINE
+		return KnxManufacturer_M_FINELINE, true
 	case "M_CP_ELECTRONICS_LTD":
-		enum = KnxManufacturer_M_CP_ELECTRONICS_LTD
+		return KnxManufacturer_M_CP_ELECTRONICS_LTD, true
 	case "M_NIKO_SERVODAN_AS":
-		enum = KnxManufacturer_M_NIKO_SERVODAN_AS
+		return KnxManufacturer_M_NIKO_SERVODAN_AS, true
 	case "M_SIMON_309":
-		enum = KnxManufacturer_M_SIMON_309
+		return KnxManufacturer_M_SIMON_309, true
 	case "M_GM_MODULAR_PVT__LTD_":
-		enum = KnxManufacturer_M_GM_MODULAR_PVT__LTD_
+		return KnxManufacturer_M_GM_MODULAR_PVT__LTD_, true
 	case "M_FU_CHENG_INTELLIGENCE":
-		enum = KnxManufacturer_M_FU_CHENG_INTELLIGENCE
+		return KnxManufacturer_M_FU_CHENG_INTELLIGENCE, true
 	case "M_NEXKON":
-		enum = KnxManufacturer_M_NEXKON
+		return KnxManufacturer_M_NEXKON, true
 	case "M_GRAESSLIN":
-		enum = KnxManufacturer_M_GRAESSLIN
+		return KnxManufacturer_M_GRAESSLIN, true
 	case "M_FEEL_S_R_L":
-		enum = KnxManufacturer_M_FEEL_S_R_L
+		return KnxManufacturer_M_FEEL_S_R_L, true
 	case "M_NOT_ASSIGNED_314":
-		enum = KnxManufacturer_M_NOT_ASSIGNED_314
+		return KnxManufacturer_M_NOT_ASSIGNED_314, true
 	case "M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_":
-		enum = KnxManufacturer_M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_
+		return KnxManufacturer_M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_, true
 	case "M_JIUZHOU_GREEBLE":
-		enum = KnxManufacturer_M_JIUZHOU_GREEBLE
+		return KnxManufacturer_M_JIUZHOU_GREEBLE, true
 	case "M_AUMUELLER_AUMATIC_GMBH":
-		enum = KnxManufacturer_M_AUMUELLER_AUMATIC_GMBH
+		return KnxManufacturer_M_AUMUELLER_AUMATIC_GMBH, true
 	case "M_ETMAN_ELECTRIC":
-		enum = KnxManufacturer_M_ETMAN_ELECTRIC
+		return KnxManufacturer_M_ETMAN_ELECTRIC, true
 	case "M_BLACK_NOVA":
-		enum = KnxManufacturer_M_BLACK_NOVA
+		return KnxManufacturer_M_BLACK_NOVA, true
 	case "M_ZIDATECH_AG":
-		enum = KnxManufacturer_M_ZIDATECH_AG
+		return KnxManufacturer_M_ZIDATECH_AG, true
 	case "M_IDGS_BVBA":
-		enum = KnxManufacturer_M_IDGS_BVBA
+		return KnxManufacturer_M_IDGS_BVBA, true
 	case "M_DAKANIMO":
-		enum = KnxManufacturer_M_DAKANIMO
+		return KnxManufacturer_M_DAKANIMO, true
 	case "M_SIMON_42":
-		enum = KnxManufacturer_M_SIMON_42
+		return KnxManufacturer_M_SIMON_42, true
 	case "M_TREBOR_AUTOMATION_AB":
-		enum = KnxManufacturer_M_TREBOR_AUTOMATION_AB
+		return KnxManufacturer_M_TREBOR_AUTOMATION_AB, true
 	case "M_SATEL_SP__Z_O_O_":
-		enum = KnxManufacturer_M_SATEL_SP__Z_O_O_
+		return KnxManufacturer_M_SATEL_SP__Z_O_O_, true
 	case "M_RUSSOUND__INC_":
-		enum = KnxManufacturer_M_RUSSOUND__INC_
+		return KnxManufacturer_M_RUSSOUND__INC_, true
 	case "M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD":
-		enum = KnxManufacturer_M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD
+		return KnxManufacturer_M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD, true
 	case "M_CONSORZIO_TERRANUOVA":
-		enum = KnxManufacturer_M_CONSORZIO_TERRANUOVA
+		return KnxManufacturer_M_CONSORZIO_TERRANUOVA, true
 	case "M_WOLF_HEIZTECHNIK_GMBH":
-		enum = KnxManufacturer_M_WOLF_HEIZTECHNIK_GMBH
+		return KnxManufacturer_M_WOLF_HEIZTECHNIK_GMBH, true
 	case "M_SONTEC":
-		enum = KnxManufacturer_M_SONTEC
+		return KnxManufacturer_M_SONTEC, true
 	case "M_BELCOM_CABLES_LTD_":
-		enum = KnxManufacturer_M_BELCOM_CABLES_LTD_
+		return KnxManufacturer_M_BELCOM_CABLES_LTD_, true
 	case "M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_":
-		enum = KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_
+		return KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_, true
 	case "M_ACREL":
-		enum = KnxManufacturer_M_ACREL
+		return KnxManufacturer_M_ACREL, true
 	case "M_VIMAR":
-		enum = KnxManufacturer_M_VIMAR
+		return KnxManufacturer_M_VIMAR, true
 	case "M_FRANKE_AQUAROTTER_GMBH":
-		enum = KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH
+		return KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH, true
 	case "M_ORION_SYSTEMS":
-		enum = KnxManufacturer_M_ORION_SYSTEMS
+		return KnxManufacturer_M_ORION_SYSTEMS, true
 	case "M_SCHRACK_TECHNIK_GMBH":
-		enum = KnxManufacturer_M_SCHRACK_TECHNIK_GMBH
+		return KnxManufacturer_M_SCHRACK_TECHNIK_GMBH, true
 	case "M_INSPRID":
-		enum = KnxManufacturer_M_INSPRID
+		return KnxManufacturer_M_INSPRID, true
 	case "M_SUNRICHER":
-		enum = KnxManufacturer_M_SUNRICHER
+		return KnxManufacturer_M_SUNRICHER, true
 	case "M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_":
-		enum = KnxManufacturer_M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_
+		return KnxManufacturer_M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_, true
 	case "M_AUREX":
-		enum = KnxManufacturer_M_AUREX
+		return KnxManufacturer_M_AUREX, true
 	case "M_JOSEF_BARTHELME_GMBH_AND_CO__KG":
-		enum = KnxManufacturer_M_JOSEF_BARTHELME_GMBH_AND_CO__KG
+		return KnxManufacturer_M_JOSEF_BARTHELME_GMBH_AND_CO__KG, true
 	case "M_ARCHITECTURE_NUMERIQUE":
-		enum = KnxManufacturer_M_ARCHITECTURE_NUMERIQUE
+		return KnxManufacturer_M_ARCHITECTURE_NUMERIQUE, true
 	case "M_UP_GROUP":
-		enum = KnxManufacturer_M_UP_GROUP
+		return KnxManufacturer_M_UP_GROUP, true
 	case "M_MOELLER_GEBAEUDEAUTOMATION_KG":
-		enum = KnxManufacturer_M_MOELLER_GEBAEUDEAUTOMATION_KG
+		return KnxManufacturer_M_MOELLER_GEBAEUDEAUTOMATION_KG, true
 	case "M_TEKNOS_AVINNO":
-		enum = KnxManufacturer_M_TEKNOS_AVINNO
+		return KnxManufacturer_M_TEKNOS_AVINNO, true
 	case "M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY":
-		enum = KnxManufacturer_M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY
+		return KnxManufacturer_M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY, true
 	case "M_THERMOKON_SENSORTECHNIK_GMBH":
-		enum = KnxManufacturer_M_THERMOKON_SENSORTECHNIK_GMBH
+		return KnxManufacturer_M_THERMOKON_SENSORTECHNIK_GMBH, true
 	case "M_BELIMO_AUTOMATION_AG":
-		enum = KnxManufacturer_M_BELIMO_AUTOMATION_AG
+		return KnxManufacturer_M_BELIMO_AUTOMATION_AG, true
 	case "M_ZEHNDER_GROUP_INTERNATIONAL_AG":
-		enum = KnxManufacturer_M_ZEHNDER_GROUP_INTERNATIONAL_AG
+		return KnxManufacturer_M_ZEHNDER_GROUP_INTERNATIONAL_AG, true
 	case "M_SKS_KINKEL_ELEKTRONIK":
-		enum = KnxManufacturer_M_SKS_KINKEL_ELEKTRONIK
+		return KnxManufacturer_M_SKS_KINKEL_ELEKTRONIK, true
 	case "M_ECE_WURMITZER_GMBH":
-		enum = KnxManufacturer_M_ECE_WURMITZER_GMBH
+		return KnxManufacturer_M_ECE_WURMITZER_GMBH, true
 	case "M_LARS":
-		enum = KnxManufacturer_M_LARS
+		return KnxManufacturer_M_LARS, true
 	case "M_URC":
-		enum = KnxManufacturer_M_URC
+		return KnxManufacturer_M_URC, true
 	case "M_LIGHTCONTROL":
-		enum = KnxManufacturer_M_LIGHTCONTROL
+		return KnxManufacturer_M_LIGHTCONTROL, true
 	case "M_ALBRECHT_JUNG":
-		enum = KnxManufacturer_M_ALBRECHT_JUNG
+		return KnxManufacturer_M_ALBRECHT_JUNG, true
 	case "M_ELTAKO":
-		enum = KnxManufacturer_M_ELTAKO
+		return KnxManufacturer_M_ELTAKO, true
 	case "M_SHENZHEN_YM":
-		enum = KnxManufacturer_M_SHENZHEN_YM
+		return KnxManufacturer_M_SHENZHEN_YM, true
 	case "M_MEAN_WELL_ENTERPRISES_CO__LTD_":
-		enum = KnxManufacturer_M_MEAN_WELL_ENTERPRISES_CO__LTD_
+		return KnxManufacturer_M_MEAN_WELL_ENTERPRISES_CO__LTD_, true
 	case "M_OSIX":
-		enum = KnxManufacturer_M_OSIX
+		return KnxManufacturer_M_OSIX, true
 	case "M_AYPRO_TECHNOLOGY":
-		enum = KnxManufacturer_M_AYPRO_TECHNOLOGY
+		return KnxManufacturer_M_AYPRO_TECHNOLOGY, true
 	case "M_HEFEI_ECOLITE_SOFTWARE":
-		enum = KnxManufacturer_M_HEFEI_ECOLITE_SOFTWARE
+		return KnxManufacturer_M_HEFEI_ECOLITE_SOFTWARE, true
 	case "M_ENNO":
-		enum = KnxManufacturer_M_ENNO
+		return KnxManufacturer_M_ENNO, true
 	case "M_OHOSURE":
-		enum = KnxManufacturer_M_OHOSURE
+		return KnxManufacturer_M_OHOSURE, true
 	case "M_GAREFOWL":
-		enum = KnxManufacturer_M_GAREFOWL
+		return KnxManufacturer_M_GAREFOWL, true
 	case "M_GEZE":
-		enum = KnxManufacturer_M_GEZE
+		return KnxManufacturer_M_GEZE, true
 	case "M_LG_ELECTRONICS_INC_":
-		enum = KnxManufacturer_M_LG_ELECTRONICS_INC_
+		return KnxManufacturer_M_LG_ELECTRONICS_INC_, true
 	case "M_BOSCH_SIEMENS_HAUSHALTSGERAETE":
-		enum = KnxManufacturer_M_BOSCH_SIEMENS_HAUSHALTSGERAETE
+		return KnxManufacturer_M_BOSCH_SIEMENS_HAUSHALTSGERAETE, true
 	case "M_SMC_INTERIORS":
-		enum = KnxManufacturer_M_SMC_INTERIORS
+		return KnxManufacturer_M_SMC_INTERIORS, true
 	case "M_NOT_ASSIGNED_364":
-		enum = KnxManufacturer_M_NOT_ASSIGNED_364
+		return KnxManufacturer_M_NOT_ASSIGNED_364, true
 	case "M_SCS_CABLE":
-		enum = KnxManufacturer_M_SCS_CABLE
+		return KnxManufacturer_M_SCS_CABLE, true
 	case "M_HOVAL":
-		enum = KnxManufacturer_M_HOVAL
+		return KnxManufacturer_M_HOVAL, true
 	case "M_CANST":
-		enum = KnxManufacturer_M_CANST
+		return KnxManufacturer_M_CANST, true
 	case "M_HANGZHOU_BERLIN":
-		enum = KnxManufacturer_M_HANGZHOU_BERLIN
+		return KnxManufacturer_M_HANGZHOU_BERLIN, true
 	case "M_EVN_LICHTTECHNIK":
-		enum = KnxManufacturer_M_EVN_LICHTTECHNIK
+		return KnxManufacturer_M_EVN_LICHTTECHNIK, true
 	case "M_RUTEC":
-		enum = KnxManufacturer_M_RUTEC
+		return KnxManufacturer_M_RUTEC, true
 	case "M_FINDER":
-		enum = KnxManufacturer_M_FINDER
+		return KnxManufacturer_M_FINDER, true
 	case "M_FUJITSU_GENERAL_LIMITED":
-		enum = KnxManufacturer_M_FUJITSU_GENERAL_LIMITED
+		return KnxManufacturer_M_FUJITSU_GENERAL_LIMITED, true
 	case "M_RITTO_GMBHANDCO_KG":
-		enum = KnxManufacturer_M_RITTO_GMBHANDCO_KG
+		return KnxManufacturer_M_RITTO_GMBHANDCO_KG, true
 	case "M_ZF_FRIEDRICHSHAFEN_AG":
-		enum = KnxManufacturer_M_ZF_FRIEDRICHSHAFEN_AG
+		return KnxManufacturer_M_ZF_FRIEDRICHSHAFEN_AG, true
 	case "M_CREALED":
-		enum = KnxManufacturer_M_CREALED
+		return KnxManufacturer_M_CREALED, true
 	case "M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED":
-		enum = KnxManufacturer_M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED
+		return KnxManufacturer_M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED, true
 	case "M_EPlus":
-		enum = KnxManufacturer_M_EPlus
+		return KnxManufacturer_M_EPlus, true
 	case "M_ITALCOND":
-		enum = KnxManufacturer_M_ITALCOND
+		return KnxManufacturer_M_ITALCOND, true
 	case "M_SATION":
-		enum = KnxManufacturer_M_SATION
+		return KnxManufacturer_M_SATION, true
 	case "M_NEWBEST":
-		enum = KnxManufacturer_M_NEWBEST
+		return KnxManufacturer_M_NEWBEST, true
 	case "M_GDS_DIGITAL_SYSTEMS":
-		enum = KnxManufacturer_M_GDS_DIGITAL_SYSTEMS
+		return KnxManufacturer_M_GDS_DIGITAL_SYSTEMS, true
 	case "M_IDDERO":
-		enum = KnxManufacturer_M_IDDERO
+		return KnxManufacturer_M_IDDERO, true
 	case "M_MBNLED":
-		enum = KnxManufacturer_M_MBNLED
+		return KnxManufacturer_M_MBNLED, true
 	case "M_POWER_CONTROLS":
-		enum = KnxManufacturer_M_POWER_CONTROLS
+		return KnxManufacturer_M_POWER_CONTROLS, true
 	case "M_VITRUM":
-		enum = KnxManufacturer_M_VITRUM
+		return KnxManufacturer_M_VITRUM, true
 	case "M_EKEY_BIOMETRIC_SYSTEMS_GMBH":
-		enum = KnxManufacturer_M_EKEY_BIOMETRIC_SYSTEMS_GMBH
+		return KnxManufacturer_M_EKEY_BIOMETRIC_SYSTEMS_GMBH, true
 	case "M_AMC":
-		enum = KnxManufacturer_M_AMC
+		return KnxManufacturer_M_AMC, true
 	case "M_TRILUX_GMBH_AND_CO__KG":
-		enum = KnxManufacturer_M_TRILUX_GMBH_AND_CO__KG
+		return KnxManufacturer_M_TRILUX_GMBH_AND_CO__KG, true
 	case "M_WEXCEDO":
-		enum = KnxManufacturer_M_WEXCEDO
+		return KnxManufacturer_M_WEXCEDO, true
 	case "M_VEMER_SPA":
-		enum = KnxManufacturer_M_VEMER_SPA
+		return KnxManufacturer_M_VEMER_SPA, true
 	case "M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG":
-		enum = KnxManufacturer_M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG
+		return KnxManufacturer_M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG, true
 	case "M_CITRON":
-		enum = KnxManufacturer_M_CITRON
+		return KnxManufacturer_M_CITRON, true
 	case "M_SHENZHEN_HEGUANG":
-		enum = KnxManufacturer_M_SHENZHEN_HEGUANG
+		return KnxManufacturer_M_SHENZHEN_HEGUANG, true
 	case "M_NOT_ASSIGNED_392":
-		enum = KnxManufacturer_M_NOT_ASSIGNED_392
+		return KnxManufacturer_M_NOT_ASSIGNED_392, true
 	case "M_ZUMTOBEL":
-		enum = KnxManufacturer_M_ZUMTOBEL
+		return KnxManufacturer_M_ZUMTOBEL, true
 	case "M_TRANE_B_V_B_A":
-		enum = KnxManufacturer_M_TRANE_B_V_B_A
+		return KnxManufacturer_M_TRANE_B_V_B_A, true
 	case "M_CAREL":
-		enum = KnxManufacturer_M_CAREL
+		return KnxManufacturer_M_CAREL, true
 	case "M_PROLITE_CONTROLS":
-		enum = KnxManufacturer_M_PROLITE_CONTROLS
+		return KnxManufacturer_M_PROLITE_CONTROLS, true
 	case "M_BOSMER":
-		enum = KnxManufacturer_M_BOSMER
+		return KnxManufacturer_M_BOSMER, true
 	case "M_EUCHIPS":
-		enum = KnxManufacturer_M_EUCHIPS
+		return KnxManufacturer_M_EUCHIPS, true
 	case "M_CONNECT_THINKA_CONNECT":
-		enum = KnxManufacturer_M_CONNECT_THINKA_CONNECT
+		return KnxManufacturer_M_CONNECT_THINKA_CONNECT, true
 	case "M_PEAKNX_A_DOGAWIST_COMPANY":
-		enum = KnxManufacturer_M_PEAKNX_A_DOGAWIST_COMPANY
+		return KnxManufacturer_M_PEAKNX_A_DOGAWIST_COMPANY, true
 	case "M_ACEMATIC":
-		enum = KnxManufacturer_M_ACEMATIC
+		return KnxManufacturer_M_ACEMATIC, true
 	case "M_ELAUSYS":
-		enum = KnxManufacturer_M_ELAUSYS
+		return KnxManufacturer_M_ELAUSYS, true
 	case "M_ITK_ENGINEERING_AG":
-		enum = KnxManufacturer_M_ITK_ENGINEERING_AG
+		return KnxManufacturer_M_ITK_ENGINEERING_AG, true
 	case "M_PHOENIX_CONTACT":
-		enum = KnxManufacturer_M_PHOENIX_CONTACT
+		return KnxManufacturer_M_PHOENIX_CONTACT, true
 	case "M_INTEGRA_METERING_AG":
-		enum = KnxManufacturer_M_INTEGRA_METERING_AG
+		return KnxManufacturer_M_INTEGRA_METERING_AG, true
 	case "M_FMS_HOSPITALITY_PTE_LTD":
-		enum = KnxManufacturer_M_FMS_HOSPITALITY_PTE_LTD
+		return KnxManufacturer_M_FMS_HOSPITALITY_PTE_LTD, true
 	case "M_NUVO":
-		enum = KnxManufacturer_M_NUVO
+		return KnxManufacturer_M_NUVO, true
 	case "M_U__LUX_GMBH":
-		enum = KnxManufacturer_M_U__LUX_GMBH
+		return KnxManufacturer_M_U__LUX_GMBH, true
 	case "M_BRUMBERG_LEUCHTEN":
-		enum = KnxManufacturer_M_BRUMBERG_LEUCHTEN
+		return KnxManufacturer_M_BRUMBERG_LEUCHTEN, true
 	case "M_LIME":
-		enum = KnxManufacturer_M_LIME
+		return KnxManufacturer_M_LIME, true
 	case "M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_":
-		enum = KnxManufacturer_M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_
+		return KnxManufacturer_M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_, true
 	case "M_KAVOSHPISHRO_ASIA":
-		enum = KnxManufacturer_M_KAVOSHPISHRO_ASIA
+		return KnxManufacturer_M_KAVOSHPISHRO_ASIA, true
 	case "M_V2_SPA":
-		enum = KnxManufacturer_M_V2_SPA
+		return KnxManufacturer_M_V2_SPA, true
 	case "M_JOHNSON_CONTROLS":
-		enum = KnxManufacturer_M_JOHNSON_CONTROLS
+		return KnxManufacturer_M_JOHNSON_CONTROLS, true
 	case "M_WAGO_KONTAKTTECHNIK":
-		enum = KnxManufacturer_M_WAGO_KONTAKTTECHNIK
+		return KnxManufacturer_M_WAGO_KONTAKTTECHNIK, true
 	case "M_ARKUD":
-		enum = KnxManufacturer_M_ARKUD
+		return KnxManufacturer_M_ARKUD, true
 	case "M_IRIDIUM_LTD_":
-		enum = KnxManufacturer_M_IRIDIUM_LTD_
+		return KnxManufacturer_M_IRIDIUM_LTD_, true
 	case "M_BSMART":
-		enum = KnxManufacturer_M_BSMART
+		return KnxManufacturer_M_BSMART, true
 	case "M_BAB_TECHNOLOGIE_GMBH":
-		enum = KnxManufacturer_M_BAB_TECHNOLOGIE_GMBH
+		return KnxManufacturer_M_BAB_TECHNOLOGIE_GMBH, true
 	case "M_NICE_SPA":
-		enum = KnxManufacturer_M_NICE_SPA
+		return KnxManufacturer_M_NICE_SPA, true
 	case "M_REDFISH_GROUP_PTY_LTD":
-		enum = KnxManufacturer_M_REDFISH_GROUP_PTY_LTD
+		return KnxManufacturer_M_REDFISH_GROUP_PTY_LTD, true
 	case "M_SABIANA_SPA":
-		enum = KnxManufacturer_M_SABIANA_SPA
+		return KnxManufacturer_M_SABIANA_SPA, true
 	case "M_UBEE_INTERACTIVE_EUROPE":
-		enum = KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE
+		return KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE, true
 	case "M_REXEL":
-		enum = KnxManufacturer_M_REXEL
+		return KnxManufacturer_M_REXEL, true
 	case "M_GES_TEKNIK_A_S_":
-		enum = KnxManufacturer_M_GES_TEKNIK_A_S_
+		return KnxManufacturer_M_GES_TEKNIK_A_S_, true
 	case "M_KNXPRESSO":
-		enum = KnxManufacturer_M_KNXPRESSO
+		return KnxManufacturer_M_KNXPRESSO, true
 	case "M_AVE_S_P_A_":
-		enum = KnxManufacturer_M_AVE_S_P_A_
+		return KnxManufacturer_M_AVE_S_P_A_, true
 	case "M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_":
-		enum = KnxManufacturer_M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_, true
 	case "M_ARCOM":
-		enum = KnxManufacturer_M_ARCOM
+		return KnxManufacturer_M_ARCOM, true
 	case "M_VIA_TECHNOLOGIES__INC_":
-		enum = KnxManufacturer_M_VIA_TECHNOLOGIES__INC_
+		return KnxManufacturer_M_VIA_TECHNOLOGIES__INC_, true
 	case "M_FEELSMART_":
-		enum = KnxManufacturer_M_FEELSMART_
+		return KnxManufacturer_M_FEELSMART_, true
 	case "M_SUPCON":
-		enum = KnxManufacturer_M_SUPCON
+		return KnxManufacturer_M_SUPCON, true
 	case "M_MANIC":
-		enum = KnxManufacturer_M_MANIC
+		return KnxManufacturer_M_MANIC, true
 	case "M_TDE_GMBH":
-		enum = KnxManufacturer_M_TDE_GMBH
+		return KnxManufacturer_M_TDE_GMBH, true
 	case "M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_":
-		enum = KnxManufacturer_M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_
+		return KnxManufacturer_M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_, true
 	case "M_EWTECH":
-		enum = KnxManufacturer_M_EWTECH
+		return KnxManufacturer_M_EWTECH, true
 	case "M_WIELAND_ELECTRIC":
-		enum = KnxManufacturer_M_WIELAND_ELECTRIC
+		return KnxManufacturer_M_WIELAND_ELECTRIC, true
 	case "M_KLUGER_AUTOMATION_GMBH":
-		enum = KnxManufacturer_M_KLUGER_AUTOMATION_GMBH
+		return KnxManufacturer_M_KLUGER_AUTOMATION_GMBH, true
 	case "M_JOONGANG_CONTROL":
-		enum = KnxManufacturer_M_JOONGANG_CONTROL
+		return KnxManufacturer_M_JOONGANG_CONTROL, true
 	case "M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_":
-		enum = KnxManufacturer_M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_
+		return KnxManufacturer_M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_, true
 	case "M_IME_S_P_A_":
-		enum = KnxManufacturer_M_IME_S_P_A_
+		return KnxManufacturer_M_IME_S_P_A_, true
 	case "M_SICHUAN_HAODING":
-		enum = KnxManufacturer_M_SICHUAN_HAODING
+		return KnxManufacturer_M_SICHUAN_HAODING, true
 	case "M_MINDJAGA_LTD_":
-		enum = KnxManufacturer_M_MINDJAGA_LTD_
+		return KnxManufacturer_M_MINDJAGA_LTD_, true
 	case "M_RUILI_SMART_CONTROL":
-		enum = KnxManufacturer_M_RUILI_SMART_CONTROL
+		return KnxManufacturer_M_RUILI_SMART_CONTROL, true
 	case "M_CODESYS_GMBH":
-		enum = KnxManufacturer_M_CODESYS_GMBH
+		return KnxManufacturer_M_CODESYS_GMBH, true
 	case "M_MOORGEN_DEUTSCHLAND_GMBH":
-		enum = KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH
+		return KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH, true
 	case "M_CULLMANN_TECH":
-		enum = KnxManufacturer_M_CULLMANN_TECH
+		return KnxManufacturer_M_CULLMANN_TECH, true
 	case "M_HERMANN_KLEINHUIS":
-		enum = KnxManufacturer_M_HERMANN_KLEINHUIS
+		return KnxManufacturer_M_HERMANN_KLEINHUIS, true
 	case "M_MERCK_WINDOW_TECHNOLOGIES_B_V_":
-		enum = KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_
+		return KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_, true
 	case "M_ABEGO":
-		enum = KnxManufacturer_M_ABEGO
+		return KnxManufacturer_M_ABEGO, true
 	case "M_MYGEKKO":
-		enum = KnxManufacturer_M_MYGEKKO
+		return KnxManufacturer_M_MYGEKKO, true
 	case "M_ERGO3_SARL":
-		enum = KnxManufacturer_M_ERGO3_SARL
+		return KnxManufacturer_M_ERGO3_SARL, true
 	case "M_STMICROELECTRONICS_INTERNATIONAL_N_V_":
-		enum = KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_
+		return KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_, true
 	case "M_CJC_SYSTEMS":
-		enum = KnxManufacturer_M_CJC_SYSTEMS
+		return KnxManufacturer_M_CJC_SYSTEMS, true
 	case "M_SUDOKU":
-		enum = KnxManufacturer_M_SUDOKU
+		return KnxManufacturer_M_SUDOKU, true
 	case "M_AZ_E_LITE_PTE_LTD":
-		enum = KnxManufacturer_M_AZ_E_LITE_PTE_LTD
+		return KnxManufacturer_M_AZ_E_LITE_PTE_LTD, true
 	case "M_ARLIGHT":
-		enum = KnxManufacturer_M_ARLIGHT
+		return KnxManufacturer_M_ARLIGHT, true
 	case "M_GRUENBECK_WASSERAUFBEREITUNG_GMBH":
-		enum = KnxManufacturer_M_GRUENBECK_WASSERAUFBEREITUNG_GMBH
+		return KnxManufacturer_M_GRUENBECK_WASSERAUFBEREITUNG_GMBH, true
 	case "M_BTICINO":
-		enum = KnxManufacturer_M_BTICINO
+		return KnxManufacturer_M_BTICINO, true
 	case "M_STIEBEL_ELTRON":
-		enum = KnxManufacturer_M_STIEBEL_ELTRON
+		return KnxManufacturer_M_STIEBEL_ELTRON, true
 	case "M_MODULE_ELECTRONIC":
-		enum = KnxManufacturer_M_MODULE_ELECTRONIC
+		return KnxManufacturer_M_MODULE_ELECTRONIC, true
 	case "M_KOPLAT":
-		enum = KnxManufacturer_M_KOPLAT
+		return KnxManufacturer_M_KOPLAT, true
 	case "M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD":
-		enum = KnxManufacturer_M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD, true
 	case "M_ILEVIA":
-		enum = KnxManufacturer_M_ILEVIA
+		return KnxManufacturer_M_ILEVIA, true
 	case "M_LN_SYSTEMTEQ":
-		enum = KnxManufacturer_M_LN_SYSTEMTEQ
+		return KnxManufacturer_M_LN_SYSTEMTEQ, true
 	case "M_HISENSE_SMARTHOME":
-		enum = KnxManufacturer_M_HISENSE_SMARTHOME
+		return KnxManufacturer_M_HISENSE_SMARTHOME, true
 	case "M_FLINK_AUTOMATION_SYSTEM":
-		enum = KnxManufacturer_M_FLINK_AUTOMATION_SYSTEM
+		return KnxManufacturer_M_FLINK_AUTOMATION_SYSTEM, true
 	case "M_XXTER_BV":
-		enum = KnxManufacturer_M_XXTER_BV
+		return KnxManufacturer_M_XXTER_BV, true
 	case "M_LYNXUS_TECHNOLOGY":
-		enum = KnxManufacturer_M_LYNXUS_TECHNOLOGY
+		return KnxManufacturer_M_LYNXUS_TECHNOLOGY, true
 	case "M_ROBOT_S_A_":
-		enum = KnxManufacturer_M_ROBOT_S_A_
+		return KnxManufacturer_M_ROBOT_S_A_, true
 	case "M_TEHALIT":
-		enum = KnxManufacturer_M_TEHALIT
+		return KnxManufacturer_M_TEHALIT, true
 	case "M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_":
-		enum = KnxManufacturer_M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_
+		return KnxManufacturer_M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_, true
 	case "M_NOBLESSE":
-		enum = KnxManufacturer_M_NOBLESSE
+		return KnxManufacturer_M_NOBLESSE, true
 	case "M_ADVANCED_DEVICES":
-		enum = KnxManufacturer_M_ADVANCED_DEVICES
+		return KnxManufacturer_M_ADVANCED_DEVICES, true
 	case "M_ATRINA_BUILDING_AUTOMATION_CO__LTD":
-		enum = KnxManufacturer_M_ATRINA_BUILDING_AUTOMATION_CO__LTD
+		return KnxManufacturer_M_ATRINA_BUILDING_AUTOMATION_CO__LTD, true
 	case "M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_":
-		enum = KnxManufacturer_M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_
+		return KnxManufacturer_M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_, true
 	case "M_WESTERSTRAND_URFABRIK_AB":
-		enum = KnxManufacturer_M_WESTERSTRAND_URFABRIK_AB
+		return KnxManufacturer_M_WESTERSTRAND_URFABRIK_AB, true
 	case "M_CONTROL4_CORPORATE":
-		enum = KnxManufacturer_M_CONTROL4_CORPORATE
+		return KnxManufacturer_M_CONTROL4_CORPORATE, true
 	case "M_ONTROL":
-		enum = KnxManufacturer_M_ONTROL
+		return KnxManufacturer_M_ONTROL, true
 	case "M_STARNET":
-		enum = KnxManufacturer_M_STARNET
+		return KnxManufacturer_M_STARNET, true
 	case "M_BETA_CAVI":
-		enum = KnxManufacturer_M_BETA_CAVI
+		return KnxManufacturer_M_BETA_CAVI, true
 	case "M_THEBEN_AG":
-		enum = KnxManufacturer_M_THEBEN_AG
+		return KnxManufacturer_M_THEBEN_AG, true
 	case "M_EASEMORE":
-		enum = KnxManufacturer_M_EASEMORE
+		return KnxManufacturer_M_EASEMORE, true
 	case "M_VIVALDI_SRL":
-		enum = KnxManufacturer_M_VIVALDI_SRL
+		return KnxManufacturer_M_VIVALDI_SRL, true
 	case "M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI":
-		enum = KnxManufacturer_M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI
+		return KnxManufacturer_M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI, true
 	case "M_HWISCON":
-		enum = KnxManufacturer_M_HWISCON
+		return KnxManufacturer_M_HWISCON, true
 	case "M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_":
-		enum = KnxManufacturer_M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_, true
 	case "M_KAMPMANN":
-		enum = KnxManufacturer_M_KAMPMANN
+		return KnxManufacturer_M_KAMPMANN, true
 	case "M_IMPOLUX_GMBH_LEDIMAX":
-		enum = KnxManufacturer_M_IMPOLUX_GMBH_LEDIMAX
+		return KnxManufacturer_M_IMPOLUX_GMBH_LEDIMAX, true
 	case "M_EVAUX":
-		enum = KnxManufacturer_M_EVAUX
+		return KnxManufacturer_M_EVAUX, true
 	case "M_WEBRO_CABLES_AND_CONNECTORS_LIMITED":
-		enum = KnxManufacturer_M_WEBRO_CABLES_AND_CONNECTORS_LIMITED
+		return KnxManufacturer_M_WEBRO_CABLES_AND_CONNECTORS_LIMITED, true
 	case "M_SHANGHAI_E_TECH_SOLUTION":
-		enum = KnxManufacturer_M_SHANGHAI_E_TECH_SOLUTION
+		return KnxManufacturer_M_SHANGHAI_E_TECH_SOLUTION, true
 	case "M_WILHELM_RUTENBECK":
-		enum = KnxManufacturer_M_WILHELM_RUTENBECK
+		return KnxManufacturer_M_WILHELM_RUTENBECK, true
 	case "M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_":
-		enum = KnxManufacturer_M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_
+		return KnxManufacturer_M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_, true
 	case "M_LAMMIN_HIGH_TECH_CO__LTD":
-		enum = KnxManufacturer_M_LAMMIN_HIGH_TECH_CO__LTD
+		return KnxManufacturer_M_LAMMIN_HIGH_TECH_CO__LTD, true
 	case "M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD":
-		enum = KnxManufacturer_M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD, true
 	case "M_I_LUXUS":
-		enum = KnxManufacturer_M_I_LUXUS
+		return KnxManufacturer_M_I_LUXUS, true
 	case "M_ELMOS_SEMICONDUCTOR_AG":
-		enum = KnxManufacturer_M_ELMOS_SEMICONDUCTOR_AG
+		return KnxManufacturer_M_ELMOS_SEMICONDUCTOR_AG, true
 	case "M_EMCOM_TECHNOLOGY_INC":
-		enum = KnxManufacturer_M_EMCOM_TECHNOLOGY_INC
+		return KnxManufacturer_M_EMCOM_TECHNOLOGY_INC, true
 	case "M_PROJECT_INNOVATIONS_GMBH":
-		enum = KnxManufacturer_M_PROJECT_INNOVATIONS_GMBH
+		return KnxManufacturer_M_PROJECT_INNOVATIONS_GMBH, true
 	case "M_ITC":
-		enum = KnxManufacturer_M_ITC
+		return KnxManufacturer_M_ITC, true
 	case "M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING":
-		enum = KnxManufacturer_M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING
+		return KnxManufacturer_M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING, true
 	case "M_MAICO":
-		enum = KnxManufacturer_M_MAICO
+		return KnxManufacturer_M_MAICO, true
 	case "M_WINKHAUS":
-		enum = KnxManufacturer_M_WINKHAUS
+		return KnxManufacturer_M_WINKHAUS, true
 	case "M_ELAN_SRL":
-		enum = KnxManufacturer_M_ELAN_SRL
+		return KnxManufacturer_M_ELAN_SRL, true
 	case "M_MINHHA_TECHNOLOGY_CO__LTD":
-		enum = KnxManufacturer_M_MINHHA_TECHNOLOGY_CO__LTD
+		return KnxManufacturer_M_MINHHA_TECHNOLOGY_CO__LTD, true
 	case "M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_":
-		enum = KnxManufacturer_M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_
+		return KnxManufacturer_M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_, true
 	case "M_IAUTOMATION_PTY_LIMITED":
-		enum = KnxManufacturer_M_IAUTOMATION_PTY_LIMITED
+		return KnxManufacturer_M_IAUTOMATION_PTY_LIMITED, true
 	case "M_EXTRON":
-		enum = KnxManufacturer_M_EXTRON
+		return KnxManufacturer_M_EXTRON, true
 	case "M_FREEDOMPRO":
-		enum = KnxManufacturer_M_FREEDOMPRO
+		return KnxManufacturer_M_FREEDOMPRO, true
 	case "M_ONEHOME":
-		enum = KnxManufacturer_M_ONEHOME
+		return KnxManufacturer_M_ONEHOME, true
 	case "M_EOS_SAUNATECHNIK_GMBH":
-		enum = KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH
+		return KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH, true
 	case "M_KUSATEK_GMBH":
-		enum = KnxManufacturer_M_KUSATEK_GMBH
+		return KnxManufacturer_M_KUSATEK_GMBH, true
 	case "M_EISBAER_SCADA":
-		enum = KnxManufacturer_M_EISBAER_SCADA
+		return KnxManufacturer_M_EISBAER_SCADA, true
 	case "M_ROBERT_BOSCH":
-		enum = KnxManufacturer_M_ROBERT_BOSCH
+		return KnxManufacturer_M_ROBERT_BOSCH, true
 	case "M_AUTOMATISMI_BENINCA_S_P_A_":
-		enum = KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_
+		return KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_, true
 	case "M_BLENDOM":
-		enum = KnxManufacturer_M_BLENDOM
+		return KnxManufacturer_M_BLENDOM, true
 	case "M_MADEL_AIR_TECHNICAL_DIFFUSION":
-		enum = KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION
+		return KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION, true
 	case "M_NIKO":
-		enum = KnxManufacturer_M_NIKO
+		return KnxManufacturer_M_NIKO, true
 	case "M_BOSCH_REXROTH_AG":
-		enum = KnxManufacturer_M_BOSCH_REXROTH_AG
+		return KnxManufacturer_M_BOSCH_REXROTH_AG, true
 	case "M_CANDM_PRODUCTS":
-		enum = KnxManufacturer_M_CANDM_PRODUCTS
+		return KnxManufacturer_M_CANDM_PRODUCTS, true
 	case "M_HOERMANN_KG_VERKAUFSGESELLSCHAFT":
-		enum = KnxManufacturer_M_HOERMANN_KG_VERKAUFSGESELLSCHAFT
+		return KnxManufacturer_M_HOERMANN_KG_VERKAUFSGESELLSCHAFT, true
 	case "M_SHANGHAI_RAJAYASA_CO__LTD":
-		enum = KnxManufacturer_M_SHANGHAI_RAJAYASA_CO__LTD
+		return KnxManufacturer_M_SHANGHAI_RAJAYASA_CO__LTD, true
 	case "M_SUZUKI":
-		enum = KnxManufacturer_M_SUZUKI
+		return KnxManufacturer_M_SUZUKI, true
 	case "M_SILENT_GLISS_INTERNATIONAL_LTD_":
-		enum = KnxManufacturer_M_SILENT_GLISS_INTERNATIONAL_LTD_
+		return KnxManufacturer_M_SILENT_GLISS_INTERNATIONAL_LTD_, true
 	case "M_SOMFY":
-		enum = KnxManufacturer_M_SOMFY
+		return KnxManufacturer_M_SOMFY, true
 	case "M_BEE_CONTROLS_ADGSC_GROUP":
-		enum = KnxManufacturer_M_BEE_CONTROLS_ADGSC_GROUP
+		return KnxManufacturer_M_BEE_CONTROLS_ADGSC_GROUP, true
 	case "M_XDTECGMBH":
-		enum = KnxManufacturer_M_XDTECGMBH
+		return KnxManufacturer_M_XDTECGMBH, true
 	case "M_OSRAM":
-		enum = KnxManufacturer_M_OSRAM
+		return KnxManufacturer_M_OSRAM, true
 	case "M_LEBENOR":
-		enum = KnxManufacturer_M_LEBENOR
+		return KnxManufacturer_M_LEBENOR, true
 	case "M_AUTOMANENG":
-		enum = KnxManufacturer_M_AUTOMANENG
+		return KnxManufacturer_M_AUTOMANENG, true
 	case "M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA":
-		enum = KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA
+		return KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA, true
 	case "M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD":
-		enum = KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD
+		return KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD, true
 	case "M_ETA_HEIZTECHNIK":
-		enum = KnxManufacturer_M_ETA_HEIZTECHNIK
+		return KnxManufacturer_M_ETA_HEIZTECHNIK, true
 	case "M_DIVUS_GMBH":
-		enum = KnxManufacturer_M_DIVUS_GMBH
+		return KnxManufacturer_M_DIVUS_GMBH, true
 	case "M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_":
-		enum = KnxManufacturer_M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_
+		return KnxManufacturer_M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_, true
 	case "M_WOERTZ":
-		enum = KnxManufacturer_M_WOERTZ
+		return KnxManufacturer_M_WOERTZ, true
 	case "M_LUNATONE":
-		enum = KnxManufacturer_M_LUNATONE
+		return KnxManufacturer_M_LUNATONE, true
 	case "M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT":
-		enum = KnxManufacturer_M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT
+		return KnxManufacturer_M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT, true
 	case "M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_":
-		enum = KnxManufacturer_M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_, true
 	case "M_NOKE":
-		enum = KnxManufacturer_M_NOKE
+		return KnxManufacturer_M_NOKE, true
 	case "M_LANDCOM":
-		enum = KnxManufacturer_M_LANDCOM
+		return KnxManufacturer_M_LANDCOM, true
 	case "M_STORK_AS":
-		enum = KnxManufacturer_M_STORK_AS
+		return KnxManufacturer_M_STORK_AS, true
 	case "M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_":
-		enum = KnxManufacturer_M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_, true
 	case "M_COOLAUTOMATION":
-		enum = KnxManufacturer_M_COOLAUTOMATION
+		return KnxManufacturer_M_COOLAUTOMATION, true
 	case "M_APRSTERN":
-		enum = KnxManufacturer_M_APRSTERN
+		return KnxManufacturer_M_APRSTERN, true
 	case "M_SONNEN":
-		enum = KnxManufacturer_M_SONNEN
+		return KnxManufacturer_M_SONNEN, true
 	case "M_VIESSMANN_WERKE":
-		enum = KnxManufacturer_M_VIESSMANN_WERKE
+		return KnxManufacturer_M_VIESSMANN_WERKE, true
 	case "M_DNAKE":
-		enum = KnxManufacturer_M_DNAKE
+		return KnxManufacturer_M_DNAKE, true
 	case "M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH":
-		enum = KnxManufacturer_M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH
+		return KnxManufacturer_M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH, true
 	case "M_STILIGER":
-		enum = KnxManufacturer_M_STILIGER
+		return KnxManufacturer_M_STILIGER, true
 	case "M_BERGHOF_AUTOMATION_GMBH":
-		enum = KnxManufacturer_M_BERGHOF_AUTOMATION_GMBH
+		return KnxManufacturer_M_BERGHOF_AUTOMATION_GMBH, true
 	case "M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH":
-		enum = KnxManufacturer_M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH
+		return KnxManufacturer_M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH, true
 	case "M_DOVIT":
-		enum = KnxManufacturer_M_DOVIT
+		return KnxManufacturer_M_DOVIT, true
 	case "M_INSTALIGHTING_GMBH":
-		enum = KnxManufacturer_M_INSTALIGHTING_GMBH
+		return KnxManufacturer_M_INSTALIGHTING_GMBH, true
 	case "M_UNI_TEC":
-		enum = KnxManufacturer_M_UNI_TEC
+		return KnxManufacturer_M_UNI_TEC, true
 	case "M_CASATUNES":
-		enum = KnxManufacturer_M_CASATUNES
+		return KnxManufacturer_M_CASATUNES, true
 	case "M_EMT":
-		enum = KnxManufacturer_M_EMT
+		return KnxManufacturer_M_EMT, true
 	case "M_IMI_HYDRONIC_ENGINEERING":
-		enum = KnxManufacturer_M_IMI_HYDRONIC_ENGINEERING
+		return KnxManufacturer_M_IMI_HYDRONIC_ENGINEERING, true
 	case "M_SENFFICIENT":
-		enum = KnxManufacturer_M_SENFFICIENT
+		return KnxManufacturer_M_SENFFICIENT, true
 	case "M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED":
-		enum = KnxManufacturer_M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED
+		return KnxManufacturer_M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED, true
 	case "M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_":
-		enum = KnxManufacturer_M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_, true
 	case "M_SAMSON_ELECTRIC_WIRE":
-		enum = KnxManufacturer_M_SAMSON_ELECTRIC_WIRE
+		return KnxManufacturer_M_SAMSON_ELECTRIC_WIRE, true
 	case "M_T_TOUCHING":
-		enum = KnxManufacturer_M_T_TOUCHING
+		return KnxManufacturer_M_T_TOUCHING, true
 	case "M_CORE_SMART_HOME":
-		enum = KnxManufacturer_M_CORE_SMART_HOME
+		return KnxManufacturer_M_CORE_SMART_HOME, true
 	case "M_GREENCONNECT_SOLUTIONS_SA":
-		enum = KnxManufacturer_M_GREENCONNECT_SOLUTIONS_SA
+		return KnxManufacturer_M_GREENCONNECT_SOLUTIONS_SA, true
 	case "M_ELETTRONICA_CONDUTTORI":
-		enum = KnxManufacturer_M_ELETTRONICA_CONDUTTORI
+		return KnxManufacturer_M_ELETTRONICA_CONDUTTORI, true
 	case "M_MKFC":
-		enum = KnxManufacturer_M_MKFC
+		return KnxManufacturer_M_MKFC, true
 	case "M_AUTOMATIONPlus":
-		enum = KnxManufacturer_M_AUTOMATIONPlus
+		return KnxManufacturer_M_AUTOMATIONPlus, true
 	case "M_BERKER":
-		enum = KnxManufacturer_M_BERKER
+		return KnxManufacturer_M_BERKER, true
 	case "M_JOH__VAILLANT":
-		enum = KnxManufacturer_M_JOH__VAILLANT
+		return KnxManufacturer_M_JOH__VAILLANT, true
 	case "M_BLUE_AND_RED":
-		enum = KnxManufacturer_M_BLUE_AND_RED
+		return KnxManufacturer_M_BLUE_AND_RED, true
 	case "M_FROGBLUE":
-		enum = KnxManufacturer_M_FROGBLUE
+		return KnxManufacturer_M_FROGBLUE, true
 	case "M_SAVESOR":
-		enum = KnxManufacturer_M_SAVESOR
+		return KnxManufacturer_M_SAVESOR, true
 	case "M_APP_TECH":
-		enum = KnxManufacturer_M_APP_TECH
+		return KnxManufacturer_M_APP_TECH, true
 	case "M_SENSORTEC_AG":
-		enum = KnxManufacturer_M_SENSORTEC_AG
+		return KnxManufacturer_M_SENSORTEC_AG, true
 	case "M_NYSA_TECHNOLOGY_AND_SOLUTIONS":
-		enum = KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS
+		return KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS, true
 	case "M_FARADITE":
-		enum = KnxManufacturer_M_FARADITE
+		return KnxManufacturer_M_FARADITE, true
 	case "M_OPTIMUS":
-		enum = KnxManufacturer_M_OPTIMUS
+		return KnxManufacturer_M_OPTIMUS, true
 	case "M_KTS_S_R_L_":
-		enum = KnxManufacturer_M_KTS_S_R_L_
+		return KnxManufacturer_M_KTS_S_R_L_, true
 	case "M_RAMCRO_SPA":
-		enum = KnxManufacturer_M_RAMCRO_SPA
+		return KnxManufacturer_M_RAMCRO_SPA, true
 	case "M_AMP_DEUTSCHLAND":
-		enum = KnxManufacturer_M_AMP_DEUTSCHLAND
+		return KnxManufacturer_M_AMP_DEUTSCHLAND, true
 	case "M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD":
-		enum = KnxManufacturer_M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD, true
 	case "M_BEMI_SMART_HOME_LTD":
-		enum = KnxManufacturer_M_BEMI_SMART_HOME_LTD
+		return KnxManufacturer_M_BEMI_SMART_HOME_LTD, true
 	case "M_ARDOMUS":
-		enum = KnxManufacturer_M_ARDOMUS
+		return KnxManufacturer_M_ARDOMUS, true
 	case "M_CHANGXING":
-		enum = KnxManufacturer_M_CHANGXING
+		return KnxManufacturer_M_CHANGXING, true
 	case "M_E_CONTROLS":
-		enum = KnxManufacturer_M_E_CONTROLS
+		return KnxManufacturer_M_E_CONTROLS, true
 	case "M_AIB_TECHNOLOGY":
-		enum = KnxManufacturer_M_AIB_TECHNOLOGY
+		return KnxManufacturer_M_AIB_TECHNOLOGY, true
 	case "M_NVC":
-		enum = KnxManufacturer_M_NVC
+		return KnxManufacturer_M_NVC, true
 	case "M_KBOX":
-		enum = KnxManufacturer_M_KBOX
+		return KnxManufacturer_M_KBOX, true
 	case "M_CNS":
-		enum = KnxManufacturer_M_CNS
+		return KnxManufacturer_M_CNS, true
 	case "M_TYBA":
-		enum = KnxManufacturer_M_TYBA
+		return KnxManufacturer_M_TYBA, true
 	case "M_BOSCH_THERMOTECHNIK_GMBH":
-		enum = KnxManufacturer_M_BOSCH_THERMOTECHNIK_GMBH
+		return KnxManufacturer_M_BOSCH_THERMOTECHNIK_GMBH, true
 	case "M_ATREL":
-		enum = KnxManufacturer_M_ATREL
+		return KnxManufacturer_M_ATREL, true
 	case "M_SIMON_ELECTRIC_CHINA_CO___LTD":
-		enum = KnxManufacturer_M_SIMON_ELECTRIC_CHINA_CO___LTD
+		return KnxManufacturer_M_SIMON_ELECTRIC_CHINA_CO___LTD, true
 	case "M_KORDZ_GROUP":
-		enum = KnxManufacturer_M_KORDZ_GROUP
+		return KnxManufacturer_M_KORDZ_GROUP, true
 	case "M_ND_ELECTRIC":
-		enum = KnxManufacturer_M_ND_ELECTRIC
+		return KnxManufacturer_M_ND_ELECTRIC, true
 	case "M_CONTROLIUM":
-		enum = KnxManufacturer_M_CONTROLIUM
+		return KnxManufacturer_M_CONTROLIUM, true
 	case "M_FAMO_GMBH_AND_CO__KG":
-		enum = KnxManufacturer_M_FAMO_GMBH_AND_CO__KG
+		return KnxManufacturer_M_FAMO_GMBH_AND_CO__KG, true
 	case "M_CDN_SMART":
-		enum = KnxManufacturer_M_CDN_SMART
+		return KnxManufacturer_M_CDN_SMART, true
 	case "M_HESTON":
-		enum = KnxManufacturer_M_HESTON
+		return KnxManufacturer_M_HESTON, true
 	case "M_ESLA_CONEXIONES_S_L_":
-		enum = KnxManufacturer_M_ESLA_CONEXIONES_S_L_
+		return KnxManufacturer_M_ESLA_CONEXIONES_S_L_, true
 	case "M_WEISHAUPT":
-		enum = KnxManufacturer_M_WEISHAUPT
+		return KnxManufacturer_M_WEISHAUPT, true
 	case "M_SEF___ECOTEC":
-		enum = KnxManufacturer_M_SEF___ECOTEC
+		return KnxManufacturer_M_SEF___ECOTEC, true
 	case "M_ASTRUM_TECHNOLOGY":
-		enum = KnxManufacturer_M_ASTRUM_TECHNOLOGY
+		return KnxManufacturer_M_ASTRUM_TECHNOLOGY, true
 	case "M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_":
-		enum = KnxManufacturer_M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_
+		return KnxManufacturer_M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_, true
 	case "M_NANOTECO_CORPORATION":
-		enum = KnxManufacturer_M_NANOTECO_CORPORATION
+		return KnxManufacturer_M_NANOTECO_CORPORATION, true
 	case "M_NIETIAN":
-		enum = KnxManufacturer_M_NIETIAN
+		return KnxManufacturer_M_NIETIAN, true
 	case "M_SUMSIR":
-		enum = KnxManufacturer_M_SUMSIR
+		return KnxManufacturer_M_SUMSIR, true
 	case "M_ORBIS_TECNOLOGIA_ELECTRICA_SA":
-		enum = KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA
+		return KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA, true
 	case "M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_":
-		enum = KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_
+		return KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_, true
 	case "M_ANLIPS":
-		enum = KnxManufacturer_M_ANLIPS
+		return KnxManufacturer_M_ANLIPS, true
 	case "M_GUANGDONG_PAK_CORPORATION_CO___LTD":
-		enum = KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD
+		return KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD, true
 	case "M_BVK_TECHNOLOGY":
-		enum = KnxManufacturer_M_BVK_TECHNOLOGY
+		return KnxManufacturer_M_BVK_TECHNOLOGY, true
 	case "M_DORMA_GMBH_Plus_CO__KG":
-		enum = KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG
+		return KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG, true
 	case "M_SOLOMIO_SRL":
-		enum = KnxManufacturer_M_SOLOMIO_SRL
+		return KnxManufacturer_M_SOLOMIO_SRL, true
 	case "M_DOMOTICA_LABS":
-		enum = KnxManufacturer_M_DOMOTICA_LABS
+		return KnxManufacturer_M_DOMOTICA_LABS, true
 	case "M_NVC_INTERNATIONAL":
-		enum = KnxManufacturer_M_NVC_INTERNATIONAL
+		return KnxManufacturer_M_NVC_INTERNATIONAL, true
 	case "M_BA":
-		enum = KnxManufacturer_M_BA
+		return KnxManufacturer_M_BA, true
 	case "M_IRIS_CERAMICA_GROUP":
-		enum = KnxManufacturer_M_IRIS_CERAMICA_GROUP
+		return KnxManufacturer_M_IRIS_CERAMICA_GROUP, true
 	case "M_WIREEO":
-		enum = KnxManufacturer_M_WIREEO
+		return KnxManufacturer_M_WIREEO, true
 	case "M_NVCLIGHTING":
-		enum = KnxManufacturer_M_NVCLIGHTING
+		return KnxManufacturer_M_NVCLIGHTING, true
 	case "M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_":
-		enum = KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_
+		return KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_, true
 	case "M_ARMITI_TRADING":
-		enum = KnxManufacturer_M_ARMITI_TRADING
+		return KnxManufacturer_M_ARMITI_TRADING, true
 	case "M_ELEK":
-		enum = KnxManufacturer_M_ELEK
+		return KnxManufacturer_M_ELEK, true
 	case "M_WINDOWMASTER_AS":
-		enum = KnxManufacturer_M_WINDOWMASTER_AS
+		return KnxManufacturer_M_WINDOWMASTER_AS, true
 	case "M_ACCORDIA_SA":
-		enum = KnxManufacturer_M_ACCORDIA_SA
+		return KnxManufacturer_M_ACCORDIA_SA, true
 	case "M_OURICAN":
-		enum = KnxManufacturer_M_OURICAN
+		return KnxManufacturer_M_OURICAN, true
 	case "M_INLIWOSE":
-		enum = KnxManufacturer_M_INLIWOSE
+		return KnxManufacturer_M_INLIWOSE, true
 	case "M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_":
-		enum = KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_
+		return KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_, true
 	case "M_SHK_KNX":
-		enum = KnxManufacturer_M_SHK_KNX
+		return KnxManufacturer_M_SHK_KNX, true
 	case "M_AMPIO":
-		enum = KnxManufacturer_M_AMPIO
+		return KnxManufacturer_M_AMPIO, true
 	case "M_MINGXING_WISDOM":
-		enum = KnxManufacturer_M_MINGXING_WISDOM
+		return KnxManufacturer_M_MINGXING_WISDOM, true
 	case "M_ALTEN_SW_GMBH":
-		enum = KnxManufacturer_M_ALTEN_SW_GMBH
+		return KnxManufacturer_M_ALTEN_SW_GMBH, true
 	case "M_V_Y_C_SRL":
-		enum = KnxManufacturer_M_V_Y_C_SRL
+		return KnxManufacturer_M_V_Y_C_SRL, true
 	case "M_TERMINUS_GROUP":
-		enum = KnxManufacturer_M_TERMINUS_GROUP
+		return KnxManufacturer_M_TERMINUS_GROUP, true
 	case "M_WALTHER_WERKE":
-		enum = KnxManufacturer_M_WALTHER_WERKE
+		return KnxManufacturer_M_WALTHER_WERKE, true
 	case "M_WONDERFUL_CITY_TECHNOLOGY":
-		enum = KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY
+		return KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY, true
 	case "M_QBICTECHNOLOGY":
-		enum = KnxManufacturer_M_QBICTECHNOLOGY
+		return KnxManufacturer_M_QBICTECHNOLOGY, true
 	case "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED":
-		enum = KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED
+		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED, true
 	case "M_ONEWORK":
-		enum = KnxManufacturer_M_ONEWORK
+		return KnxManufacturer_M_ONEWORK, true
 	case "M_PL_LINK":
-		enum = KnxManufacturer_M_PL_LINK
+		return KnxManufacturer_M_PL_LINK, true
 	case "M_FASEL_GMBH_ELEKTRONIK":
-		enum = KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK
+		return KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK, true
 	case "M_GOLDENHOME_SMART":
-		enum = KnxManufacturer_M_GOLDENHOME_SMART
+		return KnxManufacturer_M_GOLDENHOME_SMART, true
 	case "M_GOLDMEDAL":
-		enum = KnxManufacturer_M_GOLDMEDAL
+		return KnxManufacturer_M_GOLDMEDAL, true
 	case "M_CannX":
-		enum = KnxManufacturer_M_CannX
+		return KnxManufacturer_M_CannX, true
 	case "M_EGI___EARTH_GOODNESS":
-		enum = KnxManufacturer_M_EGI___EARTH_GOODNESS
+		return KnxManufacturer_M_EGI___EARTH_GOODNESS, true
 	case "M_ORAS":
-		enum = KnxManufacturer_M_ORAS
+		return KnxManufacturer_M_ORAS, true
 	case "M_VIEGA_GMBH_AND_CO__KG":
-		enum = KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
+		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG, true
 	case "M_FREDON_DIGITAL_BUILDINGS":
-		enum = KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
+		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS, true
 	case "M_HELUKABEL_THAILAND_CO__LTD_":
-		enum = KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
+		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_, true
 	case "M_ACE_TECHNOLOGY":
-		enum = KnxManufacturer_M_ACE_TECHNOLOGY
+		return KnxManufacturer_M_ACE_TECHNOLOGY, true
 	case "M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD":
-		enum = KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD
+		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD, true
 	case "M_SUMAMO":
-		enum = KnxManufacturer_M_SUMAMO
+		return KnxManufacturer_M_SUMAMO, true
 	case "M_SVIT":
-		enum = KnxManufacturer_M_SVIT
+		return KnxManufacturer_M_SVIT, true
 	case "M_TECGET":
-		enum = KnxManufacturer_M_TECGET
+		return KnxManufacturer_M_TECGET, true
 	case "M_XEROPOINT":
-		enum = KnxManufacturer_M_XEROPOINT
+		return KnxManufacturer_M_XEROPOINT, true
 	case "M_HONEYWELL_BUILDING_TECHNOLOGIES":
-		enum = KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES
+		return KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES, true
 	case "M_DAETWYLER":
-		enum = KnxManufacturer_M_DAETWYLER
+		return KnxManufacturer_M_DAETWYLER, true
 	case "M_COMFORTCLICK":
-		enum = KnxManufacturer_M_COMFORTCLICK
+		return KnxManufacturer_M_COMFORTCLICK, true
 	case "M_DORBAS_ELECTRIC":
-		enum = KnxManufacturer_M_DORBAS_ELECTRIC
+		return KnxManufacturer_M_DORBAS_ELECTRIC, true
 	case "M_REMKO_GMBH_AND_CO__KG":
-		enum = KnxManufacturer_M_REMKO_GMBH_AND_CO__KG
+		return KnxManufacturer_M_REMKO_GMBH_AND_CO__KG, true
 	case "M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD":
-		enum = KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD
+		return KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD, true
 	case "M_ANDAS":
-		enum = KnxManufacturer_M_ANDAS
+		return KnxManufacturer_M_ANDAS, true
 	case "M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD":
-		enum = KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD
+		return KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD, true
 	case "M_LARFE":
-		enum = KnxManufacturer_M_LARFE
+		return KnxManufacturer_M_LARFE, true
 	case "M_DONGGUAN_MUHCCI_ELECTRICAL":
-		enum = KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL
+		return KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL, true
 	case "M_STEC":
-		enum = KnxManufacturer_M_STEC
+		return KnxManufacturer_M_STEC, true
 	case "M_ARIGO_SOFTWARE_GMBH":
-		enum = KnxManufacturer_M_ARIGO_SOFTWARE_GMBH
+		return KnxManufacturer_M_ARIGO_SOFTWARE_GMBH, true
 	case "M_ELECTRAK":
-		enum = KnxManufacturer_M_ELECTRAK
+		return KnxManufacturer_M_ELECTRAK, true
 	case "M_FEISHELEC":
-		enum = KnxManufacturer_M_FEISHELEC
+		return KnxManufacturer_M_FEISHELEC, true
 	case "M_GORDIC":
-		enum = KnxManufacturer_M_GORDIC
+		return KnxManufacturer_M_GORDIC, true
 	case "M_DELTA_ELECTRONICS":
-		enum = KnxManufacturer_M_DELTA_ELECTRONICS
+		return KnxManufacturer_M_DELTA_ELECTRONICS, true
 	case "M_ABB___RESERVED":
-		enum = KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		enum = KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO":
-		enum = KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO, true
 	case "M_TECHEM":
-		enum = KnxManufacturer_M_TECHEM
+		return KnxManufacturer_M_TECHEM, true
 	case "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS":
-		enum = KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS
+		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
 	case "M_WHD_WILHELM_HUBER_Plus_SOEHNE":
-		enum = KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE
+		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE, true
 	case "M_BISCHOFF_ELEKTRONIK":
-		enum = KnxManufacturer_M_BISCHOFF_ELEKTRONIK
+		return KnxManufacturer_M_BISCHOFF_ELEKTRONIK, true
 	case "M_JEPAZ":
-		enum = KnxManufacturer_M_JEPAZ
+		return KnxManufacturer_M_JEPAZ, true
 	case "M_RTS_AUTOMATION":
-		enum = KnxManufacturer_M_RTS_AUTOMATION
+		return KnxManufacturer_M_RTS_AUTOMATION, true
 	case "M_EIBMARKT_GMBH":
-		enum = KnxManufacturer_M_EIBMARKT_GMBH
+		return KnxManufacturer_M_EIBMARKT_GMBH, true
 	case "M_WAREMA_RENKHOFF_SE":
-		enum = KnxManufacturer_M_WAREMA_RENKHOFF_SE
+		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
 	case "M_EELECTRON":
-		enum = KnxManufacturer_M_EELECTRON
+		return KnxManufacturer_M_EELECTRON, true
 	case "M_BELDEN_WIRE_AND_CABLE_B_V_":
-		enum = KnxManufacturer_M_BELDEN_WIRE_AND_CABLE_B_V_
+		return KnxManufacturer_M_BELDEN_WIRE_AND_CABLE_B_V_, true
 	case "M_GIRA_GIERSIEPEN":
-		enum = KnxManufacturer_M_GIRA_GIERSIEPEN
+		return KnxManufacturer_M_GIRA_GIERSIEPEN, true
 	case "M_BECKER_ANTRIEBE_GMBH":
-		enum = KnxManufacturer_M_BECKER_ANTRIEBE_GMBH
+		return KnxManufacturer_M_BECKER_ANTRIEBE_GMBH, true
 	case "M_J_STEHLEPlusSOEHNE_GMBH":
-		enum = KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH
+		return KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH, true
 	case "M_AGFEO":
-		enum = KnxManufacturer_M_AGFEO
+		return KnxManufacturer_M_AGFEO, true
 	case "M_ZENNIO":
-		enum = KnxManufacturer_M_ZENNIO
+		return KnxManufacturer_M_ZENNIO, true
 	case "M_TAPKO_TECHNOLOGIES":
-		enum = KnxManufacturer_M_TAPKO_TECHNOLOGIES
+		return KnxManufacturer_M_TAPKO_TECHNOLOGIES, true
 	case "M_HDL":
-		enum = KnxManufacturer_M_HDL
+		return KnxManufacturer_M_HDL, true
 	case "M_UPONOR":
-		enum = KnxManufacturer_M_UPONOR
+		return KnxManufacturer_M_UPONOR, true
 	case "M_SE_LIGHTMANAGEMENT_AG":
-		enum = KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG
+		return KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG, true
 	case "M_ARCUS_EDS":
-		enum = KnxManufacturer_M_ARCUS_EDS
+		return KnxManufacturer_M_ARCUS_EDS, true
 	case "M_INTESIS":
-		enum = KnxManufacturer_M_INTESIS
+		return KnxManufacturer_M_INTESIS, true
 	case "M_HAGER_ELECTRO":
-		enum = KnxManufacturer_M_HAGER_ELECTRO
+		return KnxManufacturer_M_HAGER_ELECTRO, true
 	case "M_HERHOLDT_CONTROLS_SRL":
-		enum = KnxManufacturer_M_HERHOLDT_CONTROLS_SRL
+		return KnxManufacturer_M_HERHOLDT_CONTROLS_SRL, true
 	case "M_NIKO_ZUBLIN":
-		enum = KnxManufacturer_M_NIKO_ZUBLIN
+		return KnxManufacturer_M_NIKO_ZUBLIN, true
 	case "M_DURABLE_TECHNOLOGIES":
-		enum = KnxManufacturer_M_DURABLE_TECHNOLOGIES
+		return KnxManufacturer_M_DURABLE_TECHNOLOGIES, true
 	case "M_INNOTEAM":
-		enum = KnxManufacturer_M_INNOTEAM
+		return KnxManufacturer_M_INNOTEAM, true
 	case "M_ISE_GMBH":
-		enum = KnxManufacturer_M_ISE_GMBH
+		return KnxManufacturer_M_ISE_GMBH, true
 	case "M_TEAM_FOR_TRONICS":
-		enum = KnxManufacturer_M_TEAM_FOR_TRONICS
+		return KnxManufacturer_M_TEAM_FOR_TRONICS, true
 	case "M_CIAT":
-		enum = KnxManufacturer_M_CIAT
+		return KnxManufacturer_M_CIAT, true
 	case "M_REMEHA_BV":
-		enum = KnxManufacturer_M_REMEHA_BV
+		return KnxManufacturer_M_REMEHA_BV, true
 	case "M_ESYLUX":
-		enum = KnxManufacturer_M_ESYLUX
+		return KnxManufacturer_M_ESYLUX, true
 	case "M_BASALTE":
-		enum = KnxManufacturer_M_BASALTE
+		return KnxManufacturer_M_BASALTE, true
 	case "M_INSTA_GMBH":
-		enum = KnxManufacturer_M_INSTA_GMBH
+		return KnxManufacturer_M_INSTA_GMBH, true
 	case "M_VESTAMATIC":
-		enum = KnxManufacturer_M_VESTAMATIC
+		return KnxManufacturer_M_VESTAMATIC, true
 	case "M_MDT_TECHNOLOGIES":
-		enum = KnxManufacturer_M_MDT_TECHNOLOGIES
+		return KnxManufacturer_M_MDT_TECHNOLOGIES, true
 	case "M_WARENDORFER_KUECHEN_GMBH":
-		enum = KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH
+		return KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH, true
 	case "M_VIDEO_STAR":
-		enum = KnxManufacturer_M_VIDEO_STAR
+		return KnxManufacturer_M_VIDEO_STAR, true
 	case "M_SITEK":
-		enum = KnxManufacturer_M_SITEK
+		return KnxManufacturer_M_SITEK, true
 	case "M_CONTROLTRONIC":
-		enum = KnxManufacturer_M_CONTROLTRONIC
+		return KnxManufacturer_M_CONTROLTRONIC, true
 	case "M_FUNCTION_TECHNOLOGY":
-		enum = KnxManufacturer_M_FUNCTION_TECHNOLOGY
+		return KnxManufacturer_M_FUNCTION_TECHNOLOGY, true
 	case "M_AMX":
-		enum = KnxManufacturer_M_AMX
+		return KnxManufacturer_M_AMX, true
 	case "M_ELDAT":
-		enum = KnxManufacturer_M_ELDAT
+		return KnxManufacturer_M_ELDAT, true
 	case "M_PANASONIC":
-		enum = KnxManufacturer_M_PANASONIC
-	default:
-		enum = 0
-		ok = false
+		return KnxManufacturer_M_PANASONIC, true
 	}
-	return
+	return 0, false
 }
 
 func KnxManufacturerKnows(value uint16) bool {
@@ -8459,7 +8455,11 @@ func KnxManufacturerParse(readBuffer utils.ReadBuffer) (KnxManufacturer, error) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxManufacturer")
 	}
-	return KnxManufacturerByValue(val), nil
+	if enum, ok := KnxManufacturerByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for KnxManufacturer", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e KnxManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {

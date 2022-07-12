@@ -291,104 +291,100 @@ func SupportedPhysicalMediaFirstEnumForFieldDescription(value string) (Supported
 	}
 	return 0, errors.Errorf("enum for %v describing Description not found", value)
 }
-func SupportedPhysicalMediaByValue(value uint8) SupportedPhysicalMedia {
+func SupportedPhysicalMediaByValue(value uint8) (enum SupportedPhysicalMedia, ok bool) {
 	switch value {
 	case 0x00:
-		return SupportedPhysicalMedia_OTHER
+		return SupportedPhysicalMedia_OTHER, true
 	case 0x01:
-		return SupportedPhysicalMedia_OIL_METER
+		return SupportedPhysicalMedia_OIL_METER, true
 	case 0x02:
-		return SupportedPhysicalMedia_ELECTRICITY_METER
+		return SupportedPhysicalMedia_ELECTRICITY_METER, true
 	case 0x03:
-		return SupportedPhysicalMedia_GAS_METER
+		return SupportedPhysicalMedia_GAS_METER, true
 	case 0x04:
-		return SupportedPhysicalMedia_HEAT_METER
+		return SupportedPhysicalMedia_HEAT_METER, true
 	case 0x05:
-		return SupportedPhysicalMedia_STEAM_METER
+		return SupportedPhysicalMedia_STEAM_METER, true
 	case 0x06:
-		return SupportedPhysicalMedia_WARM_WATER_METER
+		return SupportedPhysicalMedia_WARM_WATER_METER, true
 	case 0x07:
-		return SupportedPhysicalMedia_WATER_METER
+		return SupportedPhysicalMedia_WATER_METER, true
 	case 0x08:
-		return SupportedPhysicalMedia_HEAT_COST_ALLOCATOR
+		return SupportedPhysicalMedia_HEAT_COST_ALLOCATOR, true
 	case 0x09:
-		return SupportedPhysicalMedia_COMPRESSED_AIR
+		return SupportedPhysicalMedia_COMPRESSED_AIR, true
 	case 0x0A:
-		return SupportedPhysicalMedia_COOLING_LOAD_METER_INLET
+		return SupportedPhysicalMedia_COOLING_LOAD_METER_INLET, true
 	case 0x0B:
-		return SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET
+		return SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET, true
 	case 0x0C:
-		return SupportedPhysicalMedia_HEAT_INLET
+		return SupportedPhysicalMedia_HEAT_INLET, true
 	case 0x0D:
-		return SupportedPhysicalMedia_HEAT_AND_COOL
+		return SupportedPhysicalMedia_HEAT_AND_COOL, true
 	case 0x0E:
-		return SupportedPhysicalMedia_BUS_OR_SYSTEM
+		return SupportedPhysicalMedia_BUS_OR_SYSTEM, true
 	case 0x0F:
-		return SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE
+		return SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE, true
 	case 0x20:
-		return SupportedPhysicalMedia_BREAKER
+		return SupportedPhysicalMedia_BREAKER, true
 	case 0x21:
-		return SupportedPhysicalMedia_VALVE
+		return SupportedPhysicalMedia_VALVE, true
 	case 0x28:
-		return SupportedPhysicalMedia_WASTE_WATER_METER
+		return SupportedPhysicalMedia_WASTE_WATER_METER, true
 	case 0x29:
-		return SupportedPhysicalMedia_GARBAGE
+		return SupportedPhysicalMedia_GARBAGE, true
 	case 0x37:
-		return SupportedPhysicalMedia_RADIO_CONVERTER
+		return SupportedPhysicalMedia_RADIO_CONVERTER, true
 	}
-	return 0
+	return 0, false
 }
 
 func SupportedPhysicalMediaByName(value string) (enum SupportedPhysicalMedia, ok bool) {
-	ok = true
 	switch value {
 	case "OTHER":
-		enum = SupportedPhysicalMedia_OTHER
+		return SupportedPhysicalMedia_OTHER, true
 	case "OIL_METER":
-		enum = SupportedPhysicalMedia_OIL_METER
+		return SupportedPhysicalMedia_OIL_METER, true
 	case "ELECTRICITY_METER":
-		enum = SupportedPhysicalMedia_ELECTRICITY_METER
+		return SupportedPhysicalMedia_ELECTRICITY_METER, true
 	case "GAS_METER":
-		enum = SupportedPhysicalMedia_GAS_METER
+		return SupportedPhysicalMedia_GAS_METER, true
 	case "HEAT_METER":
-		enum = SupportedPhysicalMedia_HEAT_METER
+		return SupportedPhysicalMedia_HEAT_METER, true
 	case "STEAM_METER":
-		enum = SupportedPhysicalMedia_STEAM_METER
+		return SupportedPhysicalMedia_STEAM_METER, true
 	case "WARM_WATER_METER":
-		enum = SupportedPhysicalMedia_WARM_WATER_METER
+		return SupportedPhysicalMedia_WARM_WATER_METER, true
 	case "WATER_METER":
-		enum = SupportedPhysicalMedia_WATER_METER
+		return SupportedPhysicalMedia_WATER_METER, true
 	case "HEAT_COST_ALLOCATOR":
-		enum = SupportedPhysicalMedia_HEAT_COST_ALLOCATOR
+		return SupportedPhysicalMedia_HEAT_COST_ALLOCATOR, true
 	case "COMPRESSED_AIR":
-		enum = SupportedPhysicalMedia_COMPRESSED_AIR
+		return SupportedPhysicalMedia_COMPRESSED_AIR, true
 	case "COOLING_LOAD_METER_INLET":
-		enum = SupportedPhysicalMedia_COOLING_LOAD_METER_INLET
+		return SupportedPhysicalMedia_COOLING_LOAD_METER_INLET, true
 	case "COOLING_LOAD_METER_OUTLET":
-		enum = SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET
+		return SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET, true
 	case "HEAT_INLET":
-		enum = SupportedPhysicalMedia_HEAT_INLET
+		return SupportedPhysicalMedia_HEAT_INLET, true
 	case "HEAT_AND_COOL":
-		enum = SupportedPhysicalMedia_HEAT_AND_COOL
+		return SupportedPhysicalMedia_HEAT_AND_COOL, true
 	case "BUS_OR_SYSTEM":
-		enum = SupportedPhysicalMedia_BUS_OR_SYSTEM
+		return SupportedPhysicalMedia_BUS_OR_SYSTEM, true
 	case "UNKNOWN_DEVICE_TYPE":
-		enum = SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE
+		return SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE, true
 	case "BREAKER":
-		enum = SupportedPhysicalMedia_BREAKER
+		return SupportedPhysicalMedia_BREAKER, true
 	case "VALVE":
-		enum = SupportedPhysicalMedia_VALVE
+		return SupportedPhysicalMedia_VALVE, true
 	case "WASTE_WATER_METER":
-		enum = SupportedPhysicalMedia_WASTE_WATER_METER
+		return SupportedPhysicalMedia_WASTE_WATER_METER, true
 	case "GARBAGE":
-		enum = SupportedPhysicalMedia_GARBAGE
+		return SupportedPhysicalMedia_GARBAGE, true
 	case "RADIO_CONVERTER":
-		enum = SupportedPhysicalMedia_RADIO_CONVERTER
-	default:
-		enum = 0
-		ok = false
+		return SupportedPhysicalMedia_RADIO_CONVERTER, true
 	}
-	return
+	return 0, false
 }
 
 func SupportedPhysicalMediaKnows(value uint8) bool {
@@ -423,7 +419,11 @@ func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysical
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SupportedPhysicalMedia")
 	}
-	return SupportedPhysicalMediaByValue(val), nil
+	if enum, ok := SupportedPhysicalMediaByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for SupportedPhysicalMedia", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e SupportedPhysicalMedia) Serialize(writeBuffer utils.WriteBuffer) error {

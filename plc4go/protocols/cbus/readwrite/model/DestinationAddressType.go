@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func DestinationAddressTypeByValue(value uint8) DestinationAddressType {
+func DestinationAddressTypeByValue(value uint8) (enum DestinationAddressType, ok bool) {
 	switch value {
 	case 0x03:
-		return DestinationAddressType_PointToPointToMultiPoint
+		return DestinationAddressType_PointToPointToMultiPoint, true
 	case 0x05:
-		return DestinationAddressType_PointToMultiPoint
+		return DestinationAddressType_PointToMultiPoint, true
 	case 0x06:
-		return DestinationAddressType_PointToPoint
+		return DestinationAddressType_PointToPoint, true
 	}
-	return 0
+	return 0, false
 }
 
 func DestinationAddressTypeByName(value string) (enum DestinationAddressType, ok bool) {
-	ok = true
 	switch value {
 	case "PointToPointToMultiPoint":
-		enum = DestinationAddressType_PointToPointToMultiPoint
+		return DestinationAddressType_PointToPointToMultiPoint, true
 	case "PointToMultiPoint":
-		enum = DestinationAddressType_PointToMultiPoint
+		return DestinationAddressType_PointToMultiPoint, true
 	case "PointToPoint":
-		enum = DestinationAddressType_PointToPoint
-	default:
-		enum = 0
-		ok = false
+		return DestinationAddressType_PointToPoint, true
 	}
-	return
+	return 0, false
 }
 
 func DestinationAddressTypeKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func DestinationAddressTypeParse(readBuffer utils.ReadBuffer) (DestinationAddres
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DestinationAddressType")
 	}
-	return DestinationAddressTypeByValue(val), nil
+	if enum, ok := DestinationAddressTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for DestinationAddressType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e DestinationAddressType) Serialize(writeBuffer utils.WriteBuffer) error {

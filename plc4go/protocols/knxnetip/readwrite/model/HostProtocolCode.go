@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func HostProtocolCodeByValue(value uint8) HostProtocolCode {
+func HostProtocolCodeByValue(value uint8) (enum HostProtocolCode, ok bool) {
 	switch value {
 	case 0x01:
-		return HostProtocolCode_IPV4_UDP
+		return HostProtocolCode_IPV4_UDP, true
 	case 0x02:
-		return HostProtocolCode_IPV4_TCP
+		return HostProtocolCode_IPV4_TCP, true
 	}
-	return 0
+	return 0, false
 }
 
 func HostProtocolCodeByName(value string) (enum HostProtocolCode, ok bool) {
-	ok = true
 	switch value {
 	case "IPV4_UDP":
-		enum = HostProtocolCode_IPV4_UDP
+		return HostProtocolCode_IPV4_UDP, true
 	case "IPV4_TCP":
-		enum = HostProtocolCode_IPV4_TCP
-	default:
-		enum = 0
-		ok = false
+		return HostProtocolCode_IPV4_TCP, true
 	}
-	return
+	return 0, false
 }
 
 func HostProtocolCodeKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func HostProtocolCodeParse(readBuffer utils.ReadBuffer) (HostProtocolCode, error
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HostProtocolCode")
 	}
-	return HostProtocolCodeByValue(val), nil
+	if enum, ok := HostProtocolCodeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for HostProtocolCode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e HostProtocolCode) Serialize(writeBuffer utils.WriteBuffer) error {

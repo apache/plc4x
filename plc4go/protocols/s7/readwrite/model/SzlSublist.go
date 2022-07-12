@@ -82,96 +82,92 @@ func init() {
 	}
 }
 
-func SzlSublistByValue(value uint8) SzlSublist {
+func SzlSublistByValue(value uint8) (enum SzlSublist, ok bool) {
 	switch value {
 	case 0x11:
-		return SzlSublist_MODULE_IDENTIFICATION
+		return SzlSublist_MODULE_IDENTIFICATION, true
 	case 0x12:
-		return SzlSublist_CPU_FEATURES
+		return SzlSublist_CPU_FEATURES, true
 	case 0x13:
-		return SzlSublist_USER_MEMORY_AREA
+		return SzlSublist_USER_MEMORY_AREA, true
 	case 0x14:
-		return SzlSublist_SYSTEM_AREAS
+		return SzlSublist_SYSTEM_AREAS, true
 	case 0x15:
-		return SzlSublist_BLOCK_TYPES
+		return SzlSublist_BLOCK_TYPES, true
 	case 0x19:
-		return SzlSublist_STATUS_MODULE_LEDS
+		return SzlSublist_STATUS_MODULE_LEDS, true
 	case 0x1C:
-		return SzlSublist_COMPONENT_IDENTIFICATION
+		return SzlSublist_COMPONENT_IDENTIFICATION, true
 	case 0x22:
-		return SzlSublist_INTERRUPT_STATUS
+		return SzlSublist_INTERRUPT_STATUS, true
 	case 0x25:
-		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS
+		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS, true
 	case 0x32:
-		return SzlSublist_COMMUNICATION_STATUS_DATA
+		return SzlSublist_COMMUNICATION_STATUS_DATA, true
 	case 0x74:
-		return SzlSublist_STATUS_SINGLE_MODULE_LED
+		return SzlSublist_STATUS_SINGLE_MODULE_LED, true
 	case 0x90:
-		return SzlSublist_DP_MASTER_SYSTEM_INFORMATION
+		return SzlSublist_DP_MASTER_SYSTEM_INFORMATION, true
 	case 0x91:
-		return SzlSublist_MODULE_STATUS_INFORMATION
+		return SzlSublist_MODULE_STATUS_INFORMATION, true
 	case 0x92:
-		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION, true
 	case 0x94:
-		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2, true
 	case 0x95:
-		return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION
+		return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION, true
 	case 0x96:
-		return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP
+		return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP, true
 	case 0xA0:
-		return SzlSublist_DIAGNOSTIC_BUFFER
+		return SzlSublist_DIAGNOSTIC_BUFFER, true
 	case 0xB1:
-		return SzlSublist_MODULE_DIAGNOSTIC_DATA
+		return SzlSublist_MODULE_DIAGNOSTIC_DATA, true
 	}
-	return 0
+	return 0, false
 }
 
 func SzlSublistByName(value string) (enum SzlSublist, ok bool) {
-	ok = true
 	switch value {
 	case "MODULE_IDENTIFICATION":
-		enum = SzlSublist_MODULE_IDENTIFICATION
+		return SzlSublist_MODULE_IDENTIFICATION, true
 	case "CPU_FEATURES":
-		enum = SzlSublist_CPU_FEATURES
+		return SzlSublist_CPU_FEATURES, true
 	case "USER_MEMORY_AREA":
-		enum = SzlSublist_USER_MEMORY_AREA
+		return SzlSublist_USER_MEMORY_AREA, true
 	case "SYSTEM_AREAS":
-		enum = SzlSublist_SYSTEM_AREAS
+		return SzlSublist_SYSTEM_AREAS, true
 	case "BLOCK_TYPES":
-		enum = SzlSublist_BLOCK_TYPES
+		return SzlSublist_BLOCK_TYPES, true
 	case "STATUS_MODULE_LEDS":
-		enum = SzlSublist_STATUS_MODULE_LEDS
+		return SzlSublist_STATUS_MODULE_LEDS, true
 	case "COMPONENT_IDENTIFICATION":
-		enum = SzlSublist_COMPONENT_IDENTIFICATION
+		return SzlSublist_COMPONENT_IDENTIFICATION, true
 	case "INTERRUPT_STATUS":
-		enum = SzlSublist_INTERRUPT_STATUS
+		return SzlSublist_INTERRUPT_STATUS, true
 	case "ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS":
-		enum = SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS
+		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS, true
 	case "COMMUNICATION_STATUS_DATA":
-		enum = SzlSublist_COMMUNICATION_STATUS_DATA
+		return SzlSublist_COMMUNICATION_STATUS_DATA, true
 	case "STATUS_SINGLE_MODULE_LED":
-		enum = SzlSublist_STATUS_SINGLE_MODULE_LED
+		return SzlSublist_STATUS_SINGLE_MODULE_LED, true
 	case "DP_MASTER_SYSTEM_INFORMATION":
-		enum = SzlSublist_DP_MASTER_SYSTEM_INFORMATION
+		return SzlSublist_DP_MASTER_SYSTEM_INFORMATION, true
 	case "MODULE_STATUS_INFORMATION":
-		enum = SzlSublist_MODULE_STATUS_INFORMATION
+		return SzlSublist_MODULE_STATUS_INFORMATION, true
 	case "RACK_OR_STATION_STATUS_INFORMATION":
-		enum = SzlSublist_RACK_OR_STATION_STATUS_INFORMATION
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION, true
 	case "RACK_OR_STATION_STATUS_INFORMATION_2":
-		enum = SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2, true
 	case "ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION":
-		enum = SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION
+		return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION, true
 	case "MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP":
-		enum = SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP
+		return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP, true
 	case "DIAGNOSTIC_BUFFER":
-		enum = SzlSublist_DIAGNOSTIC_BUFFER
+		return SzlSublist_DIAGNOSTIC_BUFFER, true
 	case "MODULE_DIAGNOSTIC_DATA":
-		enum = SzlSublist_MODULE_DIAGNOSTIC_DATA
-	default:
-		enum = 0
-		ok = false
+		return SzlSublist_MODULE_DIAGNOSTIC_DATA, true
 	}
-	return
+	return 0, false
 }
 
 func SzlSublistKnows(value uint8) bool {
@@ -206,7 +202,11 @@ func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SzlSublist")
 	}
-	return SzlSublistByValue(val), nil
+	if enum, ok := SzlSublistByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for SzlSublist", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e SzlSublist) Serialize(writeBuffer utils.WriteBuffer) error {

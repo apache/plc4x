@@ -60,52 +60,48 @@ func init() {
 	}
 }
 
-func BACnetFaultTypeByValue(value uint8) BACnetFaultType {
+func BACnetFaultTypeByValue(value uint8) (enum BACnetFaultType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetFaultType_NONE
+		return BACnetFaultType_NONE, true
 	case 1:
-		return BACnetFaultType_FAULT_CHARACTERSTRING
+		return BACnetFaultType_FAULT_CHARACTERSTRING, true
 	case 2:
-		return BACnetFaultType_FAULT_EXTENDED
+		return BACnetFaultType_FAULT_EXTENDED, true
 	case 3:
-		return BACnetFaultType_FAULT_LIFE_SAFETY
+		return BACnetFaultType_FAULT_LIFE_SAFETY, true
 	case 4:
-		return BACnetFaultType_FAULT_STATE
+		return BACnetFaultType_FAULT_STATE, true
 	case 5:
-		return BACnetFaultType_FAULT_STATUS_FLAGS
+		return BACnetFaultType_FAULT_STATUS_FLAGS, true
 	case 6:
-		return BACnetFaultType_FAULT_OUT_OF_RANGE
+		return BACnetFaultType_FAULT_OUT_OF_RANGE, true
 	case 7:
-		return BACnetFaultType_FAULT_LISTED
+		return BACnetFaultType_FAULT_LISTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetFaultTypeByName(value string) (enum BACnetFaultType, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetFaultType_NONE
+		return BACnetFaultType_NONE, true
 	case "FAULT_CHARACTERSTRING":
-		enum = BACnetFaultType_FAULT_CHARACTERSTRING
+		return BACnetFaultType_FAULT_CHARACTERSTRING, true
 	case "FAULT_EXTENDED":
-		enum = BACnetFaultType_FAULT_EXTENDED
+		return BACnetFaultType_FAULT_EXTENDED, true
 	case "FAULT_LIFE_SAFETY":
-		enum = BACnetFaultType_FAULT_LIFE_SAFETY
+		return BACnetFaultType_FAULT_LIFE_SAFETY, true
 	case "FAULT_STATE":
-		enum = BACnetFaultType_FAULT_STATE
+		return BACnetFaultType_FAULT_STATE, true
 	case "FAULT_STATUS_FLAGS":
-		enum = BACnetFaultType_FAULT_STATUS_FLAGS
+		return BACnetFaultType_FAULT_STATUS_FLAGS, true
 	case "FAULT_OUT_OF_RANGE":
-		enum = BACnetFaultType_FAULT_OUT_OF_RANGE
+		return BACnetFaultType_FAULT_OUT_OF_RANGE, true
 	case "FAULT_LISTED":
-		enum = BACnetFaultType_FAULT_LISTED
-	default:
-		enum = 0
-		ok = false
+		return BACnetFaultType_FAULT_LISTED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetFaultTypeKnows(value uint8) bool {
@@ -140,7 +136,11 @@ func BACnetFaultTypeParse(readBuffer utils.ReadBuffer) (BACnetFaultType, error) 
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetFaultType")
 	}
-	return BACnetFaultTypeByValue(val), nil
+	if enum, ok := BACnetFaultTypeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetFaultType", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetFaultType) Serialize(writeBuffer utils.WriteBuffer) error {

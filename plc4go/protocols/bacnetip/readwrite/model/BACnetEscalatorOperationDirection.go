@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetEscalatorOperationDirectionByValue(value uint16) BACnetEscalatorOperationDirection {
+func BACnetEscalatorOperationDirectionByValue(value uint16) (enum BACnetEscalatorOperationDirection, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEscalatorOperationDirection_UNKNOWN
+		return BACnetEscalatorOperationDirection_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetEscalatorOperationDirection_STOPPED
+		return BACnetEscalatorOperationDirection_STOPPED, true
 	case 2:
-		return BACnetEscalatorOperationDirection_UP_RATED_SPEED
+		return BACnetEscalatorOperationDirection_UP_RATED_SPEED, true
 	case 3:
-		return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED
+		return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED, true
 	case 4:
-		return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED
+		return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED, true
 	case 5:
-		return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED
+		return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEscalatorOperationDirectionByName(value string) (enum BACnetEscalatorOperationDirection, ok bool) {
-	ok = true
 	switch value {
 	case "UNKNOWN":
-		enum = BACnetEscalatorOperationDirection_UNKNOWN
+		return BACnetEscalatorOperationDirection_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE, true
 	case "STOPPED":
-		enum = BACnetEscalatorOperationDirection_STOPPED
+		return BACnetEscalatorOperationDirection_STOPPED, true
 	case "UP_RATED_SPEED":
-		enum = BACnetEscalatorOperationDirection_UP_RATED_SPEED
+		return BACnetEscalatorOperationDirection_UP_RATED_SPEED, true
 	case "UP_REDUCED_SPEED":
-		enum = BACnetEscalatorOperationDirection_UP_REDUCED_SPEED
+		return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED, true
 	case "DOWN_RATED_SPEED":
-		enum = BACnetEscalatorOperationDirection_DOWN_RATED_SPEED
+		return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED, true
 	case "DOWN_REDUCED_SPEED":
-		enum = BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED
-	default:
-		enum = 0
-		ok = false
+		return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetEscalatorOperationDirectionKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BACnetEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer) (BACnet
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorOperationDirection")
 	}
-	return BACnetEscalatorOperationDirectionByValue(val), nil
+	if enum, ok := BACnetEscalatorOperationDirectionByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetEscalatorOperationDirection", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetEscalatorOperationDirection) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -50,32 +50,28 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(value uint8) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(value uint8) (enum BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE, true
 	case 1:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE, true
 	case 2:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByName(value string) (enum BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, ok bool) {
-	ok = true
 	switch value {
 	case "ENABLE":
-		enum = BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE, true
 	case "DISABLE":
-		enum = BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE, true
 	case "DISABLE_INITIATION":
-		enum = BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION
-	default:
-		enum = 0
-		ok = false
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableKnows(value uint8) bool {
@@ -110,7 +106,11 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(r
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable")
 	}
-	return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Serialize(writeBuffer utils.WriteBuffer) error {

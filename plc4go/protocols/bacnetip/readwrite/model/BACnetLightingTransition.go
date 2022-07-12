@@ -52,36 +52,32 @@ func init() {
 	}
 }
 
-func BACnetLightingTransitionByValue(value uint8) BACnetLightingTransition {
+func BACnetLightingTransitionByValue(value uint8) (enum BACnetLightingTransition, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLightingTransition_NONE
+		return BACnetLightingTransition_NONE, true
 	case 0xFF:
-		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLightingTransition_FADE
+		return BACnetLightingTransition_FADE, true
 	case 2:
-		return BACnetLightingTransition_RAMP
+		return BACnetLightingTransition_RAMP, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLightingTransitionByName(value string) (enum BACnetLightingTransition, ok bool) {
-	ok = true
 	switch value {
 	case "NONE":
-		enum = BACnetLightingTransition_NONE
+		return BACnetLightingTransition_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE, true
 	case "FADE":
-		enum = BACnetLightingTransition_FADE
+		return BACnetLightingTransition_FADE, true
 	case "RAMP":
-		enum = BACnetLightingTransition_RAMP
-	default:
-		enum = 0
-		ok = false
+		return BACnetLightingTransition_RAMP, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetLightingTransitionKnows(value uint8) bool {
@@ -116,7 +112,11 @@ func BACnetLightingTransitionParse(readBuffer utils.ReadBuffer) (BACnetLightingT
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingTransition")
 	}
-	return BACnetLightingTransitionByValue(val), nil
+	if enum, ok := BACnetLightingTransitionByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetLightingTransition", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetLightingTransition) Serialize(writeBuffer utils.WriteBuffer) error {

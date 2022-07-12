@@ -48,28 +48,24 @@ func init() {
 	}
 }
 
-func BACnetAccessRuleLocationSpecifierByValue(value uint8) BACnetAccessRuleLocationSpecifier {
+func BACnetAccessRuleLocationSpecifierByValue(value uint8) (enum BACnetAccessRuleLocationSpecifier, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessRuleLocationSpecifier_SPECIFIED
+		return BACnetAccessRuleLocationSpecifier_SPECIFIED, true
 	case 1:
-		return BACnetAccessRuleLocationSpecifier_ALL
+		return BACnetAccessRuleLocationSpecifier_ALL, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessRuleLocationSpecifierByName(value string) (enum BACnetAccessRuleLocationSpecifier, ok bool) {
-	ok = true
 	switch value {
 	case "SPECIFIED":
-		enum = BACnetAccessRuleLocationSpecifier_SPECIFIED
+		return BACnetAccessRuleLocationSpecifier_SPECIFIED, true
 	case "ALL":
-		enum = BACnetAccessRuleLocationSpecifier_ALL
-	default:
-		enum = 0
-		ok = false
+		return BACnetAccessRuleLocationSpecifier_ALL, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAccessRuleLocationSpecifierKnows(value uint8) bool {
@@ -104,7 +100,11 @@ func BACnetAccessRuleLocationSpecifierParse(readBuffer utils.ReadBuffer) (BACnet
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleLocationSpecifier")
 	}
-	return BACnetAccessRuleLocationSpecifierByValue(val), nil
+	if enum, ok := BACnetAccessRuleLocationSpecifierByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAccessRuleLocationSpecifier", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAccessRuleLocationSpecifier) Serialize(writeBuffer utils.WriteBuffer) error {

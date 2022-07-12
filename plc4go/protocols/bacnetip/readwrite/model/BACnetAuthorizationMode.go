@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetAuthorizationModeByValue(value uint16) BACnetAuthorizationMode {
+func BACnetAuthorizationModeByValue(value uint16) (enum BACnetAuthorizationMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAuthorizationMode_AUTHORIZE
+		return BACnetAuthorizationMode_AUTHORIZE, true
 	case 0xFFFF:
-		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAuthorizationMode_GRANT_ACTIVE
+		return BACnetAuthorizationMode_GRANT_ACTIVE, true
 	case 2:
-		return BACnetAuthorizationMode_DENY_ALL
+		return BACnetAuthorizationMode_DENY_ALL, true
 	case 3:
-		return BACnetAuthorizationMode_VERIFICATION_REQUIRED
+		return BACnetAuthorizationMode_VERIFICATION_REQUIRED, true
 	case 4:
-		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED
+		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED, true
 	case 5:
-		return BACnetAuthorizationMode_NONE
+		return BACnetAuthorizationMode_NONE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAuthorizationModeByName(value string) (enum BACnetAuthorizationMode, ok bool) {
-	ok = true
 	switch value {
 	case "AUTHORIZE":
-		enum = BACnetAuthorizationMode_AUTHORIZE
+		return BACnetAuthorizationMode_AUTHORIZE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE, true
 	case "GRANT_ACTIVE":
-		enum = BACnetAuthorizationMode_GRANT_ACTIVE
+		return BACnetAuthorizationMode_GRANT_ACTIVE, true
 	case "DENY_ALL":
-		enum = BACnetAuthorizationMode_DENY_ALL
+		return BACnetAuthorizationMode_DENY_ALL, true
 	case "VERIFICATION_REQUIRED":
-		enum = BACnetAuthorizationMode_VERIFICATION_REQUIRED
+		return BACnetAuthorizationMode_VERIFICATION_REQUIRED, true
 	case "AUTHORIZATION_DELAYED":
-		enum = BACnetAuthorizationMode_AUTHORIZATION_DELAYED
+		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED, true
 	case "NONE":
-		enum = BACnetAuthorizationMode_NONE
-	default:
-		enum = 0
-		ok = false
+		return BACnetAuthorizationMode_NONE, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAuthorizationModeKnows(value uint16) bool {
@@ -134,7 +130,11 @@ func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizat
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")
 	}
-	return BACnetAuthorizationModeByValue(val), nil
+	if enum, ok := BACnetAuthorizationModeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAuthorizationMode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAuthorizationMode) Serialize(writeBuffer utils.WriteBuffer) error {

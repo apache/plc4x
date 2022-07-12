@@ -304,540 +304,536 @@ func init() {
 	}
 }
 
-func ErrorCodeByValue(value uint16) ErrorCode {
+func ErrorCodeByValue(value uint16) (enum ErrorCode, ok bool) {
 	switch value {
 	case 0:
-		return ErrorCode_OTHER
+		return ErrorCode_OTHER, true
 	case 0xFFFF:
-		return ErrorCode_VENDOR_PROPRIETARY_VALUE
+		return ErrorCode_VENDOR_PROPRIETARY_VALUE, true
 	case 100:
-		return ErrorCode_KEY_UPDATE_IN_PROGRESS
+		return ErrorCode_KEY_UPDATE_IN_PROGRESS, true
 	case 101:
-		return ErrorCode_MALFORMED_MESSAGE
+		return ErrorCode_MALFORMED_MESSAGE, true
 	case 102:
-		return ErrorCode_NOT_KEY_SERVER
+		return ErrorCode_NOT_KEY_SERVER, true
 	case 103:
-		return ErrorCode_SECURITY_NOT_CONFIGURED
+		return ErrorCode_SECURITY_NOT_CONFIGURED, true
 	case 104:
-		return ErrorCode_SOURCE_SECURITY_REQUIRED
+		return ErrorCode_SOURCE_SECURITY_REQUIRED, true
 	case 105:
-		return ErrorCode_TOO_MANY_KEYS
+		return ErrorCode_TOO_MANY_KEYS, true
 	case 106:
-		return ErrorCode_UNKNOWN_AUTHENTICATION_TYPE
+		return ErrorCode_UNKNOWN_AUTHENTICATION_TYPE, true
 	case 107:
-		return ErrorCode_UNKNOWN_KEY
+		return ErrorCode_UNKNOWN_KEY, true
 	case 108:
-		return ErrorCode_UNKNOWN_KEY_REVISION
+		return ErrorCode_UNKNOWN_KEY_REVISION, true
 	case 109:
-		return ErrorCode_UNKNOWN_SOURCE_MESSAGE
+		return ErrorCode_UNKNOWN_SOURCE_MESSAGE, true
 	case 110:
-		return ErrorCode_NOT_ROUTER_TO_DNET
+		return ErrorCode_NOT_ROUTER_TO_DNET, true
 	case 111:
-		return ErrorCode_ROUTER_BUSY
+		return ErrorCode_ROUTER_BUSY, true
 	case 112:
-		return ErrorCode_UNKNOWN_NETWORK_MESSAGE
+		return ErrorCode_UNKNOWN_NETWORK_MESSAGE, true
 	case 113:
-		return ErrorCode_MESSAGE_TOO_LONG
+		return ErrorCode_MESSAGE_TOO_LONG, true
 	case 114:
-		return ErrorCode_SECURITY_ERROR
+		return ErrorCode_SECURITY_ERROR, true
 	case 115:
-		return ErrorCode_ADDRESSING_ERROR
+		return ErrorCode_ADDRESSING_ERROR, true
 	case 116:
-		return ErrorCode_WRITE_BDT_FAILED
+		return ErrorCode_WRITE_BDT_FAILED, true
 	case 117:
-		return ErrorCode_READ_BDT_FAILED
+		return ErrorCode_READ_BDT_FAILED, true
 	case 118:
-		return ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED
+		return ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED, true
 	case 119:
-		return ErrorCode_READ_FDT_FAILED
+		return ErrorCode_READ_FDT_FAILED, true
 	case 120:
-		return ErrorCode_DELETE_FDT_ENTRY_FAILED
+		return ErrorCode_DELETE_FDT_ENTRY_FAILED, true
 	case 121:
-		return ErrorCode_DISTRIBUTE_BROADCAST_FAILED
+		return ErrorCode_DISTRIBUTE_BROADCAST_FAILED, true
 	case 122:
-		return ErrorCode_UNKNOWN_FILE_SIZE
+		return ErrorCode_UNKNOWN_FILE_SIZE, true
 	case 123:
-		return ErrorCode_ABORT_APDU_TOO_LONG
+		return ErrorCode_ABORT_APDU_TOO_LONG, true
 	case 124:
-		return ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME
+		return ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME, true
 	case 125:
-		return ErrorCode_ABORT_OUT_OF_RESOURCES
+		return ErrorCode_ABORT_OUT_OF_RESOURCES, true
 	case 126:
-		return ErrorCode_ABORT_TSM_TIMEOUT
+		return ErrorCode_ABORT_TSM_TIMEOUT, true
 	case 127:
-		return ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE
+		return ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE, true
 	case 128:
-		return ErrorCode_FILE_FULL
+		return ErrorCode_FILE_FULL, true
 	case 129:
-		return ErrorCode_INCONSISTENT_CONFIGURATION
+		return ErrorCode_INCONSISTENT_CONFIGURATION, true
 	case 13:
-		return ErrorCode_D_PARAMETER_DATA_TYPE
+		return ErrorCode_D_PARAMETER_DATA_TYPE, true
 	case 130:
-		return ErrorCode_INCONSISTENT_OBJECT_TYPE
+		return ErrorCode_INCONSISTENT_OBJECT_TYPE, true
 	case 131:
-		return ErrorCode_INTERNAL_ERROR
+		return ErrorCode_INTERNAL_ERROR, true
 	case 132:
-		return ErrorCode_NOT_CONFIGURED
+		return ErrorCode_NOT_CONFIGURED, true
 	case 133:
-		return ErrorCode_OUT_OF_MEMORY
+		return ErrorCode_OUT_OF_MEMORY, true
 	case 134:
-		return ErrorCode_VALUE_TOO_LONG
+		return ErrorCode_VALUE_TOO_LONG, true
 	case 135:
-		return ErrorCode_ABORT_INSUFFICIENT_SECURITY
+		return ErrorCode_ABORT_INSUFFICIENT_SECURITY, true
 	case 136:
-		return ErrorCode_ABORT_SECURITY_ERROR
+		return ErrorCode_ABORT_SECURITY_ERROR, true
 	case 137:
-		return ErrorCode_DUPLICATE_ENTRY
+		return ErrorCode_DUPLICATE_ENTRY, true
 	case 138:
-		return ErrorCode_INVALID_VALUE_IN_THIS_STATE
+		return ErrorCode_INVALID_VALUE_IN_THIS_STATE, true
 	case 14:
-		return ErrorCode_INVALID_TIMESTAMP
+		return ErrorCode_INVALID_TIMESTAMP, true
 	case 16:
-		return ErrorCode_MISSING_REQUIRED_PARAMETER
+		return ErrorCode_MISSING_REQUIRED_PARAMETER, true
 	case 17:
-		return ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE
+		return ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE, true
 	case 18:
-		return ErrorCode_NO_SPACE_FOR_OBJECT
+		return ErrorCode_NO_SPACE_FOR_OBJECT, true
 	case 19:
-		return ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT
+		return ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT, true
 	case 2:
-		return ErrorCode_CONFIGURATION_IN_PROGRESS
+		return ErrorCode_CONFIGURATION_IN_PROGRESS, true
 	case 20:
-		return ErrorCode_NO_SPACE_TO_WRITE_PROPERTY
+		return ErrorCode_NO_SPACE_TO_WRITE_PROPERTY, true
 	case 21:
-		return ErrorCode_NO_VT_SESSIONS_AVAILABLE
+		return ErrorCode_NO_VT_SESSIONS_AVAILABLE, true
 	case 22:
-		return ErrorCode_PROPERTY_IS_NOT_A_LIST
+		return ErrorCode_PROPERTY_IS_NOT_A_LIST, true
 	case 23:
-		return ErrorCode_OBJECT_DELETION_NOT_PERMITTED
+		return ErrorCode_OBJECT_DELETION_NOT_PERMITTED, true
 	case 24:
-		return ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS
+		return ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS, true
 	case 25:
-		return ErrorCode_OPERATIONAL_PROBLEM
+		return ErrorCode_OPERATIONAL_PROBLEM, true
 	case 26:
-		return ErrorCode_PASSWORD_FAILURE
+		return ErrorCode_PASSWORD_FAILURE, true
 	case 27:
-		return ErrorCode_READ_ACCESS_DENIED
+		return ErrorCode_READ_ACCESS_DENIED, true
 	case 29:
-		return ErrorCode_SERVICE_REQUEST_DENIED
+		return ErrorCode_SERVICE_REQUEST_DENIED, true
 	case 3:
-		return ErrorCode_DEVICE_BUSY
+		return ErrorCode_DEVICE_BUSY, true
 	case 30:
-		return ErrorCode_TIMEOUT
+		return ErrorCode_TIMEOUT, true
 	case 31:
-		return ErrorCode_UNKNOWN_OBJECT
+		return ErrorCode_UNKNOWN_OBJECT, true
 	case 32:
-		return ErrorCode_UNKNOWN_PROPERTY
+		return ErrorCode_UNKNOWN_PROPERTY, true
 	case 34:
-		return ErrorCode_UNKNOWN_VT_CLASS
+		return ErrorCode_UNKNOWN_VT_CLASS, true
 	case 35:
-		return ErrorCode_UNKNOWN_VT_SESSION
+		return ErrorCode_UNKNOWN_VT_SESSION, true
 	case 36:
-		return ErrorCode_UNSUPPORTED_OBJECT_TYPE
+		return ErrorCode_UNSUPPORTED_OBJECT_TYPE, true
 	case 37:
-		return ErrorCode_VALUE_OUT_OF_RANGE
+		return ErrorCode_VALUE_OUT_OF_RANGE, true
 	case 38:
-		return ErrorCode_VT_SESSION_ALREADY_CLOSED
+		return ErrorCode_VT_SESSION_ALREADY_CLOSED, true
 	case 39:
-		return ErrorCode_VT_SESSION_TERMINATION_FAILURE
+		return ErrorCode_VT_SESSION_TERMINATION_FAILURE, true
 	case 4:
-		return ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED
+		return ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED, true
 	case 40:
-		return ErrorCode_WRITE_ACCESS_DENIED
+		return ErrorCode_WRITE_ACCESS_DENIED, true
 	case 41:
-		return ErrorCode_CHARACTER_SET_NOT_SUPPORTED
+		return ErrorCode_CHARACTER_SET_NOT_SUPPORTED, true
 	case 42:
-		return ErrorCode_INVALID_ARRAY_INDEX
+		return ErrorCode_INVALID_ARRAY_INDEX, true
 	case 43:
-		return ErrorCode_COV_SUBSCRIPTION_FAILED
+		return ErrorCode_COV_SUBSCRIPTION_FAILED, true
 	case 44:
-		return ErrorCode_NOT_COV_PROPERTY
+		return ErrorCode_NOT_COV_PROPERTY, true
 	case 45:
-		return ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED
+		return ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED, true
 	case 46:
-		return ErrorCode_INVALID_CONFIGURATION_DATA
+		return ErrorCode_INVALID_CONFIGURATION_DATA, true
 	case 47:
-		return ErrorCode_DATATYPE_NOT_SUPPORTED
+		return ErrorCode_DATATYPE_NOT_SUPPORTED, true
 	case 48:
-		return ErrorCode_DUPLICATE_NAME
+		return ErrorCode_DUPLICATE_NAME, true
 	case 49:
-		return ErrorCode_DUPLICATE_OBJECT_ID
+		return ErrorCode_DUPLICATE_OBJECT_ID, true
 	case 5:
-		return ErrorCode_FILE_ACCESS_DENIED
+		return ErrorCode_FILE_ACCESS_DENIED, true
 	case 50:
-		return ErrorCode_PROPERTY_IS_NOT_AN_ARRAY
+		return ErrorCode_PROPERTY_IS_NOT_AN_ARRAY, true
 	case 51:
-		return ErrorCode_ABORT_BUFFER_OVERFLOW
+		return ErrorCode_ABORT_BUFFER_OVERFLOW, true
 	case 52:
-		return ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE
+		return ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE, true
 	case 53:
-		return ErrorCode_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK
+		return ErrorCode_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
 	case 54:
-		return ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED
+		return ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED, true
 	case 55:
-		return ErrorCode_ABORT_PROPRIETARY
+		return ErrorCode_ABORT_PROPRIETARY, true
 	case 56:
-		return ErrorCode_ABORT_OTHER
+		return ErrorCode_ABORT_OTHER, true
 	case 57:
-		return ErrorCode_INVALID_TAG
+		return ErrorCode_INVALID_TAG, true
 	case 58:
-		return ErrorCode_NETWORK_DOWN
+		return ErrorCode_NETWORK_DOWN, true
 	case 59:
-		return ErrorCode_REJECT_BUFFER_OVERFLOW
+		return ErrorCode_REJECT_BUFFER_OVERFLOW, true
 	case 60:
-		return ErrorCode_REJECT_INCONSISTENT_PARAMETERS
+		return ErrorCode_REJECT_INCONSISTENT_PARAMETERS, true
 	case 61:
-		return ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE
+		return ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE, true
 	case 62:
-		return ErrorCode_REJECT_INVALID_TAG
+		return ErrorCode_REJECT_INVALID_TAG, true
 	case 63:
-		return ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER
+		return ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER, true
 	case 64:
-		return ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE
+		return ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE, true
 	case 65:
-		return ErrorCode_REJECT_TOO_MANY_ARGUMENTS
+		return ErrorCode_REJECT_TOO_MANY_ARGUMENTS, true
 	case 66:
-		return ErrorCode_REJECT_UNDEFINED_ENUMERATION
+		return ErrorCode_REJECT_UNDEFINED_ENUMERATION, true
 	case 67:
-		return ErrorCode_REJECT_UNRECOGNIZED_SERVICE
+		return ErrorCode_REJECT_UNRECOGNIZED_SERVICE, true
 	case 68:
-		return ErrorCode_REJECT_PROPRIETARY
+		return ErrorCode_REJECT_PROPRIETARY, true
 	case 69:
-		return ErrorCode_REJECT_OTHER
+		return ErrorCode_REJECT_OTHER, true
 	case 7:
-		return ErrorCode_INCONSISTENT_PARAMETERS
+		return ErrorCode_INCONSISTENT_PARAMETERS, true
 	case 70:
-		return ErrorCode_UNKNOWN_DEVICE
+		return ErrorCode_UNKNOWN_DEVICE, true
 	case 71:
-		return ErrorCode_UNKNOWN_ROUTE
+		return ErrorCode_UNKNOWN_ROUTE, true
 	case 72:
-		return ErrorCode_VALUE_NOT_INITIALIZED
+		return ErrorCode_VALUE_NOT_INITIALIZED, true
 	case 74:
-		return ErrorCode_NO_ALARM_CONFIGURED
+		return ErrorCode_NO_ALARM_CONFIGURED, true
 	case 75:
-		return ErrorCode_LOG_BUFFER_FULL
+		return ErrorCode_LOG_BUFFER_FULL, true
 	case 76:
-		return ErrorCode_LOGGED_VALUE_PURGED
+		return ErrorCode_LOGGED_VALUE_PURGED, true
 	case 77:
-		return ErrorCode_NO_PROPERTY_SPECIFIED
+		return ErrorCode_NO_PROPERTY_SPECIFIED, true
 	case 78:
-		return ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING
+		return ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING, true
 	case 79:
-		return ErrorCode_UNKNOWN_SUBSCRIPTION
+		return ErrorCode_UNKNOWN_SUBSCRIPTION, true
 	case 8:
-		return ErrorCode_INCONSISTENT_SELECTION_CRITERION
+		return ErrorCode_INCONSISTENT_SELECTION_CRITERION, true
 	case 80:
-		return ErrorCode_PARAMETER_OUT_OF_RANGE
+		return ErrorCode_PARAMETER_OUT_OF_RANGE, true
 	case 81:
-		return ErrorCode_LIST_ELEMENT_NOT_FOUND
+		return ErrorCode_LIST_ELEMENT_NOT_FOUND, true
 	case 82:
-		return ErrorCode_Busy
+		return ErrorCode_Busy, true
 	case 83:
-		return ErrorCode_COMMUNICATION_DISABLED
+		return ErrorCode_COMMUNICATION_DISABLED, true
 	case 84:
-		return ErrorCode_SUCCESS
+		return ErrorCode_SUCCESS, true
 	case 85:
-		return ErrorCode_ACCESS_DENIED
+		return ErrorCode_ACCESS_DENIED, true
 	case 86:
-		return ErrorCode_BAD_DESTINATION_ADDRESS
+		return ErrorCode_BAD_DESTINATION_ADDRESS, true
 	case 87:
-		return ErrorCode_BAD_DESTINATION_DEVICE_ID
+		return ErrorCode_BAD_DESTINATION_DEVICE_ID, true
 	case 88:
-		return ErrorCode_BAD_SIGNATURE
+		return ErrorCode_BAD_SIGNATURE, true
 	case 89:
-		return ErrorCode_BAD_SOURCE_ADDRESS
+		return ErrorCode_BAD_SOURCE_ADDRESS, true
 	case 9:
-		return ErrorCode_INVALID_DATA_TYPE
+		return ErrorCode_INVALID_DATA_TYPE, true
 	case 90:
-		return ErrorCode_BAD_TIMESTAMP
+		return ErrorCode_BAD_TIMESTAMP, true
 	case 91:
-		return ErrorCode_CANNOT_USE_KEY
+		return ErrorCode_CANNOT_USE_KEY, true
 	case 92:
-		return ErrorCode_CANNOT_VERIFY_MESSAGE_ID
+		return ErrorCode_CANNOT_VERIFY_MESSAGE_ID, true
 	case 93:
-		return ErrorCode_CORRECT_KEY_REVISION
+		return ErrorCode_CORRECT_KEY_REVISION, true
 	case 94:
-		return ErrorCode_DESTINATION_DEVICE_ID_REQUIRED
+		return ErrorCode_DESTINATION_DEVICE_ID_REQUIRED, true
 	case 95:
-		return ErrorCode_DUPLICATE_MESSAGE
+		return ErrorCode_DUPLICATE_MESSAGE, true
 	case 96:
-		return ErrorCode_ENCRYPTION_NOT_CONFIGURED
+		return ErrorCode_ENCRYPTION_NOT_CONFIGURED, true
 	case 97:
-		return ErrorCode_ENCRYPTION_REQUIRED
+		return ErrorCode_ENCRYPTION_REQUIRED, true
 	case 98:
-		return ErrorCode_INCORRECT_KEY
+		return ErrorCode_INCORRECT_KEY, true
 	}
-	return 0
+	return 0, false
 }
 
 func ErrorCodeByName(value string) (enum ErrorCode, ok bool) {
-	ok = true
 	switch value {
 	case "OTHER":
-		enum = ErrorCode_OTHER
+		return ErrorCode_OTHER, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = ErrorCode_VENDOR_PROPRIETARY_VALUE
+		return ErrorCode_VENDOR_PROPRIETARY_VALUE, true
 	case "KEY_UPDATE_IN_PROGRESS":
-		enum = ErrorCode_KEY_UPDATE_IN_PROGRESS
+		return ErrorCode_KEY_UPDATE_IN_PROGRESS, true
 	case "MALFORMED_MESSAGE":
-		enum = ErrorCode_MALFORMED_MESSAGE
+		return ErrorCode_MALFORMED_MESSAGE, true
 	case "NOT_KEY_SERVER":
-		enum = ErrorCode_NOT_KEY_SERVER
+		return ErrorCode_NOT_KEY_SERVER, true
 	case "SECURITY_NOT_CONFIGURED":
-		enum = ErrorCode_SECURITY_NOT_CONFIGURED
+		return ErrorCode_SECURITY_NOT_CONFIGURED, true
 	case "SOURCE_SECURITY_REQUIRED":
-		enum = ErrorCode_SOURCE_SECURITY_REQUIRED
+		return ErrorCode_SOURCE_SECURITY_REQUIRED, true
 	case "TOO_MANY_KEYS":
-		enum = ErrorCode_TOO_MANY_KEYS
+		return ErrorCode_TOO_MANY_KEYS, true
 	case "UNKNOWN_AUTHENTICATION_TYPE":
-		enum = ErrorCode_UNKNOWN_AUTHENTICATION_TYPE
+		return ErrorCode_UNKNOWN_AUTHENTICATION_TYPE, true
 	case "UNKNOWN_KEY":
-		enum = ErrorCode_UNKNOWN_KEY
+		return ErrorCode_UNKNOWN_KEY, true
 	case "UNKNOWN_KEY_REVISION":
-		enum = ErrorCode_UNKNOWN_KEY_REVISION
+		return ErrorCode_UNKNOWN_KEY_REVISION, true
 	case "UNKNOWN_SOURCE_MESSAGE":
-		enum = ErrorCode_UNKNOWN_SOURCE_MESSAGE
+		return ErrorCode_UNKNOWN_SOURCE_MESSAGE, true
 	case "NOT_ROUTER_TO_DNET":
-		enum = ErrorCode_NOT_ROUTER_TO_DNET
+		return ErrorCode_NOT_ROUTER_TO_DNET, true
 	case "ROUTER_BUSY":
-		enum = ErrorCode_ROUTER_BUSY
+		return ErrorCode_ROUTER_BUSY, true
 	case "UNKNOWN_NETWORK_MESSAGE":
-		enum = ErrorCode_UNKNOWN_NETWORK_MESSAGE
+		return ErrorCode_UNKNOWN_NETWORK_MESSAGE, true
 	case "MESSAGE_TOO_LONG":
-		enum = ErrorCode_MESSAGE_TOO_LONG
+		return ErrorCode_MESSAGE_TOO_LONG, true
 	case "SECURITY_ERROR":
-		enum = ErrorCode_SECURITY_ERROR
+		return ErrorCode_SECURITY_ERROR, true
 	case "ADDRESSING_ERROR":
-		enum = ErrorCode_ADDRESSING_ERROR
+		return ErrorCode_ADDRESSING_ERROR, true
 	case "WRITE_BDT_FAILED":
-		enum = ErrorCode_WRITE_BDT_FAILED
+		return ErrorCode_WRITE_BDT_FAILED, true
 	case "READ_BDT_FAILED":
-		enum = ErrorCode_READ_BDT_FAILED
+		return ErrorCode_READ_BDT_FAILED, true
 	case "REGISTER_FOREIGN_DEVICE_FAILED":
-		enum = ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED
+		return ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED, true
 	case "READ_FDT_FAILED":
-		enum = ErrorCode_READ_FDT_FAILED
+		return ErrorCode_READ_FDT_FAILED, true
 	case "DELETE_FDT_ENTRY_FAILED":
-		enum = ErrorCode_DELETE_FDT_ENTRY_FAILED
+		return ErrorCode_DELETE_FDT_ENTRY_FAILED, true
 	case "DISTRIBUTE_BROADCAST_FAILED":
-		enum = ErrorCode_DISTRIBUTE_BROADCAST_FAILED
+		return ErrorCode_DISTRIBUTE_BROADCAST_FAILED, true
 	case "UNKNOWN_FILE_SIZE":
-		enum = ErrorCode_UNKNOWN_FILE_SIZE
+		return ErrorCode_UNKNOWN_FILE_SIZE, true
 	case "ABORT_APDU_TOO_LONG":
-		enum = ErrorCode_ABORT_APDU_TOO_LONG
+		return ErrorCode_ABORT_APDU_TOO_LONG, true
 	case "ABORT_APPLICATION_EXCEEDED_REPLY_TIME":
-		enum = ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME
+		return ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME, true
 	case "ABORT_OUT_OF_RESOURCES":
-		enum = ErrorCode_ABORT_OUT_OF_RESOURCES
+		return ErrorCode_ABORT_OUT_OF_RESOURCES, true
 	case "ABORT_TSM_TIMEOUT":
-		enum = ErrorCode_ABORT_TSM_TIMEOUT
+		return ErrorCode_ABORT_TSM_TIMEOUT, true
 	case "ABORT_WINDOW_SIZE_OUT_OF_RANGE":
-		enum = ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE
+		return ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE, true
 	case "FILE_FULL":
-		enum = ErrorCode_FILE_FULL
+		return ErrorCode_FILE_FULL, true
 	case "INCONSISTENT_CONFIGURATION":
-		enum = ErrorCode_INCONSISTENT_CONFIGURATION
+		return ErrorCode_INCONSISTENT_CONFIGURATION, true
 	case "D_PARAMETER_DATA_TYPE":
-		enum = ErrorCode_D_PARAMETER_DATA_TYPE
+		return ErrorCode_D_PARAMETER_DATA_TYPE, true
 	case "INCONSISTENT_OBJECT_TYPE":
-		enum = ErrorCode_INCONSISTENT_OBJECT_TYPE
+		return ErrorCode_INCONSISTENT_OBJECT_TYPE, true
 	case "INTERNAL_ERROR":
-		enum = ErrorCode_INTERNAL_ERROR
+		return ErrorCode_INTERNAL_ERROR, true
 	case "NOT_CONFIGURED":
-		enum = ErrorCode_NOT_CONFIGURED
+		return ErrorCode_NOT_CONFIGURED, true
 	case "OUT_OF_MEMORY":
-		enum = ErrorCode_OUT_OF_MEMORY
+		return ErrorCode_OUT_OF_MEMORY, true
 	case "VALUE_TOO_LONG":
-		enum = ErrorCode_VALUE_TOO_LONG
+		return ErrorCode_VALUE_TOO_LONG, true
 	case "ABORT_INSUFFICIENT_SECURITY":
-		enum = ErrorCode_ABORT_INSUFFICIENT_SECURITY
+		return ErrorCode_ABORT_INSUFFICIENT_SECURITY, true
 	case "ABORT_SECURITY_ERROR":
-		enum = ErrorCode_ABORT_SECURITY_ERROR
+		return ErrorCode_ABORT_SECURITY_ERROR, true
 	case "DUPLICATE_ENTRY":
-		enum = ErrorCode_DUPLICATE_ENTRY
+		return ErrorCode_DUPLICATE_ENTRY, true
 	case "INVALID_VALUE_IN_THIS_STATE":
-		enum = ErrorCode_INVALID_VALUE_IN_THIS_STATE
+		return ErrorCode_INVALID_VALUE_IN_THIS_STATE, true
 	case "INVALID_TIMESTAMP":
-		enum = ErrorCode_INVALID_TIMESTAMP
+		return ErrorCode_INVALID_TIMESTAMP, true
 	case "MISSING_REQUIRED_PARAMETER":
-		enum = ErrorCode_MISSING_REQUIRED_PARAMETER
+		return ErrorCode_MISSING_REQUIRED_PARAMETER, true
 	case "NO_OBJECTS_OF_SPECIFIED_TYPE":
-		enum = ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE
+		return ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE, true
 	case "NO_SPACE_FOR_OBJECT":
-		enum = ErrorCode_NO_SPACE_FOR_OBJECT
+		return ErrorCode_NO_SPACE_FOR_OBJECT, true
 	case "NO_SPACE_TO_ADD_LIST_ELEMENT":
-		enum = ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT
+		return ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT, true
 	case "CONFIGURATION_IN_PROGRESS":
-		enum = ErrorCode_CONFIGURATION_IN_PROGRESS
+		return ErrorCode_CONFIGURATION_IN_PROGRESS, true
 	case "NO_SPACE_TO_WRITE_PROPERTY":
-		enum = ErrorCode_NO_SPACE_TO_WRITE_PROPERTY
+		return ErrorCode_NO_SPACE_TO_WRITE_PROPERTY, true
 	case "NO_VT_SESSIONS_AVAILABLE":
-		enum = ErrorCode_NO_VT_SESSIONS_AVAILABLE
+		return ErrorCode_NO_VT_SESSIONS_AVAILABLE, true
 	case "PROPERTY_IS_NOT_A_LIST":
-		enum = ErrorCode_PROPERTY_IS_NOT_A_LIST
+		return ErrorCode_PROPERTY_IS_NOT_A_LIST, true
 	case "OBJECT_DELETION_NOT_PERMITTED":
-		enum = ErrorCode_OBJECT_DELETION_NOT_PERMITTED
+		return ErrorCode_OBJECT_DELETION_NOT_PERMITTED, true
 	case "OBJECT_IDENTIFIER_ALREADY_EXISTS":
-		enum = ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS
+		return ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS, true
 	case "OPERATIONAL_PROBLEM":
-		enum = ErrorCode_OPERATIONAL_PROBLEM
+		return ErrorCode_OPERATIONAL_PROBLEM, true
 	case "PASSWORD_FAILURE":
-		enum = ErrorCode_PASSWORD_FAILURE
+		return ErrorCode_PASSWORD_FAILURE, true
 	case "READ_ACCESS_DENIED":
-		enum = ErrorCode_READ_ACCESS_DENIED
+		return ErrorCode_READ_ACCESS_DENIED, true
 	case "SERVICE_REQUEST_DENIED":
-		enum = ErrorCode_SERVICE_REQUEST_DENIED
+		return ErrorCode_SERVICE_REQUEST_DENIED, true
 	case "DEVICE_BUSY":
-		enum = ErrorCode_DEVICE_BUSY
+		return ErrorCode_DEVICE_BUSY, true
 	case "TIMEOUT":
-		enum = ErrorCode_TIMEOUT
+		return ErrorCode_TIMEOUT, true
 	case "UNKNOWN_OBJECT":
-		enum = ErrorCode_UNKNOWN_OBJECT
+		return ErrorCode_UNKNOWN_OBJECT, true
 	case "UNKNOWN_PROPERTY":
-		enum = ErrorCode_UNKNOWN_PROPERTY
+		return ErrorCode_UNKNOWN_PROPERTY, true
 	case "UNKNOWN_VT_CLASS":
-		enum = ErrorCode_UNKNOWN_VT_CLASS
+		return ErrorCode_UNKNOWN_VT_CLASS, true
 	case "UNKNOWN_VT_SESSION":
-		enum = ErrorCode_UNKNOWN_VT_SESSION
+		return ErrorCode_UNKNOWN_VT_SESSION, true
 	case "UNSUPPORTED_OBJECT_TYPE":
-		enum = ErrorCode_UNSUPPORTED_OBJECT_TYPE
+		return ErrorCode_UNSUPPORTED_OBJECT_TYPE, true
 	case "VALUE_OUT_OF_RANGE":
-		enum = ErrorCode_VALUE_OUT_OF_RANGE
+		return ErrorCode_VALUE_OUT_OF_RANGE, true
 	case "VT_SESSION_ALREADY_CLOSED":
-		enum = ErrorCode_VT_SESSION_ALREADY_CLOSED
+		return ErrorCode_VT_SESSION_ALREADY_CLOSED, true
 	case "VT_SESSION_TERMINATION_FAILURE":
-		enum = ErrorCode_VT_SESSION_TERMINATION_FAILURE
+		return ErrorCode_VT_SESSION_TERMINATION_FAILURE, true
 	case "DYNAMIC_CREATION_NOT_SUPPORTED":
-		enum = ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED
+		return ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED, true
 	case "WRITE_ACCESS_DENIED":
-		enum = ErrorCode_WRITE_ACCESS_DENIED
+		return ErrorCode_WRITE_ACCESS_DENIED, true
 	case "CHARACTER_SET_NOT_SUPPORTED":
-		enum = ErrorCode_CHARACTER_SET_NOT_SUPPORTED
+		return ErrorCode_CHARACTER_SET_NOT_SUPPORTED, true
 	case "INVALID_ARRAY_INDEX":
-		enum = ErrorCode_INVALID_ARRAY_INDEX
+		return ErrorCode_INVALID_ARRAY_INDEX, true
 	case "COV_SUBSCRIPTION_FAILED":
-		enum = ErrorCode_COV_SUBSCRIPTION_FAILED
+		return ErrorCode_COV_SUBSCRIPTION_FAILED, true
 	case "NOT_COV_PROPERTY":
-		enum = ErrorCode_NOT_COV_PROPERTY
+		return ErrorCode_NOT_COV_PROPERTY, true
 	case "OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED":
-		enum = ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED
+		return ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED, true
 	case "INVALID_CONFIGURATION_DATA":
-		enum = ErrorCode_INVALID_CONFIGURATION_DATA
+		return ErrorCode_INVALID_CONFIGURATION_DATA, true
 	case "DATATYPE_NOT_SUPPORTED":
-		enum = ErrorCode_DATATYPE_NOT_SUPPORTED
+		return ErrorCode_DATATYPE_NOT_SUPPORTED, true
 	case "DUPLICATE_NAME":
-		enum = ErrorCode_DUPLICATE_NAME
+		return ErrorCode_DUPLICATE_NAME, true
 	case "DUPLICATE_OBJECT_ID":
-		enum = ErrorCode_DUPLICATE_OBJECT_ID
+		return ErrorCode_DUPLICATE_OBJECT_ID, true
 	case "FILE_ACCESS_DENIED":
-		enum = ErrorCode_FILE_ACCESS_DENIED
+		return ErrorCode_FILE_ACCESS_DENIED, true
 	case "PROPERTY_IS_NOT_AN_ARRAY":
-		enum = ErrorCode_PROPERTY_IS_NOT_AN_ARRAY
+		return ErrorCode_PROPERTY_IS_NOT_AN_ARRAY, true
 	case "ABORT_BUFFER_OVERFLOW":
-		enum = ErrorCode_ABORT_BUFFER_OVERFLOW
+		return ErrorCode_ABORT_BUFFER_OVERFLOW, true
 	case "ABORT_INVALID_APDU_IN_THIS_STATE":
-		enum = ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE
+		return ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE, true
 	case "ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK":
-		enum = ErrorCode_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK
+		return ErrorCode_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
 	case "ABORT_SEGMENTATION_NOT_SUPPORTED":
-		enum = ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED
+		return ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED, true
 	case "ABORT_PROPRIETARY":
-		enum = ErrorCode_ABORT_PROPRIETARY
+		return ErrorCode_ABORT_PROPRIETARY, true
 	case "ABORT_OTHER":
-		enum = ErrorCode_ABORT_OTHER
+		return ErrorCode_ABORT_OTHER, true
 	case "INVALID_TAG":
-		enum = ErrorCode_INVALID_TAG
+		return ErrorCode_INVALID_TAG, true
 	case "NETWORK_DOWN":
-		enum = ErrorCode_NETWORK_DOWN
+		return ErrorCode_NETWORK_DOWN, true
 	case "REJECT_BUFFER_OVERFLOW":
-		enum = ErrorCode_REJECT_BUFFER_OVERFLOW
+		return ErrorCode_REJECT_BUFFER_OVERFLOW, true
 	case "REJECT_INCONSISTENT_PARAMETERS":
-		enum = ErrorCode_REJECT_INCONSISTENT_PARAMETERS
+		return ErrorCode_REJECT_INCONSISTENT_PARAMETERS, true
 	case "REJECT_INVALID_PARAMETER_DATA_TYPE":
-		enum = ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE
+		return ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE, true
 	case "REJECT_INVALID_TAG":
-		enum = ErrorCode_REJECT_INVALID_TAG
+		return ErrorCode_REJECT_INVALID_TAG, true
 	case "REJECT_MISSING_REQUIRED_PARAMETER":
-		enum = ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER
+		return ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER, true
 	case "REJECT_PARAMETER_OUT_OF_RANGE":
-		enum = ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE
+		return ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE, true
 	case "REJECT_TOO_MANY_ARGUMENTS":
-		enum = ErrorCode_REJECT_TOO_MANY_ARGUMENTS
+		return ErrorCode_REJECT_TOO_MANY_ARGUMENTS, true
 	case "REJECT_UNDEFINED_ENUMERATION":
-		enum = ErrorCode_REJECT_UNDEFINED_ENUMERATION
+		return ErrorCode_REJECT_UNDEFINED_ENUMERATION, true
 	case "REJECT_UNRECOGNIZED_SERVICE":
-		enum = ErrorCode_REJECT_UNRECOGNIZED_SERVICE
+		return ErrorCode_REJECT_UNRECOGNIZED_SERVICE, true
 	case "REJECT_PROPRIETARY":
-		enum = ErrorCode_REJECT_PROPRIETARY
+		return ErrorCode_REJECT_PROPRIETARY, true
 	case "REJECT_OTHER":
-		enum = ErrorCode_REJECT_OTHER
+		return ErrorCode_REJECT_OTHER, true
 	case "INCONSISTENT_PARAMETERS":
-		enum = ErrorCode_INCONSISTENT_PARAMETERS
+		return ErrorCode_INCONSISTENT_PARAMETERS, true
 	case "UNKNOWN_DEVICE":
-		enum = ErrorCode_UNKNOWN_DEVICE
+		return ErrorCode_UNKNOWN_DEVICE, true
 	case "UNKNOWN_ROUTE":
-		enum = ErrorCode_UNKNOWN_ROUTE
+		return ErrorCode_UNKNOWN_ROUTE, true
 	case "VALUE_NOT_INITIALIZED":
-		enum = ErrorCode_VALUE_NOT_INITIALIZED
+		return ErrorCode_VALUE_NOT_INITIALIZED, true
 	case "NO_ALARM_CONFIGURED":
-		enum = ErrorCode_NO_ALARM_CONFIGURED
+		return ErrorCode_NO_ALARM_CONFIGURED, true
 	case "LOG_BUFFER_FULL":
-		enum = ErrorCode_LOG_BUFFER_FULL
+		return ErrorCode_LOG_BUFFER_FULL, true
 	case "LOGGED_VALUE_PURGED":
-		enum = ErrorCode_LOGGED_VALUE_PURGED
+		return ErrorCode_LOGGED_VALUE_PURGED, true
 	case "NO_PROPERTY_SPECIFIED":
-		enum = ErrorCode_NO_PROPERTY_SPECIFIED
+		return ErrorCode_NO_PROPERTY_SPECIFIED, true
 	case "NOT_CONFIGURED_FOR_TRIGGERED_LOGGING":
-		enum = ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING
+		return ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING, true
 	case "UNKNOWN_SUBSCRIPTION":
-		enum = ErrorCode_UNKNOWN_SUBSCRIPTION
+		return ErrorCode_UNKNOWN_SUBSCRIPTION, true
 	case "INCONSISTENT_SELECTION_CRITERION":
-		enum = ErrorCode_INCONSISTENT_SELECTION_CRITERION
+		return ErrorCode_INCONSISTENT_SELECTION_CRITERION, true
 	case "PARAMETER_OUT_OF_RANGE":
-		enum = ErrorCode_PARAMETER_OUT_OF_RANGE
+		return ErrorCode_PARAMETER_OUT_OF_RANGE, true
 	case "LIST_ELEMENT_NOT_FOUND":
-		enum = ErrorCode_LIST_ELEMENT_NOT_FOUND
+		return ErrorCode_LIST_ELEMENT_NOT_FOUND, true
 	case "Busy":
-		enum = ErrorCode_Busy
+		return ErrorCode_Busy, true
 	case "COMMUNICATION_DISABLED":
-		enum = ErrorCode_COMMUNICATION_DISABLED
+		return ErrorCode_COMMUNICATION_DISABLED, true
 	case "SUCCESS":
-		enum = ErrorCode_SUCCESS
+		return ErrorCode_SUCCESS, true
 	case "ACCESS_DENIED":
-		enum = ErrorCode_ACCESS_DENIED
+		return ErrorCode_ACCESS_DENIED, true
 	case "BAD_DESTINATION_ADDRESS":
-		enum = ErrorCode_BAD_DESTINATION_ADDRESS
+		return ErrorCode_BAD_DESTINATION_ADDRESS, true
 	case "BAD_DESTINATION_DEVICE_ID":
-		enum = ErrorCode_BAD_DESTINATION_DEVICE_ID
+		return ErrorCode_BAD_DESTINATION_DEVICE_ID, true
 	case "BAD_SIGNATURE":
-		enum = ErrorCode_BAD_SIGNATURE
+		return ErrorCode_BAD_SIGNATURE, true
 	case "BAD_SOURCE_ADDRESS":
-		enum = ErrorCode_BAD_SOURCE_ADDRESS
+		return ErrorCode_BAD_SOURCE_ADDRESS, true
 	case "INVALID_DATA_TYPE":
-		enum = ErrorCode_INVALID_DATA_TYPE
+		return ErrorCode_INVALID_DATA_TYPE, true
 	case "BAD_TIMESTAMP":
-		enum = ErrorCode_BAD_TIMESTAMP
+		return ErrorCode_BAD_TIMESTAMP, true
 	case "CANNOT_USE_KEY":
-		enum = ErrorCode_CANNOT_USE_KEY
+		return ErrorCode_CANNOT_USE_KEY, true
 	case "CANNOT_VERIFY_MESSAGE_ID":
-		enum = ErrorCode_CANNOT_VERIFY_MESSAGE_ID
+		return ErrorCode_CANNOT_VERIFY_MESSAGE_ID, true
 	case "CORRECT_KEY_REVISION":
-		enum = ErrorCode_CORRECT_KEY_REVISION
+		return ErrorCode_CORRECT_KEY_REVISION, true
 	case "DESTINATION_DEVICE_ID_REQUIRED":
-		enum = ErrorCode_DESTINATION_DEVICE_ID_REQUIRED
+		return ErrorCode_DESTINATION_DEVICE_ID_REQUIRED, true
 	case "DUPLICATE_MESSAGE":
-		enum = ErrorCode_DUPLICATE_MESSAGE
+		return ErrorCode_DUPLICATE_MESSAGE, true
 	case "ENCRYPTION_NOT_CONFIGURED":
-		enum = ErrorCode_ENCRYPTION_NOT_CONFIGURED
+		return ErrorCode_ENCRYPTION_NOT_CONFIGURED, true
 	case "ENCRYPTION_REQUIRED":
-		enum = ErrorCode_ENCRYPTION_REQUIRED
+		return ErrorCode_ENCRYPTION_REQUIRED, true
 	case "INCORRECT_KEY":
-		enum = ErrorCode_INCORRECT_KEY
-	default:
-		enum = 0
-		ok = false
+		return ErrorCode_INCORRECT_KEY, true
 	}
-	return
+	return 0, false
 }
 
 func ErrorCodeKnows(value uint16) bool {
@@ -872,7 +868,11 @@ func ErrorCodeParse(readBuffer utils.ReadBuffer) (ErrorCode, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorCode")
 	}
-	return ErrorCodeByValue(val), nil
+	if enum, ok := ErrorCodeByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for ErrorCode", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e ErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {

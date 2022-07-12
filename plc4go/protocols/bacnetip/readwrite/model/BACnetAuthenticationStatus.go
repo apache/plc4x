@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetAuthenticationStatusByValue(value uint8) BACnetAuthenticationStatus {
+func BACnetAuthenticationStatusByValue(value uint8) (enum BACnetAuthenticationStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAuthenticationStatus_NOT_READY
+		return BACnetAuthenticationStatus_NOT_READY, true
 	case 1:
-		return BACnetAuthenticationStatus_READY
+		return BACnetAuthenticationStatus_READY, true
 	case 2:
-		return BACnetAuthenticationStatus_DISABLED
+		return BACnetAuthenticationStatus_DISABLED, true
 	case 3:
-		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR
+		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR, true
 	case 4:
-		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT
+		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT, true
 	case 5:
-		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION
+		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION, true
 	case 6:
-		return BACnetAuthenticationStatus_IN_PROGRESS
+		return BACnetAuthenticationStatus_IN_PROGRESS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAuthenticationStatusByName(value string) (enum BACnetAuthenticationStatus, ok bool) {
-	ok = true
 	switch value {
 	case "NOT_READY":
-		enum = BACnetAuthenticationStatus_NOT_READY
+		return BACnetAuthenticationStatus_NOT_READY, true
 	case "READY":
-		enum = BACnetAuthenticationStatus_READY
+		return BACnetAuthenticationStatus_READY, true
 	case "DISABLED":
-		enum = BACnetAuthenticationStatus_DISABLED
+		return BACnetAuthenticationStatus_DISABLED, true
 	case "WAITING_FOR_AUTHENTICATION_FACTOR":
-		enum = BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR
+		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR, true
 	case "WAITING_FOR_ACCOMPANIMENT":
-		enum = BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT
+		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT, true
 	case "WAITING_FOR_VERIFICATION":
-		enum = BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION
+		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION, true
 	case "IN_PROGRESS":
-		enum = BACnetAuthenticationStatus_IN_PROGRESS
-	default:
-		enum = 0
-		ok = false
+		return BACnetAuthenticationStatus_IN_PROGRESS, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetAuthenticationStatusKnows(value uint8) bool {
@@ -134,7 +130,11 @@ func BACnetAuthenticationStatusParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthenticationStatus")
 	}
-	return BACnetAuthenticationStatusByValue(val), nil
+	if enum, ok := BACnetAuthenticationStatusByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetAuthenticationStatus", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetAuthenticationStatus) Serialize(writeBuffer utils.WriteBuffer) error {

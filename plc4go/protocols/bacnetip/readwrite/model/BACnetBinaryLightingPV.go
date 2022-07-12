@@ -58,48 +58,44 @@ func init() {
 	}
 }
 
-func BACnetBinaryLightingPVByValue(value uint8) BACnetBinaryLightingPV {
+func BACnetBinaryLightingPVByValue(value uint8) (enum BACnetBinaryLightingPV, ok bool) {
 	switch value {
 	case 0:
-		return BACnetBinaryLightingPV_OFF
+		return BACnetBinaryLightingPV_OFF, true
 	case 0xFF:
-		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
+		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetBinaryLightingPV_ON
+		return BACnetBinaryLightingPV_ON, true
 	case 2:
-		return BACnetBinaryLightingPV_WARN
+		return BACnetBinaryLightingPV_WARN, true
 	case 3:
-		return BACnetBinaryLightingPV_WARN_OFF
+		return BACnetBinaryLightingPV_WARN_OFF, true
 	case 4:
-		return BACnetBinaryLightingPV_WARN_RELINQUISH
+		return BACnetBinaryLightingPV_WARN_RELINQUISH, true
 	case 5:
-		return BACnetBinaryLightingPV_STOP
+		return BACnetBinaryLightingPV_STOP, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetBinaryLightingPVByName(value string) (enum BACnetBinaryLightingPV, ok bool) {
-	ok = true
 	switch value {
 	case "OFF":
-		enum = BACnetBinaryLightingPV_OFF
+		return BACnetBinaryLightingPV_OFF, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		enum = BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
+		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE, true
 	case "ON":
-		enum = BACnetBinaryLightingPV_ON
+		return BACnetBinaryLightingPV_ON, true
 	case "WARN":
-		enum = BACnetBinaryLightingPV_WARN
+		return BACnetBinaryLightingPV_WARN, true
 	case "WARN_OFF":
-		enum = BACnetBinaryLightingPV_WARN_OFF
+		return BACnetBinaryLightingPV_WARN_OFF, true
 	case "WARN_RELINQUISH":
-		enum = BACnetBinaryLightingPV_WARN_RELINQUISH
+		return BACnetBinaryLightingPV_WARN_RELINQUISH, true
 	case "STOP":
-		enum = BACnetBinaryLightingPV_STOP
-	default:
-		enum = 0
-		ok = false
+		return BACnetBinaryLightingPV_STOP, true
 	}
-	return
+	return 0, false
 }
 
 func BACnetBinaryLightingPVKnows(value uint8) bool {
@@ -134,7 +130,11 @@ func BACnetBinaryLightingPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryLight
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetBinaryLightingPV")
 	}
-	return BACnetBinaryLightingPVByValue(val), nil
+	if enum, ok := BACnetBinaryLightingPVByValue(val); !ok {
+		return 0, errors.Errorf("no value %v found for BACnetBinaryLightingPV", val)
+	} else {
+		return enum, nil
+	}
 }
 
 func (e BACnetBinaryLightingPV) Serialize(writeBuffer utils.WriteBuffer) error {
