@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -532,7 +533,7 @@ func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error
 		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
 	}
 	if enum, ok := DeviceDescriptorByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for DeviceDescriptor", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for DeviceDescriptor", val)}
 	} else {
 		return enum, nil
 	}

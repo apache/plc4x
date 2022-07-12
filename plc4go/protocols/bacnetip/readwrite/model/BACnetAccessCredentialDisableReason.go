@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -155,7 +156,7 @@ func BACnetAccessCredentialDisableReasonParse(readBuffer utils.ReadBuffer) (BACn
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisableReason")
 	}
 	if enum, ok := BACnetAccessCredentialDisableReasonByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetAccessCredentialDisableReason", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetAccessCredentialDisableReason", val)}
 	} else {
 		return enum, nil
 	}

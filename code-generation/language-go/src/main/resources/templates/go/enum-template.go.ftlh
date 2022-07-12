@@ -49,6 +49,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -183,7 +184,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")
 	}
 	if enum, ok := ${type.name}ByValue(val); !ok {
-		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Errorf("no value %v found for ${type.name}", val)
+		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for ${type.name}", val)}
 	} else {
 		return enum, nil
 	}

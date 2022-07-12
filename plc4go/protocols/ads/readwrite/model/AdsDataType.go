@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -686,7 +687,7 @@ func AdsDataTypeParse(readBuffer utils.ReadBuffer) (AdsDataType, error) {
 		return 0, errors.Wrap(err, "error reading AdsDataType")
 	}
 	if enum, ok := AdsDataTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for AdsDataType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for AdsDataType", val)}
 	} else {
 		return enum, nil
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -119,7 +120,7 @@ func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState,
 		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
 	}
 	if enum, ok := BACnetSilencedStateByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetSilencedState", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetSilencedState", val)}
 	} else {
 		return enum, nil
 	}

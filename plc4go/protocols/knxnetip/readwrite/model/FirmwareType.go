@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -185,7 +186,7 @@ func FirmwareTypeParse(readBuffer utils.ReadBuffer) (FirmwareType, error) {
 		return 0, errors.Wrap(err, "error reading FirmwareType")
 	}
 	if enum, ok := FirmwareTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for FirmwareType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for FirmwareType", val)}
 	} else {
 		return enum, nil
 	}

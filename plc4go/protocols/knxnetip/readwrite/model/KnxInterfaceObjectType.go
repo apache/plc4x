@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -476,7 +477,7 @@ func KnxInterfaceObjectTypeParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjec
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectType")
 	}
 	if enum, ok := KnxInterfaceObjectTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for KnxInterfaceObjectType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for KnxInterfaceObjectType", val)}
 	} else {
 		return enum, nil
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,7 +132,7 @@ func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizat
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")
 	}
 	if enum, ok := BACnetAuthorizationModeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetAuthorizationMode", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetAuthorizationMode", val)}
 	} else {
 		return enum, nil
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -449,7 +450,7 @@ func BACnetObjectTypesSupportedParse(readBuffer utils.ReadBuffer) (BACnetObjectT
 		return 0, errors.Wrap(err, "error reading BACnetObjectTypesSupported")
 	}
 	if enum, ok := BACnetObjectTypesSupportedByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetObjectTypesSupported", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetObjectTypesSupported", val)}
 	} else {
 		return enum, nil
 	}

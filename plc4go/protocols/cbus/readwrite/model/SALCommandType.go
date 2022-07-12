@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,7 +114,7 @@ func SALCommandTypeParse(readBuffer utils.ReadBuffer) (SALCommandType, error) {
 		return 0, errors.Wrap(err, "error reading SALCommandType")
 	}
 	if enum, ok := SALCommandTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for SALCommandType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for SALCommandType", val)}
 	} else {
 		return enum, nil
 	}

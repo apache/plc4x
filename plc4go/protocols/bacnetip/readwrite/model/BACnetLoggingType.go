@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,7 +114,7 @@ func BACnetLoggingTypeParse(readBuffer utils.ReadBuffer) (BACnetLoggingType, err
 		return 0, errors.Wrap(err, "error reading BACnetLoggingType")
 	}
 	if enum, ok := BACnetLoggingTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetLoggingType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetLoggingType", val)}
 	} else {
 		return enum, nil
 	}

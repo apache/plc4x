@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -1045,7 +1046,7 @@ func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType,
 		return 0, errors.Wrap(err, "error reading KnxPropertyDataType")
 	}
 	if enum, ok := KnxPropertyDataTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for KnxPropertyDataType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for KnxPropertyDataType", val)}
 	} else {
 		return enum, nil
 	}

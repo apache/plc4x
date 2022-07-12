@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,7 +114,7 @@ func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 		return 0, errors.Wrap(err, "error reading CEMIPriority")
 	}
 	if enum, ok := CEMIPriorityByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for CEMIPriority", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for CEMIPriority", val)}
 	} else {
 		return enum, nil
 	}

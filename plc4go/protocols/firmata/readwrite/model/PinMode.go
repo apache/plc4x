@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -161,7 +162,7 @@ func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {
 		return 0, errors.Wrap(err, "error reading PinMode")
 	}
 	if enum, ok := PinModeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for PinMode", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for PinMode", val)}
 	} else {
 		return enum, nil
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -377,7 +378,7 @@ func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
 		return 0, errors.Wrap(err, "error reading ModbusDataType")
 	}
 	if enum, ok := ModbusDataTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for ModbusDataType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for ModbusDataType", val)}
 	} else {
 		return enum, nil
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -420,7 +421,7 @@ func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysical
 		return 0, errors.Wrap(err, "error reading SupportedPhysicalMedia")
 	}
 	if enum, ok := SupportedPhysicalMediaByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for SupportedPhysicalMedia", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for SupportedPhysicalMedia", val)}
 	} else {
 		return enum, nil
 	}

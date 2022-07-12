@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +138,7 @@ func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 		return 0, errors.Wrap(err, "error reading BACnetVTClass")
 	}
 	if enum, ok := BACnetVTClassByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetVTClass", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetVTClass", val)}
 	} else {
 		return enum, nil
 	}

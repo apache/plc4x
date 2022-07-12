@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,7 @@ func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
 		return 0, errors.Wrap(err, "error reading QueryType")
 	}
 	if enum, ok := QueryTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for QueryType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for QueryType", val)}
 	} else {
 		return enum, nil
 	}

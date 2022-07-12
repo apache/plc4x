@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -177,7 +178,7 @@ func RequestTypeParse(readBuffer utils.ReadBuffer) (RequestType, error) {
 		return 0, errors.Wrap(err, "error reading RequestType")
 	}
 	if enum, ok := RequestTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for RequestType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for RequestType", val)}
 	} else {
 		return enum, nil
 	}

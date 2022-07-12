@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,7 @@ func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {
 		return 0, errors.Wrap(err, "error reading CommandId")
 	}
 	if enum, ok := CommandIdByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for CommandId", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for CommandId", val)}
 	} else {
 		return enum, nil
 	}

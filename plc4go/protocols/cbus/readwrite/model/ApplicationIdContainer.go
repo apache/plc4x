@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -3710,7 +3711,7 @@ func ApplicationIdContainerParse(readBuffer utils.ReadBuffer) (ApplicationIdCont
 		return 0, errors.Wrap(err, "error reading ApplicationIdContainer")
 	}
 	if enum, ok := ApplicationIdContainerByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for ApplicationIdContainer", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for ApplicationIdContainer", val)}
 	} else {
 		return enum, nil
 	}

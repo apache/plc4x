@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -119,7 +120,7 @@ func ConfirmationTypeParse(readBuffer utils.ReadBuffer) (ConfirmationType, error
 		return 0, errors.Wrap(err, "error reading ConfirmationType")
 	}
 	if enum, ok := ConfirmationTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for ConfirmationType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for ConfirmationType", val)}
 	} else {
 		return enum, nil
 	}

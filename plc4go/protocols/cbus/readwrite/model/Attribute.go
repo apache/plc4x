@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -287,7 +288,7 @@ func AttributeParse(readBuffer utils.ReadBuffer) (Attribute, error) {
 		return 0, errors.Wrap(err, "error reading Attribute")
 	}
 	if enum, ok := AttributeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for Attribute", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for Attribute", val)}
 	} else {
 		return enum, nil
 	}

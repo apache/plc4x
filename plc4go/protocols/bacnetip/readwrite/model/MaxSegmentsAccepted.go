@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +138,7 @@ func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted,
 		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
 	}
 	if enum, ok := MaxSegmentsAcceptedByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for MaxSegmentsAccepted", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for MaxSegmentsAccepted", val)}
 	} else {
 		return enum, nil
 	}

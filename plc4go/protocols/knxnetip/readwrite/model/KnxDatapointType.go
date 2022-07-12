@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -6427,7 +6428,7 @@ func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error
 		return 0, errors.Wrap(err, "error reading KnxDatapointType")
 	}
 	if enum, ok := KnxDatapointTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for KnxDatapointType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for KnxDatapointType", val)}
 	} else {
 		return enum, nil
 	}

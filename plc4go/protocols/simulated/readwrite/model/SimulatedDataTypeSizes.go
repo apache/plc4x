@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -377,7 +378,7 @@ func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataType
 		return 0, errors.Wrap(err, "error reading SimulatedDataTypeSizes")
 	}
 	if enum, ok := SimulatedDataTypeSizesByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for SimulatedDataTypeSizes", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for SimulatedDataTypeSizes", val)}
 	} else {
 		return enum, nil
 	}

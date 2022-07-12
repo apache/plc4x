@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +138,7 @@ func CALCommandTypeParse(readBuffer utils.ReadBuffer) (CALCommandType, error) {
 		return 0, errors.Wrap(err, "error reading CALCommandType")
 	}
 	if enum, ok := CALCommandTypeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for CALCommandType", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for CALCommandType", val)}
 	} else {
 		return enum, nil
 	}

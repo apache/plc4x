@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,7 +102,7 @@ func BACnetAccessRuleTimeRangeSpecifierParse(readBuffer utils.ReadBuffer) (BACne
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleTimeRangeSpecifier")
 	}
 	if enum, ok := BACnetAccessRuleTimeRangeSpecifierByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetAccessRuleTimeRangeSpecifier", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetAccessRuleTimeRangeSpecifier", val)}
 	} else {
 		return enum, nil
 	}

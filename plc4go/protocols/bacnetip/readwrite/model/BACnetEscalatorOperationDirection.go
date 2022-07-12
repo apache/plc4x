@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,7 +132,7 @@ func BACnetEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer) (BACnet
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorOperationDirection")
 	}
 	if enum, ok := BACnetEscalatorOperationDirectionByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetEscalatorOperationDirection", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetEscalatorOperationDirection", val)}
 	} else {
 		return enum, nil
 	}

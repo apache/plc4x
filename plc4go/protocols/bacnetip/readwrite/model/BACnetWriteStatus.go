@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,7 +114,7 @@ func BACnetWriteStatusParse(readBuffer utils.ReadBuffer) (BACnetWriteStatus, err
 		return 0, errors.Wrap(err, "error reading BACnetWriteStatus")
 	}
 	if enum, ok := BACnetWriteStatusByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetWriteStatus", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetWriteStatus", val)}
 	} else {
 		return enum, nil
 	}

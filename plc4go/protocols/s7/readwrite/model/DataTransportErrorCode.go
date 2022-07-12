@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -125,7 +126,7 @@ func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErro
 		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
 	}
 	if enum, ok := DataTransportErrorCodeByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for DataTransportErrorCode", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for DataTransportErrorCode", val)}
 	} else {
 		return enum, nil
 	}

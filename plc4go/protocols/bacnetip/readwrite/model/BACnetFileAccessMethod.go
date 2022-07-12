@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,7 +102,7 @@ func BACnetFileAccessMethodParse(readBuffer utils.ReadBuffer) (BACnetFileAccessM
 		return 0, errors.Wrap(err, "error reading BACnetFileAccessMethod")
 	}
 	if enum, ok := BACnetFileAccessMethodByValue(val); !ok {
-		return 0, errors.Errorf("no value %v found for BACnetFileAccessMethod", val)
+		return 0, utils.ParseAssertError{Message: fmt.Sprintf("no value %v found for BACnetFileAccessMethod", val)}
 	} else {
 		return enum, nil
 	}
