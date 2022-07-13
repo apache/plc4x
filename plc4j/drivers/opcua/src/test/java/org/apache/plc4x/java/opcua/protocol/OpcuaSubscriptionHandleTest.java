@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
+import org.apache.plc4x.test.DisableOnParallelsVmFlag;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
@@ -35,21 +36,8 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+@DisableOnParallelsVmFlag
 public class OpcuaSubscriptionHandleTest {
-
-    @BeforeAll
-    static void setUp() {
-        assumeTrue(() -> {
-            String OS = System.getProperty("os.name").toLowerCase();
-            if (OS.contains("nix")
-                || OS.contains("nux")
-                || OS.contains("aix")) {
-                return false;
-            }
-
-            return true;
-        }, "somehow opcua doesn't run properly on linux");
-    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
