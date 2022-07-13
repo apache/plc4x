@@ -36,10 +36,10 @@ public class DisableOnParallelsVmFlagCondition implements ExecutionCondition {
         if(SystemUtils.IS_OS_WINDOWS) {
             // TODO: If on Windows: Run "systeminfo /fo CSV /nh" command and check if the output contains "Parallels Virtual Platform"
             try {
-                var processBuilder = new ProcessBuilder();
+                ProcessBuilder processBuilder = new ProcessBuilder();
                 processBuilder.command("systeminfo", "/fo", "CSV", "/nh");
-                var process = processBuilder.start();
-                try (var reader = new BufferedReader(
+                Process process = processBuilder.start();
+                try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
