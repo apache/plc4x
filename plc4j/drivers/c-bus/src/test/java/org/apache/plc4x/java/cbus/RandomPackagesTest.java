@@ -773,5 +773,19 @@ public class RandomPackagesTest {
             byte[] bytes1 = writeBuffer.getBytes();
             assertThat(bytes1).isEqualTo(bytes);
         }
+
+        @Test
+        void statusRequestBinaryState() throws Exception {
+            byte[] bytes = "\\05FF00FAFF00v\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
+            RequestCommand requestCommand = (RequestCommand) messageToServer.getRequest();
+            CBusCommand cbusCommand = requestCommand.getCbusCommand();
+            System.out.println(cbusCommand);
+        }
     }
 }

@@ -1228,12 +1228,17 @@
 [type StatusRequest
     [peek    byte     statusType           ]
     [typeSwitch statusType
-        ['0x7A' StatusRequestBinaryState
+        ['0x7A' *BinaryState
             [reserved   byte      '0x7A'                                              ]
             [simple     byte      application                                         ]
             [reserved   byte      '0x00'                                              ]
         ]
-        ['0x73' StatusRequestLevel
+        ['0xFA' *BinaryStateDeprecated
+            [reserved   byte      '0xFA'                                              ]
+            [simple     byte      application                                         ]
+            [reserved   byte      '0x00'                                              ]
+        ]
+        ['0x73' *Level
             [reserved   byte      '0x73'                                              ]
             [reserved   byte      '0x07'                                              ]
             [simple     byte      application                                         ]

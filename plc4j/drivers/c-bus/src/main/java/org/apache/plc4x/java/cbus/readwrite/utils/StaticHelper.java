@@ -133,7 +133,4 @@ public class StaticHelper {
         }
     }
 
-    public static boolean moreThanOneByteLeft(ReadBuffer readBuffer) {
-        return readBuffer.hasMore(16);
-    }
 }

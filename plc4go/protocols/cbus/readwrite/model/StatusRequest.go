@@ -141,6 +141,8 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
 		_childTemp, typeSwitchError = StatusRequestBinaryStateParse(readBuffer)
+	case statusType == 0xFA: // StatusRequestBinaryStateDeprecated
+		_childTemp, typeSwitchError = StatusRequestBinaryStateDeprecatedParse(readBuffer)
 	case statusType == 0x73: // StatusRequestLevel
 		_childTemp, typeSwitchError = StatusRequestLevelParse(readBuffer)
 	default:
