@@ -562,7 +562,9 @@
         ['0xA3' *SetParameter
             [const      uint 8    magicId         0xA3                    ]
             [simple     Parameter paramNo                                 ]
-            [const      byte      delimiter       0x0                     ]
+            // TODO: the delimiter should be a const like that but atm there are too many which have a value there so we use reserved for now
+            //[const      byte      delimiter       0x0                     ]
+            [reserved   byte                      '0x0'                   ]
             [simple     byte      parameterValue                          ]
         ]
         [* *Value
