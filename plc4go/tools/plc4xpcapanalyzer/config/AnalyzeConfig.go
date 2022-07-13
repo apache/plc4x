@@ -20,16 +20,12 @@
 package config
 
 type AnalyzeConfig struct {
-	*RootConfig
-	Filter                              string
+	*PcapConfig
 	NoFilter, OnlyParse, NoBytesCompare bool
-	Client                              string
-	StartPackageNumber                  uint
-	PackageNumberLimit                  uint
 }
 
 var AnalyzeConfigInstance = AnalyzeConfig{}
 
 func init() {
-	AnalyzeConfigInstance.RootConfig = &RootConfigInstance
+	AnalyzeConfigInstance.PcapConfig = &PcapConfigInstance
 }

@@ -57,6 +57,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.LogType, "log-type", "text", "define how the log will be evaluated")
 	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.LogLevel, "log-level", "error", "define the log Level")
 	rootCmd.PersistentFlags().CountVarP(&config.RootConfigInstance.Verbosity, "verbose", "v", "counted verbosity")
+	rootCmd.PersistentFlags().BoolVarP(&config.RootConfigInstance.HideProgressBar, "hide-progress-bar", "", false, "hides the progress bar")
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

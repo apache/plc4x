@@ -19,12 +19,16 @@
 
 package config
 
-type RootConfig struct {
-	CfgFile         string
-	LogType         string
-	LogLevel        string
-	Verbosity       int
-	HideProgressBar bool
+type PcapConfig struct {
+	*RootConfig
+	Filter             string
+	Client             string
+	StartPackageNumber uint
+	PackageNumberLimit uint
 }
 
-var RootConfigInstance = RootConfig{}
+var PcapConfigInstance = PcapConfig{}
+
+func init() {
+	PcapConfigInstance.RootConfig = &RootConfigInstance
+}

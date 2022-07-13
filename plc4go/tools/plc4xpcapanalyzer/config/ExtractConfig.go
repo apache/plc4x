@@ -19,12 +19,21 @@
 
 package config
 
-type RootConfig struct {
-	CfgFile         string
-	LogType         string
-	LogLevel        string
-	Verbosity       int
-	HideProgressBar bool
+type ExtractType uint
+
+const (
+	HEX ExtractType = iota
+	ASCII
+)
+
+type ExtractConfig struct {
+	*PcapConfig
+	ShowDirectionalIndicators bool
+	ExtractType               ExtractType
 }
 
-var RootConfigInstance = RootConfig{}
+var ExtractConfigInstance = ExtractConfig{}
+
+func init() {
+	ExtractConfigInstance.PcapConfig = &PcapConfigInstance
+}

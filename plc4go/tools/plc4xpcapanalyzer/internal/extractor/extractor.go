@@ -17,17 +17,14 @@
  * under the License.
  */
 
-package analyzer
+package extractor
 
 import (
-	"bytes"
-	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
-	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/bacnetanalyzer"
-	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/cbusanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/pcaphandler"
+	"github.com/fatih/color"
 	"github.com/google/gopacket/layers"
 	"github.com/k0kubun/go-ansi"
 	"github.com/rs/zerolog/log"
@@ -35,28 +32,48 @@ import (
 	"net"
 )
 
-func Analyze(pcapFile, protocolType string) {
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.AnalyzeConfigInstance.Filter)
+func Extract(pcapFile, protocolType string) {
+	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.ExtractConfigInstance.Filter)
 
-	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, config.AnalyzeConfigInstance.Filter)
+	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, config.ExtractConfigInstance.Filter)
 	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
 	defer handle.Close()
 	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
 	source := pcaphandler.GetPacketSource(handle)
-	var packageParse func(common.PacketInformation, []byte) (interface{}, error)
-	var serializePackage func(interface{}) ([]byte, error)
-	var prettyPrint = func(item interface{}) {
-		fmt.Printf("%v\n", item)
+	var printPayload = func(packetInformation common.PacketInformation, item []byte) {
+		fmt.Printf("%x\n", item)
 	}
 	switch protocolType {
 	case "bacnet":
-		packageParse = bacnetanalyzer.PackageParse
-		serializePackage = bacnetanalyzer.SerializePackage
+		// nothing special as this is byte based
 	case "c-bus":
-		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(config.AnalyzeConfigInstance.Client)}
-		packageParse = analyzer.PackageParse
-		serializePackage = analyzer.SerializePackage
-		prettyPrint = analyzer.PrettyPrint
+		// c-bus is string based so we consume the string and print it
+		clientIp := net.ParseIP(config.ExtractConfigInstance.Client)
+		stdout := ansi.NewAnsiStdout()
+		stderr := ansi.NewAnsiStderr()
+		serverResponseWriter := color.New(color.FgRed)
+		serverResponseIndicatorWriter := color.New(color.FgHiRed)
+		clientRequestWriter := color.New(color.FgGreen)
+		clientRequestIndicatorWriter := color.New(color.FgHiGreen)
+		printPayload = func(packetInformation common.PacketInformation, payload []byte) {
+			suffix := ""
+			if properTerminated := payload[len(payload)-1] == 0x0D || payload[len(payload)-1] == 0x0A; properTerminated {
+				suffix = "\n"
+			}
+			quotedPayload := fmt.Sprintf("%+q", payload)
+			unquotedPayload := quotedPayload[1 : len(quotedPayload)-1]
+			if isResponse := packetInformation.DstIp.Equal(clientIp); isResponse {
+				if config.ExtractConfigInstance.ShowDirectionalIndicators {
+					_, _ = serverResponseIndicatorWriter.Fprint(stderr, "(<--pci)")
+				}
+				_, _ = serverResponseWriter.Fprintf(stdout, "%s%s", unquotedPayload, suffix)
+			} else {
+				if config.ExtractConfigInstance.ShowDirectionalIndicators {
+					_, _ = clientRequestIndicatorWriter.Fprint(stderr, "(-->pci)")
+				}
+				_, _ = clientRequestWriter.Fprintf(stdout, "%s%s", unquotedPayload, suffix)
+			}
+		}
 	}
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStderr()),
 		progressbar.OptionSetVisibility(!config.RootConfigInstance.HideProgressBar),
@@ -77,12 +94,12 @@ func Analyze(pcapFile, protocolType string) {
 	compareFails := 0
 	for packet := range source.Packets() {
 		currentPackageNum++
-		if currentPackageNum < config.AnalyzeConfigInstance.StartPackageNumber {
-			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.AnalyzeConfigInstance.StartPackageNumber)
+		if currentPackageNum < config.ExtractConfigInstance.StartPackageNumber {
+			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.ExtractConfigInstance.StartPackageNumber)
 			continue
 		}
-		if currentPackageNum > config.AnalyzeConfigInstance.PackageNumberLimit {
-			log.Warn().Msgf("Aborting reading packages because we hit the limit of %d", config.AnalyzeConfigInstance.PackageNumberLimit)
+		if currentPackageNum > config.ExtractConfigInstance.PackageNumberLimit {
+			log.Warn().Msgf("Aborting reading packages because we hit the limit of %d", config.ExtractConfigInstance.PackageNumberLimit)
 			break
 		}
 		if packet == nil {
@@ -111,44 +128,12 @@ func Analyze(pcapFile, protocolType string) {
 			continue
 		}
 		payload := applicationLayer.Payload()
-		if parsed, err := packageParse(packetInformation, payload); err != nil {
-			parseFails++
-			// TODO: write report to xml or something
-			log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error parsing package", realPacketNumber)
-			continue
-		} else {
-			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Parsed", realPacketNumber)
-			if config.AnalyzeConfigInstance.Verbosity > 1 {
-				prettyPrint(parsed)
-			}
-			if config.AnalyzeConfigInstance.OnlyParse {
-				log.Trace().Msg("only parsing")
-				continue
-			}
-			serializedBytes, err := serializePackage(parsed)
-			if err != nil {
-				serializeFails++
-				// TODO: write report to xml or something
-				log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error serializing", realPacketNumber)
-				continue
-			}
-			if config.AnalyzeConfigInstance.NoBytesCompare {
-				log.Trace().Msg("not comparing bytes")
-				continue
-			}
-			if compareResult := bytes.Compare(payload, serializedBytes); compareResult != 0 {
-				compareFails++
-				// TODO: write report to xml or something
-				log.Warn().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Bytes don't match", realPacketNumber)
-				if config.AnalyzeConfigInstance.Verbosity > 0 {
-					println("Original bytes")
-					println(hex.Dump(payload))
-					println("Serialized bytes")
-					println(hex.Dump(serializedBytes))
-				}
-			}
+		log.Debug().Msgf("Got payload %x", payload)
+		if config.ExtractConfigInstance.Verbosity > 1 {
+			printPayload(packetInformation, payload)
 		}
 	}
+	println()
 
 	log.Info().Msgf("Done evaluating %d of %d packages (%d failed to parse, %d failed to serialize and %d failed in byte comparison)", currentPackageNum, numberOfPackage, parseFails, serializeFails, compareFails)
 }

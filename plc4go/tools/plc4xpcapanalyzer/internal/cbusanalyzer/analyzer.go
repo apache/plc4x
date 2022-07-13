@@ -45,7 +45,6 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		a.initialized = true
 	}
 	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s", packetInformation, a.requestContext, a.cBusOptions)
-	// TODO: srcchk we need to pull that out of the config
 	isResponse := packetInformation.DstIp.Equal(a.Client)
 	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
 	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, a.requestContext, a.cBusOptions, uint16(len(payload)))
