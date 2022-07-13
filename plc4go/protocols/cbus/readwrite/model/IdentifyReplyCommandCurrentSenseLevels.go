@@ -31,6 +31,8 @@ type IdentifyReplyCommandCurrentSenseLevels interface {
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
+	// GetCurrentSenseLevels returns CurrentSenseLevels (property field)
+	GetCurrentSenseLevels() []byte
 }
 
 // IdentifyReplyCommandCurrentSenseLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandCurrentSenseLevels.
@@ -43,6 +45,7 @@ type IdentifyReplyCommandCurrentSenseLevelsExactly interface {
 // _IdentifyReplyCommandCurrentSenseLevels is the data-structure of this message
 type _IdentifyReplyCommandCurrentSenseLevels struct {
 	*_IdentifyReplyCommand
+	CurrentSenseLevels []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -65,9 +68,24 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetParent() IdentifyReplyComma
 	return m._IdentifyReplyCommand
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_IdentifyReplyCommandCurrentSenseLevels) GetCurrentSenseLevels() []byte {
+	return m.CurrentSenseLevels
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewIdentifyReplyCommandCurrentSenseLevels factory function for _IdentifyReplyCommandCurrentSenseLevels
-func NewIdentifyReplyCommandCurrentSenseLevels(numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
+func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
 	_result := &_IdentifyReplyCommandCurrentSenseLevels{
+		CurrentSenseLevels:    currentSenseLevels,
 		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
@@ -96,6 +114,11 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBits() uint16 {
 func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Array field
+	if len(m.CurrentSenseLevels) > 0 {
+		lengthInBits += 8 * uint16(len(m.CurrentSenseLevels))
+	}
+
 	return lengthInBits
 }
 
@@ -111,6 +134,12 @@ func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, at
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	// Byte Array field (currentSenseLevels)
+	numberOfBytescurrentSenseLevels := int(numBytes)
+	currentSenseLevels, _readArrayErr := readBuffer.ReadByteArray("currentSenseLevels", numberOfBytescurrentSenseLevels)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'currentSenseLevels' field of IdentifyReplyCommandCurrentSenseLevels")
+	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandCurrentSenseLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandCurrentSenseLevels")
@@ -118,6 +147,7 @@ func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, at
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandCurrentSenseLevels{
+		CurrentSenseLevels: currentSenseLevels,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
@@ -132,6 +162,12 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) Serialize(writeBuffer utils.Wr
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandCurrentSenseLevels"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandCurrentSenseLevels")
+		}
+
+		// Array Field (currentSenseLevels)
+		// Byte Array field (currentSenseLevels)
+		if err := writeBuffer.WriteByteArray("currentSenseLevels", m.GetCurrentSenseLevels()); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentSenseLevels' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandCurrentSenseLevels"); popErr != nil {

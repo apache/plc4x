@@ -31,6 +31,10 @@ type IdentifyReplyCommandDelays interface {
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
+	// GetTerminalLevels returns TerminalLevels (property field)
+	GetTerminalLevels() []byte
+	// GetReStrikeDelay returns ReStrikeDelay (property field)
+	GetReStrikeDelay() byte
 }
 
 // IdentifyReplyCommandDelaysExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandDelays.
@@ -43,6 +47,8 @@ type IdentifyReplyCommandDelaysExactly interface {
 // _IdentifyReplyCommandDelays is the data-structure of this message
 type _IdentifyReplyCommandDelays struct {
 	*_IdentifyReplyCommand
+	TerminalLevels []byte
+	ReStrikeDelay  byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -65,9 +71,29 @@ func (m *_IdentifyReplyCommandDelays) GetParent() IdentifyReplyCommand {
 	return m._IdentifyReplyCommand
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_IdentifyReplyCommandDelays) GetTerminalLevels() []byte {
+	return m.TerminalLevels
+}
+
+func (m *_IdentifyReplyCommandDelays) GetReStrikeDelay() byte {
+	return m.ReStrikeDelay
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewIdentifyReplyCommandDelays factory function for _IdentifyReplyCommandDelays
-func NewIdentifyReplyCommandDelays(numBytes uint8) *_IdentifyReplyCommandDelays {
+func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, numBytes uint8) *_IdentifyReplyCommandDelays {
 	_result := &_IdentifyReplyCommandDelays{
+		TerminalLevels:        terminalLevels,
+		ReStrikeDelay:         reStrikeDelay,
 		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
@@ -96,6 +122,14 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBits() uint16 {
 func (m *_IdentifyReplyCommandDelays) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Array field
+	if len(m.TerminalLevels) > 0 {
+		lengthInBits += 8 * uint16(len(m.TerminalLevels))
+	}
+
+	// Simple field (reStrikeDelay)
+	lengthInBits += 8
+
 	return lengthInBits
 }
 
@@ -111,6 +145,19 @@ func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attr
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	// Byte Array field (terminalLevels)
+	numberOfBytesterminalLevels := int(uint16(numBytes) - uint16(uint16(1)))
+	terminalLevels, _readArrayErr := readBuffer.ReadByteArray("terminalLevels", numberOfBytesterminalLevels)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'terminalLevels' field of IdentifyReplyCommandDelays")
+	}
+
+	// Simple Field (reStrikeDelay)
+	_reStrikeDelay, _reStrikeDelayErr := readBuffer.ReadByte("reStrikeDelay")
+	if _reStrikeDelayErr != nil {
+		return nil, errors.Wrap(_reStrikeDelayErr, "Error parsing 'reStrikeDelay' field of IdentifyReplyCommandDelays")
+	}
+	reStrikeDelay := _reStrikeDelay
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandDelays"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandDelays")
@@ -118,6 +165,8 @@ func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attr
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandDelays{
+		TerminalLevels: terminalLevels,
+		ReStrikeDelay:  reStrikeDelay,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
@@ -132,6 +181,19 @@ func (m *_IdentifyReplyCommandDelays) Serialize(writeBuffer utils.WriteBuffer) e
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandDelays"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandDelays")
+		}
+
+		// Array Field (terminalLevels)
+		// Byte Array field (terminalLevels)
+		if err := writeBuffer.WriteByteArray("terminalLevels", m.GetTerminalLevels()); err != nil {
+			return errors.Wrap(err, "Error serializing 'terminalLevels' field")
+		}
+
+		// Simple Field (reStrikeDelay)
+		reStrikeDelay := byte(m.GetReStrikeDelay())
+		_reStrikeDelayErr := writeBuffer.WriteByte("reStrikeDelay", (reStrikeDelay))
+		if _reStrikeDelayErr != nil {
+			return errors.Wrap(_reStrikeDelayErr, "Error serializing 'reStrikeDelay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandDelays"); popErr != nil {

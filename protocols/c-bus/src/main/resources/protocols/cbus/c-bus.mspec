@@ -1026,10 +1026,10 @@
             [simple   bit                     microPowerReset        ]
         ]
         ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
-            //TODO: read dynamic
+            [array  byte        minimumLevels        count 'numBytes'       ] // TODO: check datatype
         ]
         ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
-            //TODO: read dynamic
+            [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
         ]
         ['NetworkVoltage'               IdentifyReplyCommandNetworkVoltage
            [simple string 2     volts                   ]
@@ -1038,28 +1038,29 @@
            [const  byte         v       0x56            ]
         ]
         ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent
-           [array  byte         values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   '16'    ] // TODO: check datatype
         ]
         ['GAVValuesStored'              IdentifyReplyCommandGAVValuesStored
-           [array  byte         values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   '16'    ] // TODO: check datatype
         ]
         ['GAVPhysicalAddresses'         IdentifyReplyCommandGAVPhysicalAddresses
-           [array  byte         values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   '16'    ] // TODO: check datatype
         ]
         ['LogicalAssignment'            IdentifyReplyCommandLogicalAssignment
-            //TODO: read dynamic
+            [array  LogicAssignment   logicAssigment        count 'numBytes'       ]
         ]
         ['Delays'                       IdentifyReplyCommandDelays
-            //TODO: read dynamic
+            [array  byte        terminalLevels        count 'numBytes-1'       ]
+            [simple byte        reStrikeDelay                   ]
         ]
         ['MinimumLevels'                IdentifyReplyCommandMinimumLevels
-            //TODO: read dynamic
+            [array  byte        minimumLevels       count 'numBytes'       ]
         ]
         ['MaximumLevels'                IdentifyReplyCommandMaximumLevels
-            //TODO: read dynamic
+            [array  byte        maximumLevels       count 'numBytes'       ]
         ]
         ['CurrentSenseLevels'           IdentifyReplyCommandCurrentSenseLevels
-            //TODO: read dynamic
+            [array  byte        currentSenseLevels  count 'numBytes'       ]
         ]
         ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
             // TODO: we can use the bytes from above, but how is that dynamic? repeat the complete block here?
@@ -1093,6 +1094,17 @@
     [simple bit localToggleActiveState  ]
     [simple bit clockGenerationEnabled  ]
     [simple bit unitGeneratingClock     ]
+]
+
+[type LogicAssignment
+    [simple   bit greaterOfOrLogic  ]
+    [simple   bit reStrikeDelay     ]
+    [reserved bit 'false'           ]
+    [reserved bit 'false'           ]
+    [simple   bit assignedToGav16   ]
+    [simple   bit assignedToGav15   ]
+    [simple   bit assignedToGav14   ]
+    [simple   bit assignedToGav13   ]
 ]
 
 [enum uint 8 ChannelStatus

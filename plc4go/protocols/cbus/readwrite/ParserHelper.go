@@ -172,6 +172,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CBusPointToPointToMultipointCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointToMultipointCommandParse(io, cBusOptions)
+	case "LogicAssignment":
+		return model.LogicAssignmentParse(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

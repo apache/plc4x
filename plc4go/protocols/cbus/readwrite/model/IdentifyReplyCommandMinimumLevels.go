@@ -31,6 +31,8 @@ type IdentifyReplyCommandMinimumLevels interface {
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
+	// GetMinimumLevels returns MinimumLevels (property field)
+	GetMinimumLevels() []byte
 }
 
 // IdentifyReplyCommandMinimumLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandMinimumLevels.
@@ -43,6 +45,7 @@ type IdentifyReplyCommandMinimumLevelsExactly interface {
 // _IdentifyReplyCommandMinimumLevels is the data-structure of this message
 type _IdentifyReplyCommandMinimumLevels struct {
 	*_IdentifyReplyCommand
+	MinimumLevels []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -65,9 +68,24 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetParent() IdentifyReplyCommand {
 	return m._IdentifyReplyCommand
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_IdentifyReplyCommandMinimumLevels) GetMinimumLevels() []byte {
+	return m.MinimumLevels
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewIdentifyReplyCommandMinimumLevels factory function for _IdentifyReplyCommandMinimumLevels
-func NewIdentifyReplyCommandMinimumLevels(numBytes uint8) *_IdentifyReplyCommandMinimumLevels {
+func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMinimumLevels {
 	_result := &_IdentifyReplyCommandMinimumLevels{
+		MinimumLevels:         minimumLevels,
 		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
@@ -96,6 +114,11 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBits() uint16 {
 func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Array field
+	if len(m.MinimumLevels) > 0 {
+		lengthInBits += 8 * uint16(len(m.MinimumLevels))
+	}
+
 	return lengthInBits
 }
 
@@ -111,6 +134,12 @@ func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribu
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	// Byte Array field (minimumLevels)
+	numberOfBytesminimumLevels := int(numBytes)
+	minimumLevels, _readArrayErr := readBuffer.ReadByteArray("minimumLevels", numberOfBytesminimumLevels)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'minimumLevels' field of IdentifyReplyCommandMinimumLevels")
+	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandMinimumLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandMinimumLevels")
@@ -118,6 +147,7 @@ func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribu
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandMinimumLevels{
+		MinimumLevels: minimumLevels,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
@@ -132,6 +162,12 @@ func (m *_IdentifyReplyCommandMinimumLevels) Serialize(writeBuffer utils.WriteBu
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandMinimumLevels"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandMinimumLevels")
+		}
+
+		// Array Field (minimumLevels)
+		// Byte Array field (minimumLevels)
+		if err := writeBuffer.WriteByteArray("minimumLevels", m.GetMinimumLevels()); err != nil {
+			return errors.Wrap(err, "Error serializing 'minimumLevels' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandMinimumLevels"); popErr != nil {

@@ -199,6 +199,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointToMultipointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
+	case "LogicAssignment":
+		return model.LogicAssignmentParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

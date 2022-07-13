@@ -787,5 +787,24 @@ public class RandomPackagesTest {
             CBusCommand cbusCommand = requestCommand.getCbusCommand();
             System.out.println(cbusCommand);
         }
+
+        @Test
+        void wat() throws Exception {
+            byte[] bytes = "D8FF0024000002000000000000000008000000000000000000\r\n".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            requestContext = new RequestContext(true, false, false);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
+            ReplyOrConfirmationReply reply = (ReplyOrConfirmationReply) messageToClient.getReply();
+            /*
+            MonitoredSALReply monitoredSALReply = (MonitoredSALReply) reply.getReply();
+            System.out.println(monitoredSALReply.getMonitoredSAL());
+             */
+            ReplyCALReply replyReply = (ReplyCALReply) reply.getReply();
+            System.out.println(replyReply.getCalReply());
+        }
     }
 }

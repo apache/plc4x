@@ -31,6 +31,8 @@ type IdentifyReplyCommandTerminalLevels interface {
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
+	// GetTerminalLevels returns TerminalLevels (property field)
+	GetTerminalLevels() []byte
 }
 
 // IdentifyReplyCommandTerminalLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandTerminalLevels.
@@ -43,6 +45,7 @@ type IdentifyReplyCommandTerminalLevelsExactly interface {
 // _IdentifyReplyCommandTerminalLevels is the data-structure of this message
 type _IdentifyReplyCommandTerminalLevels struct {
 	*_IdentifyReplyCommand
+	TerminalLevels []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -65,9 +68,24 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetParent() IdentifyReplyCommand {
 	return m._IdentifyReplyCommand
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_IdentifyReplyCommandTerminalLevels) GetTerminalLevels() []byte {
+	return m.TerminalLevels
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewIdentifyReplyCommandTerminalLevels factory function for _IdentifyReplyCommandTerminalLevels
-func NewIdentifyReplyCommandTerminalLevels(numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
+func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
 	_result := &_IdentifyReplyCommandTerminalLevels{
+		TerminalLevels:        terminalLevels,
 		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
@@ -96,6 +114,11 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetLengthInBits() uint16 {
 func (m *_IdentifyReplyCommandTerminalLevels) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Array field
+	if len(m.TerminalLevels) > 0 {
+		lengthInBits += 8 * uint16(len(m.TerminalLevels))
+	}
+
 	return lengthInBits
 }
 
@@ -111,6 +134,12 @@ func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attrib
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	// Byte Array field (terminalLevels)
+	numberOfBytesterminalLevels := int(numBytes)
+	terminalLevels, _readArrayErr := readBuffer.ReadByteArray("terminalLevels", numberOfBytesterminalLevels)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'terminalLevels' field of IdentifyReplyCommandTerminalLevels")
+	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandTerminalLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandTerminalLevels")
@@ -118,6 +147,7 @@ func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandTerminalLevels{
+		TerminalLevels: terminalLevels,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
@@ -132,6 +162,12 @@ func (m *_IdentifyReplyCommandTerminalLevels) Serialize(writeBuffer utils.WriteB
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandTerminalLevels"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandTerminalLevels")
+		}
+
+		// Array Field (terminalLevels)
+		// Byte Array field (terminalLevels)
+		if err := writeBuffer.WriteByteArray("terminalLevels", m.GetTerminalLevels()); err != nil {
+			return errors.Wrap(err, "Error serializing 'terminalLevels' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandTerminalLevels"); popErr != nil {

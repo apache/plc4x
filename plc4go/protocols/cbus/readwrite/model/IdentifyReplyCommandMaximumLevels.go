@@ -31,6 +31,8 @@ type IdentifyReplyCommandMaximumLevels interface {
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand
+	// GetMaximumLevels returns MaximumLevels (property field)
+	GetMaximumLevels() []byte
 }
 
 // IdentifyReplyCommandMaximumLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandMaximumLevels.
@@ -43,6 +45,7 @@ type IdentifyReplyCommandMaximumLevelsExactly interface {
 // _IdentifyReplyCommandMaximumLevels is the data-structure of this message
 type _IdentifyReplyCommandMaximumLevels struct {
 	*_IdentifyReplyCommand
+	MaximumLevels []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -65,9 +68,24 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetParent() IdentifyReplyCommand {
 	return m._IdentifyReplyCommand
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_IdentifyReplyCommandMaximumLevels) GetMaximumLevels() []byte {
+	return m.MaximumLevels
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewIdentifyReplyCommandMaximumLevels factory function for _IdentifyReplyCommandMaximumLevels
-func NewIdentifyReplyCommandMaximumLevels(numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
+func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
 	_result := &_IdentifyReplyCommandMaximumLevels{
+		MaximumLevels:         maximumLevels,
 		_IdentifyReplyCommand: NewIdentifyReplyCommand(numBytes),
 	}
 	_result._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _result
@@ -96,6 +114,11 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetLengthInBits() uint16 {
 func (m *_IdentifyReplyCommandMaximumLevels) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Array field
+	if len(m.MaximumLevels) > 0 {
+		lengthInBits += 8 * uint16(len(m.MaximumLevels))
+	}
+
 	return lengthInBits
 }
 
@@ -111,6 +134,12 @@ func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribu
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+	// Byte Array field (maximumLevels)
+	numberOfBytesmaximumLevels := int(numBytes)
+	maximumLevels, _readArrayErr := readBuffer.ReadByteArray("maximumLevels", numberOfBytesmaximumLevels)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'maximumLevels' field of IdentifyReplyCommandMaximumLevels")
+	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandMaximumLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandMaximumLevels")
@@ -118,6 +147,7 @@ func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribu
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandMaximumLevels{
+		MaximumLevels: maximumLevels,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
@@ -132,6 +162,12 @@ func (m *_IdentifyReplyCommandMaximumLevels) Serialize(writeBuffer utils.WriteBu
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandMaximumLevels"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandMaximumLevels")
+		}
+
+		// Array Field (maximumLevels)
+		// Byte Array field (maximumLevels)
+		if err := writeBuffer.WriteByteArray("maximumLevels", m.GetMaximumLevels()); err != nil {
+			return errors.Wrap(err, "Error serializing 'maximumLevels' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandMaximumLevels"); popErr != nil {
