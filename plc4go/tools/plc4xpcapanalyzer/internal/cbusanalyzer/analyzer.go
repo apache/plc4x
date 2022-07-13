@@ -146,6 +146,12 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 				// TODO: add recursion
 				case model.ReplyOrConfirmationReplyExactly:
 					switch reply := reply.GetReply().(type) {
+					case model.ReplyExtendedFormatStatusReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetReply())
+					case model.ReplyStandardFormatStatusReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetReply())
 					case model.ReplyCALReplyExactly:
 						// We print this a second time as the first print contains only the hex part
 						fmt.Printf("%v\n", reply.GetCalReply())
@@ -156,6 +162,12 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 				}
 			case model.ReplyOrConfirmationReplyExactly:
 				switch reply := reply.GetReply().(type) {
+				case model.ReplyExtendedFormatStatusReplyExactly:
+					// We print this a second time as the first print contains only the hex part
+					fmt.Printf("%v\n", reply.GetReply())
+				case model.ReplyStandardFormatStatusReplyExactly:
+					// We print this a second time as the first print contains only the hex part
+					fmt.Printf("%v\n", reply.GetReply())
 				case model.ReplyCALReplyExactly:
 					// We print this a second time as the first print contains only the hex part
 					fmt.Printf("%v\n", reply.GetCalReply())

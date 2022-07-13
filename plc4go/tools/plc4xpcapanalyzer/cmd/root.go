@@ -55,7 +55,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.CfgFile, "config", "", "config file (default is $HOME/.plc4xpcapanalyzer.yaml)")
 	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.LogType, "log-type", "text", "define how the log will be evaluated")
-	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.LogLevel, "log-level", "off", "define the log Level")
+	rootCmd.PersistentFlags().StringVar(&config.RootConfigInstance.LogLevel, "log-level", "error", "define the log Level")
 	rootCmd.PersistentFlags().CountVarP(&config.RootConfigInstance.Verbosity, "verbose", "v", "counted verbosity")
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
