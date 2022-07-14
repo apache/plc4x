@@ -31,23 +31,83 @@ import (
 )
 
 type Analyzer struct {
-	Client         net.IP
-	requestContext model.RequestContext
-	cBusOptions    model.CBusOptions
-	initialized    bool
+	Client                 net.IP
+	requestContext         model.RequestContext
+	cBusOptions            model.CBusOptions
+	initialized            bool
+	currentInboundPayloads map[string][]byte
+}
+
+func (a *Analyzer) Init() {
+	if a.initialized {
+		return
+	}
+	a.requestContext = model.NewRequestContext(false, false, false)
+	a.cBusOptions = model.NewCBusOptions(config.CBusConfigInstance.Connect, config.CBusConfigInstance.Smart, config.CBusConfigInstance.Idmon, config.CBusConfigInstance.Exstat, config.CBusConfigInstance.Monitor, config.CBusConfigInstance.Monall, config.CBusConfigInstance.Pun, config.CBusConfigInstance.Pcn, config.CBusConfigInstance.Srchk)
+	a.currentInboundPayloads = make(map[string][]byte)
+	a.initialized = true
 }
 
 func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
 	if !a.initialized {
 		log.Warn().Msg("Not initialized... doing that now")
-		a.requestContext = model.NewRequestContext(false, false, false)
-		a.cBusOptions = model.NewCBusOptions(config.CBusConfigInstance.Connect, config.CBusConfigInstance.Smart, config.CBusConfigInstance.Idmon, config.CBusConfigInstance.Exstat, config.CBusConfigInstance.Monitor, config.CBusConfigInstance.Monall, config.CBusConfigInstance.Pun, config.CBusConfigInstance.Pcn, config.CBusConfigInstance.Srchk)
-		a.initialized = true
+		a.Init()
 	}
 	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s", packetInformation, a.requestContext, a.cBusOptions)
 	isResponse := packetInformation.DstIp.Equal(a.Client)
 	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, a.requestContext, a.cBusOptions, uint16(len(payload)))
+	payload = filterXOnXOff(payload)
+	if len(payload) == 0 {
+		return nil, common.ErrEmptyPackage
+	}
+	// Check if we have a termination in the middle
+	currentPayload := a.currentInboundPayloads[packetInformation.SrcIp.String()]
+	currentPayload = append(currentPayload, payload...)
+	shouldClearInboundPayload := true
+	// Check if we have a merged message
+	for i, b := range currentPayload {
+		if i == 0 {
+			// TODO: we ignore the first byte as this is typical for reset etc... so maybe this is good or bad we will see
+			continue
+		}
+		switch b {
+		case 0x0D:
+			if i+1 < len(currentPayload) && currentPayload[i+1] == 0x0A {
+				// If we know the next is a newline we jump to that index...
+				i++
+			}
+			// ... other than that the logic is the same
+			fallthrough
+		case 0x0A:
+			// We have a merged message if we are not at the end
+			if i < len(currentPayload)-1 {
+				log.Warn().Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d", i)
+				// In this case we need to put the tail into our "buffer"
+				a.currentInboundPayloads[packetInformation.SrcIp.String()] = currentPayload[i+1:]
+				// and use the beginning as current payload
+				currentPayload = currentPayload[:i+1]
+				shouldClearInboundPayload = false
+			}
+		}
+	}
+	a.currentInboundPayloads[packetInformation.SrcIp.String()] = currentPayload
+	if lastElement := currentPayload[len(currentPayload)-1]; (!isResponse /*a request must end with cr*/ && lastElement != 0x0D /*cr*/) || (isResponse /*a response must end with lf*/ && lastElement != 0x0A /*lf*/) {
+		return nil, common.ErrUnterminatedPackage
+	} else {
+		log.Debug().Msgf("Last element %x", lastElement)
+		if shouldClearInboundPayload {
+			if currentSavedPayload := a.currentInboundPayloads[packetInformation.SrcIp.String()]; currentSavedPayload != nil {
+				// We remove our current payload from the beginning of the cache
+				for i, b := range currentPayload {
+					if currentSavedPayload[i] != b {
+						panic("programming error... at this point they should start with the identical bytes")
+					}
+				}
+			}
+			a.currentInboundPayloads[packetInformation.SrcIp.String()] = nil
+		}
+	}
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, a.cBusOptions, uint16(len(currentPayload)))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}
@@ -107,6 +167,20 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 	}
 	log.Debug().Msgf("Parsed c-bus command \n%v", parse)
 	return parse, nil
+}
+
+func filterXOnXOff(payload []byte) []byte {
+	n := 0
+	for _, b := range payload {
+		switch b {
+		case 0x11: // Filter XON
+		case 0x13: // Filter XOFF
+		default:
+			payload[n] = b
+			n++
+		}
+	}
+	return payload[:n]
 }
 
 func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {

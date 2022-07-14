@@ -21,6 +21,7 @@ package common
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"net"
 	"time"
 )
@@ -36,3 +37,8 @@ type PacketInformation struct {
 func (p PacketInformation) String() string {
 	return fmt.Sprintf("%s (SrcIp:%v, DstIp:%v)", p.Description, p.SrcIp, p.DstIp)
 }
+
+// ErrUnterminatedPackage is used when a transmission is incomplete (usually when package is split)
+var ErrUnterminatedPackage = errors.New("ErrUnterminatedPackage")
+
+var ErrEmptyPackage = errors.New("ErrEmptyPackage")

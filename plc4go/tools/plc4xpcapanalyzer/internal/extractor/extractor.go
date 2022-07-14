@@ -56,22 +56,30 @@ func Extract(pcapFile, protocolType string) {
 		clientRequestWriter := color.New(color.FgGreen)
 		clientRequestIndicatorWriter := color.New(color.FgHiGreen)
 		printPayload = func(packetInformation common.PacketInformation, payload []byte) {
+			payloadString := ""
 			suffix := ""
-			if properTerminated := payload[len(payload)-1] == 0x0D || payload[len(payload)-1] == 0x0A; properTerminated {
-				suffix = "\n"
+			extraInformation := ""
+			if config.ExtractConfigInstance.Verbosity > 2 {
+				extraInformation = fmt.Sprintf("(No.[%d])", packetInformation.PacketNumber)
 			}
-			quotedPayload := fmt.Sprintf("%+q", payload)
-			unquotedPayload := quotedPayload[1 : len(quotedPayload)-1]
+			if len(payload) > 0 {
+				if properTerminated := payload[len(payload)-1] == 0x0D || payload[len(payload)-1] == 0x0A; properTerminated {
+					suffix = "\n"
+				}
+				quotedPayload := fmt.Sprintf("%+q", payload)
+				unquotedPayload := quotedPayload[1 : len(quotedPayload)-1]
+				payloadString = unquotedPayload
+			}
 			if isResponse := packetInformation.DstIp.Equal(clientIp); isResponse {
 				if config.ExtractConfigInstance.ShowDirectionalIndicators {
-					_, _ = serverResponseIndicatorWriter.Fprint(stderr, "(<--pci)")
+					_, _ = serverResponseIndicatorWriter.Fprintf(stderr, "%s(<--pci)", extraInformation)
 				}
-				_, _ = serverResponseWriter.Fprintf(stdout, "%s%s", unquotedPayload, suffix)
+				_, _ = serverResponseWriter.Fprintf(stdout, "%s%s", payloadString, suffix)
 			} else {
 				if config.ExtractConfigInstance.ShowDirectionalIndicators {
-					_, _ = clientRequestIndicatorWriter.Fprint(stderr, "(-->pci)")
+					_, _ = clientRequestIndicatorWriter.Fprintf(stderr, "%s(-->pci)", extraInformation)
 				}
-				_, _ = clientRequestWriter.Fprintf(stdout, "%s%s", unquotedPayload, suffix)
+				_, _ = clientRequestWriter.Fprintf(stdout, "%s%s", payloadString, suffix)
 			}
 		}
 	}
@@ -122,12 +130,14 @@ func Extract(pcapFile, protocolType string) {
 			packetInformation.DstIp = networkLayer.DstIP
 		}
 
+		var payload []byte
 		applicationLayer := packet.ApplicationLayer()
 		if applicationLayer == nil {
 			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] No application layer", realPacketNumber)
-			continue
+		} else {
+			payload = applicationLayer.Payload()
 		}
-		payload := applicationLayer.Payload()
+
 		log.Debug().Msgf("Got payload %x", payload)
 		if config.ExtractConfigInstance.Verbosity > 1 {
 			printPayload(packetInformation, payload)

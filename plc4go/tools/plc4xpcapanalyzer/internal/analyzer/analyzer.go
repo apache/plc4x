@@ -54,6 +54,7 @@ func Analyze(pcapFile, protocolType string) {
 		serializePackage = bacnetanalyzer.SerializePackage
 	case "c-bus":
 		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(config.AnalyzeConfigInstance.Client)}
+		analyzer.Init()
 		packageParse = analyzer.PackageParse
 		serializePackage = analyzer.SerializePackage
 		prettyPrint = analyzer.PrettyPrint
@@ -112,9 +113,16 @@ func Analyze(pcapFile, protocolType string) {
 		}
 		payload := applicationLayer.Payload()
 		if parsed, err := packageParse(packetInformation, payload); err != nil {
-			parseFails++
-			// TODO: write report to xml or something
-			log.Warn().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error parsing package", realPacketNumber)
+			switch err {
+			case common.ErrUnterminatedPackage:
+				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is unterminated", realPacketNumber)
+			case common.ErrEmptyPackage:
+				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is empty", realPacketNumber)
+			default:
+				parseFails++
+				// TODO: write report to xml or something
+				log.Error().Stringer("packetInformation", packetInformation).Err(err).Msgf("No.[%d] Error parsing package", realPacketNumber)
+			}
 			continue
 		} else {
 			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Parsed", realPacketNumber)
