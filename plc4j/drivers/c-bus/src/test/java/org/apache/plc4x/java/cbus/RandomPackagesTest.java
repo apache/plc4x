@@ -806,5 +806,16 @@ public class RandomPackagesTest {
             ReplyCALReply replyReply = (ReplyCALReply) reply.getReply();
             System.out.println(replyReply.getCalReply());
         }
+
+        @Test
+        void WriteCommand() throws Exception {
+            byte[] bytes = "\\46310900A400410600r\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+        }
     }
 }

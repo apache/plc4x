@@ -593,6 +593,10 @@
             [simple Parameter paramNo                                                       ]
             [simple uint 8    count                                                         ]
         ]
+        ['WRITE'            *Write(CALCommandTypeContainer commandTypeContainer) // Request
+            [simple Parameter paramNo                                                       ]
+            [array  byte      data        count 'commandTypeContainer.numBytes-1'           ]
+        ]
         ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer) // Reply
             [simple Attribute   attribute                                                   ]
             [simple IdentifyReplyCommand('attribute', 'commandTypeContainer.numBytes - 1')
@@ -1127,6 +1131,7 @@
     ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
     ['0x21' CALCommandIdentify               ['IDENTIFY',         '0']]
     ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '0']]
+    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '0']]
     ['0x80' CALCommandReply_0Bytes           ['REPLY',            '0']]
     ['0x81' CALCommandReply_1Bytes           ['REPLY',            '1']]
     ['0x82' CALCommandReply_2Bytes           ['REPLY',            '2']]
@@ -1159,7 +1164,22 @@
     ['0x9D' CALCommandReply_29Bytes          ['REPLY',           '29']]
     ['0x9E' CALCommandReply_30Bytes          ['REPLY',           '30']]
     ['0x9F' CALCommandReply_31Bytes          ['REPLY',           '31']]
-    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '0']]
+    ['0xA0' CALCommandWrite_0Bytes           ['WRITE',            '0']]
+    ['0xA1' CALCommandWrite_1Bytes           ['WRITE',            '1']]
+    ['0xA2' CALCommandWrite_2Bytes           ['WRITE',            '2']]
+    ['0xA3' CALCommandWrite_3Bytes           ['WRITE',            '3']]
+    ['0xA4' CALCommandWrite_4Bytes           ['WRITE',            '4']]
+    ['0xA5' CALCommandWrite_5Bytes           ['WRITE',            '5']]
+    ['0xA6' CALCommandWrite_6Bytes           ['WRITE',            '6']]
+    ['0xA7' CALCommandWrite_7Bytes           ['WRITE',            '7']]
+    ['0xA8' CALCommandWrite_8Bytes           ['WRITE',            '8']]
+    ['0xA9' CALCommandWrite_9Bytes           ['WRITE',            '9']]
+    ['0xAA' CALCommandWrite_10Bytes          ['WRITE',           '10']]
+    ['0xAB' CALCommandWrite_11Bytes          ['WRITE',           '11']]
+    ['0xAC' CALCommandWrite_12Bytes          ['WRITE',           '12']]
+    ['0xAD' CALCommandWrite_13Bytes          ['WRITE',           '13']]
+    ['0xAE' CALCommandWrite_14Bytes          ['WRITE',           '14']]
+    ['0xAF' CALCommandWrite_15Bytes          ['WRITE',           '15']]
     ['0xC0' CALCommandStatus_0Bytes          ['STATUS',           '0']]
     ['0xC1' CALCommandStatus_1Bytes          ['STATUS',           '1']]
     ['0xC2' CALCommandStatus_2Bytes          ['STATUS',           '2']]
@@ -1226,17 +1246,18 @@
     ['0xFF' CALCommandStatusExtended_31Bytes ['STATUS_EXTENDED', '31']]
 ]
 
-[enum uint 4 CALCommandType
+[enum uint 8 CALCommandType
     // Request
-    ['0x0' RESET          ]
-    ['0x1' RECALL         ]
-    ['0x2' IDENTIFY       ]
-    ['0x3' GET_STATUS     ]
+    ['0x00' RESET          ]
+    ['0x01' RECALL         ]
+    ['0x02' IDENTIFY       ]
+    ['0x03' GET_STATUS     ]
+    ['0x04' WRITE          ]
     // Response
-    ['0x4' REPLY          ]
-    ['0x5' ACKNOWLEDGE    ]
-    ['0x6' STATUS         ]
-    ['0x7' STATUS_EXTENDED]
+    ['0x0F' REPLY          ]
+    ['0x10' ACKNOWLEDGE    ]
+    ['0x11' STATUS         ]
+    ['0x12' STATUS_EXTENDED]
 ]
 
 [type StatusRequest

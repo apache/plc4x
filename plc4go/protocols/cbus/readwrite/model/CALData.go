@@ -215,6 +215,8 @@ func CALDataParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (C
 		_childTemp, typeSwitchError = CALDataIdentifyParse(readBuffer, requestContext)
 	case commandType == CALCommandType_GET_STATUS: // CALDataGetStatus
 		_childTemp, typeSwitchError = CALDataGetStatusParse(readBuffer, requestContext)
+	case commandType == CALCommandType_WRITE: // CALDataWrite
+		_childTemp, typeSwitchError = CALDataWriteParse(readBuffer, requestContext, commandTypeContainer)
 	case commandType == CALCommandType_REPLY && sendIdentifyRequestBefore == bool(true): // CALDataIdentifyReply
 		_childTemp, typeSwitchError = CALDataIdentifyReplyParse(readBuffer, requestContext, commandTypeContainer)
 	case commandType == CALCommandType_REPLY: // CALDataReply
