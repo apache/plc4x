@@ -31,6 +31,7 @@ import (
 type SALCommandTypeContainer uint8
 
 type ISALCommandTypeContainer interface {
+	NumBytes() uint8
 	CommandType() SALCommandType
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,6 +56,38 @@ const (
 	SALCommandTypeContainer_SALCommandRampToLevel_900Second     SALCommandTypeContainer = 0x72
 	SALCommandTypeContainer_SALCommandRampToLevel_1020Second    SALCommandTypeContainer = 0x7A
 	SALCommandTypeContainer_SALCommandTerminateRamp             SALCommandTypeContainer = 0x09
+	SALCommandTypeContainer_SALCommandLabel_0Bytes              SALCommandTypeContainer = 0xA0
+	SALCommandTypeContainer_SALCommandLabel_1Bytes              SALCommandTypeContainer = 0xA1
+	SALCommandTypeContainer_SALCommandLabel_2Bytes              SALCommandTypeContainer = 0xA2
+	SALCommandTypeContainer_SALCommandLabel_3Bytes              SALCommandTypeContainer = 0xA3
+	SALCommandTypeContainer_SALCommandLabel_4Bytes              SALCommandTypeContainer = 0xA4
+	SALCommandTypeContainer_SALCommandLabel_5Bytes              SALCommandTypeContainer = 0xA5
+	SALCommandTypeContainer_SALCommandLabel_6Bytes              SALCommandTypeContainer = 0xA6
+	SALCommandTypeContainer_SALCommandLabel_7Bytes              SALCommandTypeContainer = 0xA7
+	SALCommandTypeContainer_SALCommandLabel_8Bytes              SALCommandTypeContainer = 0xA8
+	SALCommandTypeContainer_SALCommandLabel_9Bytes              SALCommandTypeContainer = 0xA9
+	SALCommandTypeContainer_SALCommandLabel_10Bytes             SALCommandTypeContainer = 0xAA
+	SALCommandTypeContainer_SALCommandLabel_11Bytes             SALCommandTypeContainer = 0xAB
+	SALCommandTypeContainer_SALCommandLabel_12Bytes             SALCommandTypeContainer = 0xAC
+	SALCommandTypeContainer_SALCommandLabel_13Bytes             SALCommandTypeContainer = 0xAD
+	SALCommandTypeContainer_SALCommandLabel_14Bytes             SALCommandTypeContainer = 0xAE
+	SALCommandTypeContainer_SALCommandLabel_15Bytes             SALCommandTypeContainer = 0xAF
+	SALCommandTypeContainer_SALCommandLabel_16Bytes             SALCommandTypeContainer = 0xB0
+	SALCommandTypeContainer_SALCommandLabel_17Bytes             SALCommandTypeContainer = 0xB1
+	SALCommandTypeContainer_SALCommandLabel_18Bytes             SALCommandTypeContainer = 0xB2
+	SALCommandTypeContainer_SALCommandLabel_19Bytes             SALCommandTypeContainer = 0xB3
+	SALCommandTypeContainer_SALCommandLabel_20Bytes             SALCommandTypeContainer = 0xB4
+	SALCommandTypeContainer_SALCommandLabel_21Bytes             SALCommandTypeContainer = 0xB5
+	SALCommandTypeContainer_SALCommandLabel_22Bytes             SALCommandTypeContainer = 0xB6
+	SALCommandTypeContainer_SALCommandLabel_23Bytes             SALCommandTypeContainer = 0xB7
+	SALCommandTypeContainer_SALCommandLabel_24Bytes             SALCommandTypeContainer = 0xB8
+	SALCommandTypeContainer_SALCommandLabel_25Bytes             SALCommandTypeContainer = 0xB9
+	SALCommandTypeContainer_SALCommandLabel_26Bytes             SALCommandTypeContainer = 0xBA
+	SALCommandTypeContainer_SALCommandLabel_27Bytes             SALCommandTypeContainer = 0xBB
+	SALCommandTypeContainer_SALCommandLabel_28Bytes             SALCommandTypeContainer = 0xBC
+	SALCommandTypeContainer_SALCommandLabel_29Bytes             SALCommandTypeContainer = 0xBD
+	SALCommandTypeContainer_SALCommandLabel_30Bytes             SALCommandTypeContainer = 0xBE
+	SALCommandTypeContainer_SALCommandLabel_32Bytes             SALCommandTypeContainer = 0xBF
 )
 
 var SALCommandTypeContainerValues []SALCommandTypeContainer
@@ -81,7 +114,261 @@ func init() {
 		SALCommandTypeContainer_SALCommandRampToLevel_900Second,
 		SALCommandTypeContainer_SALCommandRampToLevel_1020Second,
 		SALCommandTypeContainer_SALCommandTerminateRamp,
+		SALCommandTypeContainer_SALCommandLabel_0Bytes,
+		SALCommandTypeContainer_SALCommandLabel_1Bytes,
+		SALCommandTypeContainer_SALCommandLabel_2Bytes,
+		SALCommandTypeContainer_SALCommandLabel_3Bytes,
+		SALCommandTypeContainer_SALCommandLabel_4Bytes,
+		SALCommandTypeContainer_SALCommandLabel_5Bytes,
+		SALCommandTypeContainer_SALCommandLabel_6Bytes,
+		SALCommandTypeContainer_SALCommandLabel_7Bytes,
+		SALCommandTypeContainer_SALCommandLabel_8Bytes,
+		SALCommandTypeContainer_SALCommandLabel_9Bytes,
+		SALCommandTypeContainer_SALCommandLabel_10Bytes,
+		SALCommandTypeContainer_SALCommandLabel_11Bytes,
+		SALCommandTypeContainer_SALCommandLabel_12Bytes,
+		SALCommandTypeContainer_SALCommandLabel_13Bytes,
+		SALCommandTypeContainer_SALCommandLabel_14Bytes,
+		SALCommandTypeContainer_SALCommandLabel_15Bytes,
+		SALCommandTypeContainer_SALCommandLabel_16Bytes,
+		SALCommandTypeContainer_SALCommandLabel_17Bytes,
+		SALCommandTypeContainer_SALCommandLabel_18Bytes,
+		SALCommandTypeContainer_SALCommandLabel_19Bytes,
+		SALCommandTypeContainer_SALCommandLabel_20Bytes,
+		SALCommandTypeContainer_SALCommandLabel_21Bytes,
+		SALCommandTypeContainer_SALCommandLabel_22Bytes,
+		SALCommandTypeContainer_SALCommandLabel_23Bytes,
+		SALCommandTypeContainer_SALCommandLabel_24Bytes,
+		SALCommandTypeContainer_SALCommandLabel_25Bytes,
+		SALCommandTypeContainer_SALCommandLabel_26Bytes,
+		SALCommandTypeContainer_SALCommandLabel_27Bytes,
+		SALCommandTypeContainer_SALCommandLabel_28Bytes,
+		SALCommandTypeContainer_SALCommandLabel_29Bytes,
+		SALCommandTypeContainer_SALCommandLabel_30Bytes,
+		SALCommandTypeContainer_SALCommandLabel_32Bytes,
 	}
+}
+
+func (e SALCommandTypeContainer) NumBytes() uint8 {
+	switch e {
+	case 0x01:
+		{ /* '0x01' */
+			return 1
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 1
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return 1
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return 2
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return 2
+		}
+	case 0x1A:
+		{ /* '0x1A' */
+			return 2
+		}
+	case 0x22:
+		{ /* '0x22' */
+			return 2
+		}
+	case 0x2A:
+		{ /* '0x2A' */
+			return 2
+		}
+	case 0x32:
+		{ /* '0x32' */
+			return 2
+		}
+	case 0x3A:
+		{ /* '0x3A' */
+			return 2
+		}
+	case 0x42:
+		{ /* '0x42' */
+			return 2
+		}
+	case 0x4A:
+		{ /* '0x4A' */
+			return 2
+		}
+	case 0x52:
+		{ /* '0x52' */
+			return 2
+		}
+	case 0x5A:
+		{ /* '0x5A' */
+			return 2
+		}
+	case 0x62:
+		{ /* '0x62' */
+			return 2
+		}
+	case 0x6A:
+		{ /* '0x6A' */
+			return 2
+		}
+	case 0x72:
+		{ /* '0x72' */
+			return 2
+		}
+	case 0x79:
+		{ /* '0x79' */
+			return 1
+		}
+	case 0x7A:
+		{ /* '0x7A' */
+			return 2
+		}
+	case 0xA0:
+		{ /* '0xA0' */
+			return 0
+		}
+	case 0xA1:
+		{ /* '0xA1' */
+			return 1
+		}
+	case 0xA2:
+		{ /* '0xA2' */
+			return 2
+		}
+	case 0xA3:
+		{ /* '0xA3' */
+			return 3
+		}
+	case 0xA4:
+		{ /* '0xA4' */
+			return 4
+		}
+	case 0xA5:
+		{ /* '0xA5' */
+			return 5
+		}
+	case 0xA6:
+		{ /* '0xA6' */
+			return 6
+		}
+	case 0xA7:
+		{ /* '0xA7' */
+			return 7
+		}
+	case 0xA8:
+		{ /* '0xA8' */
+			return 8
+		}
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
+		}
+	case 0xAA:
+		{ /* '0xAA' */
+			return 10
+		}
+	case 0xAB:
+		{ /* '0xAB' */
+			return 11
+		}
+	case 0xAC:
+		{ /* '0xAC' */
+			return 12
+		}
+	case 0xAD:
+		{ /* '0xAD' */
+			return 13
+		}
+	case 0xAE:
+		{ /* '0xAE' */
+			return 14
+		}
+	case 0xAF:
+		{ /* '0xAF' */
+			return 15
+		}
+	case 0xB0:
+		{ /* '0xB0' */
+			return 16
+		}
+	case 0xB1:
+		{ /* '0xB1' */
+			return 17
+		}
+	case 0xB2:
+		{ /* '0xB2' */
+			return 18
+		}
+	case 0xB3:
+		{ /* '0xB3' */
+			return 19
+		}
+	case 0xB4:
+		{ /* '0xB4' */
+			return 20
+		}
+	case 0xB5:
+		{ /* '0xB5' */
+			return 21
+		}
+	case 0xB6:
+		{ /* '0xB6' */
+			return 22
+		}
+	case 0xB7:
+		{ /* '0xB7' */
+			return 23
+		}
+	case 0xB8:
+		{ /* '0xB8' */
+			return 24
+		}
+	case 0xB9:
+		{ /* '0xB9' */
+			return 25
+		}
+	case 0xBA:
+		{ /* '0xBA' */
+			return 26
+		}
+	case 0xBB:
+		{ /* '0xBB' */
+			return 27
+		}
+	case 0xBC:
+		{ /* '0xBC' */
+			return 28
+		}
+	case 0xBD:
+		{ /* '0xBD' */
+			return 29
+		}
+	case 0xBE:
+		{ /* '0xBE' */
+			return 30
+		}
+	case 0xBF:
+		{ /* '0xBF' */
+			return 31
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func SALCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (SALCommandTypeContainer, error) {
+	for _, sizeValue := range SALCommandTypeContainerValues {
+		if sizeValue.NumBytes() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
 }
 
 func (e SALCommandTypeContainer) CommandType() SALCommandType {
@@ -162,6 +449,134 @@ func (e SALCommandTypeContainer) CommandType() SALCommandType {
 		{ /* '0x7A' */
 			return SALCommandType_RAMP_TO_LEVEL
 		}
+	case 0xA0:
+		{ /* '0xA0' */
+			return SALCommandType_LABEL
+		}
+	case 0xA1:
+		{ /* '0xA1' */
+			return SALCommandType_LABEL
+		}
+	case 0xA2:
+		{ /* '0xA2' */
+			return SALCommandType_LABEL
+		}
+	case 0xA3:
+		{ /* '0xA3' */
+			return SALCommandType_LABEL
+		}
+	case 0xA4:
+		{ /* '0xA4' */
+			return SALCommandType_LABEL
+		}
+	case 0xA5:
+		{ /* '0xA5' */
+			return SALCommandType_LABEL
+		}
+	case 0xA6:
+		{ /* '0xA6' */
+			return SALCommandType_LABEL
+		}
+	case 0xA7:
+		{ /* '0xA7' */
+			return SALCommandType_LABEL
+		}
+	case 0xA8:
+		{ /* '0xA8' */
+			return SALCommandType_LABEL
+		}
+	case 0xA9:
+		{ /* '0xA9' */
+			return SALCommandType_LABEL
+		}
+	case 0xAA:
+		{ /* '0xAA' */
+			return SALCommandType_LABEL
+		}
+	case 0xAB:
+		{ /* '0xAB' */
+			return SALCommandType_LABEL
+		}
+	case 0xAC:
+		{ /* '0xAC' */
+			return SALCommandType_LABEL
+		}
+	case 0xAD:
+		{ /* '0xAD' */
+			return SALCommandType_LABEL
+		}
+	case 0xAE:
+		{ /* '0xAE' */
+			return SALCommandType_LABEL
+		}
+	case 0xAF:
+		{ /* '0xAF' */
+			return SALCommandType_LABEL
+		}
+	case 0xB0:
+		{ /* '0xB0' */
+			return SALCommandType_LABEL
+		}
+	case 0xB1:
+		{ /* '0xB1' */
+			return SALCommandType_LABEL
+		}
+	case 0xB2:
+		{ /* '0xB2' */
+			return SALCommandType_LABEL
+		}
+	case 0xB3:
+		{ /* '0xB3' */
+			return SALCommandType_LABEL
+		}
+	case 0xB4:
+		{ /* '0xB4' */
+			return SALCommandType_LABEL
+		}
+	case 0xB5:
+		{ /* '0xB5' */
+			return SALCommandType_LABEL
+		}
+	case 0xB6:
+		{ /* '0xB6' */
+			return SALCommandType_LABEL
+		}
+	case 0xB7:
+		{ /* '0xB7' */
+			return SALCommandType_LABEL
+		}
+	case 0xB8:
+		{ /* '0xB8' */
+			return SALCommandType_LABEL
+		}
+	case 0xB9:
+		{ /* '0xB9' */
+			return SALCommandType_LABEL
+		}
+	case 0xBA:
+		{ /* '0xBA' */
+			return SALCommandType_LABEL
+		}
+	case 0xBB:
+		{ /* '0xBB' */
+			return SALCommandType_LABEL
+		}
+	case 0xBC:
+		{ /* '0xBC' */
+			return SALCommandType_LABEL
+		}
+	case 0xBD:
+		{ /* '0xBD' */
+			return SALCommandType_LABEL
+		}
+	case 0xBE:
+		{ /* '0xBE' */
+			return SALCommandType_LABEL
+		}
+	case 0xBF:
+		{ /* '0xBF' */
+			return SALCommandType_LABEL
+		}
 	default:
 		{
 			return 0
@@ -217,6 +632,70 @@ func SALCommandTypeContainerByValue(value uint8) (enum SALCommandTypeContainer, 
 		return SALCommandTypeContainer_SALCommandOn, true
 	case 0x7A:
 		return SALCommandTypeContainer_SALCommandRampToLevel_1020Second, true
+	case 0xA0:
+		return SALCommandTypeContainer_SALCommandLabel_0Bytes, true
+	case 0xA1:
+		return SALCommandTypeContainer_SALCommandLabel_1Bytes, true
+	case 0xA2:
+		return SALCommandTypeContainer_SALCommandLabel_2Bytes, true
+	case 0xA3:
+		return SALCommandTypeContainer_SALCommandLabel_3Bytes, true
+	case 0xA4:
+		return SALCommandTypeContainer_SALCommandLabel_4Bytes, true
+	case 0xA5:
+		return SALCommandTypeContainer_SALCommandLabel_5Bytes, true
+	case 0xA6:
+		return SALCommandTypeContainer_SALCommandLabel_6Bytes, true
+	case 0xA7:
+		return SALCommandTypeContainer_SALCommandLabel_7Bytes, true
+	case 0xA8:
+		return SALCommandTypeContainer_SALCommandLabel_8Bytes, true
+	case 0xA9:
+		return SALCommandTypeContainer_SALCommandLabel_9Bytes, true
+	case 0xAA:
+		return SALCommandTypeContainer_SALCommandLabel_10Bytes, true
+	case 0xAB:
+		return SALCommandTypeContainer_SALCommandLabel_11Bytes, true
+	case 0xAC:
+		return SALCommandTypeContainer_SALCommandLabel_12Bytes, true
+	case 0xAD:
+		return SALCommandTypeContainer_SALCommandLabel_13Bytes, true
+	case 0xAE:
+		return SALCommandTypeContainer_SALCommandLabel_14Bytes, true
+	case 0xAF:
+		return SALCommandTypeContainer_SALCommandLabel_15Bytes, true
+	case 0xB0:
+		return SALCommandTypeContainer_SALCommandLabel_16Bytes, true
+	case 0xB1:
+		return SALCommandTypeContainer_SALCommandLabel_17Bytes, true
+	case 0xB2:
+		return SALCommandTypeContainer_SALCommandLabel_18Bytes, true
+	case 0xB3:
+		return SALCommandTypeContainer_SALCommandLabel_19Bytes, true
+	case 0xB4:
+		return SALCommandTypeContainer_SALCommandLabel_20Bytes, true
+	case 0xB5:
+		return SALCommandTypeContainer_SALCommandLabel_21Bytes, true
+	case 0xB6:
+		return SALCommandTypeContainer_SALCommandLabel_22Bytes, true
+	case 0xB7:
+		return SALCommandTypeContainer_SALCommandLabel_23Bytes, true
+	case 0xB8:
+		return SALCommandTypeContainer_SALCommandLabel_24Bytes, true
+	case 0xB9:
+		return SALCommandTypeContainer_SALCommandLabel_25Bytes, true
+	case 0xBA:
+		return SALCommandTypeContainer_SALCommandLabel_26Bytes, true
+	case 0xBB:
+		return SALCommandTypeContainer_SALCommandLabel_27Bytes, true
+	case 0xBC:
+		return SALCommandTypeContainer_SALCommandLabel_28Bytes, true
+	case 0xBD:
+		return SALCommandTypeContainer_SALCommandLabel_29Bytes, true
+	case 0xBE:
+		return SALCommandTypeContainer_SALCommandLabel_30Bytes, true
+	case 0xBF:
+		return SALCommandTypeContainer_SALCommandLabel_32Bytes, true
 	}
 	return 0, false
 }
@@ -261,6 +740,70 @@ func SALCommandTypeContainerByName(value string) (enum SALCommandTypeContainer, 
 		return SALCommandTypeContainer_SALCommandOn, true
 	case "SALCommandRampToLevel_1020Second":
 		return SALCommandTypeContainer_SALCommandRampToLevel_1020Second, true
+	case "SALCommandLabel_0Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_0Bytes, true
+	case "SALCommandLabel_1Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_1Bytes, true
+	case "SALCommandLabel_2Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_2Bytes, true
+	case "SALCommandLabel_3Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_3Bytes, true
+	case "SALCommandLabel_4Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_4Bytes, true
+	case "SALCommandLabel_5Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_5Bytes, true
+	case "SALCommandLabel_6Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_6Bytes, true
+	case "SALCommandLabel_7Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_7Bytes, true
+	case "SALCommandLabel_8Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_8Bytes, true
+	case "SALCommandLabel_9Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_9Bytes, true
+	case "SALCommandLabel_10Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_10Bytes, true
+	case "SALCommandLabel_11Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_11Bytes, true
+	case "SALCommandLabel_12Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_12Bytes, true
+	case "SALCommandLabel_13Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_13Bytes, true
+	case "SALCommandLabel_14Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_14Bytes, true
+	case "SALCommandLabel_15Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_15Bytes, true
+	case "SALCommandLabel_16Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_16Bytes, true
+	case "SALCommandLabel_17Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_17Bytes, true
+	case "SALCommandLabel_18Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_18Bytes, true
+	case "SALCommandLabel_19Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_19Bytes, true
+	case "SALCommandLabel_20Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_20Bytes, true
+	case "SALCommandLabel_21Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_21Bytes, true
+	case "SALCommandLabel_22Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_22Bytes, true
+	case "SALCommandLabel_23Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_23Bytes, true
+	case "SALCommandLabel_24Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_24Bytes, true
+	case "SALCommandLabel_25Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_25Bytes, true
+	case "SALCommandLabel_26Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_26Bytes, true
+	case "SALCommandLabel_27Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_27Bytes, true
+	case "SALCommandLabel_28Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_28Bytes, true
+	case "SALCommandLabel_29Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_29Bytes, true
+	case "SALCommandLabel_30Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_30Bytes, true
+	case "SALCommandLabel_32Bytes":
+		return SALCommandTypeContainer_SALCommandLabel_32Bytes, true
 	}
 	return 0, false
 }
@@ -350,6 +893,70 @@ func (e SALCommandTypeContainer) PLC4XEnumName() string {
 		return "SALCommandOn"
 	case SALCommandTypeContainer_SALCommandRampToLevel_1020Second:
 		return "SALCommandRampToLevel_1020Second"
+	case SALCommandTypeContainer_SALCommandLabel_0Bytes:
+		return "SALCommandLabel_0Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_1Bytes:
+		return "SALCommandLabel_1Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_2Bytes:
+		return "SALCommandLabel_2Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_3Bytes:
+		return "SALCommandLabel_3Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_4Bytes:
+		return "SALCommandLabel_4Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_5Bytes:
+		return "SALCommandLabel_5Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_6Bytes:
+		return "SALCommandLabel_6Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_7Bytes:
+		return "SALCommandLabel_7Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_8Bytes:
+		return "SALCommandLabel_8Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_9Bytes:
+		return "SALCommandLabel_9Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_10Bytes:
+		return "SALCommandLabel_10Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_11Bytes:
+		return "SALCommandLabel_11Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_12Bytes:
+		return "SALCommandLabel_12Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_13Bytes:
+		return "SALCommandLabel_13Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_14Bytes:
+		return "SALCommandLabel_14Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_15Bytes:
+		return "SALCommandLabel_15Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_16Bytes:
+		return "SALCommandLabel_16Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_17Bytes:
+		return "SALCommandLabel_17Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_18Bytes:
+		return "SALCommandLabel_18Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_19Bytes:
+		return "SALCommandLabel_19Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_20Bytes:
+		return "SALCommandLabel_20Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_21Bytes:
+		return "SALCommandLabel_21Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_22Bytes:
+		return "SALCommandLabel_22Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_23Bytes:
+		return "SALCommandLabel_23Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_24Bytes:
+		return "SALCommandLabel_24Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_25Bytes:
+		return "SALCommandLabel_25Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_26Bytes:
+		return "SALCommandLabel_26Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_27Bytes:
+		return "SALCommandLabel_27Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_28Bytes:
+		return "SALCommandLabel_28Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_29Bytes:
+		return "SALCommandLabel_29Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_30Bytes:
+		return "SALCommandLabel_30Bytes"
+	case SALCommandTypeContainer_SALCommandLabel_32Bytes:
+		return "SALCommandLabel_32Bytes"
 	}
 	return ""
 }

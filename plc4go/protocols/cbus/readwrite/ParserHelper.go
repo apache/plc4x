@@ -37,6 +37,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CALDataParse(io, requestContext)
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(io)
+	case "LabelOptions":
+		return model.LabelOptionsParse(io)
 	case "ApplicationAddress1":
 		return model.ApplicationAddress1Parse(io)
 	case "Checksum":
@@ -143,6 +145,10 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.StatusHeaderParse(io)
 	case "StatusRequest":
 		return model.StatusRequestParse(io)
+	case "EncodedReply":
+		var cBusOptions model.CBusOptions
+		var requestContext model.RequestContext
+		return model.EncodedReplyParse(io, cBusOptions, requestContext)
 	case "InterfaceOptions3":
 		return model.InterfaceOptions3Parse(io)
 	case "InterfaceOptions1":

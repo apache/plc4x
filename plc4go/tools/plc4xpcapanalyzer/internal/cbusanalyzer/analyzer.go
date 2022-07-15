@@ -120,6 +120,8 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
 		}
 	case model.CBusMessageToClientExactly:
+		// We received a request so we need to reset our flags
+		a.requestContext = model.NewRequestContext(false, false, false)
 	}
 	log.Debug().Msgf("Parsed c-bus command \n%v", parse)
 	return parse, nil
@@ -256,31 +258,37 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 				// TODO: add recursion
 				case model.ReplyOrConfirmationReplyExactly:
 					switch reply := reply.GetReply().(type) {
-					case model.ReplyExtendedFormatStatusReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetReply())
-					case model.ReplyStandardFormatStatusReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetReply())
-					case model.ReplyCALReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetCalReply())
-					case model.MonitoredSALReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetMonitoredSAL())
+					case model.ReplyEncodedReplyExactly:
+						switch reply := reply.GetEncodedReply().(type) {
+						case model.EncodedReplyExtendedFormatStatusReplyExactly:
+							// We print this a second time as the first print contains only the hex part
+							fmt.Printf("%v\n", reply.GetReply())
+						case model.EncodedReplyStandardFormatStatusReplyExactly:
+							// We print this a second time as the first print contains only the hex part
+							fmt.Printf("%v\n", reply.GetReply())
+						case model.EncodedReplyCALReplyExactly:
+							// We print this a second time as the first print contains only the hex part
+							fmt.Printf("%v\n", reply.GetCalReply())
+						case model.MonitoredSALReplyExactly:
+							// We print this a second time as the first print contains only the hex part
+							fmt.Printf("%v\n", reply.GetMonitoredSAL())
+						}
 					}
 				}
 			case model.ReplyOrConfirmationReplyExactly:
 				switch reply := reply.GetReply().(type) {
-				case model.ReplyExtendedFormatStatusReplyExactly:
-					// We print this a second time as the first print contains only the hex part
-					fmt.Printf("%v\n", reply.GetReply())
-				case model.ReplyStandardFormatStatusReplyExactly:
-					// We print this a second time as the first print contains only the hex part
-					fmt.Printf("%v\n", reply.GetReply())
-				case model.ReplyCALReplyExactly:
-					// We print this a second time as the first print contains only the hex part
-					fmt.Printf("%v\n", reply.GetCalReply())
+				case model.ReplyEncodedReplyExactly:
+					switch reply := reply.GetEncodedReply().(type) {
+					case model.EncodedReplyExtendedFormatStatusReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetReply())
+					case model.EncodedReplyStandardFormatStatusReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetReply())
+					case model.EncodedReplyCALReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetCalReply())
+					}
 				}
 			}
 		}

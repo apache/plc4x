@@ -197,6 +197,8 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 		_childTemp, typeSwitchError = SALDataRampToLevelParse(readBuffer)
 	case commandType == SALCommandType_TERMINATE_RAMP: // SALDataTerminateRamp
 		_childTemp, typeSwitchError = SALDataTerminateRampParse(readBuffer)
+	case commandType == SALCommandType_LABEL: // SALDataLabel
+		_childTemp, typeSwitchError = SALDataLabelParse(readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

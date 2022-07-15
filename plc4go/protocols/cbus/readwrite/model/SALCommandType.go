@@ -39,6 +39,7 @@ const (
 	SALCommandType_ON             SALCommandType = 0x01
 	SALCommandType_RAMP_TO_LEVEL  SALCommandType = 0x02
 	SALCommandType_TERMINATE_RAMP SALCommandType = 0x03
+	SALCommandType_LABEL          SALCommandType = 0x04
 )
 
 var SALCommandTypeValues []SALCommandType
@@ -50,6 +51,7 @@ func init() {
 		SALCommandType_ON,
 		SALCommandType_RAMP_TO_LEVEL,
 		SALCommandType_TERMINATE_RAMP,
+		SALCommandType_LABEL,
 	}
 }
 
@@ -63,6 +65,8 @@ func SALCommandTypeByValue(value uint8) (enum SALCommandType, ok bool) {
 		return SALCommandType_RAMP_TO_LEVEL, true
 	case 0x03:
 		return SALCommandType_TERMINATE_RAMP, true
+	case 0x04:
+		return SALCommandType_LABEL, true
 	}
 	return 0, false
 }
@@ -77,6 +81,8 @@ func SALCommandTypeByName(value string) (enum SALCommandType, ok bool) {
 		return SALCommandType_RAMP_TO_LEVEL, true
 	case "TERMINATE_RAMP":
 		return SALCommandType_TERMINATE_RAMP, true
+	case "LABEL":
+		return SALCommandType_LABEL, true
 	}
 	return 0, false
 }
@@ -136,6 +142,8 @@ func (e SALCommandType) PLC4XEnumName() string {
 		return "RAMP_TO_LEVEL"
 	case SALCommandType_TERMINATE_RAMP:
 		return "TERMINATE_RAMP"
+	case SALCommandType_LABEL:
+		return "LABEL"
 	}
 	return ""
 }

@@ -1301,44 +1301,176 @@
     [simple  SALCommandTypeContainer commandTypeContainer                                   ]
     [virtual SALCommandType          commandType          'commandTypeContainer.commandType']
     [typeSwitch commandType
-        ['OFF'            SALDataOff
+        ['OFF'            *Off
             [simple byte group                                                              ]
         ]
-        ['ON'             SALDataOn
+        ['ON'             *On
             [simple byte group                                                              ]
         ]
-        ['RAMP_TO_LEVEL'  SALDataRampToLevel
+        ['RAMP_TO_LEVEL'  *RampToLevel
             [simple byte group                                                              ]
             [simple byte level                                                              ]
         ]
-        ['TERMINATE_RAMP' SALDataTerminateRamp
+        ['TERMINATE_RAMP' *TerminateRamp
             [simple byte group                                                              ]
+        ]
+        ['LABEL'          *Label(SALCommandTypeContainer commandTypeContainer)
+            [simple byte            group                                                   ]
+            [simple LabelOptions    labelOptions                                            ]
+            [simple Language        language                                                ]
+            [array  byte      data        count 'commandTypeContainer.numBytes-3'           ]
         ]
     ]
     // TODO: we need to check that we don't read the crc by accident
     [optional SALData salData                                                               ]
 ]
 
-[enum uint 8 SALCommandTypeContainer(SALCommandType commandType)
-    ['0x01' SALCommandOff                       ['OFF'           ]]
-    ['0x79' SALCommandOn                        ['ON'            ]]
-    ['0x02' SALCommandRampToLevel_Instantaneous ['RAMP_TO_LEVEL' ]]
-    ['0x0A' SALCommandRampToLevel_4Second       ['RAMP_TO_LEVEL' ]]
-    ['0x12' SALCommandRampToLevel_8Second       ['RAMP_TO_LEVEL' ]]
-    ['0x1A' SALCommandRampToLevel_12Second      ['RAMP_TO_LEVEL' ]]
-    ['0x22' SALCommandRampToLevel_20Second      ['RAMP_TO_LEVEL' ]]
-    ['0x2A' SALCommandRampToLevel_30Second      ['RAMP_TO_LEVEL' ]]
-    ['0x32' SALCommandRampToLevel_40Second      ['RAMP_TO_LEVEL' ]]
-    ['0x3A' SALCommandRampToLevel_60Second      ['RAMP_TO_LEVEL' ]]
-    ['0x42' SALCommandRampToLevel_90Second      ['RAMP_TO_LEVEL' ]]
-    ['0x4A' SALCommandRampToLevel_120Second     ['RAMP_TO_LEVEL' ]]
-    ['0x52' SALCommandRampToLevel_180Second     ['RAMP_TO_LEVEL' ]]
-    ['0x5A' SALCommandRampToLevel_300Second     ['RAMP_TO_LEVEL' ]]
-    ['0x62' SALCommandRampToLevel_420Second     ['RAMP_TO_LEVEL' ]]
-    ['0x6A' SALCommandRampToLevel_600Second     ['RAMP_TO_LEVEL' ]]
-    ['0x72' SALCommandRampToLevel_900Second     ['RAMP_TO_LEVEL' ]]
-    ['0x7A' SALCommandRampToLevel_1020Second    ['RAMP_TO_LEVEL' ]]
-    ['0x09' SALCommandTerminateRamp             ['TERMINATE_RAMP']]
+[type LabelOptions
+    [reserved bit           'false'     ] // only for dynamic icon loading can switch to 1
+    [simple   LabelFlavour  labelFlavour]
+    [reserved bit           'false'     ]
+    [reserved bit           'false'     ] // For Lighting, this bit must be 0
+    [simple   LabelType     labelType   ]
+    [reserved bit           'false'     ] // For Lighting, this bit must be 0
+]
+
+[enum uint 2 LabelFlavour
+    ['0' FLAVOUR_1              ]
+    ['1' FLAVOUR_2              ]
+    ['2' FLAVOUR_3              ]
+    ['3' FLAVOUR_4              ]
+]
+
+[enum uint 2 LabelType
+    ['0' TEXT_LABEL             ]
+    ['1' PREDEFINED_ICON        ]
+    ['2' LOAD_DYNAMIC_ICON      ]
+    ['3' SET_PREFERRED_LANGUAGE ]
+]
+
+[enum uint 8 Language
+    ['0x01' ENGLISH                     ]
+    ['0x02' ENGLISH_AUSTRALIA           ]
+    ['0x03' ENGLISH_BELIZE              ]
+    ['0x04' ENGLISH_CANADA              ]
+    ['0x05' ENGLISH_CARRIBEAN           ]
+    ['0x06' ENGLISH_IRELAND             ]
+    ['0x07' ENGLISH_JAMAICA             ]
+    ['0x08' ENGLISH_NEW_ZEALAND         ]
+    ['0x09' ENGLISH_PHILIPPINES         ]
+    ['0x0A' ENGLISH_SOUTH_AFRICA        ]
+    ['0x0B' ENGLISH_TRINIDAD            ]
+    ['0x0C' ENGLISH_UK                  ]
+    ['0x0D' ENGLISH_USA                 ]
+    ['0x0E' ENGLISH_ZIMBABWE            ]
+    ['0x40' AFRIKAANS                   ]
+    ['0x41' BASQUE                      ]
+    ['0x42' CATALAN                     ]
+    ['0x43' DANISH                      ]
+    ['0x44' DUTCH_BELGIUM               ]
+    ['0x45' DUTCH_NETHERLANDS           ]
+    ['0x46' FAEROESE                    ]
+    ['0x47' FINNISH                     ]
+    ['0x48' FRENCH_BELGIUM              ]
+    ['0x49' FRENCH_CANADA               ]
+    ['0x4A' FRENCH                      ]
+    ['0x4B' FRENCH_LUXEMBOURG           ]
+    ['0x4C' FRENCH_MONACO               ]
+    ['0x4D' FRENCH_SWITZERLAND          ]
+    ['0x4E' GALICIAN                    ]
+    ['0x4F' GERMAN_AUSTRIA              ]
+    ['0x50' GERMAN                      ]
+    ['0x51' GERMAN_LIECHTENSTEIN        ]
+    ['0x52' GERMAN_LUXEMBOURG           ]
+    ['0x53' GERMAN_SWITZERLAND          ]
+    ['0x54' ICELANDIC                   ]
+    ['0x55' INDONESIAN                  ]
+    ['0x56' ITALIAN                     ]
+    ['0x57' ITALIAN_SWITZERLAND         ]
+    ['0x58' MALAY_BRUNEI                ]
+    ['0x59' MALAY                       ]
+    ['0x5A' NORWEGIAN                   ]
+    ['0x5B' NORWEGIAN_NYNORSK           ]
+    ['0x5C' PORTUGUESE_BRAZIL           ]
+    ['0x5D' PORTUGUESE                  ]
+    ['0x5E' SPANISH_ARGENTINE           ]
+    ['0x5F' SPANISH_BOLIVIA             ]
+    ['0x60' SPANISH_CHILE               ]
+    ['0x61' SPANISH_COLOMBIA            ]
+    ['0x62' SPANISH_COSTA_RICA          ]
+    ['0x63' SPANISH_DOMINICAN_REPUBLIC  ]
+    ['0x64' SPANISH_ECUADOR             ]
+    ['0x65' SPANISH_EL_SALVADOR         ]
+    ['0x66' SPANISH_GUATEMALA           ]
+    ['0x67' SPANISH_HONDURAS            ]
+    ['0x68' SPANISH                     ]
+    ['0x69' SPANISH_MEXICO              ]
+    ['0x6A' SPANISH_NICARAGUA           ]
+    ['0x6B' SPANISH_PANAMA              ]
+    ['0x6C' SPANISH_PARAGUAY            ]
+    ['0x6D' SPANISH_PERU                ]
+    ['0x6E' SPANISH_PERTO_RICO          ]
+    ['0x6F' SPANISH_TRADITIONAL         ]
+    ['0x70' SPANISH_URUGUAY             ]
+    ['0x71' SPANISH_VENEZUELA           ]
+    ['0x72' SWAHILI                     ]
+    ['0x73' SWEDISH                     ]
+    ['0x74' SWEDISH_FINLAND             ]
+    ['0xCA' CHINESE_CP936               ]
+]
+
+[enum uint 8 SALCommandTypeContainer(SALCommandType commandType, uint 5 numBytes)
+    ['0x01' SALCommandOff                       ['OFF',             '1' ]]
+    ['0x79' SALCommandOn                        ['ON',              '1' ]]
+    ['0x02' SALCommandRampToLevel_Instantaneous ['RAMP_TO_LEVEL',   '1' ]]
+    ['0x0A' SALCommandRampToLevel_4Second       ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x12' SALCommandRampToLevel_8Second       ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x1A' SALCommandRampToLevel_12Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x22' SALCommandRampToLevel_20Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x2A' SALCommandRampToLevel_30Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x32' SALCommandRampToLevel_40Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x3A' SALCommandRampToLevel_60Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x42' SALCommandRampToLevel_90Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x4A' SALCommandRampToLevel_120Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x52' SALCommandRampToLevel_180Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x5A' SALCommandRampToLevel_300Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x62' SALCommandRampToLevel_420Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x6A' SALCommandRampToLevel_600Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x72' SALCommandRampToLevel_900Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x7A' SALCommandRampToLevel_1020Second    ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x09' SALCommandTerminateRamp             ['TERMINATE_RAMP',  '1' ]]
+    ['0xA0' SALCommandLabel_0Bytes              ['LABEL',           '0' ]]
+    ['0xA1' SALCommandLabel_1Bytes              ['LABEL',           '1' ]]
+    ['0xA2' SALCommandLabel_2Bytes              ['LABEL',           '2' ]]
+    ['0xA3' SALCommandLabel_3Bytes              ['LABEL',           '3' ]]
+    ['0xA4' SALCommandLabel_4Bytes              ['LABEL',           '4' ]]
+    ['0xA5' SALCommandLabel_5Bytes              ['LABEL',           '5' ]]
+    ['0xA6' SALCommandLabel_6Bytes              ['LABEL',           '6' ]]
+    ['0xA7' SALCommandLabel_7Bytes              ['LABEL',           '7' ]]
+    ['0xA8' SALCommandLabel_8Bytes              ['LABEL',           '8' ]]
+    ['0xA9' SALCommandLabel_9Bytes              ['LABEL',           '9' ]]
+    ['0xAA' SALCommandLabel_10Bytes             ['LABEL',          '10' ]]
+    ['0xAB' SALCommandLabel_11Bytes             ['LABEL',          '11' ]]
+    ['0xAC' SALCommandLabel_12Bytes             ['LABEL',          '12' ]]
+    ['0xAD' SALCommandLabel_13Bytes             ['LABEL',          '13' ]]
+    ['0xAE' SALCommandLabel_14Bytes             ['LABEL',          '14' ]]
+    ['0xAF' SALCommandLabel_15Bytes             ['LABEL',          '15' ]]
+    ['0xB0' SALCommandLabel_16Bytes             ['LABEL',          '16' ]]
+    ['0xB1' SALCommandLabel_17Bytes             ['LABEL',          '17' ]]
+    ['0xB2' SALCommandLabel_18Bytes             ['LABEL',          '18' ]]
+    ['0xB3' SALCommandLabel_19Bytes             ['LABEL',          '19' ]]
+    ['0xB4' SALCommandLabel_20Bytes             ['LABEL',          '20' ]]
+    ['0xB5' SALCommandLabel_21Bytes             ['LABEL',          '21' ]]
+    ['0xB6' SALCommandLabel_22Bytes             ['LABEL',          '22' ]]
+    ['0xB7' SALCommandLabel_23Bytes             ['LABEL',          '23' ]]
+    ['0xB8' SALCommandLabel_24Bytes             ['LABEL',          '24' ]]
+    ['0xB9' SALCommandLabel_25Bytes             ['LABEL',          '25' ]]
+    ['0xBA' SALCommandLabel_26Bytes             ['LABEL',          '26' ]]
+    ['0xBB' SALCommandLabel_27Bytes             ['LABEL',          '27' ]]
+    ['0xBC' SALCommandLabel_28Bytes             ['LABEL',          '28' ]]
+    ['0xBD' SALCommandLabel_29Bytes             ['LABEL',          '29' ]]
+    ['0xBE' SALCommandLabel_30Bytes             ['LABEL',          '30' ]]
+    ['0xBF' SALCommandLabel_32Bytes             ['LABEL',          '31' ]]
 ]
 
 [enum uint 4 SALCommandType
@@ -1346,6 +1478,7 @@
     ['0x01' ON            ]
     ['0x02' RAMP_TO_LEVEL ]
     ['0x03' TERMINATE_RAMP]
+    ['0x04' LABEL         ]
 ]
 
 [type CommandHeader
@@ -1370,50 +1503,46 @@
 
 [type Reply(CBusOptions cBusOptions, uint 16 replyLength, RequestContext requestContext)
     [peek    byte peekedByte                                                                ]
-    [virtual bit  sendCalCommandBefore        'requestContext.sendCalCommandBefore'         ]
-    [virtual bit  sendSALStatusRequestBefore  'requestContext.sendSALStatusRequestBefore'   ]
-    [virtual bit  exstat                      'cBusOptions.exstat'                          ]
-    [typeSwitch peekedByte, sendCalCommandBefore, sendSALStatusRequestBefore, exstat
-        ['0x2B'                     PowerUpReply // is a +
+    [typeSwitch peekedByte
+        ['0x2B' PowerUpReply // is a +
             [simple PowerUp isA]
         ]
-        ['0x3D'                     ParameterChangeReply // is a =
+        ['0x3D' ParameterChangeReply // is a =
             [simple ParameterChange isA                 ]
         ]
-        ['0x21'                     ServerErrorReply // is a !
+        ['0x21' ServerErrorReply // is a !
             [const  byte    errorMarker     0x21        ]
         ]
-        [*, *, 'true', 'false'      *StandardFormatStatusReply
+        [*      *EncodedReply
             [virtual uint 16 payloadLength 'replyLength']
-            [manual   StandardFormatStatusReply
-                              reply
-                                    'STATIC_CALL("readStandardFormatStatusReply", readBuffer, payloadLength)'
-                                    'STATIC_CALL("writeStandardFormatStatusReply", writeBuffer, reply)'
+            [manual   EncodedReply
+                              encodedReply
+                                    'STATIC_CALL("readEncodedReply", readBuffer, payloadLength, cBusOptions, requestContext)'
+                                    'STATIC_CALL("writeEncodedReply", writeBuffer, encodedReply)'
                                     '_value.lengthInBytes*2'                                     ]
+        ]
+    ]
+]
+
+[type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
+    [peek    byte peekedByte                                                                ]
+    // TODO: if we reliable can detect this with the mask we don't need the request context anymore
+    [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'       ]
+    [virtual bit  isSALStatusRequest        '(peekedByte & 0xE0) == 0xC0 || requestContext.sendSALStatusRequestBefore' ]
+    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05'         ]
+    [virtual bit  exstat                    'cBusOptions.exstat'                  ]
+    [typeSwitch isMonitoredSAL, isCalCommand, isSALStatusRequest, exstat
+        ['true', 'false', 'false'   MonitoredSALReply
+            [simple   MonitoredSAL('cBusOptions') monitoredSAL    ]
+        ]
+        [*, *, 'true', 'false'      *StandardFormatStatusReply
+            [simple   StandardFormatStatusReply                     reply           ]
         ]
         [*, *, 'true', 'true'       *ExtendedFormatStatusReply
-            [virtual uint 16 payloadLength 'replyLength']
-            [manual   ExtendedFormatStatusReply
-                              reply
-                                    'STATIC_CALL("readExtendedFormatStatusReply", readBuffer, payloadLength)'
-                                    'STATIC_CALL("writeExtendedFormatStatusReply", writeBuffer, reply)'
-                                    '_value.lengthInBytes*2'                                     ]
+            [simple   ExtendedFormatStatusReply                     reply           ]
         ]
         [*, 'true', *, *            *CALReply
-            [virtual uint 16 payloadLength 'replyLength']
-            [manual   CALReply
-                              calReply
-                                    'STATIC_CALL("readCALReply", readBuffer, payloadLength, cBusOptions, requestContext)'
-                                    'STATIC_CALL("writeCALReply", writeBuffer, calReply)'
-                                    '_value.lengthInBytes*2'                                     ]
-        ]
-        [*                          MonitoredSALReply
-            [virtual uint 16 payloadLength 'replyLength']
-            [manual   MonitoredSAL
-                              monitoredSAL
-                                    'STATIC_CALL("readMonitoredSAL", readBuffer, payloadLength, cBusOptions)'
-                                    'STATIC_CALL("writeMonitoredSAL", writeBuffer, monitoredSAL)'
-                                    '_value.lengthInBytes*2'                                     ]
+            [simple   CALReply('cBusOptions', 'requestContext')     calReply        ]
         ]
     ]
 ]

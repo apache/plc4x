@@ -38,13 +38,13 @@ public class StaticHelper {
         return CBusCommand.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions);
     }
 
-    public static void writeCALReply(WriteBuffer writeBuffer, CALReply calReply) throws SerializationException {
-        writeToHex("calReply", writeBuffer, calReply, calReply.getLengthInBytes());
+    public static void writeEncodedReply(WriteBuffer writeBuffer, EncodedReply encodedReply) throws SerializationException{
+        writeToHex("encodedReply", writeBuffer, encodedReply, encodedReply.getLengthInBytes());
     }
 
-    public static CALReply readCALReply(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions, RequestContext requestContext) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("calReply", readBuffer, payloadLength);
-        return CALReply.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions, requestContext);
+    public static EncodedReply readEncodedReply(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions, RequestContext requestContext) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("encodedReply", readBuffer, payloadLength);
+        return EncodedReply.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions, requestContext);
     }
 
     public static void writeCALDataOrSetParameter(WriteBuffer writeBuffer, CALDataOrSetParameter calDataOrSetParameter) throws SerializationException {
@@ -54,33 +54,6 @@ public class StaticHelper {
     public static CALDataOrSetParameter readCALDataOrSetParameter(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
         byte[] rawBytes = readBytesFromHex("calDataOrSetParameter", readBuffer, payloadLength);
         return CALDataOrSetParameter.staticParse(new ReadBufferByteBased(rawBytes));
-    }
-
-    public static void writeMonitoredSAL(WriteBuffer writeBuffer, MonitoredSAL monitoredSAL) throws SerializationException {
-        writeToHex("monitoredSAL", writeBuffer, monitoredSAL, monitoredSAL.getLengthInBytes());
-    }
-
-    public static MonitoredSAL readMonitoredSAL(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("monitoredSAL", readBuffer, payloadLength);
-        return MonitoredSAL.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions);
-    }
-
-    public static void writeStandardFormatStatusReply(WriteBuffer writeBuffer, StandardFormatStatusReply standardFormatStatusReply) throws SerializationException {
-        writeToHex("reply", writeBuffer, standardFormatStatusReply, standardFormatStatusReply.getLengthInBytes());
-    }
-
-    public static StandardFormatStatusReply readStandardFormatStatusReply(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("reply", readBuffer, payloadLength);
-        return StandardFormatStatusReply.staticParse(new ReadBufferByteBased(rawBytes));
-    }
-
-    public static void writeExtendedFormatStatusReply(WriteBuffer writeBuffer, ExtendedFormatStatusReply extendedFormatStatusReply) throws SerializationException {
-        writeToHex("reply", writeBuffer, extendedFormatStatusReply, extendedFormatStatusReply.getLengthInBytes());
-    }
-
-    public static ExtendedFormatStatusReply readExtendedFormatStatusReply(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("reply", readBuffer, payloadLength);
-        return ExtendedFormatStatusReply.staticParse(new ReadBufferByteBased(rawBytes));
     }
 
     private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, Integer payloadLength) throws ParseException {

@@ -38,16 +38,16 @@ func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, cBusOpti
 	return CBusCommandParse(utils.NewReadBufferByteBased(rawBytes), cBusOptions)
 }
 
-func WriteCALReply(writeBuffer utils.WriteBuffer, calReply CALReply) error {
-	return writeToHex("calReply", writeBuffer, calReply)
+func WriteEncodedReply(writeBuffer utils.WriteBuffer, encodedReply EncodedReply) error {
+	return writeToHex("encodedReply", writeBuffer, encodedReply)
 }
 
-func ReadCALReply(readBuffer utils.ReadBuffer, payloadLength uint16, options CBusOptions, requestContext RequestContext) (CALReply, error) {
-	rawBytes, err := readBytesFromHex("calReply", readBuffer, payloadLength)
+func ReadEncodedReply(readBuffer utils.ReadBuffer, payloadLength uint16, options CBusOptions, requestContext RequestContext) (EncodedReply, error) {
+	rawBytes, err := readBytesFromHex("encodedReply", readBuffer, payloadLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALReplyParse(utils.NewReadBufferByteBased(rawBytes), options, requestContext)
+	return EncodedReplyParse(utils.NewReadBufferByteBased(rawBytes), options, requestContext)
 }
 
 func WriteCALDataOrSetParameter(writeBuffer utils.WriteBuffer, calDataOrSetParameter CALDataOrSetParameter) error {
@@ -60,42 +60,6 @@ func ReadCALDataOrSetParameter(readBuffer utils.ReadBuffer, payloadLength uint16
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
 	return CALDataOrSetParameterParse(utils.NewReadBufferByteBased(rawBytes))
-}
-
-func WriteMonitoredSAL(writeBuffer utils.WriteBuffer, monitoredSAL MonitoredSAL) error {
-	return writeToHex("monitoredSAL", writeBuffer, monitoredSAL)
-}
-
-func ReadMonitoredSAL(readBuffer utils.ReadBuffer, payloadLength uint16, options CBusOptions) (MonitoredSAL, error) {
-	rawBytes, err := readBytesFromHex("monitoredSAL", readBuffer, payloadLength)
-	if err != nil {
-		return nil, errors.Wrap(err, "Error getting hex")
-	}
-	return MonitoredSALParse(utils.NewReadBufferByteBased(rawBytes), options)
-}
-
-func WriteStandardFormatStatusReply(writeBuffer utils.WriteBuffer, reply StandardFormatStatusReply) error {
-	return writeToHex("reply", writeBuffer, reply)
-}
-
-func ReadStandardFormatStatusReply(readBuffer utils.ReadBuffer, payloadLength uint16) (StandardFormatStatusReply, error) {
-	rawBytes, err := readBytesFromHex("reply", readBuffer, payloadLength)
-	if err != nil {
-		return nil, errors.Wrap(err, "Error getting hex")
-	}
-	return StandardFormatStatusReplyParse(utils.NewReadBufferByteBased(rawBytes))
-}
-
-func WriteExtendedFormatStatusReply(writeBuffer utils.WriteBuffer, reply ExtendedFormatStatusReply) error {
-	return writeToHex("reply", writeBuffer, reply)
-}
-
-func ReadExtendedFormatStatusReply(readBuffer utils.ReadBuffer, payloadLength uint16) (ExtendedFormatStatusReply, error) {
-	rawBytes, err := readBytesFromHex("reply", readBuffer, payloadLength)
-	if err != nil {
-		return nil, errors.Wrap(err, "Error getting hex")
-	}
-	return ExtendedFormatStatusReplyParse(utils.NewReadBufferByteBased(rawBytes))
 }
 
 func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLength uint16) ([]byte, error) {

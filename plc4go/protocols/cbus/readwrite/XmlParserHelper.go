@@ -48,6 +48,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), requestContext)
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "LabelOptions":
+		return model.LabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress1":
 		return model.ApplicationAddress1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Checksum":
@@ -166,6 +168,12 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusRequest":
 		return model.StatusRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "EncodedReply":
+		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		// TODO: find a way to parse the sub types
+		var requestContext model.RequestContext
+		return model.EncodedReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
 	case "InterfaceOptions3":
 		return model.InterfaceOptions3Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "InterfaceOptions1":
