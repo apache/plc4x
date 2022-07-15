@@ -623,6 +623,176 @@ public class RandomPackagesTest {
 
     }
 
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2002%20-%20C-Bus%20Lighting%20Application.pdf
+    @Nested
+    class LightningApplicationsTest {
+
+        // 2.9.6.4.4 Command Sequence
+        @Nested
+        class CommandSquence {
+            @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+            @Test
+            void StartDynamicIcon() throws Exception {
+                byte[] bytes = "\\053800A412080020\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+            @Test
+            void IconBitmap() throws Exception {
+                byte[] bytes = "\\053800A412080021\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+            @Test
+            void CompleteDynamicIcon() throws Exception {
+                byte[] bytes = "\\053800A412080022\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Nested
+            class ChineseTable {
+
+                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+                @Test
+                void StartDynamicIcon() throws Exception {
+                    byte[] bytes = "\\053800A401080020\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void IconHeader() throws Exception {
+                    byte[] bytes = "\\053800A80104CA00130C0600\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+                @Test
+                void AppendDynamicIcon() throws Exception {
+                    byte[] bytes = "\\053800A401080021\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+                @Test
+                void WriteIconBitmapData1() throws Exception {
+                    byte[] bytes = "\\053800A80104AAF05500FF50\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+                @Test
+                void WriteIconBitmapData2() throws Exception {
+                    byte[] bytes = "\\053800A801040000F0F00F00\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+                @Test
+                void useDynamicIcon() throws Exception {
+                    byte[] bytes = "\\053800A401080022\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void displayIcon() throws Exception {
+                    byte[] bytes = "\\053800A60102CA010013\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+            }
+        }
+
+        // 2.11 Examples
+        @Nested
+        class Examples {
+            @Test
+            void switchElectricalLoads() throws Exception {
+                byte[] bytes = "\\0538007993B7\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void switchElectricalLoadsBridged() throws Exception {
+                byte[] bytes = "\\0356093879935A\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+        }
+    }
+
     @Nested
     class OwnCaptures {
 
@@ -893,7 +1063,7 @@ public class RandomPackagesTest {
             byte[] bytes = "o.8510020000FF6A\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
-            requestContext = new RequestContext(true,false,true);
+            requestContext = new RequestContext(true, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
             assertThat(msg).isNotNull();
             System.out.println(msg);
@@ -922,6 +1092,6 @@ public class RandomPackagesTest {
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(expectedBytes.length);
         msg.serialize(writeBuffer);
         byte[] actualBytes = writeBuffer.getBytes();
-        assertThat(actualBytes).withFailMessage(() -> "Actual:\n" + StringEscapeUtils.escapeJava(new String(actualBytes))+"\ndoes not match expected\n"+ StringEscapeUtils.escapeJava(new String(expectedBytes))).isEqualTo(expectedBytes);
+        assertThat(actualBytes).withFailMessage(() -> "Actual:\n" + StringEscapeUtils.escapeJava(new String(actualBytes)) + "\ndoes not match expected\n" + StringEscapeUtils.escapeJava(new String(expectedBytes))).isEqualTo(expectedBytes);
     }
 }
