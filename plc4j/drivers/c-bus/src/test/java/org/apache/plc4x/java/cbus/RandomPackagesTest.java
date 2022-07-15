@@ -630,7 +630,7 @@ public class RandomPackagesTest {
         // 2.9.6.4.4 Command Sequence
         @Nested
         class CommandSquence {
-            @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
+
             @Test
             void StartDynamicIcon() throws Exception {
                 byte[] bytes = "\\053800A412080020\r".getBytes(StandardCharsets.UTF_8);
@@ -643,7 +643,6 @@ public class RandomPackagesTest {
                 assertMessageMatches(bytes, msg);
             }
 
-            @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
             @Test
             void IconBitmap() throws Exception {
                 byte[] bytes = "\\053800A412080021\r".getBytes(StandardCharsets.UTF_8);
@@ -656,7 +655,6 @@ public class RandomPackagesTest {
                 assertMessageMatches(bytes, msg);
             }
 
-            @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
             @Test
             void CompleteDynamicIcon() throws Exception {
                 byte[] bytes = "\\053800A412080022\r".getBytes(StandardCharsets.UTF_8);
@@ -672,7 +670,6 @@ public class RandomPackagesTest {
             @Nested
             class ChineseTable {
 
-                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
                 @Test
                 void StartDynamicIcon() throws Exception {
                     byte[] bytes = "\\053800A401080020\r".getBytes(StandardCharsets.UTF_8);
@@ -697,7 +694,6 @@ public class RandomPackagesTest {
                     assertMessageMatches(bytes, msg);
                 }
 
-                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
                 @Test
                 void AppendDynamicIcon() throws Exception {
                     byte[] bytes = "\\053800A401080021\r".getBytes(StandardCharsets.UTF_8);

@@ -1326,12 +1326,12 @@
 ]
 
 [type LabelOptions
-    [reserved bit           'false'     ] // only for dynamic icon loading can switch to 1
+    [simple   bit           reservedBit7] // only for dynamic icon loading can switch to 1 (note this could use mspec reserved field but sadly this discards data)
     [simple   LabelFlavour  labelFlavour]
     [reserved bit           'false'     ]
-    [reserved bit           'false'     ] // For Lighting, this bit must be 0
+    [simple   bit           reservedBit4] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
     [simple   LabelType     labelType   ]
-    [reserved bit           'false'     ] // For Lighting, this bit must be 0
+    [simple   bit           reservedBit0] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
 ]
 
 [enum uint 2 LabelFlavour
@@ -1349,6 +1349,7 @@
 ]
 
 [enum uint 8 Language
+    ['0x00' NO_LANGUAGE                 ]
     ['0x01' ENGLISH                     ]
     ['0x02' ENGLISH_AUSTRALIA           ]
     ['0x03' ENGLISH_BELIZE              ]
