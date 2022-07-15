@@ -49,7 +49,7 @@ TODO: document me
 	Run: func(cmd *cobra.Command, args []string) {
 		pcapFile := args[0]
 		if !config.BacnetConfigInstance.NoFilter {
-			if config.BacnetConfigInstance.Filter != "" && config.BacnetConfigInstance.BacnetFilter != "" {
+			if config.BacnetConfigInstance.Filter == "" && config.BacnetConfigInstance.BacnetFilter != "" {
 				log.Debug().Str("filter", config.BacnetConfigInstance.Filter).Msg("Setting bacnet filter")
 				config.BacnetConfigInstance.Filter = config.BacnetConfigInstance.BacnetFilter
 			}

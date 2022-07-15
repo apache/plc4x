@@ -49,7 +49,7 @@ TODO: document me
 	Run: func(cmd *cobra.Command, args []string) {
 		pcapFile := args[0]
 		if !config.CBusConfigInstance.NoFilter {
-			if config.CBusConfigInstance.Filter != "" && config.CBusConfigInstance.CBusFilter != "" {
+			if config.CBusConfigInstance.Filter == "" && config.CBusConfigInstance.CBusFilter != "" {
 				log.Debug().Str("filter", config.CBusConfigInstance.Filter).Msg("Setting cbus filter")
 				config.CBusConfigInstance.Filter = config.CBusConfigInstance.CBusFilter
 			}
@@ -64,7 +64,7 @@ TODO: document me
 func init() {
 	analyzeCmd.AddCommand(cbusCmd)
 
-	cbusCmd.PersistentFlags().StringVarP(&config.CBusConfigInstance.CBusFilter, "default-cbus-filter", "", "udp port 10001", "Defines the default filter when c-bus is selected")
+	cbusCmd.PersistentFlags().StringVarP(&config.CBusConfigInstance.CBusFilter, "default-cbus-filter", "", "tcp port 10001", "Defines the default filter when c-bus is selected")
 
 	cbusCmd.Flags().BoolVarP(&config.CBusConfigInstance.Connect, "cbus-connect", "", false, "Defines that SAL messages can occur at any time")
 	cbusCmd.Flags().BoolVarP(&config.CBusConfigInstance.Smart, "cbus-smart", "", false, "Disable echo of characters. When used with connect SAL have a long option. Select long from of most CAL replies")

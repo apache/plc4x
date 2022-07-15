@@ -741,11 +741,7 @@ public class RandomPackagesTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
-            ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
-            ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
-            ReplyCALReply calReplyReply = (ReplyCALReply) normalReply.getReply();
-            System.out.println(calReplyReply.getCalReply());
+            System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter());
 
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bytes.length);
             msg.serialize(writeBuffer);

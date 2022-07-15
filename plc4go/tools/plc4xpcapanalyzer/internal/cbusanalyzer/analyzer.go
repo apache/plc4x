@@ -25,17 +25,20 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
+	"github.com/google/gopacket"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net"
 )
 
 type Analyzer struct {
-	Client                 net.IP
-	requestContext         model.RequestContext
-	cBusOptions            model.CBusOptions
-	initialized            bool
-	currentInboundPayloads map[string][]byte
+	Client                          net.IP
+	requestContext                  model.RequestContext
+	cBusOptions                     model.CBusOptions
+	initialized                     bool
+	currentInboundPayloads          map[string][]byte
+	currentPrefilterInboundPayloads map[string][]byte
+	mappedPacketChan                chan gopacket.Packet
 }
 
 func (a *Analyzer) Init() {
@@ -45,6 +48,7 @@ func (a *Analyzer) Init() {
 	a.requestContext = model.NewRequestContext(false, false, false)
 	a.cBusOptions = model.NewCBusOptions(config.CBusConfigInstance.Connect, config.CBusConfigInstance.Smart, config.CBusConfigInstance.Idmon, config.CBusConfigInstance.Exstat, config.CBusConfigInstance.Monitor, config.CBusConfigInstance.Monall, config.CBusConfigInstance.Pun, config.CBusConfigInstance.Pcn, config.CBusConfigInstance.Srchk)
 	a.currentInboundPayloads = make(map[string][]byte)
+	a.currentPrefilterInboundPayloads = make(map[string][]byte)
 	a.initialized = true
 }
 
@@ -53,59 +57,11 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		log.Warn().Msg("Not initialized... doing that now")
 		a.Init()
 	}
-	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s", packetInformation, a.requestContext, a.cBusOptions)
-	isResponse := packetInformation.DstIp.Equal(a.Client)
-	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
-	payload = filterXOnXOff(payload)
-	if len(payload) == 0 {
-		return nil, common.ErrEmptyPackage
-	}
-	// Check if we have a termination in the middle
-	currentPayload := a.currentInboundPayloads[packetInformation.SrcIp.String()]
-	currentPayload = append(currentPayload, payload...)
-	shouldClearInboundPayload := true
-	// Check if we have a merged message
-	for i, b := range currentPayload {
-		if i == 0 {
-			// TODO: we ignore the first byte as this is typical for reset etc... so maybe this is good or bad we will see
-			continue
-		}
-		switch b {
-		case 0x0D:
-			if i+1 < len(currentPayload) && currentPayload[i+1] == 0x0A {
-				// If we know the next is a newline we jump to that index...
-				i++
-			}
-			// ... other than that the logic is the same
-			fallthrough
-		case 0x0A:
-			// We have a merged message if we are not at the end
-			if i < len(currentPayload)-1 {
-				log.Warn().Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d", i)
-				// In this case we need to put the tail into our "buffer"
-				a.currentInboundPayloads[packetInformation.SrcIp.String()] = currentPayload[i+1:]
-				// and use the beginning as current payload
-				currentPayload = currentPayload[:i+1]
-				shouldClearInboundPayload = false
-			}
-		}
-	}
-	a.currentInboundPayloads[packetInformation.SrcIp.String()] = currentPayload
-	if lastElement := currentPayload[len(currentPayload)-1]; (!isResponse /*a request must end with cr*/ && lastElement != 0x0D /*cr*/) || (isResponse /*a response must end with lf*/ && lastElement != 0x0A /*lf*/) {
-		return nil, common.ErrUnterminatedPackage
-	} else {
-		log.Debug().Msgf("Last element %x", lastElement)
-		if shouldClearInboundPayload {
-			if currentSavedPayload := a.currentInboundPayloads[packetInformation.SrcIp.String()]; currentSavedPayload != nil {
-				// We remove our current payload from the beginning of the cache
-				for i, b := range currentPayload {
-					if currentSavedPayload[i] != b {
-						panic("programming error... at this point they should start with the identical bytes")
-					}
-				}
-			}
-			a.currentInboundPayloads[packetInformation.SrcIp.String()] = nil
-		}
+	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, a.cBusOptions, payload)
+	isResponse := a.isResponse(packetInformation)
+	currentPayload, err := a.getCurrentPayload(packetInformation, payload, isResponse, true, false)
+	if err != nil {
+		return nil, err
 	}
 	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, a.cBusOptions, uint16(len(currentPayload)))
 	if err != nil {
@@ -169,6 +125,86 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 	return parse, nil
 }
 
+func (a *Analyzer) isResponse(packetInformation common.PacketInformation) bool {
+	isResponse := packetInformation.DstIp.Equal(a.Client)
+	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
+	return isResponse
+}
+
+func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation, payload []byte, isResponse bool, warnAboutSplit bool, usePrefilterPayloads bool) ([]byte, error) {
+	srcUip := packetInformation.SrcIp.String()
+	payload = filterXOnXOff(payload)
+	if len(payload) == 0 {
+		return nil, common.ErrEmptyPackage
+	}
+	// Check if we have a termination in the middle
+	currentInboundPayloads := a.currentInboundPayloads
+	if usePrefilterPayloads {
+		currentInboundPayloads = a.currentPrefilterInboundPayloads
+	}
+	currentPayload := currentInboundPayloads[srcUip]
+	currentPayload = append(currentPayload, payload...)
+	shouldClearInboundPayload := true
+	isMergedMessage := false
+	// Check if we have a merged message
+mergeCheck:
+	for i, b := range currentPayload {
+		if i == 0 {
+			// TODO: we ignore the first byte as this is typical for reset etc... so maybe this is good or bad we will see
+			continue
+		}
+		switch b {
+		case 0x0D:
+			if i+1 < len(currentPayload) && currentPayload[i+1] == 0x0A {
+				// If we know the next is a newline we jump to that index...
+				i++
+			}
+			// ... other than that the logic is the same
+			fallthrough
+		case 0x0A:
+			// We have a merged message if we are not at the end
+			if i < len(currentPayload)-1 {
+				event := log.Warn()
+				if !warnAboutSplit {
+					event = log.Debug()
+				}
+				event.Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d (usePrefilterPayloads=%t)", i, usePrefilterPayloads)
+				// In this case we need to put the tail into our "buffer"
+				currentInboundPayloads[srcUip] = currentPayload[i+1:]
+				// and use the beginning as current payload
+				currentPayload = currentPayload[:i+1]
+				shouldClearInboundPayload = false
+				isMergedMessage = true
+				break mergeCheck
+			}
+		}
+	}
+	if !isMergedMessage {
+		// When we have a merge message we already set the current payload to the tail
+		currentInboundPayloads[srcUip] = currentPayload
+	} else {
+		log.Debug().Stringer("packetInformation", packetInformation).Msgf("Remainder %+q", currentInboundPayloads[srcUip])
+	}
+	if lastElement := currentPayload[len(currentPayload)-1]; (!isResponse /*a request must end with cr*/ && lastElement != 0x0D /*cr*/) || (isResponse /*a response must end with lf*/ && lastElement != 0x0A /*lf*/) {
+		return nil, common.ErrUnterminatedPackage
+	} else {
+		log.Debug().Msgf("Last element 0x%x", lastElement)
+		if shouldClearInboundPayload {
+			if currentSavedPayload := currentInboundPayloads[srcUip]; currentSavedPayload != nil {
+				// We remove our current payload from the beginning of the cache
+				for i, b := range currentPayload {
+					if currentSavedPayload[i] != b {
+						panic("programming error... at this point they should start with the identical bytes")
+					}
+				}
+			}
+			currentInboundPayloads[srcUip] = nil
+		}
+	}
+	log.Debug().Stringer("packetInformation", packetInformation).Msgf("Returning payload %+q", currentPayload)
+	return currentPayload, nil
+}
+
 func filterXOnXOff(payload []byte) []byte {
 	n := 0
 	for _, b := range payload {
@@ -196,6 +232,7 @@ func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {
 	}
 }
 
+// PrettyPrint as messages switch encoding (hex strings) we print the inner messages too
 func (a *Analyzer) PrettyPrint(message interface{}) {
 	if message, ok := message.(model.CBusMessage); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
@@ -248,4 +285,60 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 			}
 		}
 	}
+}
+
+// MapPackets reorders the packages as they were not split
+func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
+	if a.mappedPacketChan == nil {
+		a.mappedPacketChan = make(chan gopacket.Packet)
+		go func() {
+			defer close(a.mappedPacketChan)
+			currentPackageNum := uint(0)
+			currentPackageNum++
+		mappingLoop:
+			for packet := range in {
+				currentPackageNum++
+				switch {
+				case packet == nil:
+					log.Debug().Msg("Done reading packages. (nil returned)")
+					a.mappedPacketChan <- nil
+					break mappingLoop
+				case packet.ApplicationLayer() == nil:
+					a.mappedPacketChan <- packet
+				default:
+					packetInformation := packetInformationCreator(packet)
+					if payload, err := a.getCurrentPayload(packetInformation, packet.ApplicationLayer().Payload(), a.isResponse(packetInformation), false, true); err != nil {
+						log.Debug().Err(err).Stringer("packetInformation", packetInformation).Msg("Filtering message")
+						a.mappedPacketChan <- common.NewFilteredPackage(err, packet)
+					} else {
+						currentApplicationLayer := packet.ApplicationLayer()
+						newApplicationLayer := gopacket.Payload(payload)
+						if len(currentApplicationLayer.Payload()) != len(newApplicationLayer) {
+							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newApplicationLayer}
+						}
+						a.mappedPacketChan <- packet
+					}
+				}
+			}
+		}()
+	}
+	return a.mappedPacketChan
+}
+
+// ByteOutput returns the string representation as usually this is ASCII over serial... so this output is much more useful in that context
+func (a *Analyzer) ByteOutput(data []byte) string {
+	return fmt.Sprintf("%+q\n", data)
+}
+
+type manipulatedPackage struct {
+	gopacket.Packet
+	newApplicationLayer gopacket.ApplicationLayer
+}
+
+func (p *manipulatedPackage) SetApplicationLayer(l gopacket.ApplicationLayer) {
+	p.newApplicationLayer = l
+}
+
+func (p *manipulatedPackage) ApplicationLayer() gopacket.ApplicationLayer {
+	return p.newApplicationLayer
 }

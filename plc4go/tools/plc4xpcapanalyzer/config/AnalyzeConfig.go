@@ -21,7 +21,7 @@ package config
 
 type AnalyzeConfig struct {
 	*PcapConfig
-	NoFilter, OnlyParse, NoBytesCompare bool
+	NoFilter, OnlyParse, NoBytesCompare, NoCustomMapping bool
 }
 
 var AnalyzeConfigInstance = AnalyzeConfig{}

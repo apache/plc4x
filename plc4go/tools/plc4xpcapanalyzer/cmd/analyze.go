@@ -71,9 +71,10 @@ func init() {
 func addAnalyzeFlags(command *cobra.Command) {
 	command.Flags().StringVarP(&config.AnalyzeConfigInstance.Filter, "filter", "f", "", "BFF filter to apply")
 	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.NoFilter, "no-filter", "n", false, "disable filter")
-	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.OnlyParse, "onlyParse", "o", false, "only parse messaged")
-	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.NoBytesCompare, "noBytesCompare", "b", false, "don't compare original bytes with serialized bytes")
+	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.OnlyParse, "only-parse", "o", false, "only parse messaged")
+	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.NoBytesCompare, "no-bytes-compare", "b", false, "don't compare original bytes with serialized bytes")
+	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.NoCustomMapping, "no-custom-mapping", "", false, "don't use the custom mapper for protocols")
 	command.Flags().StringVarP(&config.AnalyzeConfigInstance.Client, "client", "c", "", "The client ip (this is useful for protocols where request/response is different e.g. modbus, cbus)")
-	command.Flags().UintVarP(&config.AnalyzeConfigInstance.StartPackageNumber, "startPackageNumber", "s", 0, "Defines with what package number should be started")
-	command.Flags().UintVarP(&config.AnalyzeConfigInstance.PackageNumberLimit, "packageNumberLimit", "l", math.MaxUint, "Defines how many packages should be parsed")
+	command.Flags().UintVarP(&config.AnalyzeConfigInstance.StartPackageNumber, "start-package-umber", "s", 0, "Defines with what package number should be started")
+	command.Flags().UintVarP(&config.AnalyzeConfigInstance.PackageNumberLimit, "package-number-limit", "l", math.MaxUint, "Defines how many packages should be parsed")
 }

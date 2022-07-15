@@ -21,6 +21,7 @@ package common
 
 import (
 	"fmt"
+	"github.com/google/gopacket"
 	"github.com/pkg/errors"
 	"net"
 	"time"
@@ -42,3 +43,26 @@ func (p PacketInformation) String() string {
 var ErrUnterminatedPackage = errors.New("ErrUnterminatedPackage")
 
 var ErrEmptyPackage = errors.New("ErrEmptyPackage")
+
+type FilteredPackage interface {
+	gopacket.Packet
+	IsFilteredPackage() bool
+	FilterReason() error
+}
+
+func NewFilteredPackage(err error, packet gopacket.Packet) FilteredPackage {
+	return &filteredPackage{Packet: packet, err: err}
+}
+
+type filteredPackage struct {
+	gopacket.Packet
+	err error
+}
+
+func (f *filteredPackage) IsFilteredPackage() bool {
+	return true
+}
+
+func (f *filteredPackage) FilterReason() error {
+	return f.err
+}
