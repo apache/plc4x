@@ -47,7 +47,13 @@ ConnectorIO sp. z o.o. /
 Code-House (self employed)
 
 Warsaw | He started working with Apache Software Foundation projects in 2007 - at the time when the first incubation version of Apache CXF was out. Since then he took active part and contributed to Apache projects related to software integration such as Apache Karaf, Apache ActiveMQ and Apache Camel. He is an Open Source and OSGi enthusiast, passionate about connecting things, physical ones too. | a|image::team/ldywicki.jpg[ldywicki, 240, 304]
+| *Lukas Ott*
 
+Domain Architect
+
+Pharmaceutical Industry
+
+Copenhagen | He started working with Apache Software Foundation projects in 2013 - at that time in the context of Semantic Technologies with an archived project called Apache Stanbol. Since then he took an interested in several different Apache projects like Apache ActiveMQ, Apache Spark, Apache Storm, Apache Cassandra. He is an Open Source and Pythonista, passionate about connecting people, processes and machines. Main focus is community over code and linking different communities together | a|image::team/lott.jpg[lott, 240, 304]
 
 | *Sebastian Rühl*
 
