@@ -124,7 +124,7 @@ const (
 	CALCommandTypeContainer_CALCommandStatus_31Bytes         CALCommandTypeContainer = 0xDF
 	CALCommandTypeContainer_CALCommandStatusExtended_0Bytes  CALCommandTypeContainer = 0xE0
 	CALCommandTypeContainer_CALCommandStatusExtended_1Bytes  CALCommandTypeContainer = 0xE1
-	CALCommandTypeContainer_CALCommandStatusExtended_2Bytes  CALCommandTypeContainer = 0xE1
+	CALCommandTypeContainer_CALCommandStatusExtended_2Bytes  CALCommandTypeContainer = 0xE2
 	CALCommandTypeContainer_CALCommandStatusExtended_3Bytes  CALCommandTypeContainer = 0xE3
 	CALCommandTypeContainer_CALCommandStatusExtended_4Bytes  CALCommandTypeContainer = 0xE4
 	CALCommandTypeContainer_CALCommandStatusExtended_5Bytes  CALCommandTypeContainer = 0xE5
@@ -631,6 +631,10 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 		{ /* '0xE1' */
 			return 1
 		}
+	case 0xE2:
+		{ /* '0xE2' */
+			return 2
+		}
 	case 0xE3:
 		{ /* '0xE3' */
 			return 3
@@ -1113,6 +1117,10 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 		{ /* '0xE1' */
 			return CALCommandType_STATUS_EXTENDED
 		}
+	case 0xE2:
+		{ /* '0xE2' */
+			return CALCommandType_STATUS_EXTENDED
+		}
 	case 0xE3:
 		{ /* '0xE3' */
 			return CALCommandType_STATUS_EXTENDED
@@ -1420,6 +1428,8 @@ func CALCommandTypeContainerByValue(value uint8) (enum CALCommandTypeContainer, 
 		return CALCommandTypeContainer_CALCommandStatusExtended_0Bytes, true
 	case 0xE1:
 		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes, true
+	case 0xE2:
+		return CALCommandTypeContainer_CALCommandStatusExtended_2Bytes, true
 	case 0xE3:
 		return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes, true
 	case 0xE4:
@@ -1658,6 +1668,8 @@ func CALCommandTypeContainerByName(value string) (enum CALCommandTypeContainer, 
 		return CALCommandTypeContainer_CALCommandStatusExtended_0Bytes, true
 	case "CALCommandStatusExtended_1Bytes":
 		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes, true
+	case "CALCommandStatusExtended_2Bytes":
+		return CALCommandTypeContainer_CALCommandStatusExtended_2Bytes, true
 	case "CALCommandStatusExtended_3Bytes":
 		return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes, true
 	case "CALCommandStatusExtended_4Bytes":
@@ -1941,6 +1953,8 @@ func (e CALCommandTypeContainer) PLC4XEnumName() string {
 		return "CALCommandStatusExtended_0Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_1Bytes:
 		return "CALCommandStatusExtended_1Bytes"
+	case CALCommandTypeContainer_CALCommandStatusExtended_2Bytes:
+		return "CALCommandStatusExtended_2Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_3Bytes:
 		return "CALCommandStatusExtended_3Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_4Bytes:

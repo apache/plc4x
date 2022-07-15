@@ -32,12 +32,6 @@ type Reply interface {
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
-	// GetSendCalCommandBefore returns SendCalCommandBefore (virtual field)
-	GetSendCalCommandBefore() bool
-	// GetSendSALStatusRequestBefore returns SendSALStatusRequestBefore (virtual field)
-	GetSendSALStatusRequestBefore() bool
-	// GetExstat returns Exstat (virtual field)
-	GetExstat() bool
 }
 
 // ReplyExactly can be used when we want exactly this type and not a type which fulfills Reply.
@@ -91,27 +85,6 @@ func (m *_Reply) GetPeekedByte() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_Reply) GetSendCalCommandBefore() bool {
-	return bool(m.RequestContext.GetSendCalCommandBefore())
-}
-
-func (m *_Reply) GetSendSALStatusRequestBefore() bool {
-	return bool(m.RequestContext.GetSendSALStatusRequestBefore())
-}
-
-func (m *_Reply) GetExstat() bool {
-	return bool(m.CBusOptions.GetExstat())
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // NewReply factory function for _Reply
 func NewReply(peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_Reply {
@@ -135,12 +108,6 @@ func (m *_Reply) GetTypeName() string {
 
 func (m *_Reply) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
@@ -167,21 +134,6 @@ func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLengt
 
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_sendCalCommandBefore := requestContext.GetSendCalCommandBefore()
-	sendCalCommandBefore := bool(_sendCalCommandBefore)
-	_ = sendCalCommandBefore
-
-	// Virtual field
-	_sendSALStatusRequestBefore := requestContext.GetSendSALStatusRequestBefore()
-	sendSALStatusRequestBefore := bool(_sendSALStatusRequestBefore)
-	_ = sendSALStatusRequestBefore
-
-	// Virtual field
-	_exstat := cBusOptions.GetExstat()
-	exstat := bool(_exstat)
-	_ = exstat
-
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ReplyChildSerializeRequirement interface {
 		Reply
@@ -198,16 +150,10 @@ func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLengt
 		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
 	case peekedByte == 0x21: // ServerErrorReply
 		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
-	case 0 == 0 && 1 == 1 && sendSALStatusRequestBefore == bool(true) && exstat == bool(false): // ReplyStandardFormatStatusReply
-		_childTemp, typeSwitchError = ReplyStandardFormatStatusReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
-	case 0 == 0 && 1 == 1 && sendSALStatusRequestBefore == bool(true) && exstat == bool(true): // ReplyExtendedFormatStatusReply
-		_childTemp, typeSwitchError = ReplyExtendedFormatStatusReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
-	case 0 == 0 && sendCalCommandBefore == bool(true) && 2 == 2 && 3 == 3: // ReplyCALReply
-		_childTemp, typeSwitchError = ReplyCALReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
-	case 0 == 0: // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+	case 0 == 0: // ReplyEncodedReply
+		_childTemp, typeSwitchError = ReplyEncodedReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v, sendCalCommandBefore=%v, sendSALStatusRequestBefore=%v, exstat=%v]", peekedByte, sendCalCommandBefore, sendSALStatusRequestBefore, exstat)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v]", peekedByte)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Reply")
@@ -231,18 +177,6 @@ func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, se
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Reply"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for Reply")
-	}
-	// Virtual field
-	if _sendCalCommandBeforeErr := writeBuffer.WriteVirtual("sendCalCommandBefore", m.GetSendCalCommandBefore()); _sendCalCommandBeforeErr != nil {
-		return errors.Wrap(_sendCalCommandBeforeErr, "Error serializing 'sendCalCommandBefore' field")
-	}
-	// Virtual field
-	if _sendSALStatusRequestBeforeErr := writeBuffer.WriteVirtual("sendSALStatusRequestBefore", m.GetSendSALStatusRequestBefore()); _sendSALStatusRequestBeforeErr != nil {
-		return errors.Wrap(_sendSALStatusRequestBeforeErr, "Error serializing 'sendSALStatusRequestBefore' field")
-	}
-	// Virtual field
-	if _exstatErr := writeBuffer.WriteVirtual("exstat", m.GetExstat()); _exstatErr != nil {
-		return errors.Wrap(_exstatErr, "Error serializing 'exstat' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

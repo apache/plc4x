@@ -31,14 +31,24 @@ type CALDataStatusExtended interface {
 	utils.LengthAware
 	utils.Serializable
 	CALData
-	// GetEncoding returns Encoding (property field)
-	GetEncoding() uint8
+	// GetCoding returns Coding (property field)
+	GetCoding() uint8
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
+	// GetIsBinaryBySerialInterface returns IsBinaryBySerialInterface (virtual field)
+	GetIsBinaryBySerialInterface() bool
+	// GetIsBinaryByElsewhere returns IsBinaryByElsewhere (virtual field)
+	GetIsBinaryByElsewhere() bool
+	// GetIsLevelBySerialInterface returns IsLevelBySerialInterface (virtual field)
+	GetIsLevelBySerialInterface() bool
+	// GetIsLevelByElsewhere returns IsLevelByElsewhere (virtual field)
+	GetIsLevelByElsewhere() bool
+	// GetIsReserved returns IsReserved (virtual field)
+	GetIsReserved() bool
 }
 
 // CALDataStatusExtendedExactly can be used when we want exactly this type and not a type which fulfills CALDataStatusExtended.
@@ -51,7 +61,7 @@ type CALDataStatusExtendedExactly interface {
 // _CALDataStatusExtended is the data-structure of this message
 type _CALDataStatusExtended struct {
 	*_CALData
-	Encoding    uint8
+	Coding      uint8
 	Application ApplicationIdContainer
 	BlockStart  uint8
 	Data        []byte
@@ -81,8 +91,8 @@ func (m *_CALDataStatusExtended) GetParent() CALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALDataStatusExtended) GetEncoding() uint8 {
-	return m.Encoding
+func (m *_CALDataStatusExtended) GetCoding() uint8 {
+	return m.Coding
 }
 
 func (m *_CALDataStatusExtended) GetApplication() ApplicationIdContainer {
@@ -101,11 +111,40 @@ func (m *_CALDataStatusExtended) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_CALDataStatusExtended) GetIsBinaryBySerialInterface() bool {
+	return bool(bool((m.GetCoding()) == (0x00)))
+}
+
+func (m *_CALDataStatusExtended) GetIsBinaryByElsewhere() bool {
+	return bool(bool((m.GetCoding()) == (0x40)))
+}
+
+func (m *_CALDataStatusExtended) GetIsLevelBySerialInterface() bool {
+	return bool(bool((m.GetCoding()) == (0x07)))
+}
+
+func (m *_CALDataStatusExtended) GetIsLevelByElsewhere() bool {
+	return bool(bool((m.GetCoding()) == (0x47)))
+}
+
+func (m *_CALDataStatusExtended) GetIsReserved() bool {
+	return bool(bool(bool(bool(!(m.GetIsBinaryBySerialInterface())) && bool(!(m.GetIsBinaryByElsewhere()))) && bool(!(m.GetIsLevelBySerialInterface()))) && bool(!(m.GetIsLevelByElsewhere())))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(encoding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
+func NewCALDataStatusExtended(coding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
 	_result := &_CALDataStatusExtended{
-		Encoding:    encoding,
+		Coding:      coding,
 		Application: application,
 		BlockStart:  blockStart,
 		Data:        data,
@@ -137,8 +176,18 @@ func (m *_CALDataStatusExtended) GetLengthInBits() uint16 {
 func (m *_CALDataStatusExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (encoding)
+	// Simple field (coding)
 	lengthInBits += 8
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
 
 	// Simple field (application)
 	lengthInBits += 8
@@ -167,12 +216,37 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (encoding)
-	_encoding, _encodingErr := readBuffer.ReadUint8("encoding", 8)
-	if _encodingErr != nil {
-		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field of CALDataStatusExtended")
+	// Simple Field (coding)
+	_coding, _codingErr := readBuffer.ReadUint8("coding", 8)
+	if _codingErr != nil {
+		return nil, errors.Wrap(_codingErr, "Error parsing 'coding' field of CALDataStatusExtended")
 	}
-	encoding := _encoding
+	coding := _coding
+
+	// Virtual field
+	_isBinaryBySerialInterface := bool((coding) == (0x00))
+	isBinaryBySerialInterface := bool(_isBinaryBySerialInterface)
+	_ = isBinaryBySerialInterface
+
+	// Virtual field
+	_isBinaryByElsewhere := bool((coding) == (0x40))
+	isBinaryByElsewhere := bool(_isBinaryByElsewhere)
+	_ = isBinaryByElsewhere
+
+	// Virtual field
+	_isLevelBySerialInterface := bool((coding) == (0x07))
+	isLevelBySerialInterface := bool(_isLevelBySerialInterface)
+	_ = isLevelBySerialInterface
+
+	// Virtual field
+	_isLevelByElsewhere := bool((coding) == (0x47))
+	isLevelByElsewhere := bool(_isLevelByElsewhere)
+	_ = isLevelByElsewhere
+
+	// Virtual field
+	_isReserved := bool(bool(bool(!(isBinaryBySerialInterface)) && bool(!(isBinaryByElsewhere))) && bool(!(isLevelBySerialInterface))) && bool(!(isLevelByElsewhere))
+	isReserved := bool(_isReserved)
+	_ = isReserved
 
 	// Simple Field (application)
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
@@ -194,7 +268,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	}
 	blockStart := _blockStart
 	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(3)))
+	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(2)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataStatusExtended")
@@ -206,7 +280,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 
 	// Create a partially initialized instance
 	_child := &_CALDataStatusExtended{
-		Encoding:    encoding,
+		Coding:      coding,
 		Application: application,
 		BlockStart:  blockStart,
 		Data:        data,
@@ -226,11 +300,31 @@ func (m *_CALDataStatusExtended) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for CALDataStatusExtended")
 		}
 
-		// Simple Field (encoding)
-		encoding := uint8(m.GetEncoding())
-		_encodingErr := writeBuffer.WriteUint8("encoding", 8, (encoding))
-		if _encodingErr != nil {
-			return errors.Wrap(_encodingErr, "Error serializing 'encoding' field")
+		// Simple Field (coding)
+		coding := uint8(m.GetCoding())
+		_codingErr := writeBuffer.WriteUint8("coding", 8, (coding))
+		if _codingErr != nil {
+			return errors.Wrap(_codingErr, "Error serializing 'coding' field")
+		}
+		// Virtual field
+		if _isBinaryBySerialInterfaceErr := writeBuffer.WriteVirtual("isBinaryBySerialInterface", m.GetIsBinaryBySerialInterface()); _isBinaryBySerialInterfaceErr != nil {
+			return errors.Wrap(_isBinaryBySerialInterfaceErr, "Error serializing 'isBinaryBySerialInterface' field")
+		}
+		// Virtual field
+		if _isBinaryByElsewhereErr := writeBuffer.WriteVirtual("isBinaryByElsewhere", m.GetIsBinaryByElsewhere()); _isBinaryByElsewhereErr != nil {
+			return errors.Wrap(_isBinaryByElsewhereErr, "Error serializing 'isBinaryByElsewhere' field")
+		}
+		// Virtual field
+		if _isLevelBySerialInterfaceErr := writeBuffer.WriteVirtual("isLevelBySerialInterface", m.GetIsLevelBySerialInterface()); _isLevelBySerialInterfaceErr != nil {
+			return errors.Wrap(_isLevelBySerialInterfaceErr, "Error serializing 'isLevelBySerialInterface' field")
+		}
+		// Virtual field
+		if _isLevelByElsewhereErr := writeBuffer.WriteVirtual("isLevelByElsewhere", m.GetIsLevelByElsewhere()); _isLevelByElsewhereErr != nil {
+			return errors.Wrap(_isLevelByElsewhereErr, "Error serializing 'isLevelByElsewhere' field")
+		}
+		// Virtual field
+		if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
 		// Simple Field (application)

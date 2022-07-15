@@ -30,11 +30,9 @@ import (
 type MonitoredSALReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	EncodedReply
 	// GetMonitoredSAL returns MonitoredSAL (property field)
 	GetMonitoredSAL() MonitoredSAL
-	// GetPayloadLength returns PayloadLength (virtual field)
-	GetPayloadLength() uint16
 }
 
 // MonitoredSALReplyExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALReply.
@@ -46,7 +44,7 @@ type MonitoredSALReplyExactly interface {
 
 // _MonitoredSALReply is the data-structure of this message
 type _MonitoredSALReply struct {
-	*_Reply
+	*_EncodedReply
 	MonitoredSAL MonitoredSAL
 }
 
@@ -60,12 +58,12 @@ type _MonitoredSALReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_MonitoredSALReply) InitializeParent(parent EncodedReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_MonitoredSALReply) GetParent() Reply {
-	return m._Reply
+func (m *_MonitoredSALReply) GetParent() EncodedReply {
+	return m._EncodedReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,27 +79,14 @@ func (m *_MonitoredSALReply) GetMonitoredSAL() MonitoredSAL {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_MonitoredSALReply) GetPayloadLength() uint16 {
-	return uint16(m.ReplyLength)
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_MonitoredSALReply {
+func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
 	_result := &_MonitoredSALReply{
-		MonitoredSAL: monitoredSAL,
-		_Reply:       NewReply(peekedByte, cBusOptions, replyLength, requestContext),
+		MonitoredSAL:  monitoredSAL,
+		_EncodedReply: NewEncodedReply(peekedByte, cBusOptions, requestContext),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._EncodedReply._EncodedReplyChildRequirements = _result
 	return _result
 }
 
@@ -127,10 +112,8 @@ func (m *_MonitoredSALReply) GetLengthInBits() uint16 {
 func (m *_MonitoredSALReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
-	// Manual Field (monitoredSAL)
-	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
+	// Simple field (monitoredSAL)
+	lengthInBits += m.MonitoredSAL.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -139,7 +122,7 @@ func (m *_MonitoredSALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (MonitoredSALReply, error) {
+func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
@@ -148,17 +131,18 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_payloadLength := replyLength
-	payloadLength := uint16(_payloadLength)
-	_ = payloadLength
-
-	// Manual Field (monitoredSAL)
-	_monitoredSAL, _monitoredSALErr := ReadMonitoredSAL(readBuffer, payloadLength, cBusOptions)
+	// Simple Field (monitoredSAL)
+	if pullErr := readBuffer.PullContext("monitoredSAL"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for monitoredSAL")
+	}
+	_monitoredSAL, _monitoredSALErr := MonitoredSALParse(readBuffer, cBusOptions)
 	if _monitoredSALErr != nil {
 		return nil, errors.Wrap(_monitoredSALErr, "Error parsing 'monitoredSAL' field of MonitoredSALReply")
 	}
 	monitoredSAL := _monitoredSAL.(MonitoredSAL)
+	if closeErr := readBuffer.CloseContext("monitoredSAL"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for monitoredSAL")
+	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredSALReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSALReply")
@@ -167,13 +151,12 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	// Create a partially initialized instance
 	_child := &_MonitoredSALReply{
 		MonitoredSAL: monitoredSAL,
-		_Reply: &_Reply{
+		_EncodedReply: &_EncodedReply{
 			CBusOptions:    cBusOptions,
-			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._EncodedReply._EncodedReplyChildRequirements = _child
 	return _child, nil
 }
 
@@ -184,13 +167,15 @@ func (m *_MonitoredSALReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("MonitoredSALReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for MonitoredSALReply")
 		}
-		// Virtual field
-		if _payloadLengthErr := writeBuffer.WriteVirtual("payloadLength", m.GetPayloadLength()); _payloadLengthErr != nil {
-			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
-		}
 
-		// Manual Field (monitoredSAL)
-		_monitoredSALErr := WriteMonitoredSAL(writeBuffer, m.GetMonitoredSAL())
+		// Simple Field (monitoredSAL)
+		if pushErr := writeBuffer.PushContext("monitoredSAL"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for monitoredSAL")
+		}
+		_monitoredSALErr := writeBuffer.WriteSerializable(m.GetMonitoredSAL())
+		if popErr := writeBuffer.PopContext("monitoredSAL"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for monitoredSAL")
+		}
 		if _monitoredSALErr != nil {
 			return errors.Wrap(_monitoredSALErr, "Error serializing 'monitoredSAL' field")
 		}

@@ -616,10 +616,15 @@
             [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ]
         ]
         ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer) // Reply
-            [simple uint 8                 encoding                                                    ]
+            [simple uint 8                 coding                                                      ]
+            [virtual bit                   isBinaryBySerialInterface 'coding == 0x00'                  ]
+            [virtual bit                   isBinaryByElsewhere       'coding == 0x40'                  ]
+            [virtual bit                   isLevelBySerialInterface  'coding == 0x07'                  ]
+            [virtual bit                   isLevelByElsewhere        'coding == 0x47'                  ]
+            [virtual bit                   isReserved                '!isBinaryBySerialInterface && !isBinaryByElsewhere && !isLevelBySerialInterface && !isLevelByElsewhere']
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes - 3'       ]
+            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ] // TODO: this should be -3 but somehow it is -2 with the examples
         ]
     ]
     // TODO: we need to check that we don't read the crc by accident
@@ -1214,7 +1219,7 @@
     ['0xDF' CALCommandStatus_31Bytes         ['STATUS',          '31']]
     ['0xE0' CALCommandStatusExtended_0Bytes  ['STATUS_EXTENDED',  '0']]
     ['0xE1' CALCommandStatusExtended_1Bytes  ['STATUS_EXTENDED',  '1']]
-    ['0xE1' CALCommandStatusExtended_2Bytes  ['STATUS_EXTENDED',  '2']]
+    ['0xE2' CALCommandStatusExtended_2Bytes  ['STATUS_EXTENDED',  '2']]
     ['0xE3' CALCommandStatusExtended_3Bytes  ['STATUS_EXTENDED',  '3']]
     ['0xE4' CALCommandStatusExtended_4Bytes  ['STATUS_EXTENDED',  '4']]
     ['0xE5' CALCommandStatusExtended_5Bytes  ['STATUS_EXTENDED',  '5']]
