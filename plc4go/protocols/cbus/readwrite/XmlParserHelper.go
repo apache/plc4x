@@ -165,6 +165,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CustomManufacturerParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "LightingData":
 		return model.LightingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AccessControlData":
+		return model.AccessControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StandardFormatStatusReply":

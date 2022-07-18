@@ -181,3 +181,13 @@ func KnowsTemperatureBroadcastCommandTypeContainer(readBuffer utils.ReadBuffer) 
 	}
 	return TemperatureBroadcastCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsAccessControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return AccessControlCommandTypeContainerKnows(readUint8)
+}

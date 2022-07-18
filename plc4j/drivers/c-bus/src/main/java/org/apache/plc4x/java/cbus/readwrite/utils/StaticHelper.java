@@ -150,11 +150,22 @@ public class StaticHelper {
         }
     }
 
-
     public static boolean knowsTemperatureBroadcastCommandTypeContainer(ReadBuffer readBuffer) {
         int oldPos = readBuffer.getPos();
         try {
             return TemperatureBroadcastCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+
+    public static boolean knowsAccessControlCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return AccessControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
         } catch (ParseException ignore) {
             return false;
         } finally {

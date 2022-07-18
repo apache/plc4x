@@ -142,6 +142,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CustomManufacturerParse(io)
 	case "LightingData":
 		return model.LightingDataParse(io)
+	case "AccessControlData":
+		return model.AccessControlDataParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
 	case "StandardFormatStatusReply":
