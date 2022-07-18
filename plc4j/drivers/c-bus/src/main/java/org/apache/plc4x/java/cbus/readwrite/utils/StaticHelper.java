@@ -95,10 +95,10 @@ public class StaticHelper {
         }
     }
 
-    public static boolean knowsSALCommandTypeContainer(ReadBuffer readBuffer) {
+    public static boolean knowsLightingCommandTypeContainer(ReadBuffer readBuffer) {
         int oldPos = readBuffer.getPos();
         try {
-            return SALCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+            return LightingCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
         } catch (ParseException ignore) {
             return false;
         } finally {

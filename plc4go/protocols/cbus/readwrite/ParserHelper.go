@@ -37,8 +37,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CALDataParse(io, requestContext)
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(io)
-	case "LabelOptions":
-		return model.LabelOptionsParse(io)
 	case "ApplicationAddress1":
 		return model.ApplicationAddress1Parse(io)
 	case "Checksum":
@@ -51,6 +49,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CALReplyParse(io, cBusOptions, requestContext)
 	case "CustomManufacturer":
 		return model.CustomManufacturerParse(io)
+	case "LightingData":
+		return model.LightingDataParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
 	case "NetworkNumber":
@@ -84,7 +84,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CBusOptions":
 		return model.CBusOptionsParse(io)
 	case "SALData":
-		return model.SALDataParse(io)
+		applicationId, _ := model.ApplicationIdByName(arguments[0])
+		return model.SALDataParse(io, applicationId)
 	case "CBusCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusCommandParse(io, cBusOptions)
@@ -126,6 +127,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ParameterChangeParse(io)
 	case "StatusByte":
 		return model.StatusByteParse(io)
+	case "LightingLabelOptions":
+		return model.LightingLabelOptionsParse(io)
 	case "ReplyNetwork":
 		return model.ReplyNetworkParse(io)
 	case "SerialNumber":

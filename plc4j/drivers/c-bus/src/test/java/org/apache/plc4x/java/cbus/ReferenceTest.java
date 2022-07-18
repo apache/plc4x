@@ -785,5 +785,158 @@ public class ReferenceTest {
         }
     }
 
+    @Disabled("needs to be implemented")
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2005%20-%20C-Bus%20Security%20Application.pdf
+    @Nested
+    class SecurityApplicationsTest {
 
+        //5.11.1
+        @Nested
+        class SecuritySystemEmitsAlarmOn{
+            @Test
+            void AlarmOnWrongPrio() throws Exception {
+                byte[] bytes = "\\05D00079832F\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void AlarmOn() throws Exception {
+                byte[] bytes = "\\85D0007983AF\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+        }
+
+        //5.11.2
+        @Test
+        void Zone3Unsealed() throws Exception {
+            byte[] bytes = "\\05D0000A860398\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+            assertMessageMatches(bytes, msg);
+        }
+
+        //5.11.3
+        @Test
+        void ZoneName() throws Exception {
+            byte[] bytes = "\\05D000AD8D034B49544348452E2020202088\r".getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+            System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+            assertMessageMatches(bytes, msg);
+        }
+
+        // 5.11.4
+        @Nested
+        class DeviceRequestsSecuritySystemtoArm {
+
+            @Test
+            void ArmSecurity() throws Exception {
+                byte[] bytes = "\\05D0000AA2FF80\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+            @Test
+            void ArmSecurityRemote() throws Exception {
+                byte[] bytes = "\\039209D00AA2FFE7\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+        }
+    }
+
+
+    @Disabled("needs to be implemented")
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2006%20-%20C-Bus%20Metering%20Application.pdf
+    @Nested
+    class MeteringApplicationsTest{
+
+        //6.11.1
+        @Nested
+        class DeviceRequestsMeteringApplicationtoMeasureElectricity{
+            @Test
+            void LocalMeasurement() throws Exception {
+                byte[] bytes = "\\05D100090120\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void RemoteMeasurement() throws Exception {
+                byte[] bytes = "\\035609D10901C3\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+        }
+
+        @Disabled("this application needs to be implemented")
+        //6.11.2
+        @Nested
+        class MeterMeasurementDevicesendsElectricityUse{
+            @Test
+            void LocalMeasurement() throws Exception {
+                byte[] bytes = "\\05D1000D810000DBF8C9\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void RemoteMeasurement() throws Exception {
+                byte[] bytes = "\\033709D10D810000DBF88B\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+        }
+    }
 }

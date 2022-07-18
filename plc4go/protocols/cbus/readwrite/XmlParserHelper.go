@@ -48,8 +48,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), requestContext)
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "LabelOptions":
-		return model.LabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress1":
 		return model.ApplicationAddress1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Checksum":
@@ -64,6 +62,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
 	case "CustomManufacturer":
 		return model.CustomManufacturerParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "LightingData":
+		return model.LightingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
@@ -100,7 +100,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "CBusOptions":
 		return model.CBusOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SALData":
-		return model.SALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		applicationId, _ := model.ApplicationIdByName(parserArguments[0])
+		return model.SALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), applicationId)
 	case "CBusCommand":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
@@ -148,6 +149,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ParameterChangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusByte":
 		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "LightingLabelOptions":
+		return model.LightingLabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ReplyNetwork":
 		return model.ReplyNetworkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SerialNumber":

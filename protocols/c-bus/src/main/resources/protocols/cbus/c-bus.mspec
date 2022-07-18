@@ -238,9 +238,9 @@
             [simple   StatusRequest statusRequest                                                      ]
         ]
         [         *Normal
-            [simple   ApplicationIdContainer   application                                             ]
-            [reserved byte                     '0x00'                                                  ]
-            [simple   SALData                  salData                                                 ]
+            [simple   ApplicationIdContainer                application                                ]
+            [reserved byte                                  '0x00'                                     ]
+            [simple   SALData('application.applicationId')  salData                                    ]
         ]
     ]
     [optional Checksum      crc           'cBusOptions.srchk'                                          ] // checksum is optional but mspec checksum isn't
@@ -256,8 +256,8 @@
             [simple StatusRequest statusRequest                                                      ]
         ]
         [*        *Normal
-            [simple   ApplicationIdContainer application                                             ]
-            [simple   SALData                salData                                                 ]
+            [simple   ApplicationIdContainer                application                              ]
+            [simple   SALData('application.applicationId')  salData                                  ]
         ]
     ]
     [optional Checksum      crc           'cBusOptions.srchk'                                        ] // checksum is optional but mspec checksum isn't
@@ -1295,11 +1295,79 @@
     ]
 ]
 
-[type SALData
+// TODO: this is currently lightning only so we need more typeSwitched based on the applicationid
+[type SALData(ApplicationId applicationId)
+    [typeSwitch applicationId
+        ['RESERVED'                             *Reserved
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['FREE_USAGE'                           *FreeUsage
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['TEMPERATURE_BROADCAST'                *TemperatureBroadcast
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['ROOM_CONTROL_SYSTEM'                  *RoomControlSystem
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['LIGHTING'                             *Lighting
+            [simple LightingData lightingData]
+        ]
+        ['VENTILATION'                          *Ventilation
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['IRRIGATION_CONTROL'                   *IrrigationControl
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL'   *PoolsSpasPondsFountainsControl
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['HEATING'                              *Heating
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['AIR_CONDITIONING'                     *AirConditioning
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['TRIGGER_CONTROL'                      *TriggerControl
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['ENABLE_CONTROL'                       *EnableControl
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['AUDIO_AND_VIDEO'                      *AudioAndVideo
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['SECURITY'                             *Security
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['METERING'                             *Metering
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['ACCESS_CONTROL'                       *AccessControl
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['CLOCK_AND_TIMEKEEPING'                *ClockAndTimekeeping
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['TELEPHONY_STATUS_AND_CONTROL'         *TelephonyStatusAndControl
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['MEASUREMENT'                          *Measurement
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+        ['TESTING'                              *Testing
+            [validation '1==2' "Not yet implemented"] // TODO: implement me
+        ]
+    ]
+    // TODO: we need to check that we don't read the crc by accident
+    [optional SALData('applicationId') salData                                  ]
+]
+
+[type LightingData
     //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
-    [validation 'STATIC_CALL("knowsSALCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
-    [simple  SALCommandTypeContainer commandTypeContainer                                   ]
-    [virtual SALCommandType          commandType          'commandTypeContainer.commandType']
+    [validation 'STATIC_CALL("knowsLightingCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
+    [simple  LightingCommandTypeContainer commandTypeContainer                                   ]
+    [virtual LightingCommandType          commandType          'commandTypeContainer.commandType']
     [typeSwitch commandType
         ['OFF'            *Off
             [simple byte group                                                              ]
@@ -1314,41 +1382,39 @@
         ['TERMINATE_RAMP' *TerminateRamp
             [simple byte group                                                              ]
         ]
-        ['LABEL'          *Label(SALCommandTypeContainer commandTypeContainer)
-            [simple   byte            group                                                   ]
-            [simple   LabelOptions    labelOptions                                            ]
-            [optional Language        language      'labelOptions.labelType != LabelType.LOAD_DYNAMIC_ICON']
-            [array    byte      data        count 'commandTypeContainer.numBytes-((labelOptions.labelType != LabelType.LOAD_DYNAMIC_ICON)?3:2)'           ]
+        ['LABEL'          *Label(LightingCommandTypeContainer commandTypeContainer)
+            [simple   byte                  group                                                   ]
+            [simple   LightingLabelOptions  labelOptions                                            ]
+            [optional LightingLanguage      language      'labelOptions.labelType != LightingLabelType.LOAD_DYNAMIC_ICON']
+            [array    byte                  data        count 'commandTypeContainer.numBytes-((labelOptions.labelType != LightingLabelType.LOAD_DYNAMIC_ICON)?3:2)'           ]
         ]
     ]
-    // TODO: we need to check that we don't read the crc by accident
-    [optional SALData salData                                                               ]
 ]
 
-[type LabelOptions
-    [simple   bit           reservedBit7] // only for dynamic icon loading can switch to 1 (note this could use mspec reserved field but sadly this discards data)
-    [simple   LabelFlavour  labelFlavour]
-    [reserved bit           'false'     ]
-    [simple   bit           reservedBit4] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
-    [simple   LabelType     labelType   ]
-    [simple   bit           reservedBit0] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
+[type LightingLabelOptions
+    [simple   bit                   reservedBit7] // only for dynamic icon loading can switch to 1 (note this could use mspec reserved field but sadly this discards data)
+    [simple   LightingLabelFlavour  labelFlavour]
+    [reserved bit                   'false'     ]
+    [simple   bit                   reservedBit4] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
+    [simple   LightingLabelType     labelType   ]
+    [simple   bit                   reservedBit0] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
 ]
 
-[enum uint 2 LabelFlavour
+[enum uint 2 LightingLabelFlavour
     ['0' FLAVOUR_1              ]
     ['1' FLAVOUR_2              ]
     ['2' FLAVOUR_3              ]
     ['3' FLAVOUR_4              ]
 ]
 
-[enum uint 2 LabelType
+[enum uint 2 LightingLabelType
     ['0' TEXT_LABEL             ]
     ['1' PREDEFINED_ICON        ]
     ['2' LOAD_DYNAMIC_ICON      ]
     ['3' SET_PREFERRED_LANGUAGE ]
 ]
 
-[enum uint 8 Language
+[enum uint 8 LightingLanguage
     ['0x00' NO_LANGUAGE                 ]
     ['0x01' ENGLISH                     ]
     ['0x02' ENGLISH_AUSTRALIA           ]
@@ -1420,61 +1486,61 @@
     ['0xCA' CHINESE_CP936               ]
 ]
 
-[enum uint 8 SALCommandTypeContainer(SALCommandType commandType, uint 5 numBytes)
-    ['0x01' SALCommandOff                       ['OFF',             '1' ]]
-    ['0x79' SALCommandOn                        ['ON',              '1' ]]
-    ['0x02' SALCommandRampToLevel_Instantaneous ['RAMP_TO_LEVEL',   '1' ]]
-    ['0x0A' SALCommandRampToLevel_4Second       ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x12' SALCommandRampToLevel_8Second       ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x1A' SALCommandRampToLevel_12Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x22' SALCommandRampToLevel_20Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x2A' SALCommandRampToLevel_30Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x32' SALCommandRampToLevel_40Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x3A' SALCommandRampToLevel_60Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x42' SALCommandRampToLevel_90Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x4A' SALCommandRampToLevel_120Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x52' SALCommandRampToLevel_180Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x5A' SALCommandRampToLevel_300Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x62' SALCommandRampToLevel_420Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x6A' SALCommandRampToLevel_600Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x72' SALCommandRampToLevel_900Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x7A' SALCommandRampToLevel_1020Second    ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x09' SALCommandTerminateRamp             ['TERMINATE_RAMP',  '1' ]]
-    ['0xA0' SALCommandLabel_0Bytes              ['LABEL',           '0' ]]
-    ['0xA1' SALCommandLabel_1Bytes              ['LABEL',           '1' ]]
-    ['0xA2' SALCommandLabel_2Bytes              ['LABEL',           '2' ]]
-    ['0xA3' SALCommandLabel_3Bytes              ['LABEL',           '3' ]]
-    ['0xA4' SALCommandLabel_4Bytes              ['LABEL',           '4' ]]
-    ['0xA5' SALCommandLabel_5Bytes              ['LABEL',           '5' ]]
-    ['0xA6' SALCommandLabel_6Bytes              ['LABEL',           '6' ]]
-    ['0xA7' SALCommandLabel_7Bytes              ['LABEL',           '7' ]]
-    ['0xA8' SALCommandLabel_8Bytes              ['LABEL',           '8' ]]
-    ['0xA9' SALCommandLabel_9Bytes              ['LABEL',           '9' ]]
-    ['0xAA' SALCommandLabel_10Bytes             ['LABEL',          '10' ]]
-    ['0xAB' SALCommandLabel_11Bytes             ['LABEL',          '11' ]]
-    ['0xAC' SALCommandLabel_12Bytes             ['LABEL',          '12' ]]
-    ['0xAD' SALCommandLabel_13Bytes             ['LABEL',          '13' ]]
-    ['0xAE' SALCommandLabel_14Bytes             ['LABEL',          '14' ]]
-    ['0xAF' SALCommandLabel_15Bytes             ['LABEL',          '15' ]]
-    ['0xB0' SALCommandLabel_16Bytes             ['LABEL',          '16' ]]
-    ['0xB1' SALCommandLabel_17Bytes             ['LABEL',          '17' ]]
-    ['0xB2' SALCommandLabel_18Bytes             ['LABEL',          '18' ]]
-    ['0xB3' SALCommandLabel_19Bytes             ['LABEL',          '19' ]]
-    ['0xB4' SALCommandLabel_20Bytes             ['LABEL',          '20' ]]
-    ['0xB5' SALCommandLabel_21Bytes             ['LABEL',          '21' ]]
-    ['0xB6' SALCommandLabel_22Bytes             ['LABEL',          '22' ]]
-    ['0xB7' SALCommandLabel_23Bytes             ['LABEL',          '23' ]]
-    ['0xB8' SALCommandLabel_24Bytes             ['LABEL',          '24' ]]
-    ['0xB9' SALCommandLabel_25Bytes             ['LABEL',          '25' ]]
-    ['0xBA' SALCommandLabel_26Bytes             ['LABEL',          '26' ]]
-    ['0xBB' SALCommandLabel_27Bytes             ['LABEL',          '27' ]]
-    ['0xBC' SALCommandLabel_28Bytes             ['LABEL',          '28' ]]
-    ['0xBD' SALCommandLabel_29Bytes             ['LABEL',          '29' ]]
-    ['0xBE' SALCommandLabel_30Bytes             ['LABEL',          '30' ]]
-    ['0xBF' SALCommandLabel_32Bytes             ['LABEL',          '31' ]]
+[enum uint 8 LightingCommandTypeContainer(LightingCommandType commandType, uint 5 numBytes)
+    ['0x01' LightingCommandOff                       ['OFF',             '1' ]]
+    ['0x79' LightingCommandOn                        ['ON',              '1' ]]
+    ['0x02' LightingCommandRampToLevel_Instantaneous ['RAMP_TO_LEVEL',   '1' ]]
+    ['0x0A' LightingCommandRampToLevel_4Second       ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x12' LightingCommandRampToLevel_8Second       ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x1A' LightingCommandRampToLevel_12Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x22' LightingCommandRampToLevel_20Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x2A' LightingCommandRampToLevel_30Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x32' LightingCommandRampToLevel_40Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x3A' LightingCommandRampToLevel_60Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x42' LightingCommandRampToLevel_90Second      ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x4A' LightingCommandRampToLevel_120Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x52' LightingCommandRampToLevel_180Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x5A' LightingCommandRampToLevel_300Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x62' LightingCommandRampToLevel_420Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x6A' LightingCommandRampToLevel_600Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x72' LightingCommandRampToLevel_900Second     ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x7A' LightingCommandRampToLevel_1020Second    ['RAMP_TO_LEVEL',   '2' ]]
+    ['0x09' LightingCommandTerminateRamp             ['TERMINATE_RAMP',  '1' ]]
+    ['0xA0' LightingCommandLabel_0Bytes              ['LABEL',           '0' ]]
+    ['0xA1' LightingCommandLabel_1Bytes              ['LABEL',           '1' ]]
+    ['0xA2' LightingCommandLabel_2Bytes              ['LABEL',           '2' ]]
+    ['0xA3' LightingCommandLabel_3Bytes              ['LABEL',           '3' ]]
+    ['0xA4' LightingCommandLabel_4Bytes              ['LABEL',           '4' ]]
+    ['0xA5' LightingCommandLabel_5Bytes              ['LABEL',           '5' ]]
+    ['0xA6' LightingCommandLabel_6Bytes              ['LABEL',           '6' ]]
+    ['0xA7' LightingCommandLabel_7Bytes              ['LABEL',           '7' ]]
+    ['0xA8' LightingCommandLabel_8Bytes              ['LABEL',           '8' ]]
+    ['0xA9' LightingCommandLabel_9Bytes              ['LABEL',           '9' ]]
+    ['0xAA' LightingCommandLabel_10Bytes             ['LABEL',          '10' ]]
+    ['0xAB' LightingCommandLabel_11Bytes             ['LABEL',          '11' ]]
+    ['0xAC' LightingCommandLabel_12Bytes             ['LABEL',          '12' ]]
+    ['0xAD' LightingCommandLabel_13Bytes             ['LABEL',          '13' ]]
+    ['0xAE' LightingCommandLabel_14Bytes             ['LABEL',          '14' ]]
+    ['0xAF' LightingCommandLabel_15Bytes             ['LABEL',          '15' ]]
+    ['0xB0' LightingCommandLabel_16Bytes             ['LABEL',          '16' ]]
+    ['0xB1' LightingCommandLabel_17Bytes             ['LABEL',          '17' ]]
+    ['0xB2' LightingCommandLabel_18Bytes             ['LABEL',          '18' ]]
+    ['0xB3' LightingCommandLabel_19Bytes             ['LABEL',          '19' ]]
+    ['0xB4' LightingCommandLabel_20Bytes             ['LABEL',          '20' ]]
+    ['0xB5' LightingCommandLabel_21Bytes             ['LABEL',          '21' ]]
+    ['0xB6' LightingCommandLabel_22Bytes             ['LABEL',          '22' ]]
+    ['0xB7' LightingCommandLabel_23Bytes             ['LABEL',          '23' ]]
+    ['0xB8' LightingCommandLabel_24Bytes             ['LABEL',          '24' ]]
+    ['0xB9' LightingCommandLabel_25Bytes             ['LABEL',          '25' ]]
+    ['0xBA' LightingCommandLabel_26Bytes             ['LABEL',          '26' ]]
+    ['0xBB' LightingCommandLabel_27Bytes             ['LABEL',          '27' ]]
+    ['0xBC' LightingCommandLabel_28Bytes             ['LABEL',          '28' ]]
+    ['0xBD' LightingCommandLabel_29Bytes             ['LABEL',          '29' ]]
+    ['0xBE' LightingCommandLabel_30Bytes             ['LABEL',          '30' ]]
+    ['0xBF' LightingCommandLabel_32Bytes             ['LABEL',          '31' ]]
 ]
 
-[enum uint 4 SALCommandType
+[enum uint 4 LightingCommandType
     ['0x00' OFF           ]
     ['0x01' ON            ]
     ['0x02' RAMP_TO_LEVEL ]
@@ -1581,30 +1647,28 @@
 [type MonitoredSAL(CBusOptions cBusOptions)
     [peek    byte     salType             ]
     [typeSwitch salType
-        ['0x05' MonitoredSALLongFormSmartMode
+        ['0x05' *LongFormSmartMode
             [reserved byte '0x05']
-            [peek    uint 24     terminatingByte                        ]
+            [peek    uint 24     terminatingByte                                ]
             // TODO: this should be subSub type but mspec doesn't support that yet directly
-            [virtual bit isUnitAddress '(terminatingByte & 0xff) == 0x00' ]
-            [optional   UnitAddress
-                         unitAddress     'isUnitAddress'                ]
-            [optional   BridgeAddress
-                         bridgeAddress   '!isUnitAddress'               ]
-            [simple     SerialInterfaceAddress
-                         serialInterfaceAddress                         ]
-            [optional   byte    reservedByte    'isUnitAddress'         ]
+            [virtual  bit isUnitAddress '(terminatingByte & 0xff) == 0x00'      ]
+            [optional UnitAddress            unitAddress     'isUnitAddress'    ]
+            [optional BridgeAddress          bridgeAddress   '!isUnitAddress'   ]
+            [simple   ApplicationIdContainer application                        ]
+            [optional byte                   reservedByte    'isUnitAddress'    ]
             [validation 'isUnitAddress && reservedByte == 0x00 || !isUnitAddress' "invalid unit address"]
-            [optional   ReplyNetwork     replyNetwork       '!isUnitAddress'        ]
+            [optional ReplyNetwork           replyNetwork       '!isUnitAddress']
+            [optional SALData('application.applicationId')   salData            ]
         ]
-        [    MonitoredSALShortFormBasicMode
-            [peek    byte                  counts                                  ]
-            [optional BridgeCount          bridgeCount     'counts != 0x00'        ]
-            [optional NetworkNumber        networkNumber   'counts != 0x00'        ]
-            [optional byte                 noCounts        'counts == 0x00'        ] // TODO: add validation that this is 0x00 when no bridge and network number are set
-            [simple ApplicationIdContainer application                             ]
+        [*      *ShortFormBasicMode
+            [peek     byte                   counts                             ]
+            [optional BridgeCount            bridgeCount     'counts != 0x00'   ]
+            [optional NetworkNumber          networkNumber   'counts != 0x00'   ]
+            [optional byte                   noCounts        'counts == 0x00'   ] // TODO: add validation that this is 0x00 when no bridge and network number are set
+            [simple   ApplicationIdContainer application                        ]
+            [optional SALData('application.applicationId')  salData             ]
         ]
     ]
-    [optional SALData salData                                               ]
     [optional Checksum      crc      'cBusOptions.srchk'                                                    ] // checksum is optional but mspec checksum isn't
 ]
 
