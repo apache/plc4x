@@ -1024,4 +1024,10 @@ public class ReferenceTest {
             }
         }
     }
+
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2010%20-%20C-Bus%20Ventilation%20Application.pdf
+    @Nested
+    class VentilationApplicationTest{
+        // TODO: no tests described here but it should work by adjusting the values from Lightning...
+    }
 }

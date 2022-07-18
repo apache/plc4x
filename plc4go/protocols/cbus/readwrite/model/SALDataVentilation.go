@@ -31,6 +31,8 @@ type SALDataVentilation interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetVentilationData returns VentilationData (property field)
+	GetVentilationData() LightingData
 }
 
 // SALDataVentilationExactly can be used when we want exactly this type and not a type which fulfills SALDataVentilation.
@@ -43,6 +45,7 @@ type SALDataVentilationExactly interface {
 // _SALDataVentilation is the data-structure of this message
 type _SALDataVentilation struct {
 	*_SALData
+	VentilationData LightingData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataVentilation) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataVentilation) GetVentilationData() LightingData {
+	return m.VentilationData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataVentilation factory function for _SALDataVentilation
-func NewSALDataVentilation(salData SALData) *_SALDataVentilation {
+func NewSALDataVentilation(ventilationData LightingData, salData SALData) *_SALDataVentilation {
 	_result := &_SALDataVentilation{
-		_SALData: NewSALData(salData),
+		VentilationData: ventilationData,
+		_SALData:        NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataVentilation) GetLengthInBits() uint16 {
 func (m *_SALDataVentilation) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (ventilationData)
+	lengthInBits += m.VentilationData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataVentilationParse(readBuffer utils.ReadBuffer, applicationId Applicat
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"VENTILATION Not yet implemented"})
+	// Simple Field (ventilationData)
+	if pullErr := readBuffer.PullContext("ventilationData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for ventilationData")
+	}
+	_ventilationData, _ventilationDataErr := LightingDataParse(readBuffer)
+	if _ventilationDataErr != nil {
+		return nil, errors.Wrap(_ventilationDataErr, "Error parsing 'ventilationData' field of SALDataVentilation")
+	}
+	ventilationData := _ventilationData.(LightingData)
+	if closeErr := readBuffer.CloseContext("ventilationData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for ventilationData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataVentilation"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataVentilationParse(readBuffer utils.ReadBuffer, applicationId Applicat
 
 	// Create a partially initialized instance
 	_child := &_SALDataVentilation{
-		_SALData: &_SALData{},
+		VentilationData: ventilationData,
+		_SALData:        &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataVentilation) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataVentilation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataVentilation")
+		}
+
+		// Simple Field (ventilationData)
+		if pushErr := writeBuffer.PushContext("ventilationData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for ventilationData")
+		}
+		_ventilationDataErr := writeBuffer.WriteSerializable(m.GetVentilationData())
+		if popErr := writeBuffer.PopContext("ventilationData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for ventilationData")
+		}
+		if _ventilationDataErr != nil {
+			return errors.Wrap(_ventilationDataErr, "Error serializing 'ventilationData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataVentilation"); popErr != nil {

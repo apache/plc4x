@@ -1314,7 +1314,8 @@
             [simple LightingData lightingData]
         ]
         ['VENTILATION'                          *Ventilation
-            [validation '1==2' "VENTILATION Not yet implemented"] // TODO: implement me
+            // Note: the documentation states that the data for ventilation uses LightingData
+            [simple LightingData ventilationData]
         ]
         ['IRRIGATION_CONTROL'                   *IrrigationControl
             [validation '1==2' "IRRIGATION_CONTROL Not yet implemented"] // TODO: implement me
