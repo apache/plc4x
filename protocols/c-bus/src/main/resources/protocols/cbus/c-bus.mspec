@@ -1299,64 +1299,64 @@
 [type SALData(ApplicationId applicationId)
     [typeSwitch applicationId
         ['RESERVED'                             *Reserved
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "RESERVED Not yet implemented"] // TODO: implement me
         ]
         ['FREE_USAGE'                           *FreeUsage
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "FREE_USAGE Not yet implemented"] // TODO: implement me
         ]
         ['TEMPERATURE_BROADCAST'                *TemperatureBroadcast
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "TEMPERATURE_BROADCAST Not yet implemented"] // TODO: implement me
         ]
         ['ROOM_CONTROL_SYSTEM'                  *RoomControlSystem
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "ROOM_CONTROL_SYSTEM Not yet implemented"] // TODO: implement me
         ]
         ['LIGHTING'                             *Lighting
             [simple LightingData lightingData]
         ]
         ['VENTILATION'                          *Ventilation
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "VENTILATION Not yet implemented"] // TODO: implement me
         ]
         ['IRRIGATION_CONTROL'                   *IrrigationControl
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "IRRIGATION_CONTROL Not yet implemented"] // TODO: implement me
         ]
         ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL'   *PoolsSpasPondsFountainsControl
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL Not yet implemented"] // TODO: implement me
         ]
         ['HEATING'                              *Heating
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "HEATING Not yet implemented"] // TODO: implement me
         ]
         ['AIR_CONDITIONING'                     *AirConditioning
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "AIR_CONDITIONING Not yet implemented"] // TODO: implement me
         ]
         ['TRIGGER_CONTROL'                      *TriggerControl
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "TRIGGER_CONTROL Not yet implemented"] // TODO: implement me
         ]
         ['ENABLE_CONTROL'                       *EnableControl
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "ENABLE_CONTROL Not yet implemented"] // TODO: implement me
         ]
         ['AUDIO_AND_VIDEO'                      *AudioAndVideo
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "AUDIO_AND_VIDEO Not yet implemented"] // TODO: implement me
         ]
         ['SECURITY'                             *Security
             [simple SecurityData securityData]
         ]
         ['METERING'                             *Metering
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [simple MeteringData meteringData]
         ]
         ['ACCESS_CONTROL'                       *AccessControl
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "ACCESS_CONTROL Not yet implemented"] // TODO: implement me
         ]
         ['CLOCK_AND_TIMEKEEPING'                *ClockAndTimekeeping
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "CLOCK_AND_TIMEKEEPING Not yet implemented"] // TODO: implement me
         ]
         ['TELEPHONY_STATUS_AND_CONTROL'         *TelephonyStatusAndControl
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "TELEPHONY_STATUS_AND_CONTROL Not yet implemented"] // TODO: implement me
         ]
         ['MEASUREMENT'                          *Measurement
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "MEASUREMENT Not yet implemented"] // TODO: implement me
         ]
         ['TESTING'                              *Testing
-            [validation '1==2' "Not yet implemented"] // TODO: implement me
+            [validation '1==2' "TESTING Not yet implemented"] // TODO: implement me
         ]
     ]
     // TODO: we need to check that we don't read the crc by accident
@@ -1863,6 +1863,56 @@
     ['0x1' ZONE_UNSEALED    ]
     ['0x2' ZONE_OPEN        ]
     ['0x3' ZONE_SHORT       ]
+]
+
+[type MeteringData
+    //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
+    [validation 'STATIC_CALL("knowsMeteringCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
+    [simple  MeteringCommandTypeContainer commandTypeContainer                                   ]
+    [virtual MeteringCommandType          commandType          'commandTypeContainer.commandType']
+    [simple byte argument                                                               ]
+    [typeSwitch commandType, argument
+        ['EVENT', '0x01'       *MeasureElectricity
+        ]
+        ['EVENT', '0x02'       *MeasureGas
+        ]
+        ['EVENT', '0x03'       *MeasureDrinkingWater
+        ]
+        ['EVENT', '0x04'       *MeasureOtherWater
+        ]
+        ['EVENT', '0x05'       *MeasureOil
+        ]
+        ['EVENT', '0x81'       *ElectricityConsumption
+            [simple uint 32 kWhr      ] // kilo watt hours
+        ]
+        ['EVENT', '0x82'       *GasConsumption
+            [simple uint 32 mJ        ] // mega joule
+        ]
+        ['EVENT', '0x83'       *DrinkingWaterConsumption
+            [simple uint 32 kL        ] // kilo litre
+        ]
+        ['EVENT', '0x84'       *OtherWaterConsumption
+            [simple uint 32 kL        ] // kilo litre
+        ]
+        ['EVENT', '0x85'       *OilConsumption
+            [simple uint 32 L         ] // litre
+        ]
+    ]
+]
+
+[enum uint 8 MeteringCommandTypeContainer(MeteringCommandType commandType, uint 5 numBytes)
+    ['0x08' MeteringCommandEvent_0Bytes                    ['EVENT',  '0']]
+    ['0x09' MeteringCommandEvent_1Bytes                    ['EVENT',  '1']]
+    ['0x0A' MeteringCommandEvent_2Bytes                    ['EVENT',  '2']]
+    ['0x0B' MeteringCommandEvent_3Bytes                    ['EVENT',  '3']]
+    ['0x0C' MeteringCommandEvent_4Bytes                    ['EVENT',  '4']]
+    ['0x0D' MeteringCommandEvent_5Bytes                    ['EVENT',  '5']]
+    ['0x0E' MeteringCommandEvent_6Bytes                    ['EVENT',  '6']]
+    ['0x0F' MeteringCommandEvent_7Bytes                    ['EVENT',  '7']]
+]
+
+[enum uint 4 MeteringCommandType
+    ['0x00' EVENT     ]
 ]
 
 [type ReplyOrConfirmation(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)

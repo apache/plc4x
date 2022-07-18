@@ -116,7 +116,7 @@ func SALDataReservedParse(readBuffer utils.ReadBuffer, applicationId Application
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{"RESERVED Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataReserved"); closeErr != nil {

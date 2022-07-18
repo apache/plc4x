@@ -42,6 +42,8 @@ func init() {
 
 func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
+	case "MeteringData":
+		return model.MeteringDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress1":

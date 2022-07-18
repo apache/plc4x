@@ -116,7 +116,7 @@ func SALDataAirConditioningParse(readBuffer utils.ReadBuffer, applicationId Appl
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{"AIR_CONDITIONING Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataAirConditioning"); closeErr != nil {

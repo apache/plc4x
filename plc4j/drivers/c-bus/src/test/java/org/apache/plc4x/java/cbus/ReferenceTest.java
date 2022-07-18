@@ -874,7 +874,6 @@ public class ReferenceTest {
     }
 
 
-    @Disabled("needs to be implemented")
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2006%20-%20C-Bus%20Metering%20Application.pdf
     @Nested
     class MeteringApplicationsTest{
@@ -908,7 +907,6 @@ public class ReferenceTest {
 
         }
 
-        @Disabled("this application needs to be implemented")
         //6.11.2
         @Nested
         class MeterMeasurementDevicesendsElectricityUse{

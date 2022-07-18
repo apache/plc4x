@@ -31,6 +31,8 @@ type SALDataMetering interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetMeteringData returns MeteringData (property field)
+	GetMeteringData() MeteringData
 }
 
 // SALDataMeteringExactly can be used when we want exactly this type and not a type which fulfills SALDataMetering.
@@ -43,6 +45,7 @@ type SALDataMeteringExactly interface {
 // _SALDataMetering is the data-structure of this message
 type _SALDataMetering struct {
 	*_SALData
+	MeteringData MeteringData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataMetering) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataMetering) GetMeteringData() MeteringData {
+	return m.MeteringData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataMetering factory function for _SALDataMetering
-func NewSALDataMetering(salData SALData) *_SALDataMetering {
+func NewSALDataMetering(meteringData MeteringData, salData SALData) *_SALDataMetering {
 	_result := &_SALDataMetering{
-		_SALData: NewSALData(salData),
+		MeteringData: meteringData,
+		_SALData:     NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataMetering) GetLengthInBits() uint16 {
 func (m *_SALDataMetering) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (meteringData)
+	lengthInBits += m.MeteringData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataMeteringParse(readBuffer utils.ReadBuffer, applicationId Application
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+	// Simple Field (meteringData)
+	if pullErr := readBuffer.PullContext("meteringData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for meteringData")
+	}
+	_meteringData, _meteringDataErr := MeteringDataParse(readBuffer)
+	if _meteringDataErr != nil {
+		return nil, errors.Wrap(_meteringDataErr, "Error parsing 'meteringData' field of SALDataMetering")
+	}
+	meteringData := _meteringData.(MeteringData)
+	if closeErr := readBuffer.CloseContext("meteringData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for meteringData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataMetering"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataMeteringParse(readBuffer utils.ReadBuffer, applicationId Application
 
 	// Create a partially initialized instance
 	_child := &_SALDataMetering{
-		_SALData: &_SALData{},
+		MeteringData: meteringData,
+		_SALData:     &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataMetering) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataMetering"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataMetering")
+		}
+
+		// Simple Field (meteringData)
+		if pushErr := writeBuffer.PushContext("meteringData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for meteringData")
+		}
+		_meteringDataErr := writeBuffer.WriteSerializable(m.GetMeteringData())
+		if popErr := writeBuffer.PopContext("meteringData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for meteringData")
+		}
+		if _meteringDataErr != nil {
+			return errors.Wrap(_meteringDataErr, "Error serializing 'meteringData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataMetering"); popErr != nil {

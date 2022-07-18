@@ -116,7 +116,7 @@ func SALDataPoolsSpasPondsFountainsControlParse(readBuffer utils.ReadBuffer, app
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{"POOLS_SPAS_PONDS_FOUNTAINS_CONTROL Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataPoolsSpasPondsFountainsControl"); closeErr != nil {

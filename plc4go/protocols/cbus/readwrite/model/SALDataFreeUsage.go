@@ -116,7 +116,7 @@ func SALDataFreeUsageParse(readBuffer utils.ReadBuffer, applicationId Applicatio
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{"FREE_USAGE Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataFreeUsage"); closeErr != nil {

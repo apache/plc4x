@@ -116,7 +116,7 @@ func SALDataAudioAndVideoParse(readBuffer utils.ReadBuffer, applicationId Applic
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{"AUDIO_AND_VIDEO Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataAudioAndVideo"); closeErr != nil {

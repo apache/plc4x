@@ -32,6 +32,8 @@ type CbusParserHelper struct {
 
 func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
+	case "MeteringData":
+		return model.MeteringDataParse(io)
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(io)
 	case "ApplicationAddress1":

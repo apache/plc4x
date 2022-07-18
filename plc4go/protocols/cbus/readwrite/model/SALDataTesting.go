@@ -116,7 +116,7 @@ func SALDataTestingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{"TESTING Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTesting"); closeErr != nil {

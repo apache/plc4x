@@ -116,7 +116,7 @@ func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{"HEATING Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataHeating"); closeErr != nil {
