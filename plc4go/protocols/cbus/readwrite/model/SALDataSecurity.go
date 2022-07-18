@@ -31,6 +31,8 @@ type SALDataSecurity interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetSecurityData returns SecurityData (property field)
+	GetSecurityData() SecurityData
 }
 
 // SALDataSecurityExactly can be used when we want exactly this type and not a type which fulfills SALDataSecurity.
@@ -43,6 +45,7 @@ type SALDataSecurityExactly interface {
 // _SALDataSecurity is the data-structure of this message
 type _SALDataSecurity struct {
 	*_SALData
+	SecurityData SecurityData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataSecurity) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataSecurity) GetSecurityData() SecurityData {
+	return m.SecurityData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataSecurity factory function for _SALDataSecurity
-func NewSALDataSecurity(salData SALData) *_SALDataSecurity {
+func NewSALDataSecurity(securityData SecurityData, salData SALData) *_SALDataSecurity {
 	_result := &_SALDataSecurity{
-		_SALData: NewSALData(salData),
+		SecurityData: securityData,
+		_SALData:     NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataSecurity) GetLengthInBits() uint16 {
 func (m *_SALDataSecurity) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (securityData)
+	lengthInBits += m.SecurityData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataSecurityParse(readBuffer utils.ReadBuffer, applicationId Application
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Not yet implemented"})
+	// Simple Field (securityData)
+	if pullErr := readBuffer.PullContext("securityData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for securityData")
+	}
+	_securityData, _securityDataErr := SecurityDataParse(readBuffer)
+	if _securityDataErr != nil {
+		return nil, errors.Wrap(_securityDataErr, "Error parsing 'securityData' field of SALDataSecurity")
+	}
+	securityData := _securityData.(SecurityData)
+	if closeErr := readBuffer.CloseContext("securityData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for securityData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataSecurity"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataSecurityParse(readBuffer utils.ReadBuffer, applicationId Application
 
 	// Create a partially initialized instance
 	_child := &_SALDataSecurity{
-		_SALData: &_SALData{},
+		SecurityData: securityData,
+		_SALData:     &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataSecurity) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataSecurity"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataSecurity")
+		}
+
+		// Simple Field (securityData)
+		if pushErr := writeBuffer.PushContext("securityData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for securityData")
+		}
+		_securityDataErr := writeBuffer.WriteSerializable(m.GetSecurityData())
+		if popErr := writeBuffer.PopContext("securityData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for securityData")
+		}
+		if _securityDataErr != nil {
+			return errors.Wrap(_securityDataErr, "Error serializing 'securityData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataSecurity"); popErr != nil {

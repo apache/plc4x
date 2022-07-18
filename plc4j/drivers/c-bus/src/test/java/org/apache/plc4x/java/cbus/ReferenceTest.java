@@ -785,7 +785,6 @@ public class ReferenceTest {
         }
     }
 
-    @Disabled("needs to be implemented")
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2005%20-%20C-Bus%20Security%20Application.pdf
     @Nested
     class SecurityApplicationsTest {

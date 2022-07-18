@@ -131,3 +131,13 @@ func KnowsLightingCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	}
 	return LightingCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsSecurityCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return SecurityCommandTypeContainerKnows(readUint8)
+}
