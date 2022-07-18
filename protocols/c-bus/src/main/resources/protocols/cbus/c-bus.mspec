@@ -1332,7 +1332,7 @@
             [simple TriggerControlData triggerControlData]
         ]
         ['ENABLE_CONTROL'                       *EnableControl
-            [validation '1==2' "ENABLE_CONTROL Not yet implemented"] // TODO: implement me
+            [simple EnableControlData enableControlData]
         ]
         ['AUDIO_AND_VIDEO'                      *AudioAndVideo
             [validation '1==2' "AUDIO_AND_VIDEO Not yet implemented"] // TODO: implement me
@@ -2026,6 +2026,38 @@
     ['1' PREDEFINED_ICON        ]
     ['2' LOAD_DYNAMIC_ICON      ]
     ['3' SET_PREFERRED_LANGUAGE ]
+]
+
+[type EnableControlData
+    //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
+    [validation 'STATIC_CALL("knowsEnableControlCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
+    [simple  EnableControlCommandTypeContainer commandTypeContainer                                   ]
+    [virtual EnableControlCommandType          commandType          'commandTypeContainer.commandType']
+    [simple  byte                              enableNetworkVariable                                  ]
+    [simple  byte                              value                                                  ]
+]
+
+[enum uint 8 EnableControlCommandTypeContainer(EnableControlCommandType commandType, uint 5 numBytes)
+    ['0x02' EnableControlCommandSetNetworkVariable0_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x0A' EnableControlCommandSetNetworkVariable1_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x12' EnableControlCommandSetNetworkVariable2_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x1A' EnableControlCommandSetNetworkVariable3_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x22' EnableControlCommandSetNetworkVariable4_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x2A' EnableControlCommandSetNetworkVariable5_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x32' EnableControlCommandSetNetworkVariable6_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x3A' EnableControlCommandSetNetworkVariable7_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x42' EnableControlCommandSetNetworkVariable8_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x4A' EnableControlCommandSetNetworkVariable9_2Bytes       ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x52' EnableControlCommandSetNetworkVariable10_2Bytes      ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x5A' EnableControlCommandSetNetworkVariable11_2Bytes      ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x62' EnableControlCommandSetNetworkVariable12_2Bytes      ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x6A' EnableControlCommandSetNetworkVariable13_2Bytes      ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x72' EnableControlCommandSetNetworkVariable14_2Bytes      ['SET_NETWORK_VARIABLE',   '2']]
+    ['0x7A' EnableControlCommandSetNetworkVariable15_2Bytes      ['SET_NETWORK_VARIABLE',   '2']]
+]
+
+[enum uint 4 EnableControlCommandType
+    ['0x00' SET_NETWORK_VARIABLE   ]
 ]
 
 [type ReplyOrConfirmation(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)

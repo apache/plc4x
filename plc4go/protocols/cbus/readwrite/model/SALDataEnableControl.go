@@ -31,6 +31,8 @@ type SALDataEnableControl interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetEnableControlData returns EnableControlData (property field)
+	GetEnableControlData() EnableControlData
 }
 
 // SALDataEnableControlExactly can be used when we want exactly this type and not a type which fulfills SALDataEnableControl.
@@ -43,6 +45,7 @@ type SALDataEnableControlExactly interface {
 // _SALDataEnableControl is the data-structure of this message
 type _SALDataEnableControl struct {
 	*_SALData
+	EnableControlData EnableControlData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataEnableControl) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataEnableControl) GetEnableControlData() EnableControlData {
+	return m.EnableControlData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataEnableControl factory function for _SALDataEnableControl
-func NewSALDataEnableControl(salData SALData) *_SALDataEnableControl {
+func NewSALDataEnableControl(enableControlData EnableControlData, salData SALData) *_SALDataEnableControl {
 	_result := &_SALDataEnableControl{
-		_SALData: NewSALData(salData),
+		EnableControlData: enableControlData,
+		_SALData:          NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataEnableControl) GetLengthInBits() uint16 {
 func (m *_SALDataEnableControl) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (enableControlData)
+	lengthInBits += m.EnableControlData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataEnableControlParse(readBuffer utils.ReadBuffer, applicationId Applic
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"ENABLE_CONTROL Not yet implemented"})
+	// Simple Field (enableControlData)
+	if pullErr := readBuffer.PullContext("enableControlData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for enableControlData")
+	}
+	_enableControlData, _enableControlDataErr := EnableControlDataParse(readBuffer)
+	if _enableControlDataErr != nil {
+		return nil, errors.Wrap(_enableControlDataErr, "Error parsing 'enableControlData' field of SALDataEnableControl")
+	}
+	enableControlData := _enableControlData.(EnableControlData)
+	if closeErr := readBuffer.CloseContext("enableControlData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for enableControlData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataEnableControl"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataEnableControlParse(readBuffer utils.ReadBuffer, applicationId Applic
 
 	// Create a partially initialized instance
 	_child := &_SALDataEnableControl{
-		_SALData: &_SALData{},
+		EnableControlData: enableControlData,
+		_SALData:          &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataEnableControl) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataEnableControl"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataEnableControl")
+		}
+
+		// Simple Field (enableControlData)
+		if pushErr := writeBuffer.PushContext("enableControlData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for enableControlData")
+		}
+		_enableControlDataErr := writeBuffer.WriteSerializable(m.GetEnableControlData())
+		if popErr := writeBuffer.PopContext("enableControlData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for enableControlData")
+		}
+		if _enableControlDataErr != nil {
+			return errors.Wrap(_enableControlDataErr, "Error serializing 'enableControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataEnableControl"); popErr != nil {

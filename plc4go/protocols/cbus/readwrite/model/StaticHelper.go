@@ -161,3 +161,13 @@ func KnowsTriggerControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	}
 	return TriggerControlCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsEnableControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return EnableControlCommandTypeContainerKnows(readUint8)
+}

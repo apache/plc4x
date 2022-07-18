@@ -44,6 +44,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	switch typeName {
 	case "MeteringData":
 		return model.MeteringDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "EnableControlData":
+		return model.EnableControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress1":

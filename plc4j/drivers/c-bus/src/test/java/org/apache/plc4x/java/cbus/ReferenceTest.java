@@ -967,8 +967,38 @@ public class ReferenceTest {
                 System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
                 assertMessageMatches(bytes, msg);
             }
-
         }
+    }
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2008%20-%20C-Bus%20Enable%20Control%20Application.pdf
+    @Nested
+    class EnableControlApplicationsTest{
 
+        //8.11
+        @Nested
+        class Examples{
+            @Test
+            void LocalTrigger() throws Exception {
+                byte[] bytes = "\\05CB0002378275\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void RemoteTrigger() throws Exception {
+                byte[] bytes = "\\035609CB02378216\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+        }
     }
 }
