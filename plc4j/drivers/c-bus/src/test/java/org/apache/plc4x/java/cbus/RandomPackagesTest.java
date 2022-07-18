@@ -706,7 +706,6 @@ public class RandomPackagesTest {
                     assertMessageMatches(bytes, msg);
                 }
 
-                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
                 @Test
                 void WriteIconBitmapData1() throws Exception {
                     byte[] bytes = "\\053800A80104AAF05500FF50\r".getBytes(StandardCharsets.UTF_8);
@@ -719,7 +718,6 @@ public class RandomPackagesTest {
                     assertMessageMatches(bytes, msg);
                 }
 
-                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
                 @Test
                 void WriteIconBitmapData2() throws Exception {
                     byte[] bytes = "\\053800A801040000F0F00F00\r".getBytes(StandardCharsets.UTF_8);
@@ -732,7 +730,6 @@ public class RandomPackagesTest {
                     assertMessageMatches(bytes, msg);
                 }
 
-                @Disabled("This seems to be a bad example... neither 08 for options nor 00 for language make any sense")
                 @Test
                 void useDynamicIcon() throws Exception {
                     byte[] bytes = "\\053800A401080022\r".getBytes(StandardCharsets.UTF_8);

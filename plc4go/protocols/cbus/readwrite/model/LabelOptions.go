@@ -31,10 +31,16 @@ import (
 type LabelOptions interface {
 	utils.LengthAware
 	utils.Serializable
+	// GetReservedBit7 returns ReservedBit7 (property field)
+	GetReservedBit7() bool
 	// GetLabelFlavour returns LabelFlavour (property field)
 	GetLabelFlavour() LabelFlavour
+	// GetReservedBit4 returns ReservedBit4 (property field)
+	GetReservedBit4() bool
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() LabelType
+	// GetReservedBit0 returns ReservedBit0 (property field)
+	GetReservedBit0() bool
 }
 
 // LabelOptionsExactly can be used when we want exactly this type and not a type which fulfills LabelOptions.
@@ -46,8 +52,11 @@ type LabelOptionsExactly interface {
 
 // _LabelOptions is the data-structure of this message
 type _LabelOptions struct {
+	ReservedBit7 bool
 	LabelFlavour LabelFlavour
+	ReservedBit4 bool
 	LabelType    LabelType
+	ReservedBit0 bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -55,12 +64,24 @@ type _LabelOptions struct {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
+func (m *_LabelOptions) GetReservedBit7() bool {
+	return m.ReservedBit7
+}
+
 func (m *_LabelOptions) GetLabelFlavour() LabelFlavour {
 	return m.LabelFlavour
 }
 
+func (m *_LabelOptions) GetReservedBit4() bool {
+	return m.ReservedBit4
+}
+
 func (m *_LabelOptions) GetLabelType() LabelType {
 	return m.LabelType
+}
+
+func (m *_LabelOptions) GetReservedBit0() bool {
+	return m.ReservedBit0
 }
 
 ///////////////////////
@@ -69,8 +90,8 @@ func (m *_LabelOptions) GetLabelType() LabelType {
 ///////////////////////////////////////////////////////////
 
 // NewLabelOptions factory function for _LabelOptions
-func NewLabelOptions(labelFlavour LabelFlavour, labelType LabelType) *_LabelOptions {
-	return &_LabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
+func NewLabelOptions(reservedBit7 bool, labelFlavour LabelFlavour, reservedBit4 bool, labelType LabelType, reservedBit0 bool) *_LabelOptions {
+	return &_LabelOptions{ReservedBit7: reservedBit7, LabelFlavour: labelFlavour, ReservedBit4: reservedBit4, LabelType: labelType, ReservedBit0: reservedBit0}
 }
 
 // Deprecated: use the interface for direct cast
@@ -95,7 +116,7 @@ func (m *_LabelOptions) GetLengthInBits() uint16 {
 func (m *_LabelOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Reserved Field (reserved)
+	// Simple field (reservedBit7)
 	lengthInBits += 1
 
 	// Simple field (labelFlavour)
@@ -104,13 +125,13 @@ func (m *_LabelOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Reserved Field (reserved)
 	lengthInBits += 1
 
-	// Reserved Field (reserved)
+	// Simple field (reservedBit4)
 	lengthInBits += 1
 
 	// Simple field (labelType)
 	lengthInBits += 2
 
-	// Reserved Field (reserved)
+	// Simple field (reservedBit0)
 	lengthInBits += 1
 
 	return lengthInBits
@@ -129,19 +150,12 @@ func LabelOptionsParse(readBuffer utils.ReadBuffer) (LabelOptions, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LabelOptions")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]interface{}{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-		}
+	// Simple Field (reservedBit7)
+	_reservedBit7, _reservedBit7Err := readBuffer.ReadBit("reservedBit7")
+	if _reservedBit7Err != nil {
+		return nil, errors.Wrap(_reservedBit7Err, "Error parsing 'reservedBit7' field of LabelOptions")
 	}
+	reservedBit7 := _reservedBit7
 
 	// Simple Field (labelFlavour)
 	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
@@ -170,19 +184,12 @@ func LabelOptionsParse(readBuffer utils.ReadBuffer) (LabelOptions, error) {
 		}
 	}
 
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LabelOptions")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]interface{}{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-		}
+	// Simple Field (reservedBit4)
+	_reservedBit4, _reservedBit4Err := readBuffer.ReadBit("reservedBit4")
+	if _reservedBit4Err != nil {
+		return nil, errors.Wrap(_reservedBit4Err, "Error parsing 'reservedBit4' field of LabelOptions")
 	}
+	reservedBit4 := _reservedBit4
 
 	// Simple Field (labelType)
 	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
@@ -197,26 +204,19 @@ func LabelOptionsParse(readBuffer utils.ReadBuffer) (LabelOptions, error) {
 		return nil, errors.Wrap(closeErr, "Error closing for labelType")
 	}
 
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadBit("reserved")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LabelOptions")
-		}
-		if reserved != bool(false) {
-			log.Info().Fields(map[string]interface{}{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-		}
+	// Simple Field (reservedBit0)
+	_reservedBit0, _reservedBit0Err := readBuffer.ReadBit("reservedBit0")
+	if _reservedBit0Err != nil {
+		return nil, errors.Wrap(_reservedBit0Err, "Error parsing 'reservedBit0' field of LabelOptions")
 	}
+	reservedBit0 := _reservedBit0
 
 	if closeErr := readBuffer.CloseContext("LabelOptions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LabelOptions")
 	}
 
 	// Create the instance
-	return NewLabelOptions(labelFlavour, labelType), nil
+	return NewLabelOptions(reservedBit7, labelFlavour, reservedBit4, labelType, reservedBit0), nil
 }
 
 func (m *_LabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -226,12 +226,11 @@ func (m *_LabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(pushErr, "Error pushing for LabelOptions")
 	}
 
-	// Reserved Field (reserved)
-	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	// Simple Field (reservedBit7)
+	reservedBit7 := bool(m.GetReservedBit7())
+	_reservedBit7Err := writeBuffer.WriteBit("reservedBit7", (reservedBit7))
+	if _reservedBit7Err != nil {
+		return errors.Wrap(_reservedBit7Err, "Error serializing 'reservedBit7' field")
 	}
 
 	// Simple Field (labelFlavour)
@@ -254,12 +253,11 @@ func (m *_LabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 
-	// Reserved Field (reserved)
-	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	// Simple Field (reservedBit4)
+	reservedBit4 := bool(m.GetReservedBit4())
+	_reservedBit4Err := writeBuffer.WriteBit("reservedBit4", (reservedBit4))
+	if _reservedBit4Err != nil {
+		return errors.Wrap(_reservedBit4Err, "Error serializing 'reservedBit4' field")
 	}
 
 	// Simple Field (labelType)
@@ -274,12 +272,11 @@ func (m *_LabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_labelTypeErr, "Error serializing 'labelType' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	// Simple Field (reservedBit0)
+	reservedBit0 := bool(m.GetReservedBit0())
+	_reservedBit0Err := writeBuffer.WriteBit("reservedBit0", (reservedBit0))
+	if _reservedBit0Err != nil {
+		return errors.Wrap(_reservedBit0Err, "Error serializing 'reservedBit0' field")
 	}
 
 	if popErr := writeBuffer.PopContext("LabelOptions"); popErr != nil {

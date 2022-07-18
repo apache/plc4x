@@ -36,7 +36,7 @@ type SALDataLabel interface {
 	// GetLabelOptions returns LabelOptions (property field)
 	GetLabelOptions() LabelOptions
 	// GetLanguage returns Language (property field)
-	GetLanguage() Language
+	GetLanguage() *Language
 	// GetData returns Data (property field)
 	GetData() []byte
 }
@@ -53,7 +53,7 @@ type _SALDataLabel struct {
 	*_SALData
 	Group        byte
 	LabelOptions LabelOptions
-	Language     Language
+	Language     *Language
 	Data         []byte
 }
 
@@ -89,7 +89,7 @@ func (m *_SALDataLabel) GetLabelOptions() LabelOptions {
 	return m.LabelOptions
 }
 
-func (m *_SALDataLabel) GetLanguage() Language {
+func (m *_SALDataLabel) GetLanguage() *Language {
 	return m.Language
 }
 
@@ -103,7 +103,7 @@ func (m *_SALDataLabel) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataLabel factory function for _SALDataLabel
-func NewSALDataLabel(group byte, labelOptions LabelOptions, language Language, data []byte, commandTypeContainer SALCommandTypeContainer, salData SALData) *_SALDataLabel {
+func NewSALDataLabel(group byte, labelOptions LabelOptions, language *Language, data []byte, commandTypeContainer SALCommandTypeContainer, salData SALData) *_SALDataLabel {
 	_result := &_SALDataLabel{
 		Group:        group,
 		LabelOptions: labelOptions,
@@ -143,8 +143,10 @@ func (m *_SALDataLabel) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (labelOptions)
 	lengthInBits += m.LabelOptions.GetLengthInBits()
 
-	// Simple field (language)
-	lengthInBits += 8
+	// Optional Field (language)
+	if m.Language != nil {
+		lengthInBits += 8
+	}
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -187,20 +189,23 @@ func SALDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer SALComm
 		return nil, errors.Wrap(closeErr, "Error closing for labelOptions")
 	}
 
-	// Simple Field (language)
-	if pullErr := readBuffer.PullContext("language"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for language")
-	}
-	_language, _languageErr := LanguageParse(readBuffer)
-	if _languageErr != nil {
-		return nil, errors.Wrap(_languageErr, "Error parsing 'language' field of SALDataLabel")
-	}
-	language := _language
-	if closeErr := readBuffer.CloseContext("language"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for language")
+	// Optional Field (language) (Can be skipped, if a given expression evaluates to false)
+	var language *Language = nil
+	if bool((labelOptions.GetLabelType()) != (LabelType_LOAD_DYNAMIC_ICON)) {
+		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
+			return nil, errors.Wrap(pullErr, "Error pulling for language")
+		}
+		_val, _err := LanguageParse(readBuffer)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'language' field of SALDataLabel")
+		}
+		language = &_val
+		if closeErr := readBuffer.CloseContext("language"); closeErr != nil {
+			return nil, errors.Wrap(closeErr, "Error closing for language")
+		}
 	}
 	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(3)))
+	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(utils.InlineIf(bool(bool((labelOptions.GetLabelType()) != (LabelType_LOAD_DYNAMIC_ICON))), func() interface{} { return uint16(uint16(3)) }, func() interface{} { return uint16(uint16(2)) }).(uint16))))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of SALDataLabel")
@@ -249,16 +254,20 @@ func (m *_SALDataLabel) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_labelOptionsErr, "Error serializing 'labelOptions' field")
 		}
 
-		// Simple Field (language)
-		if pushErr := writeBuffer.PushContext("language"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for language")
-		}
-		_languageErr := writeBuffer.WriteSerializable(m.GetLanguage())
-		if popErr := writeBuffer.PopContext("language"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for language")
-		}
-		if _languageErr != nil {
-			return errors.Wrap(_languageErr, "Error serializing 'language' field")
+		// Optional Field (language) (Can be skipped, if the value is null)
+		var language *Language = nil
+		if m.GetLanguage() != nil {
+			if pushErr := writeBuffer.PushContext("language"); pushErr != nil {
+				return errors.Wrap(pushErr, "Error pushing for language")
+			}
+			language = m.GetLanguage()
+			_languageErr := writeBuffer.WriteSerializable(language)
+			if popErr := writeBuffer.PopContext("language"); popErr != nil {
+				return errors.Wrap(popErr, "Error popping for language")
+			}
+			if _languageErr != nil {
+				return errors.Wrap(_languageErr, "Error serializing 'language' field")
+			}
 		}
 
 		// Array Field (data)

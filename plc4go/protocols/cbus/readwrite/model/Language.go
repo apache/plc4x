@@ -35,6 +35,7 @@ type ILanguage interface {
 }
 
 const (
+	Language_NO_LANGUAGE                Language = 0x00
 	Language_ENGLISH                    Language = 0x01
 	Language_ENGLISH_AUSTRALIA          Language = 0x02
 	Language_ENGLISH_BELIZE             Language = 0x03
@@ -110,6 +111,7 @@ var LanguageValues []Language
 func init() {
 	_ = errors.New
 	LanguageValues = []Language{
+		Language_NO_LANGUAGE,
 		Language_ENGLISH,
 		Language_ENGLISH_AUSTRALIA,
 		Language_ENGLISH_BELIZE,
@@ -183,6 +185,8 @@ func init() {
 
 func LanguageByValue(value uint8) (enum Language, ok bool) {
 	switch value {
+	case 0x00:
+		return Language_NO_LANGUAGE, true
 	case 0x01:
 		return Language_ENGLISH, true
 	case 0x02:
@@ -325,6 +329,8 @@ func LanguageByValue(value uint8) (enum Language, ok bool) {
 
 func LanguageByName(value string) (enum Language, ok bool) {
 	switch value {
+	case "NO_LANGUAGE":
+		return Language_NO_LANGUAGE, true
 	case "ENGLISH":
 		return Language_ENGLISH, true
 	case "ENGLISH_AUSTRALIA":
@@ -512,6 +518,8 @@ func (e Language) Serialize(writeBuffer utils.WriteBuffer) error {
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e Language) PLC4XEnumName() string {
 	switch e {
+	case Language_NO_LANGUAGE:
+		return "NO_LANGUAGE"
 	case Language_ENGLISH:
 		return "ENGLISH"
 	case Language_ENGLISH_AUSTRALIA:

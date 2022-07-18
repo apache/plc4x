@@ -1315,10 +1315,10 @@
             [simple byte group                                                              ]
         ]
         ['LABEL'          *Label(SALCommandTypeContainer commandTypeContainer)
-            [simple byte            group                                                   ]
-            [simple LabelOptions    labelOptions                                            ]
-            [simple Language        language                                                ]
-            [array  byte      data        count 'commandTypeContainer.numBytes-3'           ]
+            [simple   byte            group                                                   ]
+            [simple   LabelOptions    labelOptions                                            ]
+            [optional Language        language      'labelOptions.labelType != LabelType.LOAD_DYNAMIC_ICON']
+            [array    byte      data        count 'commandTypeContainer.numBytes-((labelOptions.labelType != LabelType.LOAD_DYNAMIC_ICON)?3:2)'           ]
         ]
     ]
     // TODO: we need to check that we don't read the crc by accident
