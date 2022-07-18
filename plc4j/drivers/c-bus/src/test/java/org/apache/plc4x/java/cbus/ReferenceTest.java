@@ -936,4 +936,39 @@ public class ReferenceTest {
 
         }
     }
+
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2007%20-%20C-Bus%20Trigger%20Control%20Application.pdf
+    @Nested
+    class TriggerControlApplicationsTest{
+
+        //7.12
+        @Nested
+        class Examples{
+            @Test
+            void LocalTrigger() throws Exception {
+                byte[] bytes = "\\05CA0002250109\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void RemoteTrigger() throws Exception {
+                byte[] bytes = "\\035609CA022501AC\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+        }
+
+    }
 }

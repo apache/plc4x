@@ -151,3 +151,13 @@ func KnowsMeteringCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	}
 	return MeteringCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsTriggerControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return TriggerControlCommandTypeContainerKnows(readUint8)
+}

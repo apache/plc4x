@@ -31,6 +31,8 @@ type SALDataTriggerControl interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetTriggerControlData returns TriggerControlData (property field)
+	GetTriggerControlData() TriggerControlData
 }
 
 // SALDataTriggerControlExactly can be used when we want exactly this type and not a type which fulfills SALDataTriggerControl.
@@ -43,6 +45,7 @@ type SALDataTriggerControlExactly interface {
 // _SALDataTriggerControl is the data-structure of this message
 type _SALDataTriggerControl struct {
 	*_SALData
+	TriggerControlData TriggerControlData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataTriggerControl) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataTriggerControl) GetTriggerControlData() TriggerControlData {
+	return m.TriggerControlData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataTriggerControl factory function for _SALDataTriggerControl
-func NewSALDataTriggerControl(salData SALData) *_SALDataTriggerControl {
+func NewSALDataTriggerControl(triggerControlData TriggerControlData, salData SALData) *_SALDataTriggerControl {
 	_result := &_SALDataTriggerControl{
-		_SALData: NewSALData(salData),
+		TriggerControlData: triggerControlData,
+		_SALData:           NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataTriggerControl) GetLengthInBits() uint16 {
 func (m *_SALDataTriggerControl) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (triggerControlData)
+	lengthInBits += m.TriggerControlData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId Appli
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"TRIGGER_CONTROL Not yet implemented"})
+	// Simple Field (triggerControlData)
+	if pullErr := readBuffer.PullContext("triggerControlData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlData")
+	}
+	_triggerControlData, _triggerControlDataErr := TriggerControlDataParse(readBuffer)
+	if _triggerControlDataErr != nil {
+		return nil, errors.Wrap(_triggerControlDataErr, "Error parsing 'triggerControlData' field of SALDataTriggerControl")
+	}
+	triggerControlData := _triggerControlData.(TriggerControlData)
+	if closeErr := readBuffer.CloseContext("triggerControlData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for triggerControlData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTriggerControl"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId Appli
 
 	// Create a partially initialized instance
 	_child := &_SALDataTriggerControl{
-		_SALData: &_SALData{},
+		TriggerControlData: triggerControlData,
+		_SALData:           &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataTriggerControl) Serialize(writeBuffer utils.WriteBuffer) error 
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataTriggerControl"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataTriggerControl")
+		}
+
+		// Simple Field (triggerControlData)
+		if pushErr := writeBuffer.PushContext("triggerControlData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for triggerControlData")
+		}
+		_triggerControlDataErr := writeBuffer.WriteSerializable(m.GetTriggerControlData())
+		if popErr := writeBuffer.PopContext("triggerControlData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for triggerControlData")
+		}
+		if _triggerControlDataErr != nil {
+			return errors.Wrap(_triggerControlDataErr, "Error serializing 'triggerControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTriggerControl"); popErr != nil {

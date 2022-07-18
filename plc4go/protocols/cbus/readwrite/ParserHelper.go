@@ -40,6 +40,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ApplicationAddress1Parse(io)
 	case "RequestContext":
 		return model.RequestContextParse(io)
+	case "TriggerControlData":
+		return model.TriggerControlDataParse(io)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "RequestTermination":
@@ -173,6 +175,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ExtendedStatusHeaderParse(io)
 	case "CustomTypes":
 		return model.CustomTypesParse(io)
+	case "TriggerControlLabelOptions":
+		return model.TriggerControlLabelOptionsParse(io)
 	case "StatusHeader":
 		return model.StatusHeaderParse(io)
 	case "EncodedReply":

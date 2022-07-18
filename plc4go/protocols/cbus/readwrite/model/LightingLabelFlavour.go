@@ -35,10 +35,10 @@ type ILightingLabelFlavour interface {
 }
 
 const (
-	LightingLabelFlavour_FLAVOUR_1 LightingLabelFlavour = 0
-	LightingLabelFlavour_FLAVOUR_2 LightingLabelFlavour = 1
-	LightingLabelFlavour_FLAVOUR_3 LightingLabelFlavour = 2
-	LightingLabelFlavour_FLAVOUR_4 LightingLabelFlavour = 3
+	LightingLabelFlavour_FLAVOUR_0 LightingLabelFlavour = 0
+	LightingLabelFlavour_FLAVOUR_1 LightingLabelFlavour = 1
+	LightingLabelFlavour_FLAVOUR_2 LightingLabelFlavour = 2
+	LightingLabelFlavour_FLAVOUR_3 LightingLabelFlavour = 3
 )
 
 var LightingLabelFlavourValues []LightingLabelFlavour
@@ -46,37 +46,37 @@ var LightingLabelFlavourValues []LightingLabelFlavour
 func init() {
 	_ = errors.New
 	LightingLabelFlavourValues = []LightingLabelFlavour{
+		LightingLabelFlavour_FLAVOUR_0,
 		LightingLabelFlavour_FLAVOUR_1,
 		LightingLabelFlavour_FLAVOUR_2,
 		LightingLabelFlavour_FLAVOUR_3,
-		LightingLabelFlavour_FLAVOUR_4,
 	}
 }
 
 func LightingLabelFlavourByValue(value uint8) (enum LightingLabelFlavour, ok bool) {
 	switch value {
 	case 0:
-		return LightingLabelFlavour_FLAVOUR_1, true
+		return LightingLabelFlavour_FLAVOUR_0, true
 	case 1:
-		return LightingLabelFlavour_FLAVOUR_2, true
+		return LightingLabelFlavour_FLAVOUR_1, true
 	case 2:
-		return LightingLabelFlavour_FLAVOUR_3, true
+		return LightingLabelFlavour_FLAVOUR_2, true
 	case 3:
-		return LightingLabelFlavour_FLAVOUR_4, true
+		return LightingLabelFlavour_FLAVOUR_3, true
 	}
 	return 0, false
 }
 
 func LightingLabelFlavourByName(value string) (enum LightingLabelFlavour, ok bool) {
 	switch value {
+	case "FLAVOUR_0":
+		return LightingLabelFlavour_FLAVOUR_0, true
 	case "FLAVOUR_1":
 		return LightingLabelFlavour_FLAVOUR_1, true
 	case "FLAVOUR_2":
 		return LightingLabelFlavour_FLAVOUR_2, true
 	case "FLAVOUR_3":
 		return LightingLabelFlavour_FLAVOUR_3, true
-	case "FLAVOUR_4":
-		return LightingLabelFlavour_FLAVOUR_4, true
 	}
 	return 0, false
 }
@@ -128,14 +128,14 @@ func (e LightingLabelFlavour) Serialize(writeBuffer utils.WriteBuffer) error {
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e LightingLabelFlavour) PLC4XEnumName() string {
 	switch e {
+	case LightingLabelFlavour_FLAVOUR_0:
+		return "FLAVOUR_0"
 	case LightingLabelFlavour_FLAVOUR_1:
 		return "FLAVOUR_1"
 	case LightingLabelFlavour_FLAVOUR_2:
 		return "FLAVOUR_2"
 	case LightingLabelFlavour_FLAVOUR_3:
 		return "FLAVOUR_3"
-	case LightingLabelFlavour_FLAVOUR_4:
-		return "FLAVOUR_4"
 	}
 	return ""
 }

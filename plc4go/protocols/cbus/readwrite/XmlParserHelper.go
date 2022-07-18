@@ -50,6 +50,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ApplicationAddress1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestContext":
 		return model.RequestContextParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "TriggerControlData":
+		return model.TriggerControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestTermination":
@@ -198,6 +200,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ExtendedStatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CustomTypes":
 		return model.CustomTypesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "TriggerControlLabelOptions":
+		return model.TriggerControlLabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusHeader":
 		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "EncodedReply":

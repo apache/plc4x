@@ -36,7 +36,7 @@ type LightingDataLabel interface {
 	// GetLabelOptions returns LabelOptions (property field)
 	GetLabelOptions() LightingLabelOptions
 	// GetLanguage returns Language (property field)
-	GetLanguage() *LightingLanguage
+	GetLanguage() *Language
 	// GetData returns Data (property field)
 	GetData() []byte
 }
@@ -53,7 +53,7 @@ type _LightingDataLabel struct {
 	*_LightingData
 	Group        byte
 	LabelOptions LightingLabelOptions
-	Language     *LightingLanguage
+	Language     *Language
 	Data         []byte
 }
 
@@ -88,7 +88,7 @@ func (m *_LightingDataLabel) GetLabelOptions() LightingLabelOptions {
 	return m.LabelOptions
 }
 
-func (m *_LightingDataLabel) GetLanguage() *LightingLanguage {
+func (m *_LightingDataLabel) GetLanguage() *Language {
 	return m.Language
 }
 
@@ -102,7 +102,7 @@ func (m *_LightingDataLabel) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewLightingDataLabel factory function for _LightingDataLabel
-func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, language *LightingLanguage, data []byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataLabel {
+func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, language *Language, data []byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataLabel {
 	_result := &_LightingDataLabel{
 		Group:         group,
 		LabelOptions:  labelOptions,
@@ -189,12 +189,12 @@ func LightingDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer Li
 	}
 
 	// Optional Field (language) (Can be skipped, if a given expression evaluates to false)
-	var language *LightingLanguage = nil
+	var language *Language = nil
 	if bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON)) {
 		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for language")
 		}
-		_val, _err := LightingLanguageParse(readBuffer)
+		_val, _err := LanguageParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'language' field of LightingDataLabel")
 		}
@@ -254,7 +254,7 @@ func (m *_LightingDataLabel) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Optional Field (language) (Can be skipped, if the value is null)
-		var language *LightingLanguage = nil
+		var language *Language = nil
 		if m.GetLanguage() != nil {
 			if pushErr := writeBuffer.PushContext("language"); pushErr != nil {
 				return errors.Wrap(pushErr, "Error pushing for language")
