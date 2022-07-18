@@ -31,6 +31,8 @@ type SALDataTemperatureBroadcast interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetTemperatureBroadcastData returns TemperatureBroadcastData (property field)
+	GetTemperatureBroadcastData() TemperatureBroadcastData
 }
 
 // SALDataTemperatureBroadcastExactly can be used when we want exactly this type and not a type which fulfills SALDataTemperatureBroadcast.
@@ -43,6 +45,7 @@ type SALDataTemperatureBroadcastExactly interface {
 // _SALDataTemperatureBroadcast is the data-structure of this message
 type _SALDataTemperatureBroadcast struct {
 	*_SALData
+	TemperatureBroadcastData TemperatureBroadcastData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataTemperatureBroadcast) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataTemperatureBroadcast) GetTemperatureBroadcastData() TemperatureBroadcastData {
+	return m.TemperatureBroadcastData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataTemperatureBroadcast factory function for _SALDataTemperatureBroadcast
-func NewSALDataTemperatureBroadcast(salData SALData) *_SALDataTemperatureBroadcast {
+func NewSALDataTemperatureBroadcast(temperatureBroadcastData TemperatureBroadcastData, salData SALData) *_SALDataTemperatureBroadcast {
 	_result := &_SALDataTemperatureBroadcast{
-		_SALData: NewSALData(salData),
+		TemperatureBroadcastData: temperatureBroadcastData,
+		_SALData:                 NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataTemperatureBroadcast) GetLengthInBits() uint16 {
 func (m *_SALDataTemperatureBroadcast) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (temperatureBroadcastData)
+	lengthInBits += m.TemperatureBroadcastData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataTemperatureBroadcastParse(readBuffer utils.ReadBuffer, applicationId
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"TEMPERATURE_BROADCAST Not yet implemented"})
+	// Simple Field (temperatureBroadcastData)
+	if pullErr := readBuffer.PullContext("temperatureBroadcastData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for temperatureBroadcastData")
+	}
+	_temperatureBroadcastData, _temperatureBroadcastDataErr := TemperatureBroadcastDataParse(readBuffer)
+	if _temperatureBroadcastDataErr != nil {
+		return nil, errors.Wrap(_temperatureBroadcastDataErr, "Error parsing 'temperatureBroadcastData' field of SALDataTemperatureBroadcast")
+	}
+	temperatureBroadcastData := _temperatureBroadcastData.(TemperatureBroadcastData)
+	if closeErr := readBuffer.CloseContext("temperatureBroadcastData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for temperatureBroadcastData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTemperatureBroadcast"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataTemperatureBroadcastParse(readBuffer utils.ReadBuffer, applicationId
 
 	// Create a partially initialized instance
 	_child := &_SALDataTemperatureBroadcast{
-		_SALData: &_SALData{},
+		TemperatureBroadcastData: temperatureBroadcastData,
+		_SALData:                 &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataTemperatureBroadcast) Serialize(writeBuffer utils.WriteBuffer) 
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataTemperatureBroadcast"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataTemperatureBroadcast")
+		}
+
+		// Simple Field (temperatureBroadcastData)
+		if pushErr := writeBuffer.PushContext("temperatureBroadcastData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for temperatureBroadcastData")
+		}
+		_temperatureBroadcastDataErr := writeBuffer.WriteSerializable(m.GetTemperatureBroadcastData())
+		if popErr := writeBuffer.PopContext("temperatureBroadcastData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for temperatureBroadcastData")
+		}
+		if _temperatureBroadcastDataErr != nil {
+			return errors.Wrap(_temperatureBroadcastDataErr, "Error serializing 'temperatureBroadcastData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTemperatureBroadcast"); popErr != nil {

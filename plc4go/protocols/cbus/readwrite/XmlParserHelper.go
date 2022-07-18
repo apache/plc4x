@@ -85,6 +85,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CBusOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CALDataOrSetParameter":
 		return model.CALDataOrSetParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "TemperatureBroadcastData":
+		return model.TemperatureBroadcastDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PanicStatus":
 		return model.PanicStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IdentifyReplyCommandUnitSummary":

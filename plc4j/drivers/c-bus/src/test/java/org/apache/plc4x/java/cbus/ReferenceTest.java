@@ -969,6 +969,7 @@ public class ReferenceTest {
             }
         }
     }
+
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2008%20-%20C-Bus%20Enable%20Control%20Application.pdf
     @Nested
     class EnableControlApplicationsTest{
@@ -991,6 +992,28 @@ public class ReferenceTest {
             @Test
             void RemoteTrigger() throws Exception {
                 byte[] bytes = "\\035609CB02378216\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+        }
+    }
+
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2009%20-%20C-Bus%20Temperature%20Broadcast%20Application.pdf
+    @Nested
+    class TemperatureBroadcastApplicationsTest{
+
+        //9.11
+        @Nested
+        class Examples{
+
+            @Test
+            void temperatureBroadcast() throws Exception {
+                byte[] bytes = "\\051900020564\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);

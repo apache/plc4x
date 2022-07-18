@@ -1305,7 +1305,7 @@
             [validation '1==2' "FREE_USAGE Not yet implemented"] // TODO: implement me
         ]
         ['TEMPERATURE_BROADCAST'                *TemperatureBroadcast
-            [validation '1==2' "TEMPERATURE_BROADCAST Not yet implemented"] // TODO: implement me
+            [simple TemperatureBroadcastData temperatureBroadcastData]
         ]
         ['ROOM_CONTROL_SYSTEM'                  *RoomControlSystem
             [validation '1==2' "ROOM_CONTROL_SYSTEM Not yet implemented"] // TODO: implement me
@@ -2058,6 +2058,39 @@
 
 [enum uint 4 EnableControlCommandType
     ['0x00' SET_NETWORK_VARIABLE   ]
+]
+
+[type TemperatureBroadcastData
+    //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
+    [validation 'STATIC_CALL("knowsTemperatureBroadcastCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
+    [simple  TemperatureBroadcastCommandTypeContainer   commandTypeContainer                                   ]
+    [virtual TemperatureBroadcastCommandType            commandType          'commandTypeContainer.commandType']
+    [simple  byte                                       temperatureGroup                                       ]
+    [simple  byte                                       temperatureByte                                        ]
+    [virtual float 32                                   temperatureInCelsius 'temperatureByte/4'               ]
+]
+
+[enum uint 8 TemperatureBroadcastCommandTypeContainer(TemperatureBroadcastCommandType commandType, uint 5 numBytes)
+    ['0x02' TemperatureBroadcastCommandSetBroadcastEvent0_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x0A' TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x12' TemperatureBroadcastCommandSetBroadcastEvent2_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x1A' TemperatureBroadcastCommandSetBroadcastEvent3_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x22' TemperatureBroadcastCommandSetBroadcastEvent4_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x2A' TemperatureBroadcastCommandSetBroadcastEvent5_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x32' TemperatureBroadcastCommandSetBroadcastEvent6_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x3A' TemperatureBroadcastCommandSetBroadcastEvent7_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x42' TemperatureBroadcastCommandSetBroadcastEvent8_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x4A' TemperatureBroadcastCommandSetBroadcastEvent9_2Bytes       ['BROADCAST_EVENT',   '2']]
+    ['0x52' TemperatureBroadcastCommandSetBroadcastEvent10_2Bytes      ['BROADCAST_EVENT',   '2']]
+    ['0x5A' TemperatureBroadcastCommandSetBroadcastEvent11_2Bytes      ['BROADCAST_EVENT',   '2']]
+    ['0x62' TemperatureBroadcastCommandSetBroadcastEvent12_2Bytes      ['BROADCAST_EVENT',   '2']]
+    ['0x6A' TemperatureBroadcastCommandSetBroadcastEvent13_2Bytes      ['BROADCAST_EVENT',   '2']]
+    ['0x72' TemperatureBroadcastCommandSetBroadcastEvent14_2Bytes      ['BROADCAST_EVENT',   '2']]
+    ['0x7A' TemperatureBroadcastCommandSetBroadcastEvent15_2Bytes      ['BROADCAST_EVENT',   '2']]
+]
+
+[enum uint 4 TemperatureBroadcastCommandType
+    ['0x00' BROADCAST_EVENT   ]
 ]
 
 [type ReplyOrConfirmation(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)
