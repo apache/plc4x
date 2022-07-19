@@ -1092,14 +1092,57 @@ public class ReferenceTest {
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2021%20-%20C-Bus%20Media%20Transport%20Control%20Application.pdf
     @Nested
     class MediaTransportControlApplicationsTest{
+        // TODO: no tests described here
+    }
 
-        //9.11
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2023%20-%20C-Bus%20Clock%20and%20Timekeeping%20Application.pdf
+    @Nested
+    class ClockAndTimekeeping{
+
+        //23.13
         @Nested
         class Examples{
 
             @Test
-            void tbd() throws Exception {
-                byte[] bytes = "\\05D500A4010300017D\r".getBytes(StandardCharsets.UTF_8);
+            void outputATimeCommand() throws Exception {
+                byte[] bytes = "\\05DF000D010A2B1700C2\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void outputADateCommand() throws Exception {
+                byte[] bytes = "\\05DF000E0207D502190411\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Disabled("This example just seems plain wrong... First of all there is no command for 0x10 defined and the argument which should be it 0x11 requires a argument of 0x03... So either documenation wrong or the example")
+            @Test
+            void outputARequestRefreshCommand() throws Exception {
+                byte[] bytes = "\\05DF00100C\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            @Test
+            void outputARequestRefreshCommandFixedQuestionMark() throws Exception {
+                byte[] bytes = "\\05DF001103\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);

@@ -183,4 +183,15 @@ public class StaticHelper {
         }
     }
 
+    public static boolean knowsClockAndTimekeepingCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return ClockAndTimekeepingCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
 }

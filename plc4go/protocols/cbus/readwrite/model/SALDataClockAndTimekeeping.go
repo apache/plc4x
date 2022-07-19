@@ -31,6 +31,8 @@ type SALDataClockAndTimekeeping interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetClockAndTimekeepingData returns ClockAndTimekeepingData (property field)
+	GetClockAndTimekeepingData() ClockAndTimekeepingData
 }
 
 // SALDataClockAndTimekeepingExactly can be used when we want exactly this type and not a type which fulfills SALDataClockAndTimekeeping.
@@ -43,6 +45,7 @@ type SALDataClockAndTimekeepingExactly interface {
 // _SALDataClockAndTimekeeping is the data-structure of this message
 type _SALDataClockAndTimekeeping struct {
 	*_SALData
+	ClockAndTimekeepingData ClockAndTimekeepingData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataClockAndTimekeeping) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataClockAndTimekeeping) GetClockAndTimekeepingData() ClockAndTimekeepingData {
+	return m.ClockAndTimekeepingData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
-func NewSALDataClockAndTimekeeping(salData SALData) *_SALDataClockAndTimekeeping {
+func NewSALDataClockAndTimekeeping(clockAndTimekeepingData ClockAndTimekeepingData, salData SALData) *_SALDataClockAndTimekeeping {
 	_result := &_SALDataClockAndTimekeeping{
-		_SALData: NewSALData(salData),
+		ClockAndTimekeepingData: clockAndTimekeepingData,
+		_SALData:                NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataClockAndTimekeeping) GetLengthInBits() uint16 {
 func (m *_SALDataClockAndTimekeeping) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (clockAndTimekeepingData)
+	lengthInBits += m.ClockAndTimekeepingData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataClockAndTimekeepingParse(readBuffer utils.ReadBuffer, applicationId 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"CLOCK_AND_TIMEKEEPING Not yet implemented"})
+	// Simple Field (clockAndTimekeepingData)
+	if pullErr := readBuffer.PullContext("clockAndTimekeepingData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for clockAndTimekeepingData")
+	}
+	_clockAndTimekeepingData, _clockAndTimekeepingDataErr := ClockAndTimekeepingDataParse(readBuffer)
+	if _clockAndTimekeepingDataErr != nil {
+		return nil, errors.Wrap(_clockAndTimekeepingDataErr, "Error parsing 'clockAndTimekeepingData' field of SALDataClockAndTimekeeping")
+	}
+	clockAndTimekeepingData := _clockAndTimekeepingData.(ClockAndTimekeepingData)
+	if closeErr := readBuffer.CloseContext("clockAndTimekeepingData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for clockAndTimekeepingData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataClockAndTimekeeping"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataClockAndTimekeepingParse(readBuffer utils.ReadBuffer, applicationId 
 
 	// Create a partially initialized instance
 	_child := &_SALDataClockAndTimekeeping{
-		_SALData: &_SALData{},
+		ClockAndTimekeepingData: clockAndTimekeepingData,
+		_SALData:                &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataClockAndTimekeeping) Serialize(writeBuffer utils.WriteBuffer) e
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataClockAndTimekeeping"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataClockAndTimekeeping")
+		}
+
+		// Simple Field (clockAndTimekeepingData)
+		if pushErr := writeBuffer.PushContext("clockAndTimekeepingData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for clockAndTimekeepingData")
+		}
+		_clockAndTimekeepingDataErr := writeBuffer.WriteSerializable(m.GetClockAndTimekeepingData())
+		if popErr := writeBuffer.PopContext("clockAndTimekeepingData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for clockAndTimekeepingData")
+		}
+		if _clockAndTimekeepingDataErr != nil {
+			return errors.Wrap(_clockAndTimekeepingDataErr, "Error serializing 'clockAndTimekeepingData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataClockAndTimekeeping"); popErr != nil {
