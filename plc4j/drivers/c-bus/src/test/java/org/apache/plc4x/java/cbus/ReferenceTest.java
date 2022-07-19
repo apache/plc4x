@@ -1201,4 +1201,120 @@ public class ReferenceTest {
 
         }
     }
+
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2034%20-%20C-Bus%20Error%20Reporting%20Application.pdf
+    @Nested
+    class ErrorReporting{
+
+        //34.13
+        @Nested
+        class Examples{
+
+            // 34.13.1
+            @Test
+            void AllOk() throws Exception {
+                byte[] bytes = "\\05CE0015FF20DE0000\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+            // 34.13.2
+            @Test
+            void MinorFailure() throws Exception {
+                byte[] bytes = "\\05CE0015882A6721B4\r".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                assertMessageMatches(bytes, msg);
+            }
+
+
+            // 34.13.3
+            @Nested
+            class GeneralFailureWhichGetsAcknowledged{
+                @Test
+                void Reporting() throws Exception {
+                    byte[] bytes = "\\05CE00159023426633\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Acknowledge() throws Exception {
+                    byte[] bytes = "\\05CE00259033426633\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+
+            @Nested
+            class LatchedExtremeFailureWhichGetsCleared {
+                @Test
+                void mostRecent() throws Exception {
+                    byte[] bytes = "\\05CE001569E1FE0100\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void mostSevere() throws Exception {
+                    byte[] bytes = "\\05CE001569CCFE0102\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void clearMostSevere() throws Exception {
+                    byte[] bytes = "\\05CE003569C9FE0102\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void newError() throws Exception {
+                    byte[] bytes = "\\05CE001569E9FE0100\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+        }
+    }
 }

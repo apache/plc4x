@@ -80,6 +80,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CALDataOrSetParameterParse(io)
 	case "TemperatureBroadcastData":
 		return model.TemperatureBroadcastDataParse(io)
+	case "ErrorReportingSystemCategory":
+		return model.ErrorReportingSystemCategoryParse(io)
 	case "PanicStatus":
 		return model.PanicStatusParse(io)
 	case "IdentifyReplyCommandUnitSummary":
@@ -111,6 +113,9 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ReplyNetworkParse(io)
 	case "SerialNumber":
 		return model.SerialNumberParse(io)
+	case "ErrorReportingSystemCategoryType":
+		errorReportingSystemCategoryClass, _ := model.ErrorReportingSystemCategoryClassByName(arguments[0])
+		return model.ErrorReportingSystemCategoryTypeParse(io, errorReportingSystemCategoryClass)
 	case "Confirmation":
 		return model.ConfirmationParse(io)
 	case "CBusPointToMultiPointCommand":
@@ -217,6 +222,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		var cBusOptions model.CBusOptions
 		var requestContext model.RequestContext
 		return model.EncodedReplyParse(io, cBusOptions, requestContext)
+	case "ErrorReportingData":
+		return model.ErrorReportingDataParse(io)
 	case "UnitAddress":
 		return model.UnitAddressParse(io)
 	case "ExtendedFormatStatusReply":

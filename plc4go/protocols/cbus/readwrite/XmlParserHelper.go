@@ -93,6 +93,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CALDataOrSetParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TemperatureBroadcastData":
 		return model.TemperatureBroadcastDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ErrorReportingSystemCategory":
+		return model.ErrorReportingSystemCategoryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PanicStatus":
 		return model.PanicStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IdentifyReplyCommandUnitSummary":
@@ -128,6 +130,9 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ReplyNetworkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SerialNumber":
 		return model.SerialNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ErrorReportingSystemCategoryType":
+		errorReportingSystemCategoryClass, _ := model.ErrorReportingSystemCategoryClassByName(parserArguments[0])
+		return model.ErrorReportingSystemCategoryTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), errorReportingSystemCategoryClass)
 	case "Confirmation":
 		return model.ConfirmationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusPointToMultiPointCommand":
@@ -244,6 +249,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
 		return model.EncodedReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
+	case "ErrorReportingData":
+		return model.ErrorReportingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "UnitAddress":
 		return model.UnitAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ExtendedFormatStatusReply":

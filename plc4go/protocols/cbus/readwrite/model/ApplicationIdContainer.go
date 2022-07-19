@@ -2429,7 +2429,7 @@ func (e ApplicationIdContainer) ApplicationId() ApplicationId {
 		}
 	case 0xCE:
 		{ /* '0xCE' */
-			return ApplicationId_RESERVED
+			return ApplicationId_ERROR_REPORTING
 		}
 	case 0xCF:
 		{ /* '0xCF' */

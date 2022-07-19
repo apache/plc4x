@@ -241,3 +241,13 @@ func KnowsMeasurementCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	}
 	return MeasurementCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsErrorReportingCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return ErrorReportingCommandTypeContainerKnows(readUint8)
+}
