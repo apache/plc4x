@@ -31,8 +31,8 @@ type SALDataIrrigationControl interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
-	// GetVentilationData returns VentilationData (property field)
-	GetVentilationData() LightingData
+	// GetIrrigationControlData returns IrrigationControlData (property field)
+	GetIrrigationControlData() LightingData
 }
 
 // SALDataIrrigationControlExactly can be used when we want exactly this type and not a type which fulfills SALDataIrrigationControl.
@@ -45,7 +45,7 @@ type SALDataIrrigationControlExactly interface {
 // _SALDataIrrigationControl is the data-structure of this message
 type _SALDataIrrigationControl struct {
 	*_SALData
-	VentilationData LightingData
+	IrrigationControlData LightingData
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,8 +75,8 @@ func (m *_SALDataIrrigationControl) GetParent() SALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SALDataIrrigationControl) GetVentilationData() LightingData {
-	return m.VentilationData
+func (m *_SALDataIrrigationControl) GetIrrigationControlData() LightingData {
+	return m.IrrigationControlData
 }
 
 ///////////////////////
@@ -85,10 +85,10 @@ func (m *_SALDataIrrigationControl) GetVentilationData() LightingData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataIrrigationControl factory function for _SALDataIrrigationControl
-func NewSALDataIrrigationControl(ventilationData LightingData, salData SALData) *_SALDataIrrigationControl {
+func NewSALDataIrrigationControl(irrigationControlData LightingData, salData SALData) *_SALDataIrrigationControl {
 	_result := &_SALDataIrrigationControl{
-		VentilationData: ventilationData,
-		_SALData:        NewSALData(salData),
+		IrrigationControlData: irrigationControlData,
+		_SALData:              NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -116,8 +116,8 @@ func (m *_SALDataIrrigationControl) GetLengthInBits() uint16 {
 func (m *_SALDataIrrigationControl) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (ventilationData)
-	lengthInBits += m.VentilationData.GetLengthInBits()
+	// Simple field (irrigationControlData)
+	lengthInBits += m.IrrigationControlData.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -135,17 +135,17 @@ func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId Ap
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ventilationData)
-	if pullErr := readBuffer.PullContext("ventilationData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ventilationData")
+	// Simple Field (irrigationControlData)
+	if pullErr := readBuffer.PullContext("irrigationControlData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for irrigationControlData")
 	}
-	_ventilationData, _ventilationDataErr := LightingDataParse(readBuffer)
-	if _ventilationDataErr != nil {
-		return nil, errors.Wrap(_ventilationDataErr, "Error parsing 'ventilationData' field of SALDataIrrigationControl")
+	_irrigationControlData, _irrigationControlDataErr := LightingDataParse(readBuffer)
+	if _irrigationControlDataErr != nil {
+		return nil, errors.Wrap(_irrigationControlDataErr, "Error parsing 'irrigationControlData' field of SALDataIrrigationControl")
 	}
-	ventilationData := _ventilationData.(LightingData)
-	if closeErr := readBuffer.CloseContext("ventilationData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ventilationData")
+	irrigationControlData := _irrigationControlData.(LightingData)
+	if closeErr := readBuffer.CloseContext("irrigationControlData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for irrigationControlData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataIrrigationControl"); closeErr != nil {
@@ -154,8 +154,8 @@ func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId Ap
 
 	// Create a partially initialized instance
 	_child := &_SALDataIrrigationControl{
-		VentilationData: ventilationData,
-		_SALData:        &_SALData{},
+		IrrigationControlData: irrigationControlData,
+		_SALData:              &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -169,16 +169,16 @@ func (m *_SALDataIrrigationControl) Serialize(writeBuffer utils.WriteBuffer) err
 			return errors.Wrap(pushErr, "Error pushing for SALDataIrrigationControl")
 		}
 
-		// Simple Field (ventilationData)
-		if pushErr := writeBuffer.PushContext("ventilationData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ventilationData")
+		// Simple Field (irrigationControlData)
+		if pushErr := writeBuffer.PushContext("irrigationControlData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for irrigationControlData")
 		}
-		_ventilationDataErr := writeBuffer.WriteSerializable(m.GetVentilationData())
-		if popErr := writeBuffer.PopContext("ventilationData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ventilationData")
+		_irrigationControlDataErr := writeBuffer.WriteSerializable(m.GetIrrigationControlData())
+		if popErr := writeBuffer.PopContext("irrigationControlData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for irrigationControlData")
 		}
-		if _ventilationDataErr != nil {
-			return errors.Wrap(_ventilationDataErr, "Error serializing 'ventilationData' field")
+		if _irrigationControlDataErr != nil {
+			return errors.Wrap(_irrigationControlDataErr, "Error serializing 'irrigationControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataIrrigationControl"); popErr != nil {

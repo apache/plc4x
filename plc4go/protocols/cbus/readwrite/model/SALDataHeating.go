@@ -31,6 +31,8 @@ type SALDataHeating interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetHeatingData returns HeatingData (property field)
+	GetHeatingData() LightingData
 }
 
 // SALDataHeatingExactly can be used when we want exactly this type and not a type which fulfills SALDataHeating.
@@ -43,6 +45,7 @@ type SALDataHeatingExactly interface {
 // _SALDataHeating is the data-structure of this message
 type _SALDataHeating struct {
 	*_SALData
+	HeatingData LightingData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataHeating) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataHeating) GetHeatingData() LightingData {
+	return m.HeatingData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataHeating factory function for _SALDataHeating
-func NewSALDataHeating(salData SALData) *_SALDataHeating {
+func NewSALDataHeating(heatingData LightingData, salData SALData) *_SALDataHeating {
 	_result := &_SALDataHeating{
-		_SALData: NewSALData(salData),
+		HeatingData: heatingData,
+		_SALData:    NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataHeating) GetLengthInBits() uint16 {
 func (m *_SALDataHeating) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (heatingData)
+	lengthInBits += m.HeatingData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"HEATING Not yet implemented"})
+	// Simple Field (heatingData)
+	if pullErr := readBuffer.PullContext("heatingData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for heatingData")
+	}
+	_heatingData, _heatingDataErr := LightingDataParse(readBuffer)
+	if _heatingDataErr != nil {
+		return nil, errors.Wrap(_heatingDataErr, "Error parsing 'heatingData' field of SALDataHeating")
+	}
+	heatingData := _heatingData.(LightingData)
+	if closeErr := readBuffer.CloseContext("heatingData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for heatingData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataHeating"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 
 	// Create a partially initialized instance
 	_child := &_SALDataHeating{
-		_SALData: &_SALData{},
+		HeatingData: heatingData,
+		_SALData:    &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataHeating) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataHeating"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataHeating")
+		}
+
+		// Simple Field (heatingData)
+		if pushErr := writeBuffer.PushContext("heatingData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for heatingData")
+		}
+		_heatingDataErr := writeBuffer.WriteSerializable(m.GetHeatingData())
+		if popErr := writeBuffer.PopContext("heatingData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for heatingData")
+		}
+		if _heatingDataErr != nil {
+			return errors.Wrap(_heatingDataErr, "Error serializing 'heatingData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataHeating"); popErr != nil {

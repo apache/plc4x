@@ -1322,14 +1322,15 @@
         ]
         ['IRRIGATION_CONTROL'                   *IrrigationControl
              // Note: the documentation states that the data for irrigation control uses LightingData
-            [simple LightingData ventilationData]
+            [simple LightingData irrigationControlData]
         ]
         ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL'   *PoolsSpasPondsFountainsControl
-             // Note: the documentation states that the data for pools spas ponds fauntains uses LightingData
-            [simple LightingData ventilationData]
+             // Note: the documentation states that the data for pools spas ponds fountains uses LightingData
+            [simple LightingData poolsSpaPondsFountainsData]
         ]
         ['HEATING'                              *Heating
-            [validation '1==2' "HEATING Not yet implemented"] // TODO: implement me
+            // Note: the documentation states that the data for ventilation uses LightingData
+            [simple LightingData heatingData]
         ]
         ['AIR_CONDITIONING'                     *AirConditioning
             [simple AirConditioningData airConditioningData]

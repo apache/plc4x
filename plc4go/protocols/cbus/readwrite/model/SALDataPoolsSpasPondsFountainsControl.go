@@ -31,8 +31,8 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
-	// GetVentilationData returns VentilationData (property field)
-	GetVentilationData() LightingData
+	// GetPoolsSpaPondsFountainsData returns PoolsSpaPondsFountainsData (property field)
+	GetPoolsSpaPondsFountainsData() LightingData
 }
 
 // SALDataPoolsSpasPondsFountainsControlExactly can be used when we want exactly this type and not a type which fulfills SALDataPoolsSpasPondsFountainsControl.
@@ -45,7 +45,7 @@ type SALDataPoolsSpasPondsFountainsControlExactly interface {
 // _SALDataPoolsSpasPondsFountainsControl is the data-structure of this message
 type _SALDataPoolsSpasPondsFountainsControl struct {
 	*_SALData
-	VentilationData LightingData
+	PoolsSpaPondsFountainsData LightingData
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,8 +75,8 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetParent() SALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SALDataPoolsSpasPondsFountainsControl) GetVentilationData() LightingData {
-	return m.VentilationData
+func (m *_SALDataPoolsSpasPondsFountainsControl) GetPoolsSpaPondsFountainsData() LightingData {
+	return m.PoolsSpaPondsFountainsData
 }
 
 ///////////////////////
@@ -85,10 +85,10 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetVentilationData() LightingDa
 ///////////////////////////////////////////////////////////
 
 // NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
-func NewSALDataPoolsSpasPondsFountainsControl(ventilationData LightingData, salData SALData) *_SALDataPoolsSpasPondsFountainsControl {
+func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData LightingData, salData SALData) *_SALDataPoolsSpasPondsFountainsControl {
 	_result := &_SALDataPoolsSpasPondsFountainsControl{
-		VentilationData: ventilationData,
-		_SALData:        NewSALData(salData),
+		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
+		_SALData:                   NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -116,8 +116,8 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits() uint16 {
 func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (ventilationData)
-	lengthInBits += m.VentilationData.GetLengthInBits()
+	// Simple field (poolsSpaPondsFountainsData)
+	lengthInBits += m.PoolsSpaPondsFountainsData.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -135,17 +135,17 @@ func SALDataPoolsSpasPondsFountainsControlParse(readBuffer utils.ReadBuffer, app
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ventilationData)
-	if pullErr := readBuffer.PullContext("ventilationData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ventilationData")
+	// Simple Field (poolsSpaPondsFountainsData)
+	if pullErr := readBuffer.PullContext("poolsSpaPondsFountainsData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for poolsSpaPondsFountainsData")
 	}
-	_ventilationData, _ventilationDataErr := LightingDataParse(readBuffer)
-	if _ventilationDataErr != nil {
-		return nil, errors.Wrap(_ventilationDataErr, "Error parsing 'ventilationData' field of SALDataPoolsSpasPondsFountainsControl")
+	_poolsSpaPondsFountainsData, _poolsSpaPondsFountainsDataErr := LightingDataParse(readBuffer)
+	if _poolsSpaPondsFountainsDataErr != nil {
+		return nil, errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error parsing 'poolsSpaPondsFountainsData' field of SALDataPoolsSpasPondsFountainsControl")
 	}
-	ventilationData := _ventilationData.(LightingData)
-	if closeErr := readBuffer.CloseContext("ventilationData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ventilationData")
+	poolsSpaPondsFountainsData := _poolsSpaPondsFountainsData.(LightingData)
+	if closeErr := readBuffer.CloseContext("poolsSpaPondsFountainsData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for poolsSpaPondsFountainsData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataPoolsSpasPondsFountainsControl"); closeErr != nil {
@@ -154,8 +154,8 @@ func SALDataPoolsSpasPondsFountainsControlParse(readBuffer utils.ReadBuffer, app
 
 	// Create a partially initialized instance
 	_child := &_SALDataPoolsSpasPondsFountainsControl{
-		VentilationData: ventilationData,
-		_SALData:        &_SALData{},
+		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
+		_SALData:                   &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -169,16 +169,16 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for SALDataPoolsSpasPondsFountainsControl")
 		}
 
-		// Simple Field (ventilationData)
-		if pushErr := writeBuffer.PushContext("ventilationData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ventilationData")
+		// Simple Field (poolsSpaPondsFountainsData)
+		if pushErr := writeBuffer.PushContext("poolsSpaPondsFountainsData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for poolsSpaPondsFountainsData")
 		}
-		_ventilationDataErr := writeBuffer.WriteSerializable(m.GetVentilationData())
-		if popErr := writeBuffer.PopContext("ventilationData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ventilationData")
+		_poolsSpaPondsFountainsDataErr := writeBuffer.WriteSerializable(m.GetPoolsSpaPondsFountainsData())
+		if popErr := writeBuffer.PopContext("poolsSpaPondsFountainsData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for poolsSpaPondsFountainsData")
 		}
-		if _ventilationDataErr != nil {
-			return errors.Wrap(_ventilationDataErr, "Error serializing 'ventilationData' field")
+		if _poolsSpaPondsFountainsDataErr != nil {
+			return errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error serializing 'poolsSpaPondsFountainsData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataPoolsSpasPondsFountainsControl"); popErr != nil {
