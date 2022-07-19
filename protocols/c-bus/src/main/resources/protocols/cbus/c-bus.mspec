@@ -1323,7 +1323,8 @@
             [simple LightingData ventilationData]
         ]
         ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL'   *PoolsSpasPondsFountainsControl
-            [validation '1==2' "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL Not yet implemented"] // TODO: implement me
+             // Note: the documentation states that the data for ventilation uses LightingData
+            [simple LightingData ventilationData]
         ]
         ['HEATING'                              *Heating
             [validation '1==2' "HEATING Not yet implemented"] // TODO: implement me
