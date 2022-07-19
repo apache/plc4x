@@ -229,7 +229,7 @@ const (
 	ApplicationIdContainer_RESERVED_BD                           ApplicationIdContainer = 0xBD
 	ApplicationIdContainer_RESERVED_BE                           ApplicationIdContainer = 0xBE
 	ApplicationIdContainer_RESERVED_BF                           ApplicationIdContainer = 0xBF
-	ApplicationIdContainer_MEDIA_TRANSPORT_C0                    ApplicationIdContainer = 0xC0
+	ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0            ApplicationIdContainer = 0xC0
 	ApplicationIdContainer_RESERVED_C1                           ApplicationIdContainer = 0xC1
 	ApplicationIdContainer_RESERVED_C2                           ApplicationIdContainer = 0xC2
 	ApplicationIdContainer_RESERVED_C3                           ApplicationIdContainer = 0xC3
@@ -492,7 +492,7 @@ func init() {
 		ApplicationIdContainer_RESERVED_BD,
 		ApplicationIdContainer_RESERVED_BE,
 		ApplicationIdContainer_RESERVED_BF,
-		ApplicationIdContainer_MEDIA_TRANSPORT_C0,
+		ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0,
 		ApplicationIdContainer_RESERVED_C1,
 		ApplicationIdContainer_RESERVED_C2,
 		ApplicationIdContainer_RESERVED_C3,
@@ -2373,7 +2373,7 @@ func (e ApplicationIdContainer) ApplicationId() ApplicationId {
 		}
 	case 0xC0:
 		{ /* '0xC0' */
-			return ApplicationId_RESERVED
+			return ApplicationId_MEDIA_TRANSPORT_CONTROL
 		}
 	case 0xC1:
 		{ /* '0xC1' */
@@ -3029,7 +3029,7 @@ func ApplicationIdContainerByValue(value uint8) (enum ApplicationIdContainer, ok
 	case 0xBF:
 		return ApplicationIdContainer_RESERVED_BF, true
 	case 0xC0:
-		return ApplicationIdContainer_MEDIA_TRANSPORT_C0, true
+		return ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0, true
 	case 0xC1:
 		return ApplicationIdContainer_RESERVED_C1, true
 	case 0xC2:
@@ -3546,8 +3546,8 @@ func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok
 		return ApplicationIdContainer_RESERVED_BE, true
 	case "RESERVED_BF":
 		return ApplicationIdContainer_RESERVED_BF, true
-	case "MEDIA_TRANSPORT_C0":
-		return ApplicationIdContainer_MEDIA_TRANSPORT_C0, true
+	case "MEDIA_TRANSPORT_CONTROL_C0":
+		return ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0, true
 	case "RESERVED_C1":
 		return ApplicationIdContainer_RESERVED_C1, true
 	case "RESERVED_C2":
@@ -4109,8 +4109,8 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 		return "RESERVED_BE"
 	case ApplicationIdContainer_RESERVED_BF:
 		return "RESERVED_BF"
-	case ApplicationIdContainer_MEDIA_TRANSPORT_C0:
-		return "MEDIA_TRANSPORT_C0"
+	case ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0:
+		return "MEDIA_TRANSPORT_CONTROL_C0"
 	case ApplicationIdContainer_RESERVED_C1:
 		return "RESERVED_C1"
 	case ApplicationIdContainer_RESERVED_C2:

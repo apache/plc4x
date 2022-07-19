@@ -198,6 +198,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ZoneStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BridgeAddress":
 		return model.BridgeAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "MediaTransportControlData":
+		return model.MediaTransportControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusByte":
 		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "LightingLabelOptions":

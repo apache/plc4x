@@ -191,3 +191,13 @@ func KnowsAccessControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	}
 	return AccessControlCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsMediaTransportControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return MediaTransportControlCommandTypeContainerKnows(readUint8)
+}

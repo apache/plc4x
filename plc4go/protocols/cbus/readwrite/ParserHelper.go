@@ -173,6 +173,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ZoneStatusParse(io)
 	case "BridgeAddress":
 		return model.BridgeAddressParse(io)
+	case "MediaTransportControlData":
+		return model.MediaTransportControlDataParse(io)
 	case "StatusByte":
 		return model.StatusByteParse(io)
 	case "LightingLabelOptions":
