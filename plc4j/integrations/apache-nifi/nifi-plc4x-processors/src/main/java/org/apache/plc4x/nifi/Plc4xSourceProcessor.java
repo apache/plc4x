@@ -76,7 +76,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
             } catch (ExecutionException e) {
                 throw new ProcessException(e);
             }
-            session.transfer(flowFile, SUCCESS);
+            session.transfer(flowFile, REL_SUCCESS);
         } catch (ProcessException e) {
             throw e;
         } catch (Exception e) {

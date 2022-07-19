@@ -31,14 +31,15 @@ import java.util.*;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
-    private static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
+	protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
         .Builder().name("PLC_CONNECTION_STRING")
         .displayName("PLC connection String")
         .description("PLC4X connection string used to connect to a given PLC device.")
         .required(true)
         .addValidator(new Plc4xConnectionStringValidator())
         .build();
-    private static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
+	
+	protected static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
         .Builder().name("PLC_ADDRESS_STRING")
         .displayName("PLC resource address String")
         .description("PLC4X address string used identify the resource to read/write on a given PLC device " +
@@ -47,30 +48,43 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .addValidator(new Plc4xAddressStringValidator())
         .build();
 
-    static final Relationship SUCCESS = new Relationship.Builder()
-        .name("SUCCESS")
-        .description("Successfully processed")
-        .build();
-    static final Relationship FAILURE = new Relationship.Builder()
-        .name("FAILURE")
+    protected static final Relationship REL_SUCCESS = new Relationship.Builder()
+	    .name("success")
+	    .description("Successfully processed")
+	    .build();
+    protected static final Relationship REL_FAILURE = new Relationship.Builder()
+        .name("failure")
         .description("An error occurred processing")
         .build();
 
-    private List<PropertyDescriptor> descriptors;
 
-    Set<Relationship> relationships;
-
-    private String connectionString;
+    protected List<PropertyDescriptor> properties;
+    protected Set<Relationship> relationships;
+  
+    protected String connectionString;
     private Map<String, String> addressMap;
+
 
     private final PooledPlcDriverManager driverManager = new PooledPlcDriverManager();
 
     @Override
     protected void init(final ProcessorInitializationContext context) {
-        this.descriptors = Arrays.asList(PLC_CONNECTION_STRING, PLC_ADDRESS_STRING);
-        this.relationships = new HashSet<>(Arrays.asList(SUCCESS, FAILURE));
+    	final List<PropertyDescriptor> properties = new ArrayList<>();
+    	properties.add(PLC_CONNECTION_STRING);
+    	properties.add(PLC_ADDRESS_STRING);
+        this.properties = Collections.unmodifiableList(properties);
+
+    	
+    	final Set<Relationship> relationships = new HashSet<>();
+        relationships.add(REL_SUCCESS);
+        relationships.add(REL_FAILURE);
+        this.relationships = Collections.unmodifiableSet(relationships);
     }
 
+    public Map<String, String> getPlcAddress() {
+        return addressMap;
+    }
+    
     public String getConnectionString() {
         return connectionString;
     }
@@ -82,6 +96,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         return addressMap.get(field);
     }
 
+
     @Override
     public Set<Relationship> getRelationships() {
         return this.relationships;
@@ -89,22 +104,21 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     @Override
     public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-        return descriptors;
+        return properties;
     }
 
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
-        PropertyValue property = context.getProperty(PLC_CONNECTION_STRING.getName());
-        connectionString = property.getValue();
-        addressMap = new HashMap<>();
-        PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
-        for (String segment : addresses.getValue().split(";")) {
-            String[] parts = segment.split("=");
-            if(parts.length != 2) {
-                throw new PlcRuntimeException("Invalid address format");
-            }
-            addressMap.put(parts[0], parts[1]);
-        }
+		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
+		addressMap = new HashMap<>();
+		String addresses = context.getProperty(PLC_ADDRESS_STRING.getName()).evaluateAttributeExpressions().getValue();
+		for (String segment : addresses.split(";")) {
+		String[] parts = segment.split("=");
+		if(parts.length != 2) {
+		    throw new PlcRuntimeException("Invalid address format");
+		    }
+		    addressMap.put(parts[0], parts[1]);
+		}
     }
 
     @Override
@@ -119,7 +133,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
             return false;
         }
         BasePlc4xProcessor that = (BasePlc4xProcessor) o;
-        return Objects.equals(descriptors, that.descriptors) &&
+        return Objects.equals(properties, that.properties) &&
             Objects.equals(getRelationships(), that.getRelationships()) &&
             Objects.equals(getConnectionString(), that.getConnectionString()) &&
             Objects.equals(addressMap, that.addressMap);
@@ -127,7 +141,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), descriptors, getRelationships(), getConnectionString(), addressMap);
+        return Objects.hash(super.hashCode(), properties, getRelationships(), getConnectionString(), addressMap);
     }
 
     public static class Plc4xConnectionStringValidator implements Validator {
