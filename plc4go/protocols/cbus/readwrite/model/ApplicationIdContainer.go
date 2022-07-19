@@ -2065,11 +2065,11 @@ func (e ApplicationIdContainer) ApplicationId() ApplicationId {
 		}
 	case 0x73:
 		{ /* '0x73' */
-			return ApplicationId_RESERVED
+			return ApplicationId_HVAC_ACTUATOR
 		}
 	case 0x74:
 		{ /* '0x74' */
-			return ApplicationId_RESERVED
+			return ApplicationId_HVAC_ACTUATOR
 		}
 	case 0x75:
 		{ /* '0x75' */

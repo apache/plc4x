@@ -184,6 +184,8 @@ func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SAL
 		_childTemp, typeSwitchError = SALDataMediaTransportParse(readBuffer, applicationId)
 	case applicationId == ApplicationId_ERROR_REPORTING: // SALDataErrorReporting
 		_childTemp, typeSwitchError = SALDataErrorReportingParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_HVAC_ACTUATOR: // SALDataHvacActuator
+		_childTemp, typeSwitchError = SALDataHvacActuatorParse(readBuffer, applicationId)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [applicationId=%v]", applicationId)
 	}

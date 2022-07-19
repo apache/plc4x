@@ -290,6 +290,7 @@
     ['0x13' TESTING                           ]
     ['0x14' MEDIA_TRANSPORT_CONTROL           ]
     ['0x15' ERROR_REPORTING                   ]
+    ['0x16' HVAC_ACTUATOR                     ]
 ]
 
 [enum uint 4 LightingCompatible
@@ -415,8 +416,8 @@
     ['0x70' VENTILATION_70                        ['VENTILATION'                       , 'YES'                 ]]
     ['0x71' IRRIGATION_CONTROL_71                 ['IRRIGATION_CONTROL'                , 'YES'                 ]]
     ['0x72' POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72 ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL', 'YES'                 ]]
-    ['0x73' RESERVED_73                           ['RESERVED'                          , 'NA'                  ]] // HVAC_ACTUATOR
-    ['0x74' RESERVED_74                           ['RESERVED'                          , 'NA'                  ]] // HVAC_ACTUATOR
+    ['0x73' RESERVED_73                           ['HVAC_ACTUATOR'                     , 'NA'                  ]] // HVAC_ACTUATOR
+    ['0x74' RESERVED_74                           ['HVAC_ACTUATOR'                     , 'NA'                  ]] // HVAC_ACTUATOR
     ['0x75' RESERVED_75                           ['RESERVED'                          , 'NA'                  ]]
     ['0x76' RESERVED_76                           ['RESERVED'                          , 'NA'                  ]]
     ['0x77' RESERVED_77                           ['RESERVED'                          , 'NA'                  ]]
@@ -1320,11 +1321,11 @@
             [simple LightingData ventilationData]
         ]
         ['IRRIGATION_CONTROL'                   *IrrigationControl
-             // Note: the documentation states that the data for ventilation uses LightingData
+             // Note: the documentation states that the data for irrigation control uses LightingData
             [simple LightingData ventilationData]
         ]
         ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL'   *PoolsSpasPondsFountainsControl
-             // Note: the documentation states that the data for ventilation uses LightingData
+             // Note: the documentation states that the data for pools spas ponds fauntains uses LightingData
             [simple LightingData ventilationData]
         ]
         ['HEATING'                              *Heating
@@ -1368,6 +1369,10 @@
         ]
         ['ERROR_REPORTING'                      *ErrorReporting
             [simple ErrorReportingData   errorReportingData]
+        ]
+        ['HVAC_ACTUATOR'                        *HvacActuator
+             // Note: the documentation states that the data for hvac actuator uses LightingData
+            [simple LightingData ventilationData]
         ]
     ]
     // TODO: we need to check that we don't read the crc by accident
