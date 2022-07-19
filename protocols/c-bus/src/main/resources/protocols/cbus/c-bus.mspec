@@ -1328,7 +1328,7 @@
             [validation '1==2' "HEATING Not yet implemented"] // TODO: implement me
         ]
         ['AIR_CONDITIONING'                     *AirConditioning
-            [validation '1==2' "AIR_CONDITIONING Not yet implemented"] // TODO: implement me
+            [simple AirConditioningData airConditioningData]
         ]
         ['TRIGGER_CONTROL'                      *TriggerControl
             [simple TriggerControlData triggerControlData]
