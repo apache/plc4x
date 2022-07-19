@@ -90,6 +90,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		}
 		var requestContext model.RequestContext
 		return model.ReplyParse(io, cBusOptions, replyLength, requestContext)
+	case "TelephonyData":
+		return model.TelephonyDataParse(io)
 	case "InterfaceOptions1PowerUpSettings":
 		return model.InterfaceOptions1PowerUpSettingsParse(io)
 	case "MonitoredSAL":

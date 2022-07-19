@@ -106,6 +106,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
 		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, replyLength, requestContext)
+	case "TelephonyData":
+		return model.TelephonyDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "InterfaceOptions1PowerUpSettings":
 		return model.InterfaceOptions1PowerUpSettingsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "MonitoredSAL":

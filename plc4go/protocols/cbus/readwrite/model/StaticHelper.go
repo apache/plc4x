@@ -211,3 +211,13 @@ func KnowsClockAndTimekeepingCommandTypeContainer(readBuffer utils.ReadBuffer) b
 	}
 	return ClockAndTimekeepingCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsTelephonyCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return TelephonyCommandTypeContainerKnows(readUint8)
+}
