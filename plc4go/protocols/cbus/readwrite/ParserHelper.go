@@ -76,8 +76,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CBusMessageParse(io, isResponse, requestContext, cBusOptions, messageLength)
 	case "CBusOptions":
 		return model.CBusOptionsParse(io)
-	case "CALDataOrSetParameter":
-		return model.CALDataOrSetParameterParse(io)
 	case "TemperatureBroadcastData":
 		return model.TemperatureBroadcastDataParse(io)
 	case "ErrorReportingSystemCategory":

@@ -73,12 +73,9 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		case model.RequestDirectCommandAccessExactly:
 			sendIdentifyRequestBefore := false
 			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
-			case model.CALDataOrSetParameterValueExactly:
-				switch calDataOrSetParameter.GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
+			switch request.GetCalData().(type) {
+			case model.CALDataIdentifyExactly:
+				sendIdentifyRequestBefore = true
 			}
 			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
 		case model.RequestCommandExactly:
@@ -110,12 +107,9 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		case model.RequestObsoleteExactly:
 			sendIdentifyRequestBefore := false
 			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
-			case model.CALDataOrSetParameterValueExactly:
-				switch calDataOrSetParameter.GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
+			switch request.GetCalData().(type) {
+			case model.CALDataIdentifyExactly:
+				sendIdentifyRequestBefore = true
 			}
 			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
 		}
@@ -245,9 +239,9 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 		case model.CBusMessageToServerExactly:
 			switch request := message.GetRequest().(type) {
 			case model.RequestDirectCommandAccessExactly:
-				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
+				fmt.Printf("%v\n", request.GetCalData())
 			case model.RequestObsoleteExactly:
-				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
+				fmt.Printf("%v\n", request.GetCalData())
 			case model.RequestCommandExactly:
 				fmt.Printf("%v\n", request.GetCbusCommand())
 			}

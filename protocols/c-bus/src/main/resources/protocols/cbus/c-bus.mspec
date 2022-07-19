@@ -81,10 +81,10 @@
         ]
         ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
             [const    byte         at        0x40                           ]
-            [manual   CALDataOrSetParameter
-                                          calDataOrSetParameter
-                        'STATIC_CALL("readCALDataOrSetParameter", readBuffer, payloadLength)'
-                        'STATIC_CALL("writeCALDataOrSetParameter", writeBuffer, calDataOrSetParameter)'
+            [manual   CALData
+                                          calData
+                        'STATIC_CALL("readCALData", readBuffer, payloadLength)'
+                        'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '_value.lengthInBytes*2'                            ]
         ]
         ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
@@ -104,10 +104,10 @@
         // TODO: we should check if we are in basic mode
         [* *Obsolete(uint 16 payloadLength)
             [virtual  uint 16 obsoletePayloadLength 'payloadLength+1']
-            [manual   CALDataOrSetParameter
-                                          calDataOrSetParameter
-                        'STATIC_CALL("readCALDataOrSetParameter", readBuffer, obsoletePayloadLength)'
-                        'STATIC_CALL("writeCALDataOrSetParameter", writeBuffer, calDataOrSetParameter)'
+            [manual   CALData
+                                          calData
+                        'STATIC_CALL("readCALData", readBuffer, obsoletePayloadLength)'
+                        'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '_value.lengthInBytes*2'                            ]
             [optional Alpha         alpha                                   ]
         ]
@@ -557,23 +557,6 @@
     ['0xFD' RESERVED_FD                           ['RESERVED'                          , 'NO'                  ]]
     ['0xFE' RESERVED_FE                           ['RESERVED'                          , 'NO'                  ]]
     ['0xFF' RESERVED_FF                           ['RESERVED'                          , 'NO'                  ]] // NETWORK_CONTROL
-]
-
-[type CALDataOrSetParameter
-    [peek    byte     firstByte           ]
-    [typeSwitch firstByte
-        ['0xA3' *SetParameter
-            [const      uint 8    magicId         0xA3                    ]
-            [simple     Parameter paramNo                                 ]
-            // TODO: the delimiter should be a const like that but atm there are too many which have a value there so we use reserved for now
-            //[const      byte      delimiter       0x0                     ]
-            [reserved   byte                      '0x0'                   ]
-            [simple     byte      parameterValue                          ]
-        ]
-        [* *Value
-            [simple   CALData('null') calData]
-        ]
-    ]
 ]
 
 [type CALData(RequestContext requestContext)

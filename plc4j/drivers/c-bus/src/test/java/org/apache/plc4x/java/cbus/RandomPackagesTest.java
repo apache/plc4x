@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.cbus;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
@@ -139,8 +138,7 @@ public class RandomPackagesTest {
             assertThat(msg).isNotNull();
             System.out.println(msg);
             CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
-            RequestObsolete requestObsolete = (RequestObsolete) messageToServer.getRequest();
-            CALData calData = ((CALDataOrSetParameterValue) requestObsolete.getCalDataOrSetParameter()).getCalData();
+            CALData calData = ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData();
             System.out.println(calData);
             assertMessageMatches(bytes, msg);
         }
@@ -172,8 +170,8 @@ public class RandomPackagesTest {
             System.out.println(msg);
             CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
             RequestDirectCommandAccess requestDirectCommandAccess = (RequestDirectCommandAccess) messageToServer.getRequest();
-            CALDataOrSetParameter calDataOrSetParameter = requestDirectCommandAccess.getCalDataOrSetParameter();
-            System.out.println(calDataOrSetParameter);
+            CALData calData = ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData();
+            System.out.println(calData);
 
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bytes.length);
             msg.serialize(writeBuffer);
@@ -199,16 +197,15 @@ public class RandomPackagesTest {
             assertMessageMatches(bytes, msg);
         }
 
-        @Disabled
         @Test
-        void strangeNotYetParsableCommand() throws Exception {
+        void write30to9755() throws Exception {
             byte[] bytes = "A3309755s\r".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter());
+            System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
 
             assertMessageMatches(bytes, msg);
         }
@@ -303,7 +300,7 @@ public class RandomPackagesTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter());
+            System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
 
             assertMessageMatches(bytes, msg);
         }

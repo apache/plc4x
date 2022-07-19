@@ -50,16 +50,16 @@ func ReadEncodedReply(readBuffer utils.ReadBuffer, payloadLength uint16, options
 	return EncodedReplyParse(utils.NewReadBufferByteBased(rawBytes), options, requestContext)
 }
 
-func WriteCALDataOrSetParameter(writeBuffer utils.WriteBuffer, calDataOrSetParameter CALDataOrSetParameter) error {
-	return writeToHex("calDataOrSetParameter", writeBuffer, calDataOrSetParameter)
+func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
+	return writeToHex("calData", writeBuffer, calData)
 }
 
-func ReadCALDataOrSetParameter(readBuffer utils.ReadBuffer, payloadLength uint16) (CALDataOrSetParameter, error) {
-	rawBytes, err := readBytesFromHex("calDataOrSetParameter", readBuffer, payloadLength)
+func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, error) {
+	rawBytes, err := readBytesFromHex("calData", readBuffer, payloadLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALDataOrSetParameterParse(utils.NewReadBufferByteBased(rawBytes))
+	return CALDataParse(utils.NewReadBufferByteBased(rawBytes), nil)
 }
 
 func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLength uint16) ([]byte, error) {

@@ -133,7 +133,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CALData calData = ((CALDataOrSetParameterValue) ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter()).getCalData();
+                CALData calData = ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData();
                 System.out.println(calData);
                 assertMessageMatches(bytes, msg);
             }
@@ -147,7 +147,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CALData calData = ((CALDataOrSetParameterValue) ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter()).getCalData();
+                CALData calData = ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData();
                 System.out.println(calData);
                 assertMessageMatches(bytes, msg);
             }
@@ -597,9 +597,8 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+            System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
 
-            CALDataOrSetParameterSetParameter calDataOrSetParameter = (CALDataOrSetParameterSetParameter) ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalDataOrSetParameter();
-            System.out.println(calDataOrSetParameter);
             assertMessageMatches(bytes, msg);
         }
     }
@@ -791,7 +790,7 @@ public class ReferenceTest {
 
         //5.11.1
         @Nested
-        class SecuritySystemEmitsAlarmOn{
+        class SecuritySystemEmitsAlarmOn {
             @Test
             void AlarmOnWrongPrio() throws Exception {
                 byte[] bytes = "\\05D00079832F\r".getBytes(StandardCharsets.UTF_8);
@@ -859,6 +858,7 @@ public class ReferenceTest {
                 System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
                 assertMessageMatches(bytes, msg);
             }
+
             @Test
             void ArmSecurityRemote() throws Exception {
                 byte[] bytes = "\\039209D00AA2FFE7\r".getBytes(StandardCharsets.UTF_8);
@@ -876,11 +876,11 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2006%20-%20C-Bus%20Metering%20Application.pdf
     @Nested
-    class MeteringApplicationsTest{
+    class MeteringApplicationsTest {
 
         //6.11.1
         @Nested
-        class DeviceRequestsMeteringApplicationtoMeasureElectricity{
+        class DeviceRequestsMeteringApplicationtoMeasureElectricity {
             @Test
             void LocalMeasurement() throws Exception {
                 byte[] bytes = "\\05D100090120\r".getBytes(StandardCharsets.UTF_8);
@@ -909,7 +909,7 @@ public class ReferenceTest {
 
         //6.11.2
         @Nested
-        class MeterMeasurementDevicesendsElectricityUse{
+        class MeterMeasurementDevicesendsElectricityUse {
             @Test
             void LocalMeasurement() throws Exception {
                 byte[] bytes = "\\05D1000D810000DBF8C9\r".getBytes(StandardCharsets.UTF_8);
@@ -939,11 +939,11 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2007%20-%20C-Bus%20Trigger%20Control%20Application.pdf
     @Nested
-    class TriggerControlApplicationsTest{
+    class TriggerControlApplicationsTest {
 
         //7.12
         @Nested
-        class Examples{
+        class Examples {
             @Test
             void LocalTrigger() throws Exception {
                 byte[] bytes = "\\05CA0002250109\r".getBytes(StandardCharsets.UTF_8);
@@ -972,11 +972,11 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2008%20-%20C-Bus%20Enable%20Control%20Application.pdf
     @Nested
-    class EnableControlApplicationsTest{
+    class EnableControlApplicationsTest {
 
         //8.11
         @Nested
-        class Examples{
+        class Examples {
             @Test
             void LocalTrigger() throws Exception {
                 byte[] bytes = "\\05CB0002378275\r".getBytes(StandardCharsets.UTF_8);
@@ -1005,11 +1005,11 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2009%20-%20C-Bus%20Temperature%20Broadcast%20Application.pdf
     @Nested
-    class TemperatureBroadcastApplicationsTest{
+    class TemperatureBroadcastApplicationsTest {
 
         //9.11
         @Nested
-        class Examples{
+        class Examples {
 
             @Test
             void temperatureBroadcast() throws Exception {
@@ -1027,17 +1027,17 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2010%20-%20C-Bus%20Ventilation%20Application.pdf
     @Nested
-    class VentilationApplicationTest{
+    class VentilationApplicationTest {
         // TODO: no tests described here but it should work by adjusting the values from Lightning...
     }
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2009%20-%20C-Bus%20Temperature%20Control%20Application.pdf
     @Nested
-    class AccessControlApplicationsTest{
+    class AccessControlApplicationsTest {
 
         //9.11
         @Nested
-        class Examples{
+        class Examples {
 
             @Test
             void validAccessRequest() throws Exception {
@@ -1091,17 +1091,17 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2021%20-%20C-Bus%20Media%20Transport%20Control%20Application.pdf
     @Nested
-    class MediaTransportControlApplicationsTest{
+    class MediaTransportControlApplicationsTest {
         // TODO: no tests described here
     }
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2023%20-%20C-Bus%20Clock%20and%20Timekeeping%20Application.pdf
     @Nested
-    class ClockAndTimekeeping{
+    class ClockAndTimekeeping {
 
         //23.13
         @Nested
-        class Examples{
+        class Examples {
 
             @Test
             void outputATimeCommand() throws Exception {
@@ -1156,11 +1156,11 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2024%20-%20C-Bus%20Telephony%20Application.pdf
     @Nested
-    class Telephony{
+    class Telephony {
 
         //24.11
         @Nested
-        class Examples{
+        class Examples {
 
             @Test
             void LineOnHook() throws Exception {
@@ -1204,11 +1204,11 @@ public class ReferenceTest {
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Chapter%2034%20-%20C-Bus%20Error%20Reporting%20Application.pdf
     @Nested
-    class ErrorReporting{
+    class ErrorReporting {
 
         //34.13
         @Nested
-        class Examples{
+        class Examples {
 
             // 34.13.1
             @Test
@@ -1239,7 +1239,7 @@ public class ReferenceTest {
 
             // 34.13.3
             @Nested
-            class GeneralFailureWhichGetsAcknowledged{
+            class GeneralFailureWhichGetsAcknowledged {
                 @Test
                 void Reporting() throws Exception {
                     byte[] bytes = "\\05CE00159023426633\r".getBytes(StandardCharsets.UTF_8);
