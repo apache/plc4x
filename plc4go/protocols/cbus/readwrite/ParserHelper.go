@@ -189,6 +189,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CBusConstantsParse(io)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(io)
+	case "MeasurementData":
+		return model.MeasurementDataParse(io)
 	case "HVACZoneList":
 		return model.HVACZoneListParse(io)
 	case "ZoneStatus":

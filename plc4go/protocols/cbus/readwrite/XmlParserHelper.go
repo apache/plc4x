@@ -214,6 +214,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CBusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "MeasurementData":
+		return model.MeasurementDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HVACZoneList":
 		return model.HVACZoneListParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ZoneStatus":

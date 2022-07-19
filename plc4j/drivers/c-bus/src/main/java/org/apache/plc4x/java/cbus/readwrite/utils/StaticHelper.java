@@ -216,4 +216,15 @@ public class StaticHelper {
         }
     }
 
+    public static boolean knowsMeasurementCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return MeasurementCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
 }

@@ -231,3 +231,13 @@ func KnowsAirConditioningCommandTypeContainer(readBuffer utils.ReadBuffer) bool 
 	}
 	return AirConditioningCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsMeasurementCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return MeasurementCommandTypeContainerKnows(readUint8)
+}
