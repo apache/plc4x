@@ -1357,7 +1357,7 @@
             [simple TelephonyData telephonyData]
         ]
         ['MEASUREMENT'                          *Measurement
-            [validation '1==2' "MEASUREMENT Not yet implemented"] // TODO: implement me
+            [simple MeasurementData measurementData]
         ]
         ['TESTING'                              *Testing
             [validation '1==2' "TESTING Not yet implemented"] // TODO: implement me
@@ -3282,6 +3282,14 @@
     ]
 ]
 
+[enum uint 8 MeasurementCommandTypeContainer(MeasurementCommandType commandType, uint 5 numBytes)
+    ['0x0E' MeasurementCommandChannelMeasurementData    ['MEASUREMENT_EVENT',  '6']]
+]
+
+[enum uint 4 MeasurementCommandType
+    ['0x00' MEASUREMENT_EVENT              ]
+]
+
 [enum uint 8 MeasurementUnits
     ['0x00' CELSIUS                 ]
     ['0x01' AMPS                    ]
@@ -3325,14 +3333,6 @@
     ['0x27' WEBERS                  ]
     ['0xFE' NO_UNITS                ]
     ['0xFF' CUSTOM                  ]
-]
-
-[enum uint 8 MeasurementCommandTypeContainer(MeasurementCommandType commandType, uint 5 numBytes)
-    ['0x0E' MeasurementCommandChannelMeasurementData    ['MEASUREMENT_EVENT',  '6']]
-]
-
-[enum uint 4 MeasurementCommandType
-    ['0x00' MEASUREMENT_EVENT              ]
 ]
 
 [type ReplyOrConfirmation(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)
