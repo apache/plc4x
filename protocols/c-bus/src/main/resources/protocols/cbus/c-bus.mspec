@@ -1342,7 +1342,8 @@
             [simple EnableControlData enableControlData]
         ]
         ['AUDIO_AND_VIDEO'                      *AudioAndVideo
-            [validation '1==2' "AUDIO_AND_VIDEO Not yet implemented"] // TODO: implement me
+             // Note: the documentation states that the data for ventilation uses LightingData
+            [simple LightingData audioVideoData]
         ]
         ['SECURITY'                             *Security
             [simple SecurityData securityData]
