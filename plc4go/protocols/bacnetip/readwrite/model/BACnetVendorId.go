@@ -1395,6 +1395,11 @@ const (
 	BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD                                                    BACnetVendorId = 1362
 	BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY                                          BACnetVendorId = 1363
 	BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC                                        BACnetVendorId = 1364
+	BACnetVendorId_WADSWORTH_CONTROL_SYSTEMS                                                    BACnetVendorId = 1365
+	BACnetVendorId_SERVICES_HILO_INC                                                            BACnetVendorId = 1366
+	BACnetVendorId_IDM_ENERGIESYSTEME_GMBH                                                      BACnetVendorId = 1367
+	BACnetVendorId_BE_NEXTBV                                                                    BACnetVendorId = 1368
+	BACnetVendorId_CLEAN_AIRAI_CORPORATION                                                      BACnetVendorId = 1369
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2761,6 +2766,11 @@ func init() {
 		BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD,
 		BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY,
 		BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC,
+		BACnetVendorId_WADSWORTH_CONTROL_SYSTEMS,
+		BACnetVendorId_SERVICES_HILO_INC,
+		BACnetVendorId_IDM_ENERGIESYSTEME_GMBH,
+		BACnetVendorId_BE_NEXTBV,
+		BACnetVendorId_CLEAN_AIRAI_CORPORATION,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4398,6 +4408,26 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1364:
 		{ /* '1364' */
 			return 1364
+		}
+	case 1365:
+		{ /* '1365' */
+			return 1365
+		}
+	case 1366:
+		{ /* '1366' */
+			return 1366
+		}
+	case 1367:
+		{ /* '1367' */
+			return 1367
+		}
+	case 1368:
+		{ /* '1368' */
+			return 1368
+		}
+	case 1369:
+		{ /* '1369' */
+			return 1369
 		}
 	case 137:
 		{ /* '137' */
@@ -9853,6 +9883,26 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1364' */
 			return "Industrial Turnaround Corporation (ITAC)"
 		}
+	case 1365:
+		{ /* '1365' */
+			return "Wadsworth Control Systems"
+		}
+	case 1366:
+		{ /* '1366' */
+			return "Services Hilo Inc."
+		}
+	case 1367:
+		{ /* '1367' */
+			return "iDM Energiesysteme GmbH"
+		}
+	case 1368:
+		{ /* '1368' */
+			return "BeNext B.V."
+		}
+	case 1369:
+		{ /* '1369' */
+			return "CleanAir.ai Corporation"
+		}
 	case 137:
 		{ /* '137' */
 			return "AFDtek Division of Fastek International Inc."
@@ -14490,6 +14540,16 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY, true
 	case 1364:
 		return BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC, true
+	case 1365:
+		return BACnetVendorId_WADSWORTH_CONTROL_SYSTEMS, true
+	case 1366:
+		return BACnetVendorId_SERVICES_HILO_INC, true
+	case 1367:
+		return BACnetVendorId_IDM_ENERGIESYSTEME_GMBH, true
+	case 1368:
+		return BACnetVendorId_BE_NEXTBV, true
+	case 1369:
+		return BACnetVendorId_CLEAN_AIRAI_CORPORATION, true
 	case 137:
 		return BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC, true
 	case 138:
@@ -17214,6 +17274,16 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY, true
 	case "INDUSTRIAL_TURNAROUND_CORPORATIONITAC":
 		return BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC, true
+	case "WADSWORTH_CONTROL_SYSTEMS":
+		return BACnetVendorId_WADSWORTH_CONTROL_SYSTEMS, true
+	case "SERVICES_HILO_INC":
+		return BACnetVendorId_SERVICES_HILO_INC, true
+	case "IDM_ENERGIESYSTEME_GMBH":
+		return BACnetVendorId_IDM_ENERGIESYSTEME_GMBH, true
+	case "BE_NEXTBV":
+		return BACnetVendorId_BE_NEXTBV, true
+	case "CLEAN_AIRAI_CORPORATION":
+		return BACnetVendorId_CLEAN_AIRAI_CORPORATION, true
 	case "AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC":
 		return BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC, true
 	case "POWER_COLD_COMFORT_AIR_SOLUTIONS_INC":
@@ -19983,6 +20053,16 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "HUBBELL_THE_ELECTRIC_HEATER_COMPANY"
 	case BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC:
 		return "INDUSTRIAL_TURNAROUND_CORPORATIONITAC"
+	case BACnetVendorId_WADSWORTH_CONTROL_SYSTEMS:
+		return "WADSWORTH_CONTROL_SYSTEMS"
+	case BACnetVendorId_SERVICES_HILO_INC:
+		return "SERVICES_HILO_INC"
+	case BACnetVendorId_IDM_ENERGIESYSTEME_GMBH:
+		return "IDM_ENERGIESYSTEME_GMBH"
+	case BACnetVendorId_BE_NEXTBV:
+		return "BE_NEXTBV"
+	case BACnetVendorId_CLEAN_AIRAI_CORPORATION:
+		return "CLEAN_AIRAI_CORPORATION"
 	case BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC:
 		return "AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC"
 	case BACnetVendorId_POWER_COLD_COMFORT_AIR_SOLUTIONS_INC:
