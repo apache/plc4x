@@ -32,6 +32,8 @@ type CbusParserHelper struct {
 
 func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
+	case "HVACStatusFlags":
+		return model.HVACStatusFlagsParse(io)
 	case "MeteringData":
 		return model.MeteringDataParse(io)
 	case "EnableControlData":
@@ -44,6 +46,10 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.RequestContextParse(io)
 	case "TriggerControlData":
 		return model.TriggerControlDataParse(io)
+	case "HVACStartTime":
+		return model.HVACStartTimeParse(io)
+	case "HVACTemperature":
+		return model.HVACTemperatureParse(io)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "RequestTermination":
@@ -92,6 +98,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ReplyParse(io, cBusOptions, replyLength, requestContext)
 	case "TelephonyData":
 		return model.TelephonyDataParse(io)
+	case "HVACHumidityStatusFlags":
+		return model.HVACHumidityStatusFlagsParse(io)
 	case "InterfaceOptions1PowerUpSettings":
 		return model.InterfaceOptions1PowerUpSettingsParse(io)
 	case "MonitoredSAL":
@@ -129,6 +137,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.RequestParse(io, cBusOptions, messageLength)
+	case "HVACModeAndFlags":
+		return model.HVACModeAndFlagsParse(io)
 	case "Alpha":
 		return model.AlphaParse(io)
 	case "CALData":
@@ -169,10 +179,18 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.IdentifyReplyCommandParse(io, attribute, numBytes)
+	case "HVACHumidity":
+		return model.HVACHumidityParse(io)
+	case "HVACHumidityModeAndFlags":
+		return model.HVACHumidityModeAndFlagsParse(io)
+	case "HVACRawLevels":
+		return model.HVACRawLevelsParse(io)
 	case "CBusConstants":
 		return model.CBusConstantsParse(io)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(io)
+	case "HVACZoneList":
+		return model.HVACZoneListParse(io)
 	case "ZoneStatus":
 		return model.ZoneStatusParse(io)
 	case "BridgeAddress":
@@ -189,6 +207,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CustomTypesParse(io)
 	case "TriggerControlLabelOptions":
 		return model.TriggerControlLabelOptionsParse(io)
+	case "HVACAuxiliaryLevel":
+		return model.HVACAuxiliaryLevelParse(io)
 	case "StatusHeader":
 		return model.StatusHeaderParse(io)
 	case "EncodedReply":
@@ -207,6 +227,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CBusPointToPointToMultipointCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointToMultipointCommandParse(io, cBusOptions)
+	case "AirConditioningData":
+		return model.AirConditioningDataParse(io)
 	case "LogicAssignment":
 		return model.LogicAssignmentParse(io)
 	}

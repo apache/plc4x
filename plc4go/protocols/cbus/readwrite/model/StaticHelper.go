@@ -221,3 +221,13 @@ func KnowsTelephonyCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	}
 	return TelephonyCommandTypeContainerKnows(readUint8)
 }
+
+func KnowsAirConditioningCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return AirConditioningCommandTypeContainerKnows(readUint8)
+}
