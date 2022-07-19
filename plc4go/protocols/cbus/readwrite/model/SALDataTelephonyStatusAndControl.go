@@ -31,6 +31,8 @@ type SALDataTelephonyStatusAndControl interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetTelephonyData returns TelephonyData (property field)
+	GetTelephonyData() TelephonyData
 }
 
 // SALDataTelephonyStatusAndControlExactly can be used when we want exactly this type and not a type which fulfills SALDataTelephonyStatusAndControl.
@@ -43,6 +45,7 @@ type SALDataTelephonyStatusAndControlExactly interface {
 // _SALDataTelephonyStatusAndControl is the data-structure of this message
 type _SALDataTelephonyStatusAndControl struct {
 	*_SALData
+	TelephonyData TelephonyData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataTelephonyStatusAndControl) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataTelephonyStatusAndControl) GetTelephonyData() TelephonyData {
+	return m.TelephonyData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataTelephonyStatusAndControl factory function for _SALDataTelephonyStatusAndControl
-func NewSALDataTelephonyStatusAndControl(salData SALData) *_SALDataTelephonyStatusAndControl {
+func NewSALDataTelephonyStatusAndControl(telephonyData TelephonyData, salData SALData) *_SALDataTelephonyStatusAndControl {
 	_result := &_SALDataTelephonyStatusAndControl{
-		_SALData: NewSALData(salData),
+		TelephonyData: telephonyData,
+		_SALData:      NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataTelephonyStatusAndControl) GetLengthInBits() uint16 {
 func (m *_SALDataTelephonyStatusAndControl) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (telephonyData)
+	lengthInBits += m.TelephonyData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataTelephonyStatusAndControlParse(readBuffer utils.ReadBuffer, applicat
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"TELEPHONY_STATUS_AND_CONTROL Not yet implemented"})
+	// Simple Field (telephonyData)
+	if pullErr := readBuffer.PullContext("telephonyData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for telephonyData")
+	}
+	_telephonyData, _telephonyDataErr := TelephonyDataParse(readBuffer)
+	if _telephonyDataErr != nil {
+		return nil, errors.Wrap(_telephonyDataErr, "Error parsing 'telephonyData' field of SALDataTelephonyStatusAndControl")
+	}
+	telephonyData := _telephonyData.(TelephonyData)
+	if closeErr := readBuffer.CloseContext("telephonyData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for telephonyData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTelephonyStatusAndControl"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataTelephonyStatusAndControlParse(readBuffer utils.ReadBuffer, applicat
 
 	// Create a partially initialized instance
 	_child := &_SALDataTelephonyStatusAndControl{
-		_SALData: &_SALData{},
+		TelephonyData: telephonyData,
+		_SALData:      &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataTelephonyStatusAndControl) Serialize(writeBuffer utils.WriteBuf
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataTelephonyStatusAndControl"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataTelephonyStatusAndControl")
+		}
+
+		// Simple Field (telephonyData)
+		if pushErr := writeBuffer.PushContext("telephonyData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for telephonyData")
+		}
+		_telephonyDataErr := writeBuffer.WriteSerializable(m.GetTelephonyData())
+		if popErr := writeBuffer.PopContext("telephonyData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for telephonyData")
+		}
+		if _telephonyDataErr != nil {
+			return errors.Wrap(_telephonyDataErr, "Error serializing 'telephonyData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTelephonyStatusAndControl"); popErr != nil {

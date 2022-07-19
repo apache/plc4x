@@ -114,7 +114,7 @@ func (m *_SecurityDataDisplayMessage) GetLengthInBitsConditional(lastItem bool) 
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (message)
-	lengthInBits += uint16(int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))
+	lengthInBits += uint16(int32(int32(int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1)))) * int32(int32(8)))
 
 	return lengthInBits
 }
@@ -133,7 +133,7 @@ func SecurityDataDisplayMessageParse(readBuffer utils.ReadBuffer, commandTypeCon
 	_ = currentPos
 
 	// Simple Field (message)
-	_message, _messageErr := readBuffer.ReadString("message", uint32((commandTypeContainer.NumBytes())-(1)))
+	_message, _messageErr := readBuffer.ReadString("message", uint32(((commandTypeContainer.NumBytes())-(1))*(8)))
 	if _messageErr != nil {
 		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of SecurityDataDisplayMessage")
 	}
@@ -162,7 +162,7 @@ func (m *_SecurityDataDisplayMessage) Serialize(writeBuffer utils.WriteBuffer) e
 
 		// Simple Field (message)
 		message := string(m.GetMessage())
-		_messageErr := writeBuffer.WriteString("message", uint32((m.GetCommandTypeContainer().NumBytes())-(1)), "UTF-8", (message))
+		_messageErr := writeBuffer.WriteString("message", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (message))
 		if _messageErr != nil {
 			return errors.Wrap(_messageErr, "Error serializing 'message' field")
 		}

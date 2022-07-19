@@ -114,7 +114,7 @@ func (m *_MediaTransportControlDataTrackName) GetLengthInBitsConditional(lastIte
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (trackName)
-	lengthInBits += uint16(int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))
+	lengthInBits += uint16(int32(int32(int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1)))) * int32(int32(8)))
 
 	return lengthInBits
 }
@@ -133,7 +133,7 @@ func MediaTransportControlDataTrackNameParse(readBuffer utils.ReadBuffer, comman
 	_ = currentPos
 
 	// Simple Field (trackName)
-	_trackName, _trackNameErr := readBuffer.ReadString("trackName", uint32((commandTypeContainer.NumBytes())-(1)))
+	_trackName, _trackNameErr := readBuffer.ReadString("trackName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)))
 	if _trackNameErr != nil {
 		return nil, errors.Wrap(_trackNameErr, "Error parsing 'trackName' field of MediaTransportControlDataTrackName")
 	}
@@ -162,7 +162,7 @@ func (m *_MediaTransportControlDataTrackName) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (trackName)
 		trackName := string(m.GetTrackName())
-		_trackNameErr := writeBuffer.WriteString("trackName", uint32((m.GetCommandTypeContainer().NumBytes())-(1)), "UTF-8", (trackName))
+		_trackNameErr := writeBuffer.WriteString("trackName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (trackName))
 		if _trackNameErr != nil {
 			return errors.Wrap(_trackNameErr, "Error serializing 'trackName' field")
 		}

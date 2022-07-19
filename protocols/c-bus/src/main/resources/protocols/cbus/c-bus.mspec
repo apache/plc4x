@@ -1689,7 +1689,7 @@
             [virtual bit  isVacation    'key == 0x87'                ]
         ]
         ['ON', '0xA6'       *DisplayMessage(SecurityCommandTypeContainer commandTypeContainer)
-            [simple vstring 'commandTypeContainer.numBytes-1' message                           ]
+            [simple vstring '(commandTypeContainer.numBytes-1)*8' message                           ]
         ]
         ['EVENT', '0xA7'    *RequestZoneName
             [simple uint 8      zoneNumber  ]
@@ -2332,10 +2332,10 @@
             [simple  uint 8 size                                        ]
         ]
         ['TRACK_NAME'       *TrackName(MediaTransportControlCommandTypeContainer commandTypeContainer)
-             [simple vstring 'commandTypeContainer.numBytes-1' trackName                                    ]
+             [simple vstring '(commandTypeContainer.numBytes-1)*8' trackName                                    ]
         ]
         ['SELECTION_NAME'   *SelectionName(MediaTransportControlCommandTypeContainer commandTypeContainer)
-             [simple vstring 'commandTypeContainer.numBytes-1' selectionName                                ]
+             [simple vstring '(commandTypeContainer.numBytes-1)*8' selectionName                                ]
         ]
     ]
 ]
