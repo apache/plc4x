@@ -178,7 +178,7 @@ func NormalParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Normal, 
 	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for salData")
 	}
-	_salData, _salDataErr := SALDataParse(readBuffer)
+	_salData, _salDataErr := SALDataParse(readBuffer, ApplicationId(application.ApplicationId()))
 	if _salDataErr != nil {
 		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of Normal")
 	}

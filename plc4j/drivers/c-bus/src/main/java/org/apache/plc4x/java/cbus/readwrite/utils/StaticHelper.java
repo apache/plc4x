@@ -95,10 +95,98 @@ public class StaticHelper {
         }
     }
 
-    public static boolean knowsSALCommandTypeContainer(ReadBuffer readBuffer) {
+    public static boolean knowsLightingCommandTypeContainer(ReadBuffer readBuffer) {
         int oldPos = readBuffer.getPos();
         try {
-            return SALCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+            return LightingCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsSecurityCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return SecurityCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsMeteringCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return MeteringCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsTriggerControlCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return TriggerControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsEnableControlCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return EnableControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsTemperatureBroadcastCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return TemperatureBroadcastCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsAccessControlCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return AccessControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsMediaTransportControlCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return MediaTransportControlCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (ParseException ignore) {
+            return false;
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static boolean knowsClockAndTimekeepingCommandTypeContainer(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPos();
+        try {
+            return ClockAndTimekeepingCommandTypeContainer.isDefined(readBuffer.readUnsignedShort(8));
         } catch (ParseException ignore) {
             return false;
         } finally {

@@ -122,12 +122,92 @@ func KnowsCALCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	return CALCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsSALCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+func KnowsLightingCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
 	if err != nil {
 		return false
 	}
-	return SALCommandTypeContainerKnows(readUint8)
+	return LightingCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsSecurityCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return SecurityCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsMeteringCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return MeteringCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsTriggerControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return TriggerControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsEnableControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return EnableControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsTemperatureBroadcastCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return TemperatureBroadcastCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsAccessControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return AccessControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsMediaTransportControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return MediaTransportControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsClockAndTimekeepingCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return ClockAndTimekeepingCommandTypeContainerKnows(readUint8)
 }

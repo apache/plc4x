@@ -363,7 +363,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
-                String lengthExpression = toExpression(field, field.getType(), vstringTypeReference.getLengthExpression(), null, null, false, false);
+                String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "))";
             }
             case TIME:
@@ -467,7 +467,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
                     .asStringLiteral()
                     .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
-                String lengthExpression = toExpression(field, field.getType(), vstringTypeReference.getLengthExpression(), null, null, true, false);
+                String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";

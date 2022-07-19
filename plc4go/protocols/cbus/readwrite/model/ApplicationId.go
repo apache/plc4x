@@ -55,6 +55,7 @@ const (
 	ApplicationId_TELEPHONY_STATUS_AND_CONTROL       ApplicationId = 0x11
 	ApplicationId_MEASUREMENT                        ApplicationId = 0x12
 	ApplicationId_TESTING                            ApplicationId = 0x13
+	ApplicationId_MEDIA_TRANSPORT_CONTROL            ApplicationId = 0x14
 )
 
 var ApplicationIdValues []ApplicationId
@@ -82,6 +83,7 @@ func init() {
 		ApplicationId_TELEPHONY_STATUS_AND_CONTROL,
 		ApplicationId_MEASUREMENT,
 		ApplicationId_TESTING,
+		ApplicationId_MEDIA_TRANSPORT_CONTROL,
 	}
 }
 
@@ -127,6 +129,8 @@ func ApplicationIdByValue(value uint8) (enum ApplicationId, ok bool) {
 		return ApplicationId_MEASUREMENT, true
 	case 0x13:
 		return ApplicationId_TESTING, true
+	case 0x14:
+		return ApplicationId_MEDIA_TRANSPORT_CONTROL, true
 	}
 	return 0, false
 }
@@ -173,6 +177,8 @@ func ApplicationIdByName(value string) (enum ApplicationId, ok bool) {
 		return ApplicationId_MEASUREMENT, true
 	case "TESTING":
 		return ApplicationId_TESTING, true
+	case "MEDIA_TRANSPORT_CONTROL":
+		return ApplicationId_MEDIA_TRANSPORT_CONTROL, true
 	}
 	return 0, false
 }
@@ -264,6 +270,8 @@ func (e ApplicationId) PLC4XEnumName() string {
 		return "MEASUREMENT"
 	case ApplicationId_TESTING:
 		return "TESTING"
+	case ApplicationId_MEDIA_TRANSPORT_CONTROL:
+		return "MEDIA_TRANSPORT_CONTROL"
 	}
 	return ""
 }

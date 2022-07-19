@@ -34,8 +34,6 @@ type MonitoredSAL interface {
 	utils.Serializable
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
-	// GetSalData returns SalData (property field)
-	GetSalData() SALData
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
 }
@@ -51,7 +49,6 @@ type MonitoredSALExactly interface {
 type _MonitoredSAL struct {
 	_MonitoredSALChildRequirements
 	SalType byte
-	SalData SALData
 	Crc     Checksum
 
 	// Arguments.
@@ -71,7 +68,7 @@ type MonitoredSALParent interface {
 
 type MonitoredSALChild interface {
 	utils.Serializable
-	InitializeParent(parent MonitoredSAL, salType byte, salData SALData, crc Checksum)
+	InitializeParent(parent MonitoredSAL, salType byte, crc Checksum)
 	GetParent() *MonitoredSAL
 
 	GetTypeName() string
@@ -87,10 +84,6 @@ func (m *_MonitoredSAL) GetSalType() byte {
 	return m.SalType
 }
 
-func (m *_MonitoredSAL) GetSalData() SALData {
-	return m.SalData
-}
-
 func (m *_MonitoredSAL) GetCrc() Checksum {
 	return m.Crc
 }
@@ -101,8 +94,8 @@ func (m *_MonitoredSAL) GetCrc() Checksum {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSAL factory function for _MonitoredSAL
-func NewMonitoredSAL(salType byte, salData SALData, crc Checksum, cBusOptions CBusOptions) *_MonitoredSAL {
-	return &_MonitoredSAL{SalType: salType, SalData: salData, Crc: crc, CBusOptions: cBusOptions}
+func NewMonitoredSAL(salType byte, crc Checksum, cBusOptions CBusOptions) *_MonitoredSAL {
+	return &_MonitoredSAL{SalType: salType, Crc: crc, CBusOptions: cBusOptions}
 }
 
 // Deprecated: use the interface for direct cast
@@ -122,11 +115,6 @@ func (m *_MonitoredSAL) GetTypeName() string {
 
 func (m *_MonitoredSAL) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
-	// Optional Field (salData)
-	if m.SalData != nil {
-		lengthInBits += m.SalData.GetLengthInBits()
-	}
 
 	// Optional Field (crc)
 	if m.Crc != nil {
@@ -161,7 +149,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Mo
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MonitoredSALChildSerializeRequirement interface {
 		MonitoredSAL
-		InitializeParent(MonitoredSAL, byte, SALData, Checksum)
+		InitializeParent(MonitoredSAL, byte, Checksum)
 		GetParent() MonitoredSAL
 	}
 	var _childTemp interface{}
@@ -170,7 +158,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Mo
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
 		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParse(readBuffer, cBusOptions)
-	case true: // MonitoredSALShortFormBasicMode
+	case 0 == 0: // MonitoredSALShortFormBasicMode
 		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParse(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [salType=%v]", salType)
@@ -179,28 +167,6 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Mo
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of MonitoredSAL")
 	}
 	_child = _childTemp.(MonitoredSALChildSerializeRequirement)
-
-	// Optional Field (salData) (Can be skipped, if a given expression evaluates to false)
-	var salData SALData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for salData")
-		}
-		_val, _err := SALDataParse(readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'salData' field of MonitoredSAL")
-		default:
-			salData = _val.(SALData)
-			if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for salData")
-			}
-		}
-	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
 	var crc Checksum = nil
@@ -229,7 +195,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Mo
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, salType, salData, crc)
+	_child.InitializeParent(_child, salType, crc)
 	return _child, nil
 }
 
@@ -246,22 +212,6 @@ func (pm *_MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child Mo
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
-	}
-
-	// Optional Field (salData) (Can be skipped, if the value is null)
-	var salData SALData = nil
-	if m.GetSalData() != nil {
-		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for salData")
-		}
-		salData = m.GetSalData()
-		_salDataErr := writeBuffer.WriteSerializable(salData)
-		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for salData")
-		}
-		if _salDataErr != nil {
-			return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
-		}
 	}
 
 	// Optional Field (crc) (Can be skipped, if the value is null)
