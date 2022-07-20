@@ -100,7 +100,7 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 				}
 			case model.CBusCommandPointToPointToMultiPointExactly:
 				switch command.GetCommand().(type) {
-				case model.CBusPointToPointToMultipointCommandStatusExactly:
+				case model.CBusPointToPointToMultiPointCommandStatusExactly:
 					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
 					a.requestContext = model.NewRequestContext(false, true, false)
 				}

@@ -222,6 +222,9 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.EncodedReplyParse(io, cBusOptions, requestContext)
 	case "ErrorReportingData":
 		return model.ErrorReportingDataParse(io)
+	case "CBusPointToPointToMultiPointCommand":
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToPointToMultiPointCommandParse(io, cBusOptions)
 	case "UnitAddress":
 		return model.UnitAddressParse(io)
 	case "ExtendedFormatStatusReply":
@@ -231,9 +234,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CBusPointToPointCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointCommandParse(io, cBusOptions)
-	case "CBusPointToPointToMultipointCommand":
-		var cBusOptions model.CBusOptions
-		return model.CBusPointToPointToMultipointCommandParse(io, cBusOptions)
 	case "AirConditioningData":
 		return model.AirConditioningDataParse(io)
 	case "LogicAssignment":

@@ -249,6 +249,10 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.EncodedReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
 	case "ErrorReportingData":
 		return model.ErrorReportingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CBusPointToPointToMultiPointCommand":
+		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToPointToMultiPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
 	case "UnitAddress":
 		return model.UnitAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ExtendedFormatStatusReply":
@@ -259,10 +263,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
-	case "CBusPointToPointToMultipointCommand":
-		// TODO: find a way to parse the sub types
-		var cBusOptions model.CBusOptions
-		return model.CBusPointToPointToMultipointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
 	case "AirConditioningData":
 		return model.AirConditioningDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "LogicAssignment":

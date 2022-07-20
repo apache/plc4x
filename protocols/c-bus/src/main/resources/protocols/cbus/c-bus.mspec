@@ -137,7 +137,7 @@
             [simple     byte      parameterValue                          ]
         ]
         ['PointToPointToMultiPoint' *PointToPointToMultiPoint
-            [simple CBusPointToPointToMultipointCommand('cBusOptions') command]
+            [simple CBusPointToPointToMultiPointCommand('cBusOptions') command]
         ]
         ['PointToMultiPoint'        *PointToMultiPoint
             [simple CBusPointToMultiPointCommand('cBusOptions')        command]
@@ -246,7 +246,7 @@
     [optional Checksum      crc           'cBusOptions.srchk'                                          ] // checksum is optional but mspec checksum isn't
 ]
 
-[discriminatedType CBusPointToPointToMultipointCommand(CBusOptions cBusOptions)
+[discriminatedType CBusPointToPointToMultiPointCommand(CBusOptions cBusOptions)
     [simple BridgeAddress bridgeAddress                                                              ]
     [simple NetworkRoute  networkRoute                                                               ]
     [peek    byte       peekedApplication                                                            ]
@@ -566,29 +566,29 @@
     [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
     [virtual bit  sendIdentifyRequestBefore       'requestContext!=null?requestContext.sendIdentifyRequestBefore:false']
     [typeSwitch commandType, sendIdentifyRequestBefore
-        ['RESET'            *Reset // Request
+        ['RESET'            *Reset                                                              // Request
         ]
-        ['RECALL'           *Recall // Request
+        ['RECALL'           *Recall                                                             // Request
             [simple Parameter paramNo                                                       ]
             [simple uint 8    count                                                         ]
         ]
-        ['IDENTIFY'         *Identify // Request
+        ['IDENTIFY'         *Identify                                                           // Request
             [simple Attribute attribute                                                     ]
         ]
         ['GET_STATUS'       *GetStatus // Request
             [simple Parameter paramNo                                                       ]
             [simple uint 8    count                                                         ]
         ]
-        ['WRITE'            *Write(CALCommandTypeContainer commandTypeContainer) // Request
+        ['WRITE'            *Write(CALCommandTypeContainer commandTypeContainer)                // Request
             [simple Parameter paramNo                                                       ]
             [array  byte      data        count 'commandTypeContainer.numBytes-1'           ]
         ]
-        ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer) // Reply
+        ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer)        // Reply
             [simple Attribute   attribute                                                   ]
             [simple IdentifyReplyCommand('attribute', 'commandTypeContainer.numBytes - 1')
                                 identifyReplyCommand                                        ]
         ]
-        ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer) // Reply
+        ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer)                // Reply
             [simple Parameter paramNo                                                       ]
             [array  byte      data        count 'commandTypeContainer.numBytes-1'           ]
         ]
@@ -596,12 +596,12 @@
             [simple Parameter paramNo                                                       ]
             [simple uint 8    code                                                          ]
         ]
-        ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer) // Reply
+        ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer)               // Reply
             [simple ApplicationIdContainer application                                                 ]
             [simple uint 8                 blockStart                                                  ]
             [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ]
         ]
-        ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer) // Reply
+        ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer)       // Reply
             [simple uint 8                 coding                                                      ]
             [virtual bit                   isBinaryBySerialInterface 'coding == 0x00'                  ]
             [virtual bit                   isBinaryByElsewhere       'coding == 0x40'                  ]

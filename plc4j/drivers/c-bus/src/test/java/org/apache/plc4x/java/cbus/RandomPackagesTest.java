@@ -371,4 +371,32 @@ public class RandomPackagesTest {
         assertMessageMatches(bytes, msg);
     }
 
+    @Test
+    void SetHvacLevel() throws Exception {
+        byte[] bytes = "0531AC0036040108FF0000DC\r\n".getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+        requestContext = new RequestContext(false, false, false);
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+        // TODO: apparently the set the first bit of AuxiliaryLevel to true wich is not valid according to the documentation
+        //assertMessageMatches(bytes, msg);
+    }
+
+    @Disabled("Not clear yet what this is")
+    @Test
+    void closestFitIsAStatusRequestButWeDonTHaveAnyBytesBeforeThat() throws Exception {
+        byte[] bytes = "FAFF00r\r".getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+
+        assertMessageMatches(bytes, msg);
+    }
+
 }
