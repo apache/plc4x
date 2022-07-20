@@ -29,6 +29,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net"
+	"reflect"
 )
 
 type Analyzer struct {
@@ -295,11 +296,8 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 		a.mappedPacketChan = make(chan gopacket.Packet)
 		go func() {
 			defer close(a.mappedPacketChan)
-			currentPackageNum := uint(0)
-			currentPackageNum++
 		mappingLoop:
 			for packet := range in {
-				currentPackageNum++
 				switch {
 				case packet == nil:
 					log.Debug().Msg("Done reading packages. (nil returned)")
@@ -314,9 +312,10 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 						a.mappedPacketChan <- common.NewFilteredPackage(err, packet)
 					} else {
 						currentApplicationLayer := packet.ApplicationLayer()
-						newApplicationLayer := gopacket.Payload(payload)
-						if len(currentApplicationLayer.Payload()) != len(newApplicationLayer) {
-							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newApplicationLayer}
+						newPayload := gopacket.Payload(payload)
+						if !reflect.DeepEqual(currentApplicationLayer.Payload(), newPayload) {
+							log.Debug().Msgf("Replacing payload %q with %q", currentApplicationLayer.Payload(), payload)
+							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newPayload}
 						}
 						a.mappedPacketChan <- packet
 					}
