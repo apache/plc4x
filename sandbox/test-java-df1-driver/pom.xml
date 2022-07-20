@@ -159,7 +159,7 @@
         <artifactId>plc4x-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>test</id>
+            <id>generate-driver</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>generate-driver</goal>
