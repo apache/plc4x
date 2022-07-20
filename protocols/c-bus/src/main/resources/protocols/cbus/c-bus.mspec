@@ -3678,9 +3678,11 @@
 ]
 
 [type ReplyNetwork
-     [simple RouteType     routeType                                                    ]
-     [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-     [simple UnitAddress   unitAddress                                                  ]
+    [reserved uint 2      '0x00'                                                       ]
+    [simple RouteType     reverseRouteType                                             ]
+    [simple RouteType     routeType                                                    ]
+    [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
+    [simple UnitAddress   unitAddress                                                  ]
 ]
 
 [type Checksum
