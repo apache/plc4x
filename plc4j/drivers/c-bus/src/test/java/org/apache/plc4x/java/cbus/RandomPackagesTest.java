@@ -357,4 +357,18 @@ public class RandomPackagesTest {
         assertMessageMatches(bytes, msg);
     }
 
+    @Test
+    void gavValuesCurrentReply() throws Exception {
+        byte[] bytes = "w.860C02008A08000000C8000000000012\r\n".getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+        requestContext = new RequestContext(false, false, true);
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
+
+        assertMessageMatches(bytes, msg);
+    }
+
 }

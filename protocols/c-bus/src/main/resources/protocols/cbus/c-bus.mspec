@@ -1034,13 +1034,13 @@
            [const  byte         v       0x56            ]
         ]
         ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent
-            [array  byte        values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
         ]
         ['GAVValuesStored'              IdentifyReplyCommandGAVValuesStored
-            [array  byte        values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
         ]
         ['GAVPhysicalAddresses'         IdentifyReplyCommandGAVPhysicalAddresses
-            [array  byte        values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
         ]
         ['LogicalAssignment'            IdentifyReplyCommandLogicalAssignment
             [array  LogicAssignment   logicAssigment        count 'numBytes'       ]
