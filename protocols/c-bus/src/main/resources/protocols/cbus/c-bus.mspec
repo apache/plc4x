@@ -614,7 +614,8 @@
         ]
     ]
     // TODO: we need to check that we don't read the crc by accident
-    [optional CALData('requestContext') additionalData]
+    // Note: we omit the request context as it is only useful for the first element
+    [optional CALData('null') additionalData]
 ]
 
 [enum uint 8 Parameter(vstring group, vstring parameterDescription, vstring form, bit isVolatile, ProtectionLevel protectionLevel)

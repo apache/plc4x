@@ -242,7 +242,7 @@ func CALDataParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (C
 		if pullErr := readBuffer.PullContext("additionalData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for additionalData")
 		}
-		_val, _err := CALDataParse(readBuffer, requestContext)
+		_val, _err := CALDataParse(readBuffer, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
