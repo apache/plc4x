@@ -148,7 +148,10 @@ func BACnetLightingInProgressTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLightingInProgressTagged")
 	}
-	value := _value.(BACnetLightingInProgress)
+	var value BACnetLightingInProgress
+	if _value != nil {
+		value = _value.(BACnetLightingInProgress)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLightingInProgressTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLightingInProgressTagged")

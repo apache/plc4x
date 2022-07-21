@@ -175,7 +175,10 @@ func BACnetAccessCredentialDisableReasonTaggedParse(readBuffer utils.ReadBuffer,
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessCredentialDisableReasonTagged")
 	}
-	value := _value.(BACnetAccessCredentialDisableReason)
+	var value BACnetAccessCredentialDisableReason
+	if _value != nil {
+		value = _value.(BACnetAccessCredentialDisableReason)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetAccessCredentialDisableReasonTaggedParse(readBuffer utils.ReadBuffer,
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAccessCredentialDisableReasonTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessCredentialDisableReasonTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessCredentialDisableReasonTagged")

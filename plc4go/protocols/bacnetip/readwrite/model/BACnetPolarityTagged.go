@@ -148,7 +148,10 @@ func BACnetPolarityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetPolarityTagged")
 	}
-	value := _value.(BACnetPolarity)
+	var value BACnetPolarity
+	if _value != nil {
+		value = _value.(BACnetPolarity)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPolarityTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPolarityTagged")

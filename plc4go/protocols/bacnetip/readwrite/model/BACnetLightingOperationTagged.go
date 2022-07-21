@@ -175,7 +175,10 @@ func BACnetLightingOperationTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLightingOperationTagged")
 	}
-	value := _value.(BACnetLightingOperation)
+	var value BACnetLightingOperation
+	if _value != nil {
+		value = _value.(BACnetLightingOperation)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetLightingOperationTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetLightingOperationTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLightingOperationTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLightingOperationTagged")

@@ -148,7 +148,10 @@ func BACnetProgramRequestTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProgramRequestTagged")
 	}
-	value := _value.(BACnetProgramRequest)
+	var value BACnetProgramRequest
+	if _value != nil {
+		value = _value.(BACnetProgramRequest)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetProgramRequestTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetProgramRequestTagged")

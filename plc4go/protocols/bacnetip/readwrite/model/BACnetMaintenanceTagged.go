@@ -175,7 +175,10 @@ func BACnetMaintenanceTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetMaintenanceTagged")
 	}
-	value := _value.(BACnetMaintenance)
+	var value BACnetMaintenance
+	if _value != nil {
+		value = _value.(BACnetMaintenance)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetMaintenance_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetMaintenanceTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetMaintenanceTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetMaintenanceTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetMaintenanceTagged")

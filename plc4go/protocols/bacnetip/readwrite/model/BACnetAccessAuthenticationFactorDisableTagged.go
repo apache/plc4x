@@ -175,7 +175,10 @@ func BACnetAccessAuthenticationFactorDisableTaggedParse(readBuffer utils.ReadBuf
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessAuthenticationFactorDisableTagged")
 	}
-	value := _value.(BACnetAccessAuthenticationFactorDisable)
+	var value BACnetAccessAuthenticationFactorDisable
+	if _value != nil {
+		value = _value.(BACnetAccessAuthenticationFactorDisable)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetAccessAuthenticationFactorDisableTaggedParse(readBuffer utils.ReadBuf
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAccessAuthenticationFactorDisableTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessAuthenticationFactorDisableTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessAuthenticationFactorDisableTagged")

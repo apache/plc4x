@@ -148,7 +148,10 @@ func BACnetSecurityPolicyTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetSecurityPolicyTagged")
 	}
-	value := _value.(BACnetSecurityPolicy)
+	var value BACnetSecurityPolicy
+	if _value != nil {
+		value = _value.(BACnetSecurityPolicy)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSecurityPolicyTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetSecurityPolicyTagged")

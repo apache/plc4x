@@ -148,7 +148,10 @@ func BACnetLiftCarDoorCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarDoorCommandTagged")
 	}
-	value := _value.(BACnetLiftCarDoorCommand)
+	var value BACnetLiftCarDoorCommand
+	if _value != nil {
+		value = _value.(BACnetLiftCarDoorCommand)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarDoorCommandTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLiftCarDoorCommandTagged")

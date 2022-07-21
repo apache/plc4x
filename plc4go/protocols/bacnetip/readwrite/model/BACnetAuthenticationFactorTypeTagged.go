@@ -148,7 +148,10 @@ func BACnetAuthenticationFactorTypeTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthenticationFactorTypeTagged")
 	}
-	value := _value.(BACnetAuthenticationFactorType)
+	var value BACnetAuthenticationFactorType
+	if _value != nil {
+		value = _value.(BACnetAuthenticationFactorType)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationFactorTypeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationFactorTypeTagged")

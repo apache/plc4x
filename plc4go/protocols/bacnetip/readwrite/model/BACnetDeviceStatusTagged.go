@@ -175,7 +175,10 @@ func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDeviceStatusTagged")
 	}
-	value := _value.(BACnetDeviceStatus)
+	var value BACnetDeviceStatus
+	if _value != nil {
+		value = _value.(BACnetDeviceStatus)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetDeviceStatusTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDeviceStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDeviceStatusTagged")

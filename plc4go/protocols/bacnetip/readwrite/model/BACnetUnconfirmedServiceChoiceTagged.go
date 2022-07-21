@@ -148,7 +148,10 @@ func BACnetUnconfirmedServiceChoiceTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetUnconfirmedServiceChoiceTagged")
 	}
-	value := _value.(BACnetUnconfirmedServiceChoice)
+	var value BACnetUnconfirmedServiceChoice
+	if _value != nil {
+		value = _value.(BACnetUnconfirmedServiceChoice)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceChoiceTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceChoiceTagged")

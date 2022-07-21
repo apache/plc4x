@@ -148,7 +148,10 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetFileAccessMethodTagged")
 	}
-	value := _value.(BACnetFileAccessMethod)
+	var value BACnetFileAccessMethod
+	if _value != nil {
+		value = _value.(BACnetFileAccessMethod)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFileAccessMethodTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFileAccessMethodTagged")

@@ -148,7 +148,10 @@ func BACnetTimerTransitionTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTimerTransitionTagged")
 	}
-	value := _value.(BACnetTimerTransition)
+	var value BACnetTimerTransition
+	if _value != nil {
+		value = _value.(BACnetTimerTransition)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerTransitionTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerTransitionTagged")

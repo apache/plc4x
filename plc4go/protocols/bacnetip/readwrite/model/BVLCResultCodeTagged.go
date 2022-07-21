@@ -148,7 +148,10 @@ func BVLCResultCodeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BVLCResultCodeTagged")
 	}
-	value := _value.(BVLCResultCode)
+	var value BVLCResultCode
+	if _value != nil {
+		value = _value.(BVLCResultCode)
+	}
 
 	if closeErr := readBuffer.CloseContext("BVLCResultCodeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCResultCodeTagged")

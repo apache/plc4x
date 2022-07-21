@@ -148,7 +148,10 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of MaxApduLengthAcceptedTagged")
 	}
-	value := _value.(MaxApduLengthAccepted)
+	var value MaxApduLengthAccepted
+	if _value != nil {
+		value = _value.(MaxApduLengthAccepted)
+	}
 
 	if closeErr := readBuffer.CloseContext("MaxApduLengthAcceptedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MaxApduLengthAcceptedTagged")

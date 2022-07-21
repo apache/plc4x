@@ -175,7 +175,10 @@ func BACnetLiftCarModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarModeTagged")
 	}
-	value := _value.(BACnetLiftCarMode)
+	var value BACnetLiftCarMode
+	if _value != nil {
+		value = _value.(BACnetLiftCarMode)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetLiftCarModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetLiftCarModeTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarModeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLiftCarModeTagged")

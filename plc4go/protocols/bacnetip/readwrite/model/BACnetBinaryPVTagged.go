@@ -148,7 +148,10 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetBinaryPVTagged")
 	}
-	value := _value.(BACnetBinaryPV)
+	var value BACnetBinaryPV
+	if _value != nil {
+		value = _value.(BACnetBinaryPV)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetBinaryPVTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetBinaryPVTagged")

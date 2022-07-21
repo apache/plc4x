@@ -141,7 +141,10 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetRejectReasonTagged")
 	}
-	value := _value.(BACnetRejectReason)
+	var value BACnetRejectReason
+	if _value != nil {
+		value = _value.(BACnetRejectReason)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetRejectReason_VENDOR_PROPRIETARY_VALUE))
@@ -153,7 +156,10 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetRejectReasonTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRejectReasonTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRejectReasonTagged")

@@ -172,7 +172,10 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestDirectCommandAccess")
 	}
-	calData := _calData.(CALData)
+	var calData CALData
+	if _calData != nil {
+		calData = _calData.(CALData)
+	}
 
 	if closeErr := readBuffer.CloseContext("RequestDirectCommandAccess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestDirectCommandAccess")

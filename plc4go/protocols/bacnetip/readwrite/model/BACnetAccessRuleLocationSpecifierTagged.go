@@ -148,7 +148,10 @@ func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, t
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessRuleLocationSpecifierTagged")
 	}
-	value := _value.(BACnetAccessRuleLocationSpecifier)
+	var value BACnetAccessRuleLocationSpecifier
+	if _value != nil {
+		value = _value.(BACnetAccessRuleLocationSpecifier)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessRuleLocationSpecifierTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessRuleLocationSpecifierTagged")

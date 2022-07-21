@@ -148,7 +148,10 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedPars
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged")
 	}
-	value := _value.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter)
+	var value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter
+	if _value != nil {
+		value = _value.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged")

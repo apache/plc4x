@@ -169,14 +169,20 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	if _encodedReplyErr != nil {
 		return nil, errors.Wrap(_encodedReplyErr, "Error parsing 'encodedReply' field of ReplyEncodedReply")
 	}
-	encodedReply := _encodedReply.(EncodedReply)
+	var encodedReply EncodedReply
+	if _encodedReply != nil {
+		encodedReply = _encodedReply.(EncodedReply)
+	}
 
 	// Manual Field (chksum)
 	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, encodedReply, cBusOptions.GetSrchk())
 	if _chksumErr != nil {
 		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of ReplyEncodedReply")
 	}
-	chksum := _chksum.(Checksum)
+	var chksum Checksum
+	if _chksum != nil {
+		chksum = _chksum.(Checksum)
+	}
 
 	if closeErr := readBuffer.CloseContext("ReplyEncodedReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReplyEncodedReply")

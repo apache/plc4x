@@ -175,7 +175,10 @@ func BACnetEscalatorOperationDirectionTaggedParse(readBuffer utils.ReadBuffer, t
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetEscalatorOperationDirectionTagged")
 	}
-	value := _value.(BACnetEscalatorOperationDirection)
+	var value BACnetEscalatorOperationDirection
+	if _value != nil {
+		value = _value.(BACnetEscalatorOperationDirection)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetEscalatorOperationDirectionTaggedParse(readBuffer utils.ReadBuffer, t
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetEscalatorOperationDirectionTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEscalatorOperationDirectionTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEscalatorOperationDirectionTagged")

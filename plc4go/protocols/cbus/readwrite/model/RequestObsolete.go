@@ -182,7 +182,10 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestObsolete")
 	}
-	calData := _calData.(CALData)
+	var calData CALData
+	if _calData != nil {
+		calData = _calData.(CALData)
+	}
 
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil

@@ -1128,7 +1128,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	if _${manualField.name}Err != nil {
 		return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-    ${manualField.name} := _${manualField.name}.(${helper.getLanguageTypeNameForField(manualField)})
+	var ${manualField.name} ${helper.getLanguageTypeNameForField(manualField)}
+	if _${manualField.name} != nil {
+            ${manualField.name} = _${manualField.name}.(${helper.getLanguageTypeNameForField(manualField)})
+	}
 			<#break>
 			<#case "optional">
 				<#assign optionalField = field.asOptionalField().orElseThrow()>
@@ -1137,7 +1140,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#if optionalField.conditionExpression.present && optionalField.conditionExpression.get().contains("curPos")>
 	curPos = positionAware.GetPos() - startPos
 				</#if>
-	var ${optionalField.name} <#if !optionalField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)} = nil
+	var ${optionalField.name} <#if !optionalF
+	ield.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)} = nil
 	<#if optionalField.conditionExpression.present>
 	if ${helper.toBooleanParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)} </#if>{
 			<#if optionalField.type.isSimpleTypeReference()>

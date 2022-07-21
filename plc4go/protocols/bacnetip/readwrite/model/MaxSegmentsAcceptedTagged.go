@@ -148,7 +148,10 @@ func MaxSegmentsAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of MaxSegmentsAcceptedTagged")
 	}
-	value := _value.(MaxSegmentsAccepted)
+	var value MaxSegmentsAccepted
+	if _value != nil {
+		value = _value.(MaxSegmentsAccepted)
+	}
 
 	if closeErr := readBuffer.CloseContext("MaxSegmentsAcceptedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MaxSegmentsAcceptedTagged")

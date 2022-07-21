@@ -175,7 +175,10 @@ func BACnetAccessEventTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessEventTagged")
 	}
-	value := _value.(BACnetAccessEvent)
+	var value BACnetAccessEvent
+	if _value != nil {
+		value = _value.(BACnetAccessEvent)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetAccessEventTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAccessEventTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessEventTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessEventTagged")

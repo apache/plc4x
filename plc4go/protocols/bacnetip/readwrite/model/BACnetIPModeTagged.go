@@ -148,7 +148,10 @@ func BACnetIPModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagCl
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetIPModeTagged")
 	}
-	value := _value.(BACnetIPMode)
+	var value BACnetIPMode
+	if _value != nil {
+		value = _value.(BACnetIPMode)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetIPModeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetIPModeTagged")

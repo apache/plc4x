@@ -175,7 +175,10 @@ func BACnetVendorIdTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetVendorIdTagged")
 	}
-	value := _value.(BACnetVendorId)
+	var value BACnetVendorId
+	if _value != nil {
+		value = _value.(BACnetVendorId)
+	}
 
 	// Virtual field
 	_isUnknownId := bool((value) == (BACnetVendorId_UNKNOWN_VENDOR))
@@ -187,7 +190,10 @@ func BACnetVendorIdTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _unknownIdErr != nil {
 		return nil, errors.Wrap(_unknownIdErr, "Error parsing 'unknownId' field of BACnetVendorIdTagged")
 	}
-	unknownId := _unknownId.(uint32)
+	var unknownId uint32
+	if _unknownId != nil {
+		unknownId = _unknownId.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVendorIdTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetVendorIdTagged")

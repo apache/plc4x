@@ -148,7 +148,10 @@ func BACnetLockStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLockStatusTagged")
 	}
-	value := _value.(BACnetLockStatus)
+	var value BACnetLockStatus
+	if _value != nil {
+		value = _value.(BACnetLockStatus)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLockStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLockStatusTagged")

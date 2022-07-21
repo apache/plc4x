@@ -175,7 +175,10 @@ func BACnetDoorAlarmStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDoorAlarmStateTagged")
 	}
-	value := _value.(BACnetDoorAlarmState)
+	var value BACnetDoorAlarmState
+	if _value != nil {
+		value = _value.(BACnetDoorAlarmState)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetDoorAlarmStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetDoorAlarmStateTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDoorAlarmStateTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDoorAlarmStateTagged")

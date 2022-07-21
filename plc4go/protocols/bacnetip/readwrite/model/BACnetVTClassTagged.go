@@ -175,7 +175,10 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetVTClassTagged")
 	}
-	value := _value.(BACnetVTClass)
+	var value BACnetVTClass
+	if _value != nil {
+		value = _value.(BACnetVTClass)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetVTClass_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetVTClassTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVTClassTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetVTClassTagged")

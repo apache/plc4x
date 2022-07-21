@@ -148,7 +148,10 @@ func BACnetRouterEntryStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetRouterEntryStatusTagged")
 	}
-	value := _value.(BACnetRouterEntryStatus)
+	var value BACnetRouterEntryStatus
+	if _value != nil {
+		value = _value.(BACnetRouterEntryStatus)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRouterEntryStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRouterEntryStatusTagged")

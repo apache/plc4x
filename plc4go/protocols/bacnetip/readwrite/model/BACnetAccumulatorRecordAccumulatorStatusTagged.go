@@ -148,7 +148,10 @@ func BACnetAccumulatorRecordAccumulatorStatusTaggedParse(readBuffer utils.ReadBu
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccumulatorRecordAccumulatorStatusTagged")
 	}
-	value := _value.(BACnetAccumulatorRecordAccumulatorStatus)
+	var value BACnetAccumulatorRecordAccumulatorStatus
+	if _value != nil {
+		value = _value.(BACnetAccumulatorRecordAccumulatorStatus)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccumulatorRecordAccumulatorStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccumulatorRecordAccumulatorStatusTagged")

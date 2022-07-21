@@ -148,7 +148,10 @@ func BACnetNotifyTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNotifyTypeTagged")
 	}
-	value := _value.(BACnetNotifyType)
+	var value BACnetNotifyType
+	if _value != nil {
+		value = _value.(BACnetNotifyType)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotifyTypeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotifyTypeTagged")

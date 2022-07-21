@@ -175,7 +175,10 @@ func BACnetAuthorizationExemptionTaggedParse(readBuffer utils.ReadBuffer, tagNum
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthorizationExemptionTagged")
 	}
-	value := _value.(BACnetAuthorizationExemption)
+	var value BACnetAuthorizationExemption
+	if _value != nil {
+		value = _value.(BACnetAuthorizationExemption)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetAuthorizationExemptionTaggedParse(readBuffer utils.ReadBuffer, tagNum
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAuthorizationExemptionTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthorizationExemptionTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthorizationExemptionTagged")

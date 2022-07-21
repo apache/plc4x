@@ -175,7 +175,10 @@ func BACnetLifeSafetyStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLifeSafetyStateTagged")
 	}
-	value := _value.(BACnetLifeSafetyState)
+	var value BACnetLifeSafetyState
+	if _value != nil {
+		value = _value.(BACnetLifeSafetyState)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetLifeSafetyStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetLifeSafetyStateTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLifeSafetyStateTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLifeSafetyStateTagged")

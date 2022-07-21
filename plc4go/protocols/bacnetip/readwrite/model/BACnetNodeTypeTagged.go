@@ -148,7 +148,10 @@ func BACnetNodeTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNodeTypeTagged")
 	}
-	value := _value.(BACnetNodeType)
+	var value BACnetNodeType
+	if _value != nil {
+		value = _value.(BACnetNodeType)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNodeTypeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNodeTypeTagged")

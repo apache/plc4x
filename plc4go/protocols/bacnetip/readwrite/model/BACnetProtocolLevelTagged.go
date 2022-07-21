@@ -148,7 +148,10 @@ func BACnetProtocolLevelTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProtocolLevelTagged")
 	}
-	value := _value.(BACnetProtocolLevel)
+	var value BACnetProtocolLevel
+	if _value != nil {
+		value = _value.(BACnetProtocolLevel)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetProtocolLevelTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetProtocolLevelTagged")

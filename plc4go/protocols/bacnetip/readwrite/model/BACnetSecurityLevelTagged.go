@@ -148,7 +148,10 @@ func BACnetSecurityLevelTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetSecurityLevelTagged")
 	}
-	value := _value.(BACnetSecurityLevel)
+	var value BACnetSecurityLevel
+	if _value != nil {
+		value = _value.(BACnetSecurityLevel)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSecurityLevelTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetSecurityLevelTagged")

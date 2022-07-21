@@ -148,7 +148,10 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParse(readBuffer utils.ReadBuffer, 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessRuleTimeRangeSpecifierTagged")
 	}
-	value := _value.(BACnetAccessRuleTimeRangeSpecifier)
+	var value BACnetAccessRuleTimeRangeSpecifier
+	if _value != nil {
+		value = _value.(BACnetAccessRuleTimeRangeSpecifier)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessRuleTimeRangeSpecifierTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessRuleTimeRangeSpecifierTagged")

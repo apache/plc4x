@@ -175,7 +175,10 @@ func BACnetNetworkPortCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNetworkPortCommandTagged")
 	}
-	value := _value.(BACnetNetworkPortCommand)
+	var value BACnetNetworkPortCommand
+	if _value != nil {
+		value = _value.(BACnetNetworkPortCommand)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetNetworkPortCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetNetworkPortCommandTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNetworkPortCommandTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNetworkPortCommandTagged")

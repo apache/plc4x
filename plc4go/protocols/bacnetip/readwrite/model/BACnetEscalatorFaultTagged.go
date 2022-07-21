@@ -175,7 +175,10 @@ func BACnetEscalatorFaultTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetEscalatorFaultTagged")
 	}
-	value := _value.(BACnetEscalatorFault)
+	var value BACnetEscalatorFault
+	if _value != nil {
+		value = _value.(BACnetEscalatorFault)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetEscalatorFaultTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetEscalatorFaultTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEscalatorFaultTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEscalatorFaultTagged")

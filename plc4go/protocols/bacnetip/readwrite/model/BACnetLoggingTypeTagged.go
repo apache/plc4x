@@ -175,7 +175,10 @@ func BACnetLoggingTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLoggingTypeTagged")
 	}
-	value := _value.(BACnetLoggingType)
+	var value BACnetLoggingType
+	if _value != nil {
+		value = _value.(BACnetLoggingType)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetLoggingType_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetLoggingTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetLoggingTypeTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLoggingTypeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLoggingTypeTagged")

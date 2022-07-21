@@ -148,7 +148,10 @@ func NPDUNetworkPriorityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of NPDUNetworkPriorityTagged")
 	}
-	value := _value.(NPDUNetworkPriority)
+	var value NPDUNetworkPriority
+	if _value != nil {
+		value = _value.(NPDUNetworkPriority)
+	}
 
 	if closeErr := readBuffer.CloseContext("NPDUNetworkPriorityTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NPDUNetworkPriorityTagged")

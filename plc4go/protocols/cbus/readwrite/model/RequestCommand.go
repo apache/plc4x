@@ -198,14 +198,20 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, m
 	if _cbusCommandErr != nil {
 		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestCommand")
 	}
-	cbusCommand := _cbusCommand.(CBusCommand)
+	var cbusCommand CBusCommand
+	if _cbusCommand != nil {
+		cbusCommand = _cbusCommand.(CBusCommand)
+	}
 
 	// Manual Field (chksum)
 	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, cbusCommand, cBusOptions.GetSrchk())
 	if _chksumErr != nil {
 		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of RequestCommand")
 	}
-	chksum := _chksum.(Checksum)
+	var chksum Checksum
+	if _chksum != nil {
+		chksum = _chksum.(Checksum)
+	}
 
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil

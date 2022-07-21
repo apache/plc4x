@@ -148,7 +148,10 @@ func BACnetLiftGroupModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftGroupModeTagged")
 	}
-	value := _value.(BACnetLiftGroupMode)
+	var value BACnetLiftGroupMode
+	if _value != nil {
+		value = _value.(BACnetLiftGroupMode)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftGroupModeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLiftGroupModeTagged")

@@ -148,7 +148,10 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged")
 	}
-	value := _value.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority)
+	var value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
+	if _value != nil {
+		value = _value.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged")

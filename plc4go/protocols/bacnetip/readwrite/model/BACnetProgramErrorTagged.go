@@ -175,7 +175,10 @@ func BACnetProgramErrorTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProgramErrorTagged")
 	}
-	value := _value.(BACnetProgramError)
+	var value BACnetProgramError
+	if _value != nil {
+		value = _value.(BACnetProgramError)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetProgramError_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetProgramErrorTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetProgramErrorTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetProgramErrorTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetProgramErrorTagged")

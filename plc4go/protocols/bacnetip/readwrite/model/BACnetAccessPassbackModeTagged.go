@@ -148,7 +148,10 @@ func BACnetAccessPassbackModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessPassbackModeTagged")
 	}
-	value := _value.(BACnetAccessPassbackMode)
+	var value BACnetAccessPassbackMode
+	if _value != nil {
+		value = _value.(BACnetAccessPassbackMode)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessPassbackModeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessPassbackModeTagged")

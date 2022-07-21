@@ -148,7 +148,10 @@ func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNetworkNumberQualityTagged")
 	}
-	value := _value.(BACnetNetworkNumberQuality)
+	var value BACnetNetworkNumberQuality
+	if _value != nil {
+		value = _value.(BACnetNetworkNumberQuality)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNetworkNumberQualityTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNetworkNumberQualityTagged")

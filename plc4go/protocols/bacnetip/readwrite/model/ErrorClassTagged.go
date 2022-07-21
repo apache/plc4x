@@ -175,7 +175,10 @@ func ErrorClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClas
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ErrorClassTagged")
 	}
-	value := _value.(ErrorClass)
+	var value ErrorClass
+	if _value != nil {
+		value = _value.(ErrorClass)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (ErrorClass_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func ErrorClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClas
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of ErrorClassTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("ErrorClassTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorClassTagged")

@@ -148,7 +148,10 @@ func BACnetDoorValueTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDoorValueTagged")
 	}
-	value := _value.(BACnetDoorValue)
+	var value BACnetDoorValue
+	if _value != nil {
+		value = _value.(BACnetDoorValue)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDoorValueTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDoorValueTagged")

@@ -148,7 +148,10 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged")
 	}
-	value := _value.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice)
+	var value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
+	if _value != nil {
+		value = _value.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged")

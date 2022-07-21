@@ -148,7 +148,10 @@ func BACnetSegmentationTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetSegmentationTagged")
 	}
-	value := _value.(BACnetSegmentation)
+	var value BACnetSegmentation
+	if _value != nil {
+		value = _value.(BACnetSegmentation)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSegmentationTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetSegmentationTagged")

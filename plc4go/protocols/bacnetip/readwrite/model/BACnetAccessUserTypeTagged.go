@@ -175,7 +175,10 @@ func BACnetAccessUserTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessUserTypeTagged")
 	}
-	value := _value.(BACnetAccessUserType)
+	var value BACnetAccessUserType
+	if _value != nil {
+		value = _value.(BACnetAccessUserType)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetAccessUserTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAccessUserTypeTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessUserTypeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessUserTypeTagged")
