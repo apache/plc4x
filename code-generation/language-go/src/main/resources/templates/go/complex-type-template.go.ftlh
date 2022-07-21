@@ -1140,8 +1140,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#if optionalField.conditionExpression.present && optionalField.conditionExpression.get().contains("curPos")>
 	curPos = positionAware.GetPos() - startPos
 				</#if>
-	var ${optionalField.name} <#if !optionalF
-	ield.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)} = nil
+	var ${optionalField.name} <#if !optionalField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)} = nil
 	<#if optionalField.conditionExpression.present>
 	if ${helper.toBooleanParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)} </#if>{
 			<#if optionalField.type.isSimpleTypeReference()>
