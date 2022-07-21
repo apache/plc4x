@@ -102,16 +102,23 @@ public class StaticHelper {
             readBuffer.reset(readBuffer.getPos() - 1);
             hexBytes = Arrays.copyOf(hexBytes, hexBytes.length - 1);
         }
-        if (srchk) {
-            // We need to reset the last to hex bytes
-            readBuffer.reset(readBuffer.getPos() - 2);
-            hexBytes = Arrays.copyOf(hexBytes, hexBytes.length - 2);
-        }
         byte[] rawBytes;
         try {
             rawBytes = Hex.decodeHex(new String(hexBytes));
         } catch (DecoderException e) {
             throw new ParseException("error getting hex", e);
+        }
+        if (srchk) {
+            byte checksum = 0x0;
+            for (byte aByte : rawBytes) {
+                checksum+=aByte;
+            }
+            if (checksum != 0x0) {
+                throw new ParseException("Checksum validation failed");
+            }
+            // We need to reset the last to hex bytes
+            readBuffer.reset(readBuffer.getPos() - 2);
+            rawBytes = Arrays.copyOf(rawBytes, rawBytes.length - 1);
         }
         return rawBytes;
     }

@@ -123,15 +123,22 @@ func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLe
 		readBuffer.Reset(readBuffer.GetPos() - 1)
 		hexBytes = hexBytes[:len(hexBytes)-1]
 	}
-	if srchk {
-		// We need to reset the last to hex bytes
-		readBuffer.Reset(readBuffer.GetPos() - 2)
-		hexBytes = hexBytes[:len(hexBytes)-2]
-	}
 	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
 	n, err := hex.Decode(rawBytes, hexBytes)
 	if err != nil {
 		return nil, err
+	}
+	if srchk {
+		checksum := byte(0x0)
+		for _, aByte := range rawBytes {
+			checksum += aByte
+		}
+		if checksum != 0x0 {
+			return nil, errors.New("Checksum validation failed")
+		}
+		// We need to reset the last to hex bytes
+		readBuffer.Reset(readBuffer.GetPos() - 2)
+		rawBytes = rawBytes[:len(rawBytes)-1]
 	}
 	log.Debug().Msgf("%d bytes decoded", n)
 	return rawBytes, nil
