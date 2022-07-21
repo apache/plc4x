@@ -21,17 +21,64 @@ package model
 
 import (
 	"encoding/hex"
+	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
-func WriteCBusCommand(writeBuffer utils.WriteBuffer, cbusCommand CBusCommand) error {
-	return writeToHex("cbusCommand", writeBuffer, cbusCommand)
+func ReadAndValidateChecksum(readBuffer utils.ReadBuffer, message spi.Message, srchk bool) (Checksum, error) {
+	if !srchk {
+		return nil, nil
+	}
+	hexBytes, err := readBytesFromHex("chksum", readBuffer, 2, false)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to calculate checksum")
+	}
+	checksum := hexBytes[0]
+	actualChecksum, err := getChecksum(message)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to calculate checksum")
+	}
+	if checksum != actualChecksum {
+		return nil, errors.Errorf("Expected checksum 0x%x doesn't match actual checksum 0x%x", checksum, actualChecksum)
+	}
+	return NewChecksum(checksum), nil
 }
 
-func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, cBusOptions CBusOptions) (CBusCommand, error) {
-	rawBytes, err := readBytesFromHex("cbusCommand", readBuffer, payloadLength)
+func CalculateChecksum(writeBuffer utils.WriteBuffer, message spi.Message, srchk bool) error {
+	if !srchk {
+		// Nothing to do when srchck is disabled
+		return nil
+	}
+	checksum, err := getChecksum(message)
+	if err != nil {
+		return errors.Wrap(err, "Unable to calculate checksum")
+	}
+	return writeToHex("chksum", writeBuffer, []byte{checksum})
+}
+
+func getChecksum(message spi.Message) (byte, error) {
+	checksum := byte(0x0)
+	checksumWriteBuffer := utils.NewWriteBufferByteBased()
+	err := message.Serialize(checksumWriteBuffer)
+	if err != nil {
+		return 0, errors.Wrap(err, "Error serializing")
+	}
+	for _, aByte := range checksumWriteBuffer.GetBytes() {
+		checksum += aByte
+	}
+	checksum = ^checksum
+	checksum++
+	return checksum, nil
+}
+
+func WriteCBusCommand(writeBuffer utils.WriteBuffer, cbusCommand CBusCommand) error {
+	return writeSerializableToHex("cbusCommand", writeBuffer, cbusCommand)
+}
+
+func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, cBusOptions CBusOptions, srchk bool) (CBusCommand, error) {
+	rawBytes, err := readBytesFromHex("cbusCommand", readBuffer, payloadLength, srchk)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
@@ -39,11 +86,11 @@ func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, cBusOpti
 }
 
 func WriteEncodedReply(writeBuffer utils.WriteBuffer, encodedReply EncodedReply) error {
-	return writeToHex("encodedReply", writeBuffer, encodedReply)
+	return writeSerializableToHex("encodedReply", writeBuffer, encodedReply)
 }
 
-func ReadEncodedReply(readBuffer utils.ReadBuffer, payloadLength uint16, options CBusOptions, requestContext RequestContext) (EncodedReply, error) {
-	rawBytes, err := readBytesFromHex("encodedReply", readBuffer, payloadLength)
+func ReadEncodedReply(readBuffer utils.ReadBuffer, payloadLength uint16, options CBusOptions, requestContext RequestContext, srchk bool) (EncodedReply, error) {
+	rawBytes, err := readBytesFromHex("encodedReply", readBuffer, payloadLength, srchk)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
@@ -51,18 +98,18 @@ func ReadEncodedReply(readBuffer utils.ReadBuffer, payloadLength uint16, options
 }
 
 func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
-	return writeToHex("calData", writeBuffer, calData)
+	return writeSerializableToHex("calData", writeBuffer, calData)
 }
 
 func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, error) {
-	rawBytes, err := readBytesFromHex("calData", readBuffer, payloadLength)
+	rawBytes, err := readBytesFromHex("calData", readBuffer, payloadLength, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
 	return CALDataParse(utils.NewReadBufferByteBased(rawBytes), nil)
 }
 
-func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLength uint16) ([]byte, error) {
+func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLength uint16, srchk bool) ([]byte, error) {
 	if payloadLength == 0 {
 		return nil, errors.New("Length is 0")
 	}
@@ -76,6 +123,11 @@ func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLe
 		readBuffer.Reset(readBuffer.GetPos() - 1)
 		hexBytes = hexBytes[:len(hexBytes)-1]
 	}
+	if srchk {
+		// We need to reset the last to hex bytes
+		readBuffer.Reset(readBuffer.GetPos() - 2)
+		hexBytes = hexBytes[:len(hexBytes)-2]
+	}
 	rawBytes := make([]byte, hex.DecodedLen(len(hexBytes)))
 	n, err := hex.Decode(rawBytes, hexBytes)
 	if err != nil {
@@ -85,13 +137,17 @@ func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLe
 	return rawBytes, nil
 }
 
-func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable utils.Serializable) error {
+func writeSerializableToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable utils.Serializable) error {
 	wbbb := utils.NewWriteBufferByteBased()
 	err := serializable.Serialize(wbbb)
 	if err != nil {
 		return errors.Wrap(err, "Error serializing")
 	}
 	bytesToWrite := wbbb.GetBytes()
+	return writeToHex(logicalName, writeBuffer, bytesToWrite)
+}
+
+func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, bytesToWrite []byte) error {
 	hexBytes := make([]byte, hex.EncodedLen(len(bytesToWrite)))
 	// usually you use hex.Encode but we want the encoding in uppercase
 	//n := hex.Encode(hexBytes, wbbb.GetBytes())

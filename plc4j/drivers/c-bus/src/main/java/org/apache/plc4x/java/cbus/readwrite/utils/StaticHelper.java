@@ -22,41 +22,76 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class StaticHelper {
 
-    public static void writeCBusCommand(WriteBuffer writeBuffer, CBusCommand cbusCommand) throws SerializationException {
-        writeToHex("cbusCommand", writeBuffer, cbusCommand, cbusCommand.getLengthInBytes());
+    public static Checksum readAndValidateChecksum(ReadBuffer readBuffer, Message message, boolean srchk) throws ParseException {
+        if (!srchk) {
+            return null;
+        }
+        byte checksum = readBytesFromHex("chksum", readBuffer, 2, false)[0];
+        try {
+            byte actualChecksum = getChecksum(message);
+            if (checksum != actualChecksum) {
+                throw new ParseException(String.format("Expected checksum 0x%x doesn't match actual checksum 0x%x", checksum, actualChecksum));
+            }
+        } catch (SerializationException e) {
+            throw new ParseException("Unable to calculate checksum", e);
+        }
+        return new Checksum(checksum);
     }
 
-    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("cbusCommand", readBuffer, payloadLength);
+    public static void calculateChecksum(WriteBuffer writeBuffer, Message message, boolean srchk) throws SerializationException {
+        if (!srchk) {
+            // Nothing to do when srchck is disabled
+            return;
+        }
+        writeToHex("chksum", writeBuffer, new byte[]{getChecksum(message)});
+    }
+
+    private static byte getChecksum(Message message) throws SerializationException {
+        byte checksum = 0x0;
+        WriteBufferByteBased checksumWriteBuffer = new WriteBufferByteBased(message.getLengthInBytes());
+        message.serialize(checksumWriteBuffer);
+        for (byte aByte : checksumWriteBuffer.getBytes()) {
+            checksum += aByte;
+        }
+        checksum = (byte) ~checksum;
+        checksum++;
+        return checksum;
+    }
+
+    public static void writeCBusCommand(WriteBuffer writeBuffer, CBusCommand cbusCommand) throws SerializationException {
+        writeToHex("cbusCommand", writeBuffer, cbusCommand);
+    }
+
+    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, int payloadLength, CBusOptions cBusOptions, boolean srchk) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("cbusCommand", readBuffer, payloadLength, srchk);
         return CBusCommand.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions);
     }
 
     public static void writeEncodedReply(WriteBuffer writeBuffer, EncodedReply encodedReply) throws SerializationException {
-        writeToHex("encodedReply", writeBuffer, encodedReply, encodedReply.getLengthInBytes());
+        writeToHex("encodedReply", writeBuffer, encodedReply);
     }
 
-    public static EncodedReply readEncodedReply(ReadBuffer readBuffer, Integer payloadLength, CBusOptions cBusOptions, RequestContext requestContext) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("encodedReply", readBuffer, payloadLength);
+    public static EncodedReply readEncodedReply(ReadBuffer readBuffer, int payloadLength, CBusOptions cBusOptions, RequestContext requestContext, boolean srchk) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("encodedReply", readBuffer, payloadLength, srchk);
         return EncodedReply.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions, requestContext);
     }
 
     public static void writeCALData(WriteBuffer writeBuffer, CALData calData) throws SerializationException {
-        writeToHex("calData", writeBuffer, calData, calData.getLengthInBytes());
+        writeToHex("calData", writeBuffer, calData);
     }
 
     public static CALData readCALData(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("calData", readBuffer, payloadLength);
+        byte[] rawBytes = readBytesFromHex("calData", readBuffer, payloadLength, false);
         return CALData.staticParse(new ReadBufferByteBased(rawBytes), (RequestContext) null);
     }
 
-    private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
+    private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, int payloadLength, boolean srchk) throws ParseException {
         if (payloadLength == 0) {
             throw new ParseException("Length is 0");
         }
@@ -67,6 +102,11 @@ public class StaticHelper {
             readBuffer.reset(readBuffer.getPos() - 1);
             hexBytes = Arrays.copyOf(hexBytes, hexBytes.length - 1);
         }
+        if (srchk) {
+            // We need to reset the last to hex bytes
+            readBuffer.reset(readBuffer.getPos() - 2);
+            hexBytes = Arrays.copyOf(hexBytes, hexBytes.length - 2);
+        }
         byte[] rawBytes;
         try {
             rawBytes = Hex.decodeHex(new String(hexBytes));
@@ -76,11 +116,15 @@ public class StaticHelper {
         return rawBytes;
     }
 
-    private static void writeToHex(String logicalName, WriteBuffer writeBuffer, Serializable serializable, int lengthInBytes) throws SerializationException {
+    private static void writeToHex(String logicalName, WriteBuffer writeBuffer, Message message) throws SerializationException {
         // TODO: maybe we use a writeBuffer hex based
-        WriteBufferByteBased payloadWriteBuffer = new WriteBufferByteBased(lengthInBytes * 2);
-        serializable.serialize(payloadWriteBuffer);
-        byte[] hexBytes = Hex.encodeHexString(payloadWriteBuffer.getBytes(), false).getBytes(StandardCharsets.UTF_8);
+        WriteBufferByteBased payloadWriteBuffer = new WriteBufferByteBased(message.getLengthInBytes() * 2);
+        message.serialize(payloadWriteBuffer);
+        writeToHex(logicalName, writeBuffer, payloadWriteBuffer.getBytes());
+    }
+
+    private static void writeToHex(String logicalName, WriteBuffer writeBuffer, byte[] bytes) throws SerializationException {
+        byte[] hexBytes = Hex.encodeHexString(bytes, false).getBytes(StandardCharsets.UTF_8);
         writeBuffer.writeByteArray(logicalName, hexBytes);
     }
 
@@ -237,5 +281,4 @@ public class StaticHelper {
             readBuffer.reset(oldPos);
         }
     }
-
 }

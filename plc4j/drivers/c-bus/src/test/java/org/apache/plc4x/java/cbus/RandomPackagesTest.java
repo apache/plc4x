@@ -228,7 +228,7 @@ public class RandomPackagesTest {
     void statusRequestBinaryState() throws Exception {
         byte[] bytes = "\\05FF00FAFF00v\r".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, false);
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
         assertThat(msg).isNotNull();
         System.out.println(msg);
@@ -264,7 +264,7 @@ public class RandomPackagesTest {
     void WriteCommand() throws Exception {
         byte[] bytes = "\\46310900A400410600r\r".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, false);
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
         assertThat(msg).isNotNull();
         System.out.println(msg);
@@ -375,7 +375,6 @@ public class RandomPackagesTest {
     void SetHvacLevel() throws Exception {
         byte[] bytes = "0531AC0036040108FF0000DC\r\n".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
         requestContext = new RequestContext(false, false, false);
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
         assertThat(msg).isNotNull();

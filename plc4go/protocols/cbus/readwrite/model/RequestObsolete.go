@@ -149,7 +149,7 @@ func (m *_RequestObsolete) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (calData)
-	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
+	lengthInBits += uint16(int32(int32(int32(m.GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {

@@ -75,9 +75,8 @@ type _MonitoredSALShortFormBasicMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALShortFormBasicMode) InitializeParent(parent MonitoredSAL, salType byte, crc Checksum) {
+func (m *_MonitoredSALShortFormBasicMode) InitializeParent(parent MonitoredSAL, salType byte) {
 	m.SalType = salType
-	m.Crc = crc
 }
 
 func (m *_MonitoredSALShortFormBasicMode) GetParent() MonitoredSAL {
@@ -119,7 +118,7 @@ func (m *_MonitoredSALShortFormBasicMode) GetSalData() SALData {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, networkNumber NetworkNumber, noCounts *byte, application ApplicationIdContainer, salData SALData, salType byte, crc Checksum, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
+func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, networkNumber NetworkNumber, noCounts *byte, application ApplicationIdContainer, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
 	_result := &_MonitoredSALShortFormBasicMode{
 		Counts:        counts,
 		BridgeCount:   bridgeCount,
@@ -127,7 +126,7 @@ func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, net
 		NoCounts:      noCounts,
 		Application:   application,
 		SalData:       salData,
-		_MonitoredSAL: NewMonitoredSAL(salType, crc, cBusOptions),
+		_MonitoredSAL: NewMonitoredSAL(salType, cBusOptions),
 	}
 	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
 	return _result

@@ -61,11 +61,10 @@ type _CBusPointToPointToMultiPointCommandNormal struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) InitializeParent(parent CBusPointToPointToMultiPointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, crc Checksum) {
+func (m *_CBusPointToPointToMultiPointCommandNormal) InitializeParent(parent CBusPointToPointToMultiPointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte) {
 	m.BridgeAddress = bridgeAddress
 	m.NetworkRoute = networkRoute
 	m.PeekedApplication = peekedApplication
-	m.Crc = crc
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) GetParent() CBusPointToPointToMultiPointCommand {
@@ -91,11 +90,11 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetSalData() SALData {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointToMultiPointCommandNormal factory function for _CBusPointToPointToMultiPointCommandNormal
-func NewCBusPointToPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, crc Checksum, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandNormal {
+func NewCBusPointToPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandNormal {
 	_result := &_CBusPointToPointToMultiPointCommandNormal{
 		Application:                          application,
 		SalData:                              salData,
-		_CBusPointToPointToMultiPointCommand: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, crc, cBusOptions),
+		_CBusPointToPointToMultiPointCommand: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
 	}
 	_result._CBusPointToPointToMultiPointCommand._CBusPointToPointToMultiPointCommandChildRequirements = _result
 	return _result

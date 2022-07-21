@@ -33,6 +33,8 @@ type ReplyEncodedReply interface {
 	Reply
 	// GetEncodedReply returns EncodedReply (property field)
 	GetEncodedReply() EncodedReply
+	// GetChksum returns Chksum (property field)
+	GetChksum() Checksum
 	// GetPayloadLength returns PayloadLength (virtual field)
 	GetPayloadLength() uint16
 }
@@ -48,6 +50,7 @@ type ReplyEncodedReplyExactly interface {
 type _ReplyEncodedReply struct {
 	*_Reply
 	EncodedReply EncodedReply
+	Chksum       Checksum
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,6 +80,10 @@ func (m *_ReplyEncodedReply) GetEncodedReply() EncodedReply {
 	return m.EncodedReply
 }
 
+func (m *_ReplyEncodedReply) GetChksum() Checksum {
+	return m.Chksum
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,9 +103,10 @@ func (m *_ReplyEncodedReply) GetPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewReplyEncodedReply factory function for _ReplyEncodedReply
-func NewReplyEncodedReply(encodedReply EncodedReply, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ReplyEncodedReply {
+func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ReplyEncodedReply {
 	_result := &_ReplyEncodedReply{
 		EncodedReply: encodedReply,
+		Chksum:       chksum,
 		_Reply:       NewReply(peekedByte, cBusOptions, replyLength, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
@@ -130,7 +138,10 @@ func (m *_ReplyEncodedReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (encodedReply)
-	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
+	lengthInBits += uint16(int32(int32(int32(m.GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
+
+	// Manual Field (chksum)
+	lengthInBits += uint16(int32(8))
 
 	return lengthInBits
 }
@@ -154,11 +165,18 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	_ = payloadLength
 
 	// Manual Field (encodedReply)
-	_encodedReply, _encodedReplyErr := ReadEncodedReply(readBuffer, payloadLength, cBusOptions, requestContext)
+	_encodedReply, _encodedReplyErr := ReadEncodedReply(readBuffer, payloadLength, cBusOptions, requestContext, cBusOptions.GetSrchk())
 	if _encodedReplyErr != nil {
 		return nil, errors.Wrap(_encodedReplyErr, "Error parsing 'encodedReply' field of ReplyEncodedReply")
 	}
 	encodedReply := _encodedReply.(EncodedReply)
+
+	// Manual Field (chksum)
+	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, encodedReply, cBusOptions.GetSrchk())
+	if _chksumErr != nil {
+		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of ReplyEncodedReply")
+	}
+	chksum := _chksum.(Checksum)
 
 	if closeErr := readBuffer.CloseContext("ReplyEncodedReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReplyEncodedReply")
@@ -167,6 +185,7 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	// Create a partially initialized instance
 	_child := &_ReplyEncodedReply{
 		EncodedReply: encodedReply,
+		Chksum:       chksum,
 		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
 			ReplyLength:    replyLength,
@@ -193,6 +212,12 @@ func (m *_ReplyEncodedReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		_encodedReplyErr := WriteEncodedReply(writeBuffer, m.GetEncodedReply())
 		if _encodedReplyErr != nil {
 			return errors.Wrap(_encodedReplyErr, "Error serializing 'encodedReply' field")
+		}
+
+		// Manual Field (chksum)
+		_chksumErr := CalculateChecksum(writeBuffer, m.GetEncodedReply(), m.CBusOptions.GetSrchk())
+		if _chksumErr != nil {
+			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReplyEncodedReply"); popErr != nil {

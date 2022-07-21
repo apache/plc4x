@@ -40,8 +40,6 @@ type ExtendedFormatStatusReply interface {
 	GetBlockStart() uint8
 	// GetStatusBytes returns StatusBytes (property field)
 	GetStatusBytes() []StatusByte
-	// GetCrc returns Crc (property field)
-	GetCrc() Checksum
 }
 
 // ExtendedFormatStatusReplyExactly can be used when we want exactly this type and not a type which fulfills ExtendedFormatStatusReply.
@@ -58,7 +56,6 @@ type _ExtendedFormatStatusReply struct {
 	Application  ApplicationIdContainer
 	BlockStart   uint8
 	StatusBytes  []StatusByte
-	Crc          Checksum
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,18 +83,14 @@ func (m *_ExtendedFormatStatusReply) GetStatusBytes() []StatusByte {
 	return m.StatusBytes
 }
 
-func (m *_ExtendedFormatStatusReply) GetCrc() Checksum {
-	return m.Crc
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewExtendedFormatStatusReply factory function for _ExtendedFormatStatusReply
-func NewExtendedFormatStatusReply(statusHeader ExtendedStatusHeader, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, crc Checksum) *_ExtendedFormatStatusReply {
-	return &_ExtendedFormatStatusReply{StatusHeader: statusHeader, Coding: coding, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
+func NewExtendedFormatStatusReply(statusHeader ExtendedStatusHeader, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) *_ExtendedFormatStatusReply {
+	return &_ExtendedFormatStatusReply{StatusHeader: statusHeader, Coding: coding, Application: application, BlockStart: blockStart, StatusBytes: statusBytes}
 }
 
 // Deprecated: use the interface for direct cast
@@ -141,9 +134,6 @@ func (m *_ExtendedFormatStatusReply) GetLengthInBitsConditional(lastItem bool) u
 			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
 		}
 	}
-
-	// Simple field (crc)
-	lengthInBits += m.Crc.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -230,25 +220,12 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (ExtendedFormat
 		return nil, errors.Wrap(closeErr, "Error closing for statusBytes")
 	}
 
-	// Simple Field (crc)
-	if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for crc")
-	}
-	_crc, _crcErr := ChecksumParse(readBuffer)
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of ExtendedFormatStatusReply")
-	}
-	crc := _crc.(Checksum)
-	if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for crc")
-	}
-
 	if closeErr := readBuffer.CloseContext("ExtendedFormatStatusReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ExtendedFormatStatusReply")
 	}
 
 	// Create the instance
-	return NewExtendedFormatStatusReply(statusHeader, coding, application, blockStart, statusBytes, crc), nil
+	return NewExtendedFormatStatusReply(statusHeader, coding, application, blockStart, statusBytes), nil
 }
 
 func (m *_ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -313,18 +290,6 @@ func (m *_ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for statusBytes")
-	}
-
-	// Simple Field (crc)
-	if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for crc")
-	}
-	_crcErr := writeBuffer.WriteSerializable(m.GetCrc())
-	if popErr := writeBuffer.PopContext("crc"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for crc")
-	}
-	if _crcErr != nil {
-		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ExtendedFormatStatusReply"); popErr != nil {

@@ -59,11 +59,10 @@ type _CBusPointToPointToMultiPointCommandStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointToMultiPointCommandStatus) InitializeParent(parent CBusPointToPointToMultiPointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, crc Checksum) {
+func (m *_CBusPointToPointToMultiPointCommandStatus) InitializeParent(parent CBusPointToPointToMultiPointCommand, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte) {
 	m.BridgeAddress = bridgeAddress
 	m.NetworkRoute = networkRoute
 	m.PeekedApplication = peekedApplication
-	m.Crc = crc
 }
 
 func (m *_CBusPointToPointToMultiPointCommandStatus) GetParent() CBusPointToPointToMultiPointCommand {
@@ -85,10 +84,10 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetStatusRequest() StatusRe
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointToMultiPointCommandStatus factory function for _CBusPointToPointToMultiPointCommandStatus
-func NewCBusPointToPointToMultiPointCommandStatus(statusRequest StatusRequest, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, crc Checksum, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandStatus {
+func NewCBusPointToPointToMultiPointCommandStatus(statusRequest StatusRequest, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandStatus {
 	_result := &_CBusPointToPointToMultiPointCommandStatus{
 		StatusRequest:                        statusRequest,
-		_CBusPointToPointToMultiPointCommand: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, crc, cBusOptions),
+		_CBusPointToPointToMultiPointCommand: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
 	}
 	_result._CBusPointToPointToMultiPointCommand._CBusPointToPointToMultiPointCommandChildRequirements = _result
 	return _result

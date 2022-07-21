@@ -80,20 +80,25 @@
         ['RESET' *Reset
         ]
         ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
-            [const    byte         at        0x40                           ]
+            [const    byte    at        0x40                                ]
             [manual   CALData
-                                          calData
+                              calData
                         'STATIC_CALL("readCALData", readBuffer, payloadLength)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
-                        '_value.lengthInBytes*2'                            ]
+                        '(_value.lengthInBytes*2)*8'                        ]
         ]
         ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
-            [const    byte                initiator 0x5C                    ] // 0x5C == "/"
+            [const    byte  initiator 0x5C                                  ] // 0x5C == "/"
             [manual   CBusCommand
-                                          cbusCommand
-                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, cBusOptions)'
+                              cbusCommand
+                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, cBusOptions, cBusOptions.srchk)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
-                        '_value.lengthInBytes*2'                            ]
+                        '(_value.lengthInBytes*2)*8'                        ]
+            [manual   Checksum
+                              chksum
+                        'STATIC_CALL("readAndValidateChecksum", readBuffer, cbusCommand, cBusOptions.srchk)'
+                        'STATIC_CALL("calculateChecksum", writeBuffer, cbusCommand, cBusOptions.srchk)'
+                        '8'                                                 ]
             [optional Alpha         alpha                                   ]
         ]
         ['NULL' *Null
@@ -103,13 +108,13 @@
         ]
         // TODO: we should check if we are in basic mode
         [* *Obsolete(uint 16 payloadLength)
-            [virtual  uint 16 obsoletePayloadLength 'payloadLength+1']
+            [virtual  uint 16 obsoletePayloadLength 'payloadLength+1'       ]
             [manual   CALData
-                                          calData
+                              calData
                         'STATIC_CALL("readCALData", readBuffer, obsoletePayloadLength)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
-                        '_value.lengthInBytes*2'                            ]
-            [optional Alpha         alpha                                   ]
+                        '(_value.lengthInBytes*2)*8'                        ]
+            [optional Alpha   alpha                                         ]
         ]
     ]
     [simple   RequestTermination  termination                               ]
@@ -226,7 +231,6 @@
         ]
     ]
     [simple   CALData('null') calData                                                           ]
-    [optional Checksum      crc      'cBusOptions.srchk'                                        ] // checksum is optional but mspec checksum isn't
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(CBusOptions cBusOptions)
@@ -243,7 +247,6 @@
             [simple   SALData('application.applicationId')  salData                                    ]
         ]
     ]
-    [optional Checksum      crc           'cBusOptions.srchk'                                          ] // checksum is optional but mspec checksum isn't
 ]
 
 [discriminatedType CBusPointToPointToMultiPointCommand(CBusOptions cBusOptions)
@@ -260,7 +263,6 @@
             [simple   SALData('application.applicationId')  salData                                  ]
         ]
     ]
-    [optional Checksum      crc           'cBusOptions.srchk'                                        ] // checksum is optional but mspec checksum isn't
 ]
 
 /*
@@ -3561,9 +3563,14 @@
             [virtual uint 16 payloadLength 'replyLength']
             [manual   EncodedReply
                               encodedReply
-                                    'STATIC_CALL("readEncodedReply", readBuffer, payloadLength, cBusOptions, requestContext)'
+                                    'STATIC_CALL("readEncodedReply", readBuffer, payloadLength, cBusOptions, requestContext, cBusOptions.srchk)'
                                     'STATIC_CALL("writeEncodedReply", writeBuffer, encodedReply)'
-                                    '_value.lengthInBytes*2'                                     ]
+                                    '(_value.lengthInBytes*2)*8'                                     ]
+            [manual   Checksum
+                              chksum
+                        'STATIC_CALL("readAndValidateChecksum", readBuffer, encodedReply, cBusOptions.srchk)'
+                        'STATIC_CALL("calculateChecksum", writeBuffer, encodedReply, cBusOptions.srchk)'
+                        '8'                   ]
         ]
     ]
 ]
@@ -3610,7 +3617,6 @@
         ]
     ]
     [simple   CALData('requestContext')   calData                                                ]
-    [optional Checksum      crc      'cBusOptions.srchk'                                         ] // checksum is optional but mspec checksum isn't
 ]
 
 [type BridgeCount
@@ -3646,7 +3652,6 @@
             [optional SALData('application.applicationId')  salData             ]
         ]
     ]
-    [optional Checksum      crc      'cBusOptions.srchk'                                                    ] // checksum is optional but mspec checksum isn't
 ]
 
 [type Confirmation
@@ -3686,7 +3691,7 @@
 ]
 
 [type Checksum
-    [simple byte crc]
+    [simple byte value]
 ]
 
 [type StandardFormatStatusReply
@@ -3699,8 +3704,6 @@
                         statusBytes
                         count
                         'statusHeader.numberOfCharacterPairs - 2'   ]
-    [simple     Checksum
-                        crc                                         ]
 ]
 
 [type StatusHeader
@@ -3720,8 +3723,6 @@
                         statusBytes
                         count
                         'statusHeader.numberOfCharacterPairs - 3'   ]
-    [simple     Checksum
-                        crc                                         ]
 ]
 
 [type ExtendedStatusHeader

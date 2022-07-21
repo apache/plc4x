@@ -59,9 +59,8 @@ type _CBusPointToMultiPointCommandStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToMultiPointCommandStatus) InitializeParent(parent CBusPointToMultiPointCommand, peekedApplication byte, crc Checksum) {
+func (m *_CBusPointToMultiPointCommandStatus) InitializeParent(parent CBusPointToMultiPointCommand, peekedApplication byte) {
 	m.PeekedApplication = peekedApplication
-	m.Crc = crc
 }
 
 func (m *_CBusPointToMultiPointCommandStatus) GetParent() CBusPointToMultiPointCommand {
@@ -83,10 +82,10 @@ func (m *_CBusPointToMultiPointCommandStatus) GetStatusRequest() StatusRequest {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
-func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, peekedApplication byte, crc Checksum, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
+func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
 	_result := &_CBusPointToMultiPointCommandStatus{
 		StatusRequest:                 statusRequest,
-		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, crc, cBusOptions),
+		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
 	}
 	_result._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _result
 	return _result
