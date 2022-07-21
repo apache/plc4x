@@ -317,7 +317,6 @@ println "Detected Arch: " + arch
 /////////////////////////////////////////////////////
 
 def cEnabled = false
-def dockerEnabled = false
 def dotnetEnabled = false
 def goEnabled = false
 // Java is always enabled ...
@@ -329,10 +328,6 @@ def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
     if (activeProfile == "with-c") {
         cEnabled = true
-    } else if (activeProfile == "with-cpp") {
-        cppEnabled = true
-    } else if (activeProfile == "with-docker") {
-        dockerEnabled = true
     } else if (activeProfile == "with-dotnet") {
         dotnetEnabled = true
     } else if (activeProfile == "with-go") {
@@ -388,10 +383,6 @@ if (goEnabled) {
 if (pythonEnabled) {
     checkPython()
     checkPythonVenv()
-}
-
-if (dockerEnabled) {
-    checkDocker()
 }
 
 if (cEnabled) {
