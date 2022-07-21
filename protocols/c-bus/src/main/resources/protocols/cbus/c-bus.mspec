@@ -78,6 +78,10 @@
             [optional byte        secondPipe 'pipePeek == RequestType.SMART_CONNECT_SHORTCUT']
         ]
         ['RESET' *Reset
+            [peek     RequestType tildePeek                                     ]
+            [optional byte        secondTilde 'tildePeek == RequestType.RESET'  ]
+            [peek     RequestType tildePeek2                                    ]
+            [optional byte        thirdTilde 'tildePeek2 == RequestType.RESET'  ]
         ]
         ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
             [const    byte    at        0x40                                ]
@@ -583,7 +587,9 @@
         ]
         ['WRITE'            *Write(CALCommandTypeContainer commandTypeContainer)                // Request
             [simple Parameter paramNo                                                       ]
-            [array  byte      data        count 'commandTypeContainer.numBytes-1'           ]
+            [simple byte      code                                                          ]
+            // TODO: we can decode this with the parametert above... e.g. INTERFACE_OPTIONS_1 is defined below
+            [array  byte      data        count 'commandTypeContainer.numBytes - 2'         ]
         ]
         ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer)        // Reply
             [simple Attribute   attribute                                                   ]

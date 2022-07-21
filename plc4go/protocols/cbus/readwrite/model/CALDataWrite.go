@@ -33,6 +33,8 @@ type CALDataWrite interface {
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
+	// GetCode returns Code (property field)
+	GetCode() byte
 	// GetData returns Data (property field)
 	GetData() []byte
 }
@@ -48,6 +50,7 @@ type CALDataWriteExactly interface {
 type _CALDataWrite struct {
 	*_CALData
 	ParamNo Parameter
+	Code    byte
 	Data    []byte
 }
 
@@ -79,6 +82,10 @@ func (m *_CALDataWrite) GetParamNo() Parameter {
 	return m.ParamNo
 }
 
+func (m *_CALDataWrite) GetCode() byte {
+	return m.Code
+}
+
 func (m *_CALDataWrite) GetData() []byte {
 	return m.Data
 }
@@ -89,9 +96,10 @@ func (m *_CALDataWrite) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataWrite factory function for _CALDataWrite
-func NewCALDataWrite(paramNo Parameter, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataWrite {
+func NewCALDataWrite(paramNo Parameter, code byte, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataWrite {
 	_result := &_CALDataWrite{
 		ParamNo:  paramNo,
+		Code:     code,
 		Data:     data,
 		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
@@ -122,6 +130,9 @@ func (m *_CALDataWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (paramNo)
+	lengthInBits += 8
+
+	// Simple field (code)
 	lengthInBits += 8
 
 	// Array field
@@ -157,8 +168,15 @@ func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
 	}
+
+	// Simple Field (code)
+	_code, _codeErr := readBuffer.ReadByte("code")
+	if _codeErr != nil {
+		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataWrite")
+	}
+	code := _code
 	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(1)))
+	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(2)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataWrite")
@@ -171,6 +189,7 @@ func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	// Create a partially initialized instance
 	_child := &_CALDataWrite{
 		ParamNo: paramNo,
+		Code:    code,
 		Data:    data,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
@@ -198,6 +217,13 @@ func (m *_CALDataWrite) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		if _paramNoErr != nil {
 			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
+		}
+
+		// Simple Field (code)
+		code := byte(m.GetCode())
+		_codeErr := writeBuffer.WriteByte("code", (code))
+		if _codeErr != nil {
+			return errors.Wrap(_codeErr, "Error serializing 'code' field")
 		}
 
 		// Array Field (data)
