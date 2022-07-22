@@ -58,14 +58,29 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		log.Warn().Msg("Not initialized... doing that now")
 		a.Init()
 	}
-	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, a.cBusOptions, payload)
+	cBusOptions := a.cBusOptions
+	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, cBusOptions, payload)
 	isResponse := a.isResponse(packetInformation)
+	if isResponse {
+		// Responses should have a checksum
+		cBusOptions = model.NewCBusOptions(
+			cBusOptions.GetConnect(),
+			cBusOptions.GetSmart(),
+			cBusOptions.GetIdmon(),
+			cBusOptions.GetExstat(),
+			cBusOptions.GetMonitor(),
+			cBusOptions.GetMonall(),
+			cBusOptions.GetPun(),
+			cBusOptions.GetPcn(),
+			true,
+		)
+	}
 	currentPayload, err := a.getCurrentPayload(packetInformation, payload, isResponse, true, false)
 	if err != nil {
 		return nil, err
 	}
 	// TODO: apparently we only do crc on receive with our tests so we need to implement that
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, a.cBusOptions, uint16(len(currentPayload)))
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions, uint16(len(currentPayload)))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}

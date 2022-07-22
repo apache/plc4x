@@ -74,7 +74,7 @@ func init() {
 	cbusCmd.Flags().BoolVarP(&config.CBusConfigInstance.Monall, "cbus-monall", "", false, "Same as connect. In addition it will return remote network SAL")
 	cbusCmd.Flags().BoolVarP(&config.CBusConfigInstance.Pun, "cbus-pun", "", false, "Serial interface will emit a power up notification")
 	cbusCmd.Flags().BoolVarP(&config.CBusConfigInstance.Pcn, "cbus-pcn", "", false, "causes parameter change notifications to be emitted.")
-	cbusCmd.Flags().BoolVarP(&config.CBusConfigInstance.Srchk, "cbus-srchk", "", false, "enabled the crc checks")
+	cbusCmd.Flags().BoolVarP(&config.CBusConfigInstance.Srchk, "cbus-srchk", "", false, "forces the checksum checks from the beginning")
 
 	addAnalyzeFlags(cbusCmd)
 }

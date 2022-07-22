@@ -47,7 +47,7 @@
     [simple bit pun    ]
     // causes parameter change notifications to be emitted.
     [simple bit pcn    ]
-    // enabled the crc checks
+    // enabled the checksum checks
     [simple bit srchk ]
 ]
 
@@ -621,7 +621,6 @@
             [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ] // TODO: this should be -3 but somehow it is -2 with the examples
         ]
     ]
-    // TODO: we need to check that we don't read the crc by accident
     // Note: we omit the request context as it is only useful for the first element
     [optional CALData('null') additionalData]
 ]
@@ -1369,7 +1368,6 @@
             [simple LightingData ventilationData]
         ]
     ]
-    // TODO: we need to check that we don't read the crc by accident
     [optional SALData('applicationId') salData                                  ]
 ]
 
