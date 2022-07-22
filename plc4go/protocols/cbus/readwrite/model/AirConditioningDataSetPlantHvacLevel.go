@@ -184,8 +184,10 @@ func (m *_AirConditioningDataSetPlantHvacLevel) GetLengthInBitsConditional(lastI
 		lengthInBits += m.RawLevel.GetLengthInBits()
 	}
 
-	// Simple field (auxLevel)
-	lengthInBits += m.AuxLevel.GetLengthInBits()
+	// Optional Field (auxLevel)
+	if m.AuxLevel != nil {
+		lengthInBits += m.AuxLevel.GetLengthInBits()
+	}
 
 	return lengthInBits
 }
@@ -293,17 +295,26 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 		}
 	}
 
-	// Simple Field (auxLevel)
-	if pullErr := readBuffer.PullContext("auxLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for auxLevel")
-	}
-	_auxLevel, _auxLevelErr := HVACAuxiliaryLevelParse(readBuffer)
-	if _auxLevelErr != nil {
-		return nil, errors.Wrap(_auxLevelErr, "Error parsing 'auxLevel' field of AirConditioningDataSetPlantHvacLevel")
-	}
-	auxLevel := _auxLevel.(HVACAuxiliaryLevel)
-	if closeErr := readBuffer.CloseContext("auxLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for auxLevel")
+	// Optional Field (auxLevel) (Can be skipped, if a given expression evaluates to false)
+	var auxLevel HVACAuxiliaryLevel = nil
+	if hvacModeAndFlags.GetIsAuxLevelUsed() {
+		currentPos = positionAware.GetPos()
+		if pullErr := readBuffer.PullContext("auxLevel"); pullErr != nil {
+			return nil, errors.Wrap(pullErr, "Error pulling for auxLevel")
+		}
+		_val, _err := HVACAuxiliaryLevelParse(readBuffer)
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'auxLevel' field of AirConditioningDataSetPlantHvacLevel")
+		default:
+			auxLevel = _val.(HVACAuxiliaryLevel)
+			if closeErr := readBuffer.CloseContext("auxLevel"); closeErr != nil {
+				return nil, errors.Wrap(closeErr, "Error closing for auxLevel")
+			}
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataSetPlantHvacLevel"); closeErr != nil {
@@ -408,16 +419,20 @@ func (m *_AirConditioningDataSetPlantHvacLevel) Serialize(writeBuffer utils.Writ
 			}
 		}
 
-		// Simple Field (auxLevel)
-		if pushErr := writeBuffer.PushContext("auxLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for auxLevel")
-		}
-		_auxLevelErr := writeBuffer.WriteSerializable(m.GetAuxLevel())
-		if popErr := writeBuffer.PopContext("auxLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for auxLevel")
-		}
-		if _auxLevelErr != nil {
-			return errors.Wrap(_auxLevelErr, "Error serializing 'auxLevel' field")
+		// Optional Field (auxLevel) (Can be skipped, if the value is null)
+		var auxLevel HVACAuxiliaryLevel = nil
+		if m.GetAuxLevel() != nil {
+			if pushErr := writeBuffer.PushContext("auxLevel"); pushErr != nil {
+				return errors.Wrap(pushErr, "Error pushing for auxLevel")
+			}
+			auxLevel = m.GetAuxLevel()
+			_auxLevelErr := writeBuffer.WriteSerializable(auxLevel)
+			if popErr := writeBuffer.PopContext("auxLevel"); popErr != nil {
+				return errors.Wrap(popErr, "Error popping for auxLevel")
+			}
+			if _auxLevelErr != nil {
+				return errors.Wrap(_auxLevelErr, "Error serializing 'auxLevel' field")
+			}
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataSetPlantHvacLevel"); popErr != nil {

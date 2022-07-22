@@ -42,9 +42,15 @@ public class ReferenceTest {
         cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, false);
     }
 
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/C-Bus%20Interface%20Requirements.pdf
+    @Nested
+    class InterfaceRequirementsTest {
+        // TODO: implement those
+    }
+
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf
     @Nested
-    class ReferenceDocumentationTest {
+    class SerialInterfaceGuideTest {
 
         // 3.4
         @Nested
