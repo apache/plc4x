@@ -88,7 +88,7 @@
               <arguments>
                 <argument>-m</argument>
                 <argument>venv</argument>
-                <argument> ./venv</argument>
+                <argument>${python.venv.dir}</argument>
               </arguments>
             </configuration>
           </execution>

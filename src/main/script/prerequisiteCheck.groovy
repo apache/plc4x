@@ -359,8 +359,7 @@ if (os == "windows") {
 // profiles.
 /////////////////////////////////////////////////////
 
-// Codegen requires at least java 9
-checkJavaVersion("9", null)
+checkJavaVersion("11", null)
 
 if (dotnetEnabled) {
     checkDotnet()
@@ -371,8 +370,6 @@ if (javaEnabled) {
 }
 
 if (cEnabled) {
-    // The cmake-maven-plugin requires at least java 11
-    checkJavaVersion("11", null)
     checkGcc()
 }
 

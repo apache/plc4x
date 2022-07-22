@@ -729,14 +729,11 @@
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <exclude>**/EPL-2.0</exclude>
+
             <!--
-              Explicitly exclude thfese files as I was unable
-              to add a new licenses to the configuration.
+              Files licensed under other compatible licenses.
             -->
             <exclude>**/Expression.g4</exclude>
-            <exclude>**/KeyStoreLoader.java</exclude>
-            <exclude>**/OPCUAServer.java</exclude>
-            <exclude>**/Plc4xNamespace.java</exclude>
 
             <!-- Maven related files -->
             <exclude>**/target/**</exclude>
@@ -1577,6 +1574,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.venv.dir>./venv</python.venv.dir>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1594,6 +1592,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.venv.dir>./venv</python.venv.dir>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1611,6 +1610,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
+        <python.venv.dir>./venv</python.venv.dir>
       </properties>
     </profile>
 
