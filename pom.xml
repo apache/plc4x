@@ -1574,7 +1574,6 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <python.venv.dir>./venv</python.venv.dir>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1592,7 +1591,6 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <python.venv.dir>./venv</python.venv.dir>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1610,7 +1608,6 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
-        <python.venv.dir>./venv</python.venv.dir>
       </properties>
     </profile>
 
