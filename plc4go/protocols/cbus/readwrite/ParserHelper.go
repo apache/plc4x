@@ -170,11 +170,11 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "SALData":
 		applicationId, _ := model.ApplicationIdByName(arguments[0])
 		return model.SALDataParse(io, applicationId)
+	case "TamperStatus":
+		return model.TamperStatusParse(io)
 	case "CBusCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusCommandParse(io, cBusOptions)
-	case "TamperStatus":
-		return model.TamperStatusParse(io)
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(arguments[0])
 		numBytes, err := utils.StrToUint8(arguments[1])

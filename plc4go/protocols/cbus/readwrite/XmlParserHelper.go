@@ -193,12 +193,12 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "SALData":
 		applicationId, _ := model.ApplicationIdByName(parserArguments[0])
 		return model.SALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), applicationId)
+	case "TamperStatus":
+		return model.TamperStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusCommand":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.CBusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
-	case "TamperStatus":
-		return model.TamperStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(parserArguments[0])
 		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 5)
