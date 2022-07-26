@@ -196,8 +196,8 @@ func TelephonyDataParse(readBuffer utils.ReadBuffer) (TelephonyData, error) {
 		_childTemp, typeSwitchError = TelephonyDataLineOffHookParse(readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x03: // TelephonyDataDialOutFailure
 		_childTemp, typeSwitchError = TelephonyDataDialOutFailureParse(readBuffer)
-	case commandType == TelephonyCommandType_EVENT && argument == 0x04: // TelephonyDataDialOutFailure
-		_childTemp, typeSwitchError = TelephonyDataDialOutFailureParse(readBuffer)
+	case commandType == TelephonyCommandType_EVENT && argument == 0x04: // TelephonyDataDialInFailure
+		_childTemp, typeSwitchError = TelephonyDataDialInFailureParse(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x05: // TelephonyDataRinging
 		_childTemp, typeSwitchError = TelephonyDataRingingParse(readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x06: // TelephonyDataRecallLastNumber

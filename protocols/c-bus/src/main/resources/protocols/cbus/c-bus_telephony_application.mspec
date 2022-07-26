@@ -33,7 +33,7 @@
         ['EVENT', '0x03'  *DialOutFailure
             [simple   DialOutFailureReason  reason]
         ]
-        ['EVENT', '0x04'  *DialOutFailure
+        ['EVENT', '0x04'  *DialInFailure
             [simple   DialInFailureReason   reason]
         ]
         ['EVENT', '0x05'  *Ringing(TelephonyCommandTypeContainer commandTypeContainer)

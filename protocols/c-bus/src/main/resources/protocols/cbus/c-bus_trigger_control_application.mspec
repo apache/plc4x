@@ -30,7 +30,7 @@
         ]
         ['TRIGGER_MIN'          *TriggerMin
         ]
-        ['TRIGGER_MAX'          *TriggerMin
+        ['TRIGGER_MAX'          *TriggerMax
         ]
         ['INDICATOR_KILL'       *IndicatorKill
         ]

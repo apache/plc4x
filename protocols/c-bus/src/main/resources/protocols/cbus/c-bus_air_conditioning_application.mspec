@@ -33,7 +33,7 @@
             [optional HVACTemperature     level 'hvacModeAndFlags.isLevelTemperature'   ]
             [optional HVACRawLevels       rawLevel 'hvacModeAndFlags.isLevelRaw'        ]
         ]
-        ['HUMIDITY_SCHEDULE_ENTRY'          *HvacScheduleEntry
+        ['HUMIDITY_SCHEDULE_ENTRY'          *HumidityScheduleEntry
             [simple   byte                      zoneGroup               ]
             [simple   HVACZoneList              zoneList                ]
             [simple   uint 8                    entry                   ]
