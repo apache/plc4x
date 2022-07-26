@@ -134,7 +134,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
         CALData calData = ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData();
         System.out.println(calData);
         assertMessageMatches(bytes, msg);
