@@ -22,6 +22,6 @@ package spi
 import "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 type PlcFieldHandler interface {
-	// ParseQuery Parser function to parse query strings for a given driver and produce plcField instances from that
+	// ParseQuery Parser function to parse query strings for a given driver and produce PlcField instances from that
 	ParseQuery(query string) (model.PlcField, error)
 }
