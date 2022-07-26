@@ -165,7 +165,7 @@ func (m PlcStringField) Serialize(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("numElements", 16, m.stringLength); err != nil {
+	if err := writeBuffer.WriteUint16("stringLength", 16, m.stringLength); err != nil {
 		return err
 	}
 	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), "UTF-8", m.Datatype.String()); err != nil {
