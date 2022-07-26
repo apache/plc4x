@@ -47,7 +47,6 @@ public class RandomPackagesTest {
     void whatEverThisIs() throws Exception {
         byte[] bytes = "\\3436303230303231303167\r".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions, bytes.length);
         assertThat(msg).isNotNull();
         System.out.println(msg);
@@ -244,19 +243,14 @@ public class RandomPackagesTest {
     void wat() throws Exception {
         byte[] bytes = "D8FF0024000002000000000000000008000000000000000000\r\n".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
         requestContext = new RequestContext(true, false, false);
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
         assertThat(msg).isNotNull();
         System.out.println(msg);
         CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
         ReplyOrConfirmationReply reply = (ReplyOrConfirmationReply) messageToClient.getReply();
-            /*
-            MonitoredSALReply monitoredSALReply = (MonitoredSALReply) reply.getReply();
-            System.out.println(monitoredSALReply.getMonitoredSAL());
-             */
-        EncodedReplyCALReply encodedReplyCALReply = (EncodedReplyCALReply) ((ReplyEncodedReply) reply.getReply()).getEncodedReply();
-        System.out.println(encodedReplyCALReply.getCalReply());
+        EncodedReplyStandardFormatStatusReply encodedReplyCALReply = (EncodedReplyStandardFormatStatusReply) ((ReplyEncodedReply) reply.getReply()).getEncodedReply();
+        System.out.println(encodedReplyCALReply.getReply());
         assertMessageMatches(bytes, msg);
     }
 

@@ -22,47 +22,96 @@ package cbus
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 )
 
-type PlcField interface {
+type StatusRequestType uint8
+
+const (
+	StatusRequestTypeBinaryState StatusRequestType = iota
+	StatusRequestTypeLevel
+)
+
+// StatusField can be used to query status using a P-to-MP-StatusRequest command
+type StatusField interface {
+	model.PlcField
+	GetStatusRequestType() StatusRequestType
 	GetApplicationId() readWriteModel.ApplicationId
 }
 
-type plcField struct {
-	NumElements uint16
-}
-
-func NewField(numElements uint16) PlcField {
-	return &plcField{
-		NumElements: numElements,
+func NewStatusField(statusRequestType StatusRequestType, level *byte, applicationId readWriteModel.ApplicationId, numElements uint16) StatusField {
+	return &statusField{
+		fieldType:         STATUS,
+		statusRequestType: statusRequestType,
+		applicationId:     applicationId,
+		numElements:       numElements,
 	}
 }
 
-func (m plcField) GetAddressString() string {
-	// TODO: implement me
-	return fmt.Sprintf("TODO[%d]", m.NumElements)
+// CALField can be used to get device/network management fields
+type CALField interface {
+	model.PlcField
 }
 
-func (m plcField) GetTypeName() string {
-	return "TODO"
+func NewCALField(numElements uint16) CALField {
+	return &calField{
+		fieldType:   CAL,
+		numElements: numElements,
+	}
 }
 
-func (m plcField) GetApplicationId() readWriteModel.ApplicationId {
-	//TODO implement me
-	panic("implement me")
+type statusField struct {
+	fieldType         FieldType
+	statusRequestType StatusRequestType
+	level             *byte
+	applicationId     readWriteModel.ApplicationId
+	numElements       uint16
 }
 
-func (m plcField) GetQuantity() uint16 {
-	return m.NumElements
+func (m statusField) GetAddressString() string {
+	return fmt.Sprintf("%d[%d]", m.fieldType, m.numElements)
 }
 
-func (m plcField) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("TODO"); err != nil {
+func (m statusField) GetStatusRequestType() StatusRequestType {
+	return m.statusRequestType
+}
+
+func (m statusField) GetApplicationId() readWriteModel.ApplicationId {
+	return m.applicationId
+}
+
+func (m statusField) GetTypeName() string {
+	return STATUS.GetName()
+}
+
+func (m statusField) GetQuantity() uint16 {
+	return m.numElements
+}
+
+type calField struct {
+	fieldType   FieldType
+	numElements uint16
+}
+
+func (m calField) GetAddressString() string {
+	return fmt.Sprintf("%d[%d]", m.fieldType, m.numElements)
+}
+
+func (m calField) GetTypeName() string {
+	return CAL.GetName()
+}
+
+func (m calField) GetQuantity() uint16 {
+	return m.numElements
+}
+
+func (m calField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.fieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext("TODO"); err != nil {
+	if err := writeBuffer.PopContext(m.fieldType.GetName()); err != nil {
 		return err
 	}
 	return nil
