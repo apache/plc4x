@@ -33,7 +33,7 @@ type StatusRequestLevel interface {
 	utils.Serializable
 	StatusRequest
 	// GetApplication returns Application (property field)
-	GetApplication() byte
+	GetApplication() ApplicationIdContainer
 	// GetStartingGroupAddressLabel returns StartingGroupAddressLabel (property field)
 	GetStartingGroupAddressLabel() byte
 }
@@ -48,7 +48,7 @@ type StatusRequestLevelExactly interface {
 // _StatusRequestLevel is the data-structure of this message
 type _StatusRequestLevel struct {
 	*_StatusRequest
-	Application               byte
+	Application               ApplicationIdContainer
 	StartingGroupAddressLabel byte
 }
 
@@ -75,7 +75,7 @@ func (m *_StatusRequestLevel) GetParent() StatusRequest {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_StatusRequestLevel) GetApplication() byte {
+func (m *_StatusRequestLevel) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -89,7 +89,7 @@ func (m *_StatusRequestLevel) GetStartingGroupAddressLabel() byte {
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestLevel factory function for _StatusRequestLevel
-func NewStatusRequestLevel(application byte, startingGroupAddressLabel byte, statusType byte) *_StatusRequestLevel {
+func NewStatusRequestLevel(application ApplicationIdContainer, startingGroupAddressLabel byte, statusType byte) *_StatusRequestLevel {
 	_result := &_StatusRequestLevel{
 		Application:               application,
 		StartingGroupAddressLabel: startingGroupAddressLabel,
@@ -178,11 +178,17 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 	}
 
 	// Simple Field (application)
-	_application, _applicationErr := readBuffer.ReadByte("application")
+	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
+	}
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestLevel")
 	}
 	application := _application
+	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for application")
+	}
 
 	// Simple Field (startingGroupAddressLabel)
 	_startingGroupAddressLabel, _startingGroupAddressLabelErr := readBuffer.ReadByte("startingGroupAddressLabel")
@@ -235,8 +241,13 @@ func (m *_StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (application)
-		application := byte(m.GetApplication())
-		_applicationErr := writeBuffer.WriteByte("application", (application))
+		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for application")
+		}
+		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		if popErr := writeBuffer.PopContext("application"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for application")
+		}
 		if _applicationErr != nil {
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
 		}

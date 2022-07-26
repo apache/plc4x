@@ -26,8 +26,6 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"sync"
 )
 
@@ -98,33 +96,6 @@ func (m *Connection) GetConnection() plc4go.PlcConnection {
 
 func (m *Connection) GetMessageCodec() spi.MessageCodec {
 	return m.messageCodec
-}
-
-func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
-	go func() {
-		// TODO: implement connect logic
-		m.fireConnected(ch)
-	}()
-	return ch
-}
-
-func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
-	if m.driverContext.awaitSetupComplete {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
-	} else {
-		log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
-	}
-}
-
-func (m *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
-	if m.driverContext.awaitSetupComplete {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(m, nil)
-	} else {
-		log.Info().Msg("Successfully connected")
-	}
-	m.SetConnected(true)
 }
 
 func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {

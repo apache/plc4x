@@ -1263,20 +1263,20 @@
     [peek    byte     statusType           ]
     [typeSwitch statusType
         ['0x7A' *BinaryState
-            [reserved   byte      '0x7A'                                              ]
-            [simple     byte      application                                         ]
-            [reserved   byte      '0x00'                                              ]
+            [reserved   byte                    '0x7A'                                              ]
+            [simple     ApplicationIdContainer  application                                         ]
+            [reserved   byte                    '0x00'                                              ]
         ]
         ['0xFA' *BinaryStateDeprecated
-            [reserved   byte      '0xFA'                                              ]
-            [simple     byte      application                                         ]
-            [reserved   byte      '0x00'                                              ]
+            [reserved   byte                    '0xFA'                                              ]
+            [simple     ApplicationIdContainer  application                                         ]
+            [reserved   byte                    '0x00'                                              ]
         ]
         ['0x73' *Level
-            [reserved   byte      '0x73'                                              ]
-            [reserved   byte      '0x07'                                              ]
-            [simple     byte      application                                         ]
-            [simple     byte      startingGroupAddressLabel                           ]
+            [reserved   byte                    '0x73'                                              ]
+            [reserved   byte                    '0x07'                                              ]
+            [simple     ApplicationIdContainer  application                                         ]
+            [simple     byte                    startingGroupAddressLabel                           ]
             [validation           'startingGroupAddressLabel == 0x00
                                 || startingGroupAddressLabel == 0x20
                                 || startingGroupAddressLabel == 0x40

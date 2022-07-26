@@ -33,7 +33,7 @@ type StatusRequestBinaryStateDeprecated interface {
 	utils.Serializable
 	StatusRequest
 	// GetApplication returns Application (property field)
-	GetApplication() byte
+	GetApplication() ApplicationIdContainer
 }
 
 // StatusRequestBinaryStateDeprecatedExactly can be used when we want exactly this type and not a type which fulfills StatusRequestBinaryStateDeprecated.
@@ -46,7 +46,7 @@ type StatusRequestBinaryStateDeprecatedExactly interface {
 // _StatusRequestBinaryStateDeprecated is the data-structure of this message
 type _StatusRequestBinaryStateDeprecated struct {
 	*_StatusRequest
-	Application byte
+	Application ApplicationIdContainer
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ func (m *_StatusRequestBinaryStateDeprecated) GetParent() StatusRequest {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_StatusRequestBinaryStateDeprecated) GetApplication() byte {
+func (m *_StatusRequestBinaryStateDeprecated) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -82,7 +82,7 @@ func (m *_StatusRequestBinaryStateDeprecated) GetApplication() byte {
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestBinaryStateDeprecated factory function for _StatusRequestBinaryStateDeprecated
-func NewStatusRequestBinaryStateDeprecated(application byte, statusType byte) *_StatusRequestBinaryStateDeprecated {
+func NewStatusRequestBinaryStateDeprecated(application ApplicationIdContainer, statusType byte) *_StatusRequestBinaryStateDeprecated {
 	_result := &_StatusRequestBinaryStateDeprecated{
 		Application:    application,
 		_StatusRequest: NewStatusRequest(statusType),
@@ -153,11 +153,17 @@ func StatusRequestBinaryStateDeprecatedParse(readBuffer utils.ReadBuffer) (Statu
 	}
 
 	// Simple Field (application)
-	_application, _applicationErr := readBuffer.ReadByte("application")
+	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
+	}
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryStateDeprecated")
 	}
 	application := _application
+	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for application")
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -203,8 +209,13 @@ func (m *_StatusRequestBinaryStateDeprecated) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Simple Field (application)
-		application := byte(m.GetApplication())
-		_applicationErr := writeBuffer.WriteByte("application", (application))
+		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for application")
+		}
+		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		if popErr := writeBuffer.PopContext("application"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for application")
+		}
 		if _applicationErr != nil {
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
 		}

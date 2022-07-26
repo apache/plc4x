@@ -24,9 +24,11 @@ import (
 	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
+	"strconv"
 )
 
 type Driver struct {
@@ -58,7 +60,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	options["defaultTcpPort"] = []string{"10010"}
+	options["defaultTcpPort"] = []string{strconv.FormatUint(uint64(readWriteModel.CBusConstants_CBUSTCPDEFAULTPORT), 10)}
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
