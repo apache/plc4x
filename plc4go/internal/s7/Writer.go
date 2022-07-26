@@ -103,12 +103,12 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			if err := m.messageCodec.SendRequest(
 				tpktPacket,
 				func(message spi.Message) bool {
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					if tpktPacket == nil {
+					tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+					if !ok {
 						return false
 					}
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-					if cotpPacketData == nil {
+					cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+					if !ok {
 						return false
 					}
 					payload := cotpPacketData.GetPayload()
@@ -120,8 +120,8 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				func(message spi.Message) error {
 					// Convert the response into an
 					log.Trace().Msg("convert response to ")
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
+					tpktPacket := message.(readWriteModel.TPKTPacket)
+					cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 					payload := cotpPacketData.GetPayload()
 					// Convert the s7 response into a PLC4X response
 					log.Trace().Msg("convert response to PLC4X response")
@@ -225,7 +225,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 }
 
 func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (readWriteModel.S7VarPayloadDataItem, error) {
-	s7Field, ok := field.(S7PlcField)
+	s7Field, ok := field.(PlcField)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", field)
 	}

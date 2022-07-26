@@ -20,7 +20,7 @@
 package simulated
 
 import (
-	s72 "github.com/apache/plc4x/plc4go/internal/s7"
+	s7 "github.com/apache/plc4x/plc4go/internal/s7"
 	model3 "github.com/apache/plc4x/plc4go/internal/spi/model"
 	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -142,15 +142,7 @@ func TestReader_Read(t *testing.T) {
 			},
 			args: args{
 				fields: map[string]model.PlcField{
-					"test": s72.PlcField{
-						FieldType:   s72.S7Field,
-						MemoryArea:  model4.MemoryArea_DATA_BLOCKS,
-						BlockNumber: 1,
-						ByteOffset:  1,
-						BitOffset:   0,
-						NumElements: 1,
-						Datatype:    model4.TransportSize_BOOL,
-					},
+					"test": s7.NewField(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL),
 				},
 				fieldNames: []string{"test"},
 			},
