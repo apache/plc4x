@@ -42,8 +42,6 @@ type Request interface {
 	GetTermination() RequestTermination
 	// GetActualPeek returns ActualPeek (virtual field)
 	GetActualPeek() RequestType
-	// GetPayloadLength returns PayloadLength (virtual field)
-	GetPayloadLength() uint16
 }
 
 // RequestExactly can be used when we want exactly this type and not a type which fulfills Request.
@@ -63,8 +61,7 @@ type _Request struct {
 	Termination RequestTermination
 
 	// Arguments.
-	CBusOptions   CBusOptions
-	MessageLength uint16
+	CBusOptions CBusOptions
 }
 
 type _RequestChildRequirements interface {
@@ -129,22 +126,14 @@ func (m *_Request) GetActualPeek() RequestType {
 	return CastRequestType(CastRequestType(utils.InlineIf(bool(bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) == (nil))))) || bool(bool(bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) != (nil)))) && bool(bool((m.GetSecondPeek()) == (RequestType_EMPTY))))), func() interface{} { return CastRequestType(m.GetPeekedByte()) }, func() interface{} { return CastRequestType(m.GetSecondPeek()) })))
 }
 
-func (m *_Request) GetPayloadLength() uint16 {
-	startingCR := m.StartingCR
-	_ = startingCR
-	resetMode := m.ResetMode
-	_ = resetMode
-	return uint16(uint16(uint16(uint16(m.MessageLength)-uint16(uint16(2)))) - uint16(uint16(utils.InlineIf(bool(bool((m.GetResetMode()) != (nil))), func() interface{} { return uint16(uint16(uint16(1))) }, func() interface{} { return uint16(uint16(uint16(0))) }).(uint16))))
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewRequest factory function for _Request
-func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_Request {
-	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions, MessageLength: messageLength}
+func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
+	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
 }
 
 // Deprecated: use the interface for direct cast
@@ -177,8 +166,6 @@ func (m *_Request) GetParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
-	// A virtual field doesn't have any in- or output.
-
 	// Simple field (termination)
 	lengthInBits += m.Termination.GetLengthInBits()
 
@@ -189,7 +176,7 @@ func (m *_Request) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (Request, error) {
+func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Request"); pullErr != nil {
@@ -265,11 +252,6 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageL
 	actualPeek := RequestType(_actualPeek)
 	_ = actualPeek
 
-	// Virtual field
-	_payloadLength := uint16(uint16(uint16(messageLength)-uint16(uint16(2)))) - uint16(uint16(utils.InlineIf(bool(bool((resetMode) != (nil))), func() interface{} { return uint16(uint16(uint16(1))) }, func() interface{} { return uint16(uint16(uint16(0))) }).(uint16)))
-	payloadLength := uint16(_payloadLength)
-	_ = payloadLength
-
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type RequestChildSerializeRequirement interface {
 		Request
@@ -281,19 +263,19 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageL
 	var typeSwitchError error
 	switch {
 	case actualPeek == RequestType_SMART_CONNECT_SHORTCUT: // RequestSmartConnectShortcut
-		_childTemp, typeSwitchError = RequestSmartConnectShortcutParse(readBuffer, cBusOptions, messageLength)
+		_childTemp, typeSwitchError = RequestSmartConnectShortcutParse(readBuffer, cBusOptions)
 	case actualPeek == RequestType_RESET: // RequestReset
-		_childTemp, typeSwitchError = RequestResetParse(readBuffer, cBusOptions, messageLength)
+		_childTemp, typeSwitchError = RequestResetParse(readBuffer, cBusOptions)
 	case actualPeek == RequestType_DIRECT_COMMAND: // RequestDirectCommandAccess
-		_childTemp, typeSwitchError = RequestDirectCommandAccessParse(readBuffer, cBusOptions, messageLength, payloadLength)
+		_childTemp, typeSwitchError = RequestDirectCommandAccessParse(readBuffer, cBusOptions)
 	case actualPeek == RequestType_REQUEST_COMMAND: // RequestCommand
-		_childTemp, typeSwitchError = RequestCommandParse(readBuffer, cBusOptions, messageLength, payloadLength)
+		_childTemp, typeSwitchError = RequestCommandParse(readBuffer, cBusOptions)
 	case actualPeek == RequestType_NULL: // RequestNull
-		_childTemp, typeSwitchError = RequestNullParse(readBuffer, cBusOptions, messageLength)
+		_childTemp, typeSwitchError = RequestNullParse(readBuffer, cBusOptions)
 	case actualPeek == RequestType_EMPTY: // RequestEmpty
-		_childTemp, typeSwitchError = RequestEmptyParse(readBuffer, cBusOptions, messageLength)
+		_childTemp, typeSwitchError = RequestEmptyParse(readBuffer, cBusOptions)
 	case 0 == 0: // RequestObsolete
-		_childTemp, typeSwitchError = RequestObsoleteParse(readBuffer, cBusOptions, messageLength, payloadLength)
+		_childTemp, typeSwitchError = RequestObsoleteParse(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualPeek=%v]", actualPeek)
 	}
@@ -368,10 +350,6 @@ func (pm *_Request) SerializeParent(writeBuffer utils.WriteBuffer, child Request
 	// Virtual field
 	if _actualPeekErr := writeBuffer.WriteVirtual("actualPeek", m.GetActualPeek()); _actualPeekErr != nil {
 		return errors.Wrap(_actualPeekErr, "Error serializing 'actualPeek' field")
-	}
-	// Virtual field
-	if _payloadLengthErr := writeBuffer.WriteVirtual("payloadLength", m.GetPayloadLength()); _payloadLengthErr != nil {
-		return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

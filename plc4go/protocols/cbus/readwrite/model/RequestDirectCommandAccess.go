@@ -50,9 +50,6 @@ type RequestDirectCommandAccessExactly interface {
 type _RequestDirectCommandAccess struct {
 	*_Request
 	CalData CALData
-
-	// Arguments.
-	PayloadLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,10 +102,10 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(calData CALData, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestDirectCommandAccess {
+func NewRequestDirectCommandAccess(calData CALData, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
 	_result := &_RequestDirectCommandAccess{
 		CalData:  calData,
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -149,7 +146,7 @@ func (m *_RequestDirectCommandAccess) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) (RequestDirectCommandAccess, error) {
+func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestDirectCommandAccess"); pullErr != nil {
@@ -168,7 +165,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 	}
 
 	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(readBuffer, payloadLength)
+	_calData, _calDataErr := ReadCALData(readBuffer)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestDirectCommandAccess")
 	}
@@ -185,8 +182,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 	_child := &_RequestDirectCommandAccess{
 		CalData: calData,
 		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child

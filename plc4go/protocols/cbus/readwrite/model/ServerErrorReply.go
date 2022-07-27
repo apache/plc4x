@@ -82,9 +82,9 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////////////////////////////////////////
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_Reply: NewReply(peekedByte, cBusOptions, replyLength, requestContext),
+		_Reply: NewReply(peekedByte, cBusOptions, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -122,7 +122,7 @@ func (m *_ServerErrorReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (ServerErrorReply, error) {
+func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {
@@ -148,7 +148,6 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions,
 	_child := &_ServerErrorReply{
 		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
-			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}

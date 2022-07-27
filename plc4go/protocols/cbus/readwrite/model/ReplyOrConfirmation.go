@@ -50,7 +50,6 @@ type _ReplyOrConfirmation struct {
 
 	// Arguments.
 	CBusOptions    CBusOptions
-	MessageLength  uint16
 	RequestContext RequestContext
 }
 
@@ -102,8 +101,8 @@ func (m *_ReplyOrConfirmation) GetIsAlpha() bool {
 ///////////////////////////////////////////////////////////
 
 // NewReplyOrConfirmation factory function for _ReplyOrConfirmation
-func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_ReplyOrConfirmation {
-	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, MessageLength: messageLength, RequestContext: requestContext}
+func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
+	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
 
 // Deprecated: use the interface for direct cast
@@ -133,7 +132,7 @@ func (m *_ReplyOrConfirmation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (ReplyOrConfirmation, error) {
+func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmation"); pullErr != nil {
@@ -167,9 +166,9 @@ func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptio
 	var typeSwitchError error
 	switch {
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
-		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParse(readBuffer, cBusOptions, messageLength, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParse(readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
-		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParse(readBuffer, cBusOptions, messageLength, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParse(readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v]", isAlpha)
 	}

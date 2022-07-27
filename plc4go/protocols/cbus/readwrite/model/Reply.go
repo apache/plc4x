@@ -48,7 +48,6 @@ type _Reply struct {
 
 	// Arguments.
 	CBusOptions    CBusOptions
-	ReplyLength    uint16
 	RequestContext RequestContext
 }
 
@@ -87,8 +86,8 @@ func (m *_Reply) GetPeekedByte() byte {
 ///////////////////////////////////////////////////////////
 
 // NewReply factory function for _Reply
-func NewReply(peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_Reply {
-	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, ReplyLength: replyLength, RequestContext: requestContext}
+func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
 
 // Deprecated: use the interface for direct cast
@@ -116,7 +115,7 @@ func (m *_Reply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (Reply, error) {
+func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
@@ -145,13 +144,13 @@ func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLengt
 	var typeSwitchError error
 	switch {
 	case peekedByte == 0x2B: // PowerUpReply
-		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, cBusOptions, requestContext)
 	case peekedByte == 0x3D: // ParameterChangeReply
-		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, cBusOptions, requestContext)
 	case peekedByte == 0x21: // ServerErrorReply
-		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, requestContext)
 	case 0 == 0: // ReplyEncodedReply
-		_childTemp, typeSwitchError = ReplyEncodedReplyParse(readBuffer, cBusOptions, replyLength, requestContext)
+		_childTemp, typeSwitchError = ReplyEncodedReplyParse(readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v]", peekedByte)
 	}

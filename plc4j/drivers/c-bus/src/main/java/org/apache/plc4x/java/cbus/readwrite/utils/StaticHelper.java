@@ -32,7 +32,7 @@ public class StaticHelper {
         if (!srchk) {
             return null;
         }
-        byte checksum = readBytesFromHex("chksum", readBuffer, 2, false)[0];
+        byte checksum = readBytesFromHex("chksum", readBuffer, false)[0];
         try {
             byte actualChecksum = getChecksum(message);
             if (checksum != actualChecksum) {
@@ -68,8 +68,8 @@ public class StaticHelper {
         writeToHex("cbusCommand", writeBuffer, cbusCommand);
     }
 
-    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, int payloadLength, CBusOptions cBusOptions, boolean srchk) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("cbusCommand", readBuffer, payloadLength, srchk);
+    public static CBusCommand readCBusCommand(ReadBuffer readBuffer, CBusOptions cBusOptions, boolean srchk) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("cbusCommand", readBuffer, srchk);
         return CBusCommand.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions);
     }
 
@@ -77,8 +77,8 @@ public class StaticHelper {
         writeToHex("encodedReply", writeBuffer, encodedReply);
     }
 
-    public static EncodedReply readEncodedReply(ReadBuffer readBuffer, int payloadLength, CBusOptions cBusOptions, RequestContext requestContext, boolean srchk) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("encodedReply", readBuffer, payloadLength, srchk);
+    public static EncodedReply readEncodedReply(ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext, boolean srchk) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("encodedReply", readBuffer, srchk);
         return EncodedReply.staticParse(new ReadBufferByteBased(rawBytes), cBusOptions, requestContext);
     }
 
@@ -86,15 +86,17 @@ public class StaticHelper {
         writeToHex("calData", writeBuffer, calData);
     }
 
-    public static CALData readCALData(ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
-        byte[] rawBytes = readBytesFromHex("calData", readBuffer, payloadLength, false);
+    public static CALData readCALData(ReadBuffer readBuffer) throws ParseException {
+        byte[] rawBytes = readBytesFromHex("calData", readBuffer, false);
         return CALData.staticParse(new ReadBufferByteBased(rawBytes), (RequestContext) null);
     }
 
-    private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, int payloadLength, boolean srchk) throws ParseException {
+    private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, boolean srchk) throws ParseException {
+        int payloadLength = findHexEnd(readBuffer);
         if (payloadLength == 0) {
             throw new ParseException("Length is 0");
         }
+
         byte[] hexBytes = readBuffer.readByteArray(logicalName, payloadLength);
         byte lastByte = hexBytes[hexBytes.length - 1];
         if ((lastByte >= 0x67) && (lastByte <= 0x7A)) {
@@ -111,7 +113,7 @@ public class StaticHelper {
         if (srchk) {
             byte checksum = 0x0;
             for (byte aByte : rawBytes) {
-                checksum+=aByte;
+                checksum += aByte;
             }
             if (checksum != 0x0) {
                 throw new ParseException("Checksum validation failed");
@@ -121,6 +123,23 @@ public class StaticHelper {
             rawBytes = Arrays.copyOf(rawBytes, rawBytes.length - 1);
         }
         return rawBytes;
+    }
+
+    private static int findHexEnd(ReadBuffer readBuffer) throws ParseException {
+        // TODO: find out if there is a smarter way to find the end...
+        int oldPos = readBuffer.getPos();
+        int payloadLength = 0;
+        while (readBuffer.hasMore(8)) {
+            char hexByte = (char) readBuffer.readByte();
+            boolean isHex = hexByte >= 'A' && hexByte <= 'F' || hexByte >= 'a' && hexByte <= 'f';
+            boolean isNumber = hexByte >= '0' && hexByte <= '9';
+            if (!isHex && !isNumber) {
+                break;
+            }
+            payloadLength++;
+        }
+        readBuffer.reset(oldPos);
+        return payloadLength;
     }
 
     private static void writeToHex(String logicalName, WriteBuffer writeBuffer, Message message) throws SerializationException {

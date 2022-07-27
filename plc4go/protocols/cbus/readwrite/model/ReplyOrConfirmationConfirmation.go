@@ -90,11 +90,11 @@ func (m *_ReplyOrConfirmationConfirmation) GetEmbeddedReply() ReplyOrConfirmatio
 ///////////////////////////////////////////////////////////
 
 // NewReplyOrConfirmationConfirmation factory function for _ReplyOrConfirmationConfirmation
-func NewReplyOrConfirmationConfirmation(confirmation Confirmation, embeddedReply ReplyOrConfirmation, peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
+func NewReplyOrConfirmationConfirmation(confirmation Confirmation, embeddedReply ReplyOrConfirmation, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
 	_result := &_ReplyOrConfirmationConfirmation{
 		Confirmation:         confirmation,
 		EmbeddedReply:        embeddedReply,
-		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, messageLength, requestContext),
+		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
 	}
 	_result._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _result
 	return _result
@@ -137,7 +137,7 @@ func (m *_ReplyOrConfirmationConfirmation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
+func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmationConfirmation"); pullErr != nil {
@@ -166,7 +166,7 @@ func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptio
 		if pullErr := readBuffer.PullContext("embeddedReply"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for embeddedReply")
 		}
-		_val, _err := ReplyOrConfirmationParse(readBuffer, cBusOptions, uint16(messageLength)-uint16(confirmation.GetLengthInBytes()), requestContext)
+		_val, _err := ReplyOrConfirmationParse(readBuffer, cBusOptions, requestContext)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -191,7 +191,6 @@ func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptio
 		EmbeddedReply: embeddedReply,
 		_ReplyOrConfirmation: &_ReplyOrConfirmation{
 			CBusOptions:    cBusOptions,
-			MessageLength:  messageLength,
 			RequestContext: requestContext,
 		},
 	}

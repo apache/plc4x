@@ -31,7 +31,7 @@ func ReadAndValidateChecksum(readBuffer utils.ReadBuffer, message spi.Message, s
 	if !srchk {
 		return nil, nil
 	}
-	hexBytes, err := readBytesFromHex("chksum", readBuffer, 2, false)
+	hexBytes, err := readBytesFromHex("chksum", readBuffer, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to calculate checksum")
 	}
@@ -77,8 +77,8 @@ func WriteCBusCommand(writeBuffer utils.WriteBuffer, cbusCommand CBusCommand) er
 	return writeSerializableToHex("cbusCommand", writeBuffer, cbusCommand)
 }
 
-func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, cBusOptions CBusOptions, srchk bool) (CBusCommand, error) {
-	rawBytes, err := readBytesFromHex("cbusCommand", readBuffer, payloadLength, srchk)
+func ReadCBusCommand(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, srchk bool) (CBusCommand, error) {
+	rawBytes, err := readBytesFromHex("cbusCommand", readBuffer, srchk)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
@@ -89,8 +89,8 @@ func WriteEncodedReply(writeBuffer utils.WriteBuffer, encodedReply EncodedReply)
 	return writeSerializableToHex("encodedReply", writeBuffer, encodedReply)
 }
 
-func ReadEncodedReply(readBuffer utils.ReadBuffer, payloadLength uint16, options CBusOptions, requestContext RequestContext, srchk bool) (EncodedReply, error) {
-	rawBytes, err := readBytesFromHex("encodedReply", readBuffer, payloadLength, srchk)
+func ReadEncodedReply(readBuffer utils.ReadBuffer, options CBusOptions, requestContext RequestContext, srchk bool) (EncodedReply, error) {
+	rawBytes, err := readBytesFromHex("encodedReply", readBuffer, srchk)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
@@ -101,19 +101,20 @@ func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
 	return writeSerializableToHex("calData", writeBuffer, calData)
 }
 
-func ReadCALData(readBuffer utils.ReadBuffer, payloadLength uint16) (CALData, error) {
-	rawBytes, err := readBytesFromHex("calData", readBuffer, payloadLength, false)
+func ReadCALData(readBuffer utils.ReadBuffer) (CALData, error) {
+	rawBytes, err := readBytesFromHex("calData", readBuffer, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
 	return CALDataParse(utils.NewReadBufferByteBased(rawBytes), nil)
 }
 
-func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLength uint16, srchk bool) ([]byte, error) {
+func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {
+	payloadLength := findHexEnd(readBuffer)
 	if payloadLength == 0 {
 		return nil, errors.New("Length is 0")
 	}
-	hexBytes, err := readBuffer.ReadByteArray(logicalName, int(payloadLength))
+	hexBytes, err := readBuffer.ReadByteArray(logicalName, payloadLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing")
 	}
@@ -142,6 +143,23 @@ func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLe
 	}
 	log.Debug().Msgf("%d bytes decoded", n)
 	return rawBytes, nil
+}
+
+func findHexEnd(readBuffer utils.ReadBuffer) int {
+	// TODO: find out if there is a smarter way to find the end...
+	oldPos := readBuffer.GetPos()
+	payloadLength := 0
+	for readBuffer.HasMore(8) {
+		hexByte, _ := readBuffer.ReadByte("")
+		isHex := hexByte >= 'A' && hexByte <= 'F' || hexByte >= 'a' && hexByte <= 'f'
+		isNumber := hexByte >= '0' && hexByte <= '9'
+		if !isHex && !isNumber {
+			break
+		}
+		payloadLength++
+	}
+	readBuffer.Reset(oldPos)
+	return payloadLength
 }
 
 func writeSerializableToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable utils.Serializable) error {

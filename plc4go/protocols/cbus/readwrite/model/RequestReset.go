@@ -106,13 +106,13 @@ func (m *_RequestReset) GetThirdTilde() *byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestReset factory function for _RequestReset
-func NewRequestReset(tildePeek RequestType, secondTilde *byte, tildePeek2 RequestType, thirdTilde *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_RequestReset {
+func NewRequestReset(tildePeek RequestType, secondTilde *byte, tildePeek2 RequestType, thirdTilde *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestReset {
 	_result := &_RequestReset{
 		TildePeek:   tildePeek,
 		SecondTilde: secondTilde,
 		TildePeek2:  tildePeek2,
 		ThirdTilde:  thirdTilde,
-		_Request:    NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		_Request:    NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -157,7 +157,7 @@ func (m *_RequestReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (RequestReset, error) {
+func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestReset"); pullErr != nil {
@@ -227,8 +227,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, mes
 		TildePeek2:  tildePeek2,
 		ThirdTilde:  thirdTilde,
 		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child

@@ -80,7 +80,7 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		return nil, err
 	}
 	// TODO: apparently we only do crc on receive with our tests so we need to implement that
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions, uint16(len(currentPayload)))
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}

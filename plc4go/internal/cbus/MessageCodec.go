@@ -145,7 +145,7 @@ lookingForTheEnd:
 		panic("Invalid state... If we have peeked that before we should be able to read that now")
 	}
 	rb := utils.NewReadBufferByteBased(read)
-	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions, uint16(len(read)))
+	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
 		log.Warn().Err(err).Msg("error parsing")
 		// TODO: Possibly clean up ...

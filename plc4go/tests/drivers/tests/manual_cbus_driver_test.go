@@ -39,9 +39,9 @@ func TestManualCBusDriver(t *testing.T) {
 
 	test.AddTestCase("status/binary/0x04", true)
 	test.AddTestCase("status/level=0x40/0x04", true)
-	test.AddTestCase("cal/recall=[INTERFACE_OPTIONS_1, 1]", true)
-	test.AddTestCase("cal/identify=[FirmwareVersion]", true)
-	test.AddTestCase("cal/gestatus=[0xFF, 1]", true)
+	test.AddTestCase("cal/0/recall=[INTERFACE_OPTIONS_1, 1]", true)
+	test.AddTestCase("cal/0/identify=[FirmwareVersion]", true)
+	test.AddTestCase("cal/0/gestatus=[0xFF, 1]", true)
 
 	test.Run()
 }

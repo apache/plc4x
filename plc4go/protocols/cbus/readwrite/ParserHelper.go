@@ -56,12 +56,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.RequestTerminationParse(io)
 	case "ReplyOrConfirmation":
 		var cBusOptions model.CBusOptions
-		messageLength, err := utils.StrToUint16(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
 		var requestContext model.RequestContext
-		return model.ReplyOrConfirmationParse(io, cBusOptions, messageLength, requestContext)
+		return model.ReplyOrConfirmationParse(io, cBusOptions, requestContext)
 	case "CBusMessage":
 		isResponse, err := utils.StrToBool(arguments[0])
 		if err != nil {
@@ -69,11 +65,7 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		}
 		var requestContext model.RequestContext
 		var cBusOptions model.CBusOptions
-		messageLength, err := utils.StrToUint16(arguments[3])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusMessageParse(io, isResponse, requestContext, cBusOptions, messageLength)
+		return model.CBusMessageParse(io, isResponse, requestContext, cBusOptions)
 	case "CBusOptions":
 		return model.CBusOptionsParse(io)
 	case "TemperatureBroadcastData":
@@ -90,12 +82,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.PowerUpParse(io)
 	case "Reply":
 		var cBusOptions model.CBusOptions
-		replyLength, err := utils.StrToUint16(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
 		var requestContext model.RequestContext
-		return model.ReplyParse(io, cBusOptions, replyLength, requestContext)
+		return model.ReplyParse(io, cBusOptions, requestContext)
 	case "TelephonyData":
 		return model.TelephonyDataParse(io)
 	case "HVACHumidityStatusFlags":
@@ -135,11 +123,7 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CBusHeaderParse(io)
 	case "Request":
 		var cBusOptions model.CBusOptions
-		messageLength, err := utils.StrToUint16(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.RequestParse(io, cBusOptions, messageLength)
+		return model.RequestParse(io, cBusOptions)
 	case "HVACModeAndFlags":
 		return model.HVACModeAndFlagsParse(io)
 	case "Alpha":

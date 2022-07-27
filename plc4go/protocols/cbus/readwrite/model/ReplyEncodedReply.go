@@ -35,8 +35,6 @@ type ReplyEncodedReply interface {
 	GetEncodedReply() EncodedReply
 	// GetChksum returns Chksum (property field)
 	GetChksum() Checksum
-	// GetPayloadLength returns PayloadLength (virtual field)
-	GetPayloadLength() uint16
 }
 
 // ReplyEncodedReplyExactly can be used when we want exactly this type and not a type which fulfills ReplyEncodedReply.
@@ -88,26 +86,13 @@ func (m *_ReplyEncodedReply) GetChksum() Checksum {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_ReplyEncodedReply) GetPayloadLength() uint16 {
-	return uint16(m.ReplyLength)
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // NewReplyEncodedReply factory function for _ReplyEncodedReply
-func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ReplyEncodedReply {
+func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
 	_result := &_ReplyEncodedReply{
 		EncodedReply: encodedReply,
 		Chksum:       chksum,
-		_Reply:       NewReply(peekedByte, cBusOptions, replyLength, requestContext),
+		_Reply:       NewReply(peekedByte, cBusOptions, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -135,8 +120,6 @@ func (m *_ReplyEncodedReply) GetLengthInBits() uint16 {
 func (m *_ReplyEncodedReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
 	// Manual Field (encodedReply)
 	lengthInBits += uint16(int32(int32(int32(m.GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
 
@@ -150,7 +133,7 @@ func (m *_ReplyEncodedReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (ReplyEncodedReply, error) {
+func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyEncodedReply"); pullErr != nil {
@@ -159,13 +142,8 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_payloadLength := replyLength
-	payloadLength := uint16(_payloadLength)
-	_ = payloadLength
-
 	// Manual Field (encodedReply)
-	_encodedReply, _encodedReplyErr := ReadEncodedReply(readBuffer, payloadLength, cBusOptions, requestContext, cBusOptions.GetSrchk())
+	_encodedReply, _encodedReplyErr := ReadEncodedReply(readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())
 	if _encodedReplyErr != nil {
 		return nil, errors.Wrap(_encodedReplyErr, "Error parsing 'encodedReply' field of ReplyEncodedReply")
 	}
@@ -194,7 +172,6 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 		Chksum:       chksum,
 		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
-			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}
@@ -208,10 +185,6 @@ func (m *_ReplyEncodedReply) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ReplyEncodedReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ReplyEncodedReply")
-		}
-		// Virtual field
-		if _payloadLengthErr := writeBuffer.WriteVirtual("payloadLength", m.GetPayloadLength()); _payloadLengthErr != nil {
-			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
 		}
 
 		// Manual Field (encodedReply)

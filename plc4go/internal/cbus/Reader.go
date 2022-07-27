@@ -216,32 +216,32 @@ func (m *Reader) fieldToCBusMessage(field model.PlcField) (readWriteModel.CBusMe
 		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(field.application), defaultOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions, 0, 0)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions, 0), nil
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
+		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
 	case *calRecallField:
 		calData := readWriteModel.NewCALDataRecall(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, defaultRequestContext)
 		//TODO: we need support for bridged commands
 		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions, 0, 0)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions, 0), nil
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
+		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
 	case *calIdentifyField:
 		calData := readWriteModel.NewCALDataIdentify(field.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, defaultRequestContext)
 		//TODO: we need support for bridged commands
 		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions, 0, 0)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions, 0), nil
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
+		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
 	case *calGetstatusField:
 		calData := readWriteModel.NewCALDataGetStatus(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, defaultRequestContext)
 		//TODO: we need support for bridged commands
 		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions, 0, 0)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions, 0), nil
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
+		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
 	default:
 		return nil, errors.Errorf("Unmapped type %T", field)
 	}

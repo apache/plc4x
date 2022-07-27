@@ -51,26 +51,25 @@
     [simple bit srchk ]
 ]
 
-[type CBusMessage(bit isResponse, RequestContext requestContext, CBusOptions cBusOptions, uint 16 messageLength)
+[type CBusMessage(bit isResponse, RequestContext requestContext, CBusOptions cBusOptions)
     [validation 'requestContext != null' "requestContext required"  ]
     [validation 'cBusOptions != null'    "cBusOptions required"     ]
     [typeSwitch isResponse
        ['false' *ToServer
-            [simple   Request('cBusOptions', 'messageLength')         request         ]
+            [simple   Request('cBusOptions')         request        ]
        ]
        ['true' *ToClient
-            [simple   ReplyOrConfirmation('cBusOptions', 'messageLength', 'requestContext')  reply           ]
+            [simple   ReplyOrConfirmation('cBusOptions', 'requestContext')  reply           ]
        ]
     ]
 ]
 
-[type Request(CBusOptions cBusOptions, uint 16 messageLength)
+[type Request(CBusOptions cBusOptions)
     [peek     RequestType peekedByte                                        ]
     [optional RequestType startingCR       'peekedByte == RequestType.EMPTY']
     [optional RequestType resetMode        'peekedByte == RequestType.RESET']
     [peek     RequestType secondPeek                                        ]
     [virtual  RequestType actualPeek       '(startingCR==null&&resetMode==null)||(startingCR==null&&resetMode!=null&&secondPeek==RequestType.EMPTY)?peekedByte:secondPeek'  ]
-    [virtual uint 16 payloadLength         '(messageLength-2)-((resetMode!=null)?(1):(0))'                                                                                  ] // We subtract the command itself and the termination
     [typeSwitch actualPeek
         ['SMART_CONNECT_SHORTCUT' *SmartConnectShortcut
             [const    byte        pipe      0x7C                            ]
@@ -83,19 +82,19 @@
             [peek     RequestType tildePeek2                                    ]
             [optional byte        thirdTilde 'tildePeek2 == RequestType.RESET'  ]
         ]
-        ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
+        ['DIRECT_COMMAND' *DirectCommandAccess
             [const    byte    at        0x40                                ]
             [manual   CALData
                               calData
-                        'STATIC_CALL("readCALData", readBuffer, payloadLength)'
+                        'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '(_value.lengthInBytes*2)*8'                        ]
         ]
-        ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
+        ['REQUEST_COMMAND' *Command
             [const    byte  initiator 0x5C                                  ] // 0x5C == "/"
             [manual   CBusCommand
                               cbusCommand
-                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, cBusOptions, cBusOptions.srchk)'
+                        'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
                         '(_value.lengthInBytes*2)*8'                        ]
             [manual   Checksum
@@ -111,11 +110,10 @@
         ['EMPTY' *Empty
         ]
         // TODO: we should check if we are in basic mode
-        [* *Obsolete(uint 16 payloadLength)
-            [virtual  uint 16 obsoletePayloadLength 'payloadLength+1'       ]
+        [* *Obsolete
             [manual   CALData
                               calData
-                        'STATIC_CALL("readCALData", readBuffer, obsoletePayloadLength)'
+                        'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '(_value.lengthInBytes*2)*8'                        ]
             [optional Alpha   alpha                                         ]
@@ -1371,23 +1369,22 @@
     [optional SALData('applicationId') salData                                  ]
 ]
 
-[type ReplyOrConfirmation(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)
+[type ReplyOrConfirmation(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'    ]
     [typeSwitch isAlpha
         ['true' *Confirmation
             [simple   Confirmation                      confirmation        ]
-            [optional ReplyOrConfirmation('cBusOptions','messageLength-confirmation.lengthInBytes', 'requestContext') embeddedReply]
+            [optional ReplyOrConfirmation('cBusOptions', 'requestContext') embeddedReply]
         ]
         ['false' *Reply
-            [virtual  uint 16                       replyLength 'messageLength-2'] // remove the termination \r\n
-            [simple   Reply('cBusOptions', 'replyLength', 'requestContext')    reply               ]
+            [simple   Reply('cBusOptions', 'requestContext')    reply               ]
             [simple   ResponseTermination               termination         ]
         ]
     ]
 ]
 
-[type Reply(CBusOptions cBusOptions, uint 16 replyLength, RequestContext requestContext)
+[type Reply(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                                ]
     [typeSwitch peekedByte
         ['0x2B' PowerUpReply // is a +
@@ -1400,10 +1397,9 @@
             [const  byte    errorMarker     0x21        ]
         ]
         [*      *EncodedReply
-            [virtual uint 16 payloadLength 'replyLength']
             [manual   EncodedReply
                               encodedReply
-                                    'STATIC_CALL("readEncodedReply", readBuffer, payloadLength, cBusOptions, requestContext, cBusOptions.srchk)'
+                                    'STATIC_CALL("readEncodedReply", readBuffer, cBusOptions, requestContext, cBusOptions.srchk)'
                                     'STATIC_CALL("writeEncodedReply", writeBuffer, encodedReply)'
                                     '(_value.lengthInBytes*2)*8'                                     ]
             [manual   Checksum

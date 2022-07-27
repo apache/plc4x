@@ -67,26 +67,16 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "ReplyOrConfirmation":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
-		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		messageLength := uint16(parsedUint1)
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
-		return model.ReplyOrConfirmationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, messageLength, requestContext)
+		return model.ReplyOrConfirmationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
 	case "CBusMessage":
 		isResponse := parserArguments[0] == "true"
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
-		parsedUint3, err := strconv.ParseUint(parserArguments[3], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		messageLength := uint16(parsedUint3)
-		return model.CBusMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), isResponse, requestContext, cBusOptions, messageLength)
+		return model.CBusMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), isResponse, requestContext, cBusOptions)
 	case "CBusOptions":
 		return model.CBusOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TemperatureBroadcastData":
@@ -104,14 +94,9 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "Reply":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
-		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		replyLength := uint16(parsedUint1)
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
-		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, replyLength, requestContext)
+		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
 	case "TelephonyData":
 		return model.TelephonyDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HVACHumidityStatusFlags":
@@ -154,12 +139,7 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "Request":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
-		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		messageLength := uint16(parsedUint1)
-		return model.RequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, messageLength)
+		return model.RequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
 	case "HVACModeAndFlags":
 		return model.HVACModeAndFlagsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Alpha":
