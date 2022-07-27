@@ -243,7 +243,7 @@
             [reserved byte          '0x00'                                                             ]
             [simple   StatusRequest statusRequest                                                      ]
         ]
-        [         *Normal
+        [*        *Normal
             [simple   ApplicationIdContainer                application                                ]
             [reserved byte                                  '0x00'                                     ]
             [simple   SALData('application.applicationId')  salData                                    ]

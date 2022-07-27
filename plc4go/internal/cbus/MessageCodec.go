@@ -84,6 +84,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		log.Trace().Msg("Nothing to read")
 		return nil, nil
 	}
+	// TODO: we might get a simple confirmation like g# without anything other... so we might need to handle that
+
 	peekedBytes, err := ti.PeekReadableBytes(readableBytes)
 	pciResponse, requestToPci := false, false
 	indexOfCR := -1
