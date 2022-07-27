@@ -137,7 +137,7 @@ func (m *_RequestDirectCommandAccess) GetLengthInBitsConditional(lastItem bool) 
 	lengthInBits += 8
 
 	// Manual Field (calData)
-	lengthInBits += uint16(int32(int32(int32(m.GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32(int32(int32(m.GetCalData().GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
 
 	return lengthInBits
 }

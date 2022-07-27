@@ -88,7 +88,7 @@
                               calData
                         'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
-                        '(_value.lengthInBytes*2)*8'                        ]
+                        '(calData.lengthInBytes*2)*8'                       ]
         ]
         ['REQUEST_COMMAND' *Command
             [const    byte  initiator 0x5C                                  ] // 0x5C == "/"
@@ -96,12 +96,12 @@
                               cbusCommand
                         'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
-                        '(_value.lengthInBytes*2)*8'                        ]
+                        '(cbusCommand.lengthInBytes*2)*8'                   ]
             [manual   Checksum
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, cbusCommand, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, cbusCommand, cBusOptions.srchk)'
-                        '8'                                                 ]
+                        'cBusOptions.srchk?16:0'                            ]
             [optional Alpha         alpha                                   ]
         ]
         ['NULL' *Null
@@ -115,7 +115,7 @@
                               calData
                         'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
-                        '(_value.lengthInBytes*2)*8'                        ]
+                        '(calData.lengthInBytes*2)*8'                       ]
             [optional Alpha   alpha                                         ]
         ]
     ]
@@ -1401,12 +1401,12 @@
                               encodedReply
                                     'STATIC_CALL("readEncodedReply", readBuffer, cBusOptions, requestContext, cBusOptions.srchk)'
                                     'STATIC_CALL("writeEncodedReply", writeBuffer, encodedReply)'
-                                    '(_value.lengthInBytes*2)*8'                                     ]
+                                    '(encodedReply.lengthInBytes*2)*8'                                   ]
             [manual   Checksum
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, encodedReply, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, encodedReply, cBusOptions.srchk)'
-                        '8'                   ]
+                        'cBusOptions.srchk?16:0'        ]
         ]
     ]
 ]
