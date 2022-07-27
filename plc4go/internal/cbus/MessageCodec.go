@@ -39,10 +39,10 @@ type MessageCodec struct {
 	hashEncountered uint
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance, srchk bool) *MessageCodec {
 	codec := &MessageCodec{
 		requestContext: readwriteModel.NewRequestContext(false, false, false),
-		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false),
+		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, srchk),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
 	return codec
@@ -132,9 +132,14 @@ lookingForTheEnd:
 			m.lastPackageHash, m.hashEncountered = 0, 0
 		}
 	}
-	if !pciResponse || !requestToPci {
+	if !pciResponse && !requestToPci {
 		// Apparently we have not found any message yet
 		return nil, nil
+	}
+
+	packetLength := indexOfCR + 1
+	if pciResponse {
+		packetLength = indexOfLF + 1
 	}
 
 	// Sanity check
@@ -142,7 +147,7 @@ lookingForTheEnd:
 		panic("Invalid state... Can not be response and request at the same time")
 	}
 
-	read, err := ti.Read(uint32(indexOfCR + 1))
+	read, err := ti.Read(uint32(packetLength))
 	if err != nil {
 		panic("Invalid state... If we have peeked that before we should be able to read that now")
 	}

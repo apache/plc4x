@@ -66,7 +66,8 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 				statusRequestType = StatusRequestTypeBinaryState
 			} else if levelArgument := match["startingGroupAddressLabel"]; levelArgument != "" {
 				statusRequestType = StatusRequestTypeLevel
-				decodedHex, _ := hex.DecodeString(match["level"])
+				startingGroupAddressLabelArgument := match["startingGroupAddressLabel"]
+				decodedHex, _ := hex.DecodeString(startingGroupAddressLabelArgument)
 				if len(decodedHex) != 1 {
 					panic("invalid state. Should have exactly 1")
 				}

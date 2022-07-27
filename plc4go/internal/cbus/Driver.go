@@ -72,9 +72,6 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		return ch
 	}
 
-	codec := NewMessageCodec(transportInstance)
-	log.Debug().Msgf("working with codec %#v", codec)
-
 	configuration, err := ParseFromOptions(options)
 	if err != nil {
 		log.Error().Err(err).Msgf("Invalid options")
@@ -84,6 +81,9 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		}()
 		return ch
 	}
+
+	codec := NewMessageCodec(transportInstance, configuration.srchk)
+	log.Debug().Msgf("working with codec %#v", codec)
 
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {

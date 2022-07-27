@@ -141,7 +141,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						// TODO: it could be double confirmed but this is not implemented yet
 						embeddedReply := confirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
 
-						switch reply := embeddedReply.(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
+						switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
 						case readWriteModel.EncodedReplyStandardFormatStatusReplyExactly:
 							application := reply.GetReply().GetApplication()
 							// TODO: verify application... this should be the same
@@ -173,17 +173,21 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 							// TODO: how should we serialize that???
 							addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 						}
+						requestWasOk <- true
 						return transaction.EndRequest()
 					},
 					func(err error) error {
 						log.Debug().Msgf("Error waiting for field %s", fieldNameCopy)
 						addResponseCode(fieldNameCopy, model.PlcResponseCode_REQUEST_TIMEOUT)
+						// TODO: ok or not ok?
+						requestWasOk <- true
 						return transaction.EndRequest()
 					},
 					time.Second*1); err != nil {
 					log.Debug().Err(err).Msgf("Error sending message for field %s", fieldNameCopy)
 					addResponseCode(fieldNameCopy, model.PlcResponseCode_INTERNAL_ERROR)
 					_ = transaction.EndRequest()
+					requestWasOk <- false
 				}
 			})
 			if !<-requestWasOk {
