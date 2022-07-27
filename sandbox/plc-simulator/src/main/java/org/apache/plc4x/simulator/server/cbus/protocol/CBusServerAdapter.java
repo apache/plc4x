@@ -68,6 +68,8 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             CBusCommand cbusCommand = requestCommand.getCbusCommand();
             LOGGER.info("Handling CBusCommand\n{}", cbusCommand);
             if (cbusCommand instanceof CBusCommandPointToPoint) {
+                CBusCommandPointToPoint cBusCommandPointToPoint = (CBusCommandPointToPoint) cbusCommand;
+                LOGGER.info("Handling CBusCommandPointToPoint\n{}", cBusCommandPointToPoint);
                 // TODO: handle this
                 return;
             }
@@ -99,6 +101,8 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         return;
                     }
                     if (statusRequest instanceof StatusRequestBinaryStateDeprecated) {
+                        StatusRequestBinaryStateDeprecated statusRequestBinaryStateDeprecated = (StatusRequestBinaryStateDeprecated) statusRequest;
+                        LOGGER.info("Handling StatusRequestBinaryStateDeprecated\n{}", statusRequestBinaryStateDeprecated);
                         // TODO: handle this
                         return;
                     }
@@ -126,18 +130,23 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     // TODO: handle this
                     return;
                 }
-                if (command instanceof Normal) {
-                    // TODO: handle this
+                if (command instanceof  CBusPointToMultiPointCommandNormal) {
+                    CBusPointToMultiPointCommandNormal cBusPointToMultiPointCommandNormal = (CBusPointToMultiPointCommandNormal) command;
+                    LOGGER.info("Handling CBusPointToMultiPointCommandNormal\n{}", cBusPointToMultiPointCommandNormal);
                     return;
                 }
                 // TODO: handle this
                 return;
             }
             if (cbusCommand instanceof CBusCommandPointToPointToMultiPoint) {
+                CBusCommandPointToPointToMultiPoint cBusCommandPointToPointToMultiPoint = (CBusCommandPointToPointToMultiPoint) cbusCommand;
+                LOGGER.info("Handling CBusCommandPointToPointToMultiPoint\n{}", cBusCommandPointToPointToMultiPoint);
                 // TODO: handle this
                 return;
             }
             if (cbusCommand instanceof CBusCommandDeviceManagement) {
+                CBusCommandDeviceManagement cBusCommandDeviceManagement = (CBusCommandDeviceManagement) cbusCommand;
+                LOGGER.info("Handling CBusCommandDeviceManagement\n{}", cBusCommandDeviceManagement);
                 // TODO: handle this
                 return;
             }
