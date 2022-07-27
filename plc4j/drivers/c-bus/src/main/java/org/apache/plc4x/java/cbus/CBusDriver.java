@@ -83,7 +83,6 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            System.err.println("Alarm" + byteBuf);
             // TODO: we might need to try multiple times because the ln might not be here in time
             for (int i = 0; i < byteBuf.readableBytes(); i++) {
                 boolean hasOneMore = i + 1 < byteBuf.readableBytes();

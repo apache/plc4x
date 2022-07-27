@@ -18,17 +18,17 @@
  */
 package org.apache.plc4x.simulator.exceptions;
 
-public class SimulatorExcepiton extends Exception {
+public class SimulatorException extends Exception {
 
-    public SimulatorExcepiton(String message) {
+    public SimulatorException(String message) {
         super(message);
     }
 
-    public SimulatorExcepiton(String message, Throwable cause) {
+    public SimulatorException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public SimulatorExcepiton(Throwable cause) {
+    public SimulatorException(Throwable cause) {
         super(cause);
     }
 

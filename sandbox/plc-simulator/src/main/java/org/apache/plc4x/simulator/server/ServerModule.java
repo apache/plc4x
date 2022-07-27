@@ -18,7 +18,8 @@
  */
 package org.apache.plc4x.simulator.server;
 
-import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
+import org.apache.plc4x.simulator.PlcSimulatorConfig;
+import org.apache.plc4x.simulator.exceptions.SimulatorException;
 import org.apache.plc4x.simulator.model.Context;
 
 public interface ServerModule {
@@ -28,10 +29,11 @@ public interface ServerModule {
      */
     String getName();
 
+    void setConfig(PlcSimulatorConfig config);
+
     void setContext(Context contexts);
 
-    void start() throws SimulatorExcepiton;
+    void start() throws SimulatorException;
 
-    void stop() throws SimulatorExcepiton;
-
+    void stop() throws SimulatorException;
 }

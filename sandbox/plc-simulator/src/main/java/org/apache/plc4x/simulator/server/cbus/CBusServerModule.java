@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.simulator.server.s7;
+package org.apache.plc4x.simulator.server.cbus;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -26,19 +26,20 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.apache.plc4x.simulator.PlcSimulatorConfig;
-import org.apache.plc4x.java.s7.readwrite.S7Driver;
-import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.cbus.CBusDriver;
+import org.apache.plc4x.java.cbus.readwrite.CBusConstants;
+import org.apache.plc4x.java.cbus.readwrite.CBusMessage;
+import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
+import org.apache.plc4x.java.cbus.readwrite.RequestContext;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.simulator.PlcSimulatorConfig;
 import org.apache.plc4x.simulator.exceptions.SimulatorException;
 import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
-import org.apache.plc4x.simulator.server.s7.protocol.S7Step7ServerAdapter;
+import org.apache.plc4x.simulator.server.cbus.protocol.CBusServerAdapter;
 
-public class S7ServerModule implements ServerModule {
-
-    private static final int ISO_ON_TCP_PORT = 102;
+public class CBusServerModule implements ServerModule {
 
     private EventLoopGroup loopGroup;
     private EventLoopGroup workerGroup;
@@ -47,7 +48,7 @@ public class S7ServerModule implements ServerModule {
 
     @Override
     public String getName() {
-        return "S7-STEP7";
+        return "C-BUS";
     }
 
     @Override
@@ -78,16 +79,17 @@ public class S7ServerModule implements ServerModule {
                     @Override
                     public void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
-                        pipeline.addLast(new GeneratedProtocolMessageCodec<>(TPKTPacket.class,
-                            TPKTPacket::staticParse, ByteOrder.BIG_ENDIAN, null,
-                            new S7Driver.ByteLengthEstimator(),
-                            new S7Driver.CorruptPackageCleaner()));
-                        pipeline.addLast(new S7Step7ServerAdapter(context));
+                        pipeline.addLast(new GeneratedProtocolMessageCodec<>(CBusMessage.class,
+                            CBusMessage::staticParse, ByteOrder.BIG_ENDIAN,
+                            new Object[]{false, new RequestContext(false, false, false), new CBusOptions(false, false, false, false, false, false, false, false, false)},
+                            new CBusDriver.ByteLengthEstimator(),
+                            new CBusDriver.CorruptPackageCleaner()));
+                        pipeline.addLast(new CBusServerAdapter(context));
                     }
                 }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            bootstrap.bind(config.getHost(),ISO_ON_TCP_PORT).sync();
+            bootstrap.bind(config.getHost(), CBusConstants.CBUSTCPDEFAULTPORT).sync();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new SimulatorException(e);
