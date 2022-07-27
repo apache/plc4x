@@ -290,7 +290,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             int nb = responses.getServiceNb();
             List<CipService> arr = new ArrayList<>(nb);
             ReadBufferByteBased read = new ReadBufferByteBased(responses.getServicesData(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            int total = (int) read.getTotalBytes();
+            int total = read.getTotalBytes();
             for (int i = 0; i < nb; i++) {
                 int length = 0;
                 int offset = responses.getOffsets().get(i) - responses.getOffsets().get(0); //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
@@ -557,7 +557,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             int nb = resp.getServiceNb();
             List<CipService> arr = new ArrayList<>(nb);
             ReadBufferByteBased read = new ReadBufferByteBased(resp.getServicesData());
-            int total = (int) read.getTotalBytes();
+            int total = read.getTotalBytes();
             for (int i = 0; i < nb; i++) {
                 int length = 0;
                 int offset = resp.getOffsets().get(i);

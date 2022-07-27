@@ -32,7 +32,7 @@ public class ReadBufferByteBased implements ReadBuffer {
 
     private final MyDefaultBitInput bi;
     private ByteOrder byteOrder;
-    private final long totalBytes;
+    private final int totalBytes;
 
     public ReadBufferByteBased(byte[] input) {
         this(input, ByteOrder.BIG_ENDIAN);
@@ -64,7 +64,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         return data;
     }
 
-    public long getTotalBytes() {
+    public int getTotalBytes() {
         return totalBytes;
     }
 
