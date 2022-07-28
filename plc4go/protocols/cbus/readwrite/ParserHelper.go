@@ -50,8 +50,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.HVACStartTimeParse(io)
 	case "HVACTemperature":
 		return model.HVACTemperatureParse(io)
-	case "NetworkNumber":
-		return model.NetworkNumberParse(io)
 	case "RequestTermination":
 		return model.RequestTerminationParse(io)
 	case "ReplyOrConfirmation":
@@ -76,8 +74,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.PanicStatusParse(io)
 	case "IdentifyReplyCommandUnitSummary":
 		return model.IdentifyReplyCommandUnitSummaryParse(io)
-	case "BridgeCount":
-		return model.BridgeCountParse(io)
 	case "PowerUp":
 		return model.PowerUpParse(io)
 	case "Reply":

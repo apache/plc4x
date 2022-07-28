@@ -36,9 +36,9 @@ type MonitoredSALShortFormBasicMode interface {
 	// GetCounts returns Counts (property field)
 	GetCounts() byte
 	// GetBridgeCount returns BridgeCount (property field)
-	GetBridgeCount() BridgeCount
+	GetBridgeCount() *uint8
 	// GetNetworkNumber returns NetworkNumber (property field)
-	GetNetworkNumber() NetworkNumber
+	GetNetworkNumber() *uint8
 	// GetNoCounts returns NoCounts (property field)
 	GetNoCounts() *byte
 	// GetApplication returns Application (property field)
@@ -58,8 +58,8 @@ type MonitoredSALShortFormBasicModeExactly interface {
 type _MonitoredSALShortFormBasicMode struct {
 	*_MonitoredSAL
 	Counts        byte
-	BridgeCount   BridgeCount
-	NetworkNumber NetworkNumber
+	BridgeCount   *uint8
+	NetworkNumber *uint8
 	NoCounts      *byte
 	Application   ApplicationIdContainer
 	SalData       SALData
@@ -92,11 +92,11 @@ func (m *_MonitoredSALShortFormBasicMode) GetCounts() byte {
 	return m.Counts
 }
 
-func (m *_MonitoredSALShortFormBasicMode) GetBridgeCount() BridgeCount {
+func (m *_MonitoredSALShortFormBasicMode) GetBridgeCount() *uint8 {
 	return m.BridgeCount
 }
 
-func (m *_MonitoredSALShortFormBasicMode) GetNetworkNumber() NetworkNumber {
+func (m *_MonitoredSALShortFormBasicMode) GetNetworkNumber() *uint8 {
 	return m.NetworkNumber
 }
 
@@ -118,7 +118,7 @@ func (m *_MonitoredSALShortFormBasicMode) GetSalData() SALData {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, networkNumber NetworkNumber, noCounts *byte, application ApplicationIdContainer, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
+func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
 	_result := &_MonitoredSALShortFormBasicMode{
 		Counts:        counts,
 		BridgeCount:   bridgeCount,
@@ -156,12 +156,12 @@ func (m *_MonitoredSALShortFormBasicMode) GetLengthInBitsConditional(lastItem bo
 
 	// Optional Field (bridgeCount)
 	if m.BridgeCount != nil {
-		lengthInBits += m.BridgeCount.GetLengthInBits()
+		lengthInBits += 8
 	}
 
 	// Optional Field (networkNumber)
 	if m.NetworkNumber != nil {
-		lengthInBits += m.NetworkNumber.GetLengthInBits()
+		lengthInBits += 8
 	}
 
 	// Optional Field (noCounts)
@@ -203,47 +203,23 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer, cBusOption
 	readBuffer.Reset(currentPos)
 
 	// Optional Field (bridgeCount) (Can be skipped, if a given expression evaluates to false)
-	var bridgeCount BridgeCount = nil
+	var bridgeCount *uint8 = nil
 	if bool((counts) != (0x00)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("bridgeCount"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for bridgeCount")
-		}
-		_val, _err := BridgeCountParse(readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
+		_val, _err := readBuffer.ReadUint8("bridgeCount", 8)
+		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'bridgeCount' field of MonitoredSALShortFormBasicMode")
-		default:
-			bridgeCount = _val.(BridgeCount)
-			if closeErr := readBuffer.CloseContext("bridgeCount"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for bridgeCount")
-			}
 		}
+		bridgeCount = &_val
 	}
 
 	// Optional Field (networkNumber) (Can be skipped, if a given expression evaluates to false)
-	var networkNumber NetworkNumber = nil
+	var networkNumber *uint8 = nil
 	if bool((counts) != (0x00)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
-		}
-		_val, _err := NetworkNumberParse(readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
+		_val, _err := readBuffer.ReadUint8("networkNumber", 8)
+		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'networkNumber' field of MonitoredSALShortFormBasicMode")
-		default:
-			networkNumber = _val.(NetworkNumber)
-			if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for networkNumber")
-			}
 		}
+		networkNumber = &_val
 	}
 
 	// Optional Field (noCounts) (Can be skipped, if a given expression evaluates to false)
@@ -320,32 +296,20 @@ func (m *_MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Optional Field (bridgeCount) (Can be skipped, if the value is null)
-		var bridgeCount BridgeCount = nil
+		var bridgeCount *uint8 = nil
 		if m.GetBridgeCount() != nil {
-			if pushErr := writeBuffer.PushContext("bridgeCount"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bridgeCount")
-			}
 			bridgeCount = m.GetBridgeCount()
-			_bridgeCountErr := writeBuffer.WriteSerializable(bridgeCount)
-			if popErr := writeBuffer.PopContext("bridgeCount"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bridgeCount")
-			}
+			_bridgeCountErr := writeBuffer.WriteUint8("bridgeCount", 8, *(bridgeCount))
 			if _bridgeCountErr != nil {
 				return errors.Wrap(_bridgeCountErr, "Error serializing 'bridgeCount' field")
 			}
 		}
 
 		// Optional Field (networkNumber) (Can be skipped, if the value is null)
-		var networkNumber NetworkNumber = nil
+		var networkNumber *uint8 = nil
 		if m.GetNetworkNumber() != nil {
-			if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for networkNumber")
-			}
 			networkNumber = m.GetNetworkNumber()
-			_networkNumberErr := writeBuffer.WriteSerializable(networkNumber)
-			if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for networkNumber")
-			}
+			_networkNumberErr := writeBuffer.WriteUint8("networkNumber", 8, *(networkNumber))
 			if _networkNumberErr != nil {
 				return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
 			}

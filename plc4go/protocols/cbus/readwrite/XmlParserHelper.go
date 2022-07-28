@@ -60,8 +60,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.HVACStartTimeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HVACTemperature":
 		return model.HVACTemperatureParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "NetworkNumber":
-		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestTermination":
 		return model.RequestTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ReplyOrConfirmation":
@@ -87,8 +85,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.PanicStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IdentifyReplyCommandUnitSummary":
 		return model.IdentifyReplyCommandUnitSummaryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "BridgeCount":
-		return model.BridgeCountParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PowerUp":
 		return model.PowerUpParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Reply":

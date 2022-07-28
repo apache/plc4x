@@ -1434,14 +1434,6 @@
     [simple   CALData('requestContext')   calData                                                ]
 ]
 
-[type BridgeCount
-    [simple uint 8 count]
-]
-
-[type NetworkNumber
-    [simple uint 8 number]
-]
-
 [type MonitoredSAL(CBusOptions cBusOptions)
     [peek    byte     salType             ]
     [typeSwitch salType
@@ -1460,8 +1452,8 @@
         ]
         [*      *ShortFormBasicMode
             [peek     byte                   counts                             ]
-            [optional BridgeCount            bridgeCount     'counts != 0x00'   ]
-            [optional NetworkNumber          networkNumber   'counts != 0x00'   ]
+            [optional uint 8                 bridgeCount     'counts != 0x00'   ]
+            [optional uint 8                 networkNumber   'counts != 0x00'   ]
             [optional byte                   noCounts        'counts == 0x00'   ] // TODO: add validation that this is 0x00 when no bridge and network number are set
             [simple   ApplicationIdContainer application                        ]
             [optional SALData('application.applicationId')  salData             ]
