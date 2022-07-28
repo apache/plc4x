@@ -24,8 +24,8 @@
 [type RequestContext
     // Useful for response parsing: Set this to true if you send a CAL before. This will change the way the response will be parsed
     [simple   bit       sendCalCommandBefore        ]
-    // Useful for response parsing: Set this to true if you send a SAL status request before. This will change the way the response will be parsed
-    [simple   bit       sendSALStatusRequestBefore  ]
+    // Useful for response parsing: Set this to true if you send a SAL status request request level before. This will change the way the response will be parsed
+    [simple   bit       sendStatusRequestLevelBefore  ]
     // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
     [simple   bit       sendIdentifyRequestBefore   ]
 ]
@@ -101,7 +101,7 @@
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, cbusCommand, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, cbusCommand, cBusOptions.srchk)'
-                        'cBusOptions.srchk?16:0'                            ]
+                        '(cBusOptions.srchk)?(16):(0)'                      ]
             [optional Alpha         alpha                                   ]
         ]
         ['NULL' *Null
@@ -1406,26 +1406,26 @@
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, encodedReply, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, encodedReply, cBusOptions.srchk)'
-                        'cBusOptions.srchk?16:0'        ]
+                        '(cBusOptions.srchk)?(16):(0)'        ]
         ]
     ]
 ]
 
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
-    [peek    byte peekedByte                                                                ]
+    [peek    byte peekedByte                                                        ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
-    [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'       ]
-    [virtual bit  isSALStatusRequest        '(peekedByte & 0xE0) == 0xC0 || requestContext.sendSALStatusRequestBefore' ]
-    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05'         ]
-    [virtual bit  exstat                    'cBusOptions.exstat'                  ]
-    [typeSwitch isMonitoredSAL, isCalCommand, isSALStatusRequest, exstat
+    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05'                                           ]
+    [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'    ] // The 0x3F and 0x06 doesn't seem to work always
+    [virtual bit  isStandardFormatStatus    '(peekedByte & 0xC0) == 0xC0 && !cBusOptions.exstat'                    ]
+    [virtual bit  isExtendedFormatStatus    '(peekedByte & 0xE0) == 0xE0 && (cBusOptions.exstat || requestContext.sendStatusRequestLevelBefore)']
+    [typeSwitch isMonitoredSAL, isCalCommand, isStandardFormatStatus, isExtendedFormatStatus
         ['true', 'false', 'false'   MonitoredSALReply
-            [simple   MonitoredSAL('cBusOptions') monitoredSAL    ]
+            [simple   MonitoredSAL('cBusOptions')                   monitoredSAL    ]
         ]
         [*, *, 'true', 'false'      *StandardFormatStatusReply
             [simple   StandardFormatStatusReply                     reply           ]
         ]
-        [*, *, 'true', 'true'       *ExtendedFormatStatusReply
+        [*, *, *, 'true'            *ExtendedFormatStatusReply
             [simple   ExtendedFormatStatusReply                     reply           ]
         ]
         [*, 'true', *, *            *CALReply
@@ -1566,6 +1566,13 @@
     [simple     uint 5  numberOfCharacterPairs                      ]
 ]
 
+[enum byte StatusCoding
+    ['0x00' BINARY_BY_THIS_SERIAL_INTERFACE     ]
+    ['0x40' BINARY_BY_ELSEWHERE                 ]
+    ['0x07' LEVEL_BY_THIS_SERIAL_INTERFACE      ]
+    ['0x47' LEVEL_BY_ELSEWHERE                  ]
+]
+
 [type StatusByte
     [simple GAVState    gav3                                        ]
     [simple GAVState    gav2                                        ]
@@ -1578,13 +1585,6 @@
     ['1' ON                                                         ]
     ['2' OFF                                                        ]
     ['3' ERROR                                                      ]
-]
-
-[enum byte StatusCoding
-    ['0x00' BINARY_BY_THIS_SERIAL_INTERFACE     ]
-    ['0x40' BINARY_BY_ELSEWHERE                 ]
-    ['0x07' LEVEL_BY_THIS_SERIAL_INTERFACE      ]
-    ['0x47' LEVEL_BY_ELSEWHERE                  ]
 ]
 
 [type NetworkProtocolControlInformation

@@ -21,6 +21,7 @@ package cbusanalyzer
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
@@ -84,56 +85,9 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}
-	switch cBusMessage := parse.(type) {
-	case model.CBusMessageToServerExactly:
-		switch request := cBusMessage.GetRequest().(type) {
-		case model.RequestDirectCommandAccessExactly:
-			sendIdentifyRequestBefore := false
-			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch request.GetCalData().(type) {
-			case model.CALDataIdentifyExactly:
-				sendIdentifyRequestBefore = true
-			}
-			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-		case model.RequestCommandExactly:
-			switch command := request.GetCbusCommand().(type) {
-			case model.CBusCommandDeviceManagementExactly:
-				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				a.requestContext = model.NewRequestContext(true, false, false)
-			case model.CBusCommandPointToPointExactly:
-				sendIdentifyRequestBefore := false
-				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				switch command.GetCommand().GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
-				a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-			case model.CBusCommandPointToMultiPointExactly:
-				switch command.GetCommand().(type) {
-				case model.CBusPointToMultiPointCommandStatusExactly:
-					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true, false)
-				}
-			case model.CBusCommandPointToPointToMultiPointExactly:
-				switch command.GetCommand().(type) {
-				case model.CBusPointToPointToMultiPointCommandStatusExactly:
-					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true, false)
-				}
-			}
-		case model.RequestObsoleteExactly:
-			sendIdentifyRequestBefore := false
-			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch request.GetCalData().(type) {
-			case model.CALDataIdentifyExactly:
-				sendIdentifyRequestBefore = true
-			}
-			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-		}
-	case model.CBusMessageToClientExactly:
-		// We received a request so we need to reset our flags
-		a.requestContext = model.NewRequestContext(false, false, false)
-	}
+	a.requestContext = cbus.CreateRequestContextWithInfoCallback(parse, func(infoString string) {
+		log.Debug().Msgf("No.[%d] %s", packetInformation.PacketNumber, infoString)
+	})
 	log.Debug().Msgf("Parsed c-bus command \n%v", parse)
 	return parse, nil
 }

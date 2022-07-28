@@ -56,6 +56,10 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	cbusMessage := message.(readwriteModel.CBusMessage)
+
+	// Set the right request context
+	m.requestContext = CreateRequestContext(cbusMessage)
+
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased()
 	err := cbusMessage.Serialize(wb)

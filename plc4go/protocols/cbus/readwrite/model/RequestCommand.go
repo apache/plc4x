@@ -158,7 +158,7 @@ func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += uint16(int32(int32(int32(m.GetCbusCommand().GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(utils.InlineIf(m.CBusOptions.GetSrchk(), func() interface{} { return int32(int32(16)) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(bool(m.CBusOptions.GetSrchk()), func() interface{} { return int32(int32(int32(16))) }, func() interface{} { return int32(int32(int32(0))) }).(int32))
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {

@@ -38,7 +38,6 @@ func TestManualCBusDriver(t *testing.T) {
 	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
 
 	test.AddTestCase("status/binary/0x04", true)
-	// TODO: apparently a level means that we get a extended status reply but at the moment it is guarded by exstat
 	test.AddTestCase("status/level=0x40/0x04", true)
 	//test.AddTestCase("cal/0/recall=[INTERFACE_OPTIONS_1, 1]", true)
 	//test.AddTestCase("cal/0/identify=[FirmwareVersion]", true)

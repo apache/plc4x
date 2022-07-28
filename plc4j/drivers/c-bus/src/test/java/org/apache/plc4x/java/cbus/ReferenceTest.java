@@ -394,6 +394,7 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+            System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
             assertMessageMatches(bytes, msg);
         }
 
