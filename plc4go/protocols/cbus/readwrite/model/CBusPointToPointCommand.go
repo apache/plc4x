@@ -98,7 +98,7 @@ func (m *_CBusPointToPointCommand) GetCalData() CALData {
 ///////////////////////
 
 func (m *_CBusPointToPointCommand) GetIsDirect() bool {
-	return bool(bool(((m.GetBridgeAddressCountPeek()) & (0x00FF)) == (0x0000)))
+	return bool(bool((m.GetBridgeAddressCountPeek() & 0x00FF) == (0x0000)))
 }
 
 ///////////////////////
@@ -160,7 +160,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusO
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isDirect := bool(((bridgeAddressCountPeek) & (0x00FF)) == (0x0000))
+	_isDirect := bool((bridgeAddressCountPeek & 0x00FF) == (0x0000))
 	isDirect := bool(_isDirect)
 	_ = isDirect
 

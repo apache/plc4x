@@ -98,19 +98,19 @@ func (m *_EncodedReply) GetPeekedByte() byte {
 ///////////////////////
 
 func (m *_EncodedReply) GetIsMonitoredSAL() bool {
-	return bool(bool(((m.GetPeekedByte()) & (0x3F)) == (0x05)))
+	return bool(bool((m.GetPeekedByte() & 0x3F) == (0x05)))
 }
 
 func (m *_EncodedReply) GetIsCalCommand() bool {
-	return bool(bool(bool(((m.GetPeekedByte())&(0x3F)) == (0x06))) || bool(m.RequestContext.GetSendCalCommandBefore()))
+	return bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x06))) || bool(m.RequestContext.GetSendCalCommandBefore()))
 }
 
 func (m *_EncodedReply) GetIsStandardFormatStatus() bool {
-	return bool(bool(bool(((m.GetPeekedByte())&(0xC0)) == (0xC0))) && bool(!(m.CBusOptions.GetExstat())))
+	return bool(bool(bool((m.GetPeekedByte()&0xC0) == (0xC0))) && bool(!(m.CBusOptions.GetExstat())))
 }
 
 func (m *_EncodedReply) GetIsExtendedFormatStatus() bool {
-	return bool(bool(bool(((m.GetPeekedByte())&(0xE0)) == (0xE0))) && bool(bool(bool(m.CBusOptions.GetExstat()) || bool(m.RequestContext.GetSendStatusRequestLevelBefore()))))
+	return bool(bool(bool((m.GetPeekedByte()&0xE0) == (0xE0))) && bool(bool(bool(m.CBusOptions.GetExstat()) || bool(m.RequestContext.GetSendStatusRequestLevelBefore()))))
 }
 
 ///////////////////////
@@ -175,22 +175,22 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isMonitoredSAL := bool(((peekedByte) & (0x3F)) == (0x05))
+	_isMonitoredSAL := bool((peekedByte & 0x3F) == (0x05))
 	isMonitoredSAL := bool(_isMonitoredSAL)
 	_ = isMonitoredSAL
 
 	// Virtual field
-	_isCalCommand := bool(bool(((peekedByte)&(0x3F)) == (0x06))) || bool(requestContext.GetSendCalCommandBefore())
+	_isCalCommand := bool(bool((peekedByte&0x3F) == (0x06))) || bool(requestContext.GetSendCalCommandBefore())
 	isCalCommand := bool(_isCalCommand)
 	_ = isCalCommand
 
 	// Virtual field
-	_isStandardFormatStatus := bool(bool(((peekedByte)&(0xC0)) == (0xC0))) && bool(!(cBusOptions.GetExstat()))
+	_isStandardFormatStatus := bool(bool((peekedByte&0xC0) == (0xC0))) && bool(!(cBusOptions.GetExstat()))
 	isStandardFormatStatus := bool(_isStandardFormatStatus)
 	_ = isStandardFormatStatus
 
 	// Virtual field
-	_isExtendedFormatStatus := bool(bool(((peekedByte)&(0xE0)) == (0xE0))) && bool(bool(bool(cBusOptions.GetExstat()) || bool(requestContext.GetSendStatusRequestLevelBefore())))
+	_isExtendedFormatStatus := bool(bool((peekedByte&0xE0) == (0xE0))) && bool(bool(bool(cBusOptions.GetExstat()) || bool(requestContext.GetSendStatusRequestLevelBefore())))
 	isExtendedFormatStatus := bool(_isExtendedFormatStatus)
 	_ = isExtendedFormatStatus
 

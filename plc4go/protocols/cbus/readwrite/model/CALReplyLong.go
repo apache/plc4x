@@ -133,7 +133,7 @@ func (m *_CALReplyLong) GetIsUnitAddress() bool {
 	_ = reservedByte
 	replyNetwork := m.ReplyNetwork
 	_ = replyNetwork
-	return bool(bool(((m.GetTerminatingByte()) & (0xff)) == (0x00)))
+	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
 
 ///////////////////////
@@ -246,7 +246,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isUnitAddress := bool(((terminatingByte) & (0xff)) == (0x00))
+	_isUnitAddress := bool((terminatingByte & 0xff) == (0x00))
 	isUnitAddress := bool(_isUnitAddress)
 	_ = isUnitAddress
 

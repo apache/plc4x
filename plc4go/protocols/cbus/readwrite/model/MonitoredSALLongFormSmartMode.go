@@ -141,7 +141,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 	_ = replyNetwork
 	salData := m.SalData
 	_ = salData
-	return bool(bool(((m.GetTerminatingByte()) & (0xff)) == (0x00)))
+	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
 
 ///////////////////////
@@ -260,7 +260,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isUnitAddress := bool(((terminatingByte) & (0xff)) == (0x00))
+	_isUnitAddress := bool((terminatingByte & 0xff) == (0x00))
 	isUnitAddress := bool(_isUnitAddress)
 	_ = isUnitAddress
 
