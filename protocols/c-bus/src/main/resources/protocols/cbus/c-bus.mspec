@@ -193,29 +193,8 @@
 ]
 
 [type NetworkRoute
-    [reserved uint 2      '0x00'                                                       ]
-    [simple RouteType     reverseRouteType                                             ]
-    [simple RouteType     routeType                                                    ]
-    [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-]
-
-// The last 3 bits are the total number of bridges ... subtracting 1 results in the number of additional bridges.
-// It also seems as if these are generally 2 empty bits and then twice the number of bridges as 3-bit numbers.
-// The block of 3 in bit's 3..5 seem to be the reverse route.
-//
-// Observations on failing packets:
-// - In the first case the first two bits are not empty, but 01 ... the first block of bridges is then increased by one.
-// - In another packet the first two bits are 0, but the first group ist set to 111 and the number of bridges is set to 000.
-// - In another packet the first two bits are 0, the first group is set to 001 and the second to 101
-[enum uint 3 RouteType(uint 3 additionalBridges)
-    ['0x0' NoBridgeAtAll         ['0']]
-    ['0x1' NoAdditionalBridge    ['0']]
-    ['0x2' OneAdditionalBridge   ['1']]
-    ['0x3' TwoAdditionalBridge   ['2']]
-    ['0x4' ThreeAdditionalBridge ['3']]
-    ['0x5' FourAdditionalBridge  ['4']]
-    ['0x6' FiveAdditionalBridge  ['5']]
-    ['0x7' SixAdditionalBridge   ['6']]
+    [simple NetworkProtocolControlInformation networkPCI                                ]
+    [array  BridgeAddress additionalBridgeAddresses count 'networkPCI.stackDepth-1'     ] // We substract 1 as when a route is used we always have one prefixed
 ]
 
 [discriminatedType CBusPointToPointCommand(CBusOptions cBusOptions)
@@ -1519,11 +1498,8 @@
 ]
 
 [type ReplyNetwork
-    [reserved uint 2      '0x00'                                                       ]
-    [simple RouteType     reverseRouteType                                             ]
-    [simple RouteType     routeType                                                    ]
-    [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-    [simple UnitAddress   unitAddress                                                  ]
+    [simple NetworkRoute  networkRoute                              ]
+    [simple UnitAddress   unitAddress                               ]
 ]
 
 [type Checksum
@@ -1642,8 +1618,8 @@
 
 [type NetworkProtocolControlInformation
     [reserved   uint 2  '0x0'           ]
-    [simple     uint 3  stackCounter    ]
-    [simple     uint 3  stackDepth      ]
+    [simple     uint 3  stackCounter    ] // Number of bridges required to transmit information from source to destination
+    [simple     uint 3  stackDepth      ] // Number of bridges required to complete the transmission from source to destination
 ]
 
 [type RequestTermination
