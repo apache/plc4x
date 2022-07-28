@@ -37,8 +37,8 @@ func TestManualCBusDriver(t *testing.T) {
 	transports.RegisterTcpTransport(driverManager)
 	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
 
-	test.AddTestCase("status/binary/0x04", true)
-	test.AddTestCase("status/level=0x40/0x04", true)
+	test.AddTestCase("status/binary/0x04", "DOES_NOT_EXIST, OFF, ERROR, ON")
+	test.AddTestCase("status/level=0x40/0x04", 255)
 	//test.AddTestCase("cal/0/recall=[INTERFACE_OPTIONS_1, 1]", true)
 	//test.AddTestCase("cal/0/identify=[FirmwareVersion]", true)
 	//test.AddTestCase("cal/0/gestatus=[0xFF, 1]", true)

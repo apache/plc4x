@@ -22,8 +22,8 @@ package cbus
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
+	spiModel "github.com/apache/plc4x/plc4go/internal/spi/model"
+	spiValues "github.com/apache/plc4x/plc4go/internal/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -53,7 +53,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 	go func() {
 		numFields := len(readRequest.GetFieldNames())
 		if numFields > 20 {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
+			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("Only 20 fields can be handled at once"),
@@ -65,7 +65,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			field := readRequest.GetField(fieldName)
 			message, err := m.fieldToCBusMessage(field)
 			if err != nil {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
+				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s", fieldName),
@@ -83,10 +83,10 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		}
 		valueMu := sync.Mutex{}
 		plcValues := map[string]values.PlcValue{}
-		addPlcValue := func(name string, responseCode values.PlcValue) {
+		addPlcValue := func(name string, plcValue values.PlcValue) {
 			valueMu.Lock()
 			defer valueMu.Unlock()
-			plcValues[name] = responseCode
+			plcValues[name] = plcValue
 		}
 		for fieldName, messageToSend := range messages {
 			fieldNameCopy := fieldName
@@ -151,8 +151,14 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 							_ = blockStart
 							statusBytes := reply.GetReply().GetStatusBytes()
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-							// TODO: how should we serialize that???
-							addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", statusBytes)))
+							plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+							for i, statusByte := range statusBytes {
+								plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
+								plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
+								plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
+								plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
+							}
+							addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 						case readWriteModel.EncodedReplyExtendedFormatStatusReplyExactly:
 							coding := reply.GetReply().GetCoding()
 							// TODO: verify coding... this should be the same
@@ -169,21 +175,39 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 							case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
 								statusBytes := reply.GetReply().GetStatusBytes()
 								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-								// TODO: how should we serialize that???
-								addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", statusBytes)))
+								plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+								for i, statusByte := range statusBytes {
+									plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
+									plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
+									plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
+									plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
+								}
+								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 							case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
 								fallthrough
 							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
 								levelInformation := reply.GetReply().GetLevelInformation()
 								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-								// TODO: how should we serialize that???
-								addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", levelInformation)))
+								plcListValues := make([]values.PlcValue, len(levelInformation))
+								for i, levelInformation := range levelInformation {
+									switch levelInformation := levelInformation.(type) {
+									case readWriteModel.LevelInformationAbsentExactly:
+										plcListValues[i] = spiValues.NewPlcSTRING("is absent")
+									case readWriteModel.LevelInformationCorruptedExactly:
+										plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
+									case readWriteModel.LevelInformationNormalExactly:
+										plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
+									default:
+										panic("Impossible case")
+									}
+								}
+								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 							}
 						case readWriteModel.EncodedReplyCALReplyExactly:
 							calData := reply.GetCalReply().GetCalData()
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
 							// TODO: how should we serialize that???
-							addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", calData)))
+							addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 						}
 						requestWasOk <- true
 						return transaction.EndRequest()
@@ -207,8 +231,8 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				break
 			}
 		}
-		readResponse := plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-		result <- &plc4goModel.DefaultPlcReadRequestResult{
+		readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
+		result <- &spiModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: readResponse,
 		}

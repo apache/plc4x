@@ -125,6 +125,7 @@ func (m PlcBINT) GetFloat64() float64 {
 func (m PlcBINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
 }
+
 func (m PlcBINT) isZero() bool {
 	return m.value.Cmp(big.NewInt(0)) == 0
 }
