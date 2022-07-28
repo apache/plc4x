@@ -150,7 +150,7 @@ func (m *_TelephonyDataRecallLastNumber) GetLengthInBitsConditional(lastItem boo
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (number)
-	lengthInBits += uint16(int32(int32(int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(2)))) * int32(int32(8)))
 
 	return lengthInBits
 }

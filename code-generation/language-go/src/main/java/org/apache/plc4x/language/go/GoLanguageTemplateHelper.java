@@ -670,7 +670,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return tracer + "-(" + getCastExpressionForTypeReference(fieldType) + "(" + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) + "))";
             case "()":
                 tracer = tracer.dive("case ()");
-                return tracer + getCastExpressionForTypeReference(fieldType) + "(" + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) + ")";
+                return tracer + "(" + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) + ")";
             default:
                 throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation());
         }

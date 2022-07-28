@@ -110,7 +110,7 @@ func (m *_EncodedReply) GetIsStandardFormatStatus() bool {
 }
 
 func (m *_EncodedReply) GetIsExtendedFormatStatus() bool {
-	return bool(bool(bool((m.GetPeekedByte()&0xE0) == (0xE0))) && bool(bool(bool(m.CBusOptions.GetExstat()) || bool(m.RequestContext.GetSendStatusRequestLevelBefore()))))
+	return bool(bool(bool((m.GetPeekedByte()&0xE0) == (0xE0))) && bool((bool(m.CBusOptions.GetExstat()) || bool(m.RequestContext.GetSendStatusRequestLevelBefore()))))
 }
 
 ///////////////////////
@@ -190,7 +190,7 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	_ = isStandardFormatStatus
 
 	// Virtual field
-	_isExtendedFormatStatus := bool(bool((peekedByte&0xE0) == (0xE0))) && bool(bool(bool(cBusOptions.GetExstat()) || bool(requestContext.GetSendStatusRequestLevelBefore())))
+	_isExtendedFormatStatus := bool(bool((peekedByte&0xE0) == (0xE0))) && bool((bool(cBusOptions.GetExstat()) || bool(requestContext.GetSendStatusRequestLevelBefore())))
 	isExtendedFormatStatus := bool(_isExtendedFormatStatus)
 	_ = isExtendedFormatStatus
 

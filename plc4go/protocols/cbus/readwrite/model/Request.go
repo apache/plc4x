@@ -123,7 +123,7 @@ func (m *_Request) GetActualPeek() RequestType {
 	_ = startingCR
 	resetMode := m.ResetMode
 	_ = resetMode
-	return CastRequestType(CastRequestType(utils.InlineIf(bool(bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) == (nil))))) || bool(bool(bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) != (nil)))) && bool(bool((m.GetSecondPeek()) == (RequestType_EMPTY))))), func() interface{} { return CastRequestType(m.GetPeekedByte()) }, func() interface{} { return CastRequestType(m.GetSecondPeek()) })))
+	return CastRequestType(CastRequestType(utils.InlineIf(bool((bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) == (nil))))) || bool((bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) != (nil)))) && bool(bool((m.GetSecondPeek()) == (RequestType_EMPTY))))), func() interface{} { return CastRequestType(m.GetPeekedByte()) }, func() interface{} { return CastRequestType(m.GetSecondPeek()) })))
 }
 
 ///////////////////////
@@ -248,7 +248,7 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_actualPeek := CastRequestType(utils.InlineIf(bool(bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool(bool(bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() interface{} { return CastRequestType(peekedByte) }, func() interface{} { return CastRequestType(secondPeek) }))
+	_actualPeek := CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() interface{} { return CastRequestType(peekedByte) }, func() interface{} { return CastRequestType(secondPeek) }))
 	actualPeek := RequestType(_actualPeek)
 	_ = actualPeek
 

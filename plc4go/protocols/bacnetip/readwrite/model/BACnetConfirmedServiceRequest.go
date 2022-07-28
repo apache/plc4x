@@ -78,7 +78,7 @@ type BACnetConfirmedServiceRequestChild interface {
 ///////////////////////
 
 func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint16 {
-	return uint16(utils.InlineIf(bool(bool((m.ServiceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(m.ServiceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	return uint16(utils.InlineIf((bool((m.ServiceRequestLength) > (0))), func() interface{} { return uint16((uint16(m.ServiceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 }
 
 ///////////////////////
@@ -143,7 +143,7 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	}
 
 	// Virtual field
-	_serviceRequestPayloadLength := utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	_serviceRequestPayloadLength := utils.InlineIf((bool((serviceRequestLength) > (0))), func() interface{} { return uint16((uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
 	serviceRequestPayloadLength := uint16(_serviceRequestPayloadLength)
 	_ = serviceRequestPayloadLength
 

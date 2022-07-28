@@ -127,7 +127,7 @@ func (m *_RequestObsolete) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Manual Field (calData)
-	lengthInBits += uint16(int32(int32(int32(m.GetCalData().GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {

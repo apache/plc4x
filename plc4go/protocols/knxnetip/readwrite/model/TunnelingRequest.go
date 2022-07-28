@@ -164,7 +164,7 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (Tun
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
-	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
+	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of TunnelingRequest")
 	}

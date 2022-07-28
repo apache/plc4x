@@ -114,7 +114,7 @@ func (m *_MediaTransportControlDataTrackName) GetLengthInBitsConditional(lastIte
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (trackName)
-	lengthInBits += uint16(int32(int32(int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
 
 	return lengthInBits
 }

@@ -118,7 +118,7 @@ func (m *_TelephonyDataRinging) GetLengthInBitsConditional(lastItem bool) uint16
 	lengthInBits += 8
 
 	// Simple field (number)
-	lengthInBits += uint16(int32(int32(int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(2)))) * int32(int32(8)))
 
 	return lengthInBits
 }

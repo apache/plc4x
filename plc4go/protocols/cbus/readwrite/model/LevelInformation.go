@@ -102,19 +102,19 @@ func (m *_LevelInformation) GetRaw() uint16 {
 ///////////////////////
 
 func (m *_LevelInformation) GetNibble1() uint8 {
-	return uint8(uint8(m.GetRaw()&0xF000) >> uint8(12))
+	return uint8((m.GetRaw() & 0xF000) >> uint8(12))
 }
 
 func (m *_LevelInformation) GetNibble2() uint8 {
-	return uint8(uint8(m.GetRaw()&0x0F00) >> uint8(8))
+	return uint8((m.GetRaw() & 0x0F00) >> uint8(8))
 }
 
 func (m *_LevelInformation) GetNibble3() uint8 {
-	return uint8(uint8(m.GetRaw()&0x00F0) >> uint8(4))
+	return uint8((m.GetRaw() & 0x00F0) >> uint8(4))
 }
 
 func (m *_LevelInformation) GetNibble4() uint8 {
-	return uint8(uint8(m.GetRaw()&0x000F) >> uint8(0))
+	return uint8((m.GetRaw() & 0x000F) >> uint8(0))
 }
 
 func (m *_LevelInformation) GetIsAbsent() bool {
@@ -122,11 +122,11 @@ func (m *_LevelInformation) GetIsAbsent() bool {
 }
 
 func (m *_LevelInformation) GetIsCorruptedByNoise() bool {
-	return bool(bool(!(m.GetIsAbsent())) && bool(bool(bool(bool(bool(bool(bool(bool(bool(bool((m.GetNibble1()) < (0x5)))) || bool(bool(bool((m.GetNibble1()) == (0x8))))) || bool(bool(bool((m.GetNibble1()) == (0xC)))))) || bool(bool(bool(bool(bool(bool((m.GetNibble2()) < (0x5)))) || bool(bool(bool((m.GetNibble2()) == (0x8))))) || bool(bool(bool((m.GetNibble2()) == (0xC))))))) || bool(bool(bool(bool(bool(bool((m.GetNibble3()) < (0x5)))) || bool(bool(bool((m.GetNibble3()) == (0x8))))) || bool(bool(bool((m.GetNibble3()) == (0xC))))))) || bool(bool(bool(bool(bool(bool((m.GetNibble4()) < (0x5)))) || bool(bool(bool((m.GetNibble4()) == (0x8))))) || bool(bool(bool((m.GetNibble4()) == (0xC)))))))))
+	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) < (0x5)))) || bool((bool((m.GetNibble1()) == (0x8))))) || bool((bool((m.GetNibble1()) == (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) < (0x5)))) || bool((bool((m.GetNibble2()) == (0x8))))) || bool((bool((m.GetNibble2()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) < (0x5)))) || bool((bool((m.GetNibble3()) == (0x8))))) || bool((bool((m.GetNibble3()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) < (0x5)))) || bool((bool((m.GetNibble4()) == (0x8))))) || bool((bool((m.GetNibble4()) == (0xC)))))))))
 }
 
 func (m *_LevelInformation) GetIsCorruptedByNoiseOrLevelsDiffer() bool {
-	return bool(bool(!(m.GetIsAbsent())) && bool(bool(bool(bool(bool(bool(bool(bool(bool(bool((m.GetNibble1()) == (0x7)))) || bool(bool(bool((m.GetNibble1()) == (0xB))))) || bool(bool(bool((m.GetNibble1()) > (0xC)))))) || bool(bool(bool(bool(bool(bool((m.GetNibble2()) == (0x7)))) || bool(bool(bool((m.GetNibble2()) == (0xB))))) || bool(bool(bool((m.GetNibble2()) > (0xC))))))) || bool(bool(bool(bool(bool(bool((m.GetNibble3()) == (0x7)))) || bool(bool(bool((m.GetNibble3()) == (0xB))))) || bool(bool(bool((m.GetNibble3()) > (0xC))))))) || bool(bool(bool(bool(bool(bool((m.GetNibble4()) == (0x7)))) || bool(bool(bool((m.GetNibble4()) == (0xB))))) || bool(bool(bool((m.GetNibble4()) > (0xC)))))))))
+	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) == (0x7)))) || bool((bool((m.GetNibble1()) == (0xB))))) || bool((bool((m.GetNibble1()) > (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) == (0x7)))) || bool((bool((m.GetNibble2()) == (0xB))))) || bool((bool((m.GetNibble2()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) == (0x7)))) || bool((bool((m.GetNibble3()) == (0xB))))) || bool((bool((m.GetNibble3()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) == (0x7)))) || bool((bool((m.GetNibble4()) == (0xB))))) || bool((bool((m.GetNibble4()) > (0xC)))))))))
 }
 
 func (m *_LevelInformation) GetIsCorrupted() bool {
@@ -203,22 +203,22 @@ func LevelInformationParse(readBuffer utils.ReadBuffer) (LevelInformation, error
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_nibble1 := uint8(raw&0xF000) >> uint8(12)
+	_nibble1 := (raw & 0xF000) >> uint8(12)
 	nibble1 := uint8(_nibble1)
 	_ = nibble1
 
 	// Virtual field
-	_nibble2 := uint8(raw&0x0F00) >> uint8(8)
+	_nibble2 := (raw & 0x0F00) >> uint8(8)
 	nibble2 := uint8(_nibble2)
 	_ = nibble2
 
 	// Virtual field
-	_nibble3 := uint8(raw&0x00F0) >> uint8(4)
+	_nibble3 := (raw & 0x00F0) >> uint8(4)
 	nibble3 := uint8(_nibble3)
 	_ = nibble3
 
 	// Virtual field
-	_nibble4 := uint8(raw&0x000F) >> uint8(0)
+	_nibble4 := (raw & 0x000F) >> uint8(0)
 	nibble4 := uint8(_nibble4)
 	_ = nibble4
 
@@ -228,12 +228,12 @@ func LevelInformationParse(readBuffer utils.ReadBuffer) (LevelInformation, error
 	_ = isAbsent
 
 	// Virtual field
-	_isCorruptedByNoise := bool(!(isAbsent)) && bool(bool(bool(bool(bool(bool(bool(bool(bool(bool((nibble1) < (0x5)))) || bool(bool(bool((nibble1) == (0x8))))) || bool(bool(bool((nibble1) == (0xC)))))) || bool(bool(bool(bool(bool(bool((nibble2) < (0x5)))) || bool(bool(bool((nibble2) == (0x8))))) || bool(bool(bool((nibble2) == (0xC))))))) || bool(bool(bool(bool(bool(bool((nibble3) < (0x5)))) || bool(bool(bool((nibble3) == (0x8))))) || bool(bool(bool((nibble3) == (0xC))))))) || bool(bool(bool(bool(bool(bool((nibble4) < (0x5)))) || bool(bool(bool((nibble4) == (0x8))))) || bool(bool(bool((nibble4) == (0xC))))))))
+	_isCorruptedByNoise := bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) < (0x5)))) || bool((bool((nibble1) == (0x8))))) || bool((bool((nibble1) == (0xC)))))) || bool((bool(bool((bool((nibble2) < (0x5)))) || bool((bool((nibble2) == (0x8))))) || bool((bool((nibble2) == (0xC))))))) || bool((bool(bool((bool((nibble3) < (0x5)))) || bool((bool((nibble3) == (0x8))))) || bool((bool((nibble3) == (0xC))))))) || bool((bool(bool((bool((nibble4) < (0x5)))) || bool((bool((nibble4) == (0x8))))) || bool((bool((nibble4) == (0xC))))))))
 	isCorruptedByNoise := bool(_isCorruptedByNoise)
 	_ = isCorruptedByNoise
 
 	// Virtual field
-	_isCorruptedByNoiseOrLevelsDiffer := bool(!(isAbsent)) && bool(bool(bool(bool(bool(bool(bool(bool(bool(bool((nibble1) == (0x7)))) || bool(bool(bool((nibble1) == (0xB))))) || bool(bool(bool((nibble1) > (0xC)))))) || bool(bool(bool(bool(bool(bool((nibble2) == (0x7)))) || bool(bool(bool((nibble2) == (0xB))))) || bool(bool(bool((nibble2) > (0xC))))))) || bool(bool(bool(bool(bool(bool((nibble3) == (0x7)))) || bool(bool(bool((nibble3) == (0xB))))) || bool(bool(bool((nibble3) > (0xC))))))) || bool(bool(bool(bool(bool(bool((nibble4) == (0x7)))) || bool(bool(bool((nibble4) == (0xB))))) || bool(bool(bool((nibble4) > (0xC))))))))
+	_isCorruptedByNoiseOrLevelsDiffer := bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) == (0x7)))) || bool((bool((nibble1) == (0xB))))) || bool((bool((nibble1) > (0xC)))))) || bool((bool(bool((bool((nibble2) == (0x7)))) || bool((bool((nibble2) == (0xB))))) || bool((bool((nibble2) > (0xC))))))) || bool((bool(bool((bool((nibble3) == (0x7)))) || bool((bool((nibble3) == (0xB))))) || bool((bool((nibble3) > (0xC))))))) || bool((bool(bool((bool((nibble4) == (0x7)))) || bool((bool((nibble4) == (0xB))))) || bool((bool((nibble4) > (0xC))))))))
 	isCorruptedByNoiseOrLevelsDiffer := bool(_isCorruptedByNoiseOrLevelsDiffer)
 	_ = isCorruptedByNoiseOrLevelsDiffer
 

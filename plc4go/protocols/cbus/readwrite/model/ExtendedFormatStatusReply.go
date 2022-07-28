@@ -104,15 +104,15 @@ func (m *_ExtendedFormatStatusReply) GetLevelInformation() []LevelInformation {
 ///////////////////////
 
 func (m *_ExtendedFormatStatusReply) GetNumberOfStatusBytes() uint8 {
-	return uint8(utils.InlineIf(bool(bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} {
-		return uint8(uint8(uint8(m.GetStatusHeader().GetNumberOfCharacterPairs()) - uint8(uint8(3))))
-	}, func() interface{} { return uint8(uint8(uint8(0))) }).(uint8))
+	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} {
+		return uint8((uint8(m.GetStatusHeader().GetNumberOfCharacterPairs()) - uint8(uint8(3))))
+	}, func() interface{} { return uint8((uint8(0))) }).(uint8))
 }
 
 func (m *_ExtendedFormatStatusReply) GetNumberOfLevelInformation() uint8 {
-	return uint8(utils.InlineIf(bool(bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
-		return uint8(uint8(uint8(uint8(uint8(m.GetStatusHeader().GetNumberOfCharacterPairs())-uint8(uint8(3)))) / uint8(uint8(2))))
-	}, func() interface{} { return uint8(uint8(uint8(0))) }).(uint8))
+	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
+		return uint8((uint8((uint8(m.GetStatusHeader().GetNumberOfCharacterPairs()) - uint8(uint8(3)))) / uint8(uint8(2))))
+	}, func() interface{} { return uint8((uint8(0))) }).(uint8))
 }
 
 ///////////////////////
@@ -242,16 +242,14 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (ExtendedFormat
 	blockStart := _blockStart
 
 	// Virtual field
-	_numberOfStatusBytes := utils.InlineIf(bool(bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} {
-		return uint8(uint8(uint8(statusHeader.GetNumberOfCharacterPairs()) - uint8(uint8(3))))
-	}, func() interface{} { return uint8(uint8(uint8(0))) }).(uint8)
+	_numberOfStatusBytes := utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} { return uint8((uint8(statusHeader.GetNumberOfCharacterPairs()) - uint8(uint8(3)))) }, func() interface{} { return uint8((uint8(0))) }).(uint8)
 	numberOfStatusBytes := uint8(_numberOfStatusBytes)
 	_ = numberOfStatusBytes
 
 	// Virtual field
-	_numberOfLevelInformation := utils.InlineIf(bool(bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
-		return uint8(uint8(uint8(uint8(uint8(statusHeader.GetNumberOfCharacterPairs())-uint8(uint8(3)))) / uint8(uint8(2))))
-	}, func() interface{} { return uint8(uint8(uint8(0))) }).(uint8)
+	_numberOfLevelInformation := utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
+		return uint8((uint8((uint8(statusHeader.GetNumberOfCharacterPairs()) - uint8(uint8(3)))) / uint8(uint8(2))))
+	}, func() interface{} { return uint8((uint8(0))) }).(uint8)
 	numberOfLevelInformation := uint8(_numberOfLevelInformation)
 	_ = numberOfLevelInformation
 

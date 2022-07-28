@@ -145,13 +145,13 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]bool, uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
+	data := make([]bool, uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
+		for curItem := uint16(0); curItem < uint16(uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
 			_item, _err := readBuffer.ReadBit("")
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetTagPayloadBitString")

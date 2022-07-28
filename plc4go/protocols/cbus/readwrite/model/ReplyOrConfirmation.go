@@ -92,7 +92,7 @@ func (m *_ReplyOrConfirmation) GetPeekedByte() byte {
 ///////////////////////
 
 func (m *_ReplyOrConfirmation) GetIsAlpha() bool {
-	return bool(bool(bool(bool((m.GetPeekedByte()) >= (0x67)))) && bool(bool(bool((m.GetPeekedByte()) <= (0x7A)))))
+	return bool(bool((bool((m.GetPeekedByte()) >= (0x67)))) && bool((bool((m.GetPeekedByte()) <= (0x7A)))))
 }
 
 ///////////////////////
@@ -151,7 +151,7 @@ func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptio
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isAlpha := bool(bool(bool((peekedByte) >= (0x67)))) && bool(bool(bool((peekedByte) <= (0x7A))))
+	_isAlpha := bool((bool((peekedByte) >= (0x67)))) && bool((bool((peekedByte) <= (0x7A))))
 	isAlpha := bool(_isAlpha)
 	_ = isAlpha
 

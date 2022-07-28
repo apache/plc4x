@@ -164,7 +164,7 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRea
 	}
 	requestPathSize := _requestPathSize
 	// Byte Array field (tag)
-	numberOfBytestag := int(uint16(uint16(requestPathSize) * uint16(uint16(2))))
+	numberOfBytestag := int((uint16(requestPathSize) * uint16(uint16(2))))
 	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field of CipReadRequest")

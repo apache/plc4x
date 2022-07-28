@@ -114,7 +114,7 @@ func (m *_SecurityDataDisplayMessage) GetLengthInBitsConditional(lastItem bool) 
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (message)
-	lengthInBits += uint16(int32(int32(int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCommandTypeContainer().NumBytes()) - int32(int32(1)))) * int32(int32(8)))
 
 	return lengthInBits
 }
