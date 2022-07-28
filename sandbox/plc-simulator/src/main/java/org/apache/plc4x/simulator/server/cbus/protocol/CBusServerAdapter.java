@@ -108,12 +108,12 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     }
                     if (statusRequest instanceof StatusRequestLevel) {
                         StatusRequestLevel statusRequestLevel = (StatusRequestLevel) statusRequest;
-                        ExtendedStatusHeader statusHeader = new ExtendedStatusHeader((short) (3 + 1)); // 2 we have always + 1 as we got one status byte
+                        ExtendedStatusHeader statusHeader = new ExtendedStatusHeader((short) (3 + 2)); // 3 we have always (coding is extra opposed to the standard) + 2 as we got one level information
                         StatusCoding coding = StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE;
                         // TODO: map actuall values from simulator
                         byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
-                        List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                        ExtendedFormatStatusReply extendedFormatStatusReply = new ExtendedFormatStatusReply(statusHeader, coding, statusRequestLevel.getApplication(), blockStart, statusBytes);
+                        List<LevelInformation> levelInformations = List.of(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
+                        ExtendedFormatStatusReply extendedFormatStatusReply = new ExtendedFormatStatusReply(statusHeader, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations);
                         EncodedReply encodedReply = new EncodedReplyExtendedFormatStatusReply((byte) 0xC0, extendedFormatStatusReply, cBusOptions, requestContext);
                         ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                         ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
@@ -130,7 +130,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     // TODO: handle this
                     return;
                 }
-                if (command instanceof  CBusPointToMultiPointCommandNormal) {
+                if (command instanceof CBusPointToMultiPointCommandNormal) {
                     CBusPointToMultiPointCommandNormal cBusPointToMultiPointCommandNormal = (CBusPointToMultiPointCommandNormal) command;
                     LOGGER.info("Handling CBusPointToMultiPointCommandNormal\n{}", cBusPointToMultiPointCommandNormal);
                     return;

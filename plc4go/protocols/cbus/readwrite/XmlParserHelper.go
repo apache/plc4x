@@ -170,6 +170,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.StandardFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ResponseTermination":
 		return model.ResponseTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "LevelInformation":
+		return model.LevelInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SALData":
 		applicationId, _ := model.ApplicationIdByName(parserArguments[0])
 		return model.SALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), applicationId)

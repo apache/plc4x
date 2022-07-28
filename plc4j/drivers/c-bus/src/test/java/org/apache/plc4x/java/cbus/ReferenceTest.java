@@ -387,7 +387,7 @@ public class ReferenceTest {
         // 7.4
         @Test
         void ExtendedFormatStatusReply1() throws Exception {
-            byte[] bytes = "F9073800AAAA000095990000000005555000000000005555555548\r\n".getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = "F9073800AAAA000095990000000055550000000000005555555548\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             requestContext = new RequestContext(false, true, false);
             cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);

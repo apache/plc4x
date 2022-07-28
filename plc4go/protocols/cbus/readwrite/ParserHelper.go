@@ -151,6 +151,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.StandardFormatStatusReplyParse(io)
 	case "ResponseTermination":
 		return model.ResponseTerminationParse(io)
+	case "LevelInformation":
+		return model.LevelInformationParse(io)
 	case "SALData":
 		applicationId, _ := model.ApplicationIdByName(arguments[0])
 		return model.SALDataParse(io, applicationId)

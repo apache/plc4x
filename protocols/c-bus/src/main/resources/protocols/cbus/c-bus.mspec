@@ -1555,10 +1555,16 @@
     [simple     ApplicationIdContainer
                         application                                 ]
     [simple     uint 8  blockStart                                  ]
+    [virtual    uint 5  numberOfStatusBytes '(coding == StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.BINARY_BY_ELSEWHERE)?(statusHeader.numberOfCharacterPairs - 3):(0)']
+    [virtual    uint 5  numberOfLevelInformation '(coding == StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.LEVEL_BY_ELSEWHERE)?((statusHeader.numberOfCharacterPairs - 3) / 2):(0)']
     [array      StatusByte
                         statusBytes
-                        count
-                        'statusHeader.numberOfCharacterPairs - 3'   ]
+                            count
+                            'numberOfStatusBytes'                   ]
+    [array      LevelInformation
+                        levelInformation
+                            count
+                            'numberOfLevelInformation'              ]
 ]
 
 [type ExtendedStatusHeader
@@ -1578,6 +1584,53 @@
     [simple GAVState    gav2                                        ]
     [simple GAVState    gav1                                        ]
     [simple GAVState    gav0                                        ]
+]
+
+[type LevelInformation
+    [peek    uint 16    raw                                         ]
+    [virtual uint 4     nibble1 '(raw & 0xF000) >> 12'              ]
+    [virtual uint 4     nibble2 '(raw & 0x0F00) >> 8'               ]
+    [virtual uint 4     nibble3 '(raw & 0x00F0) >> 4'               ]
+    [virtual uint 4     nibble4 '(raw & 0x000F) >> 0'               ]
+    [virtual bit        isAbsent 'nibble1 == 0x0 && nibble2 == 0x0 && nibble3 == 0x0 && nibble4 == 0x0']
+    [virtual bit        isCorruptedByNoise '!isAbsent && (((nibble1 < 0x5) || (nibble1 == 0x8) || (nibble1 == 0xC)) || ((nibble2 < 0x5) || (nibble2 == 0x8) || (nibble2 == 0xC)) || ((nibble3 < 0x5) || (nibble3 == 0x8) || (nibble3 == 0xC)) || ((nibble4 < 0x5) || (nibble4 == 0x8) || (nibble4 == 0xC)))']
+    [virtual bit        isCorruptedByNoiseOrLevelsDiffer '!isAbsent && (((nibble1 == 0x7) || (nibble1 == 0xB) || (nibble1 > 0xC)) || ((nibble2 == 0x7) || (nibble2 == 0xB) || (nibble2 > 0xC)) || ((nibble3 == 0x7) || (nibble3 == 0xB) || (nibble3 > 0xC)) || ((nibble4 == 0x7) || (nibble4 == 0xB) || (nibble4 > 0xC)))']
+    [virtual bit        isCorrupted 'isCorruptedByNoise || isCorruptedByNoiseOrLevelsDiffer']
+    [typeSwitch isAbsent, isCorrupted
+        ['true'     *Absent
+            [reserved uint 16 '0x0000'                                      ]
+        ]
+        [*, 'true'  *Corrupted
+            [simple  uint 4    corruptedNibble1]
+            [simple  uint 4    corruptedNibble2]
+            [simple  uint 4    corruptedNibble3]
+            [simple  uint 4    corruptedNibble4]
+        ]
+        [*          *Normal
+            [simple  LevelInformationNibblePair  pair1                      ]
+            [simple  LevelInformationNibblePair  pair2                      ]
+            [virtual uint 8  actualLevel 'pair2.nibbleValue << 4 | pair1.nibbleValue']
+        ]
+    ]
+]
+
+[enum uint 8 LevelInformationNibblePair(uint 4 nibbleValue)
+    ['0x55' Value_F ['0xF']]
+    ['0x56' Value_E ['0xE']]
+    ['0x59' Value_D ['0xD']]
+    ['0x5A' Value_C ['0xC']]
+    ['0x65' Value_B ['0xB']]
+    ['0x66' Value_A ['0xA']]
+    ['0x69' Value_9 ['0x9']]
+    ['0x6A' Value_8 ['0x8']]
+    ['0x95' Value_7 ['0x7']]
+    ['0x96' Value_6 ['0x6']]
+    ['0x99' Value_5 ['0x5']]
+    ['0x9A' Value_4 ['0x4']]
+    ['0xA5' Value_3 ['0x3']]
+    ['0xA6' Value_2 ['0x2']]
+    ['0xA9' Value_1 ['0x1']]
+    ['0xAA' Value_0 ['0x0']]
 ]
 
 [enum uint 2 GAVState

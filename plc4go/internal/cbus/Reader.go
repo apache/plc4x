@@ -163,10 +163,22 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 							blockStart := reply.GetReply().GetBlockStart()
 							// TODO: verify application... this should be the same
 							_ = blockStart
-							statusBytes := reply.GetReply().GetStatusBytes()
-							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-							// TODO: how should we serialize that???
-							addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", statusBytes)))
+							switch coding {
+							case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
+								fallthrough
+							case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
+								statusBytes := reply.GetReply().GetStatusBytes()
+								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+								// TODO: how should we serialize that???
+								addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", statusBytes)))
+							case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
+								fallthrough
+							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
+								levelInformation := reply.GetReply().GetLevelInformation()
+								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+								// TODO: how should we serialize that???
+								addPlcValue(fieldNameCopy, values2.NewPlcSTRING(fmt.Sprintf("%s", levelInformation)))
+							}
 						case readWriteModel.EncodedReplyCALReplyExactly:
 							calData := reply.GetCalReply().GetCalData()
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
