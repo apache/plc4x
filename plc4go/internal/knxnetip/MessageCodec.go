@@ -108,7 +108,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	return nil, nil
 }
 
-func CustomMessageHandling(codec *_default.DefaultCodecRequirements, message spi.Message) bool {
+func CustomMessageHandling(codec _default.DefaultCodecRequirements, message spi.Message) bool {
 	// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
 	tunnelingResponse := model.CastTunnelingResponse(message)
 	if tunnelingResponse != nil {
@@ -124,13 +124,13 @@ func CustomMessageHandling(codec *_default.DefaultCodecRequirements, message spi
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetSequenceCounter(),
 				model.Status_NO_ERROR),
 		)
-		err := (*codec).Send(response)
+		err := codec.Send(response)
 		if err != nil {
 			log.Warn().Err(err).Msg("got an error sending ACK from transport")
 		}
 	}
 
-	localCodec := (*codec).(*MessageCodec)
+	localCodec := codec.(*MessageCodec)
 	// Handle the packet itself
 	// Give a message interceptor a chance to intercept
 	if (*localCodec).messageInterceptor != nil {

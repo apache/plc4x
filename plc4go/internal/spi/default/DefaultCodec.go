@@ -60,7 +60,7 @@ type DefaultExpectation struct {
 	HandleError    spi.HandleError
 }
 
-func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequirements, message spi.Message) bool) options.WithOption {
+func WithCustomMessageHandler(customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool) options.WithOption {
 	return withCustomMessageHandler{customMessageHandler: customMessageHandler}
 }
 
@@ -72,7 +72,7 @@ func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequi
 
 type withCustomMessageHandler struct {
 	options.Option
-	customMessageHandler func(codec *DefaultCodecRequirements, message spi.Message) bool
+	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
 type defaultCodec struct {
@@ -81,11 +81,11 @@ type defaultCodec struct {
 	defaultIncomingMessageChannel chan spi.Message
 	expectations                  []spi.Expectation
 	running                       bool
-	customMessageHandling         func(codec *DefaultCodecRequirements, message spi.Message) bool
+	customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
-	var customMessageHandler func(codec *DefaultCodecRequirements, message spi.Message) bool
+	var customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 
 	for _, option := range options {
 		switch option.(type) {
@@ -151,7 +151,7 @@ func (m *defaultCodec) Connect() error {
 
 	if !m.running {
 		log.Debug().Msg("Message codec currently not running, starting worker now")
-		go m.Work(&m.DefaultCodecRequirements)
+		go m.Work(m.DefaultCodecRequirements)
 	}
 	m.running = true
 	return nil
@@ -234,7 +234,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	return messageHandled
 }
 
-func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
+func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 	workerLog := log.With().Logger()
 	if !config.TraceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
@@ -289,7 +289,10 @@ mainLoop:
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
 			if m.customMessageHandling(codec, message) {
+				workerLog.Trace().Msg("Custom handling handled the message")
 				continue mainLoop
+			} else {
+				workerLog.Trace().Msg("Custom handling didn't handle the message")
 			}
 		}
 

@@ -100,7 +100,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	return nil, nil
 }
 
-func (m *MessageCodec) handleCustomMessage(_ *_default.DefaultCodecRequirements, message spi.Message) bool {
+func (m *MessageCodec) handleCustomMessage(_ _default.DefaultCodecRequirements, message spi.Message) bool {
 	// For now, we just put them in the incoming channel
 	m.GetDefaultIncomingMessageChannel() <- message
 	return true
