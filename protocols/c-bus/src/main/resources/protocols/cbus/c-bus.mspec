@@ -1393,7 +1393,7 @@
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                        ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
-    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05'                                           ]
+    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00'] // First check if it is in long mode, second for short mode, third for bridged short mode
     [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'    ] // The 0x3F and 0x06 doesn't seem to work always
     [virtual bit  isStandardFormatStatus    '(peekedByte & 0xC0) == 0xC0 && !cBusOptions.exstat'                    ]
     [virtual bit  isExtendedFormatStatus    '(peekedByte & 0xE0) == 0xE0 && (cBusOptions.exstat || requestContext.sendStatusRequestLevelBefore)']

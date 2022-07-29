@@ -98,7 +98,7 @@ func (m *_EncodedReply) GetPeekedByte() byte {
 ///////////////////////
 
 func (m *_EncodedReply) GetIsMonitoredSAL() bool {
-	return bool(bool((m.GetPeekedByte() & 0x3F) == (0x05)))
+	return bool(bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))
 }
 
 func (m *_EncodedReply) GetIsCalCommand() bool {
@@ -175,7 +175,7 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isMonitoredSAL := bool((peekedByte & 0x3F) == (0x05))
+	_isMonitoredSAL := bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00)))
 	isMonitoredSAL := bool(_isMonitoredSAL)
 	_ = isMonitoredSAL
 
