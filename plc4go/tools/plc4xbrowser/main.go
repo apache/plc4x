@@ -39,7 +39,7 @@ import (
 )
 
 // TODO: replace with real commands
-const plc4xCommands = "connect,disconnect,read,write,register,subscribe"
+const plc4xCommands = "connect,disconnect,read,write,register,subscribe,quit"
 
 var connections map[string]plc4go.PlcConnection
 var connectionsChanged func()
@@ -137,6 +137,11 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 		commandInputField.
 			SetDoneFunc(func(key tcell.Key) {
 				commandText := commandInputField.GetText()
+				if commandText == "quit" {
+					// TODO: maybe add a modal here
+					application.Stop()
+					return
+				}
 				commandsExecuted++
 				_, _ = fmt.Fprintf(enteredCommands, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
 				go func() {
@@ -159,13 +164,14 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 				}
 			}
 			switch {
+			case strings.HasPrefix(currentText, "disconnect"):
+				for connectionsString, _ := range connections {
+					entries = append(entries, "disconnect "+connectionsString)
+				}
 			case strings.HasPrefix(currentText, "subscribe"):
 				for connectionsString, _ := range connections {
 					entries = append(entries, "subscribe "+connectionsString)
 				}
-			}
-			if len(entries) <= 1 {
-				entries = nil
 			}
 			return
 		})

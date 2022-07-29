@@ -1478,10 +1478,8 @@
 ]
 
 [type PowerUp
-    [const    byte        powerUpIndicator       0x2B                  ] // "+"
-    // TODO: do we really need a static helper to peek for terminated?=
-    //[array    uint 8        garbage   terminated  '0x0D'                 ] // read all following +
-    [simple   RequestTermination  reqTermination                       ] // TODO: maybe should be externalized
+    [const    byte        powerUpIndicator1       0x2B                  ] // "+"
+    [const    byte        powerUpIndicator2       0x2B                  ] // "+"
 ]
 
 [type ParameterChange

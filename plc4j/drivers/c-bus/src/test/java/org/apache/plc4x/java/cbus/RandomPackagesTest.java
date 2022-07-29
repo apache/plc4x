@@ -417,4 +417,17 @@ public class RandomPackagesTest {
 
         assertMessageMatches(bytes, msg);
     }
+
+    @Test
+    void powerUpNotification() throws Exception {
+        byte[] bytes = "++\r\n".getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+
+        assertMessageMatches(bytes, msg);
+    }
+
+
 }
