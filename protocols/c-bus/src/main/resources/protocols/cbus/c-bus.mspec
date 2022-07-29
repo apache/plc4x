@@ -399,8 +399,8 @@
     ['0x70' VENTILATION_70                        ['VENTILATION'                       , 'YES'                 ]]
     ['0x71' IRRIGATION_CONTROL_71                 ['IRRIGATION_CONTROL'                , 'YES'                 ]]
     ['0x72' POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72 ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL', 'YES'                 ]]
-    ['0x73' RESERVED_73                           ['HVAC_ACTUATOR'                     , 'NA'                  ]] // HVAC_ACTUATOR
-    ['0x74' RESERVED_74                           ['HVAC_ACTUATOR'                     , 'NA'                  ]] // HVAC_ACTUATOR
+    ['0x73' HVAC_ACTUATOR_73                      ['HVAC_ACTUATOR'                     , 'NA'                  ]]
+    ['0x74' HVAC_ACTUATOR_74                      ['HVAC_ACTUATOR'                     , 'NA'                  ]]
     ['0x75' RESERVED_75                           ['RESERVED'                          , 'NA'                  ]]
     ['0x76' RESERVED_76                           ['RESERVED'                          , 'NA'                  ]]
     ['0x77' RESERVED_77                           ['RESERVED'                          , 'NA'                  ]]
@@ -476,7 +476,7 @@
     ['0xBD' RESERVED_BD                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBE' RESERVED_BE                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBF' RESERVED_BF                           ['RESERVED'                          , 'NA'                  ]]
-    ['0xC0' MEDIA_TRANSPORT_CONTROL_C0            ['MEDIA_TRANSPORT_CONTROL'           , 'NA'                  ]] // MEDIA_TRANSPORT_CONTROL
+    ['0xC0' MEDIA_TRANSPORT_CONTROL_C0            ['MEDIA_TRANSPORT_CONTROL'           , 'NA'                  ]]
     ['0xC1' RESERVED_C1                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC2' RESERVED_C2                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC3' RESERVED_C3                           ['RESERVED'                          , 'NA'                  ]]
@@ -490,7 +490,7 @@
     ['0xCB' ENABLE_CONTROL_CB                     ['ENABLE_CONTROL'                    , 'YES_BUT_RESTRICTIONS']]
     ['0xCC' I_HAVE_NO_IDEA_CC                     ['RESERVED'                          , 'NA'                  ]] // This is the only value actually not defined in the spec.
     ['0xCD' AUDIO_AND_VIDEO_CD                    ['AUDIO_AND_VIDEO'                   , 'YES_BUT_RESTRICTIONS']]
-    ['0xCE' ERROR_REPORTING_CE                    ['ERROR_REPORTING'                   , 'NA'                  ]] // ERROR_REPORTING
+    ['0xCE' ERROR_REPORTING_CE                    ['ERROR_REPORTING'                   , 'NA'                  ]]
     ['0xCF' RESERVED_CF                           ['RESERVED'                          , 'NA'                  ]]
     ['0xD0' SECURITY_D0                           ['SECURITY'                          , 'NO'                  ]]
     ['0xD1' METERING_D1                           ['METERING'                          , 'NO'                  ]]

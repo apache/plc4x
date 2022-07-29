@@ -89,3 +89,11 @@ func (m DefaultPlcSubscriptionResponse) Serialize(writeBuffer utils.WriteBuffer)
 	}
 	return nil
 }
+
+func (m DefaultPlcSubscriptionResponse) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
+}

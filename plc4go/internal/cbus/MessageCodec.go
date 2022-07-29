@@ -33,8 +33,10 @@ import (
 type MessageCodec struct {
 	_default.DefaultCodec
 
-	requestContext  readwriteModel.RequestContext
-	cbusOptions     readwriteModel.CBusOptions
+	requestContext readwriteModel.RequestContext
+	cbusOptions    readwriteModel.CBusOptions
+
+	monitoredSALs   chan readwriteModel.MonitoredSAL
 	lastPackageHash uint32
 	hashEncountered uint
 }
@@ -43,8 +45,25 @@ func NewMessageCodec(transportInstance transports.TransportInstance, srchk bool)
 	codec := &MessageCodec{
 		requestContext: readwriteModel.NewRequestContext(false, false, false),
 		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, srchk),
+		monitoredSALs:  make(chan readwriteModel.MonitoredSAL, 100),
 	}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _default.WithCustomMessageHandler(func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+		switch message := message.(type) {
+		case readwriteModel.CBusMessageToClientExactly:
+			switch reply := message.GetReply().(type) {
+			case readwriteModel.ReplyOrConfirmationReplyExactly:
+				switch reply := reply.GetReply().(type) {
+				case readwriteModel.ReplyEncodedReplyExactly:
+					switch encodedReply := reply.GetEncodedReply().(type) {
+					case readwriteModel.MonitoredSALReplyExactly:
+						codec.(*MessageCodec).monitoredSALs <- encodedReply.GetMonitoredSAL()
+						return true
+					}
+				}
+			}
+		}
+		return false
+	}))
 	return codec
 }
 

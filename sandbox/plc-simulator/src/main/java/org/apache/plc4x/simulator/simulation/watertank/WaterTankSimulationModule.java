@@ -26,12 +26,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * This is a little simulation that simulates a Water tank.
  * This tank has a capacity who's "waterLevel" is represented as a Long value.
- * Water can flow into the tank if the input valve is opened and it can flow
+ * Water can flow into the tank if the input valve is opened, and it can flow
  * out of the tank if the output valve is open.
- *
+ * <p>
  * The capacity of the output is slightly smaller than that of the input, so
  * opening both valves will result in the tank filling.
- *
+ * <p>
  * To prevent the tank from bursting, there's an emergency valve which is opened
  * as soon as the water-level reaches a critical maximum.
  */
@@ -80,13 +80,13 @@ public class WaterTankSimulationModule implements SimulationModule {
             Long value = (Long) context.getMemory().get(PROP_WATER_LEVEL);
 
             // If the input valve is open, add 10.
-            if(context.getDigitalInputs().get(NUM_INPUT_VALVE_INPUT)) {
+            if (context.getDigitalInputs().get(NUM_INPUT_VALVE_INPUT)) {
                 value += 10;
                 value = Math.min(MAX_WATER_LEVEL, value);
             }
 
             // If the output valve is open, subtract 8 (It's slightly less throughput than the input)
-            if(context.getDigitalInputs().get(NUM_OUTPUT_VALVE_INPUT)) {
+            if (context.getDigitalInputs().get(NUM_OUTPUT_VALVE_INPUT)) {
                 value -= 8;
                 value = Math.max(0, value);
             }

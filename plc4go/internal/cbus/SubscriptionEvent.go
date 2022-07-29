@@ -17,27 +17,25 @@
  * under the License.
  */
 
-package knxnetip
+package cbus
 
 import (
 	internalMode "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"time"
 )
 
 type SubscriptionEvent struct {
 	internalMode.DefaultPlcSubscriptionEvent
-	addresses map[string][]byte
+	address map[string]string
 }
 
 func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
-	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
+	address map[string]string, values map[string]values.PlcValue) SubscriptionEvent {
 	return SubscriptionEvent{
-		addresses:                   addresses,
+		address:                     address,
 		DefaultPlcSubscriptionEvent: internalMode.NewDefaultPlcSubscriptionEvent(fields, types, intervals, responseCodes, values),
 	}
 }
@@ -46,23 +44,6 @@ func (m SubscriptionEvent) GetRequest() apiModel.PlcSubscriptionRequest {
 	panic("implement me")
 }
 
-// GetAddress Decode the binary data in the address according to the field requested
 func (m SubscriptionEvent) GetAddress(name string) string {
-	rawAddress := m.addresses[name]
-	rawAddressReadBuffer := utils.NewReadBufferByteBased(rawAddress)
-	field := m.DefaultPlcSubscriptionEvent.GetField(name)
-	var groupAddress driverModel.KnxGroupAddress
-	var err error
-	switch field.(type) {
-	case GroupAddress3LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 3)
-	case GroupAddress2LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 2)
-	case GroupAddress1LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 1)
-	}
-	if err != nil {
-		return ""
-	}
-	return GroupAddressToString(groupAddress)
+	return m.address[name]
 }

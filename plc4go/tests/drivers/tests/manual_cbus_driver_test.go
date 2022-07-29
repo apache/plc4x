@@ -20,12 +20,16 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
+	"github.com/stretchr/testify/require"
 	"testing"
+	"time"
 )
 
 func TestManualCBusDriver(t *testing.T) {
@@ -43,5 +47,38 @@ func TestManualCBusDriver(t *testing.T) {
 	//test.AddTestCase("cal/0/identify=[FirmwareVersion]", true)
 	//test.AddTestCase("cal/0/gestatus=[0xFF, 1]", true)
 
-	test.Run()
+	plcConnection := test.Run()
+	t.Run("Subscription test", func(t *testing.T) {
+		gotMonitor := make(chan bool)
+		subscriptionRequest, err := plcConnection.SubscriptionRequestBuilder().
+			AddEventQuery("something", "monitor/*/*").
+			AddItemHandler(func(event model.PlcSubscriptionEvent) {
+				fmt.Printf("\n%s", event)
+				select {
+				case gotMonitor <- true:
+				default:
+				}
+			}).
+			Build()
+		require.NoError(t, err)
+		subscriptionRequest.Execute()
+		timeout := time.After(30 * time.Second)
+		// We expect couple monitors
+		monitorCount := 0
+	waitingForMonitors:
+		for {
+			select {
+			case at := <-timeout:
+				t.Errorf("timeout at %s", at)
+				break waitingForMonitors
+			case <-gotMonitor:
+				monitorCount++
+				println(monitorCount)
+				if monitorCount > 3 {
+					break waitingForMonitors
+				}
+			}
+		}
+		t.Logf("Got %d monitors", monitorCount)
+	})
 }

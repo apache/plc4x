@@ -152,8 +152,8 @@ const (
 	ApplicationIdContainer_VENTILATION_70                        ApplicationIdContainer = 0x70
 	ApplicationIdContainer_IRRIGATION_CONTROL_71                 ApplicationIdContainer = 0x71
 	ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72 ApplicationIdContainer = 0x72
-	ApplicationIdContainer_RESERVED_73                           ApplicationIdContainer = 0x73
-	ApplicationIdContainer_RESERVED_74                           ApplicationIdContainer = 0x74
+	ApplicationIdContainer_HVAC_ACTUATOR_73                      ApplicationIdContainer = 0x73
+	ApplicationIdContainer_HVAC_ACTUATOR_74                      ApplicationIdContainer = 0x74
 	ApplicationIdContainer_RESERVED_75                           ApplicationIdContainer = 0x75
 	ApplicationIdContainer_RESERVED_76                           ApplicationIdContainer = 0x76
 	ApplicationIdContainer_RESERVED_77                           ApplicationIdContainer = 0x77
@@ -415,8 +415,8 @@ func init() {
 		ApplicationIdContainer_VENTILATION_70,
 		ApplicationIdContainer_IRRIGATION_CONTROL_71,
 		ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72,
-		ApplicationIdContainer_RESERVED_73,
-		ApplicationIdContainer_RESERVED_74,
+		ApplicationIdContainer_HVAC_ACTUATOR_73,
+		ApplicationIdContainer_HVAC_ACTUATOR_74,
 		ApplicationIdContainer_RESERVED_75,
 		ApplicationIdContainer_RESERVED_76,
 		ApplicationIdContainer_RESERVED_77,
@@ -2875,9 +2875,9 @@ func ApplicationIdContainerByValue(value uint8) (enum ApplicationIdContainer, ok
 	case 0x72:
 		return ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72, true
 	case 0x73:
-		return ApplicationIdContainer_RESERVED_73, true
+		return ApplicationIdContainer_HVAC_ACTUATOR_73, true
 	case 0x74:
-		return ApplicationIdContainer_RESERVED_74, true
+		return ApplicationIdContainer_HVAC_ACTUATOR_74, true
 	case 0x75:
 		return ApplicationIdContainer_RESERVED_75, true
 	case 0x76:
@@ -3392,10 +3392,10 @@ func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok
 		return ApplicationIdContainer_IRRIGATION_CONTROL_71, true
 	case "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72":
 		return ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72, true
-	case "RESERVED_73":
-		return ApplicationIdContainer_RESERVED_73, true
-	case "RESERVED_74":
-		return ApplicationIdContainer_RESERVED_74, true
+	case "HVAC_ACTUATOR_73":
+		return ApplicationIdContainer_HVAC_ACTUATOR_73, true
+	case "HVAC_ACTUATOR_74":
+		return ApplicationIdContainer_HVAC_ACTUATOR_74, true
 	case "RESERVED_75":
 		return ApplicationIdContainer_RESERVED_75, true
 	case "RESERVED_76":
@@ -3955,10 +3955,10 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 		return "IRRIGATION_CONTROL_71"
 	case ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72:
 		return "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72"
-	case ApplicationIdContainer_RESERVED_73:
-		return "RESERVED_73"
-	case ApplicationIdContainer_RESERVED_74:
-		return "RESERVED_74"
+	case ApplicationIdContainer_HVAC_ACTUATOR_73:
+		return "HVAC_ACTUATOR_73"
+	case ApplicationIdContainer_HVAC_ACTUATOR_74:
+		return "HVAC_ACTUATOR_74"
 	case ApplicationIdContainer_RESERVED_75:
 		return "RESERVED_75"
 	case ApplicationIdContainer_RESERVED_76:

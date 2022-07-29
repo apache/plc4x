@@ -100,6 +100,22 @@ func NewCALGetstatusField(unitAddress readWriteModel.UnitAddress, parameter read
 	}
 }
 
+// SALMonitorField can be used to monitor fields
+type SALMonitorField interface {
+	model.PlcField
+	GetUnitAddress() readWriteModel.UnitAddress
+	GetApplication() readWriteModel.ApplicationIdContainer
+}
+
+func NewSALMonitorField(unitAddress readWriteModel.UnitAddress, application readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
+	return &salMonitorField{
+		fieldType:   SAL_MONITOR,
+		unitAddress: unitAddress,
+		application: application,
+		numElements: numElements,
+	}
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -138,6 +154,13 @@ type calGetstatusField struct {
 	fieldType   FieldType
 	parameter   readWriteModel.Parameter
 	count       uint8
+	numElements uint16
+}
+
+type salMonitorField struct {
+	fieldType   FieldType
+	unitAddress readWriteModel.UnitAddress
+	application readWriteModel.ApplicationIdContainer
 	numElements uint16
 }
 
@@ -313,6 +336,44 @@ func (m calGetstatusField) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if err := writeBuffer.PopContext(m.fieldType.GetName()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s salMonitorField) GetAddressString() string {
+	return fmt.Sprintf("%d/%s%s[%d]", s.fieldType, s.unitAddress, s.application, s.numElements)
+}
+
+func (s salMonitorField) GetTypeName() string {
+	return s.fieldType.GetName()
+}
+
+func (s salMonitorField) GetQuantity() uint16 {
+	return s.numElements
+}
+
+func (s salMonitorField) GetUnitAddress() readWriteModel.UnitAddress {
+	return s.unitAddress
+}
+
+func (s salMonitorField) GetApplication() readWriteModel.ApplicationIdContainer {
+	return s.application
+}
+
+func (s salMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
+		return err
+	}
+
+	if err := s.unitAddress.Serialize(writeBuffer); err != nil {
+		return err
+	}
+	if err := s.application.Serialize(writeBuffer); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
 		return err
 	}
 	return nil

@@ -26,6 +26,7 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/rs/zerolog/log"
 	"sync"
 )
 
@@ -50,9 +51,11 @@ type Connection struct {
 	_default.DefaultConnection
 	alphaGenerator AlphaGenerator
 	messageCodec   spi.MessageCodec
-	configuration  Configuration
-	driverContext  DriverContext
+	subscribers    []*Subscriber
 	tm             *spi.RequestTransactionManager
+
+	configuration Configuration
+	driverContext DriverContext
 
 	connectionId string
 	tracer       *spi.Tracer
@@ -78,27 +81,27 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, d
 	return connection
 }
 
-func (m *Connection) GetConnectionId() string {
-	return m.connectionId
+func (c *Connection) GetConnectionId() string {
+	return c.connectionId
 }
 
-func (m *Connection) IsTraceEnabled() bool {
-	return m.tracer != nil
+func (c *Connection) IsTraceEnabled() bool {
+	return c.tracer != nil
 }
 
-func (m *Connection) GetTracer() *spi.Tracer {
-	return m.tracer
+func (c *Connection) GetTracer() *spi.Tracer {
+	return c.tracer
 }
 
-func (m *Connection) GetConnection() plc4go.PlcConnection {
-	return m
+func (c *Connection) GetConnection() plc4go.PlcConnection {
+	return c
 }
 
-func (m *Connection) GetMessageCodec() spi.MessageCodec {
-	return m.messageCodec
+func (c *Connection) GetMessageCodec() spi.MessageCodec {
+	return c.messageCodec
 }
 
-func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
+func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return _default.DefaultConnectionMetadata{
 		ProvidesReading:     true,
 		ProvidesWriting:     true,
@@ -107,29 +110,61 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	}
 }
 
-func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcFieldHandler(), NewReader(&m.alphaGenerator, m.messageCodec, m.tm))
+func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	connectionConnectResult := c.DefaultConnection.Connect()
+	ch := make(chan plc4go.PlcConnectionConnectResult)
+	go func() {
+		connectResult := <-connectionConnectResult
+		if connectResult.GetErr() == nil {
+			log.Debug().Msg("Starting subscription handler")
+			go func() {
+				for c.IsConnected() {
+					log.Debug().Msg("Handling incoming message")
+					for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
+						for _, subscriber := range c.subscribers {
+							subscriber.handleMonitoredSal(monitoredSal)
+						}
+					}
+				}
+			}()
+		}
+		ch <- connectResult
+	}()
+	return ch
 }
 
-func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(m.GetPlcFieldHandler(), m.GetPlcValueHandler(), NewWriter(&m.alphaGenerator, m.messageCodec, m.tm))
+func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	return internalModel.NewDefaultPlcReadRequestBuilder(c.GetPlcFieldHandler(), NewReader(&c.alphaGenerator, c.messageCodec, c.tm))
 }
 
-func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	// TODO: where do we get the subscriber from
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(m.GetPlcFieldHandler(), m.GetPlcValueHandler(), nil)
+func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	return internalModel.NewDefaultPlcWriteRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewWriter(&c.alphaGenerator, c.messageCodec, c.tm))
 }
 
-func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
+}
+
+func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
 	// TODO: where do we get the unsubscriber from
 	return nil
 }
 
-func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 	// TODO: where do we get the browser from
 	return internalModel.NewDefaultPlcBrowseRequestBuilder(nil)
 }
 
-func (m *Connection) String() string {
+func (c *Connection) addSubscriber(subscriber *Subscriber) {
+	for _, sub := range c.subscribers {
+		if sub == subscriber {
+			log.Debug().Msgf("Subscriber %v already added", subscriber)
+			return
+		}
+	}
+	c.subscribers = append(c.subscribers, subscriber)
+}
+
+func (c *Connection) String() string {
 	return fmt.Sprintf("cbus.Connection")
 }
