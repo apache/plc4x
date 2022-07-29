@@ -34,7 +34,6 @@
   <properties>
     <kotlin.version>1.7.0</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-    <junit-jupiter.version>5.8.2</junit-jupiter.version>
     <app.main.class>org.apache.plc4x.java.examples.hellokotlin.ReadModbusPalKt</app.main.class>
   </properties>
 
@@ -71,13 +70,13 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit-jupiter.version}</version>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit-jupiter.version}</version>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

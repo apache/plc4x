@@ -85,11 +85,6 @@
   </mailingLists>
 
   <properties>
-    <!--
-      At least 3.3.3 required for camel-package-maven-plugin
-    -->
-    <maven.version>3.8.6</maven.version>
-
     <java.version>11</java.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -131,30 +126,31 @@
     <commons-text.version>1.9</commons-text.version>
     <commons-csv.version>1.9.0</commons-csv.version>
     <dom4j.version>2.1.3</dom4j.version>
-    <equalsverifier.version>3.10</equalsverifier.version>
+    <equalsverifier.version>3.10.1</equalsverifier.version>
     <freemarker.version>2.3.31</freemarker.version>
-    <groovy.version>3.0.11</groovy.version>
+    <groovy.version>3.0.12</groovy.version>
     <gson.version>2.9.0</gson.version>
     <guava.version>31.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.13</httpclient.version>
     <httpcore.version>4.4.15</httpcore.version>
     <jackson.version>2.13.3</jackson.version>
-    <woodstox-core.version>6.2.8</woodstox-core.version>
+    <woodstox-core.version>6.3.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.0</jaxb.version>
     <jetty-util.version>11.0.11</jetty-util.version>
     <jna.version>5.12.1</jna.version>
     <joda-time.version>2.10.14</joda-time.version>
-    <jserialcom.version>2.9.1</jserialcom.version>
-    <junit.jupiter.version>5.8.2</junit.jupiter.version>
+    <jserialcom.version>2.9.2</jserialcom.version>
+    <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.2.11</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
-    <milo.version>0.6.7</milo.version>
+    <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
+    <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.6</milo.version>
     <mockito.version>4.6.1</mockito.version>
-    <netty.version>4.1.77.Final</netty.version>
+    <netty.version>4.1.79.Final</netty.version>
     <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>1.7.36</slf4j.version>
@@ -163,7 +159,7 @@
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.5.3</asciidoctorj.version>
+    <asciidoctorj.version>2.5.5</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
@@ -419,7 +415,7 @@
       <dependency>
         <groupId>net.lingala.zip4j</groupId>
         <artifactId>zip4j</artifactId>
-        <version>2.10.0</version>
+        <version>2.11.1</version>
       </dependency>
 
       <dependency>
@@ -598,8 +594,8 @@
       <!-- TODO: There's also 3.2.2, but the javacan dependency only seem to be poms with stuff in core and epoll sub-modules -->
       <dependency>
         <groupId>tel.schich</groupId>
-        <artifactId>javacan</artifactId>
-        <version>2.3.0</version>
+        <artifactId>javacan-core</artifactId>
+        <version>3.2.2</version>
       </dependency>
 
       <!-- *****************************************************************************
@@ -906,6 +902,21 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
+          <!-- Some of our plugins require certain minimum Maven versions -->
+          <execution>
+            <id>enforce-minimum-maven-version</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.6.3,)</version>
+                </requireMavenVersion>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
           <!-- Ensure we're not mixing dependency versions -->
           <execution>
             <id>enforce-version-convergence</id>
@@ -948,7 +959,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.5.1</version>
+            <version>1.6.1</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
@@ -1082,26 +1093,31 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <!-- With 3.0.0 the dependencyConvergence rule wouldn't work anymore -->
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>5.1.6</version>
+          <version>5.1.7</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.3.6</version>
+          <version>4.4.0</version>
         </plugin>
 
         <plugin>
           <groupId>com.google.code.maven-replacer-plugin</groupId>
           <artifactId>replacer</artifactId>
           <version>1.5.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.0</version>
         </plugin>
 
         <plugin>
@@ -1191,6 +1207,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
+          <!-- It seems that when going to 3.3.0 the apache-rat-plugin fails when the shade plugin is also being run -->
           <version>3.2.4</version>
           <configuration>
             <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}</outputFile>
@@ -1219,7 +1236,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.12.0</version>
+          <version>4.0.0-M3</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>
@@ -1340,7 +1357,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <!--
-          TODO: somehow the newer version is broken as it reports dependencies which are compile in fact
+          TODO: somehow the newer version (checked till 3.3.0) is broken as it reports dependencies which are compile in fact
           e.g. plc4j-connection-pool:
           [INFO] - maven-dependency-plugin:3.2.0:analyze-only (check-dependencies) @ plc4j-connection-pool -
           [WARNING] Non-test scoped test only dependencies found:

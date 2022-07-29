@@ -41,14 +41,6 @@
           <suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-          </usedDependencies>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
