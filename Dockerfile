@@ -76,7 +76,7 @@ RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpressio
 ##########################################################################################
 
 # Move the file to a place we can reference it from without a version
-RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-integration-iotdb/target/plc4j-hello-integration-iotdb-${PROJECT_VERSION}-uber-jar.jar plc4xdemo.jar
+RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-integration-iotdb/target/plc4j-examples-hello-integration-iotdb-${PROJECT_VERSION}-uber-jar.jar plc4xdemo.jar
 
 # Build a highly optimized JRE
 FROM alpine:3.10 as packager
