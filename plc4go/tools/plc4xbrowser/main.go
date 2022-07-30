@@ -21,9 +21,15 @@ package main
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/ads"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/cbus"
+	"github.com/apache/plc4x/plc4go/internal/s7"
 	"io"
+	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
@@ -32,7 +38,6 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/apache/plc4x/plc4go/internal/cbus"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
@@ -40,7 +45,10 @@ import (
 
 // TODO: replace with real commands
 const plc4xCommands = "connect,disconnect,read,write,register,subscribe,quit"
+const protocols = "ads,bacnetip,c-bus,s7"
 
+var driverManager plc4go.PlcDriverManager
+var driverAdded func(string)
 var connections map[string]plc4go.PlcConnection
 var connectionsChanged func()
 
@@ -50,7 +58,28 @@ var messagesReceived int
 var messageOutput io.Writer
 
 func init() {
+	hasShutdown = false
 	connections = make(map[string]plc4go.PlcConnection)
+}
+
+func initSubsystem() {
+	driverManager = plc4go.NewPlcDriverManager()
+}
+
+var shutdownMutex sync.Mutex
+var hasShutdown bool
+
+func shutdown() {
+	shutdownMutex.Lock()
+	defer shutdownMutex.Unlock()
+	if hasShutdown {
+		return
+	}
+	for _, connection := range connections {
+		connection.Close()
+	}
+	saveConfig()
+	hasShutdown = true
 }
 
 func main() {
@@ -66,7 +95,7 @@ func main() {
 	commandArea := buildCommandArea(newPrimitive, application)
 
 	grid := tview.NewGrid().
-		SetRows(3, 0, 3).
+		SetRows(3, 0, 1).
 		SetColumns(30, 0, 30).
 		SetBorders(true).
 		AddItem(newPrimitive("PLC4X Browser"), 0, 0, 1, 3, 0, 0, false).
@@ -82,18 +111,30 @@ func main() {
 		AddItem(outputArea, 1, 1, 1, 1, 0, 100, false).
 		AddItem(commandArea, 1, 2, 1, 1, 0, 100, false)
 
-	if err := application.SetRoot(grid, true).EnableMouse(true).Run(); err != nil {
+	application.SetRoot(grid, true).EnableMouse(true)
+
+	loadConfig()
+
+	initSubsystem()
+
+	application.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Key() {
+		case tcell.KeyCtrlC:
+			shutdown()
+		}
+		return event
+	})
+
+	if err := application.Run(); err != nil {
 		panic(err)
 	}
-	for _, connection := range connections {
-		connection.Close()
-	}
+	shutdown()
 }
 
 func buildConnectionArea(newPrimitive func(text string) tview.Primitive, application *tview.Application) tview.Primitive {
 	connectionAreaHeader := newPrimitive("Connections")
 	connectionArea := tview.NewGrid().
-		SetRows(3, 0).
+		SetRows(3, 0, 10).
 		SetColumns(0).
 		AddItem(connectionAreaHeader, 0, 0, 1, 1, 0, 0, false)
 	{
@@ -109,7 +150,27 @@ func buildConnectionArea(newPrimitive func(text string) tview.Primitive, applica
 				}
 			})
 		}
-		connectionArea.AddItem(connectionList, 1, 0, 1, 1, 0, 0, true)
+		connectionArea.AddItem(connectionList, 1, 0, 1, 1, 0, 0, false)
+		{
+			registeredDriverAreaHeader := newPrimitive("Registered drivers")
+			registeredDriverArea := tview.NewGrid().
+				SetRows(3, 0).
+				SetColumns(0).
+				AddItem(registeredDriverAreaHeader, 0, 0, 1, 1, 0, 0, false)
+			{
+				driverList := tview.NewList()
+				driverAdded = func(driver string) {
+					application.QueueUpdateDraw(func() {
+						driverList.AddItem(driver, "", 0x0, func() {
+							//TODO: disconnect popup
+						})
+					})
+				}
+				registeredDriverArea.AddItem(driverList, 1, 0, 1, 1, 0, 0, false)
+			}
+			connectionArea.AddItem(registeredDriverArea, 2, 0, 1, 1, 0, 0, false)
+		}
+
 	}
 	return connectionArea
 }
@@ -130,7 +191,8 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 			})
 		commandArea.AddItem(enteredCommands, 1, 0, 1, 1, 0, 0, false)
 
-		words := strings.Split(plc4xCommands, ",")
+		plc4xCommandSuggestions := strings.Split(plc4xCommands, ",")
+		protocolsSuggestions := strings.Split(protocols, ",")
 		commandInputField := tview.NewInputField().
 			SetLabel("PLC4X Command").
 			SetFieldWidth(30)
@@ -158,21 +220,37 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 			if len(currentText) == 0 {
 				return
 			}
-			for _, word := range words {
+			for _, word := range plc4xCommandSuggestions {
 				if strings.HasPrefix(strings.ToLower(word), strings.ToLower(currentText)) {
 					entries = append(entries, word)
 				}
 			}
 			switch {
+			case strings.HasPrefix(currentText, "connect"):
+				for _, protocol := range protocolsSuggestions {
+					if strings.HasPrefix(currentText, "connect "+protocol) {
+						for _, host := range config.History.Last10Hosts {
+							entries = append(entries, "connect "+protocol+"://"+host)
+						}
+						entries = append(entries, currentText)
+					} else {
+						entries = append(entries, "connect "+protocol)
+					}
+				}
 			case strings.HasPrefix(currentText, "disconnect"):
 				for connectionsString, _ := range connections {
 					entries = append(entries, "disconnect "+connectionsString)
+				}
+			case strings.HasPrefix(currentText, "register"):
+				for _, protocol := range protocolsSuggestions {
+					entries = append(entries, "register "+protocol)
 				}
 			case strings.HasPrefix(currentText, "subscribe"):
 				for connectionsString, _ := range connections {
 					entries = append(entries, "subscribe "+connectionsString)
 				}
 			}
+			log.Info().Msgf("%v %v", entries, config.History.Last10Hosts)
 			return
 		})
 		commandArea.AddItem(commandInputField, 2, 0, 1, 1, 0, 0, true)
@@ -183,22 +261,42 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 func handleCommand(commandText string) error {
 	switch {
 	case strings.HasPrefix(commandText, "register "):
-	case strings.HasPrefix(commandText, "connect "):
-		host := strings.TrimPrefix(commandText, "connect ")
-		if _, ok := connections[host]; ok {
-			return errors.Errorf("%s already connected", host)
+		protocol := strings.TrimPrefix(commandText, "register ")
+		switch protocol {
+		case "ads":
+			driverManager.RegisterDriver(ads.NewDriver())
+			transports.RegisterTcpTransport(driverManager)
+		case "bacnetip":
+			driverManager.RegisterDriver(bacnetip.NewDriver())
+			transports.RegisterUdpTransport(driverManager)
+		case "c-bus":
+			driverManager.RegisterDriver(cbus.NewDriver())
+			transports.RegisterTcpTransport(driverManager)
+		case "s7":
+			driverManager.RegisterDriver(s7.NewDriver())
+			transports.RegisterTcpTransport(driverManager)
+		default:
+			return errors.Errorf("Unknown protocol %s", protocol)
 		}
-		//TODO: we hardcode that to cbus for now
-		connectionString := fmt.Sprintf("c-bus://%s?srchk=true", host)
-		driverManager := plc4go.NewPlcDriverManager()
-		driverManager.RegisterDriver(cbus.NewDriver())
-		transports.RegisterTcpTransport(driverManager)
+		driverAdded(protocol)
+	case strings.HasPrefix(commandText, "connect "):
+		connectionString := strings.TrimPrefix(commandText, "connect ")
+		log.Info().Msgf("commandText [%s] connectionString [%s]", commandText, connectionString)
+		connectionUrl, err := url.Parse(connectionString)
+		if err != nil {
+			return errors.Wrapf(err, "can't parse connection url %s", connectionString)
+		}
+		addHost(connectionUrl.Host)
+		connectionId := fmt.Sprintf("%s://%s", connectionUrl.Scheme, connectionUrl.Host)
+		if _, ok := connections[connectionId]; ok {
+			return errors.Errorf("%s already connected", connectionId)
+		}
 		connectionResult := <-driverManager.GetConnection(connectionString)
 		if err := connectionResult.GetErr(); err != nil {
-			return errors.Wrapf(err, "%s can't connect to", host)
+			return errors.Wrapf(err, "%s can't connect to", connectionUrl.Host)
 		}
-		log.Info().Msgf("%s connected", host)
-		connections[host] = connectionResult.GetConnection()
+		log.Info().Msgf("%s connected", connectionId)
+		connections[connectionId] = connectionResult.GetConnection()
 		connectionsChanged()
 	case strings.HasPrefix(commandText, "disconnect "):
 		host := strings.TrimPrefix(commandText, "disconnect ")
@@ -218,6 +316,7 @@ func handleCommand(commandText string) error {
 		if connection, ok := connections[host]; !ok {
 			return errors.Errorf("%s not connected", host)
 		} else {
+			// TODO: hardcoded to c-bus at the moment
 			subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 				AddEventQuery("something", "monitor/*/*").
 				AddItemHandler(func(event model.PlcSubscriptionEvent) {
