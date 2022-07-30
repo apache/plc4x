@@ -19,6 +19,7 @@
 package org.apache.plc4x.test.generator
 
 import org.opentest4j.TestAbortedException
+import spock.lang.IgnoreIf
 
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo
 import static spock.util.matcher.HamcrestSupport.*
@@ -27,6 +28,8 @@ import spock.lang.Specification
 
 import java.nio.file.Files
 
+// TODO: find out how to access surefire groups...
+@IgnoreIf({ env["ENABLE_ALL_TESTS"] == null || env["ENABLE_ALL_TESTS"] == "false" })
 class ParserSerializerTestsuiteGeneratorSpec extends Specification {
     def "Test main with an example pcap"() {
         given:
@@ -48,13 +51,13 @@ class ParserSerializerTestsuiteGeneratorSpec extends Specification {
             proc.consumeProcessOutput(sout, serr)
             proc.waitForOrKill(1000)
             def output = serr + sout
-            if(!output.contains("libpcap")) {
+            if (!output.contains("libpcap")) {
                 throw new TestAbortedException("no libpcap")
             }
             def libpcapVersion = output.substring(output.indexOf("libpcap version ") + 16)
             libpcapVersion = libpcapVersion.substring(0, libpcapVersion.indexOf("\n"))
             // Check the libpcapVersion is at least 1.10.0
-            if(!libpcapVersion.startsWith("1.10")) {
+            if (!libpcapVersion.startsWith("1.10")) {
                 throw new TestAbortedException("minimum libpcap version 1.10.0 expected")
             }
         } catch (e) {
