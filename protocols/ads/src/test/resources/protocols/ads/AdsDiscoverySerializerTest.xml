@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
-                byteOrder="BIG_ENDIAN">
+                byteOrder="LITTLE_ENDIAN">
 
   <name>Beckhoff ADS/AMS Discovery</name>
 
@@ -31,75 +31,98 @@
     <root-type>AdsDiscovery</root-type>
     <xml>
       <AdsDiscovery>
-        <header dataType="uint" bitLength="32">57021553</header>
-        <reserved dataType="uint" bitLength="32">0</reserved>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="DISCOVERY_REQUEST">1</Operation>
         </operation>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <direction>
-          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
-        </direction>
-        <DiscoveryRequest>
-          <amsNetId>
-            <AmsNetId>
-              <octet1 dataType="uint" bitLength="8">10</octet1>
-              <octet2 dataType="uint" bitLength="8">10</octet2>
-              <octet3 dataType="uint" bitLength="8">10</octet3>
-              <octet4 dataType="uint" bitLength="8">10</octet4>
-              <octet5 dataType="uint" bitLength="8">1</octet5>
-              <octet6 dataType="uint" bitLength="8">1</octet6>
-            </AmsNetId>
-          </amsNetId>
-          <reserved dataType="uint" bitLength="16">4135</reserved>
-          <reserved dataType="uint" bitLength="32">0</reserved>
-        </DiscoveryRequest>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">10</octet1>
+            <octet2 dataType="uint" bitLength="8">10</octet2>
+            <octet3 dataType="uint" bitLength="8">10</octet3>
+            <octet4 dataType="uint" bitLength="8">10</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">0</numBlocks>
+        <blocks isList="true">
+        </blocks>
       </AdsDiscovery>
     </xml>
   </testcase>
 
   <testcase>
     <name>ADS Discovery Response from 192.168.2.221.1.1</name>
-    <raw>036614710000000001000080c0a802dd0101102704000000050010004445534b544f502d54304e36554e4200</raw>
-    <!--
-    remaining part of frame
-    04001401140100000a00000000000000bb4700000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030004000301b80f120041003363303937326134386664623736663132613831323839613335643461333731653138666333303736363038323839373031386138626638386439393264633800
-    -->
+    <raw>036614710000000001000080c0a802dd0101102704000000050010004445534b544f502d54304e36554e420004001401140100000a00000000000000bb4700000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030004000301b80f120041003363303937326134386664623736663132613831323839613335643461333731653138666333303736363038323839373031386138626638386439393264633800</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
       <AdsDiscovery>
-        <header dataType="uint" bitLength="32">57021553</header>
-        <reserved dataType="uint" bitLength="32">0</reserved>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
         </operation>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <direction>
-          <Direction dataType="uint" bitLength="8" stringRepresentation="RESPONSE">128</Direction>
-        </direction>
-        <DiscoveryResponse>
-          <amsNetId>
-            <AmsNetId>
-              <octet1 dataType="uint" bitLength="8">192</octet1>
-              <octet2 dataType="uint" bitLength="8">168</octet2>
-              <octet3 dataType="uint" bitLength="8">2</octet3>
-              <octet4 dataType="uint" bitLength="8">221</octet4>
-              <octet5 dataType="uint" bitLength="8">1</octet5>
-              <octet6 dataType="uint" bitLength="8">1</octet6>
-            </AmsNetId>
-          </amsNetId>
-          <reserved dataType="uint" bitLength="16">4135</reserved>
-          <reserved dataType="uint" bitLength="16">1024</reserved>
-          <reserved dataType="uint" bitLength="24">5</reserved>
-          <name>
-            <AmsMagicString>
-              <len dataType="uint" bitLength="16">16</len>
-              <reserved dataType="uint" bitLength="8">0</reserved>
-              <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-T0N6UNB</text>
-              <reserved dataType="uint" bitLength="8">0</reserved>
-            </AmsMagicString>
-          </name>
-        </DiscoveryResponse>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">192</octet1>
+            <octet2 dataType="uint" bitLength="8">168</octet2>
+            <octet3 dataType="uint" bitLength="8">2</octet3>
+            <octet4 dataType="uint" bitLength="8">221</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">4</numBlocks>
+        <blocks isList="true">
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="HOST_NAME">5</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockHostName>
+              <hostName>
+                <AmsString>
+                  <len dataType="uint" bitLength="16">16</len>
+                  <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-T0N6UNB</text>
+                  <reserved dataType="uint" bitLength="8">0</reserved>
+                </AmsString>
+              </hostName>
+            </AdsDiscoveryBlockHostName>
+          </AdsDiscoveryBlock>
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="OS_DATA">4</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockOsData>
+              <osDataLen dataType="uint" bitLength="16">276</osDataLen>
+              <osData dataType="byte" bitLength="2208">0x140100000a00000000000000bb4700000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</osData>
+            </AdsDiscoveryBlockOsData>
+          </AdsDiscoveryBlock>
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="VERSION">3</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockVersion>
+              <versionDataLen dataType="uint" bitLength="16">4</versionDataLen>
+              <versionData dataType="byte" bitLength="32">0x0301b80f</versionData>
+            </AdsDiscoveryBlockVersion>
+          </AdsDiscoveryBlock>
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="FINGERPRINT">18</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockFingerprint>
+              <dataLen dataType="uint" bitLength="16">65</dataLen>
+              <data dataType="byte" bitLength="520">0x3363303937326134386664623736663132613831323839613335643461333731653138666333303736363038323839373031386138626638386439393264633800</data>
+            </AdsDiscoveryBlockFingerprint>
+          </AdsDiscoveryBlock>
+        </blocks>
       </AdsDiscovery>
     </xml>
   </testcase>
@@ -192,34 +215,37 @@
     <root-type>AdsDiscovery</root-type>
     <xml>
       <AdsDiscovery>
-        <header dataType="uint" bitLength="32">57021553</header>
-        <reserved dataType="uint" bitLength="32">0</reserved>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="8" stringRepresentation="ROUTE">6</Operation>
         </operation>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <direction>
-          <Direction dataType="uint" bitLength="8" stringRepresentation="RESPONSE">128</Direction>
-        </direction>
-        <RouteResponse>
-          <amsNetId>
-            <AmsNetId>
-              <octet1 dataType="uint" bitLength="8">192</octet1>
-              <octet2 dataType="uint" bitLength="8">168</octet2>
-              <octet3 dataType="uint" bitLength="8">2</octet3>
-              <octet4 dataType="uint" bitLength="8">221</octet4>
-              <octet5 dataType="uint" bitLength="8">1</octet5>
-              <octet6 dataType="uint" bitLength="8">1</octet6>
-            </AmsNetId>
-          </amsNetId>
-          <reserved dataType="uint" bitLength="16">4135</reserved>
-          <reserved dataType="uint" bitLength="16">256</reserved>
-          <reserved dataType="uint" bitLength="32">256</reserved>
-          <status>
-            <RouteStatus dataType="uint" bitLength="24" stringRepresentation="SUCCESS">262144</RouteStatus>
-          </status>
-          <reserved dataType="uint" bitLength="24">0</reserved>
-        </RouteResponse>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">192</octet1>
+            <octet2 dataType="uint" bitLength="8">168</octet2>
+            <octet3 dataType="uint" bitLength="8">2</octet3>
+            <octet4 dataType="uint" bitLength="8">221</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">1</numBlocks>
+        <blocks isList="true">
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="STATUS">1</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockStatus>
+              <statusLength dataType="uint" bitLength="16">4</statusLength>
+              <status>
+                <Status dataType="uint" bitLength="32" stringRepresentation="SUCCESS">0</Status>
+              </status>
+            </AdsDiscoveryBlockStatus>
+          </AdsDiscoveryBlock>
+        </blocks>
       </AdsDiscovery>
 
     </xml>
@@ -269,29 +295,27 @@
     <root-type>AdsDiscovery</root-type>
     <xml>
       <AdsDiscovery>
-        <header dataType="uint" bitLength="32">57021553</header>
-        <reserved dataType="uint" bitLength="32">0</reserved>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="DISCOVERY_REQUEST">1</Operation>
         </operation>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <direction>
-          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
-        </direction>
-        <DiscoveryRequest>
-          <amsNetId>
-            <AmsNetId>
-              <octet1 dataType="uint" bitLength="8">192</octet1>
-              <octet2 dataType="uint" bitLength="8">168</octet2>
-              <octet3 dataType="uint" bitLength="8">2</octet3>
-              <octet4 dataType="uint" bitLength="8">232</octet4>
-              <octet5 dataType="uint" bitLength="8">1</octet5>
-              <octet6 dataType="uint" bitLength="8">1</octet6>
-            </AmsNetId>
-          </amsNetId>
-          <reserved dataType="uint" bitLength="16">4135</reserved>
-          <reserved dataType="uint" bitLength="32">0</reserved>
-        </DiscoveryRequest>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">192</octet1>
+            <octet2 dataType="uint" bitLength="8">168</octet2>
+            <octet3 dataType="uint" bitLength="8">2</octet3>
+            <octet4 dataType="uint" bitLength="8">232</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">0</numBlocks>
+        <blocks isList="true">
+        </blocks>
       </AdsDiscovery>
     </xml>
   </testcase>
@@ -302,29 +326,27 @@
     <root-type>AdsDiscovery</root-type>
     <xml>
       <AdsDiscovery>
-        <header dataType="uint" bitLength="32">57021553</header>
-        <reserved dataType="uint" bitLength="32">0</reserved>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="DISCOVERY_REQUEST">1</Operation>
         </operation>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <direction>
-          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
-        </direction>
-        <DiscoveryRequest>
-          <amsNetId>
-            <AmsNetId>
-              <octet1 dataType="uint" bitLength="8">192</octet1>
-              <octet2 dataType="uint" bitLength="8">168</octet2>
-              <octet3 dataType="uint" bitLength="8">0</octet3>
-              <octet4 dataType="uint" bitLength="8">137</octet4>
-              <octet5 dataType="uint" bitLength="8">1</octet5>
-              <octet6 dataType="uint" bitLength="8">1</octet6>
-            </AmsNetId>
-          </amsNetId>
-          <reserved dataType="uint" bitLength="16">4135</reserved>
-          <reserved dataType="uint" bitLength="32">0</reserved>
-        </DiscoveryRequest>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">192</octet1>
+            <octet2 dataType="uint" bitLength="8">168</octet2>
+            <octet3 dataType="uint" bitLength="8">0</octet3>
+            <octet4 dataType="uint" bitLength="8">137</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">0</numBlocks>
+        <blocks isList="true">
+        </blocks>
       </AdsDiscovery>
     </xml>
   </testcase>
@@ -442,34 +464,37 @@
     <root-type>AdsDiscovery</root-type>
     <xml>
       <AdsDiscovery>
-        <header dataType="uint" bitLength="32">57021553</header>
-        <reserved dataType="uint" bitLength="32">0</reserved>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="8" stringRepresentation="ROUTE">6</Operation>
         </operation>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <direction>
-          <Direction dataType="uint" bitLength="8" stringRepresentation="RESPONSE">128</Direction>
-        </direction>
-        <RouteResponse>
-          <amsNetId>
-            <AmsNetId>
-              <octet1 dataType="uint" bitLength="8">5</octet1>
-              <octet2 dataType="uint" bitLength="8">28</octet2>
-              <octet3 dataType="uint" bitLength="8">91</octet3>
-              <octet4 dataType="uint" bitLength="8">140</octet4>
-              <octet5 dataType="uint" bitLength="8">1</octet5>
-              <octet6 dataType="uint" bitLength="8">1</octet6>
-            </AmsNetId>
-          </amsNetId>
-          <reserved dataType="uint" bitLength="16">4135</reserved>
-          <reserved dataType="uint" bitLength="16">256</reserved>
-          <reserved dataType="uint" bitLength="32">256</reserved>
-          <status>
-            <RouteStatus dataType="uint" bitLength="24" stringRepresentation="SUCCESS">262144</RouteStatus>
-          </status>
-          <reserved dataType="uint" bitLength="24">0</reserved>
-        </RouteResponse>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">5</octet1>
+            <octet2 dataType="uint" bitLength="8">28</octet2>
+            <octet3 dataType="uint" bitLength="8">91</octet3>
+            <octet4 dataType="uint" bitLength="8">140</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">1</numBlocks>
+        <blocks isList="true">
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="STATUS">1</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockStatus>
+              <statusLength dataType="uint" bitLength="16">4</statusLength>
+              <status>
+                <Status dataType="uint" bitLength="32" stringRepresentation="SUCCESS">0</Status>
+              </status>
+            </AdsDiscoveryBlockStatus>
+          </AdsDiscoveryBlock>
+        </blocks>
       </AdsDiscovery>
     </xml>
   </testcase>

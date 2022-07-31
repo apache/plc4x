@@ -97,7 +97,7 @@
     ]
 ]
 
-[enum uint 32 AdsDiscoveryBlockType
+[enum uint 16 AdsDiscoveryBlockType
     ['0x0001' STATUS]
     ['0x0002' PASSWORD]
     ['0x0003' VERSION]
