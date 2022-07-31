@@ -140,7 +140,7 @@ public class MessageValidatorAndMigrator {
 
                     String content;
                     try {
-                        content = new String(Files.readAllBytes(path), charset);
+                        content = Files.readString(path, charset);
                         // Make sure this also works on Windows
                         // (Mainly when using git to check out Windows style and commit in Unix style)
                         content = content.replaceAll("\r\n", "\n");

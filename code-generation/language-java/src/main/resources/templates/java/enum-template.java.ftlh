@@ -70,7 +70,7 @@ public enum ${type.name} {
                         ${enumValue.value}
                     </#if>
                 <#else>
-                    ${enumValue.value}
+                    ${enumValue.value}<#if helper.needsLongMarker(type.type)>L</#if>
                 </#if>
             </#if>
             <#if type.constantNames?has_content>

@@ -82,7 +82,7 @@
         ]
         ['AMS_NET_ID' *AmsNetId
             [const    uint 16   amsNetIdLength 0x0006                                      ]
-            [simple   AmsString amsNetId                                                   ]
+            [simple   AmsNetId  amsNetId                                                   ]
         ]
         ['ROUTE_NAME' *RouteName
             [simple   AmsString routeName                                                  ]
@@ -122,7 +122,7 @@
 
 [enum uint 32 Status
     ['0x00000000' SUCCESS]
-    ['0x000407' FAILURE]
+    ['0x00000007' FAILURE]
 ]
 
 [type AmsString
