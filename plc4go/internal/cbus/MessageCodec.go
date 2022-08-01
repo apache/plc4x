@@ -139,7 +139,7 @@ lookingForTheEnd:
 		// This means a <cr> is directly followed by a <lf> which means that we know for sure this is a response
 		pciResponse = true
 	}
-	if !requestToPci && indexOfLF < 0 {
+	if !pciResponse && !requestToPci && indexOfLF < 0 {
 		// To be sure we might receive that package later we hash the bytes and check if we might receive one
 		hash := crc32.NewIEEE()
 		_, _ = hash.Write(peekedBytes)
@@ -153,6 +153,7 @@ lookingForTheEnd:
 		} else {
 			// after 90ms we give up finding a lf
 			m.lastPackageHash, m.hashEncountered = 0, 0
+			requestToPci = true
 		}
 	}
 	if !pciResponse && !requestToPci {

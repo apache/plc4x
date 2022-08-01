@@ -31,9 +31,7 @@ type Configuration struct {
 }
 
 func ParseFromOptions(options map[string][]string) (Configuration, error) {
-	configuration := Configuration{
-		srchk: true,
-	}
+	configuration := Configuration{}
 	if srchk := getFromOptions(options, "srchk"); srchk != "" {
 		parseBool, err := strconv.ParseBool(srchk)
 		if err != nil {

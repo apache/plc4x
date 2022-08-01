@@ -20,6 +20,7 @@ package org.apache.plc4x.simulator.server.cbus.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.vavr.CheckedRunnable;
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
@@ -77,6 +78,11 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         if (!(msg instanceof CBusMessage)) {
             return;
         }
+        if (!smart && !connect) {
+            // In this mode every message will be echoed
+            LOGGER.info("Sending echo");
+            ctx.writeAndFlush(msg);
+        }
         try {
             writeLock.lock();
             CBusMessage packet = (CBusMessage) msg;
@@ -98,12 +104,24 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 // TODO: handle other cal data type
                 if (calData instanceof CALDataWrite) {
                     CALDataWrite calDataWrite = (CALDataWrite) calData;
+                    Runnable acknowledger = () -> {
+                        CALDataAcknowledge calDataAcknowledge = new CALDataAcknowledge(CALCommandTypeContainer.CALCommandAcknowledge, null, calDataWrite.getParamNo(), (short) 0x0, requestContext);
+                        CALReplyShort calReply = new CALReplyShort((byte) 0x0, calDataAcknowledge, cBusOptions, requestContext);
+                        EncodedReplyCALReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+                        ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
+                        ReplyOrConfirmationReply replyOrConfirmationReply = new ReplyOrConfirmationReply((byte) 0x0, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+                        CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmationReply, requestContext, cBusOptions);
+                        LOGGER.info("Sending ack\n{}\n{}", cBusMessageToClient, encodedReply);
+                        ctx.writeAndFlush(cBusMessageToClient);
+                    };
                     switch (calDataWrite.getParamNo().getParameterType()) {
                         case APPLICATION_ADDRESS_1:
                             // TODO: check settings for subscription etc.
+                            acknowledger.run();
                             return;
                         case APPLICATION_ADDRESS_2:
                             // TODO: check settings for subscription etc.
+                            acknowledger.run();
                             return;
                         case INTERFACE_OPTIONS_1:
                             InterfaceOptions1 interfaceOptions1 = ((ParameterValueInterfaceOptions1) calDataWrite.getParameterValue()).getValue();
@@ -117,6 +135,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             // xonxoff = interfaceOptions1.getXonXoff();
                             connect = interfaceOptions1.getConnect();
                             buildCBusOptions();
+                            acknowledger.run();
                             return;
                         case INTERFACE_OPTIONS_2:
                             InterfaceOptions2 interfaceOptions2 = ((ParameterValueInterfaceOptions2) calDataWrite.getParameterValue()).getValue();
@@ -125,6 +144,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             // TODO: add support for clockgen
                             // clockgen = interfaceOptions2.getClockGen();
                             buildCBusOptions();
+                            acknowledger.run();
                             return;
                         case INTERFACE_OPTIONS_3:
                             InterfaceOptions3 interfaceOptions3Value = ((ParameterValueInterfaceOptions3) calDataWrite.getParameterValue()).getValue();
@@ -134,12 +154,14 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             // localsal = interfaceOptions3Value.getLocalSal();
                             pcn = interfaceOptions3Value.getPcn();
                             buildCBusOptions();
+                            acknowledger.run();
                             return;
                         case BAUD_RATE_SELECTOR:
                             BaudRateSelector baudRateSelector = ((ParameterValueBaudRateSelector) calDataWrite.getParameterValue()).getValue();
                             // TODO: add support for baudrate
                             // baudrate = baudRateSelector.getValue();
                             buildCBusOptions();
+                            acknowledger.run();
                             return;
                         case INTERFACE_OPTIONS_1_POWER_UP_SETTINGS:
                             InterfaceOptions1 interfaceOptions1PowerUpSettings = ((ParameterValueInterfaceOptions1PowerUpSettings) calDataWrite.getParameterValue()).getValue().getInterfaceOptions1();
@@ -153,15 +175,19 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             // xonxoff = interfaceOptions1PowerUpSettings.getXonXoff();
                             connect = interfaceOptions1PowerUpSettings.getConnect();
                             buildCBusOptions();
+                            acknowledger.run();
                             return;
                         case CUSTOM_MANUFACTURER:
                             // TODO: handle other parm typed
+                            acknowledger.run();
                             return;
                         case SERIAL_NUMBER:
                             // TODO: handle other parm typed
+                            acknowledger.run();
                             return;
                         case CUSTOM_TYPE:
                             // TODO: handle other parm typed
+                            acknowledger.run();
                             return;
                         default:
                             throw new IllegalStateException("Unmapped type");
