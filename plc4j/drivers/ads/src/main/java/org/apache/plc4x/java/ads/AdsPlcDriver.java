@@ -20,9 +20,12 @@ package org.apache.plc4x.java.ads;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
+import org.apache.plc4x.java.ads.discovery.AdsPlcDiscoverer;
 import org.apache.plc4x.java.ads.field.AdsFieldHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -38,9 +41,7 @@ import java.util.function.ToIntFunction;
  * - TCP
  * - Serial
  */
-public class ADSPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
-
-    public static final int TCP_PORT = 48898;
+public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
 
     @Override
     public String getProtocolCode() {
@@ -50,6 +51,11 @@ public class ADSPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     @Override
     public String getProtocolName() {
         return "Beckhoff TwinCat ADS";
+    }
+
+    @Override
+    public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        return new DefaultPlcDiscoveryRequest.Builder(new AdsPlcDiscoverer());
     }
 
     @Override

@@ -192,7 +192,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                             PlcDiscoveryItem discoveryItem;
                             if (!response.getPdu().getErrorFlag()) {
                                 discoveryItem = new DefaultPlcDiscoveryItem(
-                                    "modbus-tcp", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown");
+                                    "modbus-tcp", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown", Collections.emptyMap());
                                 discoveryItems.add(discoveryItem);
 
                                 // Give a handler the chance to react on the found device.

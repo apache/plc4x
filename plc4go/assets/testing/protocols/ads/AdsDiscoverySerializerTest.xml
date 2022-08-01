@@ -240,7 +240,7 @@
         <header dataType="uint" bitLength="32">1897162243</header>
         <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_ROUTE_REQUEST">6</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_OR_UPDATE_ROUTE_REQUEST">6</Operation>
         </operation>
         <amsNetId>
           <AmsNetId>
@@ -345,7 +345,7 @@
         <header dataType="uint" bitLength="32">1897162243</header>
         <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_ROUTE_RESPONSE">2147483654</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_OR_UPDATE_ROUTE_RESPONSE">2147483654</Operation>
         </operation>
         <amsNetId>
           <AmsNetId>
@@ -378,16 +378,16 @@
     </xml>
   </testcase>
 
-  <testcase>
+  <!--testcase>
     <name>ADS Add Route Response with Failure status</name>
-    <raw>036614710000000006000080c0a802dd01011027010000000100040007000000</raw>
+    <raw>036614710000000006000080c0a802dd01011027010000000100000407000000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
       <AdsDiscovery>
         <header dataType="uint" bitLength="32">1897162243</header>
         <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_ROUTE_RESPONSE">2147483654</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_OR_UPDATE_ROUTE_RESPONSE">2147483654</Operation>
         </operation>
         <amsNetId>
           <AmsNetId>
@@ -411,14 +411,13 @@
             <AdsDiscoveryBlockStatus>
               <statusLength dataType="uint" bitLength="16">4</statusLength>
               <status>
-                <Status dataType="uint" bitLength="32" stringRepresentation="FAILURE">7</Status>
               </status>
             </AdsDiscoveryBlockStatus>
           </AdsDiscoveryBlock>
         </blocks>
       </AdsDiscovery>
     </xml>
-  </testcase>
+  </testcase-->
 
   <testcase>
     <name>ADS Discovery Request</name>
@@ -516,7 +515,7 @@
         <header dataType="uint" bitLength="32">1897162243</header>
         <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_ROUTE_REQUEST">6</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_OR_UPDATE_ROUTE_REQUEST">6</Operation>
         </operation>
         <amsNetId>
           <AmsNetId>
@@ -621,7 +620,7 @@
         <header dataType="uint" bitLength="32">1897162243</header>
         <requestId dataType="uint" bitLength="32">0</requestId>
         <operation>
-          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_ROUTE_RESPONSE">2147483654</Operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="ADD_OR_UPDATE_ROUTE_RESPONSE">2147483654</Operation>
         </operation>
         <amsNetId>
           <AmsNetId>

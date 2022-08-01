@@ -39,17 +39,21 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
     private final Map<String, String> options;
     private final String name;
 
+    private final Map<String, String> attributes;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcDiscoveryItem(@JsonProperty("protocolCode") String protocolCode,
                                    @JsonProperty("transportCode") String transportCode,
                                    @JsonProperty("transportUrl") String transportUrl,
                                    @JsonProperty("options") Map<String, String> options,
-                                   @JsonProperty("name") String name) {
+                                   @JsonProperty("name") String name,
+                                   @JsonProperty("options") Map<String, String> attributes) {
         this.protocolCode = protocolCode;
         this.transportCode = transportCode;
         this.transportUrl = transportUrl;
         this.options = options;
         this.name = name;
+        this.attributes = attributes;
     }
 
     @Override
@@ -75,6 +79,11 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
     @Override

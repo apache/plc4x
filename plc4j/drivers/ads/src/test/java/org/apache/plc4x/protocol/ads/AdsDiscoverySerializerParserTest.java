@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Disabled;
 public class AdsDiscoverySerializerParserTest extends ParserSerializerTestsuiteRunner {
 
     public AdsDiscoverySerializerParserTest() {
-        super("/protocols/ads/AdsDiscoverySerializerTest.xml");
+        super("/protocols/ads/AdsDiscoverySerializerTest.xml", true);
     }
 
 }

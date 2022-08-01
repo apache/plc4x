@@ -207,7 +207,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                                 String name = deviceTypeName + " - " + deviceName;
                                                 PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
                                                     ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
-                                                    remoteIpAddress, options, name);
+                                                    remoteIpAddress, options, name, Collections.emptyMap());
                                                 values.add(value);
 
                                                 // If we have a discovery handler, pass it to the handler callback
