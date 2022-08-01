@@ -250,7 +250,6 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 					entries = append(entries, "subscribe "+connectionsString)
 				}
 			}
-			log.Info().Msgf("%v %v", entries, config.History.Last10Hosts)
 			return
 		})
 		commandArea.AddItem(commandInputField, 2, 0, 1, 1, 0, 0, true)
