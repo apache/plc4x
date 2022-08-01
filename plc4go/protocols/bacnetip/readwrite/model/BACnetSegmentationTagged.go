@@ -192,6 +192,19 @@ func (m *_BACnetSegmentationTagged) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetSegmentationTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetSegmentationTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetSegmentationTagged) isBACnetSegmentationTagged() bool {
 	return true
 }

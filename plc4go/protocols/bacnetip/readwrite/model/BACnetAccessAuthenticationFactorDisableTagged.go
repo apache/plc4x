@@ -244,6 +244,19 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) Serialize(writeBuffer u
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) isBACnetAccessAuthenticationFactorDisableTagged() bool {
 	return true
 }

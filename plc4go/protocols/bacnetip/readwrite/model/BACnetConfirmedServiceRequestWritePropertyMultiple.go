@@ -207,6 +207,16 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(writeBuf
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceRequestPayloadLength() uint16 {
+	return m.ServiceRequestPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) isBACnetConfirmedServiceRequestWritePropertyMultiple() bool {
 	return true
 }

@@ -238,6 +238,16 @@ func (m *_BACnetSecurityKeySetKeyIds) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetSecurityKeySetKeyIds) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetSecurityKeySetKeyIds) isBACnetSecurityKeySetKeyIds() bool {
 	return true
 }

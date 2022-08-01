@@ -179,6 +179,16 @@ func (m *_BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCSecureBVLL) GetBvlcPayloadLength() uint16 {
+	return m.BvlcPayloadLength
+}
+
+//
+////
+
 func (m *_BVLCSecureBVLL) isBVLCSecureBVLL() bool {
 	return true
 }

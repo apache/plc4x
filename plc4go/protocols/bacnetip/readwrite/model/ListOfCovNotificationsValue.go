@@ -292,6 +292,16 @@ func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ListOfCovNotificationsValue) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_ListOfCovNotificationsValue) isListOfCovNotificationsValue() bool {
 	return true
 }

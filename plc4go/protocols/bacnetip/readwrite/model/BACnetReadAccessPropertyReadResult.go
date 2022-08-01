@@ -284,6 +284,22 @@ func (m *_BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetReadAccessPropertyReadResult) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetReadAccessPropertyReadResult) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return m.PropertyIdentifierArgument
+}
+func (m *_BACnetReadAccessPropertyReadResult) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
+
 func (m *_BACnetReadAccessPropertyReadResult) isBACnetReadAccessPropertyReadResult() bool {
 	return true
 }

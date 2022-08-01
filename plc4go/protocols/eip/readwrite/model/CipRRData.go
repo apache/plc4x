@@ -246,6 +246,16 @@ func (m *_CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_CipRRData) GetPacketLength() uint16 {
+	return m.PacketLength
+}
+
+//
+////
+
 func (m *_CipRRData) isCipRRData() bool {
 	return true
 }

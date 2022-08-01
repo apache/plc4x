@@ -238,6 +238,16 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) Serialize(writeBuff
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) isBACnetEventParameterAccessEventListOfAccessEvents() bool {
 	return true
 }

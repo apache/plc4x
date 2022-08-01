@@ -204,6 +204,16 @@ func (m *_BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.Wri
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCReadBroadcastDistributionTableAck) GetBvlcPayloadLength() uint16 {
+	return m.BvlcPayloadLength
+}
+
+//
+////
+
 func (m *_BVLCReadBroadcastDistributionTableAck) isBVLCReadBroadcastDistributionTableAck() bool {
 	return true
 }

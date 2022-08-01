@@ -243,6 +243,16 @@ func (pm *_BACnetServiceAck) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetServiceAck) GetServiceAckLength() uint16 {
+	return m.ServiceAckLength
+}
+
+//
+////
+
 func (m *_BACnetServiceAck) isBACnetServiceAck() bool {
 	return true
 }

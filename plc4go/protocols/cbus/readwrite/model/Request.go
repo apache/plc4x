@@ -375,6 +375,16 @@ func (pm *_Request) SerializeParent(writeBuffer utils.WriteBuffer, child Request
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_Request) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
+//
+////
+
 func (m *_Request) isRequest() bool {
 	return true
 }

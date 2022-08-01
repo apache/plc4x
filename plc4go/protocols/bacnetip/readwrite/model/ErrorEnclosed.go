@@ -225,6 +225,16 @@ func (m *_ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ErrorEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_ErrorEnclosed) isErrorEnclosed() bool {
 	return true
 }

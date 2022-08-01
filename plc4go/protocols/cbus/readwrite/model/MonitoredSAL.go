@@ -184,6 +184,16 @@ func (pm *_MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child Mo
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_MonitoredSAL) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
+//
+////
+
 func (m *_MonitoredSAL) isMonitoredSAL() bool {
 	return true
 }

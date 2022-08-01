@@ -250,6 +250,16 @@ func (pm *_CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBu
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CBusCommand) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
+//
+////
+
 func (m *_CBusCommand) isCBusCommand() bool {
 	return true
 }

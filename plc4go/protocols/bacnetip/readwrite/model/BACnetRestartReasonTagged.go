@@ -244,6 +244,19 @@ func (m *_BACnetRestartReasonTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetRestartReasonTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetRestartReasonTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetRestartReasonTagged) isBACnetRestartReasonTagged() bool {
 	return true
 }

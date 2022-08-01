@@ -192,6 +192,19 @@ func (m *_BACnetBinaryPVTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetBinaryPVTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetBinaryPVTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetBinaryPVTagged) isBACnetBinaryPVTagged() bool {
 	return true
 }

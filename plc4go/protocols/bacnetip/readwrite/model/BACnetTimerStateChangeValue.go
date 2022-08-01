@@ -261,6 +261,16 @@ func (pm *_BACnetTimerStateChangeValue) SerializeParent(writeBuffer utils.WriteB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTimerStateChangeValue) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetTimerStateChangeValue) isBACnetTimerStateChangeValue() bool {
 	return true
 }

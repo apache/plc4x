@@ -192,6 +192,19 @@ func (m *_BVLCResultCodeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCResultCodeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BVLCResultCodeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BVLCResultCodeTagged) isBVLCResultCodeTagged() bool {
 	return true
 }

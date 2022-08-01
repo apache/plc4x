@@ -238,6 +238,16 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) Serialize(writeBuffer u
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterChangeOfStateListOfValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterChangeOfStateListOfValues) isBACnetEventParameterChangeOfStateListOfValues() bool {
 	return true
 }

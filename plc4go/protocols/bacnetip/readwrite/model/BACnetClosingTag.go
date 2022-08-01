@@ -170,6 +170,16 @@ func (m *_BACnetClosingTag) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetClosingTag) GetTagNumberArgument() uint8 {
+	return m.TagNumberArgument
+}
+
+//
+////
+
 func (m *_BACnetClosingTag) isBACnetClosingTag() bool {
 	return true
 }

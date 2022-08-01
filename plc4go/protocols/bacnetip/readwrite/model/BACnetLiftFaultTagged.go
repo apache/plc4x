@@ -244,6 +244,19 @@ func (m *_BACnetLiftFaultTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLiftFaultTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLiftFaultTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLiftFaultTagged) isBACnetLiftFaultTagged() bool {
 	return true
 }

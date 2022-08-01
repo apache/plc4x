@@ -211,6 +211,22 @@ func (pm *_BACnetPropertyAccessResultAccessResult) SerializeParent(writeBuffer u
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPropertyAccessResultAccessResult) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetPropertyAccessResultAccessResult) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return m.PropertyIdentifierArgument
+}
+func (m *_BACnetPropertyAccessResultAccessResult) GetPropertyArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.PropertyArrayIndexArgument
+}
+
+//
+////
+
 func (m *_BACnetPropertyAccessResultAccessResult) isBACnetPropertyAccessResultAccessResult() bool {
 	return true
 }

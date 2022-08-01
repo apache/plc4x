@@ -244,6 +244,19 @@ func (m *_BACnetLightingTransitionTagged) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLightingTransitionTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLightingTransitionTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLightingTransitionTagged) isBACnetLightingTransitionTagged() bool {
 	return true
 }

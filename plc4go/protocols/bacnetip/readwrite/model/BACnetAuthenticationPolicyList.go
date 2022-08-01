@@ -238,6 +238,16 @@ func (m *_BACnetAuthenticationPolicyList) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAuthenticationPolicyList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetAuthenticationPolicyList) isBACnetAuthenticationPolicyList() bool {
 	return true
 }

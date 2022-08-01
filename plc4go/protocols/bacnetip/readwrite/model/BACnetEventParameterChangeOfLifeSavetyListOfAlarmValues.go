@@ -238,6 +238,16 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) Serialize(wri
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) isBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues() bool {
 	return true
 }

@@ -244,6 +244,19 @@ func (m *_BACnetEventTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventTypeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetEventTypeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetEventTypeTagged) isBACnetEventTypeTagged() bool {
 	return true
 }

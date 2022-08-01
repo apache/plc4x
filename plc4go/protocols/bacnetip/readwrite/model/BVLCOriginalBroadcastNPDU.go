@@ -190,6 +190,16 @@ func (m *_BVLCOriginalBroadcastNPDU) Serialize(writeBuffer utils.WriteBuffer) er
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCOriginalBroadcastNPDU) GetBvlcPayloadLength() uint16 {
+	return m.BvlcPayloadLength
+}
+
+//
+////
+
 func (m *_BVLCOriginalBroadcastNPDU) isBVLCOriginalBroadcastNPDU() bool {
 	return true
 }

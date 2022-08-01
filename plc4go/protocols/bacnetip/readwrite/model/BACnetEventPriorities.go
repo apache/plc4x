@@ -295,6 +295,16 @@ func (m *_BACnetEventPriorities) Serialize(writeBuffer utils.WriteBuffer) error 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventPriorities) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventPriorities) isBACnetEventPriorities() bool {
 	return true
 }

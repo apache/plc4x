@@ -192,6 +192,19 @@ func (m *_BACnetProtocolLevelTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetProtocolLevelTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetProtocolLevelTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetProtocolLevelTagged) isBACnetProtocolLevelTagged() bool {
 	return true
 }

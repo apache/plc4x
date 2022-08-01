@@ -257,6 +257,16 @@ func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetReadAccessProperty) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetReadAccessProperty) isBACnetReadAccessProperty() bool {
 	return true
 }

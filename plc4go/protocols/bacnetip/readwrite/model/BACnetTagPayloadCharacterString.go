@@ -205,6 +205,16 @@ func (m *_BACnetTagPayloadCharacterString) Serialize(writeBuffer utils.WriteBuff
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTagPayloadCharacterString) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetTagPayloadCharacterString) isBACnetTagPayloadCharacterString() bool {
 	return true
 }

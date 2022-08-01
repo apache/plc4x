@@ -244,6 +244,19 @@ func (m *_BACnetAuthorizationExemptionTagged) Serialize(writeBuffer utils.WriteB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAuthorizationExemptionTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAuthorizationExemptionTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAuthorizationExemptionTagged) isBACnetAuthorizationExemptionTagged() bool {
 	return true
 }

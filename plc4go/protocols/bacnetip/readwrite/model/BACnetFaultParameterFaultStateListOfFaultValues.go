@@ -238,6 +238,16 @@ func (m *_BACnetFaultParameterFaultStateListOfFaultValues) Serialize(writeBuffer
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetFaultParameterFaultStateListOfFaultValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetFaultParameterFaultStateListOfFaultValues) isBACnetFaultParameterFaultStateListOfFaultValues() bool {
 	return true
 }

@@ -646,6 +646,16 @@ func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_NPDU) GetNpduLength() uint16 {
+	return m.NpduLength
+}
+
+//
+////
+
 func (m *_NPDU) isNPDU() bool {
 	return true
 }

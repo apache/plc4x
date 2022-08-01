@@ -192,6 +192,19 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTa
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) isBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged() bool {
 	return true
 }

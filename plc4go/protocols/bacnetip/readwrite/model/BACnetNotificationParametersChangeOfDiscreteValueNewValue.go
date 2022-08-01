@@ -317,6 +317,16 @@ func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) SerializeP
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) isBACnetNotificationParametersChangeOfDiscreteValueNewValue() bool {
 	return true
 }

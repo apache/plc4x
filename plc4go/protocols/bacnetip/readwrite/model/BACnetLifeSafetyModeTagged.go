@@ -244,6 +244,19 @@ func (m *_BACnetLifeSafetyModeTagged) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLifeSafetyModeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLifeSafetyModeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLifeSafetyModeTagged) isBACnetLifeSafetyModeTagged() bool {
 	return true
 }

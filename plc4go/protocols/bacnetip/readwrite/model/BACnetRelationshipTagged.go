@@ -244,6 +244,19 @@ func (m *_BACnetRelationshipTagged) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetRelationshipTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetRelationshipTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetRelationshipTagged) isBACnetRelationshipTagged() bool {
 	return true
 }

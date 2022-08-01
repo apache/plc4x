@@ -192,6 +192,19 @@ func (m *_BACnetLiftGroupModeTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLiftGroupModeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLiftGroupModeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLiftGroupModeTagged) isBACnetLiftGroupModeTagged() bool {
 	return true
 }

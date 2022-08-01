@@ -211,6 +211,19 @@ func (pm *_ReplyOrConfirmation) SerializeParent(writeBuffer utils.WriteBuffer, c
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ReplyOrConfirmation) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+func (m *_ReplyOrConfirmation) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_ReplyOrConfirmation) isReplyOrConfirmation() bool {
 	return true
 }

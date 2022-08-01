@@ -238,6 +238,16 @@ func (m *_BACnetEventSummariesList) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventSummariesList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventSummariesList) isBACnetEventSummariesList() bool {
 	return true
 }

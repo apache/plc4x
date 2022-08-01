@@ -254,6 +254,16 @@ func (pm *_CBusPointToPointToMultiPointCommand) SerializeParent(writeBuffer util
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CBusPointToPointToMultiPointCommand) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
+//
+////
+
 func (m *_CBusPointToPointToMultiPointCommand) isCBusPointToPointToMultiPointCommand() bool {
 	return true
 }

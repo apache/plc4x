@@ -247,6 +247,16 @@ func (pm *_NLM) SerializeParent(writeBuffer utils.WriteBuffer, child NLM, serial
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_NLM) GetApduLength() uint16 {
+	return m.ApduLength
+}
+
+//
+////
+
 func (m *_NLM) isNLM() bool {
 	return true
 }

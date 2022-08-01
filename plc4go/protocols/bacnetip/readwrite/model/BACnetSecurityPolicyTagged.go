@@ -192,6 +192,19 @@ func (m *_BACnetSecurityPolicyTagged) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetSecurityPolicyTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetSecurityPolicyTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetSecurityPolicyTagged) isBACnetSecurityPolicyTagged() bool {
 	return true
 }

@@ -192,6 +192,19 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) isBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged() bool {
 	return true
 }

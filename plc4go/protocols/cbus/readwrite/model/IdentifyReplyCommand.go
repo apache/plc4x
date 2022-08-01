@@ -193,6 +193,16 @@ func (pm *_IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_IdentifyReplyCommand) GetNumBytes() uint8 {
+	return m.NumBytes
+}
+
+//
+////
+
 func (m *_IdentifyReplyCommand) isIdentifyReplyCommand() bool {
 	return true
 }

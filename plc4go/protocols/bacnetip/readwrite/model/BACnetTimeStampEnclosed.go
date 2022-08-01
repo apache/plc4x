@@ -225,6 +225,16 @@ func (m *_BACnetTimeStampEnclosed) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTimeStampEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetTimeStampEnclosed) isBACnetTimeStampEnclosed() bool {
 	return true
 }

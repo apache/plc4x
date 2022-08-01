@@ -238,6 +238,16 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.Wr
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) isVTCloseErrorListOfVTSessionIdentifiers() bool {
 	return true
 }

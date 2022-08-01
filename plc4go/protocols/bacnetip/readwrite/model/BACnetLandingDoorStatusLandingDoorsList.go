@@ -238,6 +238,16 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) Serialize(writeBuffer utils.W
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLandingDoorStatusLandingDoorsList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetLandingDoorStatusLandingDoorsList) isBACnetLandingDoorStatusLandingDoorsList() bool {
 	return true
 }

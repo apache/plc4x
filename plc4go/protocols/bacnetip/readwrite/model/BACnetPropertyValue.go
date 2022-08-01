@@ -307,6 +307,16 @@ func (m *_BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPropertyValue) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetPropertyValue) isBACnetPropertyValue() bool {
 	return true
 }

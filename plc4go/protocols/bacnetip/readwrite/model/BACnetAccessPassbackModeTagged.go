@@ -192,6 +192,19 @@ func (m *_BACnetAccessPassbackModeTagged) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAccessPassbackModeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessPassbackModeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAccessPassbackModeTagged) isBACnetAccessPassbackModeTagged() bool {
 	return true
 }

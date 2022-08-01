@@ -192,6 +192,19 @@ func (m *_NPDUNetworkPriorityTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_NPDUNetworkPriorityTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_NPDUNetworkPriorityTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_NPDUNetworkPriorityTagged) isNPDUNetworkPriorityTagged() bool {
 	return true
 }

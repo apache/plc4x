@@ -182,6 +182,16 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) Serialize(writeBuffer utils
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConfirmedServiceRequestAuthenticate) GetServiceRequestPayloadLength() uint16 {
+	return m.ServiceRequestPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetConfirmedServiceRequestAuthenticate) isBACnetConfirmedServiceRequestAuthenticate() bool {
 	return true
 }

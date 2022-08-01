@@ -244,6 +244,19 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) Serialize(writeBuffer utils.Writ
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAccessZoneOccupancyStateTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessZoneOccupancyStateTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAccessZoneOccupancyStateTagged) isBACnetAccessZoneOccupancyStateTagged() bool {
 	return true
 }

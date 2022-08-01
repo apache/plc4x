@@ -266,6 +266,19 @@ func (pm *_EncodedReply) SerializeParent(writeBuffer utils.WriteBuffer, child En
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_EncodedReply) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+func (m *_EncodedReply) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_EncodedReply) isEncodedReply() bool {
 	return true
 }

@@ -244,6 +244,19 @@ func (m *_BACnetEscalatorFaultTagged) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEscalatorFaultTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetEscalatorFaultTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetEscalatorFaultTagged) isBACnetEscalatorFaultTagged() bool {
 	return true
 }

@@ -244,6 +244,19 @@ func (m *_BACnetNetworkTypeTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetNetworkTypeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetNetworkTypeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetNetworkTypeTagged) isBACnetNetworkTypeTagged() bool {
 	return true
 }

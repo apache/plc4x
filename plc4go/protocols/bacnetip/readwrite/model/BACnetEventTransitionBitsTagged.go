@@ -261,6 +261,19 @@ func (m *_BACnetEventTransitionBitsTagged) Serialize(writeBuffer utils.WriteBuff
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventTransitionBitsTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetEventTransitionBitsTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetEventTransitionBitsTagged) isBACnetEventTransitionBitsTagged() bool {
 	return true
 }

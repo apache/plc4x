@@ -192,6 +192,19 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) Serialize(writeBuffer utils.
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) isBACnetAccessRuleTimeRangeSpecifierTagged() bool {
 	return true
 }

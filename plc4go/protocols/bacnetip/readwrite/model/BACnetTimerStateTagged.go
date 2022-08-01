@@ -192,6 +192,19 @@ func (m *_BACnetTimerStateTagged) Serialize(writeBuffer utils.WriteBuffer) error
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTimerStateTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetTimerStateTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetTimerStateTagged) isBACnetTimerStateTagged() bool {
 	return true
 }

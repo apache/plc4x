@@ -244,6 +244,19 @@ func (m *_BACnetBinaryLightingPVTagged) Serialize(writeBuffer utils.WriteBuffer)
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetBinaryLightingPVTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetBinaryLightingPVTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetBinaryLightingPVTagged) isBACnetBinaryLightingPVTagged() bool {
 	return true
 }

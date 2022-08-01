@@ -192,6 +192,19 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) Serialize(writeBuffer utils.W
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAccessRuleLocationSpecifierTagged) isBACnetAccessRuleLocationSpecifierTagged() bool {
 	return true
 }

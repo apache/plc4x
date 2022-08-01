@@ -400,6 +400,22 @@ func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer)
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConstructedDataElement) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetConstructedDataElement) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return m.PropertyIdentifierArgument
+}
+func (m *_BACnetConstructedDataElement) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
+
 func (m *_BACnetConstructedDataElement) isBACnetConstructedDataElement() bool {
 	return true
 }

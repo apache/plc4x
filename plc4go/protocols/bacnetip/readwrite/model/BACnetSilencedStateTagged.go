@@ -244,6 +244,19 @@ func (m *_BACnetSilencedStateTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetSilencedStateTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetSilencedStateTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetSilencedStateTagged) isBACnetSilencedStateTagged() bool {
 	return true
 }

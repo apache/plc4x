@@ -711,6 +711,16 @@ func (m *_BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuff
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTagPayloadUnsignedInteger) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetTagPayloadUnsignedInteger) isBACnetTagPayloadUnsignedInteger() bool {
 	return true
 }

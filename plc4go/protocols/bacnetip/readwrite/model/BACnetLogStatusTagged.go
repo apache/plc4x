@@ -261,6 +261,19 @@ func (m *_BACnetLogStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLogStatusTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLogStatusTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLogStatusTagged) isBACnetLogStatusTagged() bool {
 	return true
 }

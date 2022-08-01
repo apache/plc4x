@@ -192,6 +192,19 @@ func (m *_BACnetFileAccessMethodTagged) Serialize(writeBuffer utils.WriteBuffer)
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetFileAccessMethodTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetFileAccessMethodTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetFileAccessMethodTagged) isBACnetFileAccessMethodTagged() bool {
 	return true
 }

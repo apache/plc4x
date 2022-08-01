@@ -253,6 +253,16 @@ func (m *_CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CipExchange) GetExchangeLen() uint16 {
+	return m.ExchangeLen
+}
+
+//
+////
+
 func (m *_CipExchange) isCipExchange() bool {
 	return true
 }

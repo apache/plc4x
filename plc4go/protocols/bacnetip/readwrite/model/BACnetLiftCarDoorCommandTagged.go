@@ -192,6 +192,19 @@ func (m *_BACnetLiftCarDoorCommandTagged) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLiftCarDoorCommandTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLiftCarDoorCommandTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLiftCarDoorCommandTagged) isBACnetLiftCarDoorCommandTagged() bool {
 	return true
 }

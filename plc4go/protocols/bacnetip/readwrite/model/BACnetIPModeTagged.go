@@ -192,6 +192,19 @@ func (m *_BACnetIPModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetIPModeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetIPModeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetIPModeTagged) isBACnetIPModeTagged() bool {
 	return true
 }

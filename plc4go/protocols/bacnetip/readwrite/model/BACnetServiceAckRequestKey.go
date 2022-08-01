@@ -181,6 +181,16 @@ func (m *_BACnetServiceAckRequestKey) Serialize(writeBuffer utils.WriteBuffer) e
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetServiceAckRequestKey) GetServiceAckPayloadLength() uint16 {
+	return m.ServiceAckPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetServiceAckRequestKey) isBACnetServiceAckRequestKey() bool {
 	return true
 }

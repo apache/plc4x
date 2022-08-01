@@ -192,6 +192,19 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagge
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) isBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged() bool {
 	return true
 }

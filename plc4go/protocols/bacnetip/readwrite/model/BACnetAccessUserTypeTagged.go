@@ -244,6 +244,19 @@ func (m *_BACnetAccessUserTypeTagged) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAccessUserTypeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessUserTypeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAccessUserTypeTagged) isBACnetAccessUserTypeTagged() bool {
 	return true
 }

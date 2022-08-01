@@ -192,6 +192,19 @@ func (m *_MaxApduLengthAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_MaxApduLengthAcceptedTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_MaxApduLengthAcceptedTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_MaxApduLengthAcceptedTagged) isMaxApduLengthAcceptedTagged() bool {
 	return true
 }

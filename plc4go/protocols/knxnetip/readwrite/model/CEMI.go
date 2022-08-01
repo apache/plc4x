@@ -219,6 +219,16 @@ func (pm *_CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child CEMI, seri
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CEMI) GetSize() uint16 {
+	return m.Size
+}
+
+//
+////
+
 func (m *_CEMI) isCEMI() bool {
 	return true
 }

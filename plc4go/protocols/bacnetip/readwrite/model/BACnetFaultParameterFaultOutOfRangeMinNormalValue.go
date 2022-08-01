@@ -288,6 +288,16 @@ func (pm *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) SerializeParent(wr
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) isBACnetFaultParameterFaultOutOfRangeMinNormalValue() bool {
 	return true
 }

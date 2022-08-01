@@ -225,6 +225,16 @@ func (m *_BACnetPropertyReferenceEnclosed) Serialize(writeBuffer utils.WriteBuff
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPropertyReferenceEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetPropertyReferenceEnclosed) isBACnetPropertyReferenceEnclosed() bool {
 	return true
 }

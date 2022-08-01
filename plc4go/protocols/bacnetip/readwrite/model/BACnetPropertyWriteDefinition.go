@@ -307,6 +307,16 @@ func (m *_BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPropertyWriteDefinition) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetPropertyWriteDefinition) isBACnetPropertyWriteDefinition() bool {
 	return true
 }

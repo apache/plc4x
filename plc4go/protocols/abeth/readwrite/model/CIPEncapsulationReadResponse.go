@@ -195,6 +195,16 @@ func (m *_CIPEncapsulationReadResponse) Serialize(writeBuffer utils.WriteBuffer)
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_CIPEncapsulationReadResponse) GetPacketLen() uint16 {
+	return m.PacketLen
+}
+
+//
+////
+
 func (m *_CIPEncapsulationReadResponse) isCIPEncapsulationReadResponse() bool {
 	return true
 }

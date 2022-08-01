@@ -329,6 +329,19 @@ func (m *_BACnetDaysOfWeekTagged) Serialize(writeBuffer utils.WriteBuffer) error
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetDaysOfWeekTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetDaysOfWeekTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetDaysOfWeekTagged) isBACnetDaysOfWeekTagged() bool {
 	return true
 }

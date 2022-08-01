@@ -332,6 +332,16 @@ func (pm *_DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_DF1ResponseMessage) GetPayloadLength() uint16 {
+	return m.PayloadLength
+}
+
+//
+////
+
 func (m *_DF1ResponseMessage) isDF1ResponseMessage() bool {
 	return true
 }

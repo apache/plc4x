@@ -244,6 +244,19 @@ func (m *_BACnetNetworkPortCommandTagged) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetNetworkPortCommandTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetNetworkPortCommandTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetNetworkPortCommandTagged) isBACnetNetworkPortCommandTagged() bool {
 	return true
 }

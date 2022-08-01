@@ -192,6 +192,19 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) Serialize(writeBuffer 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) isBACnetAccumulatorRecordAccumulatorStatusTagged() bool {
 	return true
 }

@@ -238,6 +238,16 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) Serialize(writeBuffer util
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAssignedLandingCallsLandingCallsList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetAssignedLandingCallsLandingCallsList) isBACnetAssignedLandingCallsLandingCallsList() bool {
 	return true
 }

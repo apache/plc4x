@@ -198,6 +198,16 @@ func (m *_BACnetAbortReasonTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAbortReasonTagged) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetAbortReasonTagged) isBACnetAbortReasonTagged() bool {
 	return true
 }

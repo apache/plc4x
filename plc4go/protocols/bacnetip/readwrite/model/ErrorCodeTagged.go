@@ -244,6 +244,19 @@ func (m *_ErrorCodeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ErrorCodeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_ErrorCodeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_ErrorCodeTagged) isErrorCodeTagged() bool {
 	return true
 }

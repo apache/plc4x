@@ -225,6 +225,16 @@ func (m *_BACnetDateRangeEnclosed) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetDateRangeEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetDateRangeEnclosed) isBACnetDateRangeEnclosed() bool {
 	return true
 }

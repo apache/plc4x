@@ -244,6 +244,19 @@ func (m *_BACnetLimitEnableTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLimitEnableTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLimitEnableTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLimitEnableTagged) isBACnetLimitEnableTagged() bool {
 	return true
 }

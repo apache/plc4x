@@ -192,6 +192,19 @@ func (m *_BACnetPolarityTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPolarityTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetPolarityTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetPolarityTagged) isBACnetPolarityTagged() bool {
 	return true
 }

@@ -192,6 +192,19 @@ func (m *_MaxSegmentsAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_MaxSegmentsAcceptedTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_MaxSegmentsAcceptedTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_MaxSegmentsAcceptedTagged) isMaxSegmentsAcceptedTagged() bool {
 	return true
 }

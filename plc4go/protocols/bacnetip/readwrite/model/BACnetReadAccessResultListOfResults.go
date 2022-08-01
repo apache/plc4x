@@ -239,6 +239,19 @@ func (m *_BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.Write
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetReadAccessResultListOfResults) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetReadAccessResultListOfResults) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetReadAccessResultListOfResults) isBACnetReadAccessResultListOfResults() bool {
 	return true
 }

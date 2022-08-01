@@ -380,6 +380,19 @@ func (m *_BACnetObjectTypesSupportedTagged) Serialize(writeBuffer utils.WriteBuf
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetObjectTypesSupportedTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetObjectTypesSupportedTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetObjectTypesSupportedTagged) isBACnetObjectTypesSupportedTagged() bool {
 	return true
 }

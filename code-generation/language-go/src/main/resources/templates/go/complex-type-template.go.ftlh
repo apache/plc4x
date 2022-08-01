@@ -1849,6 +1849,20 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	</#if>
 }
 
+<#if filteredParserArgumentsLocalToType?has_content>
+
+////
+// Arguments Getter
+
+    <#list filteredParserArgumentsLocalToType as parserArgument>
+func (m *_${type.name}) Get${parserArgument.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} {
+	return m.${parserArgument.name?cap_first}
+}
+    </#list>
+//
+////
+</#if>
+
 func (m *_${type.name}) is${type.name}() bool {
 	return true
 }

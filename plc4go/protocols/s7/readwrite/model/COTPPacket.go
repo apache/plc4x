@@ -318,6 +318,16 @@ func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTP
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_COTPPacket) GetCotpLen() uint16 {
+	return m.CotpLen
+}
+
+//
+////
+
 func (m *_COTPPacket) isCOTPPacket() bool {
 	return true
 }

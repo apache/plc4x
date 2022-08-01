@@ -192,6 +192,19 @@ func (m *_BACnetLightingInProgressTagged) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLightingInProgressTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLightingInProgressTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLightingInProgressTagged) isBACnetLightingInProgressTagged() bool {
 	return true
 }

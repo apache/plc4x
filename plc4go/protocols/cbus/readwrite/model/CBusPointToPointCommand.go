@@ -245,6 +245,16 @@ func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CBusPointToPointCommand) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
+//
+////
+
 func (m *_CBusPointToPointCommand) isCBusPointToPointCommand() bool {
 	return true
 }

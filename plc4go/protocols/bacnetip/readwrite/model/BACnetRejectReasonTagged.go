@@ -198,6 +198,16 @@ func (m *_BACnetRejectReasonTagged) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetRejectReasonTagged) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetRejectReasonTagged) isBACnetRejectReasonTagged() bool {
 	return true
 }

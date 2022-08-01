@@ -172,6 +172,19 @@ func (pm *_CBusMessage) SerializeParent(writeBuffer utils.WriteBuffer, child CBu
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CBusMessage) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+func (m *_CBusMessage) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
+//
+////
+
 func (m *_CBusMessage) isCBusMessage() bool {
 	return true
 }

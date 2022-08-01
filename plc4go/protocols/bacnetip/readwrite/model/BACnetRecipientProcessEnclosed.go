@@ -225,6 +225,16 @@ func (m *_BACnetRecipientProcessEnclosed) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetRecipientProcessEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetRecipientProcessEnclosed) isBACnetRecipientProcessEnclosed() bool {
 	return true
 }

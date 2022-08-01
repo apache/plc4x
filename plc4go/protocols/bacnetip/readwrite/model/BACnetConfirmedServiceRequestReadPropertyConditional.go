@@ -182,6 +182,16 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) Serialize(writeB
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetServiceRequestPayloadLength() uint16 {
+	return m.ServiceRequestPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) isBACnetConfirmedServiceRequestReadPropertyConditional() bool {
 	return true
 }

@@ -192,6 +192,19 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) Serialize(writeBuffer utils.Writ
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetUnconfirmedServiceChoiceTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetUnconfirmedServiceChoiceTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetUnconfirmedServiceChoiceTagged) isBACnetUnconfirmedServiceChoiceTagged() bool {
 	return true
 }

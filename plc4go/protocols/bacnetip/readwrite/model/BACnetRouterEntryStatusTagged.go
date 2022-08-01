@@ -192,6 +192,19 @@ func (m *_BACnetRouterEntryStatusTagged) Serialize(writeBuffer utils.WriteBuffer
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetRouterEntryStatusTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetRouterEntryStatusTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetRouterEntryStatusTagged) isBACnetRouterEntryStatusTagged() bool {
 	return true
 }

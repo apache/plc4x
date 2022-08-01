@@ -227,6 +227,16 @@ func (m *_DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) e
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_DeviceConfigurationRequest) GetTotalLength() uint16 {
+	return m.TotalLength
+}
+
+//
+////
+
 func (m *_DeviceConfigurationRequest) isDeviceConfigurationRequest() bool {
 	return true
 }

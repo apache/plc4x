@@ -192,6 +192,19 @@ func (m *_BACnetDoorValueTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetDoorValueTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetDoorValueTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetDoorValueTagged) isBACnetDoorValueTagged() bool {
 	return true
 }

@@ -225,6 +225,16 @@ func (m *_BACnetAuthenticationFactorEnclosed) Serialize(writeBuffer utils.WriteB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAuthenticationFactorEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetAuthenticationFactorEnclosed) isBACnetAuthenticationFactorEnclosed() bool {
 	return true
 }

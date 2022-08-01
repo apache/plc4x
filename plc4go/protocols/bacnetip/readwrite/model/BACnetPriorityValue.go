@@ -257,6 +257,16 @@ func (pm *_BACnetPriorityValue) SerializeParent(writeBuffer utils.WriteBuffer, c
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPriorityValue) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetPriorityValue) isBACnetPriorityValue() bool {
 	return true
 }

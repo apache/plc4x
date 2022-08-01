@@ -189,6 +189,19 @@ func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, se
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_Reply) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+func (m *_Reply) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_Reply) isReply() bool {
 	return true
 }

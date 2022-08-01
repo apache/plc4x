@@ -227,6 +227,16 @@ func (m *_TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_TunnelingRequest) GetTotalLength() uint16 {
+	return m.TotalLength
+}
+
+//
+////
+
 func (m *_TunnelingRequest) isTunnelingRequest() bool {
 	return true
 }

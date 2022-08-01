@@ -244,6 +244,19 @@ func (m *_BACnetVendorIdTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetVendorIdTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetVendorIdTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetVendorIdTagged) isBACnetVendorIdTagged() bool {
 	return true
 }

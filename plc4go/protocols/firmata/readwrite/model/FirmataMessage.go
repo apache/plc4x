@@ -183,6 +183,16 @@ func (pm *_FirmataMessage) SerializeParent(writeBuffer utils.WriteBuffer, child 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_FirmataMessage) GetResponse() bool {
+	return m.Response
+}
+
+//
+////
+
 func (m *_FirmataMessage) isFirmataMessage() bool {
 	return true
 }

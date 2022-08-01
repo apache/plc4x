@@ -279,6 +279,16 @@ func (pm *_BACnetNotificationParametersChangeOfValueNewValue) SerializeParent(wr
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetNotificationParametersChangeOfValueNewValue) isBACnetNotificationParametersChangeOfValueNewValue() bool {
 	return true
 }

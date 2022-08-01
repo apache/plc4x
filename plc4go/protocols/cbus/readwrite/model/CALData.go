@@ -323,6 +323,16 @@ func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CALData) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_CALData) isCALData() bool {
 	return true
 }

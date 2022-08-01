@@ -220,6 +220,19 @@ func (pm *_CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child CALRep
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CALReply) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+func (m *_CALReply) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_CALReply) isCALReply() bool {
 	return true
 }
