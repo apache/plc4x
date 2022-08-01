@@ -38,56 +38,37 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     private Context context;
 
     private static final RequestContext requestContext = new RequestContext(false, false, false);
-    private static final CBusOptions cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
 
-    private Lock writeLock = new ReentrantLock();
+    private static boolean connect;
+    private static boolean smart;
+    private static boolean idmon;
+    private static boolean exstat;
+    private static boolean monitor;
+    private static boolean monall;
+    private static boolean pun;
+    private static boolean pcn;
+    private static boolean srchk;
+    private static CBusOptions cBusOptions;
+
+    private final Lock writeLock = new ReentrantLock();
 
     private ScheduledFuture<?> sf;
 
     public CBusServerAdapter(Context context) {
         this.context = context;
+        cBusOptions = new CBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn, srchk);
     }
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-        sf = ctx.executor().scheduleAtFixedRate(() -> {
-            try {
-                writeLock.lock();
-                MonitoredSAL monitoredSAL;
-                if (cBusOptions.getExstat()) {
-                    // TODO implement long from
-                    throw new IllegalStateException("Not implemented");
-                } else {
-                    LightingData lightingData;
-                    double random = Math.random();
-                    if (random < 0.25) {
-                        lightingData = new LightingDataOn(LightingCommandTypeContainer.LightingCommandOn, (byte) 0xAF);
-                    } else if (random > 0.25 && random < 0.5) {
-                        lightingData = new LightingDataOff(LightingCommandTypeContainer.LightingCommandOff, (byte) 0xAF);
-                    } else if (random > 0.5 && random < 0.75) {
-                        lightingData = new LightingDataRampToLevel(LightingCommandTypeContainer.LightingCommandRampToLevel_20Second, (byte) 0xAF, (byte) 0xE0);
-                    } else {
-                        lightingData = new LightingDataTerminateRamp(LightingCommandTypeContainer.LightingCommandTerminateRamp, (byte) 0xAF);
-                    }
-                    SALData salData = new SALDataLighting(null, lightingData);
-                    monitoredSAL = new MonitoredSALShortFormBasicMode((byte) 0x0, (byte) 0x0, (short) 0x0, (short) 0x0, (byte) 0x0, ApplicationIdContainer.LIGHTING_38, salData, cBusOptions);
-                }
-                EncodedReply encodedReply = new MonitoredSALReply((byte) 0x0, monitoredSAL, cBusOptions, requestContext);
-                Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
-                ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
-                CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
-                LOGGER.info("[Monitor] Sending out\n{}\n{}", message, encodedReply);
-                ctx.writeAndFlush(message);
-            } finally {
-                writeLock.unlock();
-            }
-        }, 5, 5, TimeUnit.SECONDS);
+    private static void buildCBusOptions() {
+        LOGGER.info("Updating options {}", cBusOptions);
+        cBusOptions = new CBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn, srchk);
+        LOGGER.info("Updated options {}", cBusOptions);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        sf.cancel(false);
+        if (sf != null)
+            sf.cancel(false);
         super.channelInactive(ctx);
     }
 
@@ -111,8 +92,81 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             }
             if (request instanceof RequestDirectCommandAccess) {
                 RequestDirectCommandAccess requestDirectCommandAccess = (RequestDirectCommandAccess) request;
-                LOGGER.info("Handling RequestDirectCommandAccess\n{}", requestDirectCommandAccess);
-                // TODO: handle this
+                CALData calData = requestDirectCommandAccess.getCalData();
+                LOGGER.info("Handling RequestDirectCommandAccess\n{}\n{}", requestDirectCommandAccess, calData);
+
+                // TODO: handle other cal data type
+                if (calData instanceof CALDataWrite) {
+                    CALDataWrite calDataWrite = (CALDataWrite) calData;
+                    switch (calDataWrite.getParamNo().getParameterType()) {
+                        case APPLICATION_ADDRESS_1:
+                            // TODO: check settings for subscription etc.
+                            return;
+                        case APPLICATION_ADDRESS_2:
+                            // TODO: check settings for subscription etc.
+                            return;
+                        case INTERFACE_OPTIONS_1:
+                            InterfaceOptions1 interfaceOptions1 = ((ParameterValueInterfaceOptions1) calDataWrite.getParameterValue()).getValue();
+                            idmon = interfaceOptions1.getIdmon();
+                            monitor = interfaceOptions1.getMonitor();
+                            if (monitor) startMonitor(ctx);
+                            else stopMonitor();
+                            smart = interfaceOptions1.getSmart();
+                            srchk = interfaceOptions1.getSrchk();
+                            // TODO: add support for xonxoff
+                            // xonxoff = interfaceOptions1.getXonXoff();
+                            connect = interfaceOptions1.getConnect();
+                            buildCBusOptions();
+                            return;
+                        case INTERFACE_OPTIONS_2:
+                            InterfaceOptions2 interfaceOptions2 = ((ParameterValueInterfaceOptions2) calDataWrite.getParameterValue()).getValue();
+                            // TODO: add support for burden
+                            // burden =  interfaceOptions2.getBurden();
+                            // TODO: add support for clockgen
+                            // clockgen = interfaceOptions2.getClockGen();
+                            buildCBusOptions();
+                            return;
+                        case INTERFACE_OPTIONS_3:
+                            InterfaceOptions3 interfaceOptions3Value = ((ParameterValueInterfaceOptions3) calDataWrite.getParameterValue()).getValue();
+                            exstat = interfaceOptions3Value.getExstat();
+                            pun = interfaceOptions3Value.getPun();
+                            // TODO: add support for localsal
+                            // localsal = interfaceOptions3Value.getLocalSal();
+                            pcn = interfaceOptions3Value.getPcn();
+                            buildCBusOptions();
+                            return;
+                        case BAUD_RATE_SELECTOR:
+                            BaudRateSelector baudRateSelector = ((ParameterValueBaudRateSelector) calDataWrite.getParameterValue()).getValue();
+                            // TODO: add support for baudrate
+                            // baudrate = baudRateSelector.getValue();
+                            buildCBusOptions();
+                            return;
+                        case INTERFACE_OPTIONS_1_POWER_UP_SETTINGS:
+                            InterfaceOptions1 interfaceOptions1PowerUpSettings = ((ParameterValueInterfaceOptions1PowerUpSettings) calDataWrite.getParameterValue()).getValue().getInterfaceOptions1();
+                            idmon = interfaceOptions1PowerUpSettings.getIdmon();
+                            monitor = interfaceOptions1PowerUpSettings.getMonitor();
+                            if (monitor) startMonitor(ctx);
+                            else stopMonitor();
+                            smart = interfaceOptions1PowerUpSettings.getSmart();
+                            srchk = interfaceOptions1PowerUpSettings.getSrchk();
+                            // TODO: add support for xonxoff
+                            // xonxoff = interfaceOptions1PowerUpSettings.getXonXoff();
+                            connect = interfaceOptions1PowerUpSettings.getConnect();
+                            buildCBusOptions();
+                            return;
+                        case CUSTOM_MANUFACTURER:
+                            // TODO: handle other parm typed
+                            return;
+                        case SERIAL_NUMBER:
+                            // TODO: handle other parm typed
+                            return;
+                        case CUSTOM_TYPE:
+                            // TODO: handle other parm typed
+                            return;
+                        default:
+                            throw new IllegalStateException("Unmapped type");
+                    }
+                }
                 return;
             }
             if (request instanceof RequestCommand) {
@@ -223,7 +277,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             if (request instanceof RequestReset) {
                 RequestReset requestReset = (RequestReset) request;
                 LOGGER.info("Handling RequestReset\n{}", requestReset);
-                // TODO: handle this
+                connect = false;
+                smart = false;
+                idmon = false;
+                exstat = false;
+                monitor = false;
+                monall = false;
+                pun = false;
+                pcn = false;
+                srchk = false;
                 return;
             }
             if (request instanceof RequestSmartConnectShortcut) {
@@ -235,6 +297,63 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         } finally {
             writeLock.unlock();
         }
+    }
+
+    private void startMonitor(ChannelHandlerContext ctx) {
+        if (sf != null) {
+            LOGGER.debug("Monitor already running");
+            return;
+        }
+        LOGGER.info("Starting monitor");
+        sf = ctx.executor().scheduleAtFixedRate(() -> {
+            try {
+                writeLock.lock();
+                MonitoredSAL monitoredSAL;
+                if (cBusOptions.getExstat()) {
+                    LightingData lightingData;
+                    double random = Math.random();
+                    if (random < 0.25) {
+                        lightingData = new LightingDataOn(LightingCommandTypeContainer.LightingCommandOn, (byte) 0xAF);
+                    } else if (random > 0.25 && random < 0.5) {
+                        lightingData = new LightingDataOff(LightingCommandTypeContainer.LightingCommandOff, (byte) 0xAF);
+                    } else if (random > 0.5 && random < 0.75) {
+                        lightingData = new LightingDataRampToLevel(LightingCommandTypeContainer.LightingCommandRampToLevel_20Second, (byte) 0xAF, (byte) 0xE0);
+                    } else {
+                        lightingData = new LightingDataTerminateRamp(LightingCommandTypeContainer.LightingCommandTerminateRamp, (byte) 0xAF);
+                    }
+                    SALData salData = new SALDataLighting(null, lightingData);
+                    monitoredSAL = new MonitoredSALLongFormSmartMode((byte) 0x05, (byte) 0x00, new UnitAddress((byte) 0x0), null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, null, salData, cBusOptions);
+                } else {
+                    LightingData lightingData;
+                    double random = Math.random();
+                    if (random < 0.25) {
+                        lightingData = new LightingDataOn(LightingCommandTypeContainer.LightingCommandOn, (byte) 0xAF);
+                    } else if (random > 0.25 && random < 0.5) {
+                        lightingData = new LightingDataOff(LightingCommandTypeContainer.LightingCommandOff, (byte) 0xAF);
+                    } else if (random > 0.5 && random < 0.75) {
+                        lightingData = new LightingDataRampToLevel(LightingCommandTypeContainer.LightingCommandRampToLevel_20Second, (byte) 0xAF, (byte) 0xE0);
+                    } else {
+                        lightingData = new LightingDataTerminateRamp(LightingCommandTypeContainer.LightingCommandTerminateRamp, (byte) 0xAF);
+                    }
+                    SALData salData = new SALDataLighting(null, lightingData);
+                    monitoredSAL = new MonitoredSALShortFormBasicMode((byte) 0x0, (byte) 0x0, (short) 0x0, (short) 0x0, (byte) 0x0, ApplicationIdContainer.LIGHTING_38, salData, cBusOptions);
+                }
+                EncodedReply encodedReply = new MonitoredSALReply((byte) 0x0, monitoredSAL, cBusOptions, requestContext);
+                Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
+                ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
+                CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+                LOGGER.info("[Monitor] Sending out\n{}\n{}", message, encodedReply);
+                ctx.writeAndFlush(message);
+            } finally {
+                writeLock.unlock();
+            }
+        }, 5, 5, TimeUnit.SECONDS);
+    }
+
+    private void stopMonitor() {
+        LOGGER.info("Stopping monitor");
+        sf.cancel(false);
+        sf = null;
     }
 
 }

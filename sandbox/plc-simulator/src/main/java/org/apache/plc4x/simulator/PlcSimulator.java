@@ -153,7 +153,7 @@ public class PlcSimulator {
         CommandLine cmd = parser.parse(options, args);
 
         // Map options
-        config.host = cmd.getOptionValue("--host", "localhost");
+        config.host = cmd.getOptionValue("host", "localhost");
 
         return config;
     }
