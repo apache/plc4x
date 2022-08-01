@@ -18,7 +18,7 @@
  */
 
 [type AdsDiscoveryConstants
-    [const          uint 16     adsDiscoveryUdpDefaultPort 58899]
+    [const          uint 16     adsDiscoveryUdpDefaultPort 48899]
 ]
 
 ////////////////////////////////////////////////////////////////

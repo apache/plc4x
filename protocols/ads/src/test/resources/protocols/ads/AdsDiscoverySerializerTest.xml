@@ -129,6 +129,109 @@
   </testcase>
 
   <testcase>
+    <name>ADS Discovery Request from 192.168.23.209.1.1</name>
+    <raw>036614710000000001000000c0a817d10101102700000000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
+        <operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="DISCOVERY_REQUEST">1</Operation>
+        </operation>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">192</octet1>
+            <octet2 dataType="uint" bitLength="8">168</octet2>
+            <octet3 dataType="uint" bitLength="8">23</octet3>
+            <octet4 dataType="uint" bitLength="8">209</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">0</numBlocks>
+        <blocks isList="true">
+        </blocks>
+      </AdsDiscovery>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Discovery Response from 192.168.23.20.1.1</name>
+    <raw>036614710000000001000080c0a81714010110270400000005000700424b5f4950430004001401140100000600000001000000b11d000002000000530065007200760069006300650020005000610063006b0020003100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030004000301b80f120041003365383565393165353864346663613166643663636133323332336338613561326665306334323132343532343833303662373638353034323665353532623100</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">1897162243</header>
+        <requestId dataType="uint" bitLength="32">0</requestId>
+        <operation>
+          <Operation dataType="uint" bitLength="32" stringRepresentation="DISCOVERY_RESPONSE">2147483649</Operation>
+        </operation>
+        <amsNetId>
+          <AmsNetId>
+            <octet1 dataType="uint" bitLength="8">192</octet1>
+            <octet2 dataType="uint" bitLength="8">168</octet2>
+            <octet3 dataType="uint" bitLength="8">23</octet3>
+            <octet4 dataType="uint" bitLength="8">20</octet4>
+            <octet5 dataType="uint" bitLength="8">1</octet5>
+            <octet6 dataType="uint" bitLength="8">1</octet6>
+          </AmsNetId>
+        </amsNetId>
+        <portNumber>
+          <AdsPortNumbers dataType="uint" bitLength="16" stringRepresentation="SYSTEM_SERVICE">10000</AdsPortNumbers>
+        </portNumber>
+        <numBlocks dataType="uint" bitLength="32">4</numBlocks>
+        <blocks isList="true">
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="HOST_NAME">5</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockHostName>
+              <hostName>
+                <AmsString>
+                  <len dataType="uint" bitLength="16">7</len>
+                  <text dataType="string" bitLength="48" encoding="UTF-8">BK_IPC</text>
+                  <reserved dataType="uint" bitLength="8">0</reserved>
+                </AmsString>
+              </hostName>
+            </AdsDiscoveryBlockHostName>
+          </AdsDiscoveryBlock>
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="OS_DATA">4</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockOsData>
+              <osDataLen dataType="uint" bitLength="16">276</osDataLen>
+              <osData dataType="byte" bitLength="2208">0x140100000600000001000000b11d000002000000530065007200760069006300650020005000610063006b0020003100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</osData>
+            </AdsDiscoveryBlockOsData>
+          </AdsDiscoveryBlock>
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="VERSION">3</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockVersion>
+              <versionDataLen dataType="uint" bitLength="16">4</versionDataLen>
+              <versionData dataType="byte" bitLength="32">0x0301b80f</versionData>
+            </AdsDiscoveryBlockVersion>
+          </AdsDiscoveryBlock>
+          <AdsDiscoveryBlock>
+            <blockType>
+              <AdsDiscoveryBlockType dataType="uint" bitLength="16" stringRepresentation="FINGERPRINT">18</AdsDiscoveryBlockType>
+            </blockType>
+            <AdsDiscoveryBlockFingerprint>
+              <dataLen dataType="uint" bitLength="16">65</dataLen>
+              <data dataType="byte" bitLength="520">0x3365383565393165353864346663613166643663636133323332336338613561326665306334323132343532343833303662373638353034323665353532623100</data>
+            </AdsDiscoveryBlockFingerprint>
+          </AdsDiscoveryBlock>
+        </blocks>
+      </AdsDiscovery>
+    </xml>
+  </testcase>
+
+  <testcase>
     <name>ADS Add Route Request from 10.10.10.10.1.1 via 10.10.10.10 with user='username' and pwd='password'</name>
     <raw>0366147100000000060000000a0a0a0a01011027050000000c000c0031302e31302e31302e313000070006000a0a0a0a01010d000900757365726e616d65000200090070617373776f72640005000c0031302e31302e31302e313000</raw>
     <root-type>AdsDiscovery</root-type>
