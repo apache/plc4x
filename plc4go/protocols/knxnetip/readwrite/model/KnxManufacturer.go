@@ -630,8 +630,9 @@ const (
 	KnxManufacturer_M_FEISHELEC                                          KnxManufacturer = 590
 	KnxManufacturer_M_GORDIC                                             KnxManufacturer = 591
 	KnxManufacturer_M_DELTA_ELECTRONICS                                  KnxManufacturer = 592
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 593
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 594
+	KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_     KnxManufacturer = 593
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 594
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 595
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1232,6 +1233,7 @@ func init() {
 		KnxManufacturer_M_FEISHELEC,
 		KnxManufacturer_M_GORDIC,
 		KnxManufacturer_M_DELTA_ELECTRONICS,
+		KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3437,10 +3439,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 593:
 		{ /* '593' */
-			return 43954
+			return 651
 		}
 	case 594:
 		{ /* '594' */
+			return 43954
+		}
+	case 595:
+		{ /* '595' */
 			return 43959
 		}
 	case 6:
@@ -5835,10 +5841,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 593:
 		{ /* '593' */
-			return "ABB - reserved"
+			return "Shanghai Lewin Intelligent Technology Co.,Ltd."
 		}
 	case 594:
 		{ /* '594' */
+			return "ABB - reserved"
+		}
+	case 595:
+		{ /* '595' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 6:
@@ -7133,8 +7143,10 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 592:
 		return KnxManufacturer_M_DELTA_ELECTRONICS, true
 	case 593:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_, true
 	case 594:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 595:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 6:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO, true
@@ -8328,6 +8340,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_GORDIC, true
 	case "M_DELTA_ELECTRONICS":
 		return KnxManufacturer_M_DELTA_ELECTRONICS, true
+	case "M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_":
+		return KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -9569,6 +9583,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_GORDIC"
 	case KnxManufacturer_M_DELTA_ELECTRONICS:
 		return "M_DELTA_ELECTRONICS"
+	case KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_:
+		return "M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
