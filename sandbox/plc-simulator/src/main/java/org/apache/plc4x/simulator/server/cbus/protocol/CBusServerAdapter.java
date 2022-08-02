@@ -214,13 +214,22 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         StatusRequest statusRequest = cBusPointToMultiPointCommandStatus.getStatusRequest();
                         if (statusRequest instanceof StatusRequestBinaryState) {
                             StatusRequestBinaryState statusRequestBinaryState = (StatusRequestBinaryState) statusRequest;
-                            StatusHeader statusHeader = new StatusHeader((short) (2 + 1)); // 2 we have always + 1 as we got one status byte
-                            // TODO: map actuall values from simulator
-                            byte blockStart = 0x0;
-                            List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                            // TODO: this might be extended or standard depeding on exstat
-                            StandardFormatStatusReply standardFormatStatusReply = new StandardFormatStatusReply(statusHeader, statusRequestBinaryState.getApplication(), blockStart, statusBytes);
-                            EncodedReply encodedReply = new EncodedReplyStandardFormatStatusReply((byte) 0xC0, standardFormatStatusReply, cBusOptions, requestContext);
+                            EncodedReply encodedReply;
+                            if (exstat) {
+                                ExtendedStatusHeader extendedStatusHeader = new ExtendedStatusHeader((short) (3 + 1));
+                                // TODO: map actuall values from simulator
+                                byte blockStart = 0x0;
+                                List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                                ExtendedFormatStatusReply extendedFormatStatusReply = new ExtendedFormatStatusReply(extendedStatusHeader, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryState.getApplication(), blockStart, statusBytes, null);// 3 we have always + 1 as we got one status byte
+                                encodedReply = new EncodedReplyExtendedFormatStatusReply((byte) 0xE0, extendedFormatStatusReply, cBusOptions, requestContext);
+                            } else {
+                                StatusHeader statusHeader = new StatusHeader((short) (2 + 1)); // 2 we have always + 1 as we got one status byte
+                                // TODO: map actuall values from simulator
+                                byte blockStart = 0x0;
+                                List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                                StandardFormatStatusReply standardFormatStatusReply = new StandardFormatStatusReply(statusHeader, statusRequestBinaryState.getApplication(), blockStart, statusBytes);
+                                encodedReply = new EncodedReplyStandardFormatStatusReply((byte) 0xC0, standardFormatStatusReply, cBusOptions, requestContext);
+                            }
                             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
                             Alpha alpha = requestCommand.getAlpha();
@@ -312,6 +321,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 pun = false;
                 pcn = false;
                 srchk = false;
+                stopMonitor();
                 return;
             }
             if (request instanceof RequestSmartConnectShortcut) {
