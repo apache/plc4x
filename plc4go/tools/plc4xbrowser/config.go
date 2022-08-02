@@ -20,6 +20,7 @@
 package main
 
 import (
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -35,7 +36,8 @@ type Config struct {
 	History struct {
 		Last10Hosts []string `yaml:"last_hosts"`
 	}
-	lastUpdated time.Time `yaml:"last_updated"`
+	LastUpdated time.Time `yaml:"last_updated"`
+	LogLevel    string    `yaml:"log_level"`
 }
 
 func init() {
@@ -74,7 +76,7 @@ func loadConfig() {
 }
 
 func saveConfig() {
-	config.lastUpdated = time.Now()
+	config.LastUpdated = time.Now()
 	f, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		log.Warn().Err(err).Msg("Can't save config file")
@@ -108,4 +110,8 @@ func addHost(host string) {
 		config.History.Last10Hosts = config.History.Last10Hosts[1:]
 	}
 	config.History.Last10Hosts = append(config.History.Last10Hosts, host)
+}
+
+func setLevel(level zerolog.Level) {
+	config.LogLevel = level.String()
 }

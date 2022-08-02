@@ -39,12 +39,13 @@ import (
 	"github.com/rs/zerolog/log"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	plc4x_config "github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 )
 
 // TODO: replace with real commands
-const plc4xCommands = "connect,disconnect,read,write,register,subscribe,quit"
+const plc4xCommands = "connect,disconnect,read,write,register,subscribe,quit,log,plc4x-conf"
 const protocols = "ads,bacnetip,c-bus,s7"
 
 var driverManager plc4go.PlcDriverManager
@@ -249,6 +250,28 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 				for connectionsString, _ := range connections {
 					entries = append(entries, "subscribe "+connectionsString)
 				}
+			case strings.HasPrefix(currentText, "log"):
+				levels := []string{
+					zerolog.LevelTraceValue,
+					zerolog.LevelDebugValue,
+					zerolog.LevelInfoValue,
+					zerolog.LevelWarnValue,
+					zerolog.LevelErrorValue,
+					zerolog.LevelFatalValue,
+					zerolog.LevelPanicValue,
+				}
+				for _, level := range levels {
+					entries = append(entries, "log "+level)
+				}
+			case strings.HasPrefix(currentText, "plc4x-conf"):
+				for _, plc4xConf := range []string{
+					"TraceTransactionManagerWorkers",
+					"TraceTransactionManagerTransactions",
+					"TraceDefaultMessageCodecWorker",
+				} {
+					entries = append(entries, "plc4x-conf "+plc4xConf+" true")
+					entries = append(entries, "plc4x-conf "+plc4xConf+" false")
+				}
 			}
 			return
 		})
@@ -332,6 +355,27 @@ func handleCommand(commandText string) error {
 			}
 			log.Info().Msgf("subscription result %s", subscriptionRequestResult.GetResponse())
 		}
+	case strings.HasPrefix(commandText, "log"):
+		level := strings.TrimPrefix(commandText, "log ")
+		parseLevel, err := zerolog.ParseLevel(level)
+		if err != nil {
+			return errors.Wrapf(err, "Error setting log level")
+		}
+		setLevel(parseLevel)
+		log.Logger = log.Logger.Level(parseLevel)
+	case strings.HasPrefix(commandText, "plc4x-conf"):
+		plc4xConf := strings.TrimPrefix(commandText, "plc4x-conf ")
+		switch {
+		case strings.HasPrefix(plc4xConf, "TraceTransactionManagerWorkers "):
+			on := strings.TrimPrefix(plc4xConf, "TraceTransactionManagerWorkers ")
+			plc4x_config.TraceTransactionManagerWorkers = on == "true"
+		case strings.HasPrefix(plc4xConf, "TraceTransactionManagerTransactions "):
+			on := strings.TrimPrefix(plc4xConf, "TraceTransactionManagerTransactions ")
+			plc4x_config.TraceTransactionManagerWorkers = on == "true"
+		case strings.HasPrefix(plc4xConf, "TraceDefaultMessageCodecWorker "):
+			on := strings.TrimPrefix(plc4xConf, "TraceDefaultMessageCodecWorker ")
+			plc4x_config.TraceTransactionManagerWorkers = on == "true"
+		}
 	default:
 		return errors.Errorf("%s not found", commandText)
 	}
@@ -388,11 +432,20 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 					application.Draw()
 				})
 
+			logLevel := zerolog.InfoLevel
+			if configuredLevel := config.LogLevel; configuredLevel != "" {
+				if parsedLevel, err := zerolog.ParseLevel(configuredLevel); err != nil {
+					panic(err)
+				} else {
+					logLevel = parsedLevel
+				}
+			}
+
 			log.Logger = log.
 				//// Enable below if you want to see the filenames
 				//With().Caller().Logger().
 				Output(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleView)}).
-				Level(zerolog.InfoLevel)
+				Level(logLevel)
 
 			consoleView.SetBorder(false)
 			outputArea.AddItem(consoleView, 2, 0, 1, 1, 0, 0, false)
