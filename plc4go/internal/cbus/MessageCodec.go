@@ -179,13 +179,27 @@ lookingForTheEnd:
 	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
 		// TODO: bit bad we need to do this but cal detection is not reliable enough
-		rb := utils.NewReadBufferByteBased(read)
-		cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false, false, false), m.cbusOptions)
-		if secondErr == nil {
-			return cBusMessage, nil
-		} else {
-			log.Debug().Err(secondErr).Msg("Second parse failed too")
+		{ // Try SAL
+			rb := utils.NewReadBufferByteBased(read)
+			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false, false, false), m.cbusOptions)
+			if secondErr == nil {
+				return cBusMessage, nil
+			} else {
+				log.Debug().Err(secondErr).Msg("SAL parse failed too")
+			}
 		}
+		{ // Try MMI
+			requestContext := readwriteModel.NewRequestContext(false, false, false)
+			cbusOptions := readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
+			rb := utils.NewReadBufferByteBased(read)
+			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, true, requestContext, cbusOptions)
+			if secondErr == nil {
+				return cBusMessage, nil
+			} else {
+				log.Debug().Err(secondErr).Msg("CAL parse failed too")
+			}
+		}
+
 		log.Warn().Err(err).Msg("error parsing")
 		// TODO: Possibly clean up ...
 		return nil, nil

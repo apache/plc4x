@@ -431,5 +431,16 @@ public class RandomPackagesTest {
         assertMessageMatches(bytes, msg);
     }
 
+    @Test
+    void incmoingMMI() throws Exception {
+        byte[] bytes = ("86040200F940380001000000000000000008000000000000000000000000FA\r\n").getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+        assertMessageMatches(bytes, msg);
+    }
 
 }

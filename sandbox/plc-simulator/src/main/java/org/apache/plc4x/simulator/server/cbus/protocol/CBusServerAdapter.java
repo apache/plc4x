@@ -20,7 +20,6 @@ package org.apache.plc4x.simulator.server.cbus.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.vavr.CheckedRunnable;
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
@@ -53,7 +52,9 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
     private final Lock writeLock = new ReentrantLock();
 
-    private ScheduledFuture<?> sf;
+    private ScheduledFuture<?> salMonitorFuture;
+
+    private ScheduledFuture<?> mmiMonitorFuture;
 
     public CBusServerAdapter(Context context) {
         this.context = context;
@@ -68,8 +69,10 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (sf != null)
-            sf.cancel(false);
+        if (salMonitorFuture != null)
+            salMonitorFuture.cancel(false);
+        if (mmiMonitorFuture != null)
+            mmiMonitorFuture.cancel(false);
         super.channelInactive(ctx);
     }
 
@@ -127,13 +130,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             InterfaceOptions1 interfaceOptions1 = ((ParameterValueInterfaceOptions1) calDataWrite.getParameterValue()).getValue();
                             idmon = interfaceOptions1.getIdmon();
                             monitor = interfaceOptions1.getMonitor();
-                            if (monitor) startMonitor(ctx);
-                            else stopMonitor();
+                            if (monitor) startMMIMonitor(ctx);
+                            else stopMMIMonitor();
                             smart = interfaceOptions1.getSmart();
                             srchk = interfaceOptions1.getSrchk();
                             // TODO: add support for xonxoff
                             // xonxoff = interfaceOptions1.getXonXoff();
                             connect = interfaceOptions1.getConnect();
+                            if (connect) startSALMonitor(ctx);
+                            else stopSALMonitor();
                             buildCBusOptions();
                             acknowledger.run();
                             return;
@@ -167,13 +172,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             InterfaceOptions1 interfaceOptions1PowerUpSettings = ((ParameterValueInterfaceOptions1PowerUpSettings) calDataWrite.getParameterValue()).getValue().getInterfaceOptions1();
                             idmon = interfaceOptions1PowerUpSettings.getIdmon();
                             monitor = interfaceOptions1PowerUpSettings.getMonitor();
-                            if (monitor) startMonitor(ctx);
-                            else stopMonitor();
+                            if (monitor) startMMIMonitor(ctx);
+                            else stopMMIMonitor();
                             smart = interfaceOptions1PowerUpSettings.getSmart();
                             srchk = interfaceOptions1PowerUpSettings.getSrchk();
                             // TODO: add support for xonxoff
                             // xonxoff = interfaceOptions1PowerUpSettings.getXonXoff();
                             connect = interfaceOptions1PowerUpSettings.getConnect();
+                            if (connect) startSALMonitor(ctx);
+                            else stopSALMonitor();
                             buildCBusOptions();
                             acknowledger.run();
                             return;
@@ -321,7 +328,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 pun = false;
                 pcn = false;
                 srchk = false;
-                stopMonitor();
+                stopSALMonitor();
                 return;
             }
             if (request instanceof RequestSmartConnectShortcut) {
@@ -335,13 +342,13 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void startMonitor(ChannelHandlerContext ctx) {
-        if (sf != null) {
-            LOGGER.debug("Monitor already running");
+    private void startSALMonitor(ChannelHandlerContext ctx) {
+        if (salMonitorFuture != null) {
+            LOGGER.debug("SAL Monitor already running");
             return;
         }
         LOGGER.info("Starting monitor");
-        sf = ctx.executor().scheduleAtFixedRate(() -> {
+        salMonitorFuture = ctx.executor().scheduleAtFixedRate(() -> {
             try {
                 writeLock.lock();
                 MonitoredSAL monitoredSAL;
@@ -378,7 +385,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
                 ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
                 CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
-                LOGGER.info("[Monitor] Sending out\n{}\n{}", message, encodedReply);
+                LOGGER.info("[SAL Monitor] Sending out\n{}\n{}", message, encodedReply);
                 ctx.writeAndFlush(message);
             } finally {
                 writeLock.unlock();
@@ -386,13 +393,63 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         }, 5, 5, TimeUnit.SECONDS);
     }
 
-    private void stopMonitor() {
-        if (sf == null) {
+    private void stopMMIMonitor() {
+        if (salMonitorFuture == null) {
+            return;
+        }
+        LOGGER.info("Stopping SAL monitor");
+        salMonitorFuture.cancel(false);
+        salMonitorFuture = null;
+    }
+
+    private void startMMIMonitor(ChannelHandlerContext ctx) {
+        if (mmiMonitorFuture != null) {
+            LOGGER.debug("MMI Monitor already running");
+            return;
+        }
+        LOGGER.info("Starting MMI monitor");
+        mmiMonitorFuture = ctx.executor().scheduleAtFixedRate(() -> {
+            // TODO: for whatever reason those are not send with a crc
+            cBusOptions = new CBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn, false);
+            try {
+                writeLock.lock();
+                CALReply calReply;
+                if (cBusOptions.getExstat()) {
+                    byte[] data = {
+                        /*00|*/0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, //'..........'
+                        /*10|*/0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //'..........'
+                        /*20|*/0x00, 0x00, (byte) 0xFA,                                    //'...       '
+                    };
+                    CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, (short) 0x40, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, data, requestContext);
+                    calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
+                } else {
+                    byte[] data = {
+                        /*00|*/0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, //'..........'
+                        /*10|*/0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //'..........'
+                        /*20|*/0x00, 0x00, (byte) 0xFA,                                    //'...       '
+                    };
+                    CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandStatus_25Bytes, null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, data, requestContext);
+                    calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+                }
+                EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+                Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
+                ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
+                CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+                LOGGER.info("[MMI Monitor] Sending out\n{}\n{}", message, encodedReply);
+                ctx.writeAndFlush(message);
+            } finally {
+                writeLock.unlock();
+            }
+        }, 5, 5, TimeUnit.SECONDS);
+    }
+
+    private void stopSALMonitor() {
+        if (mmiMonitorFuture == null) {
             return;
         }
         LOGGER.info("Stopping monitor");
-        sf.cancel(false);
-        sf = null;
+        mmiMonitorFuture.cancel(false);
+        mmiMonitorFuture = null;
     }
 
 }
