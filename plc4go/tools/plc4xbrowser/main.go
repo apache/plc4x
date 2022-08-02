@@ -58,6 +58,8 @@ var commandsExecuted int
 var messagesReceived int
 var messageOutput io.Writer
 
+var consoleOutput io.Writer
+
 func init() {
 	hasShutdown = false
 	connections = make(map[string]plc4go.PlcConnection)
@@ -65,6 +67,21 @@ func init() {
 
 func initSubsystem() {
 	driverManager = plc4go.NewPlcDriverManager()
+
+	logLevel := zerolog.InfoLevel
+	if configuredLevel := config.LogLevel; configuredLevel != "" {
+		if parsedLevel, err := zerolog.ParseLevel(configuredLevel); err != nil {
+			panic(err)
+		} else {
+			logLevel = parsedLevel
+		}
+	}
+
+	log.Logger = log.
+		//// Enable below if you want to see the filenames
+		//With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)}).
+		Level(logLevel)
 }
 
 var shutdownMutex sync.Mutex
@@ -426,26 +443,10 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 		{
 			consoleView := tview.NewTextView().
 				SetDynamicColors(true).
-				SetRegions(true).
-				SetWordWrap(true).
 				SetChangedFunc(func() {
 					application.Draw()
 				})
-
-			logLevel := zerolog.InfoLevel
-			if configuredLevel := config.LogLevel; configuredLevel != "" {
-				if parsedLevel, err := zerolog.ParseLevel(configuredLevel); err != nil {
-					panic(err)
-				} else {
-					logLevel = parsedLevel
-				}
-			}
-
-			log.Logger = log.
-				//// Enable below if you want to see the filenames
-				//With().Caller().Logger().
-				Output(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleView)}).
-				Level(logLevel)
+			consoleOutput = consoleView
 
 			consoleView.SetBorder(false)
 			outputArea.AddItem(consoleView, 2, 0, 1, 1, 0, 0, false)
