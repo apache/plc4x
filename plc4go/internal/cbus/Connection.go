@@ -243,6 +243,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
 			return
 		}
+		// TODO: add localsal to the options
 		*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, true, false, false, false, false, false)
 		log.Debug().Msg("Interface options 3 set")
 	}
@@ -252,7 +253,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
 			return
 		}
-		*cbusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
+		*cbusOptions = readWriteModel.NewCBusOptions(true, true, true, true, true, false, false, false, true)
 		log.Debug().Msg("Interface options 1 power up settings set")
 	}
 	{
@@ -261,7 +262,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
 			return
 		}
-		*cbusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
+		*cbusOptions = readWriteModel.NewCBusOptions(true, true, true, true, true, false, false, false, true)
 		log.Debug().Msg("Interface options 1 set")
 	}
 	c.fireConnected(ch)
