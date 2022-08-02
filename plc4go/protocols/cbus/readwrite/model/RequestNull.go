@@ -86,9 +86,9 @@ func (m *_RequestNull) GetNullIndicator() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewRequestNull factory function for _RequestNull
-func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_RequestNull {
+func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestNull {
 	_result := &_RequestNull{
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -126,7 +126,7 @@ func (m *_RequestNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestNullParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (RequestNull, error) {
+func RequestNullParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestNull"); pullErr != nil {
@@ -151,8 +151,7 @@ func RequestNullParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, mess
 	// Create a partially initialized instance
 	_child := &_RequestNull{
 		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child

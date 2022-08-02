@@ -245,6 +245,16 @@ func (m *_Services) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_Services) GetServicesLen() uint16 {
+	return m.ServicesLen
+}
+
+//
+////
+
 func (m *_Services) isServices() bool {
 	return true
 }

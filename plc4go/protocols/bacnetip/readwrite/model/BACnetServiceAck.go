@@ -78,7 +78,7 @@ type BACnetServiceAckChild interface {
 ///////////////////////
 
 func (m *_BACnetServiceAck) GetServiceAckPayloadLength() uint16 {
-	return uint16(utils.InlineIf(bool(bool((m.ServiceAckLength) > (0))), func() interface{} { return uint16(uint16(uint16(m.ServiceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	return uint16(utils.InlineIf((bool((m.ServiceAckLength) > (0))), func() interface{} { return uint16((uint16(m.ServiceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 }
 
 ///////////////////////
@@ -143,7 +143,7 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint16)
 	}
 
 	// Virtual field
-	_serviceAckPayloadLength := utils.InlineIf(bool(bool((serviceAckLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	_serviceAckPayloadLength := utils.InlineIf((bool((serviceAckLength) > (0))), func() interface{} { return uint16((uint16(serviceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
 	serviceAckPayloadLength := uint16(_serviceAckPayloadLength)
 	_ = serviceAckPayloadLength
 
@@ -242,6 +242,16 @@ func (pm *_BACnetServiceAck) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetServiceAck) GetServiceAckLength() uint16 {
+	return m.ServiceAckLength
+}
+
+//
+////
 
 func (m *_BACnetServiceAck) isBACnetServiceAck() bool {
 	return true

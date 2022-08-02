@@ -34,55 +34,36 @@
   <name>Sandbox</name>
   <description>Place where new stuff is located before it is regarded production-quality.</description>
 
-  <modules>
-    <module>code-gen</module>
-    <module>discovery</module>
-    <module>plc-simulator</module>
-
-    <module>test-java-df1-driver</module>
-  </modules>
-
   <build>
     <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <configuration>
-            <usedDependencies combine.children="append">
-                <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
-            </usedDependencies>
-          </configuration>
-        </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
 
-        <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <configuration>
           <skip>true</skip>
         </configuration>
-        </plugin>
+      </plugin>
     </plugins>
   </build>
 
-  <dependencies>
-    <!-- JUnit 5 Support -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-test-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>code-gen</module>
+    <module>discovery</module>
+    <module>plc-simulator</module>
+    <module>test-java-df1-driver</module>
+  </modules>
 
   <profiles>
-
     <!-- Build PLC4X including the Python modules -->
     <profile>
       <id>with-python</id>
@@ -90,7 +71,6 @@
         <module>plc4py</module>
       </modules>
     </profile>
-
   </profiles>
 
 </project>

@@ -49,7 +49,7 @@
     </dependency>
     <dependency>
       <groupId>tel.schich</groupId>
-      <artifactId>javacan</artifactId>
+      <artifactId>javacan-core</artifactId>
     </dependency>
 
     <dependency>

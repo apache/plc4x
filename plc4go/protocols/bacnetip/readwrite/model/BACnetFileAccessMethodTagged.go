@@ -139,7 +139,7 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetFileAccessMethodTagged")
 	}
-	value := _value.(BACnetFileAccessMethod)
+	var value BACnetFileAccessMethod
+	if _value != nil {
+		value = _value.(BACnetFileAccessMethod)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFileAccessMethodTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFileAccessMethodTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetFileAccessMethodTagged) Serialize(writeBuffer utils.WriteBuffer)
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetFileAccessMethodTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetFileAccessMethodTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetFileAccessMethodTagged) isBACnetFileAccessMethodTagged() bool {
 	return true

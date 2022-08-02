@@ -225,6 +225,16 @@ func (m *_BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetCalendarEntryEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetCalendarEntryEnclosed) isBACnetCalendarEntryEnclosed() bool {
 	return true
 }

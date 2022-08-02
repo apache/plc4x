@@ -26,11 +26,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.apache.plc4x.simulator.PlcSimulatorConfig;
 import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
+import org.apache.plc4x.simulator.exceptions.SimulatorException;
 import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
 import org.apache.plc4x.simulator.server.s7.protocol.S7Step7ServerAdapter;
@@ -42,6 +43,7 @@ public class S7ServerModule implements ServerModule {
     private EventLoopGroup loopGroup;
     private EventLoopGroup workerGroup;
     private Context context;
+    private PlcSimulatorConfig config;
 
     @Override
     public String getName() {
@@ -49,13 +51,19 @@ public class S7ServerModule implements ServerModule {
     }
 
     @Override
+    public void setConfig(PlcSimulatorConfig config) {
+        this.config = config;
+    }
+
+    @Override
     public void setContext(Context context) {
         this.context = context;
     }
 
+
     @Override
-    public void start() throws SimulatorExcepiton {
-        if(loopGroup != null) {
+    public void start() throws SimulatorException {
+        if (loopGroup != null) {
             return;
         }
 
@@ -79,16 +87,16 @@ public class S7ServerModule implements ServerModule {
                 }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            bootstrap.bind(ISO_ON_TCP_PORT).sync();
+            bootstrap.bind(config.getHost(),ISO_ON_TCP_PORT).sync();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new SimulatorExcepiton(e);
+            throw new SimulatorException(e);
         }
     }
 
     @Override
     public void stop() {
-        if(workerGroup == null) {
+        if (workerGroup == null) {
             return;
         }
 

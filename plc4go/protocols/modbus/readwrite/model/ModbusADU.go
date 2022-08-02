@@ -163,6 +163,16 @@ func (pm *_ModbusADU) SerializeParent(writeBuffer utils.WriteBuffer, child Modbu
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ModbusADU) GetResponse() bool {
+	return m.Response
+}
+
+//
+////
+
 func (m *_ModbusADU) isModbusADU() bool {
 	return true
 }

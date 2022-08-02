@@ -139,7 +139,7 @@ func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNetworkNumberQualityTagged")
 	}
-	value := _value.(BACnetNetworkNumberQuality)
+	var value BACnetNetworkNumberQuality
+	if _value != nil {
+		value = _value.(BACnetNetworkNumberQuality)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNetworkNumberQualityTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNetworkNumberQualityTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetNetworkNumberQualityTagged) Serialize(writeBuffer utils.WriteBuf
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetNetworkNumberQualityTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetNetworkNumberQualityTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetNetworkNumberQualityTagged) isBACnetNetworkNumberQualityTagged() bool {
 	return true

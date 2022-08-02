@@ -184,26 +184,26 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if err := m.messageCodec.SendRequest(
 			m.createS7ConnectionRequest(cotpPacketConnectionResponse),
 			func(message spi.Message) bool {
-				tpktPacket := message.(readWriteModel.TPKTPacket)
-				if tpktPacket == nil {
+				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				if !ok {
 					return false
 				}
-				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-				if cotpPacketData == nil {
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				if !ok {
 					return false
 				}
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.GetPayload())
-				if messageResponseData == nil {
+				messageResponseData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseDataExactly)
+				if !ok {
 					return false
 				}
-				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.GetParameter())
-				return parameterSetupCommunication != nil
+				_, ok = messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunicationExactly)
+				return ok
 			},
 			func(message spi.Message) error {
 				tpktPacket := message.(readWriteModel.TPKTPacket)
-				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.GetPayload())
-				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.GetParameter())
+				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+				messageResponseData := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseData)
+				setupCommunication := messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunication)
 				s7ConnectionResult <- setupCommunication
 				return nil
 			},
@@ -251,25 +251,26 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			if err := m.messageCodec.SendRequest(
 				m.createIdentifyRemoteMessage(),
 				func(message spi.Message) bool {
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					if tpktPacket == nil {
+					tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+					if !ok {
 						return false
 					}
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-					if cotpPacketData == nil {
+					cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+					if !ok {
 						return false
 					}
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.GetPayload())
-					if messageUserData == nil {
+					messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserDataExactly)
+					if !ok {
 						return false
 					}
-					return readWriteModel.CastS7PayloadUserData(messageUserData.GetPayload()) != nil
+					_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserDataExactly)
+					return ok
 				},
 				func(message spi.Message) error {
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.GetPayload())
-					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.GetPayload())
+					tpktPacket := message.(readWriteModel.TPKTPacket)
+					cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+					messageUserData := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
+					s7IdentificationResult <- messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
 					return nil
 				},
 				func(err error) error {

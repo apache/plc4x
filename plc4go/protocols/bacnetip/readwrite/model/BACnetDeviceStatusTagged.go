@@ -124,12 +124,12 @@ func (m *_BACnetDeviceStatusTagged) GetLengthInBitsConditional(lastItem bool) ui
 	lengthInBits += m.Header.GetLengthInBits()
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -166,7 +166,7 @@ func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -175,7 +175,10 @@ func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDeviceStatusTagged")
 	}
-	value := _value.(BACnetDeviceStatus)
+	var value BACnetDeviceStatus
+	if _value != nil {
+		value = _value.(BACnetDeviceStatus)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetDeviceStatusTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDeviceStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDeviceStatusTagged")
@@ -237,6 +243,19 @@ func (m *_BACnetDeviceStatusTagged) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetDeviceStatusTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetDeviceStatusTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetDeviceStatusTagged) isBACnetDeviceStatusTagged() bool {
 	return true

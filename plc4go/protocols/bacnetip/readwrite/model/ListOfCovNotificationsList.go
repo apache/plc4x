@@ -238,6 +238,16 @@ func (m *_ListOfCovNotificationsList) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ListOfCovNotificationsList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_ListOfCovNotificationsList) isListOfCovNotificationsList() bool {
 	return true
 }

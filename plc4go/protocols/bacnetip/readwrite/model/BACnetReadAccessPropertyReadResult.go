@@ -191,7 +191,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	}
 
 	// Validation
-	if !(bool(bool(bool(bool((peekedTagNumber) == (4))) && bool(bool((propertyValue) != (nil))))) || bool(bool((peekedTagNumber) != (4)))) {
+	if !(bool((bool(bool((peekedTagNumber) == (4))) && bool(bool((propertyValue) != (nil))))) || bool(bool((peekedTagNumber) != (4)))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 4"})
 	}
 
@@ -218,7 +218,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	}
 
 	// Validation
-	if !(bool(bool(bool(bool((peekedTagNumber) == (5))) && bool(bool((propertyAccessError) != (nil))))) || bool(bool((peekedTagNumber) != (5)))) {
+	if !(bool((bool(bool((peekedTagNumber) == (5))) && bool(bool((propertyAccessError) != (nil))))) || bool(bool((peekedTagNumber) != (5)))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 5"})
 	}
 
@@ -283,6 +283,22 @@ func (m *_BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteB
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetReadAccessPropertyReadResult) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetReadAccessPropertyReadResult) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return m.PropertyIdentifierArgument
+}
+func (m *_BACnetReadAccessPropertyReadResult) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
 
 func (m *_BACnetReadAccessPropertyReadResult) isBACnetReadAccessPropertyReadResult() bool {
 	return true

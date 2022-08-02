@@ -124,12 +124,12 @@ func (m *_BACnetSilencedStateTagged) GetLengthInBitsConditional(lastItem bool) u
 	lengthInBits += m.Header.GetLengthInBits()
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -166,7 +166,7 @@ func BACnetSilencedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -175,7 +175,10 @@ func BACnetSilencedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetSilencedStateTagged")
 	}
-	value := _value.(BACnetSilencedState)
+	var value BACnetSilencedState
+	if _value != nil {
+		value = _value.(BACnetSilencedState)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetSilencedState_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetSilencedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetSilencedStateTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSilencedStateTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetSilencedStateTagged")
@@ -237,6 +243,19 @@ func (m *_BACnetSilencedStateTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetSilencedStateTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetSilencedStateTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetSilencedStateTagged) isBACnetSilencedStateTagged() bool {
 	return true

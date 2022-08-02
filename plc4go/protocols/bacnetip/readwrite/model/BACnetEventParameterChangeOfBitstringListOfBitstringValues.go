@@ -238,6 +238,16 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) Serialize(
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) isBACnetEventParameterChangeOfBitstringListOfBitstringValues() bool {
 	return true
 }

@@ -31,6 +31,8 @@ type SALDataAudioAndVideo interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetAudioVideoData returns AudioVideoData (property field)
+	GetAudioVideoData() LightingData
 }
 
 // SALDataAudioAndVideoExactly can be used when we want exactly this type and not a type which fulfills SALDataAudioAndVideo.
@@ -43,6 +45,7 @@ type SALDataAudioAndVideoExactly interface {
 // _SALDataAudioAndVideo is the data-structure of this message
 type _SALDataAudioAndVideo struct {
 	*_SALData
+	AudioVideoData LightingData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataAudioAndVideo) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataAudioAndVideo) GetAudioVideoData() LightingData {
+	return m.AudioVideoData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataAudioAndVideo factory function for _SALDataAudioAndVideo
-func NewSALDataAudioAndVideo(salData SALData) *_SALDataAudioAndVideo {
+func NewSALDataAudioAndVideo(audioVideoData LightingData, salData SALData) *_SALDataAudioAndVideo {
 	_result := &_SALDataAudioAndVideo{
-		_SALData: NewSALData(salData),
+		AudioVideoData: audioVideoData,
+		_SALData:       NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataAudioAndVideo) GetLengthInBits() uint16 {
 func (m *_SALDataAudioAndVideo) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (audioVideoData)
+	lengthInBits += m.AudioVideoData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataAudioAndVideoParse(readBuffer utils.ReadBuffer, applicationId Applic
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"AUDIO_AND_VIDEO Not yet implemented"})
+	// Simple Field (audioVideoData)
+	if pullErr := readBuffer.PullContext("audioVideoData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for audioVideoData")
+	}
+	_audioVideoData, _audioVideoDataErr := LightingDataParse(readBuffer)
+	if _audioVideoDataErr != nil {
+		return nil, errors.Wrap(_audioVideoDataErr, "Error parsing 'audioVideoData' field of SALDataAudioAndVideo")
+	}
+	audioVideoData := _audioVideoData.(LightingData)
+	if closeErr := readBuffer.CloseContext("audioVideoData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for audioVideoData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataAudioAndVideo"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataAudioAndVideoParse(readBuffer utils.ReadBuffer, applicationId Applic
 
 	// Create a partially initialized instance
 	_child := &_SALDataAudioAndVideo{
-		_SALData: &_SALData{},
+		AudioVideoData: audioVideoData,
+		_SALData:       &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataAudioAndVideo) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataAudioAndVideo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataAudioAndVideo")
+		}
+
+		// Simple Field (audioVideoData)
+		if pushErr := writeBuffer.PushContext("audioVideoData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for audioVideoData")
+		}
+		_audioVideoDataErr := writeBuffer.WriteSerializable(m.GetAudioVideoData())
+		if popErr := writeBuffer.PopContext("audioVideoData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for audioVideoData")
+		}
+		if _audioVideoDataErr != nil {
+			return errors.Wrap(_audioVideoDataErr, "Error serializing 'audioVideoData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataAudioAndVideo"); popErr != nil {

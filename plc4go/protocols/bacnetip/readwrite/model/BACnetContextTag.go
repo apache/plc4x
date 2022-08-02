@@ -288,6 +288,16 @@ func (pm *_BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetContextTag) GetTagNumberArgument() uint8 {
+	return m.TagNumberArgument
+}
+
+//
+////
+
 func (m *_BACnetContextTag) isBACnetContextTag() bool {
 	return true
 }

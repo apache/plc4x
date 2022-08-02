@@ -238,6 +238,16 @@ func (m *_BACnetSpecialEventListOfTimeValues) Serialize(writeBuffer utils.WriteB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetSpecialEventListOfTimeValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetSpecialEventListOfTimeValues) isBACnetSpecialEventListOfTimeValues() bool {
 	return true
 }

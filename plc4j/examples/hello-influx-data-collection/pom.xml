@@ -68,29 +68,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <!-- This is just examples including these checks here requires an insane amount of housekeeping. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
-            <usedDependency>org.apache.plc4x.sandbox:test-java-bacnetip-driver</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-transport-pcap-replay</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-transport-raw-socket</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin-->
-    </plugins>
-  </build>
-
 </project>

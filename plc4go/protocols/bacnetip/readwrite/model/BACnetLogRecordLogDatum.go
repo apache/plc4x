@@ -297,6 +297,16 @@ func (pm *_BACnetLogRecordLogDatum) SerializeParent(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLogRecordLogDatum) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetLogRecordLogDatum) isBACnetLogRecordLogDatum() bool {
 	return true
 }

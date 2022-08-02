@@ -80,9 +80,8 @@ type _MonitoredSALLongFormSmartMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte, crc Checksum) {
+func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte) {
 	m.SalType = salType
-	m.Crc = crc
 }
 
 func (m *_MonitoredSALLongFormSmartMode) GetParent() MonitoredSAL {
@@ -142,7 +141,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 	_ = replyNetwork
 	salData := m.SalData
 	_ = salData
-	return bool(bool(((m.GetTerminatingByte()) & (0xff)) == (0x00)))
+	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
 
 ///////////////////////
@@ -151,7 +150,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, salType byte, crc Checksum, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
+func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
 	_result := &_MonitoredSALLongFormSmartMode{
 		TerminatingByte: terminatingByte,
 		UnitAddress:     unitAddress,
@@ -160,7 +159,7 @@ func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAd
 		ReservedByte:    reservedByte,
 		ReplyNetwork:    replyNetwork,
 		SalData:         salData,
-		_MonitoredSAL:   NewMonitoredSAL(salType, crc, cBusOptions),
+		_MonitoredSAL:   NewMonitoredSAL(salType, cBusOptions),
 	}
 	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
 	return _result
@@ -261,7 +260,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isUnitAddress := bool(((terminatingByte) & (0xff)) == (0x00))
+	_isUnitAddress := bool((terminatingByte & 0xff) == (0x00))
 	isUnitAddress := bool(_isUnitAddress)
 	_ = isUnitAddress
 

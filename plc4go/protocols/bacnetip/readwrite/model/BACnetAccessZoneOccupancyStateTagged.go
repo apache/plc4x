@@ -124,12 +124,12 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) GetLengthInBitsConditional(lastI
 	lengthInBits += m.Header.GetLengthInBits()
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -166,7 +166,7 @@ func BACnetAccessZoneOccupancyStateTaggedParse(readBuffer utils.ReadBuffer, tagN
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -175,7 +175,10 @@ func BACnetAccessZoneOccupancyStateTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessZoneOccupancyStateTagged")
 	}
-	value := _value.(BACnetAccessZoneOccupancyState)
+	var value BACnetAccessZoneOccupancyState
+	if _value != nil {
+		value = _value.(BACnetAccessZoneOccupancyState)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE))
@@ -187,7 +190,10 @@ func BACnetAccessZoneOccupancyStateTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAccessZoneOccupancyStateTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessZoneOccupancyStateTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessZoneOccupancyStateTagged")
@@ -237,6 +243,19 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) Serialize(writeBuffer utils.Writ
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetAccessZoneOccupancyStateTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessZoneOccupancyStateTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetAccessZoneOccupancyStateTagged) isBACnetAccessZoneOccupancyStateTagged() bool {
 	return true

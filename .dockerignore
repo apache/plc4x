@@ -19,3 +19,9 @@ Dockerfile
 .dockerignore
 .git/**
 **/target/**
+sandbox/plc4py/.eggs
+sandbox/plc4py/.pytest_cache
+sandbox/plc4py/build
+sandbox/plc4py/dist
+sandbox/plc4py/plc4py.egg-info
+sandbox/plc4py/venv

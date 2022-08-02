@@ -238,6 +238,16 @@ func (m *_BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetNameValueCollection) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetNameValueCollection) isBACnetNameValueCollection() bool {
 	return true
 }

@@ -30,7 +30,9 @@ import java.lang.annotation.Target;
  * for which we want the tests to only be executed if the "enable-all-checks"
  * profile is enabled. (Actually it works by setting an environment variable
  * named "ENABLE_ALL_TESTS" to "true".
+ * @deprecated we should use tags like "@Tag("require-all-tests")"
  */
+@Deprecated
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(RequireAllTestsFlagCondition.class)

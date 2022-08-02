@@ -31,6 +31,7 @@ import (
 type Parameter uint8
 
 type IParameter interface {
+	ParameterType() ParameterType
 	Form() string
 	IsVolatile() bool
 	ParameterDescription() string
@@ -560,6 +561,1048 @@ func init() {
 		Parameter_CUSTOM_TYPE_8,
 		Parameter_UNKOWN_255,
 	}
+}
+
+func (e Parameter) ParameterType() ParameterType {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x0E:
+		{ /* '0x0E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x0F:
+		{ /* '0x0F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x10:
+		{ /* '0x10' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x11:
+		{ /* '0x11' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x13:
+		{ /* '0x13' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x14:
+		{ /* '0x14' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x15:
+		{ /* '0x15' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x16:
+		{ /* '0x16' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x17:
+		{ /* '0x17' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x18:
+		{ /* '0x18' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x19:
+		{ /* '0x19' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x1A:
+		{ /* '0x1A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x1B:
+		{ /* '0x1B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x1C:
+		{ /* '0x1C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x1D:
+		{ /* '0x1D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x1E:
+		{ /* '0x1E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x1F:
+		{ /* '0x1F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x20:
+		{ /* '0x20' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x21:
+		{ /* '0x21' */
+			return ParameterType_APPLICATION_ADDRESS_1
+		}
+	case 0x22:
+		{ /* '0x22' */
+			return ParameterType_APPLICATION_ADDRESS_2
+		}
+	case 0x23:
+		{ /* '0x23' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x24:
+		{ /* '0x24' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x25:
+		{ /* '0x25' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x26:
+		{ /* '0x26' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x27:
+		{ /* '0x27' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x28:
+		{ /* '0x28' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x29:
+		{ /* '0x29' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x2A:
+		{ /* '0x2A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x2B:
+		{ /* '0x2B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x2C:
+		{ /* '0x2C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x2D:
+		{ /* '0x2D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x2E:
+		{ /* '0x2E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x2F:
+		{ /* '0x2F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x30:
+		{ /* '0x30' */
+			return ParameterType_INTERFACE_OPTIONS_1
+		}
+	case 0x31:
+		{ /* '0x31' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x32:
+		{ /* '0x32' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x33:
+		{ /* '0x33' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x34:
+		{ /* '0x34' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x35:
+		{ /* '0x35' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x36:
+		{ /* '0x36' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x37:
+		{ /* '0x37' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x38:
+		{ /* '0x38' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x39:
+		{ /* '0x39' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x3A:
+		{ /* '0x3A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x3B:
+		{ /* '0x3B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x3C:
+		{ /* '0x3C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x3D:
+		{ /* '0x3D' */
+			return ParameterType_BAUD_RATE_SELECTOR
+		}
+	case 0x3E:
+		{ /* '0x3E' */
+			return ParameterType_INTERFACE_OPTIONS_2
+		}
+	case 0x3F:
+		{ /* '0x3F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x40:
+		{ /* '0x40' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x41:
+		{ /* '0x41' */
+			return ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS
+		}
+	case 0x42:
+		{ /* '0x42' */
+			return ParameterType_INTERFACE_OPTIONS_3
+		}
+	case 0x43:
+		{ /* '0x43' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x44:
+		{ /* '0x44' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x45:
+		{ /* '0x45' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x46:
+		{ /* '0x46' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x47:
+		{ /* '0x47' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x48:
+		{ /* '0x48' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x49:
+		{ /* '0x49' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x4A:
+		{ /* '0x4A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x4B:
+		{ /* '0x4B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x4C:
+		{ /* '0x4C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x4D:
+		{ /* '0x4D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x4E:
+		{ /* '0x4E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x4F:
+		{ /* '0x4F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x50:
+		{ /* '0x50' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x51:
+		{ /* '0x51' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x52:
+		{ /* '0x52' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x53:
+		{ /* '0x53' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x54:
+		{ /* '0x54' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x55:
+		{ /* '0x55' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x56:
+		{ /* '0x56' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x57:
+		{ /* '0x57' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x58:
+		{ /* '0x58' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x59:
+		{ /* '0x59' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x5A:
+		{ /* '0x5A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x5B:
+		{ /* '0x5B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x5C:
+		{ /* '0x5C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x5D:
+		{ /* '0x5D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x5E:
+		{ /* '0x5E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x5F:
+		{ /* '0x5F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x60:
+		{ /* '0x60' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x61:
+		{ /* '0x61' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x62:
+		{ /* '0x62' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x63:
+		{ /* '0x63' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x64:
+		{ /* '0x64' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x65:
+		{ /* '0x65' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x66:
+		{ /* '0x66' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x67:
+		{ /* '0x67' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x68:
+		{ /* '0x68' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x69:
+		{ /* '0x69' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x6A:
+		{ /* '0x6A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x6B:
+		{ /* '0x6B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x6C:
+		{ /* '0x6C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x6D:
+		{ /* '0x6D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x6E:
+		{ /* '0x6E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x6F:
+		{ /* '0x6F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x70:
+		{ /* '0x70' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x71:
+		{ /* '0x71' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x72:
+		{ /* '0x72' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x73:
+		{ /* '0x73' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x74:
+		{ /* '0x74' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x75:
+		{ /* '0x75' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x76:
+		{ /* '0x76' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x77:
+		{ /* '0x77' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x78:
+		{ /* '0x78' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x79:
+		{ /* '0x79' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x7A:
+		{ /* '0x7A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x7B:
+		{ /* '0x7B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x7C:
+		{ /* '0x7C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x7D:
+		{ /* '0x7D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x7E:
+		{ /* '0x7E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x7F:
+		{ /* '0x7F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x80:
+		{ /* '0x80' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x81:
+		{ /* '0x81' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x82:
+		{ /* '0x82' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x83:
+		{ /* '0x83' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x84:
+		{ /* '0x84' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x85:
+		{ /* '0x85' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x86:
+		{ /* '0x86' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x87:
+		{ /* '0x87' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x88:
+		{ /* '0x88' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x89:
+		{ /* '0x89' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x8A:
+		{ /* '0x8A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x8B:
+		{ /* '0x8B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x8C:
+		{ /* '0x8C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x8D:
+		{ /* '0x8D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x8E:
+		{ /* '0x8E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x8F:
+		{ /* '0x8F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x90:
+		{ /* '0x90' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x91:
+		{ /* '0x91' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x92:
+		{ /* '0x92' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x93:
+		{ /* '0x93' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x94:
+		{ /* '0x94' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x95:
+		{ /* '0x95' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x96:
+		{ /* '0x96' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x97:
+		{ /* '0x97' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x98:
+		{ /* '0x98' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x99:
+		{ /* '0x99' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x9A:
+		{ /* '0x9A' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x9B:
+		{ /* '0x9B' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x9C:
+		{ /* '0x9C' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x9D:
+		{ /* '0x9D' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x9E:
+		{ /* '0x9E' */
+			return ParameterType_UNKNOWN
+		}
+	case 0x9F:
+		{ /* '0x9F' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA0:
+		{ /* '0xA0' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA1:
+		{ /* '0xA1' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA2:
+		{ /* '0xA2' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA3:
+		{ /* '0xA3' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA4:
+		{ /* '0xA4' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA5:
+		{ /* '0xA5' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA6:
+		{ /* '0xA6' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA7:
+		{ /* '0xA7' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA8:
+		{ /* '0xA8' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xA9:
+		{ /* '0xA9' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xAA:
+		{ /* '0xAA' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xAB:
+		{ /* '0xAB' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xAC:
+		{ /* '0xAC' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xAD:
+		{ /* '0xAD' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xAE:
+		{ /* '0xAE' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xAF:
+		{ /* '0xAF' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB0:
+		{ /* '0xB0' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB1:
+		{ /* '0xB1' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB2:
+		{ /* '0xB2' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB3:
+		{ /* '0xB3' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB4:
+		{ /* '0xB4' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB5:
+		{ /* '0xB5' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB6:
+		{ /* '0xB6' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB7:
+		{ /* '0xB7' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB8:
+		{ /* '0xB8' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xB9:
+		{ /* '0xB9' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xBA:
+		{ /* '0xBA' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xBB:
+		{ /* '0xBB' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xBC:
+		{ /* '0xBC' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xBD:
+		{ /* '0xBD' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xBE:
+		{ /* '0xBE' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xBF:
+		{ /* '0xBF' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC0:
+		{ /* '0xC0' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC1:
+		{ /* '0xC1' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC2:
+		{ /* '0xC2' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC3:
+		{ /* '0xC3' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC4:
+		{ /* '0xC4' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC5:
+		{ /* '0xC5' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC6:
+		{ /* '0xC6' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC7:
+		{ /* '0xC7' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC8:
+		{ /* '0xC8' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xC9:
+		{ /* '0xC9' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xCA:
+		{ /* '0xCA' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xCB:
+		{ /* '0xCB' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xCC:
+		{ /* '0xCC' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xCD:
+		{ /* '0xCD' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xCE:
+		{ /* '0xCE' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xCF:
+		{ /* '0xCF' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD0:
+		{ /* '0xD0' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD1:
+		{ /* '0xD1' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD2:
+		{ /* '0xD2' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD3:
+		{ /* '0xD3' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD4:
+		{ /* '0xD4' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD5:
+		{ /* '0xD5' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD6:
+		{ /* '0xD6' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD7:
+		{ /* '0xD7' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD8:
+		{ /* '0xD8' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xD9:
+		{ /* '0xD9' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xDA:
+		{ /* '0xDA' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xDB:
+		{ /* '0xDB' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xDC:
+		{ /* '0xDC' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xDD:
+		{ /* '0xDD' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xDE:
+		{ /* '0xDE' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xDF:
+		{ /* '0xDF' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE0:
+		{ /* '0xE0' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE1:
+		{ /* '0xE1' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE2:
+		{ /* '0xE2' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE3:
+		{ /* '0xE3' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE4:
+		{ /* '0xE4' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE5:
+		{ /* '0xE5' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE6:
+		{ /* '0xE6' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE7:
+		{ /* '0xE7' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE8:
+		{ /* '0xE8' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xE9:
+		{ /* '0xE9' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xEA:
+		{ /* '0xEA' */
+			return ParameterType_UNKNOWN
+		}
+	case 0xEB:
+		{ /* '0xEB' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xEC:
+		{ /* '0xEC' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xED:
+		{ /* '0xED' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xEE:
+		{ /* '0xEE' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xEF:
+		{ /* '0xEF' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xF0:
+		{ /* '0xF0' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xF1:
+		{ /* '0xF1' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xF2:
+		{ /* '0xF2' */
+			return ParameterType_CUSTOM_MANUFACTURER
+		}
+	case 0xF3:
+		{ /* '0xF3' */
+			return ParameterType_SERIAL_NUMBER
+		}
+	case 0xF4:
+		{ /* '0xF4' */
+			return ParameterType_SERIAL_NUMBER
+		}
+	case 0xF5:
+		{ /* '0xF5' */
+			return ParameterType_SERIAL_NUMBER
+		}
+	case 0xF6:
+		{ /* '0xF6' */
+			return ParameterType_SERIAL_NUMBER
+		}
+	case 0xF7:
+		{ /* '0xF7' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xF8:
+		{ /* '0xF8' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xF9:
+		{ /* '0xF9' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xFA:
+		{ /* '0xFA' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xFB:
+		{ /* '0xFB' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xFC:
+		{ /* '0xFC' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xFD:
+		{ /* '0xFD' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xFE:
+		{ /* '0xFE' */
+			return ParameterType_CUSTOM_TYPE
+		}
+	case 0xFF:
+		{ /* '0xFF' */
+			return ParameterType_UNKNOWN
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func ParameterFirstEnumForFieldParameterType(value ParameterType) (Parameter, error) {
+	for _, sizeValue := range ParameterValues {
+		if sizeValue.ParameterType() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing ParameterType not found", value)
 }
 
 func (e Parameter) Form() string {

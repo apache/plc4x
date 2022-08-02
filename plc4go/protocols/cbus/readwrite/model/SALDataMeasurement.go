@@ -31,6 +31,8 @@ type SALDataMeasurement interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// GetMeasurementData returns MeasurementData (property field)
+	GetMeasurementData() MeasurementData
 }
 
 // SALDataMeasurementExactly can be used when we want exactly this type and not a type which fulfills SALDataMeasurement.
@@ -43,6 +45,7 @@ type SALDataMeasurementExactly interface {
 // _SALDataMeasurement is the data-structure of this message
 type _SALDataMeasurement struct {
 	*_SALData
+	MeasurementData MeasurementData
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,10 +70,25 @@ func (m *_SALDataMeasurement) GetParent() SALData {
 	return m._SALData
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_SALDataMeasurement) GetMeasurementData() MeasurementData {
+	return m.MeasurementData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewSALDataMeasurement factory function for _SALDataMeasurement
-func NewSALDataMeasurement(salData SALData) *_SALDataMeasurement {
+func NewSALDataMeasurement(measurementData MeasurementData, salData SALData) *_SALDataMeasurement {
 	_result := &_SALDataMeasurement{
-		_SALData: NewSALData(salData),
+		MeasurementData: measurementData,
+		_SALData:        NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -98,6 +116,9 @@ func (m *_SALDataMeasurement) GetLengthInBits() uint16 {
 func (m *_SALDataMeasurement) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (measurementData)
+	lengthInBits += m.MeasurementData.GetLengthInBits()
+
 	return lengthInBits
 }
 
@@ -114,9 +135,17 @@ func SALDataMeasurementParse(readBuffer utils.ReadBuffer, applicationId Applicat
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"MEASUREMENT Not yet implemented"})
+	// Simple Field (measurementData)
+	if pullErr := readBuffer.PullContext("measurementData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for measurementData")
+	}
+	_measurementData, _measurementDataErr := MeasurementDataParse(readBuffer)
+	if _measurementDataErr != nil {
+		return nil, errors.Wrap(_measurementDataErr, "Error parsing 'measurementData' field of SALDataMeasurement")
+	}
+	measurementData := _measurementData.(MeasurementData)
+	if closeErr := readBuffer.CloseContext("measurementData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for measurementData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataMeasurement"); closeErr != nil {
@@ -125,7 +154,8 @@ func SALDataMeasurementParse(readBuffer utils.ReadBuffer, applicationId Applicat
 
 	// Create a partially initialized instance
 	_child := &_SALDataMeasurement{
-		_SALData: &_SALData{},
+		MeasurementData: measurementData,
+		_SALData:        &_SALData{},
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -137,6 +167,18 @@ func (m *_SALDataMeasurement) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataMeasurement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SALDataMeasurement")
+		}
+
+		// Simple Field (measurementData)
+		if pushErr := writeBuffer.PushContext("measurementData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for measurementData")
+		}
+		_measurementDataErr := writeBuffer.WriteSerializable(m.GetMeasurementData())
+		if popErr := writeBuffer.PopContext("measurementData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for measurementData")
+		}
+		if _measurementDataErr != nil {
+			return errors.Wrap(_measurementDataErr, "Error serializing 'measurementData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataMeasurement"); popErr != nil {

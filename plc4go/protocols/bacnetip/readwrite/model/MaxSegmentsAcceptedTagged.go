@@ -139,7 +139,7 @@ func MaxSegmentsAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func MaxSegmentsAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of MaxSegmentsAcceptedTagged")
 	}
-	value := _value.(MaxSegmentsAccepted)
+	var value MaxSegmentsAccepted
+	if _value != nil {
+		value = _value.(MaxSegmentsAccepted)
+	}
 
 	if closeErr := readBuffer.CloseContext("MaxSegmentsAcceptedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MaxSegmentsAcceptedTagged")
@@ -188,6 +191,19 @@ func (m *_MaxSegmentsAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_MaxSegmentsAcceptedTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_MaxSegmentsAcceptedTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_MaxSegmentsAcceptedTagged) isMaxSegmentsAcceptedTagged() bool {
 	return true

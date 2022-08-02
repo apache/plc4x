@@ -53,7 +53,7 @@
 [enum uint 32 OpcuaStatusCode<xsl:text>
     </xsl:text>
         <xsl:for-each select="$tokenizedLine">
-            <xsl:variable select="tokenize(., ',')" name="values" />    ['<xsl:value-of select="$values[2]"/>L'  <xsl:value-of select="$values[1]"/>]<xsl:text>
+            <xsl:variable select="tokenize(., ',')" name="values" />    ['<xsl:value-of select="$values[2]"/>'  <xsl:value-of select="$values[1]"/>]<xsl:text>
     </xsl:text>
         </xsl:for-each>
 ]

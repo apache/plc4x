@@ -139,7 +139,7 @@ func BACnetShedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetShedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetShedStateTagged")
 	}
-	value := _value.(BACnetShedState)
+	var value BACnetShedState
+	if _value != nil {
+		value = _value.(BACnetShedState)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedStateTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetShedStateTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetShedStateTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetShedStateTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetShedStateTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetShedStateTagged) isBACnetShedStateTagged() bool {
 	return true

@@ -167,7 +167,7 @@ func BACnetTimerStateChangeValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	_ = peekedIsContextTag
 
 	// Validation
-	if !(bool(bool(!(peekedIsContextTag))) || bool(bool(bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
+	if !(bool((!(peekedIsContextTag))) || bool((bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"unexpected opening or closing tag"})
 	}
 
@@ -260,6 +260,16 @@ func (pm *_BACnetTimerStateChangeValue) SerializeParent(writeBuffer utils.WriteB
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetTimerStateChangeValue) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
 
 func (m *_BACnetTimerStateChangeValue) isBACnetTimerStateChangeValue() bool {
 	return true

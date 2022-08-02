@@ -139,7 +139,7 @@ func BACnetAuthenticationFactorTypeTaggedParse(readBuffer utils.ReadBuffer, tagN
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetAuthenticationFactorTypeTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthenticationFactorTypeTagged")
 	}
-	value := _value.(BACnetAuthenticationFactorType)
+	var value BACnetAuthenticationFactorType
+	if _value != nil {
+		value = _value.(BACnetAuthenticationFactorType)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationFactorTypeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationFactorTypeTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetAuthenticationFactorTypeTagged) Serialize(writeBuffer utils.Writ
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetAuthenticationFactorTypeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAuthenticationFactorTypeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetAuthenticationFactorTypeTagged) isBACnetAuthenticationFactorTypeTagged() bool {
 	return true

@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 type PlcList struct {
@@ -56,6 +57,14 @@ func (m PlcList) GetIndex(i uint32) values.PlcValue {
 
 func (m PlcList) GetList() []values.PlcValue {
 	return m.Values
+}
+
+func (m PlcList) GetString() string {
+	stringValues := make([]string, len(m.Values))
+	for i, v := range m.Values {
+		stringValues[i] = v.GetString()
+	}
+	return strings.Join(stringValues, ", ")
 }
 
 func (m PlcList) Serialize(writeBuffer utils.WriteBuffer) error {

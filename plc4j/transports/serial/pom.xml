@@ -32,17 +32,22 @@
   <description>Base classes needed to implement plc4x drivers based on Serial connections.</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-
 
     <dependency>
       <groupId>io.netty</groupId>
@@ -51,10 +56,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-codec</artifactId>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -67,10 +68,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
-      <scope>compile</scope>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -79,6 +79,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <!--
@@ -98,4 +99,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>

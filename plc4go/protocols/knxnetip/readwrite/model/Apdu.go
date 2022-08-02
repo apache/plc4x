@@ -235,6 +235,16 @@ func (pm *_Apdu) SerializeParent(writeBuffer utils.WriteBuffer, child Apdu, seri
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_Apdu) GetDataLength() uint8 {
+	return m.DataLength
+}
+
+//
+////
+
 func (m *_Apdu) isApdu() bool {
 	return true
 }

@@ -29,8 +29,8 @@ import (
 )
 
 type SubscriptionEvent struct {
-	addresses map[string][]byte
 	internalMode.DefaultPlcSubscriptionEvent
+	addresses map[string][]byte
 }
 
 func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,

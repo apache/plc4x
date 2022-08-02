@@ -295,6 +295,16 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wr
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) isSubscribeCOVPropertyMultipleErrorFirstFailedSubscription() bool {
 	return true
 }

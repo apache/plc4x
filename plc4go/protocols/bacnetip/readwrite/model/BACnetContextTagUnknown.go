@@ -183,6 +183,16 @@ func (m *_BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) erro
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetContextTagUnknown) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetContextTagUnknown) isBACnetContextTagUnknown() bool {
 	return true
 }

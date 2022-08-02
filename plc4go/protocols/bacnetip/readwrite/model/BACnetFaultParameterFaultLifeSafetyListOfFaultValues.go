@@ -238,6 +238,16 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) Serialize(writeB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) isBACnetFaultParameterFaultLifeSafetyListOfFaultValues() bool {
 	return true
 }

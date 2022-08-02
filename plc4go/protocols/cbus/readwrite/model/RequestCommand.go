@@ -39,6 +39,8 @@ type RequestCommand interface {
 	Request
 	// GetCbusCommand returns CbusCommand (property field)
 	GetCbusCommand() CBusCommand
+	// GetChksum returns Chksum (property field)
+	GetChksum() Checksum
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
 }
@@ -54,10 +56,8 @@ type RequestCommandExactly interface {
 type _RequestCommand struct {
 	*_Request
 	CbusCommand CBusCommand
+	Chksum      Checksum
 	Alpha       Alpha
-
-	// Arguments.
-	PayloadLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,6 +91,10 @@ func (m *_RequestCommand) GetCbusCommand() CBusCommand {
 	return m.CbusCommand
 }
 
+func (m *_RequestCommand) GetChksum() Checksum {
+	return m.Chksum
+}
+
 func (m *_RequestCommand) GetAlpha() Alpha {
 	return m.Alpha
 }
@@ -114,11 +118,12 @@ func (m *_RequestCommand) GetInitiator() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(cbusCommand CBusCommand, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestCommand {
+func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestCommand {
 	_result := &_RequestCommand{
 		CbusCommand: cbusCommand,
+		Chksum:      chksum,
 		Alpha:       alpha,
-		_Request:    NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		_Request:    NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -150,7 +155,10 @@ func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Manual Field (cbusCommand)
-	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
+	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
+
+	// Manual Field (chksum)
+	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() interface{} { return int32((int32(16))) }, func() interface{} { return int32((int32(0))) }).(int32))
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
@@ -164,7 +172,7 @@ func (m *_RequestCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) (RequestCommand, error) {
+func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestCommand"); pullErr != nil {
@@ -183,11 +191,24 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, m
 	}
 
 	// Manual Field (cbusCommand)
-	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, payloadLength, cBusOptions)
+	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, cBusOptions, cBusOptions.GetSrchk())
 	if _cbusCommandErr != nil {
 		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestCommand")
 	}
-	cbusCommand := _cbusCommand.(CBusCommand)
+	var cbusCommand CBusCommand
+	if _cbusCommand != nil {
+		cbusCommand = _cbusCommand.(CBusCommand)
+	}
+
+	// Manual Field (chksum)
+	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, cbusCommand, cBusOptions.GetSrchk())
+	if _chksumErr != nil {
+		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of RequestCommand")
+	}
+	var chksum Checksum
+	if _chksum != nil {
+		chksum = _chksum.(Checksum)
+	}
 
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil
@@ -218,10 +239,10 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, m
 	// Create a partially initialized instance
 	_child := &_RequestCommand{
 		CbusCommand: cbusCommand,
+		Chksum:      chksum,
 		Alpha:       alpha,
 		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child
@@ -246,6 +267,12 @@ func (m *_RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 		_cbusCommandErr := WriteCBusCommand(writeBuffer, m.GetCbusCommand())
 		if _cbusCommandErr != nil {
 			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
+		}
+
+		// Manual Field (chksum)
+		_chksumErr := CalculateChecksum(writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
+		if _chksumErr != nil {
+			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 
 		// Optional Field (alpha) (Can be skipped, if the value is null)

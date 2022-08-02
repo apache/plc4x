@@ -1051,6 +1051,16 @@ func (m *_BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wr
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterExtendedParameters) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterExtendedParameters) isBACnetEventParameterExtendedParameters() bool {
 	return true
 }

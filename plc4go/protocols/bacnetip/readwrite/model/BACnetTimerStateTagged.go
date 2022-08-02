@@ -139,7 +139,7 @@ func BACnetTimerStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetTimerStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTimerStateTagged")
 	}
-	value := _value.(BACnetTimerState)
+	var value BACnetTimerState
+	if _value != nil {
+		value = _value.(BACnetTimerState)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetTimerStateTagged) Serialize(writeBuffer utils.WriteBuffer) error
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetTimerStateTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetTimerStateTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetTimerStateTagged) isBACnetTimerStateTagged() bool {
 	return true

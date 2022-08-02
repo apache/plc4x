@@ -240,7 +240,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	_ = isContextTag
 
 	// Validation
-	if !(bool(!(isContextTag)) || bool(bool(bool(isContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
+	if !(bool(!(isContextTag)) || bool((bool(isContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"unexpected closing tag"})
 	}
 
@@ -311,7 +311,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	}
 
 	// Validation
-	if !(bool(bool(bool(bool(isApplicationTag) && bool(bool((applicationTag) != (nil))))) || bool(bool(bool(isContextTag) && bool(bool((contextTag) != (nil)))))) || bool(bool(bool(isConstructedData) && bool(bool((constructedData) != (nil)))))) {
+	if !(bool(bool((bool(isApplicationTag) && bool(bool((applicationTag) != (nil))))) || bool((bool(isContextTag) && bool(bool((contextTag) != (nil)))))) || bool((bool(isConstructedData) && bool(bool((constructedData) != (nil)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"BACnetConstructedDataElement could not parse anything"})
 	}
 
@@ -399,6 +399,22 @@ func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer)
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetConstructedDataElement) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetConstructedDataElement) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return m.PropertyIdentifierArgument
+}
+func (m *_BACnetConstructedDataElement) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
 
 func (m *_BACnetConstructedDataElement) isBACnetConstructedDataElement() bool {
 	return true

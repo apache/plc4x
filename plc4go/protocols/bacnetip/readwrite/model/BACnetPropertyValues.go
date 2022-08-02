@@ -239,6 +239,19 @@ func (m *_BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPropertyValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetPropertyValues) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetPropertyValues) isBACnetPropertyValues() bool {
 	return true
 }

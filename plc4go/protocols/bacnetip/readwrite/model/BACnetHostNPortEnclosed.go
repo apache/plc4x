@@ -225,6 +225,16 @@ func (m *_BACnetHostNPortEnclosed) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetHostNPortEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetHostNPortEnclosed) isBACnetHostNPortEnclosed() bool {
 	return true
 }

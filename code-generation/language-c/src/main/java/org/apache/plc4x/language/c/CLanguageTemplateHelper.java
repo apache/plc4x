@@ -800,7 +800,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // If the literal is referencing a constant field, we need to reference the constant variable instead.
         final Optional<NamedField> namedField = ((ComplexTypeDefinition) baseType).getNamedFieldByName(name);
         if(namedField.isPresent() && namedField.get() instanceof ConstField) {
-            return getCTypeName(baseType.getName()).toUpperCase() + "_" + name.toUpperCase() + "()";
+            return getCTypeName(baseType.getName()).toUpperCase() + "_" + camelCaseToSnakeCase(name).toUpperCase() + "()";
         }
 
         // Try to find the type of the addressed property.

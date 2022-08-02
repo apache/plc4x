@@ -1128,7 +1128,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	if _${manualField.name}Err != nil {
 		return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-    ${manualField.name} := _${manualField.name}.(${helper.getLanguageTypeNameForField(manualField)})
+	var ${manualField.name} ${helper.getLanguageTypeNameForField(manualField)}
+	if _${manualField.name} != nil {
+            ${manualField.name} = _${manualField.name}.(${helper.getLanguageTypeNameForField(manualField)})
+	}
 			<#break>
 			<#case "optional">
 				<#assign optionalField = field.asOptionalField().orElseThrow()>
@@ -1845,6 +1848,20 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		</#if>
 	</#if>
 }
+
+<#if filteredParserArgumentsLocalToType?has_content>
+
+////
+// Arguments Getter
+
+    <#list filteredParserArgumentsLocalToType as parserArgument>
+func (m *_${type.name}) Get${parserArgument.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} {
+	return m.${parserArgument.name?cap_first}
+}
+    </#list>
+//
+////
+</#if>
 
 func (m *_${type.name}) is${type.name}() bool {
 	return true

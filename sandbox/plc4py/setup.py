@@ -35,6 +35,9 @@ setup(
     author_email="dev@plc4x.apache.org",
     license="Apache 2.0",
     packages=find_packages(include=["plc4py", "plc4py.*"]),
+    setup_requires=[
+        "wheel",
+    ],
     install_requires=[
         "pytest-asyncio>=0.18.3",
         "pip-tools",

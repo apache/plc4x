@@ -38,8 +38,6 @@ type StandardFormatStatusReply interface {
 	GetBlockStart() uint8
 	// GetStatusBytes returns StatusBytes (property field)
 	GetStatusBytes() []StatusByte
-	// GetCrc returns Crc (property field)
-	GetCrc() Checksum
 }
 
 // StandardFormatStatusReplyExactly can be used when we want exactly this type and not a type which fulfills StandardFormatStatusReply.
@@ -55,7 +53,6 @@ type _StandardFormatStatusReply struct {
 	Application  ApplicationIdContainer
 	BlockStart   uint8
 	StatusBytes  []StatusByte
-	Crc          Checksum
 }
 
 ///////////////////////////////////////////////////////////
@@ -79,18 +76,14 @@ func (m *_StandardFormatStatusReply) GetStatusBytes() []StatusByte {
 	return m.StatusBytes
 }
 
-func (m *_StandardFormatStatusReply) GetCrc() Checksum {
-	return m.Crc
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewStandardFormatStatusReply factory function for _StandardFormatStatusReply
-func NewStandardFormatStatusReply(statusHeader StatusHeader, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, crc Checksum) *_StandardFormatStatusReply {
-	return &_StandardFormatStatusReply{StatusHeader: statusHeader, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
+func NewStandardFormatStatusReply(statusHeader StatusHeader, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) *_StandardFormatStatusReply {
+	return &_StandardFormatStatusReply{StatusHeader: statusHeader, Application: application, BlockStart: blockStart, StatusBytes: statusBytes}
 }
 
 // Deprecated: use the interface for direct cast
@@ -131,9 +124,6 @@ func (m *_StandardFormatStatusReply) GetLengthInBitsConditional(lastItem bool) u
 			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
 		}
 	}
-
-	// Simple field (crc)
-	lengthInBits += m.Crc.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -207,25 +197,12 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormat
 		return nil, errors.Wrap(closeErr, "Error closing for statusBytes")
 	}
 
-	// Simple Field (crc)
-	if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for crc")
-	}
-	_crc, _crcErr := ChecksumParse(readBuffer)
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of StandardFormatStatusReply")
-	}
-	crc := _crc.(Checksum)
-	if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for crc")
-	}
-
 	if closeErr := readBuffer.CloseContext("StandardFormatStatusReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StandardFormatStatusReply")
 	}
 
 	// Create the instance
-	return NewStandardFormatStatusReply(statusHeader, application, blockStart, statusBytes, crc), nil
+	return NewStandardFormatStatusReply(statusHeader, application, blockStart, statusBytes), nil
 }
 
 func (m *_StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -278,18 +255,6 @@ func (m *_StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for statusBytes")
-	}
-
-	// Simple Field (crc)
-	if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for crc")
-	}
-	_crcErr := writeBuffer.WriteSerializable(m.GetCrc())
-	if popErr := writeBuffer.PopContext("crc"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for crc")
-	}
-	if _crcErr != nil {
-		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
 	if popErr := writeBuffer.PopContext("StandardFormatStatusReply"); popErr != nil {

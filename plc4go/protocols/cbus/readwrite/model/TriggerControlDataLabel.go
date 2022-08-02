@@ -205,7 +205,7 @@ func TriggerControlDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContai
 		}
 	}
 	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(utils.InlineIf(bool(bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))), func() interface{} { return uint16(uint16(uint16(4))) }, func() interface{} { return uint16(uint16(uint16(3))) }).(uint16)))))
+	numberOfBytesdata := int((uint16(commandTypeContainer.NumBytes()) - uint16((utils.InlineIf((bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))), func() interface{} { return uint16((uint16(4))) }, func() interface{} { return uint16((uint16(3))) }).(uint16)))))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of TriggerControlDataLabel")

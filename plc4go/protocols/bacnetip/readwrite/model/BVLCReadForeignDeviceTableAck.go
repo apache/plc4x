@@ -204,6 +204,16 @@ func (m *_BVLCReadForeignDeviceTableAck) Serialize(writeBuffer utils.WriteBuffer
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCReadForeignDeviceTableAck) GetBvlcPayloadLength() uint16 {
+	return m.BvlcPayloadLength
+}
+
+//
+////
+
 func (m *_BVLCReadForeignDeviceTableAck) isBVLCReadForeignDeviceTableAck() bool {
 	return true
 }

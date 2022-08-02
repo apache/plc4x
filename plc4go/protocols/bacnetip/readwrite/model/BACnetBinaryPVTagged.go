@@ -139,7 +139,7 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetBinaryPVTagged")
 	}
-	value := _value.(BACnetBinaryPV)
+	var value BACnetBinaryPV
+	if _value != nil {
+		value = _value.(BACnetBinaryPV)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetBinaryPVTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetBinaryPVTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetBinaryPVTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetBinaryPVTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetBinaryPVTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetBinaryPVTagged) isBACnetBinaryPVTagged() bool {
 	return true

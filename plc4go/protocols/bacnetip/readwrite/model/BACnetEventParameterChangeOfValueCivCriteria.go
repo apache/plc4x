@@ -279,6 +279,16 @@ func (pm *_BACnetEventParameterChangeOfValueCivCriteria) SerializeParent(writeBu
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) isBACnetEventParameterChangeOfValueCivCriteria() bool {
 	return true
 }

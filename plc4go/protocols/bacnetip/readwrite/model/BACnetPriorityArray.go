@@ -597,6 +597,22 @@ func (m *_BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPriorityArray) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetPriorityArray) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetPriorityArray) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
+
 func (m *_BACnetPriorityArray) isBACnetPriorityArray() bool {
 	return true
 }

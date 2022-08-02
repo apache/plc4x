@@ -441,12 +441,29 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/s7/fieldtype_string.go</package>
+                <package>internal/cbus/fieldtype_string.go</package>
               </packages>
             </configuration>
           </execution>
           <execution>
             <id>add-license4</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
+                <package>internal/s7/fieldtype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-license5</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>

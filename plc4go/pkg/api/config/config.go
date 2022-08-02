@@ -20,9 +20,11 @@
 package config
 
 // TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log
-var TraceTransactionManagerWorkers bool
-var TraceTransactionManagerTransactions bool
-var TraceDefaultMessageCodecWorker bool
+var (
+	TraceTransactionManagerWorkers      bool
+	TraceTransactionManagerTransactions bool
+	TraceDefaultMessageCodecWorker      bool
+)
 
 func init() {
 	TraceTransactionManagerWorkers = false

@@ -190,6 +190,16 @@ func (m *_BVLCDistributeBroadcastToNetwork) Serialize(writeBuffer utils.WriteBuf
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCDistributeBroadcastToNetwork) GetBvlcPayloadLength() uint16 {
+	return m.BvlcPayloadLength
+}
+
+//
+////
+
 func (m *_BVLCDistributeBroadcastToNetwork) isBVLCDistributeBroadcastToNetwork() bool {
 	return true
 }

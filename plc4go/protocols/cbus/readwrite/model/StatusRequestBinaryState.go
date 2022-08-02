@@ -33,7 +33,7 @@ type StatusRequestBinaryState interface {
 	utils.Serializable
 	StatusRequest
 	// GetApplication returns Application (property field)
-	GetApplication() byte
+	GetApplication() ApplicationIdContainer
 }
 
 // StatusRequestBinaryStateExactly can be used when we want exactly this type and not a type which fulfills StatusRequestBinaryState.
@@ -46,7 +46,7 @@ type StatusRequestBinaryStateExactly interface {
 // _StatusRequestBinaryState is the data-structure of this message
 type _StatusRequestBinaryState struct {
 	*_StatusRequest
-	Application byte
+	Application ApplicationIdContainer
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ func (m *_StatusRequestBinaryState) GetParent() StatusRequest {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_StatusRequestBinaryState) GetApplication() byte {
+func (m *_StatusRequestBinaryState) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -82,7 +82,7 @@ func (m *_StatusRequestBinaryState) GetApplication() byte {
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestBinaryState factory function for _StatusRequestBinaryState
-func NewStatusRequestBinaryState(application byte, statusType byte) *_StatusRequestBinaryState {
+func NewStatusRequestBinaryState(application ApplicationIdContainer, statusType byte) *_StatusRequestBinaryState {
 	_result := &_StatusRequestBinaryState{
 		Application:    application,
 		_StatusRequest: NewStatusRequest(statusType),
@@ -153,11 +153,17 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 	}
 
 	// Simple Field (application)
-	_application, _applicationErr := readBuffer.ReadByte("application")
+	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
+	}
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryState")
 	}
 	application := _application
+	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for application")
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -203,8 +209,13 @@ func (m *_StatusRequestBinaryState) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		// Simple Field (application)
-		application := byte(m.GetApplication())
-		_applicationErr := writeBuffer.WriteByte("application", (application))
+		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for application")
+		}
+		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		if popErr := writeBuffer.PopContext("application"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for application")
+		}
 		if _applicationErr != nil {
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
 		}

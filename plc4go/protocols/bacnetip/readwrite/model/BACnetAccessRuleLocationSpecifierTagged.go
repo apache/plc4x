@@ -139,7 +139,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, t
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, t
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessRuleLocationSpecifierTagged")
 	}
-	value := _value.(BACnetAccessRuleLocationSpecifier)
+	var value BACnetAccessRuleLocationSpecifier
+	if _value != nil {
+		value = _value.(BACnetAccessRuleLocationSpecifier)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessRuleLocationSpecifierTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessRuleLocationSpecifierTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) Serialize(writeBuffer utils.W
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetAccessRuleLocationSpecifierTagged) isBACnetAccessRuleLocationSpecifierTagged() bool {
 	return true

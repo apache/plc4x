@@ -1598,6 +1598,19 @@ func (pm *_BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer,
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConstructedData) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetConstructedData) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
+
 func (m *_BACnetConstructedData) isBACnetConstructedData() bool {
 	return true
 }

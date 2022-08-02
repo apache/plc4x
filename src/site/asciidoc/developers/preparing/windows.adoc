@@ -95,6 +95,8 @@ When running the installer, make sure to select the options:
 - x86_64
 Not quite sure which elements are really needed, better just install all of them.
 
+When running the setup, be sure to leave the setting on the `line ending conversions` on `Checkout Windows-style, commit Unix-style line endings`, this will cause specially in the generated code, a lot of false-dirty files, however when selecting other options that check out the code with Unix line endings (the repo is in this state) the build will fail.
+
 Make sure it's `bin` directory is added to your systems `PATH`, however the installer should have taken care of this.
 Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
 

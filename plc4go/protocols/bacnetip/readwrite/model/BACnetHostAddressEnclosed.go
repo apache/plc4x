@@ -225,6 +225,16 @@ func (m *_BACnetHostAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetHostAddressEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetHostAddressEnclosed) isBACnetHostAddressEnclosed() bool {
 	return true
 }

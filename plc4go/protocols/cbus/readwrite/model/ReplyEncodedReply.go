@@ -33,8 +33,8 @@ type ReplyEncodedReply interface {
 	Reply
 	// GetEncodedReply returns EncodedReply (property field)
 	GetEncodedReply() EncodedReply
-	// GetPayloadLength returns PayloadLength (virtual field)
-	GetPayloadLength() uint16
+	// GetChksum returns Chksum (property field)
+	GetChksum() Checksum
 }
 
 // ReplyEncodedReplyExactly can be used when we want exactly this type and not a type which fulfills ReplyEncodedReply.
@@ -48,6 +48,7 @@ type ReplyEncodedReplyExactly interface {
 type _ReplyEncodedReply struct {
 	*_Reply
 	EncodedReply EncodedReply
+	Chksum       Checksum
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,17 +78,8 @@ func (m *_ReplyEncodedReply) GetEncodedReply() EncodedReply {
 	return m.EncodedReply
 }
 
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_ReplyEncodedReply) GetPayloadLength() uint16 {
-	return uint16(m.ReplyLength)
+func (m *_ReplyEncodedReply) GetChksum() Checksum {
+	return m.Chksum
 }
 
 ///////////////////////
@@ -96,10 +88,11 @@ func (m *_ReplyEncodedReply) GetPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewReplyEncodedReply factory function for _ReplyEncodedReply
-func NewReplyEncodedReply(encodedReply EncodedReply, peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ReplyEncodedReply {
+func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
 	_result := &_ReplyEncodedReply{
 		EncodedReply: encodedReply,
-		_Reply:       NewReply(peekedByte, cBusOptions, replyLength, requestContext),
+		Chksum:       chksum,
+		_Reply:       NewReply(peekedByte, cBusOptions, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -127,10 +120,11 @@ func (m *_ReplyEncodedReply) GetLengthInBits() uint16 {
 func (m *_ReplyEncodedReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
 	// Manual Field (encodedReply)
-	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
+	lengthInBits += uint16(int32((int32(m.GetEncodedReply().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
+
+	// Manual Field (chksum)
+	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() interface{} { return int32((int32(16))) }, func() interface{} { return int32((int32(0))) }).(int32))
 
 	return lengthInBits
 }
@@ -139,7 +133,7 @@ func (m *_ReplyEncodedReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (ReplyEncodedReply, error) {
+func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyEncodedReply"); pullErr != nil {
@@ -148,17 +142,25 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_payloadLength := replyLength
-	payloadLength := uint16(_payloadLength)
-	_ = payloadLength
-
 	// Manual Field (encodedReply)
-	_encodedReply, _encodedReplyErr := ReadEncodedReply(readBuffer, payloadLength, cBusOptions, requestContext)
+	_encodedReply, _encodedReplyErr := ReadEncodedReply(readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())
 	if _encodedReplyErr != nil {
 		return nil, errors.Wrap(_encodedReplyErr, "Error parsing 'encodedReply' field of ReplyEncodedReply")
 	}
-	encodedReply := _encodedReply.(EncodedReply)
+	var encodedReply EncodedReply
+	if _encodedReply != nil {
+		encodedReply = _encodedReply.(EncodedReply)
+	}
+
+	// Manual Field (chksum)
+	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, encodedReply, cBusOptions.GetSrchk())
+	if _chksumErr != nil {
+		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of ReplyEncodedReply")
+	}
+	var chksum Checksum
+	if _chksum != nil {
+		chksum = _chksum.(Checksum)
+	}
 
 	if closeErr := readBuffer.CloseContext("ReplyEncodedReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReplyEncodedReply")
@@ -167,9 +169,9 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	// Create a partially initialized instance
 	_child := &_ReplyEncodedReply{
 		EncodedReply: encodedReply,
+		Chksum:       chksum,
 		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
-			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}
@@ -184,15 +186,17 @@ func (m *_ReplyEncodedReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("ReplyEncodedReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ReplyEncodedReply")
 		}
-		// Virtual field
-		if _payloadLengthErr := writeBuffer.WriteVirtual("payloadLength", m.GetPayloadLength()); _payloadLengthErr != nil {
-			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
-		}
 
 		// Manual Field (encodedReply)
 		_encodedReplyErr := WriteEncodedReply(writeBuffer, m.GetEncodedReply())
 		if _encodedReplyErr != nil {
 			return errors.Wrap(_encodedReplyErr, "Error serializing 'encodedReply' field")
+		}
+
+		// Manual Field (chksum)
+		_chksumErr := CalculateChecksum(writeBuffer, m.GetEncodedReply(), m.CBusOptions.GetSrchk())
+		if _chksumErr != nil {
+			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReplyEncodedReply"); popErr != nil {

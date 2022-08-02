@@ -57,12 +57,12 @@ func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interfac
 	m.TestCases = append(m.TestCases, ManualTestCase{address, expectedReadValue, nil})
 }
 
-func (m *ManualTestSuite) Run() {
+func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
 	if connectionResult.GetErr() != nil {
 		panic(connectionResult.GetErr())
 	}
-	connection := connectionResult
+	connection := connectionResult.GetConnection()
 	log.Info().Msg("Reading all types in separate requests")
 	// Run all entries separately:
 	for _, testCase := range m.TestCases {
@@ -74,11 +74,12 @@ func (m *ManualTestSuite) Run() {
 	m.t.Run("combinedTest", func(t *testing.T) {
 		m.runBurstTest(t, connection)
 	})
+	return connection
 }
 
-func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnectionConnectResult, fieldName string, testCase ManualTestCase) {
+func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnection, fieldName string, testCase ManualTestCase) {
 	// Prepare the read-request
-	readRequestBuilder := connection.GetConnection().ReadRequestBuilder()
+	readRequestBuilder := connection.ReadRequestBuilder()
 	readRequestBuilder.AddQuery(fieldName, testCase.Address)
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
@@ -110,7 +111,7 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	}
 }
 
-func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnectionConnectResult) {
+func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnection) {
 	// Read all items in one big request.
 	// Shuffle the list of test cases and run the test 10 times.
 	log.Info().Msg("Reading all items together in random order")
@@ -129,7 +130,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		}
 		log.Info().Msgf("       using order: %s", sb.String())
 
-		builder := connection.GetConnection().ReadRequestBuilder()
+		builder := connection.ReadRequestBuilder()
 		for _, testCase := range shuffledTestcases {
 			fieldName := testCase.Address
 			builder.AddQuery(fieldName, testCase.Address)

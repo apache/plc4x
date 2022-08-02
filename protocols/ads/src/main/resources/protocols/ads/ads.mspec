@@ -17,6 +17,10 @@
  * under the License.
  */
 
+[type AdsConstants
+    [const          uint 16     adsTcpDefaultPort 48898]
+]
+
 ////////////////////////////////////////////////////////////////
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
@@ -131,7 +135,7 @@
     [simple     uint        32  errorCode                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
-    [simple      uint        32  invokeId                                 ]
+    [simple     uint        32  invokeId                                 ]
     // The payload
     [simple     AdsData('commandId', 'state.response')    data           ]
 ]

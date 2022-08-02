@@ -139,7 +139,7 @@ func BACnetLiftCarDoorCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetLiftCarDoorCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarDoorCommandTagged")
 	}
-	value := _value.(BACnetLiftCarDoorCommand)
+	var value BACnetLiftCarDoorCommand
+	if _value != nil {
+		value = _value.(BACnetLiftCarDoorCommand)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarDoorCommandTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLiftCarDoorCommandTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetLiftCarDoorCommandTagged) Serialize(writeBuffer utils.WriteBuffe
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetLiftCarDoorCommandTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLiftCarDoorCommandTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetLiftCarDoorCommandTagged) isBACnetLiftCarDoorCommandTagged() bool {
 	return true

@@ -181,6 +181,16 @@ func (m *_BACnetServiceAckReadPropertyConditional) Serialize(writeBuffer utils.W
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetServiceAckReadPropertyConditional) GetServiceAckPayloadLength() uint16 {
+	return m.ServiceAckPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetServiceAckReadPropertyConditional) isBACnetServiceAckReadPropertyConditional() bool {
 	return true
 }

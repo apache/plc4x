@@ -35,11 +35,10 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
         <configuration>
-          <usedDependencies combine.children="append">
-          </usedDependencies>
+          <suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
         </configuration>
       </plugin>
     </plugins>
@@ -107,7 +106,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 

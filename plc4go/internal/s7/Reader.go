@@ -100,12 +100,12 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			if err := m.messageCodec.SendRequest(
 				tpktPacket,
 				func(message spi.Message) bool {
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					if tpktPacket == nil {
+					tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+					if !ok {
 						return false
 					}
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-					if cotpPacketData == nil {
+					cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+					if !ok {
 						return false
 					}
 					payload := cotpPacketData.GetPayload()
@@ -117,8 +117,8 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				func(message spi.Message) error {
 					// Convert the response into an
 					log.Trace().Msg("convert response to ")
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
+					tpktPacket := message.(readWriteModel.TPKTPacket)
+					cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
 					payload := cotpPacketData.GetPayload()
 					// Convert the s7 response into a PLC4X response
 					log.Trace().Msg("convert response to PLC4X response")
@@ -211,7 +211,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 
 	payloadItems := payload.GetItems()
 	for i, fieldName := range readRequest.GetFieldNames() {
-		field := readRequest.GetField(fieldName).(S7PlcField)
+		field := readRequest.GetField(fieldName).(PlcField)
 		payloadItem := payloadItems[i]
 
 		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
@@ -236,7 +236,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 // Currently we only support the S7 Any type of addresses. This helper simply converts the S7Field from PLC4X into
 // S7Address objects.
 func encodeS7Address(field model.PlcField) (readWriteModel.S7Address, error) {
-	s7Field, ok := field.(S7PlcField)
+	s7Field, ok := field.(PlcField)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", field)
 	}

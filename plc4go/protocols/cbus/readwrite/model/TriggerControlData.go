@@ -207,8 +207,8 @@ func TriggerControlDataParse(readBuffer utils.ReadBuffer) (TriggerControlData, e
 		_childTemp, typeSwitchError = TriggerControlDataTriggerEventParse(readBuffer)
 	case commandType == TriggerControlCommandType_TRIGGER_MIN: // TriggerControlDataTriggerMin
 		_childTemp, typeSwitchError = TriggerControlDataTriggerMinParse(readBuffer)
-	case commandType == TriggerControlCommandType_TRIGGER_MAX: // TriggerControlDataTriggerMin
-		_childTemp, typeSwitchError = TriggerControlDataTriggerMinParse(readBuffer)
+	case commandType == TriggerControlCommandType_TRIGGER_MAX: // TriggerControlDataTriggerMax
+		_childTemp, typeSwitchError = TriggerControlDataTriggerMaxParse(readBuffer)
 	case commandType == TriggerControlCommandType_INDICATOR_KILL: // TriggerControlDataIndicatorKill
 		_childTemp, typeSwitchError = TriggerControlDataIndicatorKillParse(readBuffer)
 	case commandType == TriggerControlCommandType_LABEL: // TriggerControlDataLabel

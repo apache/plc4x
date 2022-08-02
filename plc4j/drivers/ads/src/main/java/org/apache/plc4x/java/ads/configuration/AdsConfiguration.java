@@ -19,7 +19,8 @@
 package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.ads.ADSPlcDriver;
+import org.apache.plc4x.java.ads.AdsPlcDriver;
+import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
@@ -114,7 +115,7 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
 
     @Override
     public int getDefaultPort() {
-        return ADSPlcDriver.TCP_PORT;
+        return AdsConstants.ADSTCPDEFAULTPORT;
     }
 
     @Override

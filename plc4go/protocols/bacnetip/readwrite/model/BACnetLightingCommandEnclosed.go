@@ -225,6 +225,16 @@ func (m *_BACnetLightingCommandEnclosed) Serialize(writeBuffer utils.WriteBuffer
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLightingCommandEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetLightingCommandEnclosed) isBACnetLightingCommandEnclosed() bool {
 	return true
 }

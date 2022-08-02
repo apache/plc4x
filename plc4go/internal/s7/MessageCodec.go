@@ -46,7 +46,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	tpktPacket := model.CastTPKTPacket(message)
+	tpktPacket := message.(model.TPKTPacketExactly)
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased()
 	err := tpktPacket.Serialize(wb)

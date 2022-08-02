@@ -21,6 +21,7 @@ package cbusanalyzer
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
@@ -29,6 +30,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net"
+	"reflect"
 )
 
 type Analyzer struct {
@@ -57,72 +59,35 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		log.Warn().Msg("Not initialized... doing that now")
 		a.Init()
 	}
-	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, a.cBusOptions, payload)
+	cBusOptions := a.cBusOptions
+	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, cBusOptions, payload)
 	isResponse := a.isResponse(packetInformation)
+	if isResponse {
+		// Responses should have a checksum
+		cBusOptions = model.NewCBusOptions(
+			cBusOptions.GetConnect(),
+			cBusOptions.GetSmart(),
+			cBusOptions.GetIdmon(),
+			cBusOptions.GetExstat(),
+			cBusOptions.GetMonitor(),
+			cBusOptions.GetMonall(),
+			cBusOptions.GetPun(),
+			cBusOptions.GetPcn(),
+			true,
+		)
+	}
 	currentPayload, err := a.getCurrentPayload(packetInformation, payload, isResponse, true, false)
 	if err != nil {
 		return nil, err
 	}
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, a.cBusOptions, uint16(len(currentPayload)))
+	// TODO: apparently we only do crc on receive with our tests so we need to implement that
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}
-	switch cBusMessage := parse.(type) {
-	case model.CBusMessageToServerExactly:
-		switch request := cBusMessage.GetRequest().(type) {
-		case model.RequestDirectCommandAccessExactly:
-			sendIdentifyRequestBefore := false
-			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
-			case model.CALDataOrSetParameterValueExactly:
-				switch calDataOrSetParameter.GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
-			}
-			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-		case model.RequestCommandExactly:
-			switch command := request.GetCbusCommand().(type) {
-			case model.CBusCommandDeviceManagementExactly:
-				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				a.requestContext = model.NewRequestContext(true, false, false)
-			case model.CBusCommandPointToPointExactly:
-				sendIdentifyRequestBefore := false
-				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				switch command.GetCommand().GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
-				a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-			case model.CBusCommandPointToMultiPointExactly:
-				switch command.GetCommand().(type) {
-				case model.CBusPointToMultiPointCommandStatusExactly:
-					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true, false)
-				}
-			case model.CBusCommandPointToPointToMultiPointExactly:
-				switch command.GetCommand().(type) {
-				case model.CBusPointToPointToMultipointCommandStatusExactly:
-					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true, false)
-				}
-			}
-		case model.RequestObsoleteExactly:
-			sendIdentifyRequestBefore := false
-			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
-			case model.CALDataOrSetParameterValueExactly:
-				switch calDataOrSetParameter.GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
-			}
-			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-		}
-	case model.CBusMessageToClientExactly:
-		// We received a request so we need to reset our flags
-		a.requestContext = model.NewRequestContext(false, false, false)
-	}
+	a.requestContext = cbus.CreateRequestContextWithInfoCallback(parse, func(infoString string) {
+		log.Debug().Msgf("No.[%d] %s", packetInformation.PacketNumber, infoString)
+	})
 	log.Debug().Msgf("Parsed c-bus command \n%v", parse)
 	return parse, nil
 }
@@ -245,9 +210,9 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 		case model.CBusMessageToServerExactly:
 			switch request := message.GetRequest().(type) {
 			case model.RequestDirectCommandAccessExactly:
-				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
+				fmt.Printf("%v\n", request.GetCalData())
 			case model.RequestObsoleteExactly:
-				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
+				fmt.Printf("%v\n", request.GetCalData())
 			case model.RequestCommandExactly:
 				fmt.Printf("%v\n", request.GetCbusCommand())
 			}
@@ -301,11 +266,8 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 		a.mappedPacketChan = make(chan gopacket.Packet)
 		go func() {
 			defer close(a.mappedPacketChan)
-			currentPackageNum := uint(0)
-			currentPackageNum++
 		mappingLoop:
 			for packet := range in {
-				currentPackageNum++
 				switch {
 				case packet == nil:
 					log.Debug().Msg("Done reading packages. (nil returned)")
@@ -320,9 +282,10 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 						a.mappedPacketChan <- common.NewFilteredPackage(err, packet)
 					} else {
 						currentApplicationLayer := packet.ApplicationLayer()
-						newApplicationLayer := gopacket.Payload(payload)
-						if len(currentApplicationLayer.Payload()) != len(newApplicationLayer) {
-							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newApplicationLayer}
+						newPayload := gopacket.Payload(payload)
+						if !reflect.DeepEqual(currentApplicationLayer.Payload(), newPayload) {
+							log.Debug().Msgf("Replacing payload %q with %q", currentApplicationLayer.Payload(), payload)
+							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newPayload}
 						}
 						a.mappedPacketChan <- packet
 					}

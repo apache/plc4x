@@ -139,7 +139,7 @@ func BACnetDoorValueTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetDoorValueTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetDoorValueTagged")
 	}
-	value := _value.(BACnetDoorValue)
+	var value BACnetDoorValue
+	if _value != nil {
+		value = _value.(BACnetDoorValue)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDoorValueTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDoorValueTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetDoorValueTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetDoorValueTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetDoorValueTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetDoorValueTagged) isBACnetDoorValueTagged() bool {
 	return true

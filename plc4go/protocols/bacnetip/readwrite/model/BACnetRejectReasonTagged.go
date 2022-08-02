@@ -113,12 +113,12 @@ func (m *_BACnetRejectReasonTagged) GetLengthInBitsConditional(lastItem bool) ui
 	lengthInBits := uint16(0)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.ActualLength) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.ActualLength) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(int32(m.ActualLength) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.ActualLength) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -141,7 +141,10 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetRejectReasonTagged")
 	}
-	value := _value.(BACnetRejectReason)
+	var value BACnetRejectReason
+	if _value != nil {
+		value = _value.(BACnetRejectReason)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetRejectReason_VENDOR_PROPRIETARY_VALUE))
@@ -153,7 +156,10 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetRejectReasonTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRejectReasonTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRejectReasonTagged")
@@ -191,6 +197,16 @@ func (m *_BACnetRejectReasonTagged) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetRejectReasonTagged) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
 
 func (m *_BACnetRejectReasonTagged) isBACnetRejectReasonTagged() bool {
 	return true

@@ -179,6 +179,16 @@ func (m *_UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_UnknownMessage) GetTotalLength() uint16 {
+	return m.TotalLength
+}
+
+//
+////
+
 func (m *_UnknownMessage) isUnknownMessage() bool {
 	return true
 }

@@ -139,7 +139,7 @@ func BACnetRouterEntryStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetRouterEntryStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetRouterEntryStatusTagged")
 	}
-	value := _value.(BACnetRouterEntryStatus)
+	var value BACnetRouterEntryStatus
+	if _value != nil {
+		value = _value.(BACnetRouterEntryStatus)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRouterEntryStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRouterEntryStatusTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetRouterEntryStatusTagged) Serialize(writeBuffer utils.WriteBuffer
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetRouterEntryStatusTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetRouterEntryStatusTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetRouterEntryStatusTagged) isBACnetRouterEntryStatusTagged() bool {
 	return true

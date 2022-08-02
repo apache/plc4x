@@ -238,6 +238,16 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize(writeBuffer uti
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) isBACnetEventParameterChangeOfTimerAlarmValue() bool {
 	return true
 }

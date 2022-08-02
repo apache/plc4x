@@ -312,12 +312,12 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
 	return uint64(utils.InlineIf(m.GetIsUint8(), func() interface{} { return uint64((*m.GetValueUint8())) }, func() interface{} {
-		return uint64(uint64(utils.InlineIf(m.GetIsUint16(), func() interface{} { return uint64((*m.GetValueUint16())) }, func() interface{} {
-			return uint64(uint64(utils.InlineIf(m.GetIsUint24(), func() interface{} { return uint64((*m.GetValueUint24())) }, func() interface{} {
-				return uint64(uint64(utils.InlineIf(m.GetIsUint32(), func() interface{} { return uint64((*m.GetValueUint32())) }, func() interface{} {
-					return uint64(uint64(utils.InlineIf(m.GetIsUint40(), func() interface{} { return uint64((*m.GetValueUint40())) }, func() interface{} {
-						return uint64(uint64(utils.InlineIf(m.GetIsUint48(), func() interface{} { return uint64((*m.GetValueUint48())) }, func() interface{} {
-							return uint64(uint64(utils.InlineIf(m.GetIsUint56(), func() interface{} { return uint64((*m.GetValueUint56())) }, func() interface{} { return uint64((*m.GetValueUint64())) }).(uint64)))
+		return uint64((utils.InlineIf(m.GetIsUint16(), func() interface{} { return uint64((*m.GetValueUint16())) }, func() interface{} {
+			return uint64((utils.InlineIf(m.GetIsUint24(), func() interface{} { return uint64((*m.GetValueUint24())) }, func() interface{} {
+				return uint64((utils.InlineIf(m.GetIsUint32(), func() interface{} { return uint64((*m.GetValueUint32())) }, func() interface{} {
+					return uint64((utils.InlineIf(m.GetIsUint40(), func() interface{} { return uint64((*m.GetValueUint40())) }, func() interface{} {
+						return uint64((utils.InlineIf(m.GetIsUint48(), func() interface{} { return uint64((*m.GetValueUint48())) }, func() interface{} {
+							return uint64((utils.InlineIf(m.GetIsUint56(), func() interface{} { return uint64((*m.GetValueUint56())) }, func() interface{} { return uint64((*m.GetValueUint64())) }).(uint64)))
 						}).(uint64)))
 					}).(uint64)))
 				}).(uint64)))
@@ -559,12 +559,12 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 
 	// Virtual field
 	_actualValue := utils.InlineIf(isUint8, func() interface{} { return uint64((*valueUint8)) }, func() interface{} {
-		return uint64(uint64(utils.InlineIf(isUint16, func() interface{} { return uint64((*valueUint16)) }, func() interface{} {
-			return uint64(uint64(utils.InlineIf(isUint24, func() interface{} { return uint64((*valueUint24)) }, func() interface{} {
-				return uint64(uint64(utils.InlineIf(isUint32, func() interface{} { return uint64((*valueUint32)) }, func() interface{} {
-					return uint64(uint64(utils.InlineIf(isUint40, func() interface{} { return uint64((*valueUint40)) }, func() interface{} {
-						return uint64(uint64(utils.InlineIf(isUint48, func() interface{} { return uint64((*valueUint48)) }, func() interface{} {
-							return uint64(uint64(utils.InlineIf(isUint56, func() interface{} { return uint64((*valueUint56)) }, func() interface{} { return uint64((*valueUint64)) }).(uint64)))
+		return uint64((utils.InlineIf(isUint16, func() interface{} { return uint64((*valueUint16)) }, func() interface{} {
+			return uint64((utils.InlineIf(isUint24, func() interface{} { return uint64((*valueUint24)) }, func() interface{} {
+				return uint64((utils.InlineIf(isUint32, func() interface{} { return uint64((*valueUint32)) }, func() interface{} {
+					return uint64((utils.InlineIf(isUint40, func() interface{} { return uint64((*valueUint40)) }, func() interface{} {
+						return uint64((utils.InlineIf(isUint48, func() interface{} { return uint64((*valueUint48)) }, func() interface{} {
+							return uint64((utils.InlineIf(isUint56, func() interface{} { return uint64((*valueUint56)) }, func() interface{} { return uint64((*valueUint64)) }).(uint64)))
 						}).(uint64)))
 					}).(uint64)))
 				}).(uint64)))
@@ -710,6 +710,16 @@ func (m *_BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuff
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetTagPayloadUnsignedInteger) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
 
 func (m *_BACnetTagPayloadUnsignedInteger) isBACnetTagPayloadUnsignedInteger() bool {
 	return true

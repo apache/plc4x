@@ -267,6 +267,16 @@ func (m *_BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCForwardedNPDU) GetBvlcPayloadLength() uint16 {
+	return m.BvlcPayloadLength
+}
+
+//
+////
+
 func (m *_BVLCForwardedNPDU) isBVLCForwardedNPDU() bool {
 	return true
 }

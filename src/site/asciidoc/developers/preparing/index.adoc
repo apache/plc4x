@@ -26,19 +26,15 @@ The `Java` modules hereby probably have the least demanding requirements.
 In order to build most Java parts of `PLC4X` you are required to have at least `Java 9` installed on your machine.
 Some integration modules and some other languages however may add some additional constraints to this.
 
-As soon as you're building with the `with-c`, `with-cpp` or `with-proxies` you need to use at least `Java 11` as the `cmake-maven-plugin` requires at least this version.
-
-TIP: Currently, Java 11 is the sweet-spot for being able to build all parts of PLC4X.
-
-TIP: We have tested the build with Java 11 up to Java 16 (Latest version at the time of writing this document).
+TIP: We have tested the build with Java 11 up to Java 18 (Latest version at the time of writing this document).
 
 If a new version comes out, please give us a little time to verify and handle any related issues.
 We'll probably fix them as soon as possible.
 However, in the past with Oracle's new release strategy, there have been a few bumps on the road.
 
-Also will PLC4X build with any Maven version starting with `Maven 3.3.0` however the `with-c`, `with-cpp` and `with-proxies` profiles require at least `Maven 3.6` as the `cmake-maven-plugin` requires this.
+Also will PLC4X build with any Maven version starting with `Maven 3.3.0` however the `with-c` profile requires at least `Maven 3.6` as the `cmake-maven-plugin` requires this.
 
-TIP: Currently Maven 3.6 and above is required for being able to build all parts of PLC4X.
+TIP: Currently, Maven 3.6 and above is required for being able to build all parts of PLC4X.
 
 [width=100%]
 |===
@@ -46,19 +42,12 @@ TIP: Currently Maven 3.6 and above is required for being able to build all parts
 |                | Builds Java API, drivers, integrations, examples        a|
 * Git
 * LibPCAP
-| `with-cpp`     | Builds C++ API, drivers, integrations, examples         a|
-* gcc
-* g++
+| `with-c`  | Builds C API, drivers, integrations, examples a|
 | `with-dotnet`  | Builds C# and .Net API, drivers, integrations, examples a|
 * dotnet
 | `with-python`  | Builds Python API, drivers, integrations, examples      a|
-* python (2.7)
-| `with-proxies` | Adds proxy modules to each enabled language             a|
-* bison
-* flex
-* python
-| `with-docker` | Adds building of Docker images                          a|
-* docker
+* python (min 3.7)
+* pyenv
 |===
 
 The following pages will describe how to provide these requirements for your operating system.

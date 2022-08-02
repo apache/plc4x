@@ -139,7 +139,7 @@ func BACnetUnconfirmedServiceChoiceTaggedParse(readBuffer utils.ReadBuffer, tagN
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetUnconfirmedServiceChoiceTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetUnconfirmedServiceChoiceTagged")
 	}
-	value := _value.(BACnetUnconfirmedServiceChoice)
+	var value BACnetUnconfirmedServiceChoice
+	if _value != nil {
+		value = _value.(BACnetUnconfirmedServiceChoice)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceChoiceTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceChoiceTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) Serialize(writeBuffer utils.Writ
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetUnconfirmedServiceChoiceTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetUnconfirmedServiceChoiceTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) isBACnetUnconfirmedServiceChoiceTagged() bool {
 	return true

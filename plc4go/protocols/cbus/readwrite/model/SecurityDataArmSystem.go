@@ -98,7 +98,7 @@ func (m *_SecurityDataArmSystem) GetArmMode() byte {
 ///////////////////////
 
 func (m *_SecurityDataArmSystem) GetIsReserved() bool {
-	return bool(bool(bool((m.GetArmMode()) == (0x00))) || bool(bool(bool(bool((m.GetArmMode()) >= (0x05))) && bool(bool((m.GetArmMode()) <= (0xFE))))))
+	return bool(bool(bool((m.GetArmMode()) == (0x00))) || bool((bool(bool((m.GetArmMode()) >= (0x05))) && bool(bool((m.GetArmMode()) <= (0xFE))))))
 }
 
 func (m *_SecurityDataArmSystem) GetIsArmToAwayMode() bool {
@@ -197,7 +197,7 @@ func SecurityDataArmSystemParse(readBuffer utils.ReadBuffer) (SecurityDataArmSys
 	armMode := _armMode
 
 	// Virtual field
-	_isReserved := bool(bool((armMode) == (0x00))) || bool(bool(bool(bool((armMode) >= (0x05))) && bool(bool((armMode) <= (0xFE)))))
+	_isReserved := bool(bool((armMode) == (0x00))) || bool((bool(bool((armMode) >= (0x05))) && bool(bool((armMode) <= (0xFE)))))
 	isReserved := bool(_isReserved)
 	_ = isReserved
 

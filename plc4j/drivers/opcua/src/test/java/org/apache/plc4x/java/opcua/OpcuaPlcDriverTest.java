@@ -151,7 +151,9 @@ public class OpcuaPlcDriverTest {
     @AfterAll
     public static void tearDown() {
         try {
-            exampleServer.shutdown().get();
+            if(exampleServer != null) {
+                exampleServer.shutdown().get();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

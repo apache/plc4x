@@ -139,7 +139,7 @@ func BACnetProgramRequestTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,7 +148,10 @@ func BACnetProgramRequestTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProgramRequestTagged")
 	}
-	value := _value.(BACnetProgramRequest)
+	var value BACnetProgramRequest
+	if _value != nil {
+		value = _value.(BACnetProgramRequest)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetProgramRequestTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetProgramRequestTagged")
@@ -188,6 +191,19 @@ func (m *_BACnetProgramRequestTagged) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_BACnetProgramRequestTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetProgramRequestTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
 
 func (m *_BACnetProgramRequestTagged) isBACnetProgramRequestTagged() bool {
 	return true

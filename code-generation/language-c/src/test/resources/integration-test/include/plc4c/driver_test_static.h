@@ -21,6 +21,14 @@
 #define PLC4C_TEST_READ_WRITE_DRIVER_H_
 
 // Dummy
+#include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+
+int8_t plc4c_test_read_write_crc_int8();
+uint8_t plc4c_test_read_write_crc_uint8();
+uint8_t plc4c_test_read_write_read_manual_field(plc4c_spi_read_buffer* readBuffer, uint8_t value);
+plc4c_return_code plc4c_test_read_write_write_manual_field(plc4c_spi_write_buffer* writeBuffer, void* value);
 
 #ifdef __cplusplus
 }

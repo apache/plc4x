@@ -238,6 +238,16 @@ func (m *_BACnetLiftCarCallListFloorList) Serialize(writeBuffer utils.WriteBuffe
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLiftCarCallListFloorList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetLiftCarCallListFloorList) isBACnetLiftCarCallListFloorList() bool {
 	return true
 }

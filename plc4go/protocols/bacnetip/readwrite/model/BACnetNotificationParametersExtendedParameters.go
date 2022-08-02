@@ -1051,6 +1051,16 @@ func (m *_BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetNotificationParametersExtendedParameters) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetNotificationParametersExtendedParameters) isBACnetNotificationParametersExtendedParameters() bool {
 	return true
 }
