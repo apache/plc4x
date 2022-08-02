@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.influxdb</groupId>
       <artifactId>influxdb-client-java</artifactId>
-      <version>4.3.0</version>
+      <version>6.4.0</version>
     </dependency>
 
     <dependency>
