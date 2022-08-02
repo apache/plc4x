@@ -227,6 +227,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout), ch)
 			return
 		}
+		log.Debug().Msg("Reset done")
 	}
 	{
 		log.Debug().Msg("Set application filter to all")
@@ -234,36 +235,34 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
 			return
 		}
+		log.Debug().Msg("Application filter set")
 	}
 	{
 		log.Debug().Msg("Set interface options 3")
 		interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(true, false, true, false), 1)
-		var newCBusOptions readWriteModel.CBusOptions
-		newCBusOptions = readWriteModel.NewCBusOptions(false, false, false, true, false, false, false, false, false)
-		cbusOptions = &newCBusOptions
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
 			return
 		}
+		*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, true, false, false, false, false, false)
+		log.Debug().Msg("Interface options 3 set")
 	}
 	{
 		log.Debug().Msg("Set interface options 1 power up settings")
-		var newCBusOptions readWriteModel.CBusOptions
-		newCBusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
-		cbusOptions = &newCBusOptions
 		interfaceOptions1PowerUpSettings := readWriteModel.NewParameterValueInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1(true, true, true, true, false, true)), 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
 			return
 		}
+		*cbusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
+		log.Debug().Msg("Interface options 1 power up settings set")
 	}
 	{
 		log.Debug().Msg("Set interface options 1")
-		var newCBusOptions readWriteModel.CBusOptions
-		newCBusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
-		cbusOptions = &newCBusOptions
 		interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(true, true, true, true, false, true), 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
 			return
 		}
+		*cbusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
+		log.Debug().Msg("Interface options 1 set")
 	}
 	c.fireConnected(ch)
 
@@ -278,6 +277,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			}
 		}
 	}()
+	log.Debug().Msg("Subscription handler stated")
 }
 
 func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {

@@ -178,6 +178,14 @@ lookingForTheEnd:
 	rb := utils.NewReadBufferByteBased(read)
 	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
+		// TODO: bit bad we need to do this but cal detection is not reliable enough
+		rb := utils.NewReadBufferByteBased(read)
+		cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false, false, false), m.cbusOptions)
+		if secondErr == nil {
+			return cBusMessage, nil
+		} else {
+			log.Debug().Err(secondErr).Msg("Second parse failed too")
+		}
 		log.Warn().Err(err).Msg("error parsing")
 		// TODO: Possibly clean up ...
 		return nil, nil
