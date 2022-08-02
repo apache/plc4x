@@ -69,6 +69,15 @@
           </includes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4j-utils-pcap-shared</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -94,12 +103,11 @@
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
     </dependency>
-    <!--dependency>
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
       <version>0.10.0-SNAPSHOT</version>
-      <optional>true</optional>
-    </dependency-->
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
