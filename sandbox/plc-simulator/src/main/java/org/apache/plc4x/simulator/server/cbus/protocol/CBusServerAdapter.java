@@ -84,7 +84,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         if (!smart && !connect) {
             // In this mode every message will be echoed
             LOGGER.info("Sending echo");
-            ctx.writeAndFlush(msg);
+            ctx.write(msg);
         }
         try {
             writeLock.lock();
@@ -338,6 +338,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 return;
             }
         } finally {
+            ctx.flush();
             writeLock.unlock();
         }
     }

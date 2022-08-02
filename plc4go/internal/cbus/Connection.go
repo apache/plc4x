@@ -217,6 +217,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			return
 		}
 
+		startTime := time.Now()
 		select {
 		case <-receivedResetEchoChan:
 			log.Debug().Msgf("We received the echo")
@@ -224,7 +225,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
 			return
 		case timeout := <-time.After(time.Second * 2):
-			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout), ch)
+			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 			return
 		}
 		log.Debug().Msg("Reset done")
@@ -279,6 +280,23 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		}
 	}()
 	log.Debug().Msg("Subscription handler stated")
+
+	log.Debug().Msg("Starting default incoming message handler")
+	go func() {
+		for c.IsConnected() {
+			log.Debug().Msg("Polling data")
+			incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
+			select {
+			case message := <-incomingMessageChannel:
+				// TODO: forward that to the subscriber...
+				// TODO: implement mapping to subscribers
+				log.Info().Msgf("Received \n%v", message)
+			case <-time.After(20 * time.Millisecond):
+			}
+		}
+		log.Info().Msg("Ending default incoming message handler")
+	}()
+	log.Debug().Msg("default incoming message handler started")
 }
 
 func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
@@ -348,6 +366,7 @@ func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult,
 		return false
 	}
 
+	startTime := time.Now()
 	select {
 	case <-directCommandAckChan:
 		log.Debug().Msgf("We received the ack")
@@ -355,7 +374,7 @@ func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult,
 		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
 		return false
 	case timeout := <-time.After(time.Second * 2):
-		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout), ch)
+		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		return false
 	}
 	return true

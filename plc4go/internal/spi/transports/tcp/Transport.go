@@ -21,6 +21,7 @@ package tcp
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
@@ -84,7 +85,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	}
 
 	// Potentially resolve the ip address, if a hostname was provided
-	tcpAddr, err := net.ResolveTCPAddr("tcp", address+":"+strconv.Itoa(port))
+	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", address, port))
 	if err != nil {
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
