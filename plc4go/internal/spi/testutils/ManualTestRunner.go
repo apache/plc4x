@@ -59,10 +59,14 @@ func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interfac
 
 func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
-	if connectionResult.GetErr() != nil {
-		panic(connectionResult.GetErr())
+	if err := connectionResult.GetErr(); err != nil {
+		m.t.Error(err)
+		m.t.FailNow()
 	}
 	connection := connectionResult.GetConnection()
+	m.t.Cleanup(func() {
+		connection.Close()
+	})
 	log.Info().Msg("Reading all types in separate requests")
 	// Run all entries separately:
 	for _, testCase := range m.TestCases {
