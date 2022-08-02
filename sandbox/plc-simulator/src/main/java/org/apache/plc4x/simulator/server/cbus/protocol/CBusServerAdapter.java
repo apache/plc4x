@@ -387,6 +387,9 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     }
 
     private void stopMonitor() {
+        if (sf == null) {
+            return;
+        }
         LOGGER.info("Stopping monitor");
         sf.cancel(false);
         sf = null;
