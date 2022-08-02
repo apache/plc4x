@@ -218,8 +218,8 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		}
 
 		select {
-		case receivedResetEcho := <-receivedResetEchoChan:
-			log.Debug().Msgf("We received the echo {}", receivedResetEcho)
+		case <-receivedResetEchoChan:
+			log.Debug().Msgf("We received the echo")
 		case err := <-receivedResetEchoErrorChan:
 			c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
 			return
@@ -348,8 +348,8 @@ func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult,
 	}
 
 	select {
-	case receivedResetEcho := <-directCommandAckChan:
-		log.Debug().Msgf("We received the ack {}", receivedResetEcho)
+	case <-directCommandAckChan:
+		log.Debug().Msgf("We received the ack")
 	case err := <-directCommandAckErrorChan:
 		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
 		return false
