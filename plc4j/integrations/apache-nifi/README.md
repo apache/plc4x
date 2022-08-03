@@ -43,11 +43,11 @@ The output flowfile will contain the PLC read values. This information is includ
 
 ```
 [ {
-  "var1_boolean" : true,
-  "var2_boolean" : false,
-  "var3_byte" : [ false, false, false, false, false, false, true, true ],
-  "var5_int" : 1992,
-  "var4_word" : [ false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true ],
+  "var1" : true,
+  "var2" : false,
+  "var3" : [ false, false, false, false, false, false, true, true ],
+  "var5" : 1992,
+  "var4" : [ false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true ],
   "ts" : 1628783058433
 } ]
 ```
