@@ -43,11 +43,14 @@ var connectionsChanged func()
 
 var messagesReceived int
 var messageOutput io.Writer
+var messageOutputClear func()
 
 var consoleOutput io.Writer
+var consoleOutputClear func()
 
 var commandsExecuted int
 var commandOutput io.Writer
+var commandOutputClear func()
 
 type inputMode int
 
@@ -215,6 +218,9 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 				application.Draw()
 			})
 		commandOutput = enteredCommandsView
+		commandOutputClear = func() {
+			enteredCommandsView.SetText("")
+		}
 
 		commandArea.AddItem(enteredCommandsView, 1, 0, 1, 1, 0, 0, false)
 
@@ -300,6 +306,9 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 					application.Draw()
 				})
 			messageOutput = outputView
+			messageOutputClear = func() {
+				outputView.SetText("")
+			}
 
 			outputView.SetDoneFunc(func(key tcell.Key) {
 				currentSelection := outputView.GetHighlights()
@@ -332,6 +341,9 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 					application.Draw()
 				})
 			consoleOutput = consoleView
+			consoleOutputClear = func() {
+				consoleView.SetText("")
+			}
 
 			consoleView.SetBorder(false)
 			outputArea.AddItem(consoleView, 2, 0, 1, 1, 0, 0, false)

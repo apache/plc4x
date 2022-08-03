@@ -115,6 +115,8 @@ func addHost(host string) {
 
 func addCommand(command string) {
 	switch command {
+	case "clear":
+		return
 	case "history":
 		return
 	}

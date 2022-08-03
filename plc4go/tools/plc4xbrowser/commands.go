@@ -347,6 +347,16 @@ var rootCommand = Command{
 				return nil
 			},
 		},
+		{
+			Name:        "clear",
+			Description: "clear all outputs",
+			action: func(_ Command, _ string) error {
+				messageOutputClear()
+				consoleOutputClear()
+				commandOutputClear()
+				return nil
+			},
+		},
 	},
 }
 
