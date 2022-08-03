@@ -274,7 +274,9 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			log.Debug().Msg("Handling incoming message")
 			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
 				for _, subscriber := range c.subscribers {
-					subscriber.handleMonitoredSal(monitoredSal)
+					if ok := subscriber.handleMonitoredSal(monitoredSal); ok {
+						log.Debug().Msgf("%s handled\n%s", subscriber, monitoredSal)
+					}
 				}
 			}
 		}
@@ -288,9 +290,25 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 			select {
 			case message := <-incomingMessageChannel:
-				// TODO: forward that to the subscriber...
-				// TODO: implement mapping to subscribers
-				log.Info().Msgf("Received \n%v", message)
+				switch message := message.(type) {
+				case readWriteModel.CBusMessageToClientExactly:
+					switch reply := message.GetReply().(type) {
+					case readWriteModel.ReplyOrConfirmationReplyExactly:
+						switch reply := reply.GetReply().(type) {
+						case readWriteModel.ReplyEncodedReplyExactly:
+							switch encodedReply := reply.GetEncodedReply().(type) {
+							case readWriteModel.EncodedReplyCALReplyExactly:
+								for _, subscriber := range c.subscribers {
+									calReply := encodedReply.GetCalReply()
+									if ok := subscriber.handleMonitoredMMI(calReply); ok {
+										log.Debug().Msgf("%s handled\n%s", subscriber, calReply)
+									}
+								}
+							}
+						}
+					}
+				}
+				log.Debug().Msgf("Received \n%v", message)
 			case <-time.After(20 * time.Millisecond):
 			}
 		}

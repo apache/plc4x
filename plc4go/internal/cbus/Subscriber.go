@@ -75,7 +75,86 @@ func (m *Subscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptio
 	return result
 }
 
-func (m *Subscriber) handleMonitoredSal(sal model.MonitoredSAL) {
+func (m *Subscriber) handleMonitoredMMI(calReply model.CALReply) bool {
+	var unitAddressString string
+	switch calReply := calReply.(type) {
+	case model.CALReplyLongExactly:
+		if calReply.GetIsUnitAddress() {
+			unitAddressString = fmt.Sprintf("u%d", calReply.GetUnitAddress().GetAddress())
+		} else {
+			unitAddressString = fmt.Sprintf("b%d", calReply.GetBridgeAddress().GetAddress())
+			replyNetwork := calReply.GetReplyNetwork()
+			for _, bridgeAddress := range replyNetwork.GetNetworkRoute().GetAdditionalBridgeAddresses() {
+				unitAddressString += fmt.Sprintf("-b%d", bridgeAddress.GetAddress())
+			}
+			unitAddressString += fmt.Sprintf("-u%d", replyNetwork.GetUnitAddress().GetAddress())
+		}
+	default:
+		unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
+	}
+	calData := calReply.GetCalData()
+	// TODO: filter
+	for _, subscriptionRequest := range m.subscriptionRequests {
+		fields := map[string]apiModel.PlcField{}
+		types := map[string]spiModel.SubscriptionType{}
+		intervals := map[string]time.Duration{}
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		address := map[string]string{}
+		plcValues := map[string]values.PlcValue{}
+
+		for _, fieldName := range subscriptionRequest.GetFieldNames() {
+			field, ok := subscriptionRequest.GetField(fieldName).(MMIMonitorField)
+			if !ok {
+				log.Warn().Msgf("Unusable field for subscription %s", field)
+				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+				plcValues[fieldName] = nil
+				continue
+			}
+			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
+				// TODO: filter in unit address
+			}
+			application := field.GetApplication()
+			// TODO: filter in unit address
+			_ = application
+
+			subscriptionType := subscriptionRequest.GetType(fieldName)
+			// TODO: handle subscriptionType
+			_ = subscriptionType
+
+			fields[fieldName] = field
+			types[fieldName] = subscriptionRequest.GetType(fieldName)
+			intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
+
+			var applicationString string
+
+			switch calData := calData.(type) {
+			case model.CALDataStatusExactly:
+				applicationString = calData.GetApplication().ApplicationId().String()
+			case model.CALDataStatusExtendedExactly:
+				applicationString = calData.GetApplication().ApplicationId().String()
+			default:
+				return false
+			}
+			// TODO: we might need to encode more data into the address from sal data
+			address[fieldName] = fmt.Sprintf("/%s/%s", unitAddressString, applicationString)
+
+			// TODO: map values properly
+			plcValues[fieldName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData))
+			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+
+			// Assemble a PlcSubscription event
+			if len(plcValues) > 0 {
+				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, plcValues)
+				eventHandler := subscriptionRequest.GetEventHandler()
+				eventHandler(event)
+			}
+		}
+	}
+	return true
+}
+
+func (m *Subscriber) handleMonitoredSal(sal model.MonitoredSAL) bool {
+	// TODO: filter
 	for _, subscriptionRequest := range m.subscriptionRequests {
 		fields := map[string]apiModel.PlcField{}
 		types := map[string]spiModel.SubscriptionType{}
@@ -143,4 +222,5 @@ func (m *Subscriber) handleMonitoredSal(sal model.MonitoredSAL) {
 			}
 		}
 	}
+	return true
 }
