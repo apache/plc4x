@@ -31,7 +31,6 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     // TODO: review this AtomicReference?
 	// TODO: this could be enhanced checking if record schema should be updated (via a cache boolean, checking property values is a nifi expression language, etc)
   	private AtomicReference<RecordSchema> recordSchema;
-  	// inigo private AtomicReference<Map<String, RecordSchema>> map 
 
     public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse) throws IOException {
         this.readResponse = readResponse;
@@ -40,10 +39,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         logger.debug("Creating record schema from PlcReadResponse");
         Map<String, ? extends PlcValue> responseDataStructure = readResponse.getAsPlcValue().getStruct();
         rsColumnNames = responseDataStructure.keySet();
-        
-        // inigo antes del createSchema, habría que comprobar que el hash de la readResponse.getAsPlcValue().getStruct() está contenido o no en el map, calcular de alguna manera una key unica
-        // inigo alternativa, flag de boolean para que considere si cambia o no el schema (hardcodeado)  
-        
+               
         if (recordSchema == null) {
         	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure); //TODO: review this method as it is the 'mapping' from PlcValues to avro datatypes        	
         	recordSchema = new AtomicReference<RecordSchema>();

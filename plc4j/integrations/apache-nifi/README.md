@@ -39,7 +39,7 @@ For the **Record Writer** property, any writer included in NiFi could be used, s
 - *Encoder Pool Size:* 32
 
 
-The output flowfile will contain the PLC read values. This information is included in the flowfile content, following the Record Oriented presentation using an **schema** and the configuration specified in the Record Writer (format, schema inclusion, etc). In the schema, one field will be included for each of the variables defined in the Processor's  *PLC resource address String:* property, taking into account the specified datatype. Also, a *ts* (timestamp) field is additionally included containing the read date. An example of the content of a flowfile for the previously defined properties:
+The output flowfile will contain the PLC read values. This information is included in the flowfile content, following the Record Oriented presentation using a **schema** and the configuration specified in the Record Writer (format, schema inclusion, etc). In the schema, one field will be included for each of the variables defined in the Processor's  *PLC resource address String:* property, taking into account the specified datatype. Also, a *ts* (timestamp) field is additionally included containing the read date. An example of the content of a flowfile for the previously defined properties:
 
 ```
 [ {
@@ -58,33 +58,33 @@ Table of data mapping between plc data and avro
 
 | PLC type | Avro Type |
 |----------|-----------|
-| PlcBigDecimal | floatType |
-| PlcBigInteger | longType |
-| PlcBitString | stringType |
-| PlcBOOL | booleanType |
-| PlcBYTE | stringType |
-| PlcCHAR | stringType |
-| PlcDATE_AND_TIME | stringType |
-| PlcDATE | stringType |
-| PlcDINT | stringType |
-| PlcDWORD | stringType |
-| PlcINT | intType |
-| PlcLINT | stringType |
-| PlcList | stringType |
-| PlcLREAL | stringType |
-| PlcLTIME | stringType |
-| PlcLWORD | stringType |
-| PlcNull | stringType |
-| PlcREAL | doubleType |
-| PlcSINT | intType |
-| PlcSTRING | stringType |
-| PlcStruct | stringType |
-| PlcTIME_OF_DAY | stringType |
-| PlcTIME | stringType |
-| PlcUDINT | stringType |
-| PlcUINT | stringType |
-| PlcULINT | stringType |
-| PlcUSINT | stringType |
-| PlcWCHAR | stringType |
-| PlcWORD | stringType |
-| ELSE | stringType |
+| PlcBigDecimal | float |
+| PlcBigInteger | long |
+| PlcBitString | string |
+| PlcBOOL | boolean |
+| PlcBYTE | string |
+| PlcCHAR | string |
+| PlcDATE_AND_TIME | string |
+| PlcDATE | string |
+| PlcDINT | string |
+| PlcDWORD | string |
+| PlcINT | int |
+| PlcLINT | string |
+| PlcList | string |
+| PlcLREAL | string |
+| PlcLTIME | string |
+| PlcLWORD | string |
+| PlcNull | string |
+| PlcREAL | double |
+| PlcSINT | int |
+| PlcSTRING | string |
+| PlcStruct | string |
+| PlcTIME_OF_DAY | string |
+| PlcTIME | string |
+| PlcUDINT | string |
+| PlcUINT | string |
+| PlcULINT | string |
+| PlcUSINT | string |
+| PlcWCHAR | string |
+| PlcWORD | string |
+| ELSE | string |

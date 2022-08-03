@@ -125,39 +125,6 @@
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-modbus</artifactId>
 			<version>${nifi-plc4x.version}</version>
-			<!--
-			<version>0.9.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.plc4x</groupId>
-					<artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.plc4x</groupId>
-					<artifactId>plc4j-transport-tcp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.plc4x</groupId>
-					<artifactId>plc4x-code-generation-language-java</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.plc4x</groupId>
-					<artifactId>plc4j-transport-serial</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.plc4x</groupId>
-					<artifactId>plc4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.plc4x</groupId>
-					<artifactId>plc4j-spi</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.plc4x</groupId>
-					<artifactId>plc4j-transport-raw-socket</artifactId>
-				</exclusion>
-			</exclusions>
-			-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
