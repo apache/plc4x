@@ -74,7 +74,7 @@ func initSubsystem() {
 	commandsExecuted = len(config.History.Last10Commands)
 	_, _ = fmt.Fprintln(commandOutput, "[#0000ff]Last 10 commands[white]")
 	for i, command := range config.History.Last10Commands {
-		_, _ = fmt.Fprintf(commandOutput, "   %d: [\"%d\"]%s[\"\"]\n", i+1, i, command)
+		_, _ = fmt.Fprintf(commandOutput, "   [#00ff00]%d[white]: [\"%d\"]%s[\"\"]\n", i+1, i+1, command)
 	}
 }
 
@@ -239,6 +239,7 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 					enteredCommandsView.Highlight("0").ScrollToHighlight()
 				}
 				if len(currentSelection) == 1 {
+					// TODO: currently this is broken due to https://github.com/rivo/tview/issues/751
 					commandInputField.SetText(enteredCommandsView.GetRegionText(currentSelection[0]))
 					application.SetFocus(commandInputField)
 				}
