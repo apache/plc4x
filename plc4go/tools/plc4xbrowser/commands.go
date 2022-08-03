@@ -291,7 +291,7 @@ func init() {
 		Name:        "help",
 		Description: "prints out this help",
 		action: func(_ Command, _ string) error {
-			_, _ = fmt.Fprintf(commandOutput, "Available commands\n")
+			_, _ = fmt.Fprintf(commandOutput, "[#0000ff]Available commands[white]\n")
 			rootCommand.visit(0, func(currentIndent int, command Command) {
 				indentString := strings.Repeat("  ", currentIndent)
 				_, _ = fmt.Fprintf(commandOutput, "%s [#00ff00]%s[white]: %s\n", indentString, command.Name, command.Description)
@@ -380,7 +380,11 @@ func (c Command) hasDirectExecution() bool {
 }
 
 func Execute(commandText string) error {
-	return rootCommand.Execute(commandText)
+	err := rootCommand.Execute(commandText)
+	if err == nil {
+		addCommand(commandText)
+	}
+	return err
 }
 
 func (c Command) Execute(commandText string) error {

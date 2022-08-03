@@ -34,7 +34,8 @@ var config Config
 
 type Config struct {
 	History struct {
-		Last10Hosts []string `yaml:"last_hosts"`
+		Last10Hosts    []string `yaml:"last_hosts"`
+		Last10Commands []string `yaml:"last_commands"`
 	}
 	LastUpdated time.Time `yaml:"last_updated"`
 	LogLevel    string    `yaml:"log_level"`
@@ -110,6 +111,23 @@ func addHost(host string) {
 		config.History.Last10Hosts = config.History.Last10Hosts[1:]
 	}
 	config.History.Last10Hosts = append(config.History.Last10Hosts, host)
+}
+
+func addCommand(command string) {
+	existingIndex := -1
+	for i, lastCommand := range config.History.Last10Commands {
+		if lastCommand == command {
+			existingIndex = i
+			break
+		}
+	}
+	if existingIndex >= 0 {
+		config.History.Last10Commands = append(config.History.Last10Commands[:existingIndex], config.History.Last10Commands[existingIndex+1:]...)
+	}
+	if len(config.History.Last10Commands) >= 10 {
+		config.History.Last10Commands = config.History.Last10Commands[1:]
+	}
+	config.History.Last10Commands = append(config.History.Last10Commands, command)
 }
 
 func setLevel(level zerolog.Level) {

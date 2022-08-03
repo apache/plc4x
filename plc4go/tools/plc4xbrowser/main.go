@@ -39,13 +39,12 @@ var driverAdded func(string)
 var connections map[string]plc4go.PlcConnection
 var connectionsChanged func()
 
-var commandsExecuted int
-
 var messagesReceived int
 var messageOutput io.Writer
 
 var consoleOutput io.Writer
 
+var commandsExecuted int
 var commandOutput io.Writer
 
 func init() {
@@ -70,6 +69,13 @@ func initSubsystem() {
 		//With().Caller().Logger().
 		Output(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)}).
 		Level(logLevel)
+
+	// We offset the commands executed with the last commands
+	commandsExecuted = len(config.History.Last10Commands)
+	_, _ = fmt.Fprintln(commandOutput, "[#0000ff]Last 10 commands[white]")
+	for i, command := range config.History.Last10Commands {
+		_, _ = fmt.Fprintf(commandOutput, "   %d: [\"%d\"]%s[\"\"]\n", i+1, i, command)
+	}
 }
 
 var shutdownMutex sync.Mutex
@@ -188,16 +194,16 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 		SetColumns(0).
 		AddItem(commandAreaHeader, 0, 0, 1, 1, 0, 0, false)
 	{
-		enteredCommands := tview.NewTextView().
+		enteredCommandsView := tview.NewTextView().
 			SetDynamicColors(true).
 			SetRegions(true).
 			SetWordWrap(true).
 			SetChangedFunc(func() {
 				application.Draw()
 			})
-		commandOutput = enteredCommands
+		commandOutput = enteredCommandsView
 
-		commandArea.AddItem(enteredCommands, 1, 0, 1, 1, 0, 0, false)
+		commandArea.AddItem(enteredCommandsView, 1, 0, 1, 1, 0, 0, false)
 
 		commandInputField := tview.NewInputField().
 			SetLabel("$").
@@ -211,10 +217,10 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 					return
 				}
 				commandsExecuted++
-				_, _ = fmt.Fprintf(enteredCommands, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
+				_, _ = fmt.Fprintf(enteredCommandsView, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
 				go func() {
 					if err := Execute(commandText); err != nil {
-						_, _ = fmt.Fprintf(enteredCommands, "[#ff0000]%s %s[white]\n", time.Now().Format("04:05"), err)
+						_, _ = fmt.Fprintf(enteredCommandsView, "[#ff0000]%s %s[white]\n", time.Now().Format("04:05"), err)
 						return
 					}
 					application.QueueUpdateDraw(func() {
@@ -223,6 +229,32 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 				}()
 			})
 		commandInputField.SetAutocompleteFunc(rootCommand.Completions)
+
+		enteredCommandsView.SetDoneFunc(func(key tcell.Key) {
+			currentSelection := enteredCommandsView.GetHighlights()
+			if key == tcell.KeyEnter {
+				if len(currentSelection) > 0 {
+					enteredCommandsView.Highlight()
+				} else {
+					enteredCommandsView.Highlight("0").ScrollToHighlight()
+				}
+				if len(currentSelection) == 1 {
+					commandInputField.SetText(enteredCommandsView.GetRegionText(currentSelection[0]))
+					application.SetFocus(commandInputField)
+				}
+			} else if len(currentSelection) > 0 {
+				index, _ := strconv.Atoi(currentSelection[0])
+				if key == tcell.KeyTab {
+					index = (index + 1) % commandsExecuted
+				} else if key == tcell.KeyBacktab {
+					index = (index - 1 + commandsExecuted) % commandsExecuted
+				} else {
+					return
+				}
+				enteredCommandsView.Highlight(strconv.Itoa(index)).ScrollToHighlight()
+			}
+		})
+
 		commandArea.AddItem(commandInputField, 2, 0, 1, 1, 0, 0, true)
 	}
 	return commandArea
