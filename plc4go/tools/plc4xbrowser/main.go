@@ -21,32 +21,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/ads"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/cbus"
-	"github.com/apache/plc4x/plc4go/internal/s7"
 	"io"
-	"net/url"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	plc4x_config "github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 )
-
-// TODO: replace with real commands
-const plc4xCommands = "connect,disconnect,read,write,register,subscribe,quit,log,plc4x-conf"
-const protocols = "ads,bacnetip,c-bus,s7"
 
 var driverManager plc4go.PlcDriverManager
 var driverAdded func(string)
@@ -59,6 +45,8 @@ var messagesReceived int
 var messageOutput io.Writer
 
 var consoleOutput io.Writer
+
+var commandOutput io.Writer
 
 func init() {
 	hasShutdown = false
@@ -207,12 +195,12 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 			SetChangedFunc(func() {
 				application.Draw()
 			})
+		commandOutput = enteredCommands
+
 		commandArea.AddItem(enteredCommands, 1, 0, 1, 1, 0, 0, false)
 
-		plc4xCommandSuggestions := strings.Split(plc4xCommands, ",")
-		protocolsSuggestions := strings.Split(protocols, ",")
 		commandInputField := tview.NewInputField().
-			SetLabel("PLC4X Command").
+			SetLabel("$").
 			SetFieldWidth(30)
 		commandInputField.
 			SetDoneFunc(func(key tcell.Key) {
@@ -225,7 +213,7 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 				commandsExecuted++
 				_, _ = fmt.Fprintf(enteredCommands, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
 				go func() {
-					if err := handleCommand(commandText); err != nil {
+					if err := Execute(commandText); err != nil {
 						_, _ = fmt.Fprintf(enteredCommands, "[#ff0000]%s %s[white]\n", time.Now().Format("04:05"), err)
 						return
 					}
@@ -234,169 +222,10 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 					})
 				}()
 			})
-		commandInputField.SetAutocompleteFunc(func(currentText string) (entries []string) {
-			if len(currentText) == 0 {
-				return
-			}
-			for _, word := range plc4xCommandSuggestions {
-				if strings.HasPrefix(strings.ToLower(word), strings.ToLower(currentText)) {
-					entries = append(entries, word)
-				}
-			}
-			switch {
-			case strings.HasPrefix(currentText, "connect"):
-				for _, protocol := range protocolsSuggestions {
-					if strings.HasPrefix(currentText, "connect "+protocol) {
-						for _, host := range config.History.Last10Hosts {
-							entries = append(entries, "connect "+protocol+"://"+host)
-						}
-						entries = append(entries, currentText)
-					} else {
-						entries = append(entries, "connect "+protocol)
-					}
-				}
-			case strings.HasPrefix(currentText, "disconnect"):
-				for connectionsString, _ := range connections {
-					entries = append(entries, "disconnect "+connectionsString)
-				}
-			case strings.HasPrefix(currentText, "register"):
-				for _, protocol := range protocolsSuggestions {
-					entries = append(entries, "register "+protocol)
-				}
-			case strings.HasPrefix(currentText, "subscribe"):
-				for connectionsString, _ := range connections {
-					entries = append(entries, "subscribe "+connectionsString)
-				}
-			case strings.HasPrefix(currentText, "log"):
-				levels := []string{
-					zerolog.LevelTraceValue,
-					zerolog.LevelDebugValue,
-					zerolog.LevelInfoValue,
-					zerolog.LevelWarnValue,
-					zerolog.LevelErrorValue,
-					zerolog.LevelFatalValue,
-					zerolog.LevelPanicValue,
-				}
-				for _, level := range levels {
-					entries = append(entries, "log "+level)
-				}
-			case strings.HasPrefix(currentText, "plc4x-conf"):
-				for _, plc4xConf := range []string{
-					"TraceTransactionManagerWorkers",
-					"TraceTransactionManagerTransactions",
-					"TraceDefaultMessageCodecWorker",
-				} {
-					entries = append(entries, "plc4x-conf "+plc4xConf+" true")
-					entries = append(entries, "plc4x-conf "+plc4xConf+" false")
-				}
-			}
-			return
-		})
+		commandInputField.SetAutocompleteFunc(rootCommand.Completions)
 		commandArea.AddItem(commandInputField, 2, 0, 1, 1, 0, 0, true)
 	}
 	return commandArea
-}
-
-func handleCommand(commandText string) error {
-	switch {
-	case strings.HasPrefix(commandText, "register "):
-		protocol := strings.TrimPrefix(commandText, "register ")
-		switch protocol {
-		case "ads":
-			driverManager.RegisterDriver(ads.NewDriver())
-			transports.RegisterTcpTransport(driverManager)
-		case "bacnetip":
-			driverManager.RegisterDriver(bacnetip.NewDriver())
-			transports.RegisterUdpTransport(driverManager)
-		case "c-bus":
-			driverManager.RegisterDriver(cbus.NewDriver())
-			transports.RegisterTcpTransport(driverManager)
-		case "s7":
-			driverManager.RegisterDriver(s7.NewDriver())
-			transports.RegisterTcpTransport(driverManager)
-		default:
-			return errors.Errorf("Unknown protocol %s", protocol)
-		}
-		driverAdded(protocol)
-	case strings.HasPrefix(commandText, "connect "):
-		connectionString := strings.TrimPrefix(commandText, "connect ")
-		log.Info().Msgf("commandText [%s] connectionString [%s]", commandText, connectionString)
-		connectionUrl, err := url.Parse(connectionString)
-		if err != nil {
-			return errors.Wrapf(err, "can't parse connection url %s", connectionString)
-		}
-		addHost(connectionUrl.Host)
-		connectionId := fmt.Sprintf("%s://%s", connectionUrl.Scheme, connectionUrl.Host)
-		if _, ok := connections[connectionId]; ok {
-			return errors.Errorf("%s already connected", connectionId)
-		}
-		connectionResult := <-driverManager.GetConnection(connectionString)
-		if err := connectionResult.GetErr(); err != nil {
-			return errors.Wrapf(err, "%s can't connect to", connectionUrl.Host)
-		}
-		log.Info().Msgf("%s connected", connectionId)
-		connections[connectionId] = connectionResult.GetConnection()
-		connectionsChanged()
-	case strings.HasPrefix(commandText, "disconnect "):
-		host := strings.TrimPrefix(commandText, "disconnect ")
-		if connection, ok := connections[host]; !ok {
-			return errors.Errorf("%s not connected", host)
-		} else {
-			closeResult := <-connection.Close()
-			log.Info().Msgf("%s disconnected", host)
-			delete(connections, host)
-			connectionsChanged()
-			if err := closeResult.GetErr(); err != nil {
-				return errors.Wrapf(err, "%s can't close", host)
-			}
-		}
-	case strings.HasPrefix(commandText, "subscribe "):
-		host := strings.TrimPrefix(commandText, "subscribe ")
-		if connection, ok := connections[host]; !ok {
-			return errors.Errorf("%s not connected", host)
-		} else {
-			// TODO: hardcoded to c-bus at the moment
-			subscriptionRequest, err := connection.SubscriptionRequestBuilder().
-				AddEventQuery("something", "monitor/*/*").
-				AddItemHandler(func(event model.PlcSubscriptionEvent) {
-					messagesReceived++
-					_, _ = fmt.Fprintf(messageOutput, "[\"%d\"]\n%s[\"\"]", messagesReceived, event)
-				}).
-				Build()
-			if err != nil {
-				return errors.Wrapf(err, "%s can't subscribe", host)
-			}
-			subscriptionRequestResult := <-subscriptionRequest.Execute()
-			if err := subscriptionRequestResult.GetErr(); err != nil {
-				return errors.Wrapf(err, "%s can't subscribe", host)
-			}
-			log.Info().Msgf("subscription result %s", subscriptionRequestResult.GetResponse())
-		}
-	case strings.HasPrefix(commandText, "log"):
-		level := strings.TrimPrefix(commandText, "log ")
-		parseLevel, err := zerolog.ParseLevel(level)
-		if err != nil {
-			return errors.Wrapf(err, "Error setting log level")
-		}
-		setLevel(parseLevel)
-		log.Logger = log.Logger.Level(parseLevel)
-	case strings.HasPrefix(commandText, "plc4x-conf"):
-		plc4xConf := strings.TrimPrefix(commandText, "plc4x-conf ")
-		switch {
-		case strings.HasPrefix(plc4xConf, "TraceTransactionManagerWorkers "):
-			on := strings.TrimPrefix(plc4xConf, "TraceTransactionManagerWorkers ")
-			plc4x_config.TraceTransactionManagerWorkers = on == "true"
-		case strings.HasPrefix(plc4xConf, "TraceTransactionManagerTransactions "):
-			on := strings.TrimPrefix(plc4xConf, "TraceTransactionManagerTransactions ")
-			plc4x_config.TraceTransactionManagerWorkers = on == "true"
-		case strings.HasPrefix(plc4xConf, "TraceDefaultMessageCodecWorker "):
-			on := strings.TrimPrefix(plc4xConf, "TraceDefaultMessageCodecWorker ")
-			plc4x_config.TraceTransactionManagerWorkers = on == "true"
-		}
-	default:
-		return errors.Errorf("%s not found", commandText)
-	}
-	return nil
 }
 
 func buildOutputArea(newPrimitive func(text string) tview.Primitive, application *tview.Application) *tview.Grid {
