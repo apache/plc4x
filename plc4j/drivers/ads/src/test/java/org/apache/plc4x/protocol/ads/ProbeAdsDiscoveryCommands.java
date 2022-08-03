@@ -26,20 +26,22 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ProbeAdsDiscoveryCommands {
 
     public static void main(String[] args) {
         // Create the discovery request message for this device.
         AmsNetId amsNetId = new AmsNetId((byte) 192, (byte) 168, (byte) 23, (byte) 200, (byte) 1, (byte) 1);
-        AdsDiscovery discoveryRequestMessage = new AdsDiscovery(1, Operation.ADD_OR_UPDATE_ROUTE_REQUEST, amsNetId, AdsPortNumbers.SYSTEM_SERVICE,
+        AdsDiscovery discoveryRequestMessage = new AdsDiscovery(1, Operation.UNKNOWN_REQUEST, amsNetId, AdsPortNumbers.SYSTEM_SERVICE,
             //Collections.emptyList()
             Arrays.asList(
-                new AdsDiscoveryBlockRouteName(new AmsString("route-name")),
+                /*new AdsDiscoveryBlockRouteName(new AmsString("route-name")),
                 new AdsDiscoveryBlockAmsNetId(amsNetId),
                 new AdsDiscoveryBlockUserName(new AmsString("username")),
                 new AdsDiscoveryBlockPassword(new AmsString("password")),
-                new AdsDiscoveryBlockHostName(new AmsString("host-name-or-ip"))
+                new AdsDiscoveryBlockHostName(new AmsString("host-name-or-ip"))*/
+                new AdsDiscoveryBlockAmsNetId(new AmsNetId((byte) 192, (byte) 168, (byte) 23, (byte) 20, (byte) 1, (byte) 1))
             ));
 
         try (DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT)) {

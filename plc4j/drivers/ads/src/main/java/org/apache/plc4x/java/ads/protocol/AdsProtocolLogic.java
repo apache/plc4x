@@ -96,8 +96,102 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public void onConnect(ConversationContext<AmsTCPPacket> context) {
-        // AMS/ADS doesn't know a concept of a "connect".
-        context.fireConnected();
+        LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        List<AdsDataTypeTableEntry> dataTypes = new ArrayList<>();
+        List<AdsSymbolTableEntry> symbols = new ArrayList<>();
+        // Initialize the request.
+        AdsData adsData = new AdsReadRequest(AdsSignificantGroupAddresses.TABLE_SIZES.getValue(), 0x00000000, 24);
+        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+            CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
+        AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
+        // Start a new request-transaction (Is ended in the response-handler)
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(response -> (AdsReadResponse) response.getUserdata().getData())
+            .handle(responseAdsData -> {
+                if (responseAdsData.getResult() == ReturnCode.OK) {
+                    ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData());
+                    try {
+                        AdsTableSizes adsTableSizes = AdsTableSizes.staticParse(readBuffer);
+                        LOGGER.info("PLC contains {} symbols and {} datatypes", adsTableSizes.getSymbolCount(), adsTableSizes.getDataTypeCount());
+
+                        AdsData adsReadSymbolTableData = new AdsReadRequest(AdsSignificantGroupAddresses.SYMBOL_TABLE.getValue(), 0x00000000, adsTableSizes.getSymbolLength());
+                        AmsPacket amsReadSymbolTablePacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+                            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+                            CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsReadSymbolTableData);
+                        AmsTCPPacket amsReadSymbolTableTCPPacket = new AmsTCPPacket(amsReadSymbolTablePacket);
+                        transaction.submit(() -> context.sendRequest(amsReadSymbolTableTCPPacket)
+                            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                            .onTimeout(future::completeExceptionally)
+                            .onError((p, e) -> future.completeExceptionally(e))
+                            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsReadSymbolTablePacket.getInvokeId())
+                            .unwrap(response -> (AdsReadResponse) response.getUserdata().getData())
+                            .handle(responseAdsReadSymbolTableData -> {
+                                if (responseAdsData.getResult() == ReturnCode.OK) {
+                                    ReadBuffer rb2 = new ReadBufferByteBased(responseAdsReadSymbolTableData.getData());
+                                    for (int i = 0; i < adsTableSizes.getSymbolCount(); i++) {
+                                        try {
+                                            AdsSymbolTableEntry adsSymbolTableEntry = AdsSymbolTableEntry.staticParse(rb2);
+                                            System.out.println(adsSymbolTableEntry);
+                                            symbols.add(adsSymbolTableEntry);
+                                        } catch (ParseException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                    future.complete(null);
+                                }
+                            }));
+
+                        // TODO: Now we load the symbol-table and the datatype definitions.
+                        /*AdsData adsReadTypeTableData = new AdsReadRequest(AdsSignificantGroupAddresses.DATA_TYPE_TABLE.getValue(), 0x00000000, adsTableSizes.getDataTypeLength());
+                        AmsPacket amsReadTablePacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+                            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+                            CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsReadTypeTableData);
+                        AmsTCPPacket amsReadTableTCPPacket = new AmsTCPPacket(amsReadTablePacket);
+                        transaction.submit(() -> context.sendRequest(amsReadTableTCPPacket)
+                            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                            .onTimeout(future::completeExceptionally)
+                            .onError((p, e) -> future.completeExceptionally(e))
+                            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsReadTablePacket.getInvokeId())
+                            .unwrap(response -> (AdsReadResponse) response.getUserdata().getData())
+                            .handle(responseAdsReadTableData -> {
+                                if (responseAdsData.getResult() == ReturnCode.OK) {
+                                    // Parse the result.
+                                    ReadBuffer rb = new ReadBufferByteBased(responseAdsReadTableData.getData());
+                                    while (rb.hasMore(8)) {
+                                        try {
+                                            AdsDataTypeTableEntry adsDataTypeTableEntry = AdsDataTypeTableEntry.staticParse(rb);
+                                            System.out.println(adsDataTypeTableEntry);
+                                            dataTypes.add(adsDataTypeTableEntry);
+                                        } catch (ParseException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                }
+                            }));*/
+                    } catch (ParseException e) {
+                        future.completeExceptionally(new PlcException("Error loading the table sizes", e));
+                    }
+                } else {
+                    // TODO: Implement this correctly.
+                    future.completeExceptionally(new PlcException("Result is " + responseAdsData.getResult()));
+                }
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
+        future.whenComplete((unused, throwable) -> {
+            if(throwable != null) {
+                LOGGER.error("Error fetching symbol and datatype table sizes");
+            } else {
+                context.fireConnected();
+            }
+        });
     }
 
     @Override

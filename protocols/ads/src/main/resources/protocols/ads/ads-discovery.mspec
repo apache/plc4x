@@ -113,27 +113,19 @@
 // without any blocks for any of the "UNKNOWN" request codes.
 // However all responses do contain the remote AmsNetId.
 [enum uint 32 Operation
-    ['0x00000000' UNKNOWN_1_REQUEST           ]
-    ['0x80000000' UNKNOWN_1_RESPONSE          ]
     ['0x00000001' DISCOVERY_REQUEST           ]
     ['0x80000001' DISCOVERY_RESPONSE          ]
-    ['0x00000002' UNKNOWN_2_REQUEST           ]
-    ['0x80000002' UNKNOWN_2_RESPONSE          ]
-    ['0x00000003' UNKNOWN_3_REQUEST           ]
-    ['0x80000003' UNKNOWN_3_RESPONSE          ]
-    ['0x00000004' UNKNOWN_4_REQUEST           ]
-    ['0x80000004' UNKNOWN_4_RESPONSE          ]
-    ['0x00000005' UNKNOWN_5_REQUEST           ]
-    ['0x80000005' UNKNOWN_5_RESPONSE          ]
     // Update information for an entry with the same AmsNetId
     ['0x00000006' ADD_OR_UPDATE_ROUTE_REQUEST ]
     ['0x80000006' ADD_OR_UPDATE_ROUTE_RESPONSE]
     ['0x00000007' DEL_ROUTE_REQUEST           ]
     ['0x80000007' DEL_ROUTE_RESPONSE          ]
-    ['0x00000008' UNKNOWN_8_REQUEST           ]
-    ['0x80000008' UNKNOWN_8_RESPONSE          ]
-    ['0x00000009' UNKNOWN_9_REQUEST           ]
-    ['0x80000009' UNKNOWN_9_RESPONSE          ]
+    // In contrast to the other message, I get an status block back when using this,
+    // just as if I was adding a route with invalid credentials. So possibly we might
+    // have something here ... I would guess something like a Enumerate Routes command
+    // For which I have seen in the documentation of TwinCat 2 and 3.
+    ['0x00000008' UNKNOWN_REQUEST             ]
+    ['0x80000008' UNKNOWN_RESPONSE            ]
 ]
 
 [enum uint 32 Status

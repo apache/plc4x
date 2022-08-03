@@ -735,3 +735,89 @@
     ['0x274D' WSAECONNREFUSED]
     ['0x2751' WSAEHOSTUNREACH]
 ]
+
+// https://github.com/Beckhoff/ADS/blob/master/AdsLib/standalone/AdsDef.h
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/ads.go#L145
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/connection.go#L109
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L222
+[enum uint 32 AdsSignificantGroupAddresses
+    ['0x0000F00B' SYMBOL_TABLE   ]
+    ['0x0000F00E' DATA_TYPE_TABLE]
+    ['0x0000F00F' TABLE_SIZES    ]
+]
+
+[type AdsTableSizes byteOrder='LITTLE_ENDIAN'
+	[simple   uint 32 symbolCount   ]
+	[simple   uint 32 symbolLength  ]
+	[simple   uint 32 dataTypeCount ]
+	[simple   uint 32 dataTypeLength]
+	[simple   uint 32 extraCount    ]
+	[simple   uint 32 extraLength   ]
+]
+
+[type AdsSymbolTableEntry byteOrder='LITTLE_ENDIAN'
+  	[simple   uint 32                      entryLength                           ]
+    [simple   uint 32                      group                                 ]
+    [simple   uint 32                      offset                                ]
+    [simple   uint 32                      size                                  ]
+    [simple   uint 32                      dataType                              ]
+    // Start: Flags
+    // https://github.com/jisotalo/ads-server/blob/master/src/ads-commons.ts#L631
+    // Order of the bits if read Little-Endian and then accessing the bit flags
+    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8  |  23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
+    [simple   bit                          flagMethodDeref                       ]
+    [simple   bit                          flagItfMethodAccess                   ]
+    [simple   bit                          flagReadOnly                          ]
+    [simple   bit                          flagTComInterfacePointer              ]
+    [simple   bit                          flagTypeGuid                          ]
+    [simple   bit                          flagReferenceTo                       ]
+    [simple   bit                          flagBitValue                          ]
+    [simple   bit                          flagPersistent                        ]
+    [reserved uint 3                       '0x00'                                ]
+    [simple   bit                          flagExtendedFlags                     ]
+    [simple   bit                          flagInitOnReset                       ]
+    [simple   bit                          flagStatic                            ]
+    [simple   bit                          flagAttributes                        ]
+    [simple   bit                          flagContextMask                       ]
+    [reserved uint 16                      '0x0000'                              ]
+    // End: Flags
+    [implicit uint 16                      nameLength         'STR_LEN(name)'    ]
+    [implicit uint 16                      typeNameLength     'STR_LEN(typeName)']
+    [implicit uint 16                      commentLength      'STR_LEN(comment)' ]
+	[simple   vstring 'nameLength * 8'     name                                  ]
+	[const    uint 8                       nameTerminator     0x00               ]
+	[simple   vstring 'typeNameLength * 8' typeName                              ]
+	[const    uint 8                       typeNameTerminator 0x00               ]
+	[simple   vstring 'commentLength * 8'  comment                               ]
+	[const    uint 8                       commentTerminator  0x00               ]
+	// Gobbling up the rest, but it seems there is content in here, when looking
+	// at the data in wireshark, it seems to be related to the flags field.
+	// Will have to continue searching for more details on how to decode this.
+	// I would assume that we'll have some "optional" fields here which depend
+	// on values in the flags section.
+	[array    byte                         rest               count 'entryLength - curPos']
+]
+
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
+[type AdsDataTypeTableEntry byteOrder='LITTLE_ENDIAN'
+	[simple   uint 32                            entryLength                           ]
+	[simple   uint 32                            version                               ]
+	[simple   uint 32                            hashValue                             ]
+	[simple   uint 32                            typeHashValue                         ]
+	[simple   uint 32                            size                                  ]
+	[simple   uint 32                            offs                                  ]
+	[simple   uint 32                            dataType                              ]
+	[simple   uint 32                            flags                                 ]
+	[implicit uint 16                            nameLength         'STR_LEN(name)'    ]
+	[implicit uint 16                            typeNameLength     'STR_LEN(typeName)']
+	[implicit uint 16                            commentLength      'STR_LEN(comment)' ]
+	[simple   uint 16                            arrayDim                              ]
+	[simple   uint 16                            subItems                              ]
+	[simple   vstring '(nameLength - 1) * 8'     name                                  ]
+	[const    uint 8                             nameTerminator     0x00               ]
+	[simple   vstring '(typeNameLength - 1) * 8' typeName                              ]
+	[const    uint 8                             typeNameTerminator 0x00               ]
+	[simple   vstring '(commentLength - 1) * 8'  comment                               ]
+	[const    uint 8                             commentTerminator  0x00               ]
+	//[array    AdsDataTypeTableEntry              children           length               '']
+]
