@@ -29,11 +29,14 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/pkg/errors"
+	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"net/url"
 	"strings"
 )
+
+var plc4xBrowserLog = zerolog.Nop()
 
 const rootCommandIndicator = "rootCommand"
 
@@ -41,7 +44,12 @@ const protocols = "ads,bacnetip,c-bus,s7"
 
 var protocolsSuggestions = strings.Split(protocols, ",")
 
-var rootCommand Command = Command{
+var commands = map[inputMode]Command{
+	normalMode:        rootCommand,
+	subscribeEditMode: rootCommand,
+}
+
+var rootCommand = Command{
 	Name: rootCommandIndicator,
 	subCommands: []Command{
 		{
@@ -145,14 +153,36 @@ var rootCommand Command = Command{
 		},
 		{
 			Name:        "subscribe",
-			Description: "Starts a subscription request",
+			Description: "Starts a subscription request (switched mode to subscribe edit)",
 			action: func(_ Command, connectionsString string) error {
 				if connection, ok := connections[connectionsString]; !ok {
 					return errors.Errorf("%s not connected", connectionsString)
 				} else {
-					// TODO: hardcoded to c-bus at the moment
+					return errors.Errorf("%s mode switch not yet implemented", connection)
+				}
+				return nil
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					entries = append(entries, connectionsString)
+				}
+				return
+			},
+		},
+		{
+			Name:        "subscribe-direct",
+			Description: "Builds a subscriptions request with the supplied field",
+			action: func(c Command, connectionsStringAndFieldQuery string) error {
+				split := strings.Split(connectionsStringAndFieldQuery, " ")
+				if len(split) != 2 {
+					return errors.Errorf("%s expects exactly two arguments [connection url] [fieldQuery]", c)
+				}
+				connectionsString := split[0]
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
-						AddEventQuery("something", "monitor/*/*").
+						AddEventQuery("subscriptionField", split[1]).
 						AddItemHandler(func(event model.PlcSubscriptionEvent) {
 							messagesReceived++
 							_, _ = fmt.Fprintf(messageOutput, "[\"%d\"]\n%s[\"\"]", messagesReceived, event)
@@ -172,6 +202,15 @@ var rootCommand Command = Command{
 			parameterSuggestions: func(currentText string) (entries []string) {
 				for connectionsString, _ := range connections {
 					entries = append(entries, connectionsString)
+					if strings.HasPrefix(currentText, connectionsString) {
+						parse, _ := url.Parse(connectionsString)
+						switch parse.Scheme {
+						// TODO: add to protocol suggestor so it can be reused.
+						case "c-bus":
+							entries = append(entries, connectionsString+" salmonitor/*/*")
+							entries = append(entries, connectionsString+" mmimonitor/*/*")
+						}
+					}
 				}
 				return
 			},
@@ -280,6 +319,32 @@ var rootCommand Command = Command{
 						return
 					},
 				},
+				{
+					Name: "plc4xbrowser-debug",
+					action: func(_ Command, argument string) error {
+						switch argument {
+						case "on":
+							plc4xBrowserLog = zerolog.New(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)})
+						case "off":
+							plc4xBrowserLog = zerolog.Nop()
+						default:
+							return errors.Errorf("illegal argument %s", argument)
+						}
+						return nil
+					},
+					parameterSuggestions: func(currentText string) (entries []string) {
+						entries = append(entries, "on", "off")
+						return
+					},
+				},
+			},
+		},
+		{
+			Name:        "history",
+			Description: "outputs the last commands",
+			action: func(_ Command, _ string) error {
+				outputCommandHistory()
+				return nil
 			},
 		},
 	},
@@ -348,7 +413,11 @@ func (c Command) acceptsCurrentText(currentCommandText string) bool {
 	if c.Name == rootCommandIndicator {
 		return true
 	}
-	return strings.HasPrefix(currentCommandText, c.Name)
+	hasThePrefix := strings.HasPrefix(currentCommandText, c.Name)
+	hasNoMatchingAlternative := !strings.HasPrefix(currentCommandText, c.Name+"-")
+	accepts := hasThePrefix && hasNoMatchingAlternative
+	plc4xBrowserLog.Debug().Msgf("%s accepts %t", c, accepts)
+	return accepts
 }
 
 func (c Command) doesCommandTextTargetSubCommand(currentCommandText string) bool {
@@ -388,6 +457,7 @@ func Execute(commandText string) error {
 }
 
 func (c Command) Execute(commandText string) error {
+	plc4xBrowserLog.Debug().Msgf("%s executes %s", c, commandText)
 	if !c.acceptsCurrentText(commandText) {
 		return errors.Errorf("%s doesn't understand %s", c.Name, commandText)
 	}
@@ -395,6 +465,7 @@ func (c Command) Execute(commandText string) error {
 		prepareForSubCommandForSubCommand := c.prepareForSubCommand(commandText)
 		for _, command := range c.subCommands {
 			if command.acceptsCurrentText(prepareForSubCommandForSubCommand) {
+				plc4xBrowserLog.Debug().Msgf("%s delegates to sub %s", c, command)
 				return command.Execute(prepareForSubCommandForSubCommand)
 			}
 		}
@@ -403,6 +474,7 @@ func (c Command) Execute(commandText string) error {
 		if c.action == nil {
 			return NotDirectlyExecutable
 		}
+		plc4xBrowserLog.Debug().Msgf("%s executes %s directly", c, commandText)
 		preparedForParameters := c.prepareForParameters(commandText)
 		return c.action(c, preparedForParameters)
 	}
@@ -413,4 +485,8 @@ func (c Command) visit(i int, f func(currentIndent int, command Command)) {
 	for _, subCommand := range c.subCommands {
 		f(i+1, subCommand)
 	}
+}
+
+func (c Command) String() string {
+	return c.Name
 }

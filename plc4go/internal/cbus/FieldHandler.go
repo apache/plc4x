@@ -39,6 +39,7 @@ const (
 	CAL_IDENTIFY
 	CAL_GETSTATUS
 	SAL_MONITOR
+	MMI_STATUS_MONITOR
 )
 
 func (i FieldType) GetName() string {
@@ -48,14 +49,16 @@ func (i FieldType) GetName() string {
 type FieldHandler struct {
 	statusRequestPattern *regexp.Regexp
 	calPattern           *regexp.Regexp
-	monitorPattern       *regexp.Regexp
+	salMonitorPattern    *regexp.Regexp
+	mmiMonitorPattern    *regexp.Regexp
 }
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
 		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.*)/(?P<calType>recall=\[(?P<recallParamNo>[\w\d]+), ?(?P<recallCount>\d+)]|identify=\[(?P<identifyAttribute>[\w\d]+)]|getstatus=\[(?P<getstatusParamNo>[\w\d]+), ?(?P<getstatusCount>\d+)])`),
-		monitorPattern:       regexp.MustCompile(`^monitor/(?P<unitAddress>.*)/(?P<application>.*)`),
+		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.*)/(?P<application>.*)`),
+		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.*)/(?P<application>.*)`),
 	}
 }
 
@@ -196,7 +199,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		default:
 			return nil, errors.Errorf("Invalid cal type %s", calTypeArgument)
 		}
-	} else if match := utils.GetSubgroupMatches(m.monitorPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.salMonitorPattern, query); match != nil {
 		var unitAddress readWriteModel.UnitAddress
 		{
 			unitAddressArgument := match["unitAddress"]
@@ -235,6 +238,45 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		}
 
 		return NewSALMonitorField(unitAddress, application, 1), nil
+	} else if match := utils.GetSubgroupMatches(m.mmiMonitorPattern, query); match != nil {
+		var unitAddress readWriteModel.UnitAddress
+		{
+			unitAddressArgument := match["unitAddress"]
+			if unitAddressArgument == "*" {
+				unitAddress = nil
+			} else if strings.HasPrefix(unitAddressArgument, "0x") {
+				decodedHex, err := hex.DecodeString(unitAddressArgument[2:])
+				if err != nil {
+					return nil, errors.Wrap(err, "Not a valid hex")
+				}
+				if len(decodedHex) != 1 {
+					return nil, errors.Errorf("Hex must be exatly one byte")
+				}
+				unitAddress = readWriteModel.NewUnitAddress(decodedHex[0])
+			} else {
+				atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
+				if err != nil {
+					return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
+				}
+				unitAddress = readWriteModel.NewUnitAddress(byte(atoi))
+			}
+		}
+
+		var application readWriteModel.ApplicationIdContainer
+		{
+			applicationIdArgument := match["application"]
+			if applicationIdArgument == "*" {
+				application = readWriteModel.ApplicationIdContainer_RESERVED_FF
+			} else {
+				var err error
+				application, err = applicationIdFromArgument(applicationIdArgument)
+				if err != nil {
+					return nil, errors.Wrap(err, "Error getting application id from argument")
+				}
+			}
+		}
+
+		return NewMMIMonitorField(unitAddress, application, 1), nil
 	} else {
 		return nil, errors.Errorf("Unable to parse %s", query)
 	}

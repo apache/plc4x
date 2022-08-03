@@ -21,7 +21,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
+	"regexp"
 	"strconv"
 	"sync"
 	"time"
@@ -46,6 +48,13 @@ var consoleOutput io.Writer
 
 var commandsExecuted int
 var commandOutput io.Writer
+
+type inputMode int
+
+const (
+	normalMode inputMode = iota
+	subscribeEditMode
+)
 
 func init() {
 	hasShutdown = false
@@ -72,9 +81,13 @@ func initSubsystem() {
 
 	// We offset the commands executed with the last commands
 	commandsExecuted = len(config.History.Last10Commands)
+	outputCommandHistory()
+}
+
+func outputCommandHistory() {
 	_, _ = fmt.Fprintln(commandOutput, "[#0000ff]Last 10 commands[white]")
 	for i, command := range config.History.Last10Commands {
-		_, _ = fmt.Fprintf(commandOutput, "   [#00ff00]%d[white]: [\"%d\"]%s[\"\"]\n", i+1, i+1, command)
+		_, _ = fmt.Fprintf(commandOutput, "   [#00ff00]%d[white]: [\"%d\"]%s[\"\"]\n", i, i, command)
 	}
 }
 
@@ -217,8 +230,18 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 					return
 				}
 				commandsExecuted++
-				_, _ = fmt.Fprintf(enteredCommandsView, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
 				go func() {
+					commandHistoryShortcut, _ := regexp.Compile("^[0-9]$")
+					if commandHistoryShortcut.MatchString(commandText) {
+						atoi, _ := strconv.Atoi(commandHistoryShortcut.FindString(commandText))
+						if atoi < len(config.History.Last10Commands) {
+							commandText = config.History.Last10Commands[atoi]
+						} else {
+							_, _ = fmt.Fprintf(enteredCommandsView, "[#ff0000]%s %s[white]\n", time.Now().Format("04:05"), errors.Errorf("No such elements %d in command history", atoi))
+							return
+						}
+					}
+					_, _ = fmt.Fprintf(enteredCommandsView, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
 					if err := Execute(commandText); err != nil {
 						_, _ = fmt.Fprintf(enteredCommandsView, "[#ff0000]%s %s[white]\n", time.Now().Format("04:05"), err)
 						return

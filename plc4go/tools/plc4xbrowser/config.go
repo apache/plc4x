@@ -114,6 +114,10 @@ func addHost(host string) {
 }
 
 func addCommand(command string) {
+	switch command {
+	case "history":
+		return
+	}
 	existingIndex := -1
 	for i, lastCommand := range config.History.Last10Commands {
 		if lastCommand == command {
