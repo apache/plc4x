@@ -275,7 +275,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSal(monitoredSal); ok {
-						log.Debug().Msgf("%s handled\n%s", subscriber, monitoredSal)
+						log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
 					}
 				}
 			}
@@ -301,7 +301,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 								for _, subscriber := range c.subscribers {
 									calReply := encodedReply.GetCalReply()
 									if ok := subscriber.handleMonitoredMMI(calReply); ok {
-										log.Debug().Msgf("%s handled\n%s", subscriber, calReply)
+										log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
 									}
 								}
 							}
