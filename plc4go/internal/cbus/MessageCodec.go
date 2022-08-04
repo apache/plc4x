@@ -153,7 +153,9 @@ lookingForTheEnd:
 		} else {
 			// after 90ms we give up finding a lf
 			m.lastPackageHash, m.hashEncountered = 0, 0
-			requestToPci = true
+			if indexOfCR >= 0 {
+				requestToPci = true
+			}
 		}
 	}
 	if !pciResponse && !requestToPci {
