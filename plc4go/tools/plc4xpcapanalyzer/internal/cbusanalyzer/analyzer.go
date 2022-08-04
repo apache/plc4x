@@ -283,7 +283,7 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 					} else {
 						currentApplicationLayer := packet.ApplicationLayer()
 						newPayload := gopacket.Payload(payload)
-						if !reflect.DeepEqual(currentApplicationLayer.Payload(), newPayload) {
+						if !reflect.DeepEqual(currentApplicationLayer.Payload(), payload) {
 							log.Debug().Msgf("Replacing payload %q with %q", currentApplicationLayer.Payload(), payload)
 							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newPayload}
 						}
