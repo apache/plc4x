@@ -98,6 +98,18 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	log.Trace().Msg("receiving")
 
 	ti := m.GetTransportInstance()
+	// TODO: workaround as getNumReadableBytes seem to lie
+	{
+		nBytes := uint32(1)
+		hitCR := false
+		for ; !hitCR; nBytes++ {
+			bytes, err := ti.PeekReadableBytes(nBytes)
+			if err != nil {
+				return nil, err
+			}
+			hitCR = bytes[len(bytes)-1] == '\r'
+		}
+	}
 	readableBytes, err := ti.GetNumReadableBytes()
 	if err != nil {
 		log.Warn().Err(err).Msg("Got error reading")
