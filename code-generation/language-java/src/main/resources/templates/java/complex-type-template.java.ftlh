@@ -803,7 +803,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         </#list>
         );
     <#elseif type.isDiscriminatedParentTypeDefinition()>
-        ${type.name} ${type.name?uncap_first} = builder.build(
+        ${type.name} _${type.name?uncap_first} = builder.build(
         <#list type.propertyFields as field>
             ${field.name}<#sep>, </#sep>
         </#list>
@@ -815,12 +815,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         </#if>
         );
         <#list reservedFields as reservedField>
-        ${type.name?uncap_first}.reservedField${reservedField?index} = reservedField${reservedField?index};
+        _${type.name?uncap_first}.reservedField${reservedField?index} = reservedField${reservedField?index};
         </#list>
-        return ${type.name?uncap_first};
+        return _${type.name?uncap_first};
     <#else>
-        ${type.name} ${type.name?uncap_first};
-        ${type.name?uncap_first} = new ${type.name}(
+        ${type.name} _${type.name?uncap_first};
+        _${type.name?uncap_first} = new ${type.name}(
         <#list type.propertyFields as field>
             ${field.name}<#sep>, </#sep>
         </#list>
@@ -832,9 +832,9 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         </#if>
         );
         <#list reservedFields as reservedField>
-            ${type.name?uncap_first}.reservedField${reservedField?index} = reservedField${reservedField?index};
+            _${type.name?uncap_first}.reservedField${reservedField?index} = reservedField${reservedField?index};
         </#list>
-        return ${type.name?uncap_first};
+        return _${type.name?uncap_first};
     </#if>
     }
 
