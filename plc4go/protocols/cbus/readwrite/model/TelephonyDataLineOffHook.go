@@ -169,9 +169,9 @@ func TelephonyDataLineOffHookParse(readBuffer utils.ReadBuffer, commandTypeConta
 
 	// Create a partially initialized instance
 	_child := &_TelephonyDataLineOffHook{
+		_TelephonyData: &_TelephonyData{},
 		Reason:         reason,
 		Number:         number,
-		_TelephonyData: &_TelephonyData{},
 	}
 	_child._TelephonyData._TelephonyDataChildRequirements = _child
 	return _child, nil

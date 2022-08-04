@@ -150,8 +150,8 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (BACnetTimeStampS
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimeStampSequence{
-		SequenceNumber:   sequenceNumber,
 		_BACnetTimeStamp: &_BACnetTimeStamp{},
+		SequenceNumber:   sequenceNumber,
 	}
 	_child._BACnetTimeStamp._BACnetTimeStampChildRequirements = _child
 	return _child, nil

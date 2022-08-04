@@ -182,11 +182,11 @@ func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFileSize{
-		FileSize: fileSize,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		FileSize: fileSize,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

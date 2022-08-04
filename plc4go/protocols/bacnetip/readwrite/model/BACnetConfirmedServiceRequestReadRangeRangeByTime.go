@@ -176,9 +176,9 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
+		_BACnetConfirmedServiceRequestReadRangeRange: &_BACnetConfirmedServiceRequestReadRangeRange{},
 		ReferenceTime: referenceTime,
 		Count:         count,
-		_BACnetConfirmedServiceRequestReadRangeRange: &_BACnetConfirmedServiceRequestReadRangeRange{},
 	}
 	_child._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _child
 	return _child, nil

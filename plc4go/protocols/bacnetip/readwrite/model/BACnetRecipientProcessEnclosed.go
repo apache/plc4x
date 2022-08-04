@@ -173,7 +173,12 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetRecipientProcessEnclosed(openingTag, recipientProcess, closingTag, tagNumber), nil
+	return &_BACnetRecipientProcessEnclosed{
+		TagNumber:        tagNumber,
+		OpeningTag:       openingTag,
+		RecipientProcess: recipientProcess,
+		ClosingTag:       closingTag,
+	}, nil
 }
 
 func (m *_BACnetRecipientProcessEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

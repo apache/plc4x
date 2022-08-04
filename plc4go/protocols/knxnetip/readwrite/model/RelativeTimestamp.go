@@ -118,7 +118,9 @@ func RelativeTimestampParse(readBuffer utils.ReadBuffer) (RelativeTimestamp, err
 	}
 
 	// Create the instance
-	return NewRelativeTimestamp(timestamp), nil
+	return &_RelativeTimestamp{
+		Timestamp: timestamp,
+	}, nil
 }
 
 func (m *_RelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {

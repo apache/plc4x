@@ -150,8 +150,8 @@ func BACnetFaultParameterNoneParse(readBuffer utils.ReadBuffer) (BACnetFaultPara
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterNone{
-		None:                  none,
 		_BACnetFaultParameter: &_BACnetFaultParameter{},
+		None:                  none,
 	}
 	_child._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _child
 	return _child, nil

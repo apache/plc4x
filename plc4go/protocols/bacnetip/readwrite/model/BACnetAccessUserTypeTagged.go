@@ -200,7 +200,13 @@ func BACnetAccessUserTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Create the instance
-	return NewBACnetAccessUserTypeTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetAccessUserTypeTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetAccessUserTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

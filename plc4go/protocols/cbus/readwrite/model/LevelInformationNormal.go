@@ -196,9 +196,9 @@ func LevelInformationNormalParse(readBuffer utils.ReadBuffer) (LevelInformationN
 
 	// Create a partially initialized instance
 	_child := &_LevelInformationNormal{
+		_LevelInformation: &_LevelInformation{},
 		Pair1:             pair1,
 		Pair2:             pair2,
-		_LevelInformation: &_LevelInformation{},
 	}
 	_child._LevelInformation._LevelInformationChildRequirements = _child
 	return _child, nil

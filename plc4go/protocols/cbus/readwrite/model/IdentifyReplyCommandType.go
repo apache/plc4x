@@ -146,10 +146,10 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandType{
-		UnitType: unitType,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		UnitType: unitType,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

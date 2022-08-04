@@ -262,14 +262,14 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 		SubscriberProcessIdentifier: subscriberProcessIdentifier,
 		InitiatingDeviceIdentifier:  initiatingDeviceIdentifier,
 		TimeRemaining:               timeRemaining,
 		Timestamp:                   timestamp,
 		ListOfCovNotifications:      listOfCovNotifications,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

@@ -185,7 +185,11 @@ func EnableControlDataParse(readBuffer utils.ReadBuffer) (EnableControlData, err
 	}
 
 	// Create the instance
-	return NewEnableControlData(commandTypeContainer, enableNetworkVariable, value), nil
+	return &_EnableControlData{
+		CommandTypeContainer:  commandTypeContainer,
+		EnableNetworkVariable: enableNetworkVariable,
+		Value:                 value,
+	}, nil
 }
 
 func (m *_EnableControlData) Serialize(writeBuffer utils.WriteBuffer) error {

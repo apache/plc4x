@@ -182,11 +182,11 @@ func BACnetConstructedDataAnalogInputFaultLowLimitParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAnalogInputFaultLowLimit{
-		FaultLowLimit: faultLowLimit,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		FaultLowLimit: faultLowLimit,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

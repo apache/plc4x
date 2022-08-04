@@ -214,12 +214,12 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
-		VendorId:          vendorId,
-		ServiceNumber:     serviceNumber,
-		ServiceParameters: serviceParameters,
 		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		VendorId:          vendorId,
+		ServiceNumber:     serviceNumber,
+		ServiceParameters: serviceParameters,
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil

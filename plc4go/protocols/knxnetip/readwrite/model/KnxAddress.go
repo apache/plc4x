@@ -152,7 +152,11 @@ func KnxAddressParse(readBuffer utils.ReadBuffer) (KnxAddress, error) {
 	}
 
 	// Create the instance
-	return NewKnxAddress(mainGroup, middleGroup, subGroup), nil
+	return &_KnxAddress{
+		MainGroup:   mainGroup,
+		MiddleGroup: middleGroup,
+		SubGroup:    subGroup,
+	}, nil
 }
 
 func (m *_KnxAddress) Serialize(writeBuffer utils.WriteBuffer) error {

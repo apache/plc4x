@@ -200,7 +200,13 @@ func BACnetReliabilityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Create the instance
-	return NewBACnetReliabilityTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetReliabilityTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetReliabilityTagged) Serialize(writeBuffer utils.WriteBuffer) error {

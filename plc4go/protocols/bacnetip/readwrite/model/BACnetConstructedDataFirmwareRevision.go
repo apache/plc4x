@@ -182,11 +182,11 @@ func BACnetConstructedDataFirmwareRevisionParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFirmwareRevision{
-		FirmwareRevision: firmwareRevision,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		FirmwareRevision: firmwareRevision,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -182,11 +182,11 @@ func BACnetConstructedDataEnergyMeterRefParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEnergyMeterRef{
-		EnergyMeterRef: energyMeterRef,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		EnergyMeterRef: energyMeterRef,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

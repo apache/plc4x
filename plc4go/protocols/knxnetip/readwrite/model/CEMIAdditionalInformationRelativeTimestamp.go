@@ -182,8 +182,8 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_CEMIAdditionalInformationRelativeTimestamp{
-		RelativeTimestamp:          relativeTimestamp,
 		_CEMIAdditionalInformation: &_CEMIAdditionalInformation{},
+		RelativeTimestamp:          relativeTimestamp,
 	}
 	_child._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _child
 	return _child, nil

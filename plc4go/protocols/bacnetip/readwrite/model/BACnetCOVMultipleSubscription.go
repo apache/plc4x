@@ -216,7 +216,13 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}
 
 	// Create the instance
-	return NewBACnetCOVMultipleSubscription(recipient, issueConfirmedNotifications, timeRemaining, maxNotificationDelay, listOfCovSubscriptionSpecification), nil
+	return &_BACnetCOVMultipleSubscription{
+		Recipient:                          recipient,
+		IssueConfirmedNotifications:        issueConfirmedNotifications,
+		TimeRemaining:                      timeRemaining,
+		MaxNotificationDelay:               maxNotificationDelay,
+		ListOfCovSubscriptionSpecification: listOfCovSubscriptionSpecification,
+	}, nil
 }
 
 func (m *_BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer) error {

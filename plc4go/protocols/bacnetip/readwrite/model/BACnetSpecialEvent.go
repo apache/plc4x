@@ -170,7 +170,11 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	}
 
 	// Create the instance
-	return NewBACnetSpecialEvent(period, listOfTimeValues, eventPriority), nil
+	return &_BACnetSpecialEvent{
+		Period:           period,
+		ListOfTimeValues: listOfTimeValues,
+		EventPriority:    eventPriority,
+	}, nil
 }
 
 func (m *_BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {

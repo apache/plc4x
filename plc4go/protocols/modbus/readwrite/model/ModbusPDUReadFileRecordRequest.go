@@ -182,8 +182,8 @@ func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response b
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadFileRecordRequest{
-		Items:      items,
 		_ModbusPDU: &_ModbusPDU{},
+		Items:      items,
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

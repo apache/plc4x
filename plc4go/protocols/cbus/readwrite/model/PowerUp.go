@@ -138,7 +138,7 @@ func PowerUpParse(readBuffer utils.ReadBuffer) (PowerUp, error) {
 	}
 
 	// Create the instance
-	return NewPowerUp(), nil
+	return &_PowerUp{}, nil
 }
 
 func (m *_PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {

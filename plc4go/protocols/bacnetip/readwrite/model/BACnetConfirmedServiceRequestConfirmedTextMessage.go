@@ -238,13 +238,13 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 		TextMessageSourceDevice: textMessageSourceDevice,
 		MessageClass:            messageClass,
 		MessagePriority:         messagePriority,
 		Message:                 message,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

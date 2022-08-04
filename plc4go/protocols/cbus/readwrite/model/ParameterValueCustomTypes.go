@@ -152,10 +152,10 @@ func ParameterValueCustomTypesParse(readBuffer utils.ReadBuffer, parameterType P
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueCustomTypes{
-		Value: value,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Value: value,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil

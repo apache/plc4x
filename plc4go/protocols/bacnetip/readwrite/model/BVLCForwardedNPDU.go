@@ -209,10 +209,10 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 
 	// Create a partially initialized instance
 	_child := &_BVLCForwardedNPDU{
+		_BVLC: &_BVLC{},
 		Ip:    ip,
 		Port:  port,
 		Npdu:  npdu,
-		_BVLC: &_BVLC{},
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

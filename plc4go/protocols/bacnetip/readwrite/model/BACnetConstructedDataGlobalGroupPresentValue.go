@@ -232,12 +232,12 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataGlobalGroupPresentValue{
-		NumberOfDataElements: numberOfDataElements,
-		PresentValue:         presentValue,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		PresentValue:         presentValue,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

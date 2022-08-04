@@ -191,12 +191,12 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 
 	// Create a partially initialized instance
 	_child := &_COTPPacketConnectionResponse{
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-		ProtocolClass:        protocolClass,
 		_COTPPacket: &_COTPPacket{
 			CotpLen: cotpLen,
 		},
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
+		ProtocolClass:        protocolClass,
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil

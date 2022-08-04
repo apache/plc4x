@@ -225,12 +225,12 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
-		TimeDuration:  timeDuration,
-		EnableDisable: enableDisable,
-		Password:      password,
 		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		TimeDuration:  timeDuration,
+		EnableDisable: enableDisable,
+		Password:      password,
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

@@ -182,11 +182,11 @@ func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLimitMonitoringInterval{
-		LimitMonitoringInterval: limitMonitoringInterval,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		LimitMonitoringInterval: limitMonitoringInterval,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

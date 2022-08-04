@@ -57,6 +57,9 @@ type _NPDUControl struct {
 	SourceSpecified         bool
 	ExpectingReply          bool
 	NetworkPriority         NPDUNetworkPriority
+	// Reserved Fields
+	reservedField0 *uint8
+	reservedField1 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,6 +163,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	}
 	messageTypeFieldPresent := _messageTypeFieldPresent
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
@@ -171,6 +175,8 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -181,6 +187,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	}
 	destinationSpecified := _destinationSpecified
 
+	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
@@ -192,6 +199,8 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -227,7 +236,15 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	}
 
 	// Create the instance
-	return NewNPDUControl(messageTypeFieldPresent, destinationSpecified, sourceSpecified, expectingReply, networkPriority), nil
+	return &_NPDUControl{
+		MessageTypeFieldPresent: messageTypeFieldPresent,
+		DestinationSpecified:    destinationSpecified,
+		SourceSpecified:         sourceSpecified,
+		ExpectingReply:          expectingReply,
+		NetworkPriority:         networkPriority,
+		reservedField0:          reservedField0,
+		reservedField1:          reservedField1,
+	}, nil
 }
 
 func (m *_NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -246,7 +263,15 @@ func (m *_NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint8("reserved", 1, uint8(0))
+		var reserved uint8 = uint8(0)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint8(0),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteUint8("reserved", 1, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -261,7 +286,15 @@ func (m *_NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint8("reserved", 1, uint8(0))
+		var reserved uint8 = uint8(0)
+		if m.reservedField1 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint8(0),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField1
+		}
+		_err := writeBuffer.WriteUint8("reserved", 1, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

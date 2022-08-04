@@ -176,9 +176,9 @@ func SubscribeCOVPropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorCh
 
 	// Create a partially initialized instance
 	_child := &_SubscribeCOVPropertyMultipleError{
+		_BACnetError:            &_BACnetError{},
 		ErrorType:               errorType,
 		FirstFailedSubscription: firstFailedSubscription,
-		_BACnetError:            &_BACnetError{},
 	}
 	_child._BACnetError._BACnetErrorChildRequirements = _child
 	return _child, nil

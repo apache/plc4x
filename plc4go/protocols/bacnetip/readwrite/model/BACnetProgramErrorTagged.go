@@ -200,7 +200,13 @@ func BACnetProgramErrorTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	}
 
 	// Create the instance
-	return NewBACnetProgramErrorTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetProgramErrorTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetProgramErrorTagged) Serialize(writeBuffer utils.WriteBuffer) error {

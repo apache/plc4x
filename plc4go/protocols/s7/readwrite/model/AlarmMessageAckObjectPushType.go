@@ -250,7 +250,14 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessa
 	}
 
 	// Create the instance
-	return NewAlarmMessageAckObjectPushType(lengthSpec, syntaxId, numberOfValues, eventId, ackStateGoing, ackStateComing), nil
+	return &_AlarmMessageAckObjectPushType{
+		LengthSpec:     lengthSpec,
+		SyntaxId:       syntaxId,
+		NumberOfValues: numberOfValues,
+		EventId:        eventId,
+		AckStateGoing:  ackStateGoing,
+		AckStateComing: ackStateComing,
+	}, nil
 }
 
 func (m *_AlarmMessageAckObjectPushType) Serialize(writeBuffer utils.WriteBuffer) error {

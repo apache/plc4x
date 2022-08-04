@@ -146,8 +146,8 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 
 	// Create a partially initialized instance
 	_child := &_KnxGroupAddressFreeLevel{
-		SubGroup:         subGroup,
 		_KnxGroupAddress: &_KnxGroupAddress{},
+		SubGroup:         subGroup,
 	}
 	_child._KnxGroupAddress._KnxGroupAddressChildRequirements = _child
 	return _child, nil

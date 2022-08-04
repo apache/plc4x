@@ -182,11 +182,11 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRecordsSinceNotification{
-		RecordsSinceNotifications: recordsSinceNotifications,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		RecordsSinceNotifications: recordsSinceNotifications,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

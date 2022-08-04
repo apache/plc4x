@@ -171,11 +171,11 @@ func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRestartNotificationRecipients{
-		RestartNotificationRecipients: restartNotificationRecipients,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		RestartNotificationRecipients: restartNotificationRecipients,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

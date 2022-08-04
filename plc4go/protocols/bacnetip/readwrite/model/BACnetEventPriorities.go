@@ -219,7 +219,14 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 
 	// Create the instance
-	return NewBACnetEventPriorities(openingTag, toOffnormal, toFault, toNormal, closingTag, tagNumber), nil
+	return &_BACnetEventPriorities{
+		TagNumber:   tagNumber,
+		OpeningTag:  openingTag,
+		ToOffnormal: toOffnormal,
+		ToFault:     toFault,
+		ToNormal:    toNormal,
+		ClosingTag:  closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventPriorities) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -237,12 +237,12 @@ func BACnetConstructedDataPriorityParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPriority{
-		NumberOfDataElements: numberOfDataElements,
-		Priority:             priority,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		Priority:             priority,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

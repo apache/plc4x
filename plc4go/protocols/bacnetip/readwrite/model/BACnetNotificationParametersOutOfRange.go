@@ -272,16 +272,16 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersOutOfRange{
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 		InnerOpeningTag: innerOpeningTag,
 		ExceedingValue:  exceedingValue,
 		StatusFlags:     statusFlags,
 		Deadband:        deadband,
 		ExceededLimit:   exceededLimit,
 		InnerClosingTag: innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{
-			TagNumber:          tagNumber,
-			ObjectTypeArgument: objectTypeArgument,
-		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

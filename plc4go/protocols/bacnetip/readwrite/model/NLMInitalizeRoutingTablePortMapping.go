@@ -170,7 +170,12 @@ func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (NLMI
 	}
 
 	// Create the instance
-	return NewNLMInitalizeRoutingTablePortMapping(destinationNetworkAddress, portId, portInfoLength, portInfo), nil
+	return &_NLMInitalizeRoutingTablePortMapping{
+		DestinationNetworkAddress: destinationNetworkAddress,
+		PortId:                    portId,
+		PortInfoLength:            portInfoLength,
+		PortInfo:                  portInfo,
+	}, nil
 }
 
 func (m *_NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -150,8 +150,8 @@ func BACnetPropertyStatesNodeTypeParse(readBuffer utils.ReadBuffer, peekedTagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesNodeType{
-		NodeType:              nodeType,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		NodeType:              nodeType,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

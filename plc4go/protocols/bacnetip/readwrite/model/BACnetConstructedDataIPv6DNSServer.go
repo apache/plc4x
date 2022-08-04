@@ -232,12 +232,12 @@ func BACnetConstructedDataIPv6DNSServerParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6DNSServer{
-		NumberOfDataElements: numberOfDataElements,
-		Ipv6DnsServer:        ipv6DnsServer,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		Ipv6DnsServer:        ipv6DnsServer,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

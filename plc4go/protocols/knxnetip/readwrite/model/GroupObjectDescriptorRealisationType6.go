@@ -91,7 +91,7 @@ func GroupObjectDescriptorRealisationType6Parse(readBuffer utils.ReadBuffer) (Gr
 	}
 
 	// Create the instance
-	return NewGroupObjectDescriptorRealisationType6(), nil
+	return &_GroupObjectDescriptorRealisationType6{}, nil
 }
 
 func (m *_GroupObjectDescriptorRealisationType6) Serialize(writeBuffer utils.WriteBuffer) error {

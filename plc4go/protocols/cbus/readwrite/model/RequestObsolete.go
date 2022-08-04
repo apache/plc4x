@@ -188,11 +188,11 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 
 	// Create a partially initialized instance
 	_child := &_RequestObsolete{
-		CalData: calData,
-		Alpha:   alpha,
 		_Request: &_Request{
 			CBusOptions: cBusOptions,
 		},
+		CalData: calData,
+		Alpha:   alpha,
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil

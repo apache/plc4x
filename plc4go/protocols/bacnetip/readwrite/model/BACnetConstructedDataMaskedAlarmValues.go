@@ -171,11 +171,11 @@ func BACnetConstructedDataMaskedAlarmValuesParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaskedAlarmValues{
-		MaskedAlarmValues: maskedAlarmValues,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		MaskedAlarmValues: maskedAlarmValues,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

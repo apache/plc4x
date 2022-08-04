@@ -171,11 +171,11 @@ func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialsInZone{
-		CredentialsInZone: credentialsInZone,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		CredentialsInZone: credentialsInZone,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

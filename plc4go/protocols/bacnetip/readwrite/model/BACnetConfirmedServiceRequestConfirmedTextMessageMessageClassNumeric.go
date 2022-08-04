@@ -152,10 +152,10 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(r
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
-		NumericValue: numericValue,
 		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{
 			TagNumber: tagNumber,
 		},
+		NumericValue: numericValue,
 	}
 	_child._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _child
 	return _child, nil

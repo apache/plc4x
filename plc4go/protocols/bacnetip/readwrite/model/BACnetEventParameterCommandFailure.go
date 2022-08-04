@@ -222,11 +222,11 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterCommandFailure{
+		_BACnetEventParameter:     &_BACnetEventParameter{},
 		OpeningTag:                openingTag,
 		TimeDelay:                 timeDelay,
 		FeedbackPropertyReference: feedbackPropertyReference,
 		ClosingTag:                closingTag,
-		_BACnetEventParameter:     &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

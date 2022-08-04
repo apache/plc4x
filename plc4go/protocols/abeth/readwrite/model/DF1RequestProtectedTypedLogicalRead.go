@@ -218,12 +218,12 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (DF1R
 
 	// Create a partially initialized instance
 	_child := &_DF1RequestProtectedTypedLogicalRead{
+		_DF1RequestCommand: &_DF1RequestCommand{},
 		ByteSize:           byteSize,
 		FileNumber:         fileNumber,
 		FileType:           fileType,
 		ElementNumber:      elementNumber,
 		SubElementNumber:   subElementNumber,
-		_DF1RequestCommand: &_DF1RequestCommand{},
 	}
 	_child._DF1RequestCommand._DF1RequestCommandChildRequirements = _child
 	return _child, nil

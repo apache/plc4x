@@ -144,8 +144,8 @@ func LightingDataTerminateRampParse(readBuffer utils.ReadBuffer) (LightingDataTe
 
 	// Create a partially initialized instance
 	_child := &_LightingDataTerminateRamp{
-		Group:         group,
 		_LightingData: &_LightingData{},
+		Group:         group,
 	}
 	_child._LightingData._LightingDataChildRequirements = _child
 	return _child, nil

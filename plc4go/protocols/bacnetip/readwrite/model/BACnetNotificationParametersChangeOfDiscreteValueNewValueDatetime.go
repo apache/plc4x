@@ -152,10 +152,10 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(read
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{
-		DateTimeValue: dateTimeValue,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
 			TagNumber: tagNumber,
 		},
+		DateTimeValue: dateTimeValue,
 	}
 	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
 	return _child, nil

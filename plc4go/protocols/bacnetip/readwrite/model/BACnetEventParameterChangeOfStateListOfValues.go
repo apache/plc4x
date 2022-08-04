@@ -184,7 +184,12 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	}
 
 	// Create the instance
-	return NewBACnetEventParameterChangeOfStateListOfValues(openingTag, listOfValues, closingTag, tagNumber), nil
+	return &_BACnetEventParameterChangeOfStateListOfValues{
+		TagNumber:    tagNumber,
+		OpeningTag:   openingTag,
+		ListOfValues: listOfValues,
+		ClosingTag:   closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventParameterChangeOfStateListOfValues) Serialize(writeBuffer utils.WriteBuffer) error {

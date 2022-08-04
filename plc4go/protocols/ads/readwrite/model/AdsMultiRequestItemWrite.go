@@ -182,10 +182,10 @@ func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint3
 
 	// Create a partially initialized instance
 	_child := &_AdsMultiRequestItemWrite{
+		_AdsMultiRequestItem: &_AdsMultiRequestItem{},
 		ItemIndexGroup:       itemIndexGroup,
 		ItemIndexOffset:      itemIndexOffset,
 		ItemWriteLength:      itemWriteLength,
-		_AdsMultiRequestItem: &_AdsMultiRequestItem{},
 	}
 	_child._AdsMultiRequestItem._AdsMultiRequestItemChildRequirements = _child
 	return _child, nil

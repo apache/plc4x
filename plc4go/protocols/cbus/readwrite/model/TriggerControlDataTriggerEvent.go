@@ -145,8 +145,8 @@ func TriggerControlDataTriggerEventParse(readBuffer utils.ReadBuffer) (TriggerCo
 
 	// Create a partially initialized instance
 	_child := &_TriggerControlDataTriggerEvent{
-		ActionSelector:      actionSelector,
 		_TriggerControlData: &_TriggerControlData{},
+		ActionSelector:      actionSelector,
 	}
 	_child._TriggerControlData._TriggerControlDataChildRequirements = _child
 	return _child, nil

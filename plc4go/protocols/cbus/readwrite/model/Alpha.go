@@ -123,7 +123,9 @@ func AlphaParse(readBuffer utils.ReadBuffer) (Alpha, error) {
 	}
 
 	// Create the instance
-	return NewAlpha(character), nil
+	return &_Alpha{
+		Character: character,
+	}, nil
 }
 
 func (m *_Alpha) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -184,7 +184,12 @@ func BACnetEventParameterChangeOfTimerAlarmValueParse(readBuffer utils.ReadBuffe
 	}
 
 	// Create the instance
-	return NewBACnetEventParameterChangeOfTimerAlarmValue(openingTag, alarmValues, closingTag, tagNumber), nil
+	return &_BACnetEventParameterChangeOfTimerAlarmValue{
+		TagNumber:   tagNumber,
+		OpeningTag:  openingTag,
+		AlarmValues: alarmValues,
+		ClosingTag:  closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize(writeBuffer utils.WriteBuffer) error {

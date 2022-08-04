@@ -205,11 +205,11 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions C
 
 	// Create a partially initialized instance
 	_child := &_RequestSmartConnectShortcut{
-		PipePeek:   pipePeek,
-		SecondPipe: secondPipe,
 		_Request: &_Request{
 			CBusOptions: cBusOptions,
 		},
+		PipePeek:   pipePeek,
+		SecondPipe: secondPipe,
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil

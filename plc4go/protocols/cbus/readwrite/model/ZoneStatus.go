@@ -124,7 +124,9 @@ func ZoneStatusParse(readBuffer utils.ReadBuffer) (ZoneStatus, error) {
 	}
 
 	// Create the instance
-	return NewZoneStatus(value), nil
+	return &_ZoneStatus{
+		Value: value,
+	}, nil
 }
 
 func (m *_ZoneStatus) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -237,7 +237,16 @@ func IdentifyReplyCommandUnitSummaryParse(readBuffer utils.ReadBuffer) (Identify
 	}
 
 	// Create the instance
-	return NewIdentifyReplyCommandUnitSummary(assertingNetworkBurden, restrikeTimingActive, remoteOFFInputAsserted, remoteONInputAsserted, localToggleEnabled, localToggleActiveState, clockGenerationEnabled, unitGeneratingClock), nil
+	return &_IdentifyReplyCommandUnitSummary{
+		AssertingNetworkBurden: assertingNetworkBurden,
+		RestrikeTimingActive:   restrikeTimingActive,
+		RemoteOFFInputAsserted: remoteOFFInputAsserted,
+		RemoteONInputAsserted:  remoteONInputAsserted,
+		LocalToggleEnabled:     localToggleEnabled,
+		LocalToggleActiveState: localToggleActiveState,
+		ClockGenerationEnabled: clockGenerationEnabled,
+		UnitGeneratingClock:    unitGeneratingClock,
+	}, nil
 }
 
 func (m *_IdentifyReplyCommandUnitSummary) Serialize(writeBuffer utils.WriteBuffer) error {

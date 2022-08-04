@@ -200,7 +200,13 @@ func BACnetEscalatorFaultTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Create the instance
-	return NewBACnetEscalatorFaultTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetEscalatorFaultTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetEscalatorFaultTagged) Serialize(writeBuffer utils.WriteBuffer) error {

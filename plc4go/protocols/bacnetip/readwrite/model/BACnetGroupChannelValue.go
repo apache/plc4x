@@ -183,7 +183,11 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 	}
 
 	// Create the instance
-	return NewBACnetGroupChannelValue(channel, overridingPriority, value), nil
+	return &_BACnetGroupChannelValue{
+		Channel:            channel,
+		OverridingPriority: overridingPriority,
+		Value:              value,
+	}, nil
 }
 
 func (m *_BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error {

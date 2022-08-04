@@ -146,10 +146,10 @@ func IdentifyReplyCommandManufacturerParse(readBuffer utils.ReadBuffer, attribut
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandManufacturer{
-		ManufacturerName: manufacturerName,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		ManufacturerName: manufacturerName,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

@@ -138,7 +138,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) 
 	}
 
 	// Create the instance
-	return NewParameterChange(), nil
+	return &_ParameterChange{}, nil
 }
 
 func (m *_ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {

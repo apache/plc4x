@@ -237,12 +237,12 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStateChangeValues{
-		NumberOfDataElements: numberOfDataElements,
-		StateChangeValues:    stateChangeValues,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		StateChangeValues:    stateChangeValues,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

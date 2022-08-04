@@ -182,11 +182,11 @@ func BACnetConstructedDataPositiveIntegerValueHighLimitParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPositiveIntegerValueHighLimit{
-		HighLimit: highLimit,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		HighLimit: highLimit,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

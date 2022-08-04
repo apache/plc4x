@@ -158,7 +158,12 @@ func BACnetUnconfirmedServiceChoiceTaggedParse(readBuffer utils.ReadBuffer, tagN
 	}
 
 	// Create the instance
-	return NewBACnetUnconfirmedServiceChoiceTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetUnconfirmedServiceChoiceTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) Serialize(writeBuffer utils.WriteBuffer) error {

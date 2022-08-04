@@ -249,13 +249,13 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestRemoveListElement{
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		ListOfElements:     listOfElements,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

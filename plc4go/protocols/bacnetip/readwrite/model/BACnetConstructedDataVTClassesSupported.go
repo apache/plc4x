@@ -171,11 +171,11 @@ func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataVTClassesSupported{
-		VtClassesSupported: vtClassesSupported,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		VtClassesSupported: vtClassesSupported,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

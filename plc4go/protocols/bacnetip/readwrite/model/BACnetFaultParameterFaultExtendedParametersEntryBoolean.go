@@ -150,8 +150,8 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
-		BooleanValue: booleanValue,
 		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
+		BooleanValue: booleanValue,
 	}
 	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
 	return _child, nil

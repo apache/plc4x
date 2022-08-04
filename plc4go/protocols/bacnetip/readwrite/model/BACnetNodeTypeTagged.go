@@ -158,7 +158,12 @@ func BACnetNodeTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Create the instance
-	return NewBACnetNodeTypeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetNodeTypeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetNodeTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

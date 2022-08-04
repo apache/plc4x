@@ -187,7 +187,13 @@ func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) 
 	}
 
 	// Create the instance
-	return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil
+	return &_SzlDataTreeItem{
+		ItemIndex:    itemIndex,
+		Mlfb:         mlfb,
+		ModuleTypeId: moduleTypeId,
+		Ausbg:        ausbg,
+		Ausbe:        ausbe,
+	}, nil
 }
 
 func (m *_SzlDataTreeItem) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -187,11 +187,11 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 
 	// Create a partially initialized instance
 	_child := &_NLMInitalizeRoutingTableAck{
-		NumberOfPorts: numberOfPorts,
-		PortMappings:  portMappings,
 		_NLM: &_NLM{
 			ApduLength: apduLength,
 		},
+		NumberOfPorts: numberOfPorts,
+		PortMappings:  portMappings,
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil

@@ -147,7 +147,10 @@ func ErrorParse(readBuffer utils.ReadBuffer) (Error, error) {
 	}
 
 	// Create the instance
-	return NewError(errorClass, errorCode), nil
+	return &_Error{
+		ErrorClass: errorClass,
+		ErrorCode:  errorCode,
+	}, nil
 }
 
 func (m *_Error) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -210,11 +210,11 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandNetworkVoltage{
-		Volts:             volts,
-		VoltsDecimalPlace: voltsDecimalPlace,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		Volts:             volts,
+		VoltsDecimalPlace: voltsDecimalPlace,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

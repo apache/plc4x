@@ -167,11 +167,11 @@ func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTP
 
 	// Create a partially initialized instance
 	_child := &_COTPPacketTpduError{
-		DestinationReference: destinationReference,
-		RejectCause:          rejectCause,
 		_COTPPacket: &_COTPPacket{
 			CotpLen: cotpLen,
 		},
+		DestinationReference: destinationReference,
+		RejectCause:          rejectCause,
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil

@@ -248,15 +248,15 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfReliability{
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 		InnerOpeningTag: innerOpeningTag,
 		Reliability:     reliability,
 		StatusFlags:     statusFlags,
 		PropertyValues:  propertyValues,
 		InnerClosingTag: innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{
-			TagNumber:          tagNumber,
-			ObjectTypeArgument: objectTypeArgument,
-		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

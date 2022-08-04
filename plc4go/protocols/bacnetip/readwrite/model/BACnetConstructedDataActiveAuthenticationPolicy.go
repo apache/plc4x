@@ -182,11 +182,11 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActiveAuthenticationPolicy{
-		ActiveAuthenticationPolicy: activeAuthenticationPolicy,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		ActiveAuthenticationPolicy: activeAuthenticationPolicy,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

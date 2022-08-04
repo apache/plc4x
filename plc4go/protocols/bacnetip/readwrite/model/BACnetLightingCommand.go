@@ -296,7 +296,14 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 	}
 
 	// Create the instance
-	return NewBACnetLightingCommand(lightningOperation, targetLevel, rampRate, stepIncrement, fadeTime, priority), nil
+	return &_BACnetLightingCommand{
+		LightningOperation: lightningOperation,
+		TargetLevel:        targetLevel,
+		RampRate:           rampRate,
+		StepIncrement:      stepIncrement,
+		FadeTime:           fadeTime,
+		Priority:           priority,
+	}, nil
 }
 
 func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -150,8 +150,8 @@ func BACnetPropertyStatesLiftCarDriveStatusParse(readBuffer utils.ReadBuffer, pe
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesLiftCarDriveStatus{
-		LiftCarDriveStatus:    liftCarDriveStatus,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		LiftCarDriveStatus:    liftCarDriveStatus,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

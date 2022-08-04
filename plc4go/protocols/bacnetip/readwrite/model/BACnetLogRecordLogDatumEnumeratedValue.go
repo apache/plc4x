@@ -152,10 +152,10 @@ func BACnetLogRecordLogDatumEnumeratedValueParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumEnumeratedValue{
-		EnumeratedValue: enumeratedValue,
 		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
 			TagNumber: tagNumber,
 		},
+		EnumeratedValue: enumeratedValue,
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil

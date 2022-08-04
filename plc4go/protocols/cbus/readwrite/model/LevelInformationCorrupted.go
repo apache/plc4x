@@ -198,11 +198,11 @@ func LevelInformationCorruptedParse(readBuffer utils.ReadBuffer) (LevelInformati
 
 	// Create a partially initialized instance
 	_child := &_LevelInformationCorrupted{
+		_LevelInformation: &_LevelInformation{},
 		CorruptedNibble1:  corruptedNibble1,
 		CorruptedNibble2:  corruptedNibble2,
 		CorruptedNibble3:  corruptedNibble3,
 		CorruptedNibble4:  corruptedNibble4,
-		_LevelInformation: &_LevelInformation{},
 	}
 	_child._LevelInformation._LevelInformationChildRequirements = _child
 	return _child, nil

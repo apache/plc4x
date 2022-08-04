@@ -226,7 +226,15 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	}
 
 	// Create the instance
-	return NewAmsSerialFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, length, userdata, crc), nil
+	return &_AmsSerialFrame{
+		MagicCookie:        magicCookie,
+		TransmitterAddress: transmitterAddress,
+		ReceiverAddress:    receiverAddress,
+		FragmentNumber:     fragmentNumber,
+		Length:             length,
+		Userdata:           userdata,
+		Crc:                crc,
+	}, nil
 }
 
 func (m *_AmsSerialFrame) Serialize(writeBuffer utils.WriteBuffer) error {

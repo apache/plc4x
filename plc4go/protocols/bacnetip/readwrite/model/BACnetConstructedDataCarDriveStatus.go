@@ -182,11 +182,11 @@ func BACnetConstructedDataCarDriveStatusParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCarDriveStatus{
-		CarDriveStatus: carDriveStatus,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		CarDriveStatus: carDriveStatus,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

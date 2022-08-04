@@ -182,11 +182,11 @@ func BACnetConstructedDataElevatorGroupParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataElevatorGroup{
-		ElevatorGroup: elevatorGroup,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		ElevatorGroup: elevatorGroup,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

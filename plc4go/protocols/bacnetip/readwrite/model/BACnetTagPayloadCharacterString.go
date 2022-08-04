@@ -166,7 +166,11 @@ func BACnetTagPayloadCharacterStringParse(readBuffer utils.ReadBuffer, actualLen
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadCharacterString(encoding, value, actualLength), nil
+	return &_BACnetTagPayloadCharacterString{
+		ActualLength: actualLength,
+		Encoding:     encoding,
+		Value:        value,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {

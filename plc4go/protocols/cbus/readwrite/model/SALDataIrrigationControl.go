@@ -154,8 +154,8 @@ func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId Ap
 
 	// Create a partially initialized instance
 	_child := &_SALDataIrrigationControl{
-		IrrigationControlData: irrigationControlData,
 		_SALData:              &_SALData{},
+		IrrigationControlData: irrigationControlData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

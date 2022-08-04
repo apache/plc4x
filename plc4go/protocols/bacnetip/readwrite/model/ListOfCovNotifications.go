@@ -204,7 +204,12 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	}
 
 	// Create the instance
-	return NewListOfCovNotifications(monitoredObjectIdentifier, openingTag, listOfValues, closingTag), nil
+	return &_ListOfCovNotifications{
+		MonitoredObjectIdentifier: monitoredObjectIdentifier,
+		OpeningTag:                openingTag,
+		ListOfValues:              listOfValues,
+		ClosingTag:                closingTag,
+	}, nil
 }
 
 func (m *_ListOfCovNotifications) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -170,9 +170,9 @@ func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (ConnectionStateR
 
 	// Create a partially initialized instance
 	_child := &_ConnectionStateResponse{
+		_KnxNetIpMessage:       &_KnxNetIpMessage{},
 		CommunicationChannelId: communicationChannelId,
 		Status:                 status,
-		_KnxNetIpMessage:       &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

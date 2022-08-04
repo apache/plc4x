@@ -150,8 +150,8 @@ func BACnetPropertyStatesBacnetIpModeParse(readBuffer utils.ReadBuffer, peekedTa
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesBacnetIpMode{
-		BacnetIpMode:          bacnetIpMode,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		BacnetIpMode:          bacnetIpMode,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

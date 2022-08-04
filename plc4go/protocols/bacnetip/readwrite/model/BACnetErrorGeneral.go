@@ -152,8 +152,8 @@ func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 
 	// Create a partially initialized instance
 	_child := &_BACnetErrorGeneral{
-		Error:        error,
 		_BACnetError: &_BACnetError{},
+		Error:        error,
 	}
 	_child._BACnetError._BACnetErrorChildRequirements = _child
 	return _child, nil

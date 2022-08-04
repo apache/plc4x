@@ -154,8 +154,8 @@ func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId Appli
 
 	// Create a partially initialized instance
 	_child := &_SALDataTriggerControl{
-		TriggerControlData: triggerControlData,
 		_SALData:           &_SALData{},
+		TriggerControlData: triggerControlData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

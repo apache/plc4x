@@ -182,11 +182,11 @@ func BACnetConstructedDataLifeSafetyZonePresentValueParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLifeSafetyZonePresentValue{
-		PresentValue: presentValue,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		PresentValue: presentValue,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

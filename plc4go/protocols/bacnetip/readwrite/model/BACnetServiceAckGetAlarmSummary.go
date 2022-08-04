@@ -200,12 +200,12 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckGetAlarmSummary{
-		ObjectIdentifier:        objectIdentifier,
-		EventState:              eventState,
-		AcknowledgedTransitions: acknowledgedTransitions,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		ObjectIdentifier:        objectIdentifier,
+		EventState:              eventState,
+		AcknowledgedTransitions: acknowledgedTransitions,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

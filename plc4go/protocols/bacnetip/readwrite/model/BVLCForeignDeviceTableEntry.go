@@ -187,7 +187,12 @@ func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCForeignD
 	}
 
 	// Create the instance
-	return NewBVLCForeignDeviceTableEntry(ip, port, ttl, secondRemainingBeforePurge), nil
+	return &_BVLCForeignDeviceTableEntry{
+		Ip:                         ip,
+		Port:                       port,
+		Ttl:                        ttl,
+		SecondRemainingBeforePurge: secondRemainingBeforePurge,
+	}, nil
 }
 
 func (m *_BVLCForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {

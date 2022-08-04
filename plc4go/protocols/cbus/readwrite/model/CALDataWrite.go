@@ -193,12 +193,12 @@ func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 
 	// Create a partially initialized instance
 	_child := &_CALDataWrite{
-		ParamNo:        paramNo,
-		Code:           code,
-		ParameterValue: parameterValue,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
+		ParamNo:        paramNo,
+		Code:           code,
+		ParameterValue: parameterValue,
 	}
 	_child._CALData._CALDataChildRequirements = _child
 	return _child, nil

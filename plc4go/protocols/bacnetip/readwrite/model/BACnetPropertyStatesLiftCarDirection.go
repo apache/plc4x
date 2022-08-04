@@ -150,8 +150,8 @@ func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peek
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesLiftCarDirection{
-		LiftCarDirection:      liftCarDirection,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		LiftCarDirection:      liftCarDirection,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

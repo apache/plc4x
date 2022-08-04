@@ -150,8 +150,8 @@ func BACnetPropertyStatesZoneOccupanyStateParse(readBuffer utils.ReadBuffer, pee
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesZoneOccupanyState{
-		ZoneOccupanyState:     zoneOccupanyState,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		ZoneOccupanyState:     zoneOccupanyState,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

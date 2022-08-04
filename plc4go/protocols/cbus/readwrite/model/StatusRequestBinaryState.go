@@ -47,6 +47,9 @@ type StatusRequestBinaryStateExactly interface {
 type _StatusRequestBinaryState struct {
 	*_StatusRequest
 	Application ApplicationIdContainer
+	// Reserved Fields
+	reservedField0 *byte
+	reservedField1 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -138,6 +141,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -149,6 +153,8 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 				"expected value": byte(0x7A),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -165,6 +171,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
+	var reservedField1 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -176,6 +183,8 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 				"expected value": byte(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -185,8 +194,10 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 
 	// Create a partially initialized instance
 	_child := &_StatusRequestBinaryState{
-		Application:    application,
 		_StatusRequest: &_StatusRequest{},
+		Application:    application,
+		reservedField0: reservedField0,
+		reservedField1: reservedField1,
 	}
 	_child._StatusRequest._StatusRequestChildRequirements = _child
 	return _child, nil
@@ -202,7 +213,15 @@ func (m *_StatusRequestBinaryState) Serialize(writeBuffer utils.WriteBuffer) err
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x7A))
+			var reserved byte = byte(0x7A)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x7A),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -222,7 +241,15 @@ func (m *_StatusRequestBinaryState) Serialize(writeBuffer utils.WriteBuffer) err
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x00))
+			var reserved byte = byte(0x00)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x00),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

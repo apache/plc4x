@@ -150,10 +150,10 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueConstructedValue{
-		ConstructedValue: constructedValue,
 		_BACnetPriorityValue: &_BACnetPriorityValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		ConstructedValue: constructedValue,
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil

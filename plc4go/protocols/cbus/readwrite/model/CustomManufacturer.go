@@ -121,7 +121,10 @@ func CustomManufacturerParse(readBuffer utils.ReadBuffer, numBytes uint8) (Custo
 	}
 
 	// Create the instance
-	return NewCustomManufacturer(customString, numBytes), nil
+	return &_CustomManufacturer{
+		NumBytes:     numBytes,
+		CustomString: customString,
+	}, nil
 }
 
 func (m *_CustomManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {

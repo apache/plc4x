@@ -140,7 +140,9 @@ func HVACRawLevelsParse(readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
 	}
 
 	// Create the instance
-	return NewHVACRawLevels(rawValue), nil
+	return &_HVACRawLevels{
+		RawValue: rawValue,
+	}, nil
 }
 
 func (m *_HVACRawLevels) Serialize(writeBuffer utils.WriteBuffer) error {

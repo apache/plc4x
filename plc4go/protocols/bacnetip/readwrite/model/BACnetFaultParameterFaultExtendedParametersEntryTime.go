@@ -150,8 +150,8 @@ func BACnetFaultParameterFaultExtendedParametersEntryTimeParse(readBuffer utils.
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
-		TimeValue: timeValue,
 		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
+		TimeValue: timeValue,
 	}
 	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
 	return _child, nil

@@ -152,8 +152,8 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (DescriptionRequest, e
 
 	// Create a partially initialized instance
 	_child := &_DescriptionRequest{
-		HpaiControlEndpoint: hpaiControlEndpoint,
 		_KnxNetIpMessage:    &_KnxNetIpMessage{},
+		HpaiControlEndpoint: hpaiControlEndpoint,
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

@@ -147,7 +147,10 @@ func BACnetNetworkSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetNetwor
 	}
 
 	// Create the instance
-	return NewBACnetNetworkSecurityPolicy(portId, securityLevel), nil
+	return &_BACnetNetworkSecurityPolicy{
+		PortId:        portId,
+		SecurityLevel: securityLevel,
+	}, nil
 }
 
 func (m *_BACnetNetworkSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) error {

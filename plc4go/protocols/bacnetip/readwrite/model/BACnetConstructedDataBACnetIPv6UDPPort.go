@@ -182,11 +182,11 @@ func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPv6UDPPort{
-		Ipv6UdpPort: ipv6UdpPort,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		Ipv6UdpPort: ipv6UdpPort,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

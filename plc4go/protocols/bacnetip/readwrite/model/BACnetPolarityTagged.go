@@ -158,7 +158,12 @@ func BACnetPolarityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Create the instance
-	return NewBACnetPolarityTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetPolarityTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetPolarityTagged) Serialize(writeBuffer utils.WriteBuffer) error {

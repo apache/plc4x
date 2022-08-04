@@ -185,7 +185,13 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessResultListOfResults(openingTag, listOfReadAccessProperty, closingTag, tagNumber, objectTypeArgument), nil
+	return &_BACnetReadAccessResultListOfResults{
+		TagNumber:                tagNumber,
+		ObjectTypeArgument:       objectTypeArgument,
+		OpeningTag:               openingTag,
+		ListOfReadAccessProperty: listOfReadAccessProperty,
+		ClosingTag:               closingTag,
+	}, nil
 }
 
 func (m *_BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.WriteBuffer) error {

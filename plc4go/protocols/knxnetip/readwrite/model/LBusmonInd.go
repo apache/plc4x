@@ -229,13 +229,13 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 
 	// Create a partially initialized instance
 	_child := &_LBusmonInd{
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
-		_CEMI: &_CEMI{
-			Size: size,
-		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

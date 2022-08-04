@@ -59,6 +59,8 @@ type _S7Message struct {
 	TpduReference uint16
 	Parameter     S7Parameter
 	Payload       S7Payload
+	// Reserved Fields
+	reservedField0 *uint16
 }
 
 type _S7MessageChildRequirements interface {
@@ -198,6 +200,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of S7Message")
 	}
 
+	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -209,6 +212,8 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -309,6 +314,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 
 	// Finish initializing
 	_child.InitializeParent(_child, tpduReference, parameter, payload)
+	_child.GetParent().(*_S7Message).reservedField0 = reservedField0
 	return _child, nil
 }
 
@@ -338,7 +344,15 @@ func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Mes
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0000))
+		var reserved uint16 = uint16(0x0000)
+		if pm.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint16(0x0000),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *pm.reservedField0
+		}
+		_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

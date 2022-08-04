@@ -160,8 +160,8 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (DF1Unprotecte
 
 	// Create a partially initialized instance
 	_child := &_DF1UnprotectedReadResponse{
-		Data:        data,
 		_DF1Command: &_DF1Command{},
+		Data:        data,
 	}
 	_child._DF1Command._DF1CommandChildRequirements = _child
 	return _child, nil

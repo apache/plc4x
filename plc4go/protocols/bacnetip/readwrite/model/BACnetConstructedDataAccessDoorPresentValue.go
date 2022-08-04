@@ -182,11 +182,11 @@ func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessDoorPresentValue{
-		PresentValue: presentValue,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		PresentValue: presentValue,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

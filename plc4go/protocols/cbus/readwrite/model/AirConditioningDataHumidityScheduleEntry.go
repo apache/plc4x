@@ -324,6 +324,7 @@ func AirConditioningDataHumidityScheduleEntryParse(readBuffer utils.ReadBuffer) 
 
 	// Create a partially initialized instance
 	_child := &_AirConditioningDataHumidityScheduleEntry{
+		_AirConditioningData: &_AirConditioningData{},
 		ZoneGroup:            zoneGroup,
 		ZoneList:             zoneList,
 		Entry:                entry,
@@ -332,7 +333,6 @@ func AirConditioningDataHumidityScheduleEntryParse(readBuffer utils.ReadBuffer) 
 		StartTime:            startTime,
 		Level:                level,
 		RawLevel:             rawLevel,
-		_AirConditioningData: &_AirConditioningData{},
 	}
 	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
 	return _child, nil

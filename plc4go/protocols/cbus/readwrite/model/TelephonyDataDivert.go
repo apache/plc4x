@@ -145,8 +145,8 @@ func TelephonyDataDivertParse(readBuffer utils.ReadBuffer, commandTypeContainer 
 
 	// Create a partially initialized instance
 	_child := &_TelephonyDataDivert{
-		Number:         number,
 		_TelephonyData: &_TelephonyData{},
+		Number:         number,
 	}
 	_child._TelephonyData._TelephonyDataChildRequirements = _child
 	return _child, nil

@@ -180,8 +180,8 @@ func TelephonyDataIsolateSecondaryOutletParse(readBuffer utils.ReadBuffer) (Tele
 
 	// Create a partially initialized instance
 	_child := &_TelephonyDataIsolateSecondaryOutlet{
-		IsolateStatus:  isolateStatus,
 		_TelephonyData: &_TelephonyData{},
+		IsolateStatus:  isolateStatus,
 	}
 	_child._TelephonyData._TelephonyDataChildRequirements = _child
 	return _child, nil

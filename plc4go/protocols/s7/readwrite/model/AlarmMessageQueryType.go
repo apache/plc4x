@@ -248,7 +248,13 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	}
 
 	// Create the instance
-	return NewAlarmMessageQueryType(functionId, numberOfObjects, returnCode, transportSize, messageObjects), nil
+	return &_AlarmMessageQueryType{
+		FunctionId:      functionId,
+		NumberOfObjects: numberOfObjects,
+		ReturnCode:      returnCode,
+		TransportSize:   transportSize,
+		MessageObjects:  messageObjects,
+	}, nil
 }
 
 func (m *_AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {

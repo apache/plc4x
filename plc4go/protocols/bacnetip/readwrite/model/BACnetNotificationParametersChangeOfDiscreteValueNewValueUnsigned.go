@@ -152,10 +152,10 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedParse(read
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{
-		UnsignedValue: unsignedValue,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
 			TagNumber: tagNumber,
 		},
+		UnsignedValue: unsignedValue,
 	}
 	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
 	return _child, nil

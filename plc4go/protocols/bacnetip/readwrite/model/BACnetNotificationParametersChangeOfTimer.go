@@ -355,6 +355,10 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfTimer{
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 		InnerOpeningTag: innerOpeningTag,
 		NewValue:        newValue,
 		StatusFlags:     statusFlags,
@@ -363,10 +367,6 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 		InitialTimeout:  initialTimeout,
 		ExpirationTime:  expirationTime,
 		InnerClosingTag: innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{
-			TagNumber:          tagNumber,
-			ObjectTypeArgument: objectTypeArgument,
-		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

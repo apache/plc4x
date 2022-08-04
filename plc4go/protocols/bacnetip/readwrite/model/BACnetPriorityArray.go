@@ -475,7 +475,13 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	}
 
 	// Create the instance
-	return NewBACnetPriorityArray(numberOfDataElements, data, objectTypeArgument, tagNumber, arrayIndexArgument), nil
+	return &_BACnetPriorityArray{
+		ObjectTypeArgument:   objectTypeArgument,
+		TagNumber:            tagNumber,
+		ArrayIndexArgument:   arrayIndexArgument,
+		NumberOfDataElements: numberOfDataElements,
+		Data:                 data,
+	}, nil
 }
 
 func (m *_BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {

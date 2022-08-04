@@ -168,12 +168,12 @@ func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 
 	// Create a partially initialized instance
 	_child := &_ReplyEncodedReply{
-		EncodedReply: encodedReply,
-		Chksum:       chksum,
 		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
+		EncodedReply: encodedReply,
+		Chksum:       chksum,
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil

@@ -182,10 +182,10 @@ func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (K
 
 	// Create a partially initialized instance
 	_child := &_KnxGroupAddress3Level{
+		_KnxGroupAddress: &_KnxGroupAddress{},
 		MainGroup:        mainGroup,
 		MiddleGroup:      middleGroup,
 		SubGroup:         subGroup,
-		_KnxGroupAddress: &_KnxGroupAddress{},
 	}
 	_child._KnxGroupAddress._KnxGroupAddressChildRequirements = _child
 	return _child, nil

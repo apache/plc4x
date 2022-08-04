@@ -182,11 +182,11 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAPDUSegmentTimeout{
-		ApduSegmentTimeout: apduSegmentTimeout,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		ApduSegmentTimeout: apduSegmentTimeout,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

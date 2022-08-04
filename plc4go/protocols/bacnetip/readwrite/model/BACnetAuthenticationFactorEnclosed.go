@@ -173,7 +173,12 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 
 	// Create the instance
-	return NewBACnetAuthenticationFactorEnclosed(openingTag, authenticationFactor, closingTag, tagNumber), nil
+	return &_BACnetAuthenticationFactorEnclosed{
+		TagNumber:            tagNumber,
+		OpeningTag:           openingTag,
+		AuthenticationFactor: authenticationFactor,
+		ClosingTag:           closingTag,
+	}, nil
 }
 
 func (m *_BACnetAuthenticationFactorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

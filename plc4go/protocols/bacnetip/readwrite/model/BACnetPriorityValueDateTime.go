@@ -150,10 +150,10 @@ func BACnetPriorityValueDateTimeParse(readBuffer utils.ReadBuffer, objectTypeArg
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueDateTime{
-		DateTimeValue: dateTimeValue,
 		_BACnetPriorityValue: &_BACnetPriorityValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		DateTimeValue: dateTimeValue,
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil

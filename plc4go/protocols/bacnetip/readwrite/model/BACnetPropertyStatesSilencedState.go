@@ -150,8 +150,8 @@ func BACnetPropertyStatesSilencedStateParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesSilencedState{
-		SilencedState:         silencedState,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		SilencedState:         silencedState,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

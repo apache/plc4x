@@ -160,7 +160,10 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACnetPropertyRe
 	}
 
 	// Create the instance
-	return NewBACnetPropertyReference(propertyIdentifier, arrayIndex), nil
+	return &_BACnetPropertyReference{
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+	}, nil
 }
 
 func (m *_BACnetPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {

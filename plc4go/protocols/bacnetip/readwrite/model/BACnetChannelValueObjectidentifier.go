@@ -150,8 +150,8 @@ func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (BACne
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueObjectidentifier{
-		ObjectidentifierValue: objectidentifierValue,
 		_BACnetChannelValue:   &_BACnetChannelValue{},
+		ObjectidentifierValue: objectidentifierValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

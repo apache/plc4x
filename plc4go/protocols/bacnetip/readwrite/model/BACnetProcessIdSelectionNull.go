@@ -150,8 +150,8 @@ func BACnetProcessIdSelectionNullParse(readBuffer utils.ReadBuffer) (BACnetProce
 
 	// Create a partially initialized instance
 	_child := &_BACnetProcessIdSelectionNull{
-		NullValue:                 nullValue,
 		_BACnetProcessIdSelection: &_BACnetProcessIdSelection{},
+		NullValue:                 nullValue,
 	}
 	_child._BACnetProcessIdSelection._BACnetProcessIdSelectionChildRequirements = _child
 	return _child, nil

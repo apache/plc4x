@@ -200,7 +200,13 @@ func BACnetLightingTransitionTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetLightingTransitionTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetLightingTransitionTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetLightingTransitionTagged) Serialize(writeBuffer utils.WriteBuffer) error {

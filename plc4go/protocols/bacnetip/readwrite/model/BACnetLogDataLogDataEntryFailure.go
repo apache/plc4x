@@ -150,8 +150,8 @@ func BACnetLogDataLogDataEntryFailureParse(readBuffer utils.ReadBuffer) (BACnetL
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataEntryFailure{
-		Failure:                    failure,
 		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
+		Failure:                    failure,
 	}
 	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
 	return _child, nil

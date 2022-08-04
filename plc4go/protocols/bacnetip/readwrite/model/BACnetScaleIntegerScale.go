@@ -150,8 +150,8 @@ func BACnetScaleIntegerScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleInteg
 
 	// Create a partially initialized instance
 	_child := &_BACnetScaleIntegerScale{
-		IntegerScale: integerScale,
 		_BACnetScale: &_BACnetScale{},
+		IntegerScale: integerScale,
 	}
 	_child._BACnetScale._BACnetScaleChildRequirements = _child
 	return _child, nil

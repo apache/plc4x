@@ -62,6 +62,8 @@ type _S7AddressAny struct {
 	Area             MemoryArea
 	ByteAddress      uint16
 	BitAddress       uint8
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -235,6 +237,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 		return nil, errors.Wrap(closeErr, "Error closing for area")
 	}
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 5)
@@ -246,6 +249,8 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -269,13 +274,14 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 
 	// Create a partially initialized instance
 	_child := &_S7AddressAny{
+		_S7Address:       &_S7Address{},
 		TransportSize:    transportSize,
 		NumberOfElements: numberOfElements,
 		DbNumber:         dbNumber,
 		Area:             area,
 		ByteAddress:      byteAddress,
 		BitAddress:       bitAddress,
-		_S7Address:       &_S7Address{},
+		reservedField0:   reservedField0,
 	}
 	_child._S7Address._S7AddressChildRequirements = _child
 	return _child, nil
@@ -329,7 +335,15 @@ func (m *_S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00))
+			var reserved uint8 = uint8(0x00)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x00),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 5, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

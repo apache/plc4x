@@ -184,7 +184,12 @@ func BACnetAssignedLandingCallsLandingCallsListParse(readBuffer utils.ReadBuffer
 	}
 
 	// Create the instance
-	return NewBACnetAssignedLandingCallsLandingCallsList(openingTag, landingCalls, closingTag, tagNumber), nil
+	return &_BACnetAssignedLandingCallsLandingCallsList{
+		TagNumber:    tagNumber,
+		OpeningTag:   openingTag,
+		LandingCalls: landingCalls,
+		ClosingTag:   closingTag,
+	}, nil
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsList) Serialize(writeBuffer utils.WriteBuffer) error {

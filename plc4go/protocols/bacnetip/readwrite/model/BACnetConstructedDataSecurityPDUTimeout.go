@@ -182,11 +182,11 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSecurityPDUTimeout{
-		SecurityPduTimeout: securityPduTimeout,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		SecurityPduTimeout: securityPduTimeout,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

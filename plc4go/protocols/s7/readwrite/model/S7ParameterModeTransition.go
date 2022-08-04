@@ -59,6 +59,8 @@ type _S7ParameterModeTransition struct {
 	CpuFunctionGroup uint8
 	CurrentMode      uint8
 	SequenceNumber   uint8
+	// Reserved Fields
+	reservedField0 *uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -188,6 +190,7 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -199,6 +202,8 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 				"expected value": uint16(0x0010),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -250,12 +255,13 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 
 	// Create a partially initialized instance
 	_child := &_S7ParameterModeTransition{
+		_S7Parameter:     &_S7Parameter{},
 		Method:           method,
 		CpuFunctionType:  cpuFunctionType,
 		CpuFunctionGroup: cpuFunctionGroup,
 		CurrentMode:      currentMode,
 		SequenceNumber:   sequenceNumber,
-		_S7Parameter:     &_S7Parameter{},
+		reservedField0:   reservedField0,
 	}
 	_child._S7Parameter._S7ParameterChildRequirements = _child
 	return _child, nil
@@ -271,7 +277,15 @@ func (m *_S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) er
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0010))
+			var reserved uint16 = uint16(0x0010)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint16(0x0010),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

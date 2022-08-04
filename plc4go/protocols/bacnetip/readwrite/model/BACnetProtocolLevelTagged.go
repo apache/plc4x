@@ -158,7 +158,12 @@ func BACnetProtocolLevelTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewBACnetProtocolLevelTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetProtocolLevelTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetProtocolLevelTagged) Serialize(writeBuffer utils.WriteBuffer) error {

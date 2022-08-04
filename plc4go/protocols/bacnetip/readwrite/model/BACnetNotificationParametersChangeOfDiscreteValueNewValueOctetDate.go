@@ -152,10 +152,10 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateParse(rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{
-		DateValue: dateValue,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
 			TagNumber: tagNumber,
 		},
+		DateValue: dateValue,
 	}
 	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
 	return _child, nil

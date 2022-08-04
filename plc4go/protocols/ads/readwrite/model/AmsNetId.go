@@ -203,7 +203,14 @@ func AmsNetIdParse(readBuffer utils.ReadBuffer) (AmsNetId, error) {
 	}
 
 	// Create the instance
-	return NewAmsNetId(octet1, octet2, octet3, octet4, octet5, octet6), nil
+	return &_AmsNetId{
+		Octet1: octet1,
+		Octet2: octet2,
+		Octet3: octet3,
+		Octet4: octet4,
+		Octet5: octet5,
+		Octet6: octet6,
+	}, nil
 }
 
 func (m *_AmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {

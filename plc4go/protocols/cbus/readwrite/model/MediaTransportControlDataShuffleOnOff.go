@@ -180,8 +180,8 @@ func MediaTransportControlDataShuffleOnOffParse(readBuffer utils.ReadBuffer) (Me
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataShuffleOnOff{
-		State:                      state,
 		_MediaTransportControlData: &_MediaTransportControlData{},
+		State:                      state,
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

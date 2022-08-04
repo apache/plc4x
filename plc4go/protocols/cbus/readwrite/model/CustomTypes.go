@@ -121,7 +121,10 @@ func CustomTypesParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes,
 	}
 
 	// Create the instance
-	return NewCustomTypes(customString, numBytes), nil
+	return &_CustomTypes{
+		NumBytes:     numBytes,
+		CustomString: customString,
+	}, nil
 }
 
 func (m *_CustomTypes) Serialize(writeBuffer utils.WriteBuffer) error {

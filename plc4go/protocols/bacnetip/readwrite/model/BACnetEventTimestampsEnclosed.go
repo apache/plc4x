@@ -173,7 +173,12 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 
 	// Create the instance
-	return NewBACnetEventTimestampsEnclosed(openingTag, eventTimestamps, closingTag, tagNumber), nil
+	return &_BACnetEventTimestampsEnclosed{
+		TagNumber:       tagNumber,
+		OpeningTag:      openingTag,
+		EventTimestamps: eventTimestamps,
+		ClosingTag:      closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventTimestampsEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

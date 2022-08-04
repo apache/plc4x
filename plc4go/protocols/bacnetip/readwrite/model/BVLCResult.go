@@ -152,8 +152,8 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (BVLCResult, error) {
 
 	// Create a partially initialized instance
 	_child := &_BVLCResult{
-		Code:  code,
 		_BVLC: &_BVLC{},
+		Code:  code,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

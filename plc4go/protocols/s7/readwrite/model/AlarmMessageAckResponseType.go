@@ -170,7 +170,11 @@ func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	}
 
 	// Create the instance
-	return NewAlarmMessageAckResponseType(functionId, numberOfObjects, messageObjects), nil
+	return &_AlarmMessageAckResponseType{
+		FunctionId:      functionId,
+		NumberOfObjects: numberOfObjects,
+		MessageObjects:  messageObjects,
+	}, nil
 }
 
 func (m *_AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) error {

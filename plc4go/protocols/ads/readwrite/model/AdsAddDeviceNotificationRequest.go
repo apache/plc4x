@@ -62,6 +62,9 @@ type _AdsAddDeviceNotificationRequest struct {
 	TransmissionMode uint32
 	MaxDelay         uint32
 	CycleTime        uint32
+	// Reserved Fields
+	reservedField0 *uint64
+	reservedField1 *uint64
 }
 
 ///////////////////////////////////////////////////////////
@@ -241,6 +244,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 	}
 	cycleTime := _cycleTime
 
+	var reservedField0 *uint64
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint64("reserved", 64)
@@ -252,9 +256,12 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 				"expected value": uint64(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
+	var reservedField1 *uint64
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint64("reserved", 64)
@@ -266,6 +273,8 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 				"expected value": uint64(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -275,13 +284,15 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 
 	// Create a partially initialized instance
 	_child := &_AdsAddDeviceNotificationRequest{
+		_AdsData:         &_AdsData{},
 		IndexGroup:       indexGroup,
 		IndexOffset:      indexOffset,
 		Length:           length,
 		TransmissionMode: transmissionMode,
 		MaxDelay:         maxDelay,
 		CycleTime:        cycleTime,
-		_AdsData:         &_AdsData{},
+		reservedField0:   reservedField0,
+		reservedField1:   reservedField1,
 	}
 	_child._AdsData._AdsDataChildRequirements = _child
 	return _child, nil
@@ -339,7 +350,15 @@ func (m *_AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuff
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint64("reserved", 64, uint64(0x0000))
+			var reserved uint64 = uint64(0x0000)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint64(0x0000),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint64("reserved", 64, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -347,7 +366,15 @@ func (m *_AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuff
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint64("reserved", 64, uint64(0x0000))
+			var reserved uint64 = uint64(0x0000)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint64(0x0000),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteUint64("reserved", 64, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -196,7 +196,13 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingTag, minPriority, maxPriority, closingTag, tagNumber), nil
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{
+		TagNumber:   tagNumber,
+		OpeningTag:  openingTag,
+		MinPriority: minPriority,
+		MaxPriority: maxPriority,
+		ClosingTag:  closingTag,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serialize(writeBuffer utils.WriteBuffer) error {

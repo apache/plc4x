@@ -150,8 +150,8 @@ func BACnetChannelValueBitStringParse(readBuffer utils.ReadBuffer) (BACnetChanne
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueBitString{
-		BitStringValue:      bitStringValue,
 		_BACnetChannelValue: &_BACnetChannelValue{},
+		BitStringValue:      bitStringValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

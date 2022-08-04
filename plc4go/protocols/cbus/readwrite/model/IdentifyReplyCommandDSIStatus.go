@@ -362,6 +362,9 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandDSIStatus{
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 		ChannelStatus1:          channelStatus1,
 		ChannelStatus2:          channelStatus2,
 		ChannelStatus3:          channelStatus3,
@@ -372,9 +375,6 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 		ChannelStatus8:          channelStatus8,
 		UnitStatus:              unitStatus,
 		DimmingUCRevisionNumber: dimmingUCRevisionNumber,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

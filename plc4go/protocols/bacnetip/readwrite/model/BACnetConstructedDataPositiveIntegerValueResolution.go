@@ -182,11 +182,11 @@ func BACnetConstructedDataPositiveIntegerValueResolutionParse(readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPositiveIntegerValueResolution{
-		Resolution: resolution,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		Resolution: resolution,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

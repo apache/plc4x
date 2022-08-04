@@ -150,8 +150,8 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestWhoHasObjectName{
-		ObjectName: objectName,
 		_BACnetUnconfirmedServiceRequestWhoHasObject: &_BACnetUnconfirmedServiceRequestWhoHasObject{},
+		ObjectName: objectName,
 	}
 	_child._BACnetUnconfirmedServiceRequestWhoHasObject._BACnetUnconfirmedServiceRequestWhoHasObjectChildRequirements = _child
 	return _child, nil

@@ -200,7 +200,13 @@ func BACnetEscalatorModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewBACnetEscalatorModeTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetEscalatorModeTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetEscalatorModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

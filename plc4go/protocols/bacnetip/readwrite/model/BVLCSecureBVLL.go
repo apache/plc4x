@@ -150,8 +150,8 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) 
 
 	// Create a partially initialized instance
 	_child := &_BVLCSecureBVLL{
-		SecurityWrapper: securityWrapper,
 		_BVLC:           &_BVLC{},
+		SecurityWrapper: securityWrapper,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

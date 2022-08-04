@@ -180,8 +180,8 @@ func SecurityDataLowBatteryChargingParse(readBuffer utils.ReadBuffer) (SecurityD
 
 	// Create a partially initialized instance
 	_child := &_SecurityDataLowBatteryCharging{
-		StartStop:     startStop,
 		_SecurityData: &_SecurityData{},
+		StartStop:     startStop,
 	}
 	_child._SecurityData._SecurityDataChildRequirements = _child
 	return _child, nil

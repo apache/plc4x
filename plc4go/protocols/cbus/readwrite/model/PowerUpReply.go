@@ -150,11 +150,11 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 
 	// Create a partially initialized instance
 	_child := &_PowerUpReply{
-		IsA: isA,
 		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
+		IsA: isA,
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil

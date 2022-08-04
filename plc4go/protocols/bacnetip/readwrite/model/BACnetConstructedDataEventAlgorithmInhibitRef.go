@@ -182,11 +182,11 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventAlgorithmInhibitRef{
-		EventAlgorithmInhibitRef: eventAlgorithmInhibitRef,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		EventAlgorithmInhibitRef: eventAlgorithmInhibitRef,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

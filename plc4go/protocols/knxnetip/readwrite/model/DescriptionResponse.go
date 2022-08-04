@@ -176,9 +176,9 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (DescriptionResponse,
 
 	// Create a partially initialized instance
 	_child := &_DescriptionResponse{
+		_KnxNetIpMessage:   &_KnxNetIpMessage{},
 		DibDeviceInfo:      dibDeviceInfo,
 		DibSuppSvcFamilies: dibSuppSvcFamilies,
-		_KnxNetIpMessage:   &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

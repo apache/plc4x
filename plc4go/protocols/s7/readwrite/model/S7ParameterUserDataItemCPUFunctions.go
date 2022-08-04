@@ -297,6 +297,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 
 	// Create a partially initialized instance
 	_child := &_S7ParameterUserDataItemCPUFunctions{
+		_S7ParameterUserDataItem: &_S7ParameterUserDataItem{},
 		Method:                   method,
 		CpuFunctionType:          cpuFunctionType,
 		CpuFunctionGroup:         cpuFunctionGroup,
@@ -305,7 +306,6 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 		DataUnitReferenceNumber:  dataUnitReferenceNumber,
 		LastDataUnit:             lastDataUnit,
 		ErrorCode:                errorCode,
-		_S7ParameterUserDataItem: &_S7ParameterUserDataItem{},
 	}
 	_child._S7ParameterUserDataItem._S7ParameterUserDataItemChildRequirements = _child
 	return _child, nil

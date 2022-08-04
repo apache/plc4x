@@ -165,11 +165,11 @@ func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8)
 
 	// Create a partially initialized instance
 	_child := &_ApduDataGroupValueWrite{
-		DataFirstByte: dataFirstByte,
-		Data:          data,
 		_ApduData: &_ApduData{
 			DataLength: dataLength,
 		},
+		DataFirstByte: dataFirstByte,
+		Data:          data,
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

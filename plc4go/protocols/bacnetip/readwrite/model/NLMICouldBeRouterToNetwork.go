@@ -166,11 +166,11 @@ func NLMICouldBeRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uin
 
 	// Create a partially initialized instance
 	_child := &_NLMICouldBeRouterToNetwork{
-		DestinationNetworkAddress: destinationNetworkAddress,
-		PerformanceIndex:          performanceIndex,
 		_NLM: &_NLM{
 			ApduLength: apduLength,
 		},
+		DestinationNetworkAddress: destinationNetworkAddress,
+		PerformanceIndex:          performanceIndex,
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil

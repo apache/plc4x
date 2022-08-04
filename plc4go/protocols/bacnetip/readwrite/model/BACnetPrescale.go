@@ -147,7 +147,10 @@ func BACnetPrescaleParse(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	}
 
 	// Create the instance
-	return NewBACnetPrescale(multiplier, moduloDivide), nil
+	return &_BACnetPrescale{
+		Multiplier:   multiplier,
+		ModuloDivide: moduloDivide,
+	}, nil
 }
 
 func (m *_BACnetPrescale) Serialize(writeBuffer utils.WriteBuffer) error {

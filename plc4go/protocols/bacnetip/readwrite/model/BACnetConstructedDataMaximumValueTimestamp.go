@@ -182,11 +182,11 @@ func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaximumValueTimestamp{
-		MaximumValueTimestamp: maximumValueTimestamp,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		MaximumValueTimestamp: maximumValueTimestamp,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

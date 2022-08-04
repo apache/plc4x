@@ -150,8 +150,8 @@ func BACnetPropertyStatesSecurityLevelParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesSecurityLevel{
-		SecurityLevel:         securityLevel,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		SecurityLevel:         securityLevel,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

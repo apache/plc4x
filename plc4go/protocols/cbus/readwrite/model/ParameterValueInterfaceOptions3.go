@@ -176,11 +176,11 @@ func ParameterValueInterfaceOptions3Parse(readBuffer utils.ReadBuffer, parameter
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueInterfaceOptions3{
-		Value: value,
-		Data:  data,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Value: value,
+		Data:  data,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil

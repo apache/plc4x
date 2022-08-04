@@ -333,6 +333,10 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersAccessEvent{
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 		InnerOpeningTag:      innerOpeningTag,
 		AccessEvent:          accessEvent,
 		StatusFlags:          statusFlags,
@@ -341,10 +345,6 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 		AccessCredential:     accessCredential,
 		AuthenticationFactor: authenticationFactor,
 		InnerClosingTag:      innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{
-			TagNumber:          tagNumber,
-			ObjectTypeArgument: objectTypeArgument,
-		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

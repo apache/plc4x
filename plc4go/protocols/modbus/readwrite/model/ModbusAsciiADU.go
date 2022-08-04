@@ -188,11 +188,11 @@ func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, res
 
 	// Create a partially initialized instance
 	_child := &_ModbusAsciiADU{
-		Address: address,
-		Pdu:     pdu,
 		_ModbusADU: &_ModbusADU{
 			Response: response,
 		},
+		Address: address,
+		Pdu:     pdu,
 	}
 	_child._ModbusADU._ModbusADUChildRequirements = _child
 	return _child, nil

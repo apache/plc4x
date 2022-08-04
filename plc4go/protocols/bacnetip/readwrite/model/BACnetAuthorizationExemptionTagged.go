@@ -200,7 +200,13 @@ func BACnetAuthorizationExemptionTaggedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 
 	// Create the instance
-	return NewBACnetAuthorizationExemptionTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetAuthorizationExemptionTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetAuthorizationExemptionTagged) Serialize(writeBuffer utils.WriteBuffer) error {

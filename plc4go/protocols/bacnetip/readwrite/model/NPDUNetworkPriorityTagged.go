@@ -158,7 +158,12 @@ func NPDUNetworkPriorityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewNPDUNetworkPriorityTagged(header, value, tagNumber, tagClass), nil
+	return &_NPDUNetworkPriorityTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_NPDUNetworkPriorityTagged) Serialize(writeBuffer utils.WriteBuffer) error {

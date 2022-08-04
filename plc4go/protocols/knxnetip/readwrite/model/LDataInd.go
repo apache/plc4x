@@ -206,12 +206,12 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (LDataInd, error) {
 
 	// Create a partially initialized instance
 	_child := &_LDataInd{
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
 		_CEMI: &_CEMI{
 			Size: size,
 		},
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

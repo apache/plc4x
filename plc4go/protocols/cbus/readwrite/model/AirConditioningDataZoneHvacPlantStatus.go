@@ -240,12 +240,12 @@ func AirConditioningDataZoneHvacPlantStatusParse(readBuffer utils.ReadBuffer) (A
 
 	// Create a partially initialized instance
 	_child := &_AirConditioningDataZoneHvacPlantStatus{
+		_AirConditioningData: &_AirConditioningData{},
 		ZoneGroup:            zoneGroup,
 		ZoneList:             zoneList,
 		HvacType:             hvacType,
 		HvacStatus:           hvacStatus,
 		HvacErrorCode:        hvacErrorCode,
-		_AirConditioningData: &_AirConditioningData{},
 	}
 	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
 	return _child, nil

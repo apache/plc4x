@@ -182,11 +182,11 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNotificationThreshold{
-		NotificationThreshold: notificationThreshold,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NotificationThreshold: notificationThreshold,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

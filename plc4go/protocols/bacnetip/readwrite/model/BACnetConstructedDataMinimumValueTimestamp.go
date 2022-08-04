@@ -182,11 +182,11 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMinimumValueTimestamp{
-		MinimumValueTimestamp: minimumValueTimestamp,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		MinimumValueTimestamp: minimumValueTimestamp,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

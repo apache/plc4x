@@ -152,10 +152,10 @@ func ParameterValueCustomManufacturerParse(readBuffer utils.ReadBuffer, paramete
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueCustomManufacturer{
-		Value: value,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Value: value,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil

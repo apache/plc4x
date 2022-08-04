@@ -165,11 +165,11 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 
 	// Create a partially initialized instance
 	_child := &_ApduDataDeviceDescriptorResponse{
-		DescriptorType: descriptorType,
-		Data:           data,
 		_ApduData: &_ApduData{
 			DataLength: dataLength,
 		},
+		DescriptorType: descriptorType,
+		Data:           data,
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

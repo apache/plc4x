@@ -170,9 +170,9 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (DisconnectResponse, e
 
 	// Create a partially initialized instance
 	_child := &_DisconnectResponse{
+		_KnxNetIpMessage:       &_KnxNetIpMessage{},
 		CommunicationChannelId: communicationChannelId,
 		Status:                 status,
-		_KnxNetIpMessage:       &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

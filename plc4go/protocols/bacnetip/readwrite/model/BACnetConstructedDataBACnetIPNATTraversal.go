@@ -182,11 +182,11 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPNATTraversal{
-		BacnetIPNATTraversal: bacnetIPNATTraversal,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		BacnetIPNATTraversal: bacnetIPNATTraversal,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

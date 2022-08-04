@@ -57,6 +57,13 @@ type _CipUnconnectedRequest struct {
 	UnconnectedService CipService
 	BackPlane          int8
 	Slot               int8
+	// Reserved Fields
+	reservedField0 *uint8
+	reservedField1 *uint8
+	reservedField2 *uint8
+	reservedField3 *uint8
+	reservedField4 *uint8
+	reservedField5 *uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -197,6 +204,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -208,9 +216,12 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 				"expected value": uint8(0x02),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
+	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -222,9 +233,12 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 				"expected value": uint8(0x20),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
+	var reservedField2 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -236,9 +250,12 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 				"expected value": uint8(0x06),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField2 = &reserved
 		}
 	}
 
+	var reservedField3 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -250,9 +267,12 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 				"expected value": uint8(0x24),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField3 = &reserved
 		}
 	}
 
+	var reservedField4 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -264,9 +284,12 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 				"expected value": uint8(0x01),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField4 = &reserved
 		}
 	}
 
+	var reservedField5 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -278,6 +301,8 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 				"expected value": uint16(0x9D05),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField5 = &reserved
 		}
 	}
 
@@ -330,12 +355,18 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 
 	// Create a partially initialized instance
 	_child := &_CipUnconnectedRequest{
-		UnconnectedService: unconnectedService,
-		BackPlane:          backPlane,
-		Slot:               slot,
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
 		},
+		UnconnectedService: unconnectedService,
+		BackPlane:          backPlane,
+		Slot:               slot,
+		reservedField0:     reservedField0,
+		reservedField1:     reservedField1,
+		reservedField2:     reservedField2,
+		reservedField3:     reservedField3,
+		reservedField4:     reservedField4,
+		reservedField5:     reservedField5,
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -351,7 +382,15 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x02))
+			var reserved uint8 = uint8(0x02)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x02),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -359,7 +398,15 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x20))
+			var reserved uint8 = uint8(0x20)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x20),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -367,7 +414,15 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x06))
+			var reserved uint8 = uint8(0x06)
+			if m.reservedField2 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x06),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField2
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -375,7 +430,15 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x24))
+			var reserved uint8 = uint8(0x24)
+			if m.reservedField3 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x24),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField3
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -383,7 +446,15 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x01))
+			var reserved uint8 = uint8(0x01)
+			if m.reservedField4 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x01),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField4
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -391,7 +462,15 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint16("reserved", 16, uint16(0x9D05))
+			var reserved uint16 = uint16(0x9D05)
+			if m.reservedField5 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint16(0x9D05),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField5
+			}
+			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

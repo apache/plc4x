@@ -147,10 +147,10 @@ func ParameterValueRawParse(readBuffer utils.ReadBuffer, parameterType Parameter
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueRaw{
-		Data: data,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Data: data,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil

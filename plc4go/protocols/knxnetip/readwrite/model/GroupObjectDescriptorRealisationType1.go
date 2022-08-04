@@ -66,6 +66,8 @@ type _GroupObjectDescriptorRealisationType1 struct {
 	CommunicationEnable   bool
 	Priority              CEMIPriority
 	ValueType             ComObjectValueType
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -187,6 +189,7 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (Gr
 	}
 	dataPointer := _dataPointer
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
@@ -198,6 +201,8 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (Gr
 				"expected value": uint8(0x1),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -267,7 +272,17 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (Gr
 	}
 
 	// Create the instance
-	return NewGroupObjectDescriptorRealisationType1(dataPointer, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
+	return &_GroupObjectDescriptorRealisationType1{
+		DataPointer:           dataPointer,
+		TransmitEnable:        transmitEnable,
+		SegmentSelectorEnable: segmentSelectorEnable,
+		WriteEnable:           writeEnable,
+		ReadEnable:            readEnable,
+		CommunicationEnable:   communicationEnable,
+		Priority:              priority,
+		ValueType:             valueType,
+		reservedField0:        reservedField0,
+	}, nil
 }
 
 func (m *_GroupObjectDescriptorRealisationType1) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -286,7 +301,15 @@ func (m *_GroupObjectDescriptorRealisationType1) Serialize(writeBuffer utils.Wri
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint8("reserved", 1, uint8(0x1))
+		var reserved uint8 = uint8(0x1)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint8(0x1),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteUint8("reserved", 1, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

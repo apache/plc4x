@@ -182,11 +182,11 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUpdateKeySetTimeout{
-		UpdateKeySetTimeout: updateKeySetTimeout,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		UpdateKeySetTimeout: updateKeySetTimeout,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

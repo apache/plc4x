@@ -145,8 +145,8 @@ func MeteringDataGasConsumptionParse(readBuffer utils.ReadBuffer) (MeteringDataG
 
 	// Create a partially initialized instance
 	_child := &_MeteringDataGasConsumption{
-		MJ:            mJ,
 		_MeteringData: &_MeteringData{},
+		MJ:            mJ,
 	}
 	_child._MeteringData._MeteringDataChildRequirements = _child
 	return _child, nil

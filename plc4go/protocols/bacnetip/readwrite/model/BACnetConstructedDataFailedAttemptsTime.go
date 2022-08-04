@@ -182,11 +182,11 @@ func BACnetConstructedDataFailedAttemptsTimeParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFailedAttemptsTime{
-		FailedAttemptsTime: failedAttemptsTime,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		FailedAttemptsTime: failedAttemptsTime,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

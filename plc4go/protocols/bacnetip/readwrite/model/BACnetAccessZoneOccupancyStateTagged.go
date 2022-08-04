@@ -200,7 +200,13 @@ func BACnetAccessZoneOccupancyStateTaggedParse(readBuffer utils.ReadBuffer, tagN
 	}
 
 	// Create the instance
-	return NewBACnetAccessZoneOccupancyStateTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetAccessZoneOccupancyStateTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetAccessZoneOccupancyStateTagged) Serialize(writeBuffer utils.WriteBuffer) error {

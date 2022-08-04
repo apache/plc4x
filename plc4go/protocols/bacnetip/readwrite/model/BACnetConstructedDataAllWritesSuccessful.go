@@ -182,11 +182,11 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAllWritesSuccessful{
-		AllWritesSuccessful: allWritesSuccessful,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		AllWritesSuccessful: allWritesSuccessful,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

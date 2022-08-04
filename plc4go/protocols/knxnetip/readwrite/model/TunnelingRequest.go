@@ -179,9 +179,9 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (Tun
 
 	// Create a partially initialized instance
 	_child := &_TunnelingRequest{
+		_KnxNetIpMessage:          &_KnxNetIpMessage{},
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
 		Cemi:                      cemi,
-		_KnxNetIpMessage:          &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

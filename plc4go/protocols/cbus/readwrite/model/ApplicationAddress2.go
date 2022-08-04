@@ -140,7 +140,9 @@ func ApplicationAddress2Parse(readBuffer utils.ReadBuffer) (ApplicationAddress2,
 	}
 
 	// Create the instance
-	return NewApplicationAddress2(address), nil
+	return &_ApplicationAddress2{
+		Address: address,
+	}, nil
 }
 
 func (m *_ApplicationAddress2) Serialize(writeBuffer utils.WriteBuffer) error {

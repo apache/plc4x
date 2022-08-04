@@ -182,11 +182,11 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFDBBMDAddress{
-		FDBBMDAddress: fDBBMDAddress,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		FDBBMDAddress: fDBBMDAddress,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

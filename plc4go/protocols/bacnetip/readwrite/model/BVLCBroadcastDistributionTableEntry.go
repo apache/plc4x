@@ -188,7 +188,11 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLC
 	}
 
 	// Create the instance
-	return NewBVLCBroadcastDistributionTableEntry(ip, port, broadcastDistributionMap), nil
+	return &_BVLCBroadcastDistributionTableEntry{
+		Ip:                       ip,
+		Port:                     port,
+		BroadcastDistributionMap: broadcastDistributionMap,
+	}, nil
 }
 
 func (m *_BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {

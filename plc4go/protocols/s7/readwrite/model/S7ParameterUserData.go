@@ -181,8 +181,8 @@ func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (S
 
 	// Create a partially initialized instance
 	_child := &_S7ParameterUserData{
-		Items:        items,
 		_S7Parameter: &_S7Parameter{},
+		Items:        items,
 	}
 	_child._S7Parameter._S7ParameterChildRequirements = _child
 	return _child, nil

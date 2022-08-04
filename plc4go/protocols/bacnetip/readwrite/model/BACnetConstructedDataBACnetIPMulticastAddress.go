@@ -182,11 +182,11 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPMulticastAddress{
-		IpMulticastAddress: ipMulticastAddress,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		IpMulticastAddress: ipMulticastAddress,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

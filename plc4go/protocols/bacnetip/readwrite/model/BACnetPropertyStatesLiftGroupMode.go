@@ -150,8 +150,8 @@ func BACnetPropertyStatesLiftGroupModeParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesLiftGroupMode{
-		LiftGroupMode:         liftGroupMode,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		LiftGroupMode:         liftGroupMode,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

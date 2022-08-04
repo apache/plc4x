@@ -173,7 +173,12 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 
 	// Create the instance
-	return NewBACnetLightingCommandEnclosed(openingTag, lightingCommand, closingTag, tagNumber), nil
+	return &_BACnetLightingCommandEnclosed{
+		TagNumber:       tagNumber,
+		OpeningTag:      openingTag,
+		LightingCommand: lightingCommand,
+		ClosingTag:      closingTag,
+	}, nil
 }
 
 func (m *_BACnetLightingCommandEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

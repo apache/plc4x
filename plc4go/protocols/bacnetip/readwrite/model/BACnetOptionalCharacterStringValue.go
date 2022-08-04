@@ -150,8 +150,8 @@ func BACnetOptionalCharacterStringValueParse(readBuffer utils.ReadBuffer) (BACne
 
 	// Create a partially initialized instance
 	_child := &_BACnetOptionalCharacterStringValue{
-		Characterstring:                characterstring,
 		_BACnetOptionalCharacterString: &_BACnetOptionalCharacterString{},
+		Characterstring:                characterstring,
 	}
 	_child._BACnetOptionalCharacterString._BACnetOptionalCharacterStringChildRequirements = _child
 	return _child, nil

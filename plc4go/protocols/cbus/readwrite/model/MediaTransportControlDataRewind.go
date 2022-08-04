@@ -258,8 +258,8 @@ func MediaTransportControlDataRewindParse(readBuffer utils.ReadBuffer) (MediaTra
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataRewind{
-		Operation:                  operation,
 		_MediaTransportControlData: &_MediaTransportControlData{},
+		Operation:                  operation,
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

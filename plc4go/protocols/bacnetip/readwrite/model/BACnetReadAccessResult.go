@@ -160,7 +160,10 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (BACnetReadAccessR
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessResult(objectIdentifier, listOfResults), nil
+	return &_BACnetReadAccessResult{
+		ObjectIdentifier: objectIdentifier,
+		ListOfResults:    listOfResults,
+	}, nil
 }
 
 func (m *_BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error {

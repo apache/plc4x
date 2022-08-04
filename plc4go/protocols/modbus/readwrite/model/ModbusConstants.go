@@ -121,7 +121,7 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (ModbusConstants, error) 
 	}
 
 	// Create the instance
-	return NewModbusConstants(), nil
+	return &_ModbusConstants{}, nil
 }
 
 func (m *_ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -238,12 +238,12 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 
 	// Create a partially initialized instance
 	_child := &_RequestCommand{
-		CbusCommand: cbusCommand,
-		Chksum:      chksum,
-		Alpha:       alpha,
 		_Request: &_Request{
 			CBusOptions: cBusOptions,
 		},
+		CbusCommand: cbusCommand,
+		Chksum:      chksum,
+		Alpha:       alpha,
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil

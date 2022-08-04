@@ -150,8 +150,8 @@ func BACnetPropertyStatesEscalatorOperationDirectionParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesEscalatorOperationDirection{
-		EscalatorOperationDirection: escalatorOperationDirection,
 		_BACnetPropertyStates:       &_BACnetPropertyStates{},
+		EscalatorOperationDirection: escalatorOperationDirection,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

@@ -152,10 +152,10 @@ func BACnetLogRecordLogDatumRealValueParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumRealValue{
-		RealValue: realValue,
 		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
 			TagNumber: tagNumber,
 		},
+		RealValue: realValue,
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil

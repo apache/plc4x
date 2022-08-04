@@ -147,10 +147,10 @@ func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, at
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandCurrentSenseLevels{
-		CurrentSenseLevels: currentSenseLevels,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		CurrentSenseLevels: currentSenseLevels,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

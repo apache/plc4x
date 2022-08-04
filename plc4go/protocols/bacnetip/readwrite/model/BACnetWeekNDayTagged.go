@@ -385,7 +385,14 @@ func BACnetWeekNDayTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Create the instance
-	return NewBACnetWeekNDayTagged(header, month, weekOfMonth, dayOfWeek, tagNumber, tagClass), nil
+	return &_BACnetWeekNDayTagged{
+		TagNumber:   tagNumber,
+		TagClass:    tagClass,
+		Header:      header,
+		Month:       month,
+		WeekOfMonth: weekOfMonth,
+		DayOfWeek:   dayOfWeek,
+	}, nil
 }
 
 func (m *_BACnetWeekNDayTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -200,7 +200,13 @@ func BACnetAuthorizationModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 
 	// Create the instance
-	return NewBACnetAuthorizationModeTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetAuthorizationModeTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetAuthorizationModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

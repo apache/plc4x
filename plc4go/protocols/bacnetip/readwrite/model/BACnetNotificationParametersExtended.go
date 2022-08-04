@@ -248,15 +248,15 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersExtended{
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 		InnerOpeningTag:   innerOpeningTag,
 		VendorId:          vendorId,
 		ExtendedEventType: extendedEventType,
 		Parameters:        parameters,
 		InnerClosingTag:   innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{
-			TagNumber:          tagNumber,
-			ObjectTypeArgument: objectTypeArgument,
-		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

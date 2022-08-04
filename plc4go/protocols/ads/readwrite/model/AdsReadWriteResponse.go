@@ -185,9 +185,9 @@ func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 
 	// Create a partially initialized instance
 	_child := &_AdsReadWriteResponse{
+		_AdsData: &_AdsData{},
 		Result:   result,
 		Data:     data,
-		_AdsData: &_AdsData{},
 	}
 	_child._AdsData._AdsDataChildRequirements = _child
 	return _child, nil

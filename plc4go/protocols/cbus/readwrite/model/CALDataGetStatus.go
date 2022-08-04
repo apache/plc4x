@@ -169,11 +169,11 @@ func CALDataGetStatusParse(readBuffer utils.ReadBuffer, requestContext RequestCo
 
 	// Create a partially initialized instance
 	_child := &_CALDataGetStatus{
-		ParamNo: paramNo,
-		Count:   count,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
+		ParamNo: paramNo,
+		Count:   count,
 	}
 	_child._CALData._CALDataChildRequirements = _child
 	return _child, nil

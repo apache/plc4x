@@ -150,8 +150,8 @@ func BACnetShedLevelPercentParse(readBuffer utils.ReadBuffer) (BACnetShedLevelPe
 
 	// Create a partially initialized instance
 	_child := &_BACnetShedLevelPercent{
-		Percent:          percent,
 		_BACnetShedLevel: &_BACnetShedLevel{},
+		Percent:          percent,
 	}
 	_child._BACnetShedLevel._BACnetShedLevelChildRequirements = _child
 	return _child, nil

@@ -152,10 +152,10 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParse(re
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{
-		EnumeratedValue: enumeratedValue,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
 			TagNumber: tagNumber,
 		},
+		EnumeratedValue: enumeratedValue,
 	}
 	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
 	return _child, nil

@@ -232,8 +232,8 @@ func SecurityDataArmSystemParse(readBuffer utils.ReadBuffer) (SecurityDataArmSys
 
 	// Create a partially initialized instance
 	_child := &_SecurityDataArmSystem{
-		ArmMode:       armMode,
 		_SecurityData: &_SecurityData{},
+		ArmMode:       armMode,
 	}
 	_child._SecurityData._SecurityDataChildRequirements = _child
 	return _child, nil

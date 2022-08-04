@@ -182,11 +182,11 @@ func BACnetConstructedDataTimePatternValueRelinquishDefaultParse(readBuffer util
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimePatternValueRelinquishDefault{
-		RelinquishDefault: relinquishDefault,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		RelinquishDefault: relinquishDefault,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

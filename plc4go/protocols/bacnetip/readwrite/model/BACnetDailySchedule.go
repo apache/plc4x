@@ -181,7 +181,11 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 	}
 
 	// Create the instance
-	return NewBACnetDailySchedule(openingTag, daySchedule, closingTag), nil
+	return &_BACnetDailySchedule{
+		OpeningTag:  openingTag,
+		DaySchedule: daySchedule,
+		ClosingTag:  closingTag,
+	}, nil
 }
 
 func (m *_BACnetDailySchedule) Serialize(writeBuffer utils.WriteBuffer) error {

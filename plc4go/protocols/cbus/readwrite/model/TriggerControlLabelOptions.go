@@ -57,6 +57,8 @@ type _TriggerControlLabelOptions struct {
 	ReservedBit3 bool
 	LabelType    TriggerControlLabelType
 	ReservedBit0 bool
+	// Reserved Fields
+	reservedField0 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -170,6 +172,7 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 		return nil, errors.Wrap(closeErr, "Error closing for labelFlavour")
 	}
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -181,6 +184,8 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -216,7 +221,14 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 	}
 
 	// Create the instance
-	return NewTriggerControlLabelOptions(reservedBit7, labelFlavour, reservedBit3, labelType, reservedBit0), nil
+	return &_TriggerControlLabelOptions{
+		ReservedBit7:   reservedBit7,
+		LabelFlavour:   labelFlavour,
+		ReservedBit3:   reservedBit3,
+		LabelType:      labelType,
+		ReservedBit0:   reservedBit0,
+		reservedField0: reservedField0,
+	}, nil
 }
 
 func (m *_TriggerControlLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -247,7 +259,15 @@ func (m *_TriggerControlLabelOptions) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

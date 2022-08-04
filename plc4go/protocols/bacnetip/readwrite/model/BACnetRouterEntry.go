@@ -206,7 +206,12 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 	}
 
 	// Create the instance
-	return NewBACnetRouterEntry(networkNumber, macAddress, status, performanceIndex), nil
+	return &_BACnetRouterEntry{
+		NetworkNumber:    networkNumber,
+		MacAddress:       macAddress,
+		Status:           status,
+		PerformanceIndex: performanceIndex,
+	}, nil
 }
 
 func (m *_BACnetRouterEntry) Serialize(writeBuffer utils.WriteBuffer) error {

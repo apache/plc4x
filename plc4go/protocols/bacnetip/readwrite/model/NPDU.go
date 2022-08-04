@@ -489,7 +489,20 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	}
 
 	// Create the instance
-	return NewNPDU(protocolVersionNumber, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, hopCount, nlm, apdu, npduLength), nil
+	return &_NPDU{
+		NpduLength:                npduLength,
+		ProtocolVersionNumber:     protocolVersionNumber,
+		Control:                   control,
+		DestinationNetworkAddress: destinationNetworkAddress,
+		DestinationLength:         destinationLength,
+		DestinationAddress:        destinationAddress,
+		SourceNetworkAddress:      sourceNetworkAddress,
+		SourceLength:              sourceLength,
+		SourceAddress:             sourceAddress,
+		HopCount:                  hopCount,
+		Nlm:                       nlm,
+		Apdu:                      apdu,
+	}, nil
 }
 
 func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {

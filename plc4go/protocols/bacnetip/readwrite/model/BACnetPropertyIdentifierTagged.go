@@ -200,7 +200,13 @@ func BACnetPropertyIdentifierTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetPropertyIdentifierTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetPropertyIdentifierTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetPropertyIdentifierTagged) Serialize(writeBuffer utils.WriteBuffer) error {

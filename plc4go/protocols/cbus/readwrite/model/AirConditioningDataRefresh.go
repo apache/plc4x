@@ -144,8 +144,8 @@ func AirConditioningDataRefreshParse(readBuffer utils.ReadBuffer) (AirConditioni
 
 	// Create a partially initialized instance
 	_child := &_AirConditioningDataRefresh{
-		ZoneGroup:            zoneGroup,
 		_AirConditioningData: &_AirConditioningData{},
+		ZoneGroup:            zoneGroup,
 	}
 	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
 	return _child, nil

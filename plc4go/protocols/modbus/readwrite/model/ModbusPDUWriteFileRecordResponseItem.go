@@ -180,7 +180,12 @@ func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (Mod
 	}
 
 	// Create the instance
-	return NewModbusPDUWriteFileRecordResponseItem(referenceType, fileNumber, recordNumber, recordData), nil
+	return &_ModbusPDUWriteFileRecordResponseItem{
+		ReferenceType: referenceType,
+		FileNumber:    fileNumber,
+		RecordNumber:  recordNumber,
+		RecordData:    recordData,
+	}, nil
 }
 
 func (m *_ModbusPDUWriteFileRecordResponseItem) Serialize(writeBuffer utils.WriteBuffer) error {

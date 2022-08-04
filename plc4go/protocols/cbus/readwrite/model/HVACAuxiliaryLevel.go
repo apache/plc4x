@@ -56,6 +56,8 @@ type HVACAuxiliaryLevelExactly interface {
 type _HVACAuxiliaryLevel struct {
 	FanMode bool
 	Mode    uint8
+	// Reserved Fields
+	reservedField0 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -161,6 +163,7 @@ func HVACAuxiliaryLevelParse(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, e
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -172,6 +175,8 @@ func HVACAuxiliaryLevelParse(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, e
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -214,7 +219,11 @@ func HVACAuxiliaryLevelParse(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, e
 	}
 
 	// Create the instance
-	return NewHVACAuxiliaryLevel(fanMode, mode), nil
+	return &_HVACAuxiliaryLevel{
+		FanMode:        fanMode,
+		Mode:           mode,
+		reservedField0: reservedField0,
+	}, nil
 }
 
 func (m *_HVACAuxiliaryLevel) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -226,7 +235,15 @@ func (m *_HVACAuxiliaryLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

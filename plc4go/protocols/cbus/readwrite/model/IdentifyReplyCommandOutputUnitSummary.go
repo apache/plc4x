@@ -206,13 +206,13 @@ func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, att
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandOutputUnitSummary{
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 		UnitFlags:                           unitFlags,
 		GavStoreEnabledByte1:                gavStoreEnabledByte1,
 		GavStoreEnabledByte2:                gavStoreEnabledByte2,
 		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

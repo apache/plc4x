@@ -182,11 +182,11 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProtocolObjectTypesSupported{
-		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

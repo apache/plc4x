@@ -184,7 +184,12 @@ func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParse(readBuffe
 	}
 
 	// Create the instance
-	return NewBACnetEventParameterChangeOfCharacterStringListOfAlarmValues(openingTag, listOfAlarmValues, closingTag, tagNumber), nil
+	return &_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues{
+		TagNumber:         tagNumber,
+		OpeningTag:        openingTag,
+		ListOfAlarmValues: listOfAlarmValues,
+		ClosingTag:        closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -365,7 +365,17 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (BACnetActionCommand,
 	}
 
 	// Create the instance
-	return NewBACnetActionCommand(deviceIdentifier, objectIdentifier, propertyIdentifier, arrayIndex, propertyValue, priority, postDelay, quitOnFailure, writeSuccessful), nil
+	return &_BACnetActionCommand{
+		DeviceIdentifier:   deviceIdentifier,
+		ObjectIdentifier:   objectIdentifier,
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+		PropertyValue:      propertyValue,
+		Priority:           priority,
+		PostDelay:          postDelay,
+		QuitOnFailure:      quitOnFailure,
+		WriteSuccessful:    writeSuccessful,
+	}, nil
 }
 
 func (m *_BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {

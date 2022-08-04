@@ -238,13 +238,13 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 		RequestingProcessIdentifier: requestingProcessIdentifier,
 		RequestingSource:            requestingSource,
 		Request:                     request,
 		ObjectIdentifier:            objectIdentifier,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
-			ServiceRequestLength: serviceRequestLength,
-		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

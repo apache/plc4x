@@ -170,7 +170,11 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	}
 
 	// Create the instance
-	return NewBACnetEventTimestamps(toOffnormal, toFault, toNormal), nil
+	return &_BACnetEventTimestamps{
+		ToOffnormal: toOffnormal,
+		ToFault:     toFault,
+		ToNormal:    toNormal,
+	}, nil
 }
 
 func (m *_BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {

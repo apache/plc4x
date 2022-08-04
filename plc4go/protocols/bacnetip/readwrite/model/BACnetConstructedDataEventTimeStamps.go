@@ -282,12 +282,12 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventTimeStamps{
-		NumberOfDataElements: numberOfDataElements,
-		EventTimeStamps:      eventTimeStamps,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		EventTimeStamps:      eventTimeStamps,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

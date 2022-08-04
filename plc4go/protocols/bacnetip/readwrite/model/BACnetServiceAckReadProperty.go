@@ -248,13 +248,13 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceAckLe
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckReadProperty{
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		Values:             values,
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

@@ -310,14 +310,14 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 
 	// Create a partially initialized instance
 	_child := &_CALDataStatusExtended{
+		_CALData: &_CALData{
+			RequestContext: requestContext,
+		},
 		Coding:           coding,
 		Application:      application,
 		BlockStart:       blockStart,
 		StatusBytes:      statusBytes,
 		LevelInformation: levelInformation,
-		_CALData: &_CALData{
-			RequestContext: requestContext,
-		},
 	}
 	_child._CALData._CALDataChildRequirements = _child
 	return _child, nil

@@ -775,7 +775,26 @@ func BACnetEventParameterExtendedParametersParse(readBuffer utils.ReadBuffer, ta
 	}
 
 	// Create the instance
-	return NewBACnetEventParameterExtendedParameters(openingTag, peekedTagHeader, nullValue, realValue, unsignedValue, booleanValue, integerValue, doubleValue, octetStringValue, characterStringValue, bitStringValue, enumeratedValue, dateValue, timeValue, objectIdentifier, reference, closingTag, tagNumber), nil
+	return &_BACnetEventParameterExtendedParameters{
+		TagNumber:            tagNumber,
+		OpeningTag:           openingTag,
+		PeekedTagHeader:      peekedTagHeader,
+		NullValue:            nullValue,
+		RealValue:            realValue,
+		UnsignedValue:        unsignedValue,
+		BooleanValue:         booleanValue,
+		IntegerValue:         integerValue,
+		DoubleValue:          doubleValue,
+		OctetStringValue:     octetStringValue,
+		CharacterStringValue: characterStringValue,
+		BitStringValue:       bitStringValue,
+		EnumeratedValue:      enumeratedValue,
+		DateValue:            dateValue,
+		TimeValue:            timeValue,
+		ObjectIdentifier:     objectIdentifier,
+		Reference:            reference,
+		ClosingTag:           closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.WriteBuffer) error {

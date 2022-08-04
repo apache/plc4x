@@ -184,7 +184,12 @@ func BACnetSecurityKeySetKeyIdsParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Create the instance
-	return NewBACnetSecurityKeySetKeyIds(openingTag, keyIds, closingTag, tagNumber), nil
+	return &_BACnetSecurityKeySetKeyIds{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		KeyIds:     keyIds,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetSecurityKeySetKeyIds) Serialize(writeBuffer utils.WriteBuffer) error {

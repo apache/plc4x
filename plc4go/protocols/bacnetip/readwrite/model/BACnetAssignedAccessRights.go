@@ -147,7 +147,10 @@ func BACnetAssignedAccessRightsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	}
 
 	// Create the instance
-	return NewBACnetAssignedAccessRights(assignedAccessRights, enable), nil
+	return &_BACnetAssignedAccessRights{
+		AssignedAccessRights: assignedAccessRights,
+		Enable:               enable,
+	}, nil
 }
 
 func (m *_BACnetAssignedAccessRights) Serialize(writeBuffer utils.WriteBuffer) error {

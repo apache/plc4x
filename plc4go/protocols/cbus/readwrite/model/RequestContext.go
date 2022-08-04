@@ -118,7 +118,9 @@ func RequestContextParse(readBuffer utils.ReadBuffer) (RequestContext, error) {
 	}
 
 	// Create the instance
-	return NewRequestContext(sendIdentifyRequestBefore), nil
+	return &_RequestContext{
+		SendIdentifyRequestBefore: sendIdentifyRequestBefore,
+	}, nil
 }
 
 func (m *_RequestContext) Serialize(writeBuffer utils.WriteBuffer) error {

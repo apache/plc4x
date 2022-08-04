@@ -166,10 +166,10 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestGetEventInformation{
-		LastReceivedObjectIdentifier: lastReceivedObjectIdentifier,
 		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		LastReceivedObjectIdentifier: lastReceivedObjectIdentifier,
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

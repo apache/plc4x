@@ -150,8 +150,8 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (Unkno
 
 	// Create a partially initialized instance
 	_child := &_UnknownMessage{
-		UnknownData:      unknownData,
 		_KnxNetIpMessage: &_KnxNetIpMessage{},
+		UnknownData:      unknownData,
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetChannelValueIntegerParse(readBuffer utils.ReadBuffer) (BACnetChannelV
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueInteger{
-		IntegerValue:        integerValue,
 		_BACnetChannelValue: &_BACnetChannelValue{},
+		IntegerValue:        integerValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

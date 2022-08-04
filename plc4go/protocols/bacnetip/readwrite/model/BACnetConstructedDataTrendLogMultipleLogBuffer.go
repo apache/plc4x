@@ -171,11 +171,11 @@ func BACnetConstructedDataTrendLogMultipleLogBufferParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
-		FloorText: floorText,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		FloorText: floorText,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

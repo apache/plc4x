@@ -182,11 +182,11 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMode{
-		Mode: mode,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		Mode: mode,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetPropertyStatesReasonForHaltParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesReasonForHalt{
-		ReasonForHalt:         reasonForHalt,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		ReasonForHalt:         reasonForHalt,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

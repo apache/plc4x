@@ -158,7 +158,12 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedPars
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -184,7 +184,12 @@ func BACnetEventParameterAccessEventListOfAccessEventsParse(readBuffer utils.Rea
 	}
 
 	// Create the instance
-	return NewBACnetEventParameterAccessEventListOfAccessEvents(openingTag, listOfAccessEvents, closingTag, tagNumber), nil
+	return &_BACnetEventParameterAccessEventListOfAccessEvents{
+		TagNumber:          tagNumber,
+		OpeningTag:         openingTag,
+		ListOfAccessEvents: listOfAccessEvents,
+		ClosingTag:         closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) Serialize(writeBuffer utils.WriteBuffer) error {

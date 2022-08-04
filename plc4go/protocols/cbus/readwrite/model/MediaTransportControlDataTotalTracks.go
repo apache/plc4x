@@ -199,11 +199,11 @@ func MediaTransportControlDataTotalTracksParse(readBuffer utils.ReadBuffer) (Med
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataTotalTracks{
+		_MediaTransportControlData: &_MediaTransportControlData{},
 		TotalTracksMSB:             totalTracksMSB,
 		TotalTracksMMSB:            totalTracksMMSB,
 		TotalTracksMLSB:            totalTracksMLSB,
 		TotalTracksLSB:             totalTracksLSB,
-		_MediaTransportControlData: &_MediaTransportControlData{},
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

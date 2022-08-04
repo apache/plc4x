@@ -167,8 +167,8 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 
 	// Create a partially initialized instance
 	_child := &_BVLCReadBroadcastDistributionTableAck{
-		Table: table,
 		_BVLC: &_BVLC{},
+		Table: table,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

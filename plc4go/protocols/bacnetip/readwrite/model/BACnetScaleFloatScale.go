@@ -150,8 +150,8 @@ func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleFloatSc
 
 	// Create a partially initialized instance
 	_child := &_BACnetScaleFloatScale{
-		FloatScale:   floatScale,
 		_BACnetScale: &_BACnetScale{},
+		FloatScale:   floatScale,
 	}
 	_child._BACnetScale._BACnetScaleChildRequirements = _child
 	return _child, nil

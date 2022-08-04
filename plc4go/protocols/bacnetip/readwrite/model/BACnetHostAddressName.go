@@ -150,8 +150,8 @@ func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (BACnetHostAddressN
 
 	// Create a partially initialized instance
 	_child := &_BACnetHostAddressName{
-		Name:               name,
 		_BACnetHostAddress: &_BACnetHostAddress{},
+		Name:               name,
 	}
 	_child._BACnetHostAddress._BACnetHostAddressChildRequirements = _child
 	return _child, nil

@@ -173,7 +173,12 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	}
 
 	// Create the instance
-	return NewErrorEnclosed(openingTag, error, closingTag, tagNumber), nil
+	return &_ErrorEnclosed{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		Error:      error,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

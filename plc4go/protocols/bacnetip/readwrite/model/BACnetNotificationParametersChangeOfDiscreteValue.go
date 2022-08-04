@@ -224,14 +224,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValue{
-		InnerOpeningTag: innerOpeningTag,
-		NewValue:        newValue,
-		StatusFlags:     statusFlags,
-		InnerClosingTag: innerClosingTag,
 		_BACnetNotificationParameters: &_BACnetNotificationParameters{
 			TagNumber:          tagNumber,
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		InnerOpeningTag: innerOpeningTag,
+		NewValue:        newValue,
+		StatusFlags:     statusFlags,
+		InnerClosingTag: innerClosingTag,
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

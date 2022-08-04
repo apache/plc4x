@@ -195,7 +195,10 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	}
 
 	// Create the instance
-	return NewBACnetAddress(networkNumber, macAddress), nil
+	return &_BACnetAddress{
+		NetworkNumber: networkNumber,
+		MacAddress:    macAddress,
+	}, nil
 }
 
 func (m *_BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {

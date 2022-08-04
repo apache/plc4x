@@ -121,7 +121,7 @@ func CBusConstantsParse(readBuffer utils.ReadBuffer) (CBusConstants, error) {
 	}
 
 	// Create the instance
-	return NewCBusConstants(), nil
+	return &_CBusConstants{}, nil
 }
 
 func (m *_CBusConstants) Serialize(writeBuffer utils.WriteBuffer) error {

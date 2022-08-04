@@ -294,7 +294,17 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	}
 
 	// Create the instance
-	return NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, state, errorCode, invokeId, data), nil
+	return &_AmsPacket{
+		TargetAmsNetId: targetAmsNetId,
+		TargetAmsPort:  targetAmsPort,
+		SourceAmsNetId: sourceAmsNetId,
+		SourceAmsPort:  sourceAmsPort,
+		CommandId:      commandId,
+		State:          state,
+		ErrorCode:      errorCode,
+		InvokeId:       invokeId,
+		Data:           data,
+	}, nil
 }
 
 func (m *_AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {

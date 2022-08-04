@@ -150,8 +150,8 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampD
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimeStampDateTime{
-		DateTimeValue:    dateTimeValue,
 		_BACnetTimeStamp: &_BACnetTimeStamp{},
+		DateTimeValue:    dateTimeValue,
 	}
 	_child._BACnetTimeStamp._BACnetTimeStampChildRequirements = _child
 	return _child, nil

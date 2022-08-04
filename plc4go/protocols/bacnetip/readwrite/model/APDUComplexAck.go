@@ -73,6 +73,8 @@ type _APDUComplexAck struct {
 	ServiceAck           BACnetServiceAck
 	SegmentServiceChoice *uint8
 	Segment              []byte
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -280,6 +282,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 	}
 	moreFollows := _moreFollows
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 2)
@@ -291,6 +294,8 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -382,6 +387,9 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 
 	// Create a partially initialized instance
 	_child := &_APDUComplexAck{
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 		SegmentedMessage:     segmentedMessage,
 		MoreFollows:          moreFollows,
 		OriginalInvokeId:     originalInvokeId,
@@ -390,9 +398,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 		ServiceAck:           serviceAck,
 		SegmentServiceChoice: segmentServiceChoice,
 		Segment:              segment,
-		_APDU: &_APDU{
-			ApduLength: apduLength,
-		},
+		reservedField0:       reservedField0,
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -422,7 +428,15 @@ func (m *_APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 2, uint8(0))
+			var reserved uint8 = uint8(0)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 2, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -182,11 +182,11 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
-		BaseDeviceSecurityPolicy: baseDeviceSecurityPolicy,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		BaseDeviceSecurityPolicy: baseDeviceSecurityPolicy,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

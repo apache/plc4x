@@ -150,8 +150,8 @@ func BACnetEventParameterNoneParse(readBuffer utils.ReadBuffer) (BACnetEventPara
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterNone{
-		None:                  none,
 		_BACnetEventParameter: &_BACnetEventParameter{},
+		None:                  none,
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

@@ -166,8 +166,8 @@ func SecurityDataStatusReport2Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 
 	// Create a partially initialized instance
 	_child := &_SecurityDataStatusReport2{
-		ZoneStatus:    zoneStatus,
 		_SecurityData: &_SecurityData{},
+		ZoneStatus:    zoneStatus,
 	}
 	_child._SecurityData._SecurityDataChildRequirements = _child
 	return _child, nil

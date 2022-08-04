@@ -155,8 +155,8 @@ func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayl
 
 	// Create a partially initialized instance
 	_child := &_BVLCDistributeBroadcastToNetwork{
-		Npdu:  npdu,
 		_BVLC: &_BVLC{},
+		Npdu:  npdu,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

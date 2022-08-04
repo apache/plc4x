@@ -152,8 +152,8 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 
 	// Create a partially initialized instance
 	_child := &_ComObjectTableRealisationType6{
-		ComObjectDescriptors: comObjectDescriptors,
 		_ComObjectTable:      &_ComObjectTable{},
+		ComObjectDescriptors: comObjectDescriptors,
 	}
 	_child._ComObjectTable._ComObjectTableChildRequirements = _child
 	return _child, nil

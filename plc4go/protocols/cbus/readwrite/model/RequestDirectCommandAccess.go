@@ -180,10 +180,10 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 
 	// Create a partially initialized instance
 	_child := &_RequestDirectCommandAccess{
-		CalData: calData,
 		_Request: &_Request{
 			CBusOptions: cBusOptions,
 		},
+		CalData: calData,
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil

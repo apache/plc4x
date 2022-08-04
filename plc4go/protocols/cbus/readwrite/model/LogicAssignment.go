@@ -60,6 +60,9 @@ type _LogicAssignment struct {
 	AssignedToGav15  bool
 	AssignedToGav14  bool
 	AssignedToGav13  bool
+	// Reserved Fields
+	reservedField0 *bool
+	reservedField1 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -177,6 +180,7 @@ func LogicAssignmentParse(readBuffer utils.ReadBuffer) (LogicAssignment, error) 
 	}
 	reStrikeDelay := _reStrikeDelay
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -188,9 +192,12 @@ func LogicAssignmentParse(readBuffer utils.ReadBuffer) (LogicAssignment, error) 
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
+	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -202,6 +209,8 @@ func LogicAssignmentParse(readBuffer utils.ReadBuffer) (LogicAssignment, error) 
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -238,7 +247,16 @@ func LogicAssignmentParse(readBuffer utils.ReadBuffer) (LogicAssignment, error) 
 	}
 
 	// Create the instance
-	return NewLogicAssignment(greaterOfOrLogic, reStrikeDelay, assignedToGav16, assignedToGav15, assignedToGav14, assignedToGav13), nil
+	return &_LogicAssignment{
+		GreaterOfOrLogic: greaterOfOrLogic,
+		ReStrikeDelay:    reStrikeDelay,
+		AssignedToGav16:  assignedToGav16,
+		AssignedToGav15:  assignedToGav15,
+		AssignedToGav14:  assignedToGav14,
+		AssignedToGav13:  assignedToGav13,
+		reservedField0:   reservedField0,
+		reservedField1:   reservedField1,
+	}, nil
 }
 
 func (m *_LogicAssignment) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -264,7 +282,15 @@ func (m *_LogicAssignment) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -272,7 +298,15 @@ func (m *_LogicAssignment) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField1 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField1
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

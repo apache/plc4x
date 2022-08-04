@@ -176,11 +176,11 @@ func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType 
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueSerialNumber{
-		Value: value,
-		Data:  data,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Value: value,
+		Data:  data,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil

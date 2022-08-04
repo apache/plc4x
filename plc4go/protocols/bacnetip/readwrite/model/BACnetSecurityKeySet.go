@@ -193,7 +193,12 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	}
 
 	// Create the instance
-	return NewBACnetSecurityKeySet(keyRevision, activationTime, expirationTime, keyIds), nil
+	return &_BACnetSecurityKeySet{
+		KeyRevision:    keyRevision,
+		ActivationTime: activationTime,
+		ExpirationTime: expirationTime,
+		KeyIds:         keyIds,
+	}, nil
 }
 
 func (m *_BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {

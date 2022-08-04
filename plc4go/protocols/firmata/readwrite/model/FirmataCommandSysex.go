@@ -47,6 +47,8 @@ type FirmataCommandSysexExactly interface {
 type _FirmataCommandSysex struct {
 	*_FirmataCommand
 	Command SysexCommand
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,6 +152,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -161,6 +164,8 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 				"expected value": uint8(0xF7),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -170,10 +175,11 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSysex{
-		Command: command,
 		_FirmataCommand: &_FirmataCommand{
 			Response: response,
 		},
+		Command:        command,
+		reservedField0: reservedField0,
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil
@@ -201,7 +207,15 @@ func (m *_FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0xF7))
+			var reserved uint8 = uint8(0xF7)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0xF7),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

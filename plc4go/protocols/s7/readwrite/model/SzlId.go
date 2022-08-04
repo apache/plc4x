@@ -164,7 +164,11 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (SzlId, error) {
 	}
 
 	// Create the instance
-	return NewSzlId(typeClass, sublistExtract, sublistList), nil
+	return &_SzlId{
+		TypeClass:      typeClass,
+		SublistExtract: sublistExtract,
+		SublistList:    sublistList,
+	}, nil
 }
 
 func (m *_SzlId) Serialize(writeBuffer utils.WriteBuffer) error {

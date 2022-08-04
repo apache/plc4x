@@ -197,10 +197,10 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 
 	// Create a partially initialized instance
 	_child := &_SysexCommandReportFirmwareResponse{
+		_SysexCommand: &_SysexCommand{},
 		MajorVersion:  majorVersion,
 		MinorVersion:  minorVersion,
 		FileName:      fileName,
-		_SysexCommand: &_SysexCommand{},
 	}
 	_child._SysexCommand._SysexCommandChildRequirements = _child
 	return _child, nil

@@ -172,9 +172,9 @@ func ModbusPDUWriteMultipleCoilsResponseParse(readBuffer utils.ReadBuffer, respo
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUWriteMultipleCoilsResponse{
+		_ModbusPDU:      &_ModbusPDU{},
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
-		_ModbusPDU:      &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

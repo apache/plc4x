@@ -163,7 +163,10 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, e
 	}
 
 	// Create the instance
-	return NewDIBSuppSvcFamilies(descriptionType, serviceIds), nil
+	return &_DIBSuppSvcFamilies{
+		DescriptionType: descriptionType,
+		ServiceIds:      serviceIds,
+	}, nil
 }
 
 func (m *_DIBSuppSvcFamilies) Serialize(writeBuffer utils.WriteBuffer) error {

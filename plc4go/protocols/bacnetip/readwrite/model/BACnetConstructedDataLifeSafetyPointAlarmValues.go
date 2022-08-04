@@ -171,11 +171,11 @@ func BACnetConstructedDataLifeSafetyPointAlarmValuesParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLifeSafetyPointAlarmValues{
-		AlarmValues: alarmValues,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		AlarmValues: alarmValues,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -166,7 +166,9 @@ func PanicStatusParse(readBuffer utils.ReadBuffer) (PanicStatus, error) {
 	}
 
 	// Create the instance
-	return NewPanicStatus(status), nil
+	return &_PanicStatus{
+		Status: status,
+	}, nil
 }
 
 func (m *_PanicStatus) Serialize(writeBuffer utils.WriteBuffer) error {

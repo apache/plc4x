@@ -158,7 +158,12 @@ func BACnetSegmentationTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	}
 
 	// Create the instance
-	return NewBACnetSegmentationTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetSegmentationTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetSegmentationTagged) Serialize(writeBuffer utils.WriteBuffer) error {

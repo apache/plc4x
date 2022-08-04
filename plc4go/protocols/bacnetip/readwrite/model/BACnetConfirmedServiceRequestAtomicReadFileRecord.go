@@ -176,9 +176,9 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestAtomicReadFileRecord{
+		_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord: &_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{},
 		FileStartRecord:    fileStartRecord,
 		RequestRecordCount: requestRecordCount,
-		_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord: &_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{},
 	}
 	_child._BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord._BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements = _child
 	return _child, nil

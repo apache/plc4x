@@ -165,11 +165,11 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8)
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtAuthorizeRequest{
-		Level: level,
-		Data:  data,
 		_ApduDataExt: &_ApduDataExt{
 			Length: length,
 		},
+		Level: level,
+		Data:  data,
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil

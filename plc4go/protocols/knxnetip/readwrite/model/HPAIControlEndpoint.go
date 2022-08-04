@@ -174,7 +174,11 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (HPAIControlEndpoint,
 	}
 
 	// Create the instance
-	return NewHPAIControlEndpoint(hostProtocolCode, ipAddress, ipPort), nil
+	return &_HPAIControlEndpoint{
+		HostProtocolCode: hostProtocolCode,
+		IpAddress:        ipAddress,
+		IpPort:           ipPort,
+	}, nil
 }
 
 func (m *_HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -183,12 +183,12 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRea
 
 	// Create a partially initialized instance
 	_child := &_CipReadRequest{
-		RequestPathSize: requestPathSize,
-		Tag:             tag,
-		ElementNb:       elementNb,
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
 		},
+		RequestPathSize: requestPathSize,
+		Tag:             tag,
+		ElementNb:       elementNb,
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil

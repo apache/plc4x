@@ -170,7 +170,11 @@ func ErrorReportingSystemCategoryParse(readBuffer utils.ReadBuffer) (ErrorReport
 	}
 
 	// Create the instance
-	return NewErrorReportingSystemCategory(systemCategoryClass, systemCategoryType, systemCategoryVariant), nil
+	return &_ErrorReportingSystemCategory{
+		SystemCategoryClass:   systemCategoryClass,
+		SystemCategoryType:    systemCategoryType,
+		SystemCategoryVariant: systemCategoryVariant,
+	}, nil
 }
 
 func (m *_ErrorReportingSystemCategory) Serialize(writeBuffer utils.WriteBuffer) error {

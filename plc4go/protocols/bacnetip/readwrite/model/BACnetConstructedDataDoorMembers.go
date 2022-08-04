@@ -232,12 +232,12 @@ func BACnetConstructedDataDoorMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDoorMembers{
-		NumberOfDataElements: numberOfDataElements,
-		DoorMembers:          doorMembers,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		DoorMembers:          doorMembers,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

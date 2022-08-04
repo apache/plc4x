@@ -163,8 +163,8 @@ func BACnetLogDataLogDataEntryAnyValueParse(readBuffer utils.ReadBuffer) (BACnet
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataEntryAnyValue{
-		AnyValue:                   anyValue,
 		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
+		AnyValue:                   anyValue,
 	}
 	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
 	return _child, nil

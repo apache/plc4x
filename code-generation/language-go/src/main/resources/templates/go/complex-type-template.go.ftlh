@@ -137,8 +137,15 @@ type _${type.name} struct {
 
 	// Arguments.
     <#list filteredParserArgumentsLocalToType as parserArgument>
-        ${parserArgument.name?cap_first} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+	${parserArgument.name?cap_first} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
     </#list>
+</#if>
+<#assign reservedFields=type.getFields()?filter(f->f.isReservedField())>
+<#if reservedFields?has_content>
+	// Reserved Fields
+	<#list reservedFields as reservedField>
+	reservedField${reservedField?index} *${helper.getLanguageTypeNameForTypeReference(reservedField.asReservedField().orElseThrow().type)}
+	</#list>
 </#if>
 }
 
@@ -750,6 +757,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	var startPos = positionAware.GetPos()
 	var curPos uint16
 	</#if>
+	<#assign reservedFieldIndex=0>
 	<#list type.fields as field>
 		<#switch field.typeName>
 			<#case "array">
@@ -1269,6 +1277,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign reservedField = field.asReservedField().orElseThrow()>
 				<#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
 
+	var reservedField${reservedFieldIndex} *${helper.getLanguageTypeNameForTypeReference(simpleTypeReference)}
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := ${helper.getReadBufferReadMethodCall("reserved", simpleTypeReference, reservedField)}
@@ -1280,6 +1289,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				"expected value": ${helper.getReservedValue(reservedField)},
 				"got value": reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField${reservedFieldIndex}<#assign reservedFieldIndex=reservedFieldIndex+1> = &reserved
 		}
 	}
 				<#break>
@@ -1504,26 +1515,44 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			)
 		</@compress>
 
+        <#list reservedFields as reservedField>
+	_child.GetParent().(*_${type.name}).reservedField${reservedField?index} = reservedField${reservedField?index}
+        </#list>
 	return _child, nil
 	<#elseif type.parentType.isPresent()>
 	// Create a partially initialized instance
 	_child := &_${type.name}{
+		_${type.parentType.orElseThrow().name}: &_${type.parentType.orElseThrow().name}{
+        <#if filteredParserArguments?has_content>
+            <#list filteredParserArguments?filter(arg->type.getParentType().orElseThrow().isParserArgument(arg.name)) as arg>
+			${arg.name?cap_first}: ${arg.name},
+            </#list>
+        </#if>
+		},
 		<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 		</#list>
-        _${type.parentType.orElseThrow().name}: &_${type.parentType.orElseThrow().name}{
-		<#if filteredParserArguments?has_content>
-			<#list filteredParserArguments?filter(arg->type.getParentType().orElseThrow().isParserArgument(arg.name)) as arg>
-            ${arg.name?cap_first}: ${arg.name},
-			</#list>
-		</#if>
-		},
+        <#list reservedFields as reservedField>
+		reservedField${reservedField?index}: reservedField${reservedField?index},
+        </#list>
 	}
 	_child._${type.parentType.orElseThrow().name}._${type.parentType.orElseThrow().name}ChildRequirements = _child
 	return _child, nil
 	<#else>
 	// Create the instance
-	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>), nil
+	return &_${type.name}{
+		<#if filteredParserArguments?has_content>
+        	<#list filteredParserArguments as arg>
+            ${arg.name?cap_first}: ${arg.name},
+        	</#list>
+		</#if>
+		<#list type.propertyFields as field>
+			${field.name?cap_first}: ${field.name},
+		</#list>
+		<#list reservedFields as reservedField>
+			reservedField${reservedField?index}: reservedField${reservedField?index},
+        </#list>
+		}, nil
 	</#if>
 }
 
@@ -1564,6 +1593,7 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		</#if>
+        <#assign reservedFieldIndex=0>
 		<#list type.fields as field>
 			<#switch field.typeName>
 				<#case "array">
@@ -1780,7 +1810,15 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := ${helper.getWriteBufferWriteMethodCall("reserved", simpleTypeReference, helper.getReservedValue(reservedField), reservedField)}
+		var reserved ${helper.getLanguageTypeNameForTypeReference(simpleTypeReference)} = ${helper.getReservedValue(reservedField)}
+		if <#if type.isAbstract()>p</#if>m.reservedField${reservedFieldIndex} != nil {
+			log.Info().Fields(map[string]interface{}{<@emitImport import="github.com/rs/zerolog/log" />
+				"expected value": ${helper.getReservedValue(reservedField)},
+				"got value": reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *<#if type.isAbstract()>p</#if>m.reservedField${reservedFieldIndex}
+		}<#assign reservedFieldIndex=reservedFieldIndex+1>
+		_err := ${helper.getWriteBufferWriteMethodCall("reserved", simpleTypeReference, "reserved", reservedField)}
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")<@emitImport import="github.com/pkg/errors" />
 		}

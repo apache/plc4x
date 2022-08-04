@@ -192,7 +192,9 @@ func SecurityArmCodeParse(readBuffer utils.ReadBuffer) (SecurityArmCode, error) 
 	}
 
 	// Create the instance
-	return NewSecurityArmCode(code), nil
+	return &_SecurityArmCode{
+		Code: code,
+	}, nil
 }
 
 func (m *_SecurityArmCode) Serialize(writeBuffer utils.WriteBuffer) error {

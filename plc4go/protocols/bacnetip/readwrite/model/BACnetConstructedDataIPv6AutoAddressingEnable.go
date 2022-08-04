@@ -182,11 +182,11 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6AutoAddressingEnable{
-		AutoAddressingEnable: autoAddressingEnable,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		AutoAddressingEnable: autoAddressingEnable,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

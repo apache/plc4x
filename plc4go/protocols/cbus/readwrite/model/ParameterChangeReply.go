@@ -150,11 +150,11 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 
 	// Create a partially initialized instance
 	_child := &_ParameterChangeReply{
-		IsA: isA,
 		_Reply: &_Reply{
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
+		IsA: isA,
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil

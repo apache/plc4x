@@ -150,8 +150,8 @@ func BACnetPropertyStatesLightningTransitionParse(readBuffer utils.ReadBuffer, p
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesLightningTransition{
-		LightningTransition:   lightningTransition,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		LightningTransition:   lightningTransition,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

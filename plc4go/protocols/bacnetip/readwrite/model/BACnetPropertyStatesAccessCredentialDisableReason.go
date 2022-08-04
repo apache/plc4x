@@ -150,8 +150,8 @@ func BACnetPropertyStatesAccessCredentialDisableReasonParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesAccessCredentialDisableReason{
-		AccessCredentialDisableReason: accessCredentialDisableReason,
 		_BACnetPropertyStates:         &_BACnetPropertyStates{},
+		AccessCredentialDisableReason: accessCredentialDisableReason,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

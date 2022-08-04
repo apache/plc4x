@@ -157,10 +157,10 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueInterfaceOptions1PowerUpSettings{
-		Value: value,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Value: value,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil

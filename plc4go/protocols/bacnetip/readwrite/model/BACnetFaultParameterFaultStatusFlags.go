@@ -198,10 +198,10 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultStatusFlags{
+		_BACnetFaultParameter: &_BACnetFaultParameter{},
 		OpeningTag:            openingTag,
 		StatusFlagsReference:  statusFlagsReference,
 		ClosingTag:            closingTag,
-		_BACnetFaultParameter: &_BACnetFaultParameter{},
 	}
 	_child._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _child
 	return _child, nil

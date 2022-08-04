@@ -150,8 +150,8 @@ func BACnetClientCOVNoneParse(readBuffer utils.ReadBuffer) (BACnetClientCOVNone,
 
 	// Create a partially initialized instance
 	_child := &_BACnetClientCOVNone{
-		DefaultIncrement: defaultIncrement,
 		_BACnetClientCOV: &_BACnetClientCOV{},
+		DefaultIncrement: defaultIncrement,
 	}
 	_child._BACnetClientCOV._BACnetClientCOVChildRequirements = _child
 	return _child, nil

@@ -222,11 +222,11 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterBufferReady{
+		_BACnetEventParameter:     &_BACnetEventParameter{},
 		OpeningTag:                openingTag,
 		NotificationThreshold:     notificationThreshold,
 		PreviousNotificationCount: previousNotificationCount,
 		ClosingTag:                closingTag,
-		_BACnetEventParameter:     &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

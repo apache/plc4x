@@ -200,7 +200,13 @@ func BACnetEventStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	}
 
 	// Create the instance
-	return NewBACnetEventStateTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetEventStateTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetEventStateTagged) Serialize(writeBuffer utils.WriteBuffer) error {

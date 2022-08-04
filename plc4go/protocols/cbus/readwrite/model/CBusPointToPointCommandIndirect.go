@@ -199,12 +199,12 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptio
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToPointCommandIndirect{
-		BridgeAddress: bridgeAddress,
-		NetworkRoute:  networkRoute,
-		UnitAddress:   unitAddress,
 		_CBusPointToPointCommand: &_CBusPointToPointCommand{
 			CBusOptions: cBusOptions,
 		},
+		BridgeAddress: bridgeAddress,
+		NetworkRoute:  networkRoute,
+		UnitAddress:   unitAddress,
 	}
 	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child
 	return _child, nil

@@ -183,7 +183,11 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	}
 
 	// Create the instance
-	return NewBACnetLandingCallStatus(floorNumber, command, floorText), nil
+	return &_BACnetLandingCallStatus{
+		FloorNumber: floorNumber,
+		Command:     command,
+		FloorText:   floorText,
+	}, nil
 }
 
 func (m *_BACnetLandingCallStatus) Serialize(writeBuffer utils.WriteBuffer) error {

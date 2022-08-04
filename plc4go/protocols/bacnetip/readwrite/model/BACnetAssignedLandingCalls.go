@@ -124,7 +124,9 @@ func BACnetAssignedLandingCallsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	}
 
 	// Create the instance
-	return NewBACnetAssignedLandingCalls(landingCalls), nil
+	return &_BACnetAssignedLandingCalls{
+		LandingCalls: landingCalls,
+	}, nil
 }
 
 func (m *_BACnetAssignedLandingCalls) Serialize(writeBuffer utils.WriteBuffer) error {

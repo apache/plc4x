@@ -182,11 +182,11 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataReliabilityEvaluationInhibit{
-		ReliabilityEvaluationInhibit: reliabilityEvaluationInhibit,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		ReliabilityEvaluationInhibit: reliabilityEvaluationInhibit,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

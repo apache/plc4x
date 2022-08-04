@@ -147,10 +147,10 @@ func IdentifyReplyCommandGAVValuesCurrentParse(readBuffer utils.ReadBuffer, attr
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandGAVValuesCurrent{
-		Values: values,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		Values: values,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

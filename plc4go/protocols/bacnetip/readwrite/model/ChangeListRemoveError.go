@@ -176,9 +176,9 @@ func ChangeListRemoveErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetC
 
 	// Create a partially initialized instance
 	_child := &_ChangeListRemoveError{
+		_BACnetError:             &_BACnetError{},
 		ErrorType:                errorType,
 		FirstFailedElementNumber: firstFailedElementNumber,
-		_BACnetError:             &_BACnetError{},
 	}
 	_child._BACnetError._BACnetErrorChildRequirements = _child
 	return _child, nil

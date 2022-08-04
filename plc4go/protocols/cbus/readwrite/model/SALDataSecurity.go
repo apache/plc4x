@@ -154,8 +154,8 @@ func SALDataSecurityParse(readBuffer utils.ReadBuffer, applicationId Application
 
 	// Create a partially initialized instance
 	_child := &_SALDataSecurity{
-		SecurityData: securityData,
 		_SALData:     &_SALData{},
+		SecurityData: securityData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

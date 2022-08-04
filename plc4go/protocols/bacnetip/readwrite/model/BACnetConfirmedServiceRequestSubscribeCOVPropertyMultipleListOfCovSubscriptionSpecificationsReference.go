@@ -183,7 +183,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference(monitoredProperty, covIncrement, timestamped), nil
+	return &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference{
+		MonitoredProperty: monitoredProperty,
+		CovIncrement:      covIncrement,
+		Timestamped:       timestamped,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference) Serialize(writeBuffer utils.WriteBuffer) error {

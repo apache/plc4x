@@ -164,10 +164,10 @@ func NLMRouterBusyToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16,
 
 	// Create a partially initialized instance
 	_child := &_NLMRouterBusyToNetwork{
-		DestinationNetworkAddress: destinationNetworkAddress,
 		_NLM: &_NLM{
 			ApduLength: apduLength,
 		},
+		DestinationNetworkAddress: destinationNetworkAddress,
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil

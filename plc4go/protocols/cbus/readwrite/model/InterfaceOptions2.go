@@ -48,6 +48,13 @@ type InterfaceOptions2Exactly interface {
 type _InterfaceOptions2 struct {
 	Burden   bool
 	ClockGen bool
+	// Reserved Fields
+	reservedField0 *bool
+	reservedField1 *bool
+	reservedField2 *bool
+	reservedField3 *bool
+	reservedField4 *bool
+	reservedField5 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -135,6 +142,7 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -146,6 +154,8 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -156,6 +166,7 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 	}
 	burden := _burden
 
+	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -167,9 +178,12 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
+	var reservedField2 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -181,9 +195,12 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField2 = &reserved
 		}
 	}
 
+	var reservedField3 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -195,9 +212,12 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField3 = &reserved
 		}
 	}
 
+	var reservedField4 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -209,9 +229,12 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField4 = &reserved
 		}
 	}
 
+	var reservedField5 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -223,6 +246,8 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField5 = &reserved
 		}
 	}
 
@@ -238,7 +263,16 @@ func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, err
 	}
 
 	// Create the instance
-	return NewInterfaceOptions2(burden, clockGen), nil
+	return &_InterfaceOptions2{
+		Burden:         burden,
+		ClockGen:       clockGen,
+		reservedField0: reservedField0,
+		reservedField1: reservedField1,
+		reservedField2: reservedField2,
+		reservedField3: reservedField3,
+		reservedField4: reservedField4,
+		reservedField5: reservedField5,
+	}, nil
 }
 
 func (m *_InterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -250,7 +284,15 @@ func (m *_InterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -265,7 +307,15 @@ func (m *_InterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField1 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField1
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -273,7 +323,15 @@ func (m *_InterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField2 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField2
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -281,7 +339,15 @@ func (m *_InterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField3 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField3
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -289,7 +355,15 @@ func (m *_InterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField4 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField4
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -297,7 +371,15 @@ func (m *_InterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField5 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField5
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

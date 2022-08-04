@@ -150,8 +150,8 @@ func BACnetPropertyStatesBinaryLightningValueParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesBinaryLightningValue{
-		BinaryLightningValue:  binaryLightningValue,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		BinaryLightningValue:  binaryLightningValue,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

@@ -172,9 +172,9 @@ func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool)
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUDiagnosticRequest{
+		_ModbusPDU:  &_ModbusPDU{},
 		SubFunction: subFunction,
 		Data:        data,
-		_ModbusPDU:  &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

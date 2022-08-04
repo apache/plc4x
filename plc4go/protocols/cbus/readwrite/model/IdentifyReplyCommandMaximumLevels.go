@@ -147,10 +147,10 @@ func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribu
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandMaximumLevels{
-		MaximumLevels: maximumLevels,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		MaximumLevels: maximumLevels,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

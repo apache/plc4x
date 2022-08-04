@@ -124,7 +124,9 @@ func BACnetAccessThreatLevelParse(readBuffer utils.ReadBuffer) (BACnetAccessThre
 	}
 
 	// Create the instance
-	return NewBACnetAccessThreatLevel(threatLevel), nil
+	return &_BACnetAccessThreatLevel{
+		ThreatLevel: threatLevel,
+	}, nil
 }
 
 func (m *_BACnetAccessThreatLevel) Serialize(writeBuffer utils.WriteBuffer) error {

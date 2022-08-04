@@ -321,7 +321,12 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadDat
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadDate(yearMinus1900, month, dayOfMonth, dayOfWeek), nil
+	return &_BACnetTagPayloadDate{
+		YearMinus1900: yearMinus1900,
+		Month:         month,
+		DayOfMonth:    dayOfMonth,
+		DayOfWeek:     dayOfWeek,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadDate) Serialize(writeBuffer utils.WriteBuffer) error {

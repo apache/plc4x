@@ -103,6 +103,10 @@ type _IdentifyReplyCommandExtendedDiagnosticSummary struct {
 	CommsTxError           bool
 	InternalStackOverflow  bool
 	MicroPowerReset        bool
+	// Reserved Fields
+	reservedField0 *uint8
+	reservedField1 *uint8
+	reservedField2 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -439,6 +443,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	}
 	networkVoltageMarginal := _networkVoltageMarginal
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
@@ -450,9 +455,12 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
+	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
@@ -464,9 +472,12 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
+	var reservedField2 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
@@ -478,6 +489,8 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField2 = &reserved
 		}
 	}
 
@@ -557,6 +570,9 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandExtendedDiagnosticSummary{
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 		LowApplication:         lowApplication,
 		HighApplication:        highApplication,
 		Area:                   area,
@@ -576,9 +592,9 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 		CommsTxError:           commsTxError,
 		InternalStackOverflow:  internalStackOverflow,
 		MicroPowerReset:        microPowerReset,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
+		reservedField0:         reservedField0,
+		reservedField1:         reservedField1,
+		reservedField2:         reservedField2,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil
@@ -671,7 +687,15 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer u
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(0))
+			var reserved uint8 = uint8(0)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -679,7 +703,15 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer u
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(0))
+			var reserved uint8 = uint8(0)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -687,7 +719,15 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer u
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(0))
+			var reserved uint8 = uint8(0)
+			if m.reservedField2 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField2
+			}
+			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

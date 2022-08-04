@@ -150,10 +150,10 @@ func BACnetPriorityValueBooleanParse(readBuffer utils.ReadBuffer, objectTypeArgu
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueBoolean{
-		BooleanValue: booleanValue,
 		_BACnetPriorityValue: &_BACnetPriorityValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		BooleanValue: booleanValue,
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil

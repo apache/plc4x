@@ -206,12 +206,12 @@ func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {
 
 	// Create a partially initialized instance
 	_child := &_LDataCon{
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
 		_CEMI: &_CEMI{
 			Size: size,
 		},
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

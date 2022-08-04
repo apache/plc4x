@@ -182,11 +182,11 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6PrefixLength{
-		Ipv6PrefixLength: ipv6PrefixLength,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		Ipv6PrefixLength: ipv6PrefixLength,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

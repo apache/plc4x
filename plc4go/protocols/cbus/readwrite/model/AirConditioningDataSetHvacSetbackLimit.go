@@ -216,11 +216,11 @@ func AirConditioningDataSetHvacSetbackLimitParse(readBuffer utils.ReadBuffer) (A
 
 	// Create a partially initialized instance
 	_child := &_AirConditioningDataSetHvacSetbackLimit{
+		_AirConditioningData: &_AirConditioningData{},
 		ZoneGroup:            zoneGroup,
 		ZoneList:             zoneList,
 		Limit:                limit,
 		HvacModeAndFlags:     hvacModeAndFlags,
-		_AirConditioningData: &_AirConditioningData{},
 	}
 	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
 	return _child, nil

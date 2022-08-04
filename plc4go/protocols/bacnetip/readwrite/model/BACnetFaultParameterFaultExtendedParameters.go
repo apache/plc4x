@@ -184,7 +184,12 @@ func BACnetFaultParameterFaultExtendedParametersParse(readBuffer utils.ReadBuffe
 	}
 
 	// Create the instance
-	return NewBACnetFaultParameterFaultExtendedParameters(openingTag, parameters, closingTag, tagNumber), nil
+	return &_BACnetFaultParameterFaultExtendedParameters{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		Parameters: parameters,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -154,8 +154,8 @@ func SALDataPoolsSpasPondsFountainsControlParse(readBuffer utils.ReadBuffer, app
 
 	// Create a partially initialized instance
 	_child := &_SALDataPoolsSpasPondsFountainsControl{
-		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
 		_SALData:                   &_SALData{},
+		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

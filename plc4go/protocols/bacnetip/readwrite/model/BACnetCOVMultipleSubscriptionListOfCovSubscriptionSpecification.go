@@ -184,7 +184,12 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBu
 	}
 
 	// Create the instance
-	return NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(openingTag, listOfCovSubscriptionSpecificationEntry, closingTag, tagNumber), nil
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification{
+		TagNumber:                               tagNumber,
+		OpeningTag:                              openingTag,
+		ListOfCovSubscriptionSpecificationEntry: listOfCovSubscriptionSpecificationEntry,
+		ClosingTag:                              closingTag,
+	}, nil
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Serialize(writeBuffer utils.WriteBuffer) error {
