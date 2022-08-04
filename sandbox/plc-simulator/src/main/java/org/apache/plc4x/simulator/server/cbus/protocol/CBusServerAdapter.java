@@ -25,6 +25,7 @@ import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +38,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
     private Context context;
 
-    private static final RequestContext requestContext = new RequestContext(false, false, false);
+    private static final RequestContext requestContext = new RequestContext(false);
 
     private static boolean connect;
     private static boolean smart;
@@ -221,22 +222,21 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         StatusRequest statusRequest = cBusPointToMultiPointCommandStatus.getStatusRequest();
                         if (statusRequest instanceof StatusRequestBinaryState) {
                             StatusRequestBinaryState statusRequestBinaryState = (StatusRequestBinaryState) statusRequest;
-                            EncodedReply encodedReply;
+                            CALReply calReply;
                             if (exstat) {
-                                ExtendedStatusHeader extendedStatusHeader = new ExtendedStatusHeader((short) (3 + 1));
                                 // TODO: map actuall values from simulator
                                 byte blockStart = 0x0;
                                 List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                                ExtendedFormatStatusReply extendedFormatStatusReply = new ExtendedFormatStatusReply(extendedStatusHeader, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryState.getApplication(), blockStart, statusBytes, null);// 3 we have always + 1 as we got one status byte
-                                encodedReply = new EncodedReplyExtendedFormatStatusReply((byte) 0xE0, extendedFormatStatusReply, cBusOptions, requestContext);
+                                CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryState.getApplication(), blockStart, statusBytes, null, requestContext);
+                                calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
                             } else {
-                                StatusHeader statusHeader = new StatusHeader((short) (2 + 1)); // 2 we have always + 1 as we got one status byte
                                 // TODO: map actuall values from simulator
                                 byte blockStart = 0x0;
                                 List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                                StandardFormatStatusReply standardFormatStatusReply = new StandardFormatStatusReply(statusHeader, statusRequestBinaryState.getApplication(), blockStart, statusBytes);
-                                encodedReply = new EncodedReplyStandardFormatStatusReply((byte) 0xC0, standardFormatStatusReply, cBusOptions, requestContext);
+                                CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandReply_3Bytes, null, statusRequestBinaryState.getApplication(), blockStart, statusBytes, requestContext);
+                                calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
                             }
+                            EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
                             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
                             Alpha alpha = requestCommand.getAlpha();
@@ -257,13 +257,13 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         }
                         if (statusRequest instanceof StatusRequestLevel) {
                             StatusRequestLevel statusRequestLevel = (StatusRequestLevel) statusRequest;
-                            ExtendedStatusHeader statusHeader = new ExtendedStatusHeader((short) (3 + 2)); // 3 we have always (coding is extra opposed to the standard) + 2 as we got one level information
                             StatusCoding coding = StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE;
                             // TODO: map actuall values from simulator
                             byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
                             List<LevelInformation> levelInformations = List.of(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
-                            ExtendedFormatStatusReply extendedFormatStatusReply = new ExtendedFormatStatusReply(statusHeader, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations);
-                            EncodedReply encodedReply = new EncodedReplyExtendedFormatStatusReply((byte) 0xC0, extendedFormatStatusReply, cBusOptions, requestContext);
+                            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations, requestContext);
+                            CALReply calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
+                            EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
                             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
                             Alpha alpha = requestCommand.getAlpha();
@@ -416,20 +416,18 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 writeLock.lock();
                 CALReply calReply;
                 if (cBusOptions.getExstat()) {
-                    byte[] data = {
-                        /*00|*/0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, //'..........'
-                        /*10|*/0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //'..........'
-                        /*20|*/0x00, 0x00, (byte) 0xFA,                                    //'...       '
-                    };
-                    CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, (short) 0x40, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, data, requestContext);
+                    List<StatusByte> statusBytes = new LinkedList<>();
+                    for (int i = 0; i < 21; i++) {
+                        statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                    }
+                    CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, StatusCoding.BINARY_BY_ELSEWHERE, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, null, requestContext);
                     calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
                 } else {
-                    byte[] data = {
-                        /*00|*/0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, //'..........'
-                        /*10|*/0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //'..........'
-                        /*20|*/0x00, 0x00, (byte) 0xFA,                                    //'...       '
-                    };
-                    CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandStatus_25Bytes, null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, data, requestContext);
+                    List<StatusByte> statusBytes = new LinkedList<>();
+                    for (int i = 0; i < 22; i++) {
+                        statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                    }
+                    CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandStatus_25Bytes, null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, requestContext);
                     calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
                 }
                 EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
