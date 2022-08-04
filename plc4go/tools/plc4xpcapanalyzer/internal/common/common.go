@@ -42,7 +42,11 @@ func (p PacketInformation) String() string {
 // ErrUnterminatedPackage is used when a transmission is incomplete (usually when package is split)
 var ErrUnterminatedPackage = errors.New("ErrUnterminatedPackage")
 
+// ErrEmptyPackage is used when there is no payload
 var ErrEmptyPackage = errors.New("ErrEmptyPackage")
+
+// ErrEcho is used when the package is a echo from the previous
+var ErrEcho = errors.New("ErrEcho")
 
 type FilteredPackage interface {
 	gopacket.Packet
