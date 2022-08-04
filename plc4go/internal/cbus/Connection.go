@@ -236,6 +236,10 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
 			return
 		}
+		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(0xFF), 1)
+		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
+			return
+		}
 		log.Debug().Msg("Application filter set")
 	}
 	{
