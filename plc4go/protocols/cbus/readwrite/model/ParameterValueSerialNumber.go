@@ -33,6 +33,8 @@ type ParameterValueSerialNumber interface {
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() SerialNumber
+	// GetData returns Data (property field)
+	GetData() []byte
 }
 
 // ParameterValueSerialNumberExactly can be used when we want exactly this type and not a type which fulfills ParameterValueSerialNumber.
@@ -46,6 +48,7 @@ type ParameterValueSerialNumberExactly interface {
 type _ParameterValueSerialNumber struct {
 	*_ParameterValue
 	Value SerialNumber
+	Data  []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,15 +80,20 @@ func (m *_ParameterValueSerialNumber) GetValue() SerialNumber {
 	return m.Value
 }
 
+func (m *_ParameterValueSerialNumber) GetData() []byte {
+	return m.Data
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
-func NewParameterValueSerialNumber(value SerialNumber, numBytes uint8) *_ParameterValueSerialNumber {
+func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
 	_result := &_ParameterValueSerialNumber{
 		Value:           value,
+		Data:            data,
 		_ParameterValue: NewParameterValue(numBytes),
 	}
 	_result._ParameterValue._ParameterValueChildRequirements = _result
@@ -117,6 +125,11 @@ func (m *_ParameterValueSerialNumber) GetLengthInBitsConditional(lastItem bool) 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits()
 
+	// Array field
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
+	}
+
 	return lengthInBits
 }
 
@@ -134,7 +147,7 @@ func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType 
 	_ = currentPos
 
 	// Validation
-	if !(bool((numBytes) == (4))) {
+	if !(bool((numBytes) >= (4))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"SerialNumber has exactly four bytes"})
 	}
 
@@ -150,6 +163,12 @@ func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType 
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for value")
 	}
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(4)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueSerialNumber")
+	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueSerialNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValueSerialNumber")
@@ -158,6 +177,7 @@ func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType 
 	// Create a partially initialized instance
 	_child := &_ParameterValueSerialNumber{
 		Value: value,
+		Data:  data,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
@@ -184,6 +204,12 @@ func (m *_ParameterValueSerialNumber) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		}
+
+		// Array Field (data)
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterValueSerialNumber"); popErr != nil {

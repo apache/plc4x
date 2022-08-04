@@ -887,39 +887,53 @@
 [type ParameterValue(ParameterType parameterType, uint 8 numBytes)
     [typeSwitch parameterType
         ['APPLICATION_ADDRESS_1'    *ApplicationAddress1
-            [validation 'numBytes == 1' "ApplicationAddress1 has exactly one byte"  ]
+            [validation 'numBytes >= 1' "ApplicationAddress1 has exactly one byte"  ]
             [simple ApplicationAddress1 value                                       ]
+            // TODO: find out what additional bytes mean here... would that be application address 2 then?
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['APPLICATION_ADDRESS_2'    *ApplicationAddress2
-            [validation 'numBytes == 1' "ApplicationAddress2 has exactly one byte"  ]
-            [simple ApplicationAddress1 value                                       ]
+            [validation 'numBytes >= 1' "ApplicationAddress2 has exactly one byte"  ]
+            [simple ApplicationAddress2 value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['INTERFACE_OPTIONS_1'      *InterfaceOptions1
-            [validation 'numBytes == 1' "InterfaceOptions1 has exactly one byte"    ]
+            [validation 'numBytes >= 1' "InterfaceOptions1 has exactly one byte"    ]
             [simple InterfaceOptions1   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['BAUD_RATE_SELECTOR'       *BaudRateSelector
-            [validation 'numBytes == 1' "BaudRateSelector has exactly one byte"     ]
+            [validation 'numBytes >= 1' "BaudRateSelector has exactly one byte"     ]
             [simple BaudRateSelector    value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['INTERFACE_OPTIONS_2'      *InterfaceOptions2
-            [validation 'numBytes == 1' "InterfaceOptions2 has exactly one byte"    ]
+            [validation 'numBytes >= 1' "InterfaceOptions2 has exactly one byte"    ]
             [simple InterfaceOptions2   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['INTERFACE_OPTIONS_1_POWER_UP_SETTINGS'    *InterfaceOptions1PowerUpSettings
-            [validation 'numBytes == 1' "InterfaceOptions1PowerUpSettings has exactly one byte" ]
+            [validation 'numBytes >= 1' "InterfaceOptions1PowerUpSettings has exactly one byte" ]
             [simple InterfaceOptions1PowerUpSettings   value                                    ]
         ]
         ['INTERFACE_OPTIONS_3'      *InterfaceOptions3
-            [validation 'numBytes == 1' "InterfaceOptions3 has exactly one byte"    ]
+            [validation 'numBytes >= 1' "InterfaceOptions3 has exactly one byte"    ]
             [simple InterfaceOptions3   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['CUSTOM_MANUFACTURER'      *CustomManufacturer
             [simple CustomManufacturer('numBytes')   value                          ]
         ]
         ['SERIAL_NUMBER'            *SerialNumber
-            [validation 'numBytes == 4' "SerialNumber has exactly four bytes"       ]
+            [validation 'numBytes >= 4' "SerialNumber has exactly four bytes"       ]
             [simple SerialNumber   value                                            ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-4'                        ]
         ]
         ['CUSTOM_TYPE'              *CustomTypes
             [simple CustomTypes('numBytes')   value                                 ]

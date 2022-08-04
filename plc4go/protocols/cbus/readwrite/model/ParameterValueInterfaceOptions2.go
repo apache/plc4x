@@ -33,6 +33,8 @@ type ParameterValueInterfaceOptions2 interface {
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions2
+	// GetData returns Data (property field)
+	GetData() []byte
 }
 
 // ParameterValueInterfaceOptions2Exactly can be used when we want exactly this type and not a type which fulfills ParameterValueInterfaceOptions2.
@@ -46,6 +48,7 @@ type ParameterValueInterfaceOptions2Exactly interface {
 type _ParameterValueInterfaceOptions2 struct {
 	*_ParameterValue
 	Value InterfaceOptions2
+	Data  []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,15 +80,20 @@ func (m *_ParameterValueInterfaceOptions2) GetValue() InterfaceOptions2 {
 	return m.Value
 }
 
+func (m *_ParameterValueInterfaceOptions2) GetData() []byte {
+	return m.Data
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewParameterValueInterfaceOptions2 factory function for _ParameterValueInterfaceOptions2
-func NewParameterValueInterfaceOptions2(value InterfaceOptions2, numBytes uint8) *_ParameterValueInterfaceOptions2 {
+func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions2 {
 	_result := &_ParameterValueInterfaceOptions2{
 		Value:           value,
+		Data:            data,
 		_ParameterValue: NewParameterValue(numBytes),
 	}
 	_result._ParameterValue._ParameterValueChildRequirements = _result
@@ -117,6 +125,11 @@ func (m *_ParameterValueInterfaceOptions2) GetLengthInBitsConditional(lastItem b
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits()
 
+	// Array field
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
+	}
+
 	return lengthInBits
 }
 
@@ -134,7 +147,7 @@ func ParameterValueInterfaceOptions2Parse(readBuffer utils.ReadBuffer, parameter
 	_ = currentPos
 
 	// Validation
-	if !(bool((numBytes) == (1))) {
+	if !(bool((numBytes) >= (1))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"InterfaceOptions2 has exactly one byte"})
 	}
 
@@ -150,6 +163,12 @@ func ParameterValueInterfaceOptions2Parse(readBuffer utils.ReadBuffer, parameter
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for value")
 	}
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(1)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueInterfaceOptions2")
+	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueInterfaceOptions2"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValueInterfaceOptions2")
@@ -158,6 +177,7 @@ func ParameterValueInterfaceOptions2Parse(readBuffer utils.ReadBuffer, parameter
 	// Create a partially initialized instance
 	_child := &_ParameterValueInterfaceOptions2{
 		Value: value,
+		Data:  data,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
@@ -184,6 +204,12 @@ func (m *_ParameterValueInterfaceOptions2) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		}
+
+		// Array Field (data)
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterValueInterfaceOptions2"); popErr != nil {

@@ -232,11 +232,11 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	}
 	{
 		log.Debug().Msg("Set application filter to all")
-		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(0xFF), 1)
+		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(0xFF), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
 			return
 		}
-		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(0xFF), 1)
+		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(0xFF), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
 			return
 		}
@@ -244,7 +244,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	}
 	{
 		log.Debug().Msg("Set interface options 3")
-		interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(true, false, true, false), 1)
+		interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(true, false, true, false), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
 			return
 		}
@@ -263,7 +263,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	}
 	{
 		log.Debug().Msg("Set interface options 1")
-		interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(true, true, true, true, false, true), 1)
+		interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(true, true, true, true, false, true), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
 			return
 		}

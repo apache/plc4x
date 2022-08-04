@@ -33,6 +33,8 @@ type ParameterValueBaudRateSelector interface {
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() BaudRateSelector
+	// GetData returns Data (property field)
+	GetData() []byte
 }
 
 // ParameterValueBaudRateSelectorExactly can be used when we want exactly this type and not a type which fulfills ParameterValueBaudRateSelector.
@@ -46,6 +48,7 @@ type ParameterValueBaudRateSelectorExactly interface {
 type _ParameterValueBaudRateSelector struct {
 	*_ParameterValue
 	Value BaudRateSelector
+	Data  []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,15 +80,20 @@ func (m *_ParameterValueBaudRateSelector) GetValue() BaudRateSelector {
 	return m.Value
 }
 
+func (m *_ParameterValueBaudRateSelector) GetData() []byte {
+	return m.Data
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
-func NewParameterValueBaudRateSelector(value BaudRateSelector, numBytes uint8) *_ParameterValueBaudRateSelector {
+func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
 	_result := &_ParameterValueBaudRateSelector{
 		Value:           value,
+		Data:            data,
 		_ParameterValue: NewParameterValue(numBytes),
 	}
 	_result._ParameterValue._ParameterValueChildRequirements = _result
@@ -117,6 +125,11 @@ func (m *_ParameterValueBaudRateSelector) GetLengthInBitsConditional(lastItem bo
 	// Simple field (value)
 	lengthInBits += 8
 
+	// Array field
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
+	}
+
 	return lengthInBits
 }
 
@@ -134,7 +147,7 @@ func ParameterValueBaudRateSelectorParse(readBuffer utils.ReadBuffer, parameterT
 	_ = currentPos
 
 	// Validation
-	if !(bool((numBytes) == (1))) {
+	if !(bool((numBytes) >= (1))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"BaudRateSelector has exactly one byte"})
 	}
 
@@ -150,6 +163,12 @@ func ParameterValueBaudRateSelectorParse(readBuffer utils.ReadBuffer, parameterT
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for value")
 	}
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(1)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueBaudRateSelector")
+	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueBaudRateSelector"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValueBaudRateSelector")
@@ -158,6 +177,7 @@ func ParameterValueBaudRateSelectorParse(readBuffer utils.ReadBuffer, parameterT
 	// Create a partially initialized instance
 	_child := &_ParameterValueBaudRateSelector{
 		Value: value,
+		Data:  data,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
@@ -184,6 +204,12 @@ func (m *_ParameterValueBaudRateSelector) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		}
+
+		// Array Field (data)
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterValueBaudRateSelector"); popErr != nil {

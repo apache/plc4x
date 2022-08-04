@@ -134,7 +134,7 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Validation
-	if !(bool((numBytes) == (1))) {
+	if !(bool((numBytes) >= (1))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"InterfaceOptions1PowerUpSettings has exactly one byte"})
 	}
 
