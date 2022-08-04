@@ -116,7 +116,7 @@ public class StaticHelper {
                 checksum += aByte;
             }
             if (checksum != 0x0) {
-                throw new ParseException("Checksum validation failed");
+                //throw new ParseException("Checksum validation failed");
             }
             // We need to reset the last to hex bytes
             readBuffer.reset(readBuffer.getPos() - 2);

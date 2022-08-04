@@ -43,7 +43,7 @@ type MessageCodec struct {
 
 func NewMessageCodec(transportInstance transports.TransportInstance, srchk bool) *MessageCodec {
 	codec := &MessageCodec{
-		requestContext: readwriteModel.NewRequestContext(false, false, false),
+		requestContext: readwriteModel.NewRequestContext(false),
 		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, srchk),
 		monitoredSALs:  make(chan readwriteModel.MonitoredSAL, 100),
 	}
@@ -181,7 +181,7 @@ lookingForTheEnd:
 		// TODO: bit bad we need to do this but cal detection is not reliable enough
 		{ // Try SAL
 			rb := utils.NewReadBufferByteBased(read)
-			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false, false, false), m.cbusOptions)
+			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false), m.cbusOptions)
 			if secondErr == nil {
 				return cBusMessage, nil
 			} else {
@@ -189,7 +189,7 @@ lookingForTheEnd:
 			}
 		}
 		{ // Try MMI
-			requestContext := readwriteModel.NewRequestContext(false, false, false)
+			requestContext := readwriteModel.NewRequestContext(false)
 			cbusOptions := readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 			rb := utils.NewReadBufferByteBased(read)
 			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, true, requestContext, cbusOptions)

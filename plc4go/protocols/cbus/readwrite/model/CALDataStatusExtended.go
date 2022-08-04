@@ -32,23 +32,19 @@ type CALDataStatusExtended interface {
 	utils.Serializable
 	CALData
 	// GetCoding returns Coding (property field)
-	GetCoding() uint8
+	GetCoding() StatusCoding
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
-	// GetData returns Data (property field)
-	GetData() []byte
-	// GetIsBinaryBySerialInterface returns IsBinaryBySerialInterface (virtual field)
-	GetIsBinaryBySerialInterface() bool
-	// GetIsBinaryByElsewhere returns IsBinaryByElsewhere (virtual field)
-	GetIsBinaryByElsewhere() bool
-	// GetIsLevelBySerialInterface returns IsLevelBySerialInterface (virtual field)
-	GetIsLevelBySerialInterface() bool
-	// GetIsLevelByElsewhere returns IsLevelByElsewhere (virtual field)
-	GetIsLevelByElsewhere() bool
-	// GetIsReserved returns IsReserved (virtual field)
-	GetIsReserved() bool
+	// GetStatusBytes returns StatusBytes (property field)
+	GetStatusBytes() []StatusByte
+	// GetLevelInformation returns LevelInformation (property field)
+	GetLevelInformation() []LevelInformation
+	// GetNumberOfStatusBytes returns NumberOfStatusBytes (virtual field)
+	GetNumberOfStatusBytes() uint8
+	// GetNumberOfLevelInformation returns NumberOfLevelInformation (virtual field)
+	GetNumberOfLevelInformation() uint8
 }
 
 // CALDataStatusExtendedExactly can be used when we want exactly this type and not a type which fulfills CALDataStatusExtended.
@@ -61,10 +57,11 @@ type CALDataStatusExtendedExactly interface {
 // _CALDataStatusExtended is the data-structure of this message
 type _CALDataStatusExtended struct {
 	*_CALData
-	Coding      uint8
-	Application ApplicationIdContainer
-	BlockStart  uint8
-	Data        []byte
+	Coding           StatusCoding
+	Application      ApplicationIdContainer
+	BlockStart       uint8
+	StatusBytes      []StatusByte
+	LevelInformation []LevelInformation
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,7 +88,7 @@ func (m *_CALDataStatusExtended) GetParent() CALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALDataStatusExtended) GetCoding() uint8 {
+func (m *_CALDataStatusExtended) GetCoding() StatusCoding {
 	return m.Coding
 }
 
@@ -103,8 +100,12 @@ func (m *_CALDataStatusExtended) GetBlockStart() uint8 {
 	return m.BlockStart
 }
 
-func (m *_CALDataStatusExtended) GetData() []byte {
-	return m.Data
+func (m *_CALDataStatusExtended) GetStatusBytes() []StatusByte {
+	return m.StatusBytes
+}
+
+func (m *_CALDataStatusExtended) GetLevelInformation() []LevelInformation {
+	return m.LevelInformation
 }
 
 ///////////////////////
@@ -116,24 +117,14 @@ func (m *_CALDataStatusExtended) GetData() []byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_CALDataStatusExtended) GetIsBinaryBySerialInterface() bool {
-	return bool(bool((m.GetCoding()) == (0x00)))
+func (m *_CALDataStatusExtended) GetNumberOfStatusBytes() uint8 {
+	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} { return uint8((uint8(m.GetCommandTypeContainer().NumBytes()) - uint8(uint8(3)))) }, func() interface{} { return uint8((uint8(0))) }).(uint8))
 }
 
-func (m *_CALDataStatusExtended) GetIsBinaryByElsewhere() bool {
-	return bool(bool((m.GetCoding()) == (0x40)))
-}
-
-func (m *_CALDataStatusExtended) GetIsLevelBySerialInterface() bool {
-	return bool(bool((m.GetCoding()) == (0x07)))
-}
-
-func (m *_CALDataStatusExtended) GetIsLevelByElsewhere() bool {
-	return bool(bool((m.GetCoding()) == (0x47)))
-}
-
-func (m *_CALDataStatusExtended) GetIsReserved() bool {
-	return bool(bool(bool(bool(!(m.GetIsBinaryBySerialInterface())) && bool(!(m.GetIsBinaryByElsewhere()))) && bool(!(m.GetIsLevelBySerialInterface()))) && bool(!(m.GetIsLevelByElsewhere())))
+func (m *_CALDataStatusExtended) GetNumberOfLevelInformation() uint8 {
+	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
+		return uint8((uint8((uint8(m.GetCommandTypeContainer().NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
+	}, func() interface{} { return uint8((uint8(0))) }).(uint8))
 }
 
 ///////////////////////
@@ -142,13 +133,14 @@ func (m *_CALDataStatusExtended) GetIsReserved() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(coding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
+func NewCALDataStatusExtended(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
 	_result := &_CALDataStatusExtended{
-		Coding:      coding,
-		Application: application,
-		BlockStart:  blockStart,
-		Data:        data,
-		_CALData:    NewCALData(commandTypeContainer, additionalData, requestContext),
+		Coding:           coding,
+		Application:      application,
+		BlockStart:       blockStart,
+		StatusBytes:      statusBytes,
+		LevelInformation: levelInformation,
+		_CALData:         NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result
@@ -179,25 +171,30 @@ func (m *_CALDataStatusExtended) GetLengthInBitsConditional(lastItem bool) uint1
 	// Simple field (coding)
 	lengthInBits += 8
 
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
 	// Simple field (application)
 	lengthInBits += 8
 
 	// Simple field (blockStart)
 	lengthInBits += 8
 
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
+
 	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+	if len(m.StatusBytes) > 0 {
+		for i, element := range m.StatusBytes {
+			last := i == len(m.StatusBytes)-1
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		}
+	}
+
+	// Array field
+	if len(m.LevelInformation) > 0 {
+		for i, element := range m.LevelInformation {
+			last := i == len(m.LevelInformation)-1
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		}
 	}
 
 	return lengthInBits
@@ -217,36 +214,17 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	_ = currentPos
 
 	// Simple Field (coding)
-	_coding, _codingErr := readBuffer.ReadUint8("coding", 8)
+	if pullErr := readBuffer.PullContext("coding"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for coding")
+	}
+	_coding, _codingErr := StatusCodingParse(readBuffer)
 	if _codingErr != nil {
 		return nil, errors.Wrap(_codingErr, "Error parsing 'coding' field of CALDataStatusExtended")
 	}
 	coding := _coding
-
-	// Virtual field
-	_isBinaryBySerialInterface := bool((coding) == (0x00))
-	isBinaryBySerialInterface := bool(_isBinaryBySerialInterface)
-	_ = isBinaryBySerialInterface
-
-	// Virtual field
-	_isBinaryByElsewhere := bool((coding) == (0x40))
-	isBinaryByElsewhere := bool(_isBinaryByElsewhere)
-	_ = isBinaryByElsewhere
-
-	// Virtual field
-	_isLevelBySerialInterface := bool((coding) == (0x07))
-	isLevelBySerialInterface := bool(_isLevelBySerialInterface)
-	_ = isLevelBySerialInterface
-
-	// Virtual field
-	_isLevelByElsewhere := bool((coding) == (0x47))
-	isLevelByElsewhere := bool(_isLevelByElsewhere)
-	_ = isLevelByElsewhere
-
-	// Virtual field
-	_isReserved := bool(bool(bool(!(isBinaryBySerialInterface)) && bool(!(isBinaryByElsewhere))) && bool(!(isLevelBySerialInterface))) && bool(!(isLevelByElsewhere))
-	isReserved := bool(_isReserved)
-	_ = isReserved
+	if closeErr := readBuffer.CloseContext("coding"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for coding")
+	}
 
 	// Simple Field (application)
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
@@ -267,11 +245,63 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of CALDataStatusExtended")
 	}
 	blockStart := _blockStart
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(2)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataStatusExtended")
+
+	// Virtual field
+	_numberOfStatusBytes := utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() interface{} { return uint8((uint8(0))) }).(uint8)
+	numberOfStatusBytes := uint8(_numberOfStatusBytes)
+	_ = numberOfStatusBytes
+
+	// Virtual field
+	_numberOfLevelInformation := utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
+		return uint8((uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
+	}, func() interface{} { return uint8((uint8(0))) }).(uint8)
+	numberOfLevelInformation := uint8(_numberOfLevelInformation)
+	_ = numberOfLevelInformation
+
+	// Array field (statusBytes)
+	if pullErr := readBuffer.PullContext("statusBytes", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
+	}
+	// Count array
+	statusBytes := make([]StatusByte, numberOfStatusBytes)
+	// This happens when the size is set conditional to 0
+	if len(statusBytes) == 0 {
+		statusBytes = nil
+	}
+	{
+		for curItem := uint16(0); curItem < uint16(numberOfStatusBytes); curItem++ {
+			_item, _err := StatusByteParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field of CALDataStatusExtended")
+			}
+			statusBytes[curItem] = _item.(StatusByte)
+		}
+	}
+	if closeErr := readBuffer.CloseContext("statusBytes", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for statusBytes")
+	}
+
+	// Array field (levelInformation)
+	if pullErr := readBuffer.PullContext("levelInformation", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for levelInformation")
+	}
+	// Count array
+	levelInformation := make([]LevelInformation, numberOfLevelInformation)
+	// This happens when the size is set conditional to 0
+	if len(levelInformation) == 0 {
+		levelInformation = nil
+	}
+	{
+		for curItem := uint16(0); curItem < uint16(numberOfLevelInformation); curItem++ {
+			_item, _err := LevelInformationParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'levelInformation' field of CALDataStatusExtended")
+			}
+			levelInformation[curItem] = _item.(LevelInformation)
+		}
+	}
+	if closeErr := readBuffer.CloseContext("levelInformation", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for levelInformation")
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataStatusExtended"); closeErr != nil {
@@ -280,10 +310,11 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 
 	// Create a partially initialized instance
 	_child := &_CALDataStatusExtended{
-		Coding:      coding,
-		Application: application,
-		BlockStart:  blockStart,
-		Data:        data,
+		Coding:           coding,
+		Application:      application,
+		BlockStart:       blockStart,
+		StatusBytes:      statusBytes,
+		LevelInformation: levelInformation,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
@@ -301,30 +332,15 @@ func (m *_CALDataStatusExtended) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		// Simple Field (coding)
-		coding := uint8(m.GetCoding())
-		_codingErr := writeBuffer.WriteUint8("coding", 8, (coding))
+		if pushErr := writeBuffer.PushContext("coding"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for coding")
+		}
+		_codingErr := writeBuffer.WriteSerializable(m.GetCoding())
+		if popErr := writeBuffer.PopContext("coding"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for coding")
+		}
 		if _codingErr != nil {
 			return errors.Wrap(_codingErr, "Error serializing 'coding' field")
-		}
-		// Virtual field
-		if _isBinaryBySerialInterfaceErr := writeBuffer.WriteVirtual("isBinaryBySerialInterface", m.GetIsBinaryBySerialInterface()); _isBinaryBySerialInterfaceErr != nil {
-			return errors.Wrap(_isBinaryBySerialInterfaceErr, "Error serializing 'isBinaryBySerialInterface' field")
-		}
-		// Virtual field
-		if _isBinaryByElsewhereErr := writeBuffer.WriteVirtual("isBinaryByElsewhere", m.GetIsBinaryByElsewhere()); _isBinaryByElsewhereErr != nil {
-			return errors.Wrap(_isBinaryByElsewhereErr, "Error serializing 'isBinaryByElsewhere' field")
-		}
-		// Virtual field
-		if _isLevelBySerialInterfaceErr := writeBuffer.WriteVirtual("isLevelBySerialInterface", m.GetIsLevelBySerialInterface()); _isLevelBySerialInterfaceErr != nil {
-			return errors.Wrap(_isLevelBySerialInterfaceErr, "Error serializing 'isLevelBySerialInterface' field")
-		}
-		// Virtual field
-		if _isLevelByElsewhereErr := writeBuffer.WriteVirtual("isLevelByElsewhere", m.GetIsLevelByElsewhere()); _isLevelByElsewhereErr != nil {
-			return errors.Wrap(_isLevelByElsewhereErr, "Error serializing 'isLevelByElsewhere' field")
-		}
-		// Virtual field
-		if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
-			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
 		// Simple Field (application)
@@ -345,11 +361,41 @@ func (m *_CALDataStatusExtended) Serialize(writeBuffer utils.WriteBuffer) error 
 		if _blockStartErr != nil {
 			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 		}
+		// Virtual field
+		if _numberOfStatusBytesErr := writeBuffer.WriteVirtual("numberOfStatusBytes", m.GetNumberOfStatusBytes()); _numberOfStatusBytesErr != nil {
+			return errors.Wrap(_numberOfStatusBytesErr, "Error serializing 'numberOfStatusBytes' field")
+		}
+		// Virtual field
+		if _numberOfLevelInformationErr := writeBuffer.WriteVirtual("numberOfLevelInformation", m.GetNumberOfLevelInformation()); _numberOfLevelInformationErr != nil {
+			return errors.Wrap(_numberOfLevelInformationErr, "Error serializing 'numberOfLevelInformation' field")
+		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
-			return errors.Wrap(err, "Error serializing 'data' field")
+		// Array Field (statusBytes)
+		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for statusBytes")
+		}
+		for _, _element := range m.GetStatusBytes() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
+			}
+		}
+		if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for statusBytes")
+		}
+
+		// Array Field (levelInformation)
+		if pushErr := writeBuffer.PushContext("levelInformation", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for levelInformation")
+		}
+		for _, _element := range m.GetLevelInformation() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'levelInformation' field")
+			}
+		}
+		if popErr := writeBuffer.PopContext("levelInformation", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for levelInformation")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataStatusExtended"); popErr != nil {

@@ -99,8 +99,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.MediaTransportControlDataParse(io)
 	case "StatusByte":
 		return model.StatusByteParse(io)
-	case "ExtendedStatusHeader":
-		return model.ExtendedStatusHeaderParse(io)
 	case "TriggerControlLabelOptions":
 		return model.TriggerControlLabelOptionsParse(io)
 	case "HVACAuxiliaryLevel":
@@ -188,8 +186,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ClockAndTimekeepingDataParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
-	case "StandardFormatStatusReply":
-		return model.StandardFormatStatusReplyParse(io)
 	case "ResponseTermination":
 		return model.ResponseTerminationParse(io)
 	case "LevelInformation":
@@ -217,8 +213,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.CustomTypesParse(io, numBytes)
-	case "StatusHeader":
-		return model.StatusHeaderParse(io)
 	case "EncodedReply":
 		var cBusOptions model.CBusOptions
 		var requestContext model.RequestContext
@@ -226,8 +220,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CBusPointToPointToMultiPointCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointToMultiPointCommandParse(io, cBusOptions)
-	case "ExtendedFormatStatusReply":
-		return model.ExtendedFormatStatusReplyParse(io)
 	case "CBusPointToPointCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointCommandParse(io, cBusOptions)

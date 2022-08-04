@@ -38,7 +38,7 @@ public class ReferenceTest {
 
     @BeforeEach
     void setUp() {
-        requestContext = new RequestContext(false, false, false);
+        requestContext = new RequestContext(false);
         cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, false);
     }
 
@@ -302,7 +302,7 @@ public class ReferenceTest {
             void calReplyNormal() throws Exception {
                 byte[] bytes = "8902312E322E363620200A\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                requestContext = new RequestContext(true, false, false);
+                requestContext = new RequestContext(false);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
@@ -316,7 +316,7 @@ public class ReferenceTest {
                 //byte[] bytes = "860593008902312E322E363620207F\r\n".getBytes(StandardCharsets.UTF_8);
                 byte[] bytes = "860593008902312E322E36362020EC\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                requestContext = new RequestContext(true, false, false);
+                requestContext = new RequestContext(false);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
@@ -402,7 +402,7 @@ public class ReferenceTest {
         void StandardFormatStatusReply1() throws Exception {
             byte[] bytes = "D8380068AA0140550550001000000014000000000000000000CF\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
@@ -414,7 +414,7 @@ public class ReferenceTest {
         void StandardFormatStatusReply2() throws Exception {
             byte[] bytes = "D838580000000000000000000000000000000000000000000098\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
@@ -426,7 +426,7 @@ public class ReferenceTest {
         void StandardFormatStatusReply3() throws Exception {
             byte[] bytes = "D638B000000000FF00000000000000000000000000000043\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
@@ -439,7 +439,7 @@ public class ReferenceTest {
         void ExtendedFormatStatusReply1() throws Exception {
             byte[] bytes = "F9073800AAAA000095990000000055550000000000005555555548\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
@@ -452,7 +452,7 @@ public class ReferenceTest {
         void ExtendedFormatStatusReply2() throws Exception {
             byte[] bytes = "F907380B0000000000005555000000000000000000000000000013\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
@@ -464,7 +464,7 @@ public class ReferenceTest {
         void ExtendedFormatStatusReply3() throws Exception {
             byte[] bytes = "F70738160000000000000000000000000000000000000000B4\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
@@ -501,13 +501,12 @@ public class ReferenceTest {
             void LightningStatusReply1() throws Exception {
                 byte[] bytes = "D83800A8AA02000000000000000000000000000000000000009C\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                requestContext = new RequestContext(false, true, false);
+                requestContext = new RequestContext(true);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                StandardFormatStatusReply reply = ((EncodedReplyStandardFormatStatusReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getReply();
-                System.out.println(reply);
+                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
                 assertMessageMatches(bytes, msg);
             }
 
@@ -519,7 +518,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((EncodedReplyStandardFormatStatusReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getReply());
+                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
                 assertMessageMatches(bytes, msg);
             }
 
@@ -531,15 +530,17 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((EncodedReplyStandardFormatStatusReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getReply());
+                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
                 assertMessageMatches(bytes, msg);
             }
 
             @Test
             void LightningStatusReply4() throws Exception {
-                byte[] bytes = "86999900F8003800A8AA0200000000000000000000000000000000000000C4\r\n".getBytes(StandardCharsets.UTF_8);
+                // TODO: the command header seems wrong as it is missing a byte
+                //byte[] bytes = "86999900F8003800A8AA0200000000000000000000000000000000000000C4\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "86999900F9003800A8AA0200000000000000000000000000000000000000C3\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
@@ -550,9 +551,11 @@ public class ReferenceTest {
 
             @Test
             void LightningStatusReply5() throws Exception {
-                byte[] bytes = "86999900F800385800000000000000000000000000000000000000000000C0\r\n".getBytes(StandardCharsets.UTF_8);
+                // TODO: the command header seems wrong as it is missing a byte
+                // byte[] bytes = "86999900F800385800000000000000000000000000000000000000000000C0\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "86999900F900385800000000000000000000000000000000000000000000BF\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
@@ -563,10 +566,11 @@ public class ReferenceTest {
             @Test
             void LightningStatusReply6() throws Exception {
                 // TODO: wrong checksum in this example???
+                // TODO: the command header seems wrong as it is missing a byte
                 //byte[] bytes = "86999900F60038B000000000000000000000000000000000000000008F\r\n".getBytes(StandardCharsets.UTF_8);
-                byte[] bytes = "86999900F60038B000000000000000000000000000000000000000006A\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "86999900F70038B0000000000000000000000000000000000000000069\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
@@ -732,7 +736,7 @@ public class ReferenceTest {
                 void writeSomethingResponse() throws Exception {
                     byte[] bytes = "g.322100AD\r\n".getBytes(StandardCharsets.UTF_8);
                     ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                    requestContext = new RequestContext(true, false, false);
+                    requestContext = new RequestContext(false);
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
@@ -753,7 +757,7 @@ public class ReferenceTest {
                 void writeSomethingResponse2() throws Exception {
                     byte[] bytes = "g.3242008C\r\n".getBytes(StandardCharsets.UTF_8);
                     ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                    requestContext = new RequestContext(true, false, false);
+                    requestContext = new RequestContext(false);
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
@@ -774,7 +778,7 @@ public class ReferenceTest {
                 void writeSomethingResponse3() throws Exception {
                     byte[] bytes = "g.8600000032300000\r\n".getBytes(StandardCharsets.UTF_8);
                     ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                    requestContext = new RequestContext(true, false, false);
+                    requestContext = new RequestContext(false);
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
@@ -959,7 +963,7 @@ public class ReferenceTest {
             void BigMMI1() throws Exception {
                 byte[] bytes = "D8380068AA0140550550001000000014000000000000000000CF\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, false);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);

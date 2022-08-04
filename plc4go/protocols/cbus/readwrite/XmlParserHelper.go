@@ -115,8 +115,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.MediaTransportControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusByte":
 		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ExtendedStatusHeader":
-		return model.ExtendedStatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TriggerControlLabelOptions":
 		return model.TriggerControlLabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HVACAuxiliaryLevel":
@@ -210,8 +208,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ClockAndTimekeepingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "StandardFormatStatusReply":
-		return model.StandardFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ResponseTermination":
 		return model.ResponseTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "LevelInformation":
@@ -241,8 +237,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		}
 		numBytes := uint8(parsedUint0)
 		return model.CustomTypesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), numBytes)
-	case "StatusHeader":
-		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "EncodedReply":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
@@ -253,8 +247,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointToMultiPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
-	case "ExtendedFormatStatusReply":
-		return model.ExtendedFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusPointToPointCommand":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions

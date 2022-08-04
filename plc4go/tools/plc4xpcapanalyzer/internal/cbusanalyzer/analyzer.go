@@ -51,7 +51,7 @@ func (a *Analyzer) Init() {
 	if a.initialized {
 		return
 	}
-	a.requestContext = model.NewRequestContext(false, false, false)
+	a.requestContext = model.NewRequestContext(false)
 	a.cBusOptions = model.NewCBusOptions(config.CBusConfigInstance.Connect, config.CBusConfigInstance.Smart, config.CBusConfigInstance.Idmon, config.CBusConfigInstance.Exstat, config.CBusConfigInstance.Monitor, config.CBusConfigInstance.Monall, config.CBusConfigInstance.Pun, config.CBusConfigInstance.Pcn, config.CBusConfigInstance.Srchk)
 	a.currentInboundPayloads = make(map[string][]byte)
 	a.currentPrefilterInboundPayloads = make(map[string][]byte)
@@ -93,7 +93,7 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 	a.lastParsePayload = currentPayload
 	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions)
 	if err != nil {
-		if secondParse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, model.NewRequestContext(false, false, false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
+		if secondParse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
 			log.Debug().Err(err).Msg("Second parse failed too")
 			return nil, errors.Wrap(err, "Error parsing CBusCommand")
 		} else {
@@ -180,7 +180,7 @@ func mergeCheck(currentPayload *[]byte, srcUip string, mergeCallback func(int), 
 				if reflect.DeepEqual(headPayload, *lastPayload) {
 					// This means that we have a merge where the last payload is an echo. In that case we discard that here to not offset all numbers
 					*currentPayload = tailPayload
-					log.Debug().Msgf("We cut the echo message %s out of the response to keep numbering", headPayload, *currentPayload)
+					log.Debug().Msgf("We cut the echo message %s out of the response to keep numbering", headPayload)
 					return mergeCheck(currentPayload, srcUip, mergeCallback, currentInboundPayloads, lastPayload)
 				} else {
 					if mergeCallback != nil {
@@ -253,12 +253,6 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 					switch reply := reply.GetReply().(type) {
 					case model.ReplyEncodedReplyExactly:
 						switch reply := reply.GetEncodedReply().(type) {
-						case model.EncodedReplyExtendedFormatStatusReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetReply())
-						case model.EncodedReplyStandardFormatStatusReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetReply())
 						case model.EncodedReplyCALReplyExactly:
 							// We print this a second time as the first print contains only the hex part
 							fmt.Printf("%v\n", reply.GetCalReply())
@@ -272,15 +266,12 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 				switch reply := reply.GetReply().(type) {
 				case model.ReplyEncodedReplyExactly:
 					switch reply := reply.GetEncodedReply().(type) {
-					case model.EncodedReplyExtendedFormatStatusReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetReply())
-					case model.EncodedReplyStandardFormatStatusReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetReply())
 					case model.EncodedReplyCALReplyExactly:
 						// We print this a second time as the first print contains only the hex part
 						fmt.Printf("%v\n", reply.GetCalReply())
+					case model.MonitoredSALReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetMonitoredSAL())
 					}
 				}
 			}

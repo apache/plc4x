@@ -22,10 +22,6 @@
 ]
 
 [type RequestContext
-    // Useful for response parsing: Set this to true if you send a CAL before. This will change the way the response will be parsed
-    [simple   bit       sendCalCommandBefore        ]
-    // Useful for response parsing: Set this to true if you send a SAL status request request level before. This will change the way the response will be parsed
-    [simple   bit       sendStatusRequestLevelBefore  ]
     // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
     [simple   bit       sendIdentifyRequestBefore   ]
 ]
@@ -584,20 +580,30 @@
             [simple uint 8    code                                                          ]
         ]
         ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer)               // Reply
-            [simple ApplicationIdContainer application                                                 ]
-            [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ]
+            [simple     ApplicationIdContainer
+                                application                                 ]
+            [simple     uint 8  blockStart                                  ]
+            [array      StatusByte
+                                statusBytes
+                                    count
+                                    'commandTypeContainer.numBytes - 2'     ]
         ]
         ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer)       // Reply
-            [simple uint 8                 coding                                                      ]
-            [virtual bit                   isBinaryBySerialInterface 'coding == 0x00'                  ]
-            [virtual bit                   isBinaryByElsewhere       'coding == 0x40'                  ]
-            [virtual bit                   isLevelBySerialInterface  'coding == 0x07'                  ]
-            [virtual bit                   isLevelByElsewhere        'coding == 0x47'                  ]
-            [virtual bit                   isReserved                '!isBinaryBySerialInterface && !isBinaryByElsewhere && !isLevelBySerialInterface && !isLevelByElsewhere']
-            [simple ApplicationIdContainer application                                                 ]
-            [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ] // TODO: this should be -3 but somehow it is -2 with the examples
+            [simple     StatusCoding
+                                coding                                      ]
+            [simple     ApplicationIdContainer
+                                application                                 ]
+            [simple     uint 8  blockStart                                  ]
+            [virtual    uint 5  numberOfStatusBytes '(coding == StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.BINARY_BY_ELSEWHERE)?(commandTypeContainer.numBytes - 3):(0)']
+            [virtual    uint 5  numberOfLevelInformation '(coding == StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.LEVEL_BY_ELSEWHERE)?((commandTypeContainer.numBytes - 3) / 2):(0)']
+            [array      StatusByte
+                                statusBytes
+                                    count
+                                    'numberOfStatusBytes'                   ]
+            [array      LevelInformation
+                                levelInformation
+                                    count
+                                    'numberOfLevelInformation'              ]
         ]
     ]
     // Note: we omit the request context as it is only useful for the first element
@@ -1467,21 +1473,12 @@
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                        ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
-    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00'] // First check if it is in long mode, second for short mode, third for bridged short mode
-    [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'    ] // The 0x3F and 0x06 doesn't seem to work always
-    [virtual bit  isStandardFormatStatus    '(peekedByte & 0xC0) == 0xC0 && !cBusOptions.exstat'                    ]
-    [virtual bit  isExtendedFormatStatus    '(peekedByte & 0xE0) == 0xE0 && (cBusOptions.exstat || requestContext.sendStatusRequestLevelBefore)']
-    [typeSwitch isMonitoredSAL, isCalCommand, isStandardFormatStatus, isExtendedFormatStatus
-        ['true', 'false', 'false'   MonitoredSALReply
+    [virtual bit  isMonitoredSAL            '((peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00) && !requestContext.sendIdentifyRequestBefore'] // First check if it is in long mode, second for short mode, third for bridged short mode
+    [typeSwitch isMonitoredSAL
+        ['true'  MonitoredSALReply
             [simple   MonitoredSAL('cBusOptions')                   monitoredSAL    ]
         ]
-        [*, *, 'true', 'false'      *StandardFormatStatusReply
-            [simple   StandardFormatStatusReply                     reply           ]
-        ]
-        [*, *, *, 'true'            *ExtendedFormatStatusReply
-            [simple   ExtendedFormatStatusReply                     reply           ]
-        ]
-        [*, 'true', *, *            *CALReply
+        [*       *CALReply
             [simple   CALReply('cBusOptions', 'requestContext')     calReply        ]
         ]
     ]
@@ -1568,48 +1565,6 @@
 
 [type Checksum
     [simple byte value]
-]
-
-[type StandardFormatStatusReply
-    [simple     StatusHeader
-                        statusHeader                                ]
-    [simple     ApplicationIdContainer
-                        application                                 ]
-    [simple     uint 8  blockStart                                  ]
-    [array      StatusByte
-                        statusBytes
-                        count
-                        'statusHeader.numberOfCharacterPairs - 2'   ]
-]
-
-[type StatusHeader
-    [reserved   uint 2                 '0x3'                        ]
-    [simple     uint 6  numberOfCharacterPairs                      ]
-]
-
-[type ExtendedFormatStatusReply
-    [simple     ExtendedStatusHeader
-                        statusHeader                                ]
-    [simple     StatusCoding
-                        coding                                      ]
-    [simple     ApplicationIdContainer
-                        application                                 ]
-    [simple     uint 8  blockStart                                  ]
-    [virtual    uint 5  numberOfStatusBytes '(coding == StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.BINARY_BY_ELSEWHERE)?(statusHeader.numberOfCharacterPairs - 3):(0)']
-    [virtual    uint 5  numberOfLevelInformation '(coding == StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.LEVEL_BY_ELSEWHERE)?((statusHeader.numberOfCharacterPairs - 3) / 2):(0)']
-    [array      StatusByte
-                        statusBytes
-                            count
-                            'numberOfStatusBytes'                   ]
-    [array      LevelInformation
-                        levelInformation
-                            count
-                            'numberOfLevelInformation'              ]
-]
-
-[type ExtendedStatusHeader
-    [reserved   uint 3                 '0x7'                        ]
-    [simple     uint 5  numberOfCharacterPairs                      ]
 ]
 
 [enum byte StatusCoding

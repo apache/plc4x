@@ -142,38 +142,18 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						embeddedReply := confirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
 
 						switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
-						case readWriteModel.EncodedReplyStandardFormatStatusReplyExactly:
-							application := reply.GetReply().GetApplication()
-							// TODO: verify application... this should be the same
-							_ = application
-							blockStart := reply.GetReply().GetBlockStart()
-							// TODO: verify application... this should be the same
-							_ = blockStart
-							statusBytes := reply.GetReply().GetStatusBytes()
+						case readWriteModel.EncodedReplyCALReplyExactly:
+							calData := reply.GetCalReply().GetCalData()
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-							plcListValues := make([]values.PlcValue, len(statusBytes)*4)
-							for i, statusByte := range statusBytes {
-								plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
-								plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
-								plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
-								plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
-							}
-							addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
-						case readWriteModel.EncodedReplyExtendedFormatStatusReplyExactly:
-							coding := reply.GetReply().GetCoding()
-							// TODO: verify coding... this should be the same
-							_ = coding
-							application := reply.GetReply().GetApplication()
-							// TODO: verify application... this should be the same
-							_ = application
-							blockStart := reply.GetReply().GetBlockStart()
-							// TODO: verify application... this should be the same
-							_ = blockStart
-							switch coding {
-							case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
-								fallthrough
-							case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
-								statusBytes := reply.GetReply().GetStatusBytes()
+							switch calData := calData.(type) {
+							case readWriteModel.CALDataStatusExactly:
+								application := calData.GetApplication()
+								// TODO: verify application... this should be the same
+								_ = application
+								blockStart := calData.GetBlockStart()
+								// TODO: verify application... this should be the same
+								_ = blockStart
+								statusBytes := calData.GetStatusBytes()
 								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
 								plcListValues := make([]values.PlcValue, len(statusBytes)*4)
 								for i, statusByte := range statusBytes {
@@ -183,29 +163,51 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 									plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 								}
 								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
-							case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
-								fallthrough
-							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
-								levelInformation := reply.GetReply().GetLevelInformation()
-								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-								plcListValues := make([]values.PlcValue, len(levelInformation))
-								for i, levelInformation := range levelInformation {
-									switch levelInformation := levelInformation.(type) {
-									case readWriteModel.LevelInformationAbsentExactly:
-										plcListValues[i] = spiValues.NewPlcSTRING("is absent")
-									case readWriteModel.LevelInformationCorruptedExactly:
-										plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
-									case readWriteModel.LevelInformationNormalExactly:
-										plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
-									default:
-										panic("Impossible case")
+							case readWriteModel.CALDataStatusExtendedExactly:
+								coding := calData.GetCoding()
+								// TODO: verify coding... this should be the same
+								_ = coding
+								application := calData.GetApplication()
+								// TODO: verify application... this should be the same
+								_ = application
+								blockStart := calData.GetBlockStart()
+								// TODO: verify application... this should be the same
+								_ = blockStart
+								switch coding {
+								case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
+									fallthrough
+								case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
+									statusBytes := calData.GetStatusBytes()
+									addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+									plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+									for i, statusByte := range statusBytes {
+										plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
+										plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
+										plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
+										plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 									}
+									addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
+								case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
+									fallthrough
+								case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
+									levelInformation := calData.GetLevelInformation()
+									addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+									plcListValues := make([]values.PlcValue, len(levelInformation))
+									for i, levelInformation := range levelInformation {
+										switch levelInformation := levelInformation.(type) {
+										case readWriteModel.LevelInformationAbsentExactly:
+											plcListValues[i] = spiValues.NewPlcSTRING("is absent")
+										case readWriteModel.LevelInformationCorruptedExactly:
+											plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
+										case readWriteModel.LevelInformationNormalExactly:
+											plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
+										default:
+											panic("Impossible case")
+										}
+									}
+									addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 								}
-								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 							}
-						case readWriteModel.EncodedReplyCALReplyExactly:
-							calData := reply.GetCalReply().GetCalData()
-							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
 							// TODO: how should we serialize that???
 							addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 						}
@@ -240,7 +242,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 	return result
 }
 
-var defaultRequestContext = readWriteModel.NewRequestContext(false, false, false)
+var defaultRequestContext = readWriteModel.NewRequestContext(false)
 var defaultOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
 
 func (m *Reader) fieldToCBusMessage(field model.PlcField) (readWriteModel.CBusMessage, error) {
