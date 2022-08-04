@@ -31,16 +31,10 @@ import (
 type TriggerControlLabelOptions interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetReservedBit7 returns ReservedBit7 (property field)
-	GetReservedBit7() bool
 	// GetLabelFlavour returns LabelFlavour (property field)
 	GetLabelFlavour() TriggerControlLabelFlavour
-	// GetReservedBit3 returns ReservedBit3 (property field)
-	GetReservedBit3() bool
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() TriggerControlLabelType
-	// GetReservedBit0 returns ReservedBit0 (property field)
-	GetReservedBit0() bool
 }
 
 // TriggerControlLabelOptionsExactly can be used when we want exactly this type and not a type which fulfills TriggerControlLabelOptions.
@@ -52,13 +46,13 @@ type TriggerControlLabelOptionsExactly interface {
 
 // _TriggerControlLabelOptions is the data-structure of this message
 type _TriggerControlLabelOptions struct {
-	ReservedBit7 bool
 	LabelFlavour TriggerControlLabelFlavour
-	ReservedBit3 bool
 	LabelType    TriggerControlLabelType
-	ReservedBit0 bool
 	// Reserved Fields
 	reservedField0 *bool
+	reservedField1 *bool
+	reservedField2 *bool
+	reservedField3 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -66,24 +60,12 @@ type _TriggerControlLabelOptions struct {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_TriggerControlLabelOptions) GetReservedBit7() bool {
-	return m.ReservedBit7
-}
-
 func (m *_TriggerControlLabelOptions) GetLabelFlavour() TriggerControlLabelFlavour {
 	return m.LabelFlavour
 }
 
-func (m *_TriggerControlLabelOptions) GetReservedBit3() bool {
-	return m.ReservedBit3
-}
-
 func (m *_TriggerControlLabelOptions) GetLabelType() TriggerControlLabelType {
 	return m.LabelType
-}
-
-func (m *_TriggerControlLabelOptions) GetReservedBit0() bool {
-	return m.ReservedBit0
 }
 
 ///////////////////////
@@ -92,8 +74,8 @@ func (m *_TriggerControlLabelOptions) GetReservedBit0() bool {
 ///////////////////////////////////////////////////////////
 
 // NewTriggerControlLabelOptions factory function for _TriggerControlLabelOptions
-func NewTriggerControlLabelOptions(reservedBit7 bool, labelFlavour TriggerControlLabelFlavour, reservedBit3 bool, labelType TriggerControlLabelType, reservedBit0 bool) *_TriggerControlLabelOptions {
-	return &_TriggerControlLabelOptions{ReservedBit7: reservedBit7, LabelFlavour: labelFlavour, ReservedBit3: reservedBit3, LabelType: labelType, ReservedBit0: reservedBit0}
+func NewTriggerControlLabelOptions(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) *_TriggerControlLabelOptions {
+	return &_TriggerControlLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
 }
 
 // Deprecated: use the interface for direct cast
@@ -118,7 +100,7 @@ func (m *_TriggerControlLabelOptions) GetLengthInBits() uint16 {
 func (m *_TriggerControlLabelOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (reservedBit7)
+	// Reserved Field (reserved)
 	lengthInBits += 1
 
 	// Simple field (labelFlavour)
@@ -127,13 +109,13 @@ func (m *_TriggerControlLabelOptions) GetLengthInBitsConditional(lastItem bool) 
 	// Reserved Field (reserved)
 	lengthInBits += 1
 
-	// Simple field (reservedBit3)
+	// Reserved Field (reserved)
 	lengthInBits += 1
 
 	// Simple field (labelType)
 	lengthInBits += 2
 
-	// Simple field (reservedBit0)
+	// Reserved Field (reserved)
 	lengthInBits += 1
 
 	return lengthInBits
@@ -152,26 +134,6 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reservedBit7)
-	_reservedBit7, _reservedBit7Err := readBuffer.ReadBit("reservedBit7")
-	if _reservedBit7Err != nil {
-		return nil, errors.Wrap(_reservedBit7Err, "Error parsing 'reservedBit7' field of TriggerControlLabelOptions")
-	}
-	reservedBit7 := _reservedBit7
-
-	// Simple Field (labelFlavour)
-	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
-	}
-	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParse(readBuffer)
-	if _labelFlavourErr != nil {
-		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of TriggerControlLabelOptions")
-	}
-	labelFlavour := _labelFlavour
-	if closeErr := readBuffer.CloseContext("labelFlavour"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelFlavour")
-	}
-
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -189,12 +151,52 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 		}
 	}
 
-	// Simple Field (reservedBit3)
-	_reservedBit3, _reservedBit3Err := readBuffer.ReadBit("reservedBit3")
-	if _reservedBit3Err != nil {
-		return nil, errors.Wrap(_reservedBit3Err, "Error parsing 'reservedBit3' field of TriggerControlLabelOptions")
+	// Simple Field (labelFlavour)
+	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
 	}
-	reservedBit3 := _reservedBit3
+	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParse(readBuffer)
+	if _labelFlavourErr != nil {
+		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of TriggerControlLabelOptions")
+	}
+	labelFlavour := _labelFlavour
+	if closeErr := readBuffer.CloseContext("labelFlavour"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for labelFlavour")
+	}
+
+	var reservedField1 *bool
+	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+	{
+		reserved, _err := readBuffer.ReadBit("reserved")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TriggerControlLabelOptions")
+		}
+		if reserved != bool(false) {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
+		}
+	}
+
+	var reservedField2 *bool
+	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+	{
+		reserved, _err := readBuffer.ReadBit("reserved")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TriggerControlLabelOptions")
+		}
+		if reserved != bool(false) {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField2 = &reserved
+		}
+	}
 
 	// Simple Field (labelType)
 	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
@@ -209,12 +211,22 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 		return nil, errors.Wrap(closeErr, "Error closing for labelType")
 	}
 
-	// Simple Field (reservedBit0)
-	_reservedBit0, _reservedBit0Err := readBuffer.ReadBit("reservedBit0")
-	if _reservedBit0Err != nil {
-		return nil, errors.Wrap(_reservedBit0Err, "Error parsing 'reservedBit0' field of TriggerControlLabelOptions")
+	var reservedField3 *bool
+	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+	{
+		reserved, _err := readBuffer.ReadBit("reserved")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TriggerControlLabelOptions")
+		}
+		if reserved != bool(false) {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField3 = &reserved
+		}
 	}
-	reservedBit0 := _reservedBit0
 
 	if closeErr := readBuffer.CloseContext("TriggerControlLabelOptions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TriggerControlLabelOptions")
@@ -222,12 +234,12 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 
 	// Create the instance
 	return &_TriggerControlLabelOptions{
-		ReservedBit7:   reservedBit7,
 		LabelFlavour:   labelFlavour,
-		ReservedBit3:   reservedBit3,
 		LabelType:      labelType,
-		ReservedBit0:   reservedBit0,
 		reservedField0: reservedField0,
+		reservedField1: reservedField1,
+		reservedField2: reservedField2,
+		reservedField3: reservedField3,
 	}, nil
 }
 
@@ -236,25 +248,6 @@ func (m *_TriggerControlLabelOptions) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TriggerControlLabelOptions"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for TriggerControlLabelOptions")
-	}
-
-	// Simple Field (reservedBit7)
-	reservedBit7 := bool(m.GetReservedBit7())
-	_reservedBit7Err := writeBuffer.WriteBit("reservedBit7", (reservedBit7))
-	if _reservedBit7Err != nil {
-		return errors.Wrap(_reservedBit7Err, "Error serializing 'reservedBit7' field")
-	}
-
-	// Simple Field (labelFlavour)
-	if pushErr := writeBuffer.PushContext("labelFlavour"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for labelFlavour")
-	}
-	_labelFlavourErr := writeBuffer.WriteSerializable(m.GetLabelFlavour())
-	if popErr := writeBuffer.PopContext("labelFlavour"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for labelFlavour")
-	}
-	if _labelFlavourErr != nil {
-		return errors.Wrap(_labelFlavourErr, "Error serializing 'labelFlavour' field")
 	}
 
 	// Reserved Field (reserved)
@@ -273,11 +266,48 @@ func (m *_TriggerControlLabelOptions) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 	}
 
-	// Simple Field (reservedBit3)
-	reservedBit3 := bool(m.GetReservedBit3())
-	_reservedBit3Err := writeBuffer.WriteBit("reservedBit3", (reservedBit3))
-	if _reservedBit3Err != nil {
-		return errors.Wrap(_reservedBit3Err, "Error serializing 'reservedBit3' field")
+	// Simple Field (labelFlavour)
+	if pushErr := writeBuffer.PushContext("labelFlavour"); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for labelFlavour")
+	}
+	_labelFlavourErr := writeBuffer.WriteSerializable(m.GetLabelFlavour())
+	if popErr := writeBuffer.PopContext("labelFlavour"); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for labelFlavour")
+	}
+	if _labelFlavourErr != nil {
+		return errors.Wrap(_labelFlavourErr, "Error serializing 'labelFlavour' field")
+	}
+
+	// Reserved Field (reserved)
+	{
+		var reserved bool = bool(false)
+		if m.reservedField1 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField1
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
+		if _err != nil {
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
+		}
+	}
+
+	// Reserved Field (reserved)
+	{
+		var reserved bool = bool(false)
+		if m.reservedField2 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField2
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
+		if _err != nil {
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
+		}
 	}
 
 	// Simple Field (labelType)
@@ -292,11 +322,20 @@ func (m *_TriggerControlLabelOptions) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(_labelTypeErr, "Error serializing 'labelType' field")
 	}
 
-	// Simple Field (reservedBit0)
-	reservedBit0 := bool(m.GetReservedBit0())
-	_reservedBit0Err := writeBuffer.WriteBit("reservedBit0", (reservedBit0))
-	if _reservedBit0Err != nil {
-		return errors.Wrap(_reservedBit0Err, "Error serializing 'reservedBit0' field")
+	// Reserved Field (reserved)
+	{
+		var reserved bool = bool(false)
+		if m.reservedField3 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField3
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
+		if _err != nil {
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
+		}
 	}
 
 	if popErr := writeBuffer.PopContext("TriggerControlLabelOptions"); popErr != nil {
