@@ -21,7 +21,6 @@ package transports
 
 import (
 	"bufio"
-	"github.com/pkg/errors"
 )
 
 type TransportInstance interface {
