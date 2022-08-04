@@ -19,13 +19,21 @@
 
 package transports
 
+import (
+	"bufio"
+	"github.com/pkg/errors"
+)
+
 type TransportInstance interface {
 	Connect() error
 	Close() error
 
 	IsConnected() bool
 
-	GetNumReadableBytes() (uint32, error)
+	// FillBuffer fills the buffer `until` false (Useful in conjunction if you want GetNumBytesAvailableInBuffer)
+	FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error
+	// GetNumBytesAvailableInBuffer returns the bytes currently available in buffer (!!!Careful: if you looking for a termination you have to use FillBuffer)
+	GetNumBytesAvailableInBuffer() (uint32, error)
 	PeekReadableBytes(numBytes uint32) ([]uint8, error)
 	Read(numBytes uint32) ([]uint8, error)
 

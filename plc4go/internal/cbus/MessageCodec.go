@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"bufio"
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
@@ -98,19 +99,18 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	log.Trace().Msg("receiving")
 
 	ti := m.GetTransportInstance()
-	// TODO: workaround as getNumReadableBytes seem to lie
-	{
-		nBytes := uint32(1)
-		hitCR := false
-		for ; !hitCR; nBytes++ {
-			bytes, err := ti.PeekReadableBytes(nBytes)
-			if err != nil {
-				return nil, err
-			}
-			hitCR = bytes[len(bytes)-1] == '\r'
+	if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
+		hitCr := currentByte == '\r'
+		if hitCr {
+			// Make sure we peek one more
+			_, _ = reader.Peek(1)
+			return false
 		}
+		return true
+	}); err != nil {
+		return nil, err
 	}
-	readableBytes, err := ti.GetNumReadableBytes()
+	readableBytes, err := ti.GetNumBytesAvailableInBuffer()
 	if err != nil {
 		log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil

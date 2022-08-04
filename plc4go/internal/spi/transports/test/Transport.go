@@ -20,6 +20,8 @@
 package test
 
 import (
+	"bufio"
+	"bytes"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -41,17 +43,9 @@ func (m Transport) GetTransportName() string {
 	return "Test Transport"
 }
 
-func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstance(_ url.URL, _ map[string][]string) (transports.TransportInstance, error) {
 	log.Trace().Msg("create transport instance")
-	transportInstance := NewTransportInstance(&m)
-
-	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-		if transportInstance, ok := typ.(transports.TransportInstance); ok {
-			return transportInstance, nil
-		}
-		return nil, errors.Errorf("couldn't cast to TransportInstance. Actual instance: %T", typ)
-	}
-	return castFunc(transportInstance)
+	return NewTransportInstance(&m), nil
 }
 
 type TransportInstance struct {
@@ -86,10 +80,24 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.connected
 }
 
-func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
+func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	readableBytes := len(m.readBuffer)
 	log.Trace().Msgf("return number of readable bytes %d", readableBytes)
 	return uint32(readableBytes), nil
+}
+
+func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+	nBytes := uint32(1)
+	for {
+		_bytes, err := m.PeekReadableBytes(nBytes)
+		if err != nil {
+			return errors.Wrap(err, "Error while peeking")
+		}
+		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], bufio.NewReader(bytes.NewReader(m.readBuffer))); !keepGoing {
+			return nil
+		}
+		nBytes++
+	}
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {

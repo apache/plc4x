@@ -54,7 +54,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	knxMessage := model.CastKnxNetIpMessage(message)
+	knxMessage := message.(model.KnxNetIpMessage)
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased()
 	err := knxMessage.Serialize(wb)
@@ -73,7 +73,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.GetTransportInstance().GetNumReadableBytes(); (err == nil) && (num >= 6) {
+	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
 		log.Debug().Msgf("we got %d readable bytes", num)
 		data, err := m.GetTransportInstance().PeekReadableBytes(6)
 		if err != nil {
@@ -110,13 +110,13 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 
 func CustomMessageHandling(codec _default.DefaultCodecRequirements, message spi.Message) bool {
 	// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
-	tunnelingResponse := model.CastTunnelingResponse(message)
+	tunnelingResponse := message.(model.TunnelingResponse)
 	if tunnelingResponse != nil {
 		return true
 	}
 
 	// If this is an incoming tunneling request, automatically send a tunneling ACK back to the gateway
-	tunnelingRequest := model.CastTunnelingRequest(message)
+	tunnelingRequest := message.(model.TunnelingRequest)
 	if tunnelingRequest != nil {
 		response := model.NewTunnelingResponse(
 			model.NewTunnelingResponseDataBlock(

@@ -75,15 +75,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 		}
 	}
 
-	transportInstance := NewPcapTransportInstance(transportUrl.Path, transportType, portRange, speedFactor, &m)
-
-	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-		if transportInstance, ok := typ.(transports.TransportInstance); ok {
-			return transportInstance, nil
-		}
-		return nil, errors.New("couldn't cast to TransportInstance")
-	}
-	return castFunc(transportInstance)
+	return NewPcapTransportInstance(transportUrl.Path, transportType, portRange, speedFactor, &m), nil
 }
 
 type TransportInstance struct {
@@ -191,12 +183,26 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.connected
 }
 
-func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
+func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
 	_, _ = m.reader.Peek(1)
 	return uint32(m.reader.Buffered()), nil
+}
+
+func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+	nBytes := uint32(1)
+	for {
+		_bytes, err := m.PeekReadableBytes(nBytes)
+		if err != nil {
+			return errors.Wrap(err, "Error while peeking")
+		}
+		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], m.reader); !keepGoing {
+			return nil
+		}
+		nBytes++
+	}
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {

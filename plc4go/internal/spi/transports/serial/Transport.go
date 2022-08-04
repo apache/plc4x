@@ -49,7 +49,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil)
 }
 
-func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, _ *net.UDPAddr) (transports.TransportInstance, error) {
 	var serialPortName = transportUrl.Path
 
 	var baudRate = uint(115200)
@@ -72,15 +72,7 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		}
 	}
 
-	transportInstance := NewTransportInstance(serialPortName, baudRate, connectTimeout, &m)
-
-	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-		if transportInstance, ok := typ.(transports.TransportInstance); ok {
-			return transportInstance, nil
-		}
-		return nil, errors.New("couldn't cast to TransportInstance")
-	}
-	return castFunc(transportInstance)
+	return NewTransportInstance(serialPortName, baudRate, connectTimeout, &m), nil
 }
 
 type TransportInstance struct {
@@ -138,12 +130,26 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.serialPort != nil
 }
 
-func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
+func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
 	_, _ = m.reader.Peek(1)
 	return uint32(m.reader.Buffered()), nil
+}
+
+func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+	nBytes := uint32(1)
+	for {
+		bytes, err := m.PeekReadableBytes(nBytes)
+		if err != nil {
+			return errors.Wrap(err, "Error while peeking")
+		}
+		if keepGoing := until(uint(nBytes-1), bytes[len(bytes)-1], m.reader); !keepGoing {
+			return nil
+		}
+		nBytes++
+	}
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
