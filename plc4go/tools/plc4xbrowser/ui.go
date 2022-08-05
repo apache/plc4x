@@ -61,13 +61,6 @@ func setupApplication() *tview.Application {
 
 	application.SetRoot(grid, true).EnableMouse(true)
 
-	application.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		switch event.Key() {
-		case tcell.KeyCtrlC:
-			shutdown()
-		}
-		return event
-	})
 	return application
 }
 
@@ -139,6 +132,14 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 		commandInputField := tview.NewInputField().
 			SetLabel("$").
 			SetFieldWidth(30)
+		application.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+			switch event.Key() {
+			case tcell.KeyCtrlC:
+				commandInputField.SetText("")
+				return nil
+			}
+			return event
+		})
 		commandInputField.
 			SetDoneFunc(func(key tcell.Key) {
 				commandText := commandInputField.GetText()
