@@ -289,19 +289,19 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0
+			return 2
 		}
 	case 0x21:
 		{ /* '0x21' */
-			return 0
+			return 1
 		}
 	case 0x2A:
 		{ /* '0x2A' */
-			return 0
+			return 2
 		}
 	case 0x32:
 		{ /* '0x32' */
-			return 0
+			return 2
 		}
 	case 0x80:
 		{ /* '0x80' */

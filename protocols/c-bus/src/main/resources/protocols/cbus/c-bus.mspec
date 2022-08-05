@@ -1183,10 +1183,10 @@
 // The invalid packets are receiving a value of 13 / 0x0D -> Short form command: length = 5 (no idea what the bit number 4 means, which is set)
 [enum uint 8 CALCommandTypeContainer(CALCommandType commandType, uint 5 numBytes)
     ['0x08' CALCommandReset                  ['RESET',            '0']]
-    ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
-    ['0x21' CALCommandIdentify               ['IDENTIFY',         '0']]
-    ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '0']]
-    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '0']]
+    ['0x1A' CALCommandRecall                 ['RECALL',           '2']]
+    ['0x21' CALCommandIdentify               ['IDENTIFY',         '1']]
+    ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '2']]
+    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '2']]
     ['0x80' CALCommandReply_0Bytes           ['REPLY',            '0']]
     ['0x81' CALCommandReply_1Bytes           ['REPLY',            '1']]
     ['0x82' CALCommandReply_2Bytes           ['REPLY',            '2']]
