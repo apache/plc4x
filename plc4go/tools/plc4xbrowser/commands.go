@@ -387,6 +387,32 @@ var rootCommand = Command{
 				commandOutputClear()
 				return nil
 			},
+			subCommands: []Command{
+				{
+					Name:        "message",
+					Description: "clears message output",
+					action: func(_ Command, _ string) error {
+						messageOutputClear()
+						return nil
+					},
+				},
+				{
+					Name:        "console",
+					Description: "clears console output",
+					action: func(_ Command, _ string) error {
+						consoleOutputClear()
+						return nil
+					},
+				},
+				{
+					Name:        "command",
+					Description: "clears command output",
+					action: func(_ Command, _ string) error {
+						commandOutputClear()
+						return nil
+					},
+				},
+			},
 		},
 	},
 }
