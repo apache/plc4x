@@ -36,6 +36,8 @@ const rootCommandIndicator = "rootCommand"
 
 var commands = map[inputMode]Command{
 	normalMode:        rootCommand,
+	readEditMode:      rootCommand,
+	writeEditMode:     rootCommand,
 	subscribeEditMode: rootCommand,
 }
 
@@ -104,10 +106,79 @@ var rootCommand = Command{
 			},
 		},
 		{
-			Name: "read",
+			Name:        "read",
+			Description: "Starts a read request (switched mode to read edit)",
+			action: func(_ Command, connectionsString string) error {
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					return errors.Errorf("%s mode switch not yet implemented", connection)
+				}
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					entries = append(entries, connectionsString)
+				}
+				return
+			},
 		},
 		{
-			Name: "write",
+			Name:        "read-direct",
+			Description: "Builds a read request with the supplied field",
+			action: func(c Command, connectionsStringAndFieldQuery string) error {
+				split := strings.Split(connectionsStringAndFieldQuery, " ")
+				if len(split) != 2 {
+					return errors.Errorf("%s expects exactly two arguments [connection url] [fieldQuery]", c)
+				}
+				connectionsString := split[0]
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					readRequest, err := connection.ReadRequestBuilder().
+						AddQuery("readField", split[1]).
+						Build()
+					if err != nil {
+						return errors.Wrapf(err, "%s can't read", connectionsString)
+					}
+					readRequestResult := <-readRequest.Execute()
+					if err := readRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s can't read", connectionsString)
+					}
+					log.Info().Msgf("read result %s", readRequestResult.GetResponse())
+				}
+				return nil
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					if strings.HasPrefix(currentText, connectionsString+"") {
+						parse, _ := url.Parse(connectionsString)
+						switch parse.Scheme {
+						// TODO: add to protocol suggestor so it can be reused.
+
+						}
+					} else {
+						entries = append(entries, connectionsString)
+					}
+				}
+				return
+			},
+		},
+		{
+			Name:        "write",
+			Description: "Starts a write request (switched mode to write edit)",
+			action: func(_ Command, connectionsString string) error {
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					return errors.Errorf("%s mode switch not yet implemented", connection)
+				}
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					entries = append(entries, connectionsString)
+				}
+				return
+			},
 		},
 		{
 			Name:        "register",

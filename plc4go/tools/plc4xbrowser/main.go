@@ -49,6 +49,8 @@ type inputMode int
 
 const (
 	normalMode inputMode = iota
+	readEditMode
+	writeEditMode
 	subscribeEditMode
 )
 
