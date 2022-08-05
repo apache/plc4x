@@ -134,6 +134,7 @@ var rootCommand = Command{
 				if connection, ok := connections[connectionsString]; !ok {
 					return errors.Errorf("%s not connected", connectionsString)
 				} else {
+					start := time.Now()
 					readRequest, err := connection.ReadRequestBuilder().
 						AddQuery("readField", split[1]).
 						Build()
@@ -144,7 +145,12 @@ var rootCommand = Command{
 					if err := readRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't read", connectionsString)
 					}
-					log.Info().Msgf("read result %s", readRequestResult.GetResponse())
+					plc4xBrowserLog.Debug().Msgf("read took %f seconds", time.Now().Sub(start).Seconds())
+					if err := readRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s error reading", connectionsString)
+					}
+					numberOfMessagesReceived++
+					messageReceived(numberOfMessagesReceived, time.Now(), readRequestResult.GetResponse())
 				}
 				return nil
 			},
@@ -228,9 +234,7 @@ var rootCommand = Command{
 						AddEventQuery("subscriptionField", split[1]).
 						AddItemHandler(func(event model.PlcSubscriptionEvent) {
 							numberOfMessagesReceived++
-							start := time.Now()
-							messageReceived(numberOfMessagesReceived, start, event)
-							plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+							messageReceived(numberOfMessagesReceived, time.Now(), event)
 						}).
 						Build()
 					if err != nil {
