@@ -147,6 +147,7 @@ public class PlcSimulator {
         Options options = new Options();
 
         options.addOption("host", true, "display current time");
+        options.addOption("s7port", true, "changes the s7 port");
 
         // Parse args
         CommandLineParser parser = new DefaultParser();
@@ -154,6 +155,7 @@ public class PlcSimulator {
 
         // Map options
         config.host = cmd.getOptionValue("host", "localhost");
+        config.s7Port = cmd.getOptionValue("s7port");
 
         return config;
     }
