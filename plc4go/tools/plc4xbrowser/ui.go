@@ -181,7 +181,7 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 					enteredCommandsView.Highlight("0").ScrollToHighlight()
 				}
 				if len(currentSelection) == 1 {
-					// TODO: currently this is broken due to https://github.com/rivo/tview/issues/751
+					// TODO: currently this is broken due to https://github.com/rivo/tview/issues/751 (workaround active with sruehl fix fork)
 					commandInputField.SetText(enteredCommandsView.GetRegionText(currentSelection[0]))
 					application.SetFocus(commandInputField)
 				}
@@ -217,7 +217,8 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 				//SetDynamicColors(true).
 				SetDynamicColors(false).
 				SetRegions(true).
-				SetWordWrap(true).
+				SetWordWrap(false).
+				SetWrap(false).
 				SetChangedFunc(func() {
 					application.Draw()
 				})
