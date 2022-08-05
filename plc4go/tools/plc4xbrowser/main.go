@@ -71,7 +71,9 @@ func shutdown() {
 }
 
 func main() {
+	loadConfig()
 	application := setupApplication()
+	initSubsystem()
 
 	if err := application.Run(); err != nil {
 		panic(err)

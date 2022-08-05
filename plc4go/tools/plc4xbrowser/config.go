@@ -20,6 +20,7 @@
 package main
 
 import (
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
@@ -37,8 +38,9 @@ type Config struct {
 		Last10Hosts    []string `yaml:"last_hosts"`
 		Last10Commands []string `yaml:"last_commands"`
 	}
-	LastUpdated time.Time `yaml:"last_updated"`
-	LogLevel    string    `yaml:"log_level"`
+	AutoRegisterDrivers []string  `yaml:"auto_register_driver"`
+	LastUpdated         time.Time `yaml:"last_updated"`
+	LogLevel            string    `yaml:"log_level"`
 }
 
 func init() {
@@ -96,7 +98,7 @@ func saveConfig() {
 	}
 }
 
-func addHost(host string) {
+func addHostHistoryEntry(host string) {
 	existingIndex := -1
 	for i, lastHost := range config.History.Last10Hosts {
 		if lastHost == host {
@@ -113,7 +115,7 @@ func addHost(host string) {
 	config.History.Last10Hosts = append(config.History.Last10Hosts, host)
 }
 
-func addCommand(command string) {
+func addCommandHistoryEntry(command string) {
 	switch command {
 	case "clear":
 		return
@@ -138,4 +140,37 @@ func addCommand(command string) {
 
 func setLevel(level zerolog.Level) {
 	config.LogLevel = level.String()
+}
+
+func enableAutoRegister(driver string) error {
+	if err := validateDriverParam(driver); err != nil {
+		return err
+	}
+	for _, autoRegisterDriver := range config.AutoRegisterDrivers {
+		if autoRegisterDriver == driver {
+			return errors.Errorf("%s already registered for auto register", driver)
+		}
+	}
+	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers, driver)
+	log.Info().Msgf("Auto register enabled for %s", driver)
+	return nil
+}
+
+func disableAutoRegister(driver string) error {
+	if err := validateDriverParam(driver); err != nil {
+		return err
+	}
+	index := -1
+	for i, autoRegisterDriver := range config.AutoRegisterDrivers {
+		if autoRegisterDriver == driver {
+			index = i
+			break
+		}
+	}
+	if index < 0 {
+		return errors.Errorf("%s not registered for auto register", driver)
+	}
+	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers[:index], config.AutoRegisterDrivers[index+1:]...)
+	log.Info().Msgf("Auto register disabled for %s", driver)
+	return nil
 }

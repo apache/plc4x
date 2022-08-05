@@ -60,10 +60,6 @@ func setupApplication() *tview.Application {
 
 	application.SetRoot(grid, true).EnableMouse(true)
 
-	loadConfig()
-
-	initSubsystem()
-
 	application.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
 		case tcell.KeyCtrlC:

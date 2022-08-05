@@ -21,15 +21,19 @@ package main
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/ads"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/cbus"
+	"github.com/apache/plc4x/plc4go/internal/s7"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/transports"
+	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 func initSubsystem() {
-	driverManager = plc4go.NewPlcDriverManager()
-
 	logLevel := zerolog.InfoLevel
 	if configuredLevel := config.LogLevel; configuredLevel != "" {
 		if parsedLevel, err := zerolog.ParseLevel(configuredLevel); err != nil {
@@ -38,6 +42,7 @@ func initSubsystem() {
 			logLevel = parsedLevel
 		}
 	}
+	driverManager = plc4go.NewPlcDriverManager()
 
 	log.Logger = log.
 		//// Enable below if you want to see the filenames
@@ -48,6 +53,15 @@ func initSubsystem() {
 	// We offset the commands executed with the last commands
 	commandsExecuted = len(config.History.Last10Commands)
 	outputCommandHistory()
+
+	for _, driver := range config.AutoRegisterDrivers {
+		log.Info().Msgf("Auto register driver %s")
+		if err := validateDriverParam(driver); err != nil {
+			log.Err(err).Msgf("Invalid configuration")
+			continue
+		}
+		_ = registerDriver(driver)
+	}
 }
 
 func outputCommandHistory() {
@@ -55,4 +69,34 @@ func outputCommandHistory() {
 	for i, command := range config.History.Last10Commands {
 		_, _ = fmt.Fprintf(commandOutput, "   [#00ff00]%d[white]: [\"%d\"]%s[\"\"]\n", i, i, command)
 	}
+}
+
+func validateDriverParam(driver string) error {
+	for _, protocol := range protocolList {
+		if protocol == driver {
+			return nil
+		}
+	}
+	return errors.Errorf("protocol %s not found", driver)
+}
+
+func registerDriver(driver string) error {
+	switch driver {
+	case "ads":
+		driverManager.RegisterDriver(ads.NewDriver())
+		transports.RegisterTcpTransport(driverManager)
+	case "bacnetip":
+		driverManager.RegisterDriver(bacnetip.NewDriver())
+		transports.RegisterUdpTransport(driverManager)
+	case "c-bus":
+		driverManager.RegisterDriver(cbus.NewDriver())
+		transports.RegisterTcpTransport(driverManager)
+	case "s7":
+		driverManager.RegisterDriver(s7.NewDriver())
+		transports.RegisterTcpTransport(driverManager)
+	default:
+		return errors.Errorf("Unknown driver %s", driver)
+	}
+	go driverAdded(driver)
+	return nil
 }
