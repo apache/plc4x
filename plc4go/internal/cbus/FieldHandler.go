@@ -122,8 +122,8 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 				}
 				recalParamNo = readWriteModel.Parameter(decodedHex[0])
 			} else {
-				atoi, err := strconv.ParseUint(recallParamNoArgument, 10, 8)
-				if err != nil {
+
+				if atoi, err := strconv.ParseUint(recallParamNoArgument, 10, 8); err == nil {
 					recalParamNo = readWriteModel.Parameter(atoi)
 				} else {
 					parameterByName, ok := readWriteModel.ParameterByName(recallParamNoArgument)
@@ -153,8 +153,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 				}
 				attribute = readWriteModel.Attribute(decodedHex[0])
 			} else {
-				atoi, err := strconv.ParseUint(attributeArgument, 10, 8)
-				if err != nil {
+				if atoi, err := strconv.ParseUint(attributeArgument, 10, 8); err == nil {
 					attribute = readWriteModel.Attribute(atoi)
 				} else {
 					parameterByName, ok := readWriteModel.AttributeByName(attributeArgument)
@@ -178,8 +177,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 				}
 				recalParamNo = readWriteModel.Parameter(decodedHex[0])
 			} else {
-				atoi, err := strconv.ParseUint(recallParamNoArgument, 10, 8)
-				if err != nil {
+				if atoi, err := strconv.ParseUint(recallParamNoArgument, 10, 8); err == nil {
 					recalParamNo = readWriteModel.Parameter(atoi)
 				} else {
 					parameterByName, ok := readWriteModel.ParameterByName(recallParamNoArgument)
@@ -293,8 +291,7 @@ func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.App
 		}
 		return readWriteModel.ApplicationIdContainer(decodedHex[0]), nil
 	}
-	atoi, err := strconv.ParseUint(applicationIdArgument, 10, 8)
-	if err != nil {
+	if atoi, err := strconv.ParseUint(applicationIdArgument, 10, 8); err == nil {
 		return readWriteModel.ApplicationIdContainer(atoi), nil
 	}
 	// We try first the application id
