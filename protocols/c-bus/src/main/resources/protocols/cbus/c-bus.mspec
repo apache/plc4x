@@ -1123,11 +1123,10 @@
             [array  byte        currentSenseLevels  count 'numBytes'       ]
         ]
         ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
-            // TODO: we can use the bytes from above, but how is that dynamic? repeat the complete block here?
             [simple   IdentifyReplyCommandUnitSummary
                              unitFlags                              ]
-            [simple   byte   gavStoreEnabledByte1                   ]
-            [simple   byte   gavStoreEnabledByte2                   ]
+            [optional byte   gavStoreEnabledByte1  'numBytes>1'     ]
+            [optional byte   gavStoreEnabledByte2  'numBytes>2'     ]
             [simple   uint 8 timeFromLastRecoverOfMainsInSeconds    ]
         ]
         ['DSIStatus'                    IdentifyReplyCommandDSIStatus
