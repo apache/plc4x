@@ -160,7 +160,6 @@ var rootCommand = Command{
 				} else {
 					return errors.Errorf("%s mode switch not yet implemented", connection)
 				}
-				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
 				for connectionsString, _ := range connections {
