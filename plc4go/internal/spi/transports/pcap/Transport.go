@@ -79,13 +79,13 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 }
 
 type TransportInstance struct {
+	transports.DefaultBufferedTransportInstance
 	transportFile string
 	transportType TransportType
 	portRange     string
 	speedFactor   float32
 	connected     bool
 	transport     *Transport
-	reader        *bufio.Reader
 	handle        *pcap.Handle
 	mutex         sync.Mutex
 }
@@ -118,7 +118,7 @@ func (m *TransportInstance) Connect() error {
 	m.handle = handle
 	m.connected = true
 	buffer := new(bytes.Buffer)
-	m.reader = bufio.NewReader(buffer)
+	m.Reader = bufio.NewReader(buffer)
 
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
 		packageCount := 0
@@ -181,50 +181,6 @@ func (m *TransportInstance) Close() error {
 
 func (m *TransportInstance) IsConnected() bool {
 	return m.connected
-}
-
-func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
-	if m.reader == nil {
-		return 0, nil
-	}
-	_, _ = m.reader.Peek(1)
-	return uint32(m.reader.Buffered()), nil
-}
-
-func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
-	nBytes := uint32(1)
-	for {
-		_bytes, err := m.PeekReadableBytes(nBytes)
-		if err != nil {
-			return errors.Wrap(err, "Error while peeking")
-		}
-		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], m.reader); !keepGoing {
-			return nil
-		}
-		nBytes++
-	}
-}
-
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
-	if m.reader == nil {
-		return nil, errors.New("error peeking from transport. No reader available")
-	}
-	return m.reader.Peek(int(numBytes))
-}
-
-func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
-	if m.reader == nil {
-		return nil, errors.New("error reading from transport. No reader available")
-	}
-	data := make([]uint8, numBytes)
-	for i := uint32(0); i < numBytes; i++ {
-		val, err := m.reader.ReadByte()
-		if err != nil {
-			return nil, errors.Wrap(err, "error reading")
-		}
-		data[i] = val
-	}
-	return data, nil
 }
 
 func (m *TransportInstance) Write(_ []uint8) error {

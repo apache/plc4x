@@ -201,11 +201,11 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
 	nBytes := uint32(1)
 	for {
-		bytes, err := m.PeekReadableBytes(nBytes)
+		_bytes, err := m.PeekReadableBytes(nBytes)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
 		}
-		if keepGoing := until(uint(nBytes-1), bytes[len(bytes)-1], m.reader); !keepGoing {
+		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], m.reader); !keepGoing {
 			return nil
 		}
 		nBytes++
