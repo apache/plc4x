@@ -67,7 +67,7 @@ func initSubsystem() {
 func outputCommandHistory() {
 	_, _ = fmt.Fprintln(commandOutput, "[#0000ff]Last 10 commands[white]")
 	for i, command := range config.History.Last10Commands {
-		_, _ = fmt.Fprintf(commandOutput, "   [#00ff00]%d[white]: [\"%d\"]%s[\"\"]\n", i, i, command)
+		_, _ = fmt.Fprintf(commandOutput, "   [#00ff00]%d[white]: [\"%d\"]%s[\"\"]\n", i, i, tview.Escape(command))
 	}
 }
 
