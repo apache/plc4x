@@ -213,8 +213,7 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 		var jumpToMessageItem func(messageNumber int) bool
 		{
 			outputView := tview.NewTextView().
-				// TODO: currently this is broken due to https://github.com/rivo/tview/issues/751
-				//SetDynamicColors(true).
+				SetDynamicColors(true). // TODO: currently this is broken due to https://github.com/rivo/tview/issues/751 (workaround active with sruehl fix fork)
 				SetDynamicColors(false).
 				SetRegions(true).
 				SetWordWrap(false).

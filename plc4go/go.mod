@@ -75,3 +75,5 @@ require (
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
+
+replace github.com/rivo/tview => github.com/sruehl/tview v0.0.0-20220805132948-aa2a6efb27b5
