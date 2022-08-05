@@ -29,6 +29,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"net/url"
 	"strings"
+	"time"
 )
 
 const rootCommandIndicator = "rootCommand"
@@ -156,7 +157,9 @@ var rootCommand = Command{
 						AddEventQuery("subscriptionField", split[1]).
 						AddItemHandler(func(event model.PlcSubscriptionEvent) {
 							messagesReceived++
+							start := time.Now()
 							_, _ = fmt.Fprintf(messageOutput, "[\"%d\"]\n%s[\"\"]", messagesReceived, event)
+							plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
 						}).
 						Build()
 					if err != nil {

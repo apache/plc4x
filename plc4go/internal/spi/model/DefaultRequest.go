@@ -26,6 +26,10 @@ type DefaultRequest struct {
 	fieldNames []string
 }
 
+func (m DefaultRequest) IsAPlcMessage() bool {
+	return true
+}
+
 func NewDefaultRequest(Fields map[string]model.PlcField, FieldNames []string) DefaultRequest {
 	return DefaultRequest{Fields, FieldNames}
 }

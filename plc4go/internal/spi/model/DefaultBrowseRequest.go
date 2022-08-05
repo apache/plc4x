@@ -50,8 +50,16 @@ func (m *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error)
 }
 
 type DefaultPlcBrowseRequest struct {
+	DefaultRequest
 	queries map[string]string
 	browser spi.PlcBrowser
+}
+
+func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseQueryResult) DefaultPlcBrowseResponse {
+	return DefaultPlcBrowseResponse{
+		request: request,
+		results: results,
+	}
 }
 
 func (d DefaultPlcBrowseRequest) GetQueryNames() []string {
@@ -77,13 +85,6 @@ func (d DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result 
 type DefaultPlcBrowseResponse struct {
 	request model.PlcBrowseRequest
 	results map[string][]model.PlcBrowseQueryResult
-}
-
-func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseQueryResult) DefaultPlcBrowseResponse {
-	return DefaultPlcBrowseResponse{
-		request: request,
-		results: results,
-	}
 }
 
 func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {

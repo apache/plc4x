@@ -248,6 +248,7 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 		{
 			consoleView := tview.NewTextView().
 				SetDynamicColors(true).
+				SetMaxLines(config.MaxConsoleLines).
 				SetChangedFunc(func() {
 					application.Draw()
 				})

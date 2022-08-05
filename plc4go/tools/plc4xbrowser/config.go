@@ -41,6 +41,8 @@ type Config struct {
 	AutoRegisterDrivers []string  `yaml:"auto_register_driver"`
 	LastUpdated         time.Time `yaml:"last_updated"`
 	LogLevel            string    `yaml:"log_level"`
+	MaxConsoleLines     int       `yaml:"max_console_lines"`
+	MaxOutputLines      int       `yaml:"max_output_lines"`
 }
 
 func init() {
