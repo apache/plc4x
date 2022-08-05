@@ -32,12 +32,12 @@ require (
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
 	github.com/libp2p/go-reuseport v0.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/rivo/tview v0.0.0-20220728094620-c6cff75ed57b
 	github.com/rs/zerolog v1.27.0
 	github.com/schollz/progressbar/v3 v3.9.0
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
+	github.com/sruehl/tview v0.0.0-20220805140909-9904944d3e75
 	github.com/stretchr/testify v1.8.0
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
@@ -75,5 +75,3 @@ require (
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
-
-replace github.com/rivo/tview => github.com/sruehl/tview v0.0.0-20220805132948-aa2a6efb27b5
