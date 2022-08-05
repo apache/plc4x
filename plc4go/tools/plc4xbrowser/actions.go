@@ -55,7 +55,7 @@ func initSubsystem() {
 	outputCommandHistory()
 
 	for _, driver := range config.AutoRegisterDrivers {
-		log.Info().Msgf("Auto register driver %s")
+		log.Info().Msgf("Auto register driver %s", driver)
 		if err := validateDriverParam(driver); err != nil {
 			log.Err(err).Msgf("Invalid configuration")
 			continue

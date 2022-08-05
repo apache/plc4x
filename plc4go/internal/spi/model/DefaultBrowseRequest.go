@@ -55,13 +55,6 @@ type DefaultPlcBrowseRequest struct {
 	browser spi.PlcBrowser
 }
 
-func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseQueryResult) DefaultPlcBrowseResponse {
-	return DefaultPlcBrowseResponse{
-		request: request,
-		results: results,
-	}
-}
-
 func (d DefaultPlcBrowseRequest) GetQueryNames() []string {
 	var queryNames []string
 	for queryName := range d.queries {
@@ -80,25 +73,4 @@ func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
 
 func (d DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
 	return d.browser.BrowseWithInterceptor(d, interceptor)
-}
-
-type DefaultPlcBrowseResponse struct {
-	request model.PlcBrowseRequest
-	results map[string][]model.PlcBrowseQueryResult
-}
-
-func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
-	return d.request
-}
-
-func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
-	var queryNames []string
-	for queryName := range d.results {
-		queryNames = append(queryNames, queryName)
-	}
-	return queryNames
-}
-
-func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseQueryResult {
-	return d.results[queryName]
 }
