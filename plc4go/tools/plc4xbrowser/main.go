@@ -22,8 +22,10 @@ package main
 import (
 	"io"
 	"sync"
+	"time"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	plc4goModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 var driverManager plc4go.PlcDriverManager
@@ -31,7 +33,8 @@ var driverAdded func(string)
 var connections map[string]plc4go.PlcConnection
 var connectionsChanged func()
 
-var messagesReceived int
+var messageReceived func(messageNumber int, receiveTime time.Time, message plc4goModel.PlcMessage)
+var numberOfMessagesReceived int
 var messageOutput io.Writer
 var messageOutputClear func()
 

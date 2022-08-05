@@ -156,9 +156,9 @@ var rootCommand = Command{
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 						AddEventQuery("subscriptionField", split[1]).
 						AddItemHandler(func(event model.PlcSubscriptionEvent) {
-							messagesReceived++
+							numberOfMessagesReceived++
 							start := time.Now()
-							_, _ = fmt.Fprintf(messageOutput, "[\"%d\"]\n%s[\"\"]", messagesReceived, event)
+							messageReceived(numberOfMessagesReceived, start, event)
 							plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
 						}).
 						Build()

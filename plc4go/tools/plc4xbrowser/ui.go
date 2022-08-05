@@ -21,6 +21,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/gdamore/tcell/v2"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
@@ -205,17 +206,28 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 	outputAreaHeader := newPrimitive("Output")
 	outputArea := tview.NewGrid().
 		SetRows(3, 0, 10).
-		SetColumns(0).
+		SetColumns(0, 30).
 		AddItem(outputAreaHeader, 0, 0, 1, 1, 0, 0, false)
 	{
+		var jumpToMessageItem func(messageNumber int) bool
 		{
 			outputView := tview.NewTextView().
-				SetDynamicColors(true).
+				// TODO: currently this is broken due to https://github.com/rivo/tview/issues/751
+				//SetDynamicColors(true).
+				SetDynamicColors(false).
 				SetRegions(true).
 				SetWordWrap(true).
 				SetChangedFunc(func() {
 					application.Draw()
 				})
+			jumpToMessageItem = func(messageNumber int) bool {
+				regionId := strconv.Itoa(messageNumber)
+				if outputView.GetRegionText(regionId) == "" {
+					return false
+				}
+				outputView.Highlight(regionId).ScrollToHighlight()
+				return true
+			}
 			messageOutput = outputView
 			messageOutputClear = func() {
 				outputView.SetText("")
@@ -232,9 +244,9 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 				} else if len(currentSelection) > 0 {
 					index, _ := strconv.Atoi(currentSelection[0])
 					if key == tcell.KeyTab {
-						index = (index + 1) % messagesReceived
+						index = (index + 1) % numberOfMessagesReceived
 					} else if key == tcell.KeyBacktab {
-						index = (index - 1 + messagesReceived) % messagesReceived
+						index = (index - 1 + numberOfMessagesReceived) % numberOfMessagesReceived
 					} else {
 						return
 					}
@@ -259,6 +271,22 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 
 			consoleView.SetBorder(false)
 			outputArea.AddItem(consoleView, 2, 0, 1, 1, 0, 0, false)
+		}
+
+		{
+			receivedMessagesList := tview.NewList()
+			messageReceived = func(messageNumber int, receiveTime time.Time, message model.PlcMessage) {
+				application.QueueUpdateDraw(func() {
+					receivedMessagesList.AddItem(fmt.Sprintf("No %d @%s", messageNumber, receiveTime.Format("15:04:05.999999")), "", 0x0, func() {
+						if ok := jumpToMessageItem(messageNumber); !ok {
+							plc4xBrowserLog.Debug().Msgf("Adding new message to console output")
+							_, _ = fmt.Fprintf(messageOutput, "Message nr: %d\n[\"%d\"]%s[\"\"]\n", messageNumber, messageNumber, message)
+							jumpToMessageItem(messageNumber)
+						}
+					})
+				})
+			}
+			outputArea.AddItem(receivedMessagesList, 0, 1, 3, 1, 0, 0, false)
 		}
 	}
 	return outputArea
