@@ -77,3 +77,10 @@ ISW;
 University of Stuttgart
 
 Stuttgart |Research assistant and software engineer at the Institute for control engineering of machine tools and manufacturing units (ISW) of the university of stuttgart, research in the fields of automation technology + smart services + cloud manufacturing, my favourites are woodwork + knife sharpening + cigars, member of the PMC of PLC4X| a| image::team/mstrljic.jpg[mstrljic, 150, 150]
+| *Ben Hutcheson*
+
+Software Developer
+
+Open to Work
+
+Not sure |Experienced as an Electrical Engineer, Control Systems Engineer and Software Developer. Enjoys developing systems which overlap in all three of these fields. | a| image::team/hutcheb.jpg[hutcheb, 240, 320]
