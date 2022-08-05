@@ -214,7 +214,6 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 		{
 			outputView := tview.NewTextView().
 				SetDynamicColors(true). // TODO: currently this is broken due to https://github.com/rivo/tview/issues/751 (workaround active with sruehl fix fork)
-				SetDynamicColors(false).
 				SetRegions(true).
 				SetWordWrap(false).
 				SetWrap(false).
