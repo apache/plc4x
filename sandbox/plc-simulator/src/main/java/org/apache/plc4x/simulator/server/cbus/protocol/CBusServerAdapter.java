@@ -417,14 +417,14 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 CALReply calReply;
                 if (cBusOptions.getExstat()) {
                     List<StatusByte> statusBytes = new LinkedList<>();
-                    for (int i = 0; i < 21; i++) {
+                    for (int i = 0; i < 22; i++) {
                         statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
                     }
                     CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, StatusCoding.BINARY_BY_ELSEWHERE, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, null, requestContext);
                     calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
                 } else {
                     List<StatusByte> statusBytes = new LinkedList<>();
-                    for (int i = 0; i < 22; i++) {
+                    for (int i = 0; i < 23; i++) {
                         statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
                     }
                     CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandStatus_25Bytes, null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, requestContext);
