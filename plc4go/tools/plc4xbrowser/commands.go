@@ -187,6 +187,53 @@ var rootCommand = Command{
 			},
 		},
 		{
+			Name:        "write-direct",
+			Description: "Builds a write request with the supplied field",
+			action: func(c Command, connectionsStringAndFieldQuery string) error {
+				split := strings.Split(connectionsStringAndFieldQuery, " ")
+				if len(split) != 3 {
+					return errors.Errorf("%s expects exactly three arguments [connection url] [fieldQuery] [value]", c)
+				}
+				connectionsString := split[0]
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					start := time.Now()
+					writeRequest, err := connection.WriteRequestBuilder().
+						AddQuery("writeField", split[1], split[2]).
+						Build()
+					if err != nil {
+						return errors.Wrapf(err, "%s can't write", connectionsString)
+					}
+					writeRequestResult := <-writeRequest.Execute()
+					if err := writeRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s can't write", connectionsString)
+					}
+					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					if err := writeRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s error reading", connectionsString)
+					}
+					numberOfMessagesReceived++
+					messageReceived(numberOfMessagesReceived, time.Now(), writeRequestResult.GetResponse())
+				}
+				return nil
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					if strings.HasPrefix(currentText, connectionsString+"") {
+						parse, _ := url.Parse(connectionsString)
+						switch parse.Scheme {
+						// TODO: add to protocol suggestor so it can be reused.
+
+						}
+					} else {
+						entries = append(entries, connectionsString)
+					}
+				}
+				return
+			},
+		},
+		{
 			Name:        "register",
 			Description: "register a driver in the subsystem",
 			action: func(_ Command, driver string) error {
