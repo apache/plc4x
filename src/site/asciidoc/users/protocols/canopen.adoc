@@ -18,6 +18,7 @@
 :icons: font
 
 == CANopen
+image::can_banner.png[banner,512,167]
 === CAN in Automation
 
 CANopen is a specific protocol built on top of CAN bus.
