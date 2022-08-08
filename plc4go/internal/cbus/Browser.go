@@ -59,11 +59,14 @@ func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, 
 			var queryResults []apiModel.PlcBrowseFoundField
 			switch field := field.(type) {
 			case *unitInfoField:
+				allUnits := false
 				var units []readWriteModel.UnitAddress
+				allAttributes := false
 				var attributes []readWriteModel.Attribute
 				if unitAddress := field.unitAddress; unitAddress != nil {
 					units = append(units, *unitAddress)
 				} else {
+					allUnits = true
 					for i := 0; i <= 0xFF; i++ {
 						units = append(units, readWriteModel.NewUnitAddress(byte(i)))
 					}
@@ -71,22 +74,41 @@ func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, 
 				if attribute := field.attribute; attribute != nil {
 					attributes = append(attributes, *attribute)
 				} else {
+					allAttributes = true
 					for _, attribute := range readWriteModel.AttributeValues {
 						attributes = append(attributes, attribute)
 					}
 				}
+
+				if allUnits {
+					log.Info().Msg("Querying all units")
+				}
 			unitLoop:
 				for _, unit := range units {
+					unitAddress := unit.GetAddress()
+					if !allUnits && allAttributes {
+						log.Info().Msgf("Querying all attributes of unit %d", unitAddress)
+					}
+					event := log.Info()
+					if allUnits {
+						event = log.Debug()
+					}
+					event.Msgf("Query unit  %d", unitAddress)
 					for _, attribute := range attributes {
-						unitAddress := unit.GetAddress()
-						log.Info().Msgf("unit %d: Query %s", unitAddress, attribute)
+						if !allUnits && !allAttributes {
+							log.Info().Msgf("Querying attribute %s of unit %d", attribute, unitAddress)
+						} else {
+							event.Msgf("unit %d: Query %s", unitAddress, attribute)
+						}
 						readFieldName := fmt.Sprintf("%s/%d/%s", fieldName, unitAddress, attribute)
 						readRequest, _ := m.connection.ReadRequestBuilder().
 							AddField(readFieldName, NewCALIdentifyField(unit, attribute, 1)).
 							Build()
 						requestResult := <-readRequest.Execute()
 						if err := requestResult.GetErr(); err != nil {
-							log.Info().Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
+							if !allUnits && !allAttributes {
+								event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
+							}
 							continue unitLoop
 						}
 						queryResults = append(queryResults, &model.DefaultPlcBrowseQueryResult{

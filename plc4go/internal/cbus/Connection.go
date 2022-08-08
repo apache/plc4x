@@ -43,7 +43,7 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	// If we've reached the max value 'z', reset back to 'g'
-	if t.currentAlpha >= 'z' {
+	if t.currentAlpha > 'z' {
 		t.currentAlpha = 'g'
 	}
 	result := t.currentAlpha
