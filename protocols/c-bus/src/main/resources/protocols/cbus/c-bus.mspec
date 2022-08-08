@@ -85,6 +85,8 @@
                         'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '(calData.lengthInBytes*2)*8'                       ]
+            [virtual  CALData
+                              calDataDecoded 'calData'                      ]
         ]
         ['REQUEST_COMMAND' *Command
             [const    byte  initiator 0x5C                                  ] // 0x5C == "/"
@@ -93,11 +95,15 @@
                         'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
                         '(cbusCommand.lengthInBytes*2)*8'                   ]
+            [virtual  CBusCommand
+                              cbusCommandDecoded 'cbusCommand'              ]
             [manual   Checksum
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, cbusCommand, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, cbusCommand, cBusOptions.srchk)'
                         '(cBusOptions.srchk)?(16):(0)'                      ]
+            [virtual  Checksum
+                              chksumDecoded 'chksum'                        ]
             [optional Alpha         alpha                                   ]
         ]
         ['NULL' *Null
@@ -112,6 +118,8 @@
                         'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '(calData.lengthInBytes*2)*8'                       ]
+            [virtual  CALData
+                              calDataDecoded 'calData'                      ]
             [optional Alpha   alpha                                         ]
         ]
     ]
@@ -1446,25 +1454,29 @@
     [peek    byte peekedByte                                                                ]
     [typeSwitch peekedByte
         ['0x2B' PowerUpReply // is a +
-            [simple PowerUp isA]
+            [simple PowerUp powerUpIndicator                                ]
         ]
         ['0x3D' ParameterChangeReply // is a =
-            [simple ParameterChange isA                 ]
+            [simple ParameterChange parameterChange                         ]
         ]
         ['0x21' ServerErrorReply // is a !
-            [const  byte    errorMarker     0x21        ]
+            [const  byte    errorMarker     0x21                            ]
         ]
         [*      *EncodedReply
             [manual   EncodedReply
                               encodedReply
                                     'STATIC_CALL("readEncodedReply", readBuffer, cBusOptions, requestContext, cBusOptions.srchk)'
                                     'STATIC_CALL("writeEncodedReply", writeBuffer, encodedReply)'
-                                    '(encodedReply.lengthInBytes*2)*8'                                   ]
+                                    '(encodedReply.lengthInBytes*2)*8'      ]
+            [virtual  EncodedReply
+                              encodedReplyDecoded 'encodedReply'            ]
             [manual   Checksum
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, encodedReply, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, encodedReply, cBusOptions.srchk)'
-                        '(cBusOptions.srchk)?(16):(0)'        ]
+                        '(cBusOptions.srchk)?(16):(0)'                      ]
+            [virtual  Checksum
+                              chksumDecoded 'chksum'                        ]
         ]
     ]
 ]

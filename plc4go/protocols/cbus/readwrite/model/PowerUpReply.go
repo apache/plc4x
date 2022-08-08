@@ -31,8 +31,8 @@ type PowerUpReply interface {
 	utils.LengthAware
 	utils.Serializable
 	Reply
-	// GetIsA returns IsA (property field)
-	GetIsA() PowerUp
+	// GetPowerUpIndicator returns PowerUpIndicator (property field)
+	GetPowerUpIndicator() PowerUp
 }
 
 // PowerUpReplyExactly can be used when we want exactly this type and not a type which fulfills PowerUpReply.
@@ -45,7 +45,7 @@ type PowerUpReplyExactly interface {
 // _PowerUpReply is the data-structure of this message
 type _PowerUpReply struct {
 	*_Reply
-	IsA PowerUp
+	PowerUpIndicator PowerUp
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,8 +71,8 @@ func (m *_PowerUpReply) GetParent() Reply {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_PowerUpReply) GetIsA() PowerUp {
-	return m.IsA
+func (m *_PowerUpReply) GetPowerUpIndicator() PowerUp {
+	return m.PowerUpIndicator
 }
 
 ///////////////////////
@@ -81,10 +81,10 @@ func (m *_PowerUpReply) GetIsA() PowerUp {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(isA PowerUp, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
+func NewPowerUpReply(powerUpIndicator PowerUp, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
 	_result := &_PowerUpReply{
-		IsA:    isA,
-		_Reply: NewReply(peekedByte, cBusOptions, requestContext),
+		PowerUpIndicator: powerUpIndicator,
+		_Reply:           NewReply(peekedByte, cBusOptions, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -112,8 +112,8 @@ func (m *_PowerUpReply) GetLengthInBits() uint16 {
 func (m *_PowerUpReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (isA)
-	lengthInBits += m.IsA.GetLengthInBits()
+	// Simple field (powerUpIndicator)
+	lengthInBits += m.PowerUpIndicator.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -131,17 +131,17 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (isA)
-	if pullErr := readBuffer.PullContext("isA"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for isA")
+	// Simple Field (powerUpIndicator)
+	if pullErr := readBuffer.PullContext("powerUpIndicator"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for powerUpIndicator")
 	}
-	_isA, _isAErr := PowerUpParse(readBuffer)
-	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of PowerUpReply")
+	_powerUpIndicator, _powerUpIndicatorErr := PowerUpParse(readBuffer)
+	if _powerUpIndicatorErr != nil {
+		return nil, errors.Wrap(_powerUpIndicatorErr, "Error parsing 'powerUpIndicator' field of PowerUpReply")
 	}
-	isA := _isA.(PowerUp)
-	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for isA")
+	powerUpIndicator := _powerUpIndicator.(PowerUp)
+	if closeErr := readBuffer.CloseContext("powerUpIndicator"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for powerUpIndicator")
 	}
 
 	if closeErr := readBuffer.CloseContext("PowerUpReply"); closeErr != nil {
@@ -154,7 +154,7 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
-		IsA: isA,
+		PowerUpIndicator: powerUpIndicator,
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil
@@ -168,16 +168,16 @@ func (m *_PowerUpReply) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for PowerUpReply")
 		}
 
-		// Simple Field (isA)
-		if pushErr := writeBuffer.PushContext("isA"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for isA")
+		// Simple Field (powerUpIndicator)
+		if pushErr := writeBuffer.PushContext("powerUpIndicator"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for powerUpIndicator")
 		}
-		_isAErr := writeBuffer.WriteSerializable(m.GetIsA())
-		if popErr := writeBuffer.PopContext("isA"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for isA")
+		_powerUpIndicatorErr := writeBuffer.WriteSerializable(m.GetPowerUpIndicator())
+		if popErr := writeBuffer.PopContext("powerUpIndicator"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for powerUpIndicator")
 		}
-		if _isAErr != nil {
-			return errors.Wrap(_isAErr, "Error serializing 'isA' field")
+		if _powerUpIndicatorErr != nil {
+			return errors.Wrap(_powerUpIndicatorErr, "Error serializing 'powerUpIndicator' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PowerUpReply"); popErr != nil {

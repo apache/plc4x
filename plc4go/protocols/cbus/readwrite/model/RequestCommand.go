@@ -43,6 +43,10 @@ type RequestCommand interface {
 	GetChksum() Checksum
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
+	// GetCbusCommandDecoded returns CbusCommandDecoded (virtual field)
+	GetCbusCommandDecoded() CBusCommand
+	// GetChksumDecoded returns ChksumDecoded (virtual field)
+	GetChksumDecoded() Checksum
 }
 
 // RequestCommandExactly can be used when we want exactly this type and not a type which fulfills RequestCommand.
@@ -105,6 +109,27 @@ func (m *_RequestCommand) GetAlpha() Alpha {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_RequestCommand) GetCbusCommandDecoded() CBusCommand {
+	alpha := m.Alpha
+	_ = alpha
+	return CastCBusCommand(m.GetCbusCommand())
+}
+
+func (m *_RequestCommand) GetChksumDecoded() Checksum {
+	alpha := m.Alpha
+	_ = alpha
+	return CastChecksum(m.GetChksum())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
@@ -157,8 +182,12 @@ func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Manual Field (cbusCommand)
 	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
 
+	// A virtual field doesn't have any in- or output.
+
 	// Manual Field (chksum)
 	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() interface{} { return int32((int32(16))) }, func() interface{} { return int32((int32(0))) }).(int32))
+
+	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
@@ -200,6 +229,11 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 		cbusCommand = _cbusCommand.(CBusCommand)
 	}
 
+	// Virtual field
+	_cbusCommandDecoded := cbusCommand
+	cbusCommandDecoded := _cbusCommandDecoded
+	_ = cbusCommandDecoded
+
 	// Manual Field (chksum)
 	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, cbusCommand, cBusOptions.GetSrchk())
 	if _chksumErr != nil {
@@ -209,6 +243,11 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 	if _chksum != nil {
 		chksum = _chksum.(Checksum)
 	}
+
+	// Virtual field
+	_chksumDecoded := chksum
+	chksumDecoded := _chksumDecoded
+	_ = chksumDecoded
 
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil
@@ -268,11 +307,19 @@ func (m *_RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 		if _cbusCommandErr != nil {
 			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
 		}
+		// Virtual field
+		if _cbusCommandDecodedErr := writeBuffer.WriteVirtual("cbusCommandDecoded", m.GetCbusCommandDecoded()); _cbusCommandDecodedErr != nil {
+			return errors.Wrap(_cbusCommandDecodedErr, "Error serializing 'cbusCommandDecoded' field")
+		}
 
 		// Manual Field (chksum)
 		_chksumErr := CalculateChecksum(writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
 		if _chksumErr != nil {
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
+		}
+		// Virtual field
+		if _chksumDecodedErr := writeBuffer.WriteVirtual("chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
+			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}
 
 		// Optional Field (alpha) (Can be skipped, if the value is null)

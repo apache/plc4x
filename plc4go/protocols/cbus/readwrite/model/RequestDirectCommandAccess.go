@@ -37,6 +37,8 @@ type RequestDirectCommandAccess interface {
 	Request
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
+	// GetCalDataDecoded returns CalDataDecoded (virtual field)
+	GetCalDataDecoded() CALData
 }
 
 // RequestDirectCommandAccessExactly can be used when we want exactly this type and not a type which fulfills RequestDirectCommandAccess.
@@ -81,6 +83,19 @@ func (m *_RequestDirectCommandAccess) GetParent() Request {
 
 func (m *_RequestDirectCommandAccess) GetCalData() CALData {
 	return m.CalData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_RequestDirectCommandAccess) GetCalDataDecoded() CALData {
+	return CastCALData(m.GetCalData())
 }
 
 ///////////////////////
@@ -139,6 +154,8 @@ func (m *_RequestDirectCommandAccess) GetLengthInBitsConditional(lastItem bool) 
 	// Manual Field (calData)
 	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -174,6 +191,11 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 		calData = _calData.(CALData)
 	}
 
+	// Virtual field
+	_calDataDecoded := calData
+	calDataDecoded := _calDataDecoded
+	_ = calDataDecoded
+
 	if closeErr := readBuffer.CloseContext("RequestDirectCommandAccess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestDirectCommandAccess")
 	}
@@ -207,6 +229,10 @@ func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) e
 		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
 		if _calDataErr != nil {
 			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		}
+		// Virtual field
+		if _calDataDecodedErr := writeBuffer.WriteVirtual("calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
+			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestDirectCommandAccess"); popErr != nil {

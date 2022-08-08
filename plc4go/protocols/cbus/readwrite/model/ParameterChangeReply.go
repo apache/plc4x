@@ -31,8 +31,8 @@ type ParameterChangeReply interface {
 	utils.LengthAware
 	utils.Serializable
 	Reply
-	// GetIsA returns IsA (property field)
-	GetIsA() ParameterChange
+	// GetParameterChange returns ParameterChange (property field)
+	GetParameterChange() ParameterChange
 }
 
 // ParameterChangeReplyExactly can be used when we want exactly this type and not a type which fulfills ParameterChangeReply.
@@ -45,7 +45,7 @@ type ParameterChangeReplyExactly interface {
 // _ParameterChangeReply is the data-structure of this message
 type _ParameterChangeReply struct {
 	*_Reply
-	IsA ParameterChange
+	ParameterChange ParameterChange
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,8 +71,8 @@ func (m *_ParameterChangeReply) GetParent() Reply {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ParameterChangeReply) GetIsA() ParameterChange {
-	return m.IsA
+func (m *_ParameterChangeReply) GetParameterChange() ParameterChange {
+	return m.ParameterChange
 }
 
 ///////////////////////
@@ -81,10 +81,10 @@ func (m *_ParameterChangeReply) GetIsA() ParameterChange {
 ///////////////////////////////////////////////////////////
 
 // NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(isA ParameterChange, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
+func NewParameterChangeReply(parameterChange ParameterChange, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
 	_result := &_ParameterChangeReply{
-		IsA:    isA,
-		_Reply: NewReply(peekedByte, cBusOptions, requestContext),
+		ParameterChange: parameterChange,
+		_Reply:          NewReply(peekedByte, cBusOptions, requestContext),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -112,8 +112,8 @@ func (m *_ParameterChangeReply) GetLengthInBits() uint16 {
 func (m *_ParameterChangeReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (isA)
-	lengthInBits += m.IsA.GetLengthInBits()
+	// Simple field (parameterChange)
+	lengthInBits += m.ParameterChange.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -131,17 +131,17 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (isA)
-	if pullErr := readBuffer.PullContext("isA"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for isA")
+	// Simple Field (parameterChange)
+	if pullErr := readBuffer.PullContext("parameterChange"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for parameterChange")
 	}
-	_isA, _isAErr := ParameterChangeParse(readBuffer)
-	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of ParameterChangeReply")
+	_parameterChange, _parameterChangeErr := ParameterChangeParse(readBuffer)
+	if _parameterChangeErr != nil {
+		return nil, errors.Wrap(_parameterChangeErr, "Error parsing 'parameterChange' field of ParameterChangeReply")
 	}
-	isA := _isA.(ParameterChange)
-	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for isA")
+	parameterChange := _parameterChange.(ParameterChange)
+	if closeErr := readBuffer.CloseContext("parameterChange"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for parameterChange")
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterChangeReply"); closeErr != nil {
@@ -154,7 +154,7 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
-		IsA: isA,
+		ParameterChange: parameterChange,
 	}
 	_child._Reply._ReplyChildRequirements = _child
 	return _child, nil
@@ -168,16 +168,16 @@ func (m *_ParameterChangeReply) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for ParameterChangeReply")
 		}
 
-		// Simple Field (isA)
-		if pushErr := writeBuffer.PushContext("isA"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for isA")
+		// Simple Field (parameterChange)
+		if pushErr := writeBuffer.PushContext("parameterChange"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for parameterChange")
 		}
-		_isAErr := writeBuffer.WriteSerializable(m.GetIsA())
-		if popErr := writeBuffer.PopContext("isA"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for isA")
+		_parameterChangeErr := writeBuffer.WriteSerializable(m.GetParameterChange())
+		if popErr := writeBuffer.PopContext("parameterChange"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for parameterChange")
 		}
-		if _isAErr != nil {
-			return errors.Wrap(_isAErr, "Error serializing 'isA' field")
+		if _parameterChangeErr != nil {
+			return errors.Wrap(_parameterChangeErr, "Error serializing 'parameterChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterChangeReply"); popErr != nil {
