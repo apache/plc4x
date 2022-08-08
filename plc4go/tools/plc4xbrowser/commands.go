@@ -263,22 +263,22 @@ var rootCommand = Command{
 					return errors.Errorf("%s not connected", connectionsString)
 				} else {
 					start := time.Now()
-					writeRequest, err := connection.BrowseRequestBuilder().
+					browseRequest, err := connection.BrowseRequestBuilder().
 						AddItem("writeField", split[1]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
-					writeRequestResult := <-writeRequest.Execute()
-					if err := writeRequestResult.GetErr(); err != nil {
+					browseRequestResult := <-browseRequest.Execute()
+					if err := browseRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
 					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
-					if err := writeRequestResult.GetErr(); err != nil {
+					if err := browseRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s error browse", connectionsString)
 					}
 					numberOfMessagesReceived++
-					messageReceived(numberOfMessagesReceived, time.Now(), writeRequestResult.GetResponse())
+					messageReceived(numberOfMessagesReceived, time.Now(), browseRequestResult.GetResponse())
 				}
 				return nil
 			},
