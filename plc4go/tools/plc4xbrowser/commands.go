@@ -211,7 +211,7 @@ var rootCommand = Command{
 					}
 					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
 					if err := writeRequestResult.GetErr(); err != nil {
-						return errors.Wrapf(err, "%s error reading", connectionsString)
+						return errors.Wrapf(err, "%s error writing", connectionsString)
 					}
 					numberOfMessagesReceived++
 					messageReceived(numberOfMessagesReceived, time.Now(), writeRequestResult.GetResponse())
@@ -225,6 +225,71 @@ var rootCommand = Command{
 						switch parse.Scheme {
 						// TODO: add to protocol suggestor so it can be reused.
 
+						}
+					} else {
+						entries = append(entries, connectionsString)
+					}
+				}
+				return
+			},
+		},
+		{
+			Name:        "browse",
+			Description: "Starts a browse request (switched mode to browse edit)",
+			action: func(_ Command, connectionsString string) error {
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					return errors.Errorf("%s mode switch not yet implemented", connection)
+				}
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					entries = append(entries, connectionsString)
+				}
+				return
+			},
+		},
+		{
+			Name:        "browse-direct",
+			Description: "Builds a browse request with the supplied field",
+			action: func(c Command, connectionsStringAndFieldQuery string) error {
+				split := strings.Split(connectionsStringAndFieldQuery, " ")
+				if len(split) != 2 {
+					return errors.Errorf("%s expects exactly three arguments [connection url] [fieldQuery]", c)
+				}
+				connectionsString := split[0]
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					start := time.Now()
+					writeRequest, err := connection.BrowseRequestBuilder().
+						AddItem("writeField", split[1]).
+						Build()
+					if err != nil {
+						return errors.Wrapf(err, "%s can't browse", connectionsString)
+					}
+					writeRequestResult := <-writeRequest.Execute()
+					if err := writeRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s can't browse", connectionsString)
+					}
+					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					if err := writeRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s error browse", connectionsString)
+					}
+					numberOfMessagesReceived++
+					messageReceived(numberOfMessagesReceived, time.Now(), writeRequestResult.GetResponse())
+				}
+				return nil
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					if strings.HasPrefix(currentText, connectionsString+"") {
+						parse, _ := url.Parse(connectionsString)
+						switch parse.Scheme {
+						// TODO: add to protocol suggestor so it can be reused.
+						case "c-bus":
+							entries = append(entries, connectionsString+" info/*/*")
 						}
 					} else {
 						entries = append(entries, connectionsString)
