@@ -58,10 +58,10 @@ type FieldHandler struct {
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
-		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.*)/(?P<calType>recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+))`),
-		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.*)/(?P<application>.*)`),
-		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.*)/(?P<application>.*)`),
-		unityQuery:           regexp.MustCompile(`^info/(?P<unitAddress>.*)/(?P<identifyAttribute>\w+)`),
+		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+))`),
+		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
+		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
+		unityQuery:           regexp.MustCompile(`^info/(?P<unitAddress>.+)/(?P<identifyAttribute>.+)`),
 	}
 }
 
@@ -306,7 +306,9 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 
 		var attribute *readWriteModel.Attribute
 		attributeArgument := match["identifyAttribute"]
-		if strings.HasPrefix(attributeArgument, "0x") {
+		if attributeArgument == "*" {
+			attribute = nil
+		} else if strings.HasPrefix(attributeArgument, "0x") {
 			decodedHex, err := hex.DecodeString(attributeArgument[2:])
 			if err != nil {
 				return nil, errors.Wrap(err, "Not a valid hex")

@@ -40,6 +40,7 @@ func NewDefaultPlcBrowseRequestBuilder(fieldHandler spi.PlcFieldHandler, browser
 		fieldHandler: fieldHandler,
 		browser:      browser,
 		queries:      map[string]string{},
+		fields:       map[string]model.PlcField{},
 	}
 }
 

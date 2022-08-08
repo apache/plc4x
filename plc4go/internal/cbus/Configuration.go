@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"reflect"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -27,19 +28,44 @@ import (
 )
 
 type Configuration struct {
-	srchk bool
+	Srchk    bool
+	Exstat   bool
+	Pun      bool
+	LocalSal bool
+	Pcn      bool
+	Idmon    bool
+	Monitor  bool
+	Smart    bool
+	XonXoff  bool
+	Connect  bool
 }
 
 func ParseFromOptions(options map[string][]string) (Configuration, error) {
-	configuration := Configuration{}
-	if srchk := getFromOptions(options, "srchk"); srchk != "" {
-		parseBool, err := strconv.ParseBool(srchk)
-		if err != nil {
-			return Configuration{}, errors.Wrap(err, "Error parsing srchk")
+	configuration := createDefaultConfiguration()
+	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
+	for i := 0; i < reflectConfiguration.NumField(); i++ {
+		key := reflectConfiguration.Type().Field(i).Name
+		if optionValue := getFromOptions(options, key); optionValue != "" {
+			parseBool, err := strconv.ParseBool(optionValue)
+			if err != nil {
+				return Configuration{}, errors.Wrapf(err, "Error parsing %s", key)
+			}
+			reflectConfiguration.FieldByName(key).SetBool(parseBool)
 		}
-		configuration.srchk = parseBool
 	}
 	return configuration, nil
+}
+
+func createDefaultConfiguration() Configuration {
+	return Configuration{
+		Exstat:   true,
+		LocalSal: true,
+		Idmon:    true,
+		Monitor:  true,
+		Smart:    true,
+		Srchk:    true,
+		Connect:  true,
+	}
 }
 
 func getFromOptions(options map[string][]string, key string) string {

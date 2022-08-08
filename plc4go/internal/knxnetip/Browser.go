@@ -58,14 +58,6 @@ func (m Browser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel
 
 func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
-	sendResult := func(browseResponse apiModel.PlcBrowseResponse, err error) {
-		result <- &model.DefaultPlcBrowseRequestResult{
-			Request:  browseRequest,
-			Response: browseResponse,
-			Err:      err,
-		}
-	}
-
 	go func() {
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		results := map[string][]apiModel.PlcBrowseFoundField{}
@@ -93,7 +85,11 @@ func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, 
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}
 		}
-		sendResult(model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes), nil)
+		result <- &model.DefaultPlcBrowseRequestResult{
+			Request:  browseRequest,
+			Response: model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes),
+			Err:      nil,
+		}
 	}()
 	return result
 }

@@ -82,7 +82,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		return ch
 	}
 
-	codec := NewMessageCodec(transportInstance, configuration.srchk)
+	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	driverContext, err := NewDriverContext(configuration)

@@ -119,12 +119,10 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						log.Trace().Msg("convert response to ")
 						cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
 						messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
-						confirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
-						if !confirmation.GetConfirmation().GetIsSuccess() {
+						replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+						if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
 							var responseCode model.PlcResponseCode
-							switch confirmation.GetConfirmation().GetConfirmationType() {
-							case readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL:
-								responseCode = model.PlcResponseCode_OK
+							switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
 							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
 								responseCode = model.PlcResponseCode_REMOTE_ERROR
 							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION:
@@ -133,14 +131,26 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 								responseCode = model.PlcResponseCode_REMOTE_BUSY
 							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
 								responseCode = model.PlcResponseCode_INVALID_DATA
+							default:
+								panic("Every code should be mapped here")
 							}
+							log.Trace().Msgf("Was no success %s:%s", fieldNameCopy, responseCode)
 							addResponseCode(fieldNameCopy, responseCode)
-							return nil
+							requestWasOk <- true
+							return transaction.EndRequest()
 						}
 
+						alpha := replyOrConfirmationConfirmation.GetConfirmation().GetAlpha()
 						// TODO: it could be double confirmed but this is not implemented yet
-						embeddedReply := confirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
+						embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
+						if !ok {
+							log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
+							addResponseCode(fieldNameCopy, model.PlcResponseCode_NOT_FOUND)
+							requestWasOk <- true
+							return transaction.EndRequest()
+						}
 
+						log.Trace().Msg("Handling confirmed data")
 						switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
 						case readWriteModel.EncodedReplyCALReplyExactly:
 							calData := reply.GetCalReply().GetCalData()
@@ -210,6 +220,8 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 							}
 							// TODO: how should we serialize that???
 							addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
+						default:
+							panic(fmt.Sprintf("All types should be mapped here. Not mapped: %T", reply))
 						}
 						requestWasOk <- true
 						return transaction.EndRequest()

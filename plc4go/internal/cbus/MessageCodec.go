@@ -42,10 +42,10 @@ type MessageCodec struct {
 	hashEncountered uint
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance, srchk bool) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
 	codec := &MessageCodec{
 		requestContext: readwriteModel.NewRequestContext(false),
-		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, srchk),
+		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false),
 		monitoredSALs:  make(chan readwriteModel.MonitoredSAL, 100),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _default.WithCustomMessageHandler(func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
@@ -192,6 +192,7 @@ lookingForTheEnd:
 	rb := utils.NewReadBufferByteBased(read)
 	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
+		log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
 			rb := utils.NewReadBufferByteBased(read)
 			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false), m.cbusOptions)
