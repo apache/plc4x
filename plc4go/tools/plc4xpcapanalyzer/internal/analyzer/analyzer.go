@@ -63,7 +63,6 @@ func Analyze(pcapFile, protocolType string) {
 		analyzer.Init()
 		packageParse = analyzer.PackageParse
 		serializePackage = analyzer.SerializePackage
-		prettyPrint = analyzer.PrettyPrint
 		mapPackets = analyzer.MapPackets
 		if !config.AnalyzeConfigInstance.NoCustomMapping {
 			byteOutput = analyzer.ByteOutput

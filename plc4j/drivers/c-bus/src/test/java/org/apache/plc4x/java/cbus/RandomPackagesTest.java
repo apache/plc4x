@@ -20,7 +20,6 @@ package org.apache.plc4x.java.cbus;
 
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -60,6 +59,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -70,10 +70,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToServer msgToServer = (CBusMessageToServer) msg;
-        RequestCommand requestCommand = (RequestCommand) msgToServer.getRequest();
-        CBusCommand cbusCommand = requestCommand.getCbusCommand();
-        System.out.println(cbusCommand);
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -87,11 +84,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
-        ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
-        ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
-        EncodedReplyCALReply encodedReplyCALReply = (EncodedReplyCALReply) ((ReplyEncodedReply) normalReply.getReply()).getEncodedReply();
-        System.out.println(encodedReplyCALReply.getCalReply());
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -104,11 +97,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
-        ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
-        ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
-        EncodedReplyCALReply encodedReplyCALReply = (EncodedReplyCALReply) ((ReplyEncodedReply) normalReply.getReply()).getEncodedReply();
-        System.out.println(encodedReplyCALReply.getCalReply());
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -119,9 +108,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
-        RequestCommand requestCommand = (RequestCommand) messageToServer.getRequest();
-        System.out.println(requestCommand.getCbusCommand());
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -133,8 +120,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CALData calData = ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData();
-        System.out.println(calData);
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -148,11 +134,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
-        ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
-        ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
-        EncodedReplyCALReply encodedReplyCALReply = (EncodedReplyCALReply) ((ReplyEncodedReply) normalReply.getReply()).getEncodedReply();
-        System.out.println(encodedReplyCALReply.getCalReply());
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -163,14 +145,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
-        RequestDirectCommandAccess requestDirectCommandAccess = (RequestDirectCommandAccess) messageToServer.getRequest();
-        CALData calData = ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData();
-        System.out.println(calData);
 
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bytes.length);
-        msg.serialize(writeBuffer);
-        assertThat(writeBuffer.getBytes()).isEqualTo(bytes);
         assertMessageMatches(bytes, msg);
     }
 
@@ -183,11 +158,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
-        ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
-        ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
-        EncodedReplyCALReply encodedReplyCALReply = (EncodedReplyCALReply) ((ReplyEncodedReply) normalReply.getReply()).getEncodedReply();
-        System.out.println(encodedReplyCALReply.getCalReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -200,7 +170,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
 
         assertMessageMatches(bytes, msg);
     }
@@ -214,11 +183,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToClient messageToClient = (CBusMessageToClient) msg;
-        ReplyOrConfirmationConfirmation confirmationReply = (ReplyOrConfirmationConfirmation) messageToClient.getReply();
-        ReplyOrConfirmationReply normalReply = (ReplyOrConfirmationReply) confirmationReply.getEmbeddedReply();
-        EncodedReplyCALReply encodedReplyCALReply = (EncodedReplyCALReply) ((ReplyEncodedReply) normalReply.getReply()).getEncodedReply();
-        System.out.println(encodedReplyCALReply.getCalReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -231,10 +195,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        CBusMessageToServer messageToServer = (CBusMessageToServer) msg;
-        RequestCommand requestCommand = (RequestCommand) messageToServer.getRequest();
-        CBusCommand cbusCommand = requestCommand.getCbusCommand();
-        System.out.println(cbusCommand);
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -247,7 +208,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -259,7 +220,7 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
         assertMessageMatches(bytes, msg);
     }
 
@@ -272,7 +233,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -285,7 +245,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
 
         assertMessageMatches(bytes, msg);
     }
@@ -299,7 +258,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -313,7 +271,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -328,7 +285,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -342,7 +298,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -356,7 +311,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -366,13 +320,12 @@ public class RandomPackagesTest {
         byte[] bytes = "0531AC0036040108FF0000DC\r\n".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
         requestContext = new RequestContext(false);
+        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
 
-        // TODO: apparently the set the first bit of AuxiliaryLevel to true wich is not valid according to the documentation
-        //assertMessageMatches(bytes, msg);
+        assertMessageMatches(bytes, msg);
     }
 
     @Test
@@ -384,7 +337,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -394,7 +346,6 @@ public class RandomPackagesTest {
     void closestFitIsAStatusRequestButWeDonTHaveAnyBytesBeforeThat() throws Exception {
         byte[] bytes = "FAFF00r\r".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
@@ -410,7 +361,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }
@@ -434,7 +384,6 @@ public class RandomPackagesTest {
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
         assertThat(msg).isNotNull();
         System.out.println(msg);
-        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
 
         assertMessageMatches(bytes, msg);
     }

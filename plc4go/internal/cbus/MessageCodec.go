@@ -192,7 +192,6 @@ lookingForTheEnd:
 	rb := utils.NewReadBufferByteBased(read)
 	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
-		// TODO: bit bad we need to do this but cal detection is not reliable enough
 		{ // Try SAL
 			rb := utils.NewReadBufferByteBased(read)
 			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false), m.cbusOptions)

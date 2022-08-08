@@ -227,58 +227,6 @@ func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {
 	}
 }
 
-// PrettyPrint as messages switch encoding (hex strings) we print the inner messages too
-func (a *Analyzer) PrettyPrint(message interface{}) {
-	if message, ok := message.(model.CBusMessage); !ok {
-		log.Fatal().Msgf("Unsupported type %T supplied", message)
-		panic("unreachable statement")
-	} else {
-		fmt.Printf("%v\n", message)
-		switch message := message.(type) {
-		case model.CBusMessageToServerExactly:
-			switch request := message.GetRequest().(type) {
-			case model.RequestDirectCommandAccessExactly:
-				fmt.Printf("%v\n", request.GetCalData())
-			case model.RequestObsoleteExactly:
-				fmt.Printf("%v\n", request.GetCalData())
-			case model.RequestCommandExactly:
-				fmt.Printf("%v\n", request.GetCbusCommand())
-			}
-		case model.CBusMessageToClientExactly:
-			switch reply := message.GetReply().(type) {
-			case model.ReplyOrConfirmationConfirmationExactly:
-				switch reply := reply.GetEmbeddedReply().(type) {
-				// TODO: add recursion
-				case model.ReplyOrConfirmationReplyExactly:
-					switch reply := reply.GetReply().(type) {
-					case model.ReplyEncodedReplyExactly:
-						switch reply := reply.GetEncodedReply().(type) {
-						case model.EncodedReplyCALReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetCalReply())
-						case model.MonitoredSALReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetMonitoredSAL())
-						}
-					}
-				}
-			case model.ReplyOrConfirmationReplyExactly:
-				switch reply := reply.GetReply().(type) {
-				case model.ReplyEncodedReplyExactly:
-					switch reply := reply.GetEncodedReply().(type) {
-					case model.EncodedReplyCALReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetCalReply())
-					case model.MonitoredSALReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetMonitoredSAL())
-					}
-				}
-			}
-		}
-	}
-}
-
 // MapPackets reorders the packages as they were not split
 func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
 	if a.mappedPacketChan == nil {
