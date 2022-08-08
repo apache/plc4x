@@ -89,7 +89,7 @@
                               calDataDecoded 'calData'                      ]
         ]
         ['REQUEST_COMMAND' *Command
-            [const    byte  initiator 0x5C                                  ] // 0x5C == "/"
+            [const    byte  initiator 0x5C                                  ] // 0x5C == "\"
             [manual   CBusCommand
                               cbusCommand
                         'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
