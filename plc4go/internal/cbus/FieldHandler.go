@@ -40,6 +40,7 @@ const (
 	CAL_GETSTATUS
 	SAL_MONITOR
 	MMI_STATUS_MONITOR
+	UNIT_INFO
 )
 
 func (i FieldType) GetName() string {
@@ -51,14 +52,16 @@ type FieldHandler struct {
 	calPattern           *regexp.Regexp
 	salMonitorPattern    *regexp.Regexp
 	mmiMonitorPattern    *regexp.Regexp
+	unityQuery           *regexp.Regexp
 }
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
-		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.*)/(?P<calType>recall=\[(?P<recallParamNo>[\w\d]+), ?(?P<recallCount>\d+)]|identify=\[(?P<identifyAttribute>[\w\d]+)]|getstatus=\[(?P<getstatusParamNo>[\w\d]+), ?(?P<getstatusCount>\d+)])`),
+		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.*)/(?P<calType>recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+))`),
 		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.*)/(?P<application>.*)`),
 		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.*)/(?P<application>.*)`),
+		unityQuery:           regexp.MustCompile(`^info/(?P<unitAddress>.*)/(?P<identifyAttribute>\w+)`),
 	}
 }
 
@@ -275,6 +278,61 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		}
 
 		return NewMMIMonitorField(unitAddress, application, 1), nil
+	} else if match := utils.GetSubgroupMatches(m.unityQuery, query); match != nil {
+		var unitAddress *readWriteModel.UnitAddress
+		unitAddressArgument := match["unitAddress"]
+		if unitAddressArgument == "*" {
+			unitAddress = nil
+		} else if strings.HasPrefix(unitAddressArgument, "0x") {
+			decodedHex, err := hex.DecodeString(unitAddressArgument[2:])
+			if err != nil {
+				return nil, errors.Wrap(err, "Not a valid hex")
+			}
+			if len(decodedHex) != 1 {
+				return nil, errors.Errorf("Hex must be exatly one byte")
+			}
+			var unitAddressVar readWriteModel.UnitAddress
+			unitAddressVar = readWriteModel.NewUnitAddress(decodedHex[0])
+			unitAddress = &unitAddressVar
+		} else {
+			atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
+			if err != nil {
+				return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
+			}
+			var unitAddressVar readWriteModel.UnitAddress
+			unitAddressVar = readWriteModel.NewUnitAddress(byte(atoi))
+			unitAddress = &unitAddressVar
+		}
+
+		var attribute *readWriteModel.Attribute
+		attributeArgument := match["identifyAttribute"]
+		if strings.HasPrefix(attributeArgument, "0x") {
+			decodedHex, err := hex.DecodeString(attributeArgument[2:])
+			if err != nil {
+				return nil, errors.Wrap(err, "Not a valid hex")
+			}
+			if len(decodedHex) != 1 {
+				return nil, errors.Errorf("Hex must be exatly one byte")
+			}
+			var attributeVar readWriteModel.Attribute
+			attributeVar = readWriteModel.Attribute(decodedHex[0])
+			attribute = &attributeVar
+		} else {
+			if atoi, err := strconv.ParseUint(attributeArgument, 10, 8); err == nil {
+				var attributeVar readWriteModel.Attribute
+				attributeVar = readWriteModel.Attribute(atoi)
+				attribute = &attributeVar
+			} else {
+				parameterByName, ok := readWriteModel.AttributeByName(attributeArgument)
+				if !ok {
+					return nil, errors.Errorf("Unknown attributeArgument %s", attributeArgument)
+				}
+				var attributeVar readWriteModel.Attribute
+				attributeVar = parameterByName
+				attribute = &attributeVar
+			}
+		}
+		return NewUnitInfoField(unitAddress, attribute, 1), nil
 	} else {
 		return nil, errors.Errorf("Unable to parse %s", query)
 	}
