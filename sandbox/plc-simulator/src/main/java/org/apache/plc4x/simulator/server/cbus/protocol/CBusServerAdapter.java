@@ -25,6 +25,7 @@ import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -33,6 +34,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
+
+    private static final List<Byte> AVAILABLE_UNITS = Arrays.asList((byte) 0, (byte) 23, (byte) 48);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CBusServerAdapter.class);
 
@@ -82,6 +85,8 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         if (!(msg instanceof CBusMessage)) {
             return;
         }
+        // Serial is slow
+        TimeUnit.MILLISECONDS.sleep(100);
         if (!smart && !connect) {
             // In this mode every message will be echoed
             LOGGER.info("Sending echo");
@@ -211,7 +216,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 if (cbusCommand instanceof CBusCommandPointToPoint) {
                     CBusCommandPointToPoint cBusCommandPointToPoint = (CBusCommandPointToPoint) cbusCommand;
                     CBusPointToPointCommand command = cBusCommandPointToPoint.getCommand();
-                    UnitAddress unitAddress;
+                    UnitAddress unitAddress = null;
                     if (command instanceof CBusPointToPointCommandIndirect) {
                         CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect = (CBusPointToPointCommandIndirect) command;
                         // TODO: handle bridgeAddress
@@ -222,6 +227,10 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         CBusPointToPointCommandDirect cBusPointToPointCommandDirect = (CBusPointToPointCommandDirect) command;
                         unitAddress = cBusPointToPointCommandDirect.getUnitAddress();
                     }
+                    if (unitAddress == null) {
+                        throw new IllegalStateException("Unit address should be set at this point");
+                    }
+                    boolean knownUnit = AVAILABLE_UNITS.contains(unitAddress.getAddress());
                     CALData calData = command.getCalData();
                     // TODO: handle other Datatypes
                     if (calData instanceof CALDataIdentify) {
@@ -250,12 +259,12 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                                 identifyReplyCommand = new IdentifyReplyCommandExtendedDiagnosticSummary(ApplicationIdContainer.FREE_USAGE_01, ApplicationIdContainer.FREE_USAGE_0F, (byte) 0x0, 0x0, 4711l, (byte) 0x13, false, false, false, true, false, false, false, false, false, false, false, false, false, numBytes);
                                 break;
                             case NetworkTerminalLevels:
-                                numBytes = 0x0D;
-                                identifyReplyCommand = new IdentifyReplyCommandNetworkTerminalLevels(new byte[]{0x13}, numBytes);
+                                numBytes = 0x0C;
+                                identifyReplyCommand = new IdentifyReplyCommandNetworkTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
                                 break;
                             case TerminalLevel:
-                                numBytes = 0x0D;
-                                identifyReplyCommand = new IdentifyReplyCommandTerminalLevels(new byte[]{0x13}, numBytes);
+                                numBytes = 0x0C;
+                                identifyReplyCommand = new IdentifyReplyCommandTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
                                 break;
                             case NetworkVoltage:
                                 numBytes = 0x05;
