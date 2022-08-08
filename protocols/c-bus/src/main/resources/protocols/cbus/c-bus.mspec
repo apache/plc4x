@@ -1557,6 +1557,7 @@
     ['0x24'    NOT_TRANSMITTED_CORRUPTION               ] // "$"
     ['0x25'    NOT_TRANSMITTED_SYNC_LOSS                ] // "%"
     ['0x27'    NOT_TRANSMITTED_TOO_LONG                 ] // "'"
+    ['0x21'    CHECKSUM_FAILURE                         ] // "!"
 ]
 
 [type PowerUp

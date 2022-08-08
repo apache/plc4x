@@ -94,7 +94,7 @@ public class StaticHelper {
     private static byte[] readBytesFromHex(String logicalName, ReadBuffer readBuffer, boolean srchk) throws ParseException {
         int payloadLength = findHexEnd(readBuffer);
         if (payloadLength == 0) {
-            throw new ParseException("Length is 0");
+            throw new ParseAssertException("Length is 0");
         }
 
         byte[] hexBytes = readBuffer.readByteArray(logicalName, payloadLength);

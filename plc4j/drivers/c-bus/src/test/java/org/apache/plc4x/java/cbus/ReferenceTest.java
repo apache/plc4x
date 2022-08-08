@@ -47,58 +47,304 @@ public class ReferenceTest {
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/C-Bus%20Interface%20Requirements.pdf
     @Nested
     class InterfaceRequirementsTest {
-        // TODO: implement those
 
+        // 8.2
+        @Nested
+        class Level1InterfaceImplementationRequirements {
+
+            // 8.2.4
+            @Nested
+            class SerialInterfaceInitialisation {
+
+                @Test
+                void Step_1_Reset() throws Exception {
+                    byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_2_SetInterfaceOptions3() throws Exception {
+                    byte[] bytes = "@A3420002\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_3_SetInterfaceOptions1_PUN() throws Exception {
+                    byte[] bytes = "@A3410058\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_4_SetInterfaceOptions1() throws Exception {
+                    byte[] bytes = "@A3300058\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+
+            // 8.2.5
+            @Nested
+            class ConfirmationOfTransmission {
+                @Test
+                void SomeCommand() throws Exception {
+                    byte[] bytes = "\\0538000121A1g\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void success() throws Exception {
+                    byte[] bytes = "g.".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void checksumFailure() throws Exception {
+                    byte[] bytes = "g!".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void tooManyRetransmissions() throws Exception {
+                    byte[] bytes = "g#".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void corruptionInTransmission() throws Exception {
+                    byte[] bytes = "g$".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void noSystemClock() throws Exception {
+                    byte[] bytes = "g%".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+        }
+
+        // 8.3
+        @Nested
+        class Level2InterfaceImplementationRequirements {
+
+            // 8.3.4
+            @Nested
+            class SerialInterfaceInitialisation {
+                @Test
+                void Step_1_Reset() throws Exception {
+                    byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_2_AnyApplicationFilter() throws Exception {
+                    byte[] bytes = "@A3210038\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_3_SetInterfaceOptions3() throws Exception {
+                    byte[] bytes = "@A3420002\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_4_SetInterfaceOptions1_PUN() throws Exception {
+                    byte[] bytes = "@A3410059\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_5_SetInterfaceOptions1() throws Exception {
+                    byte[] bytes = "@A3300059\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+
+            // 8.3.5
+            @Nested
+            class ProgrammingTheSerialInterfaceToFilterSALMessageTraffic {
+
+                @Test
+                void Step_1_SelectOnlyLighting() throws Exception {
+                    byte[] bytes = "@A3210038\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_2_SelectHeatingAsSecondApplication() throws Exception {
+                    byte[] bytes = "@A3220088\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+        }
+
+        // 8.4
+        @Nested
+        class Level3InterfaceImplementationRequirements {
+            // No specific tests
+        }
 
         // 8.5
         @Nested
         class Level4InterfaceImplementationRequirements {
 
-            @Test
-            void Reset() throws Exception {
-                byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
+            // 8.5.4
+            @Nested
+            class SerialInterfaceInitialisation {
+                @Test
+                void Step_1_Reset() throws Exception {
+                    byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
 
-                assertMessageMatches(bytes, msg);
-            }
+                    assertMessageMatches(bytes, msg);
+                }
 
-            @Test
-            void SetInterfaceOptions3() throws Exception {
-                byte[] bytes = "@A342000A\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
+                @Test
+                void Step_2_AnyApplicationFilter() throws Exception {
+                    byte[] bytes = "@A3210038\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
 
-                assertMessageMatches(bytes, msg);
-            }
+                    assertMessageMatches(bytes, msg);
+                }
 
-            @Test
-            void SetInterfaceOptions1_PUN() throws Exception {
-                byte[] bytes = "@A3410079\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
+                @Test
+                void Step_3_SetInterfaceOptions3() throws Exception {
+                    byte[] bytes = "@A342000A\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
 
-                assertMessageMatches(bytes, msg);
-            }
+                    assertMessageMatches(bytes, msg);
+                }
 
-            @Test
-            void SetInterfaceOptions1() throws Exception {
-                byte[] bytes = "@A3300079\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
+                @Test
+                void Step_4_SetInterfaceOptions1_PUN() throws Exception {
+                    byte[] bytes = "@A3410079\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
 
-                assertMessageMatches(bytes, msg);
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_5_SetInterfaceOptions1() throws Exception {
+                    byte[] bytes = "@A3300079\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
             }
         }
 
+        // 8.6
+        @Nested
+        class Level5InterfaceImplementationRequirements {
+            // No specific tests
+        }
+
+        // 8.7
+        @Nested
+        class Level6InterfaceImplementationRequirements {
+            // No specific tests
+        }
     }
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf

@@ -112,7 +112,7 @@ func ReadCALData(readBuffer utils.ReadBuffer) (CALData, error) {
 func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {
 	payloadLength := findHexEnd(readBuffer)
 	if payloadLength == 0 {
-		return nil, errors.New("Length is 0")
+		return nil, utils.ParseAssertError{Message: "Length is 0"}
 	}
 	hexBytes, err := readBuffer.ReadByteArray(logicalName, payloadLength)
 	if err != nil {
