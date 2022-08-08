@@ -264,7 +264,7 @@ var rootCommand = Command{
 				} else {
 					start := time.Now()
 					browseRequest, err := connection.BrowseRequestBuilder().
-						AddItem("writeField", split[1]).
+						AddQuery("writeField", split[1]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)

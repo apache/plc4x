@@ -23,8 +23,8 @@ import "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 type DefaultPlcBrowseEvent struct {
 	Request   model.PlcBrowseRequest
-	QueryName string
-	Result    model.PlcBrowseQueryResult
+	FieldName string
+	Result    model.PlcBrowseFoundField
 	Err       error
 }
 
@@ -32,11 +32,11 @@ func (d *DefaultPlcBrowseEvent) GetRequest() model.PlcBrowseRequest {
 	return d.Request
 }
 
-func (d *DefaultPlcBrowseEvent) GetQueryName() string {
-	return d.QueryName
+func (d *DefaultPlcBrowseEvent) GetFieldName() string {
+	return d.FieldName
 }
 
-func (d *DefaultPlcBrowseEvent) GetResult() model.PlcBrowseQueryResult {
+func (d *DefaultPlcBrowseEvent) GetResult() model.PlcBrowseFoundField {
 	return d.Result
 }
 

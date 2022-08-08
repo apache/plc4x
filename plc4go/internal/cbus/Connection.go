@@ -157,8 +157,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	// TODO: where do we get the browser from
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(nil)
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(NewBrowser(c, c.messageCodec))
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {

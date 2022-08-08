@@ -19,19 +19,33 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import (
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+)
 
 type DefaultPlcBrowseResponse struct {
 	DefaultResponse
 	request model.PlcBrowseRequest
-	results map[string][]model.PlcBrowseQueryResult
+	results map[string][]model.PlcBrowseFoundField
 }
 
-func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseQueryResult) DefaultPlcBrowseResponse {
+func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseFoundField, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {
 	return DefaultPlcBrowseResponse{
-		request: request,
-		results: results,
+		DefaultResponse: DefaultResponse{responseCodes: responseCodes},
+		request:         request,
+		results:         results,
 	}
+}
+
+func (d DefaultPlcBrowseResponse) GetFieldNames() []string {
+	var fieldNames []string
+	// We take the field names from the request to keep order as map is not ordered
+	for _, name := range d.request.GetFieldNames() {
+		if _, ok := d.results[name]; ok {
+			fieldNames = append(fieldNames, name)
+		}
+	}
+	return fieldNames
 }
 
 func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
@@ -46,6 +60,6 @@ func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
 	return queryNames
 }
 
-func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseQueryResult {
+func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseFoundField {
 	return d.results[queryName]
 }

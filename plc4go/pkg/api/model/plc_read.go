@@ -34,16 +34,16 @@ type PlcReadRequestResult interface {
 }
 
 type PlcReadRequest interface {
+	PlcRequest
 	Execute() <-chan PlcReadRequestResult
 	GetFieldNames() []string
 	GetField(name string) PlcField
-	PlcRequest
 }
 
 type PlcReadResponse interface {
+	PlcResponse
 	GetRequest() PlcReadRequest
 	GetFieldNames() []string
 	GetResponseCode(name string) PlcResponseCode
 	GetValue(name string) values.PlcValue
-	PlcResponse
 }

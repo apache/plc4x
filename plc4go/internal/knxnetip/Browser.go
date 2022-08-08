@@ -67,43 +67,38 @@ func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, 
 	}
 
 	go func() {
-		results := map[string][]apiModel.PlcBrowseQueryResult{}
-		for _, queryName := range browseRequest.GetQueryNames() {
-			queryString := browseRequest.GetQueryString(queryName)
-			field, err := m.connection.fieldHandler.ParseQuery(queryString)
-			if err != nil {
-				sendResult(nil, err)
-				return
-			}
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		results := map[string][]apiModel.PlcBrowseFoundField{}
+		for _, fieldName := range browseRequest.GetFieldNames() {
+			field := browseRequest.GetField(fieldName)
 
 			switch field.(type) {
 			case DeviceQueryField:
-				queryResults, err := m.executeDeviceQuery(field.(DeviceQueryField), browseRequest, queryName, interceptor)
+				queryResults, err := m.executeDeviceQuery(field.(DeviceQueryField), browseRequest, fieldName, interceptor)
 				if err != nil {
-					// TODO: Return some sort of return code like with the read and write APIs
-					results[queryName] = nil
+					log.Warn().Err(err).Msg("Error executing device query")
+					responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 				} else {
-					results[queryName] = queryResults
+					results[fieldName] = queryResults
 				}
 			case CommunicationObjectQueryField:
 				queryResults, err := m.executeCommunicationObjectQuery(field.(CommunicationObjectQueryField))
 				if err != nil {
-					// TODO: Return some sort of return code like with the read and write APIs
-					results[queryName] = nil
+					log.Warn().Err(err).Msg("Error executing device query")
+					responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 				} else {
-					results[queryName] = queryResults
+					results[fieldName] = queryResults
 				}
 			default:
-				// TODO: Return some sort of return code like with the read and write APIs
-				results[queryName] = nil
+				responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}
 		}
-		sendResult(model.NewDefaultPlcBrowseResponse(browseRequest, results), nil)
+		sendResult(model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes), nil)
 	}()
 	return result
 }
 
-func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiModel.PlcBrowseRequest, queryName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseQueryResult, error) {
+func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiModel.PlcBrowseRequest, fieldName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseFoundField, error) {
 	// Create a list of address strings, which doesn't contain any ranges, lists or wildcards
 	knxAddresses, err := m.calculateAddresses(field)
 	if err != nil {
@@ -113,7 +108,7 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 		return nil, errors.New("query resulted in not a single valid address")
 	}
 
-	var queryResults []apiModel.PlcBrowseQueryResult
+	var queryResults []apiModel.PlcBrowseFoundField
 	// Parse each of these expanded addresses and handle them accordingly.
 	for _, knxAddress := range knxAddresses {
 		// Send a connection request to the device
@@ -141,7 +136,7 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 				if interceptor != nil {
 					add = interceptor(&model.DefaultPlcBrowseEvent{
 						Request:   browseRequest,
-						QueryName: queryName,
+						FieldName: fieldName,
 						Result:    queryResult,
 						Err:       nil,
 					})
@@ -174,8 +169,8 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 	return queryResults, nil
 }
 
-func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryField) ([]apiModel.PlcBrowseQueryResult, error) {
-	var results []apiModel.PlcBrowseQueryResult
+func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryField) ([]apiModel.PlcBrowseFoundField, error) {
+	var results []apiModel.PlcBrowseFoundField
 
 	knxAddress := field.toKnxAddress()
 	knxAddressString := KnxAddressToString(knxAddress)
@@ -404,7 +399,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 				continue
 			}
 
-			// Assemble a PlcBrowseQueryResult
+			// Assemble a PlcBrowseFoundField
 			var field apiModel.PlcField
 			communicationEnable := descriptor.GetCommunicationEnable()
 			readable := communicationEnable && descriptor.GetReadEnable()

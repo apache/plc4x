@@ -19,7 +19,10 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import (
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+)
 
 type DefaultPlcBrowseQueryResult struct {
 	Field             model.PlcField
@@ -28,6 +31,7 @@ type DefaultPlcBrowseQueryResult struct {
 	Writable          bool
 	Subscribable      bool
 	PossibleDataTypes []string
+	Attributes        map[string]values.PlcValue
 }
 
 func (d *DefaultPlcBrowseQueryResult) GetField() model.PlcField {
@@ -52,4 +56,8 @@ func (d *DefaultPlcBrowseQueryResult) IsSubscribable() bool {
 
 func (d *DefaultPlcBrowseQueryResult) GetPossibleDataTypes() []string {
 	return d.PossibleDataTypes
+}
+
+func (d *DefaultPlcBrowseQueryResult) GetAttributes() map[string]values.PlcValue {
+	return d.Attributes
 }
