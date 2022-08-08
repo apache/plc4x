@@ -35,10 +35,11 @@ type DefaultPlcBrowseRequestBuilder struct {
 	fieldNames   []string
 }
 
-func NewDefaultPlcBrowseRequestBuilder(browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
+func NewDefaultPlcBrowseRequestBuilder(fieldHandler spi.PlcFieldHandler, browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
 	return &DefaultPlcBrowseRequestBuilder{
-		browser: browser,
-		queries: map[string]string{},
+		fieldHandler: fieldHandler,
+		browser:      browser,
+		queries:      map[string]string{},
 	}
 }
 

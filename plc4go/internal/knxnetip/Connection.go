@@ -471,7 +471,7 @@ func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(NewBrowser(m, m.messageCodec))
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.fieldHandler, NewBrowser(m, m.messageCodec))
 }
 
 func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
