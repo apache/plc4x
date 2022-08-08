@@ -136,6 +136,7 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 			switch event.Key() {
 			case tcell.KeyCtrlC:
 				commandInputField.SetText("")
+				application.SetFocus(commandInputField)
 				return nil
 			}
 			return event
