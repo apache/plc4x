@@ -43,7 +43,7 @@ func SetupApplication() *tview.Application {
 	commandArea := buildCommandArea(newPrimitive, application)
 
 	grid := tview.NewGrid().
-		SetRows(3, 0, 1).
+		SetRows(1, 0, 1).
 		SetColumns(30, 0, 30).
 		SetBorders(true).
 		AddItem(newPrimitive("PLC4X Browser"), 0, 0, 1, 3, 0, 0, false).
