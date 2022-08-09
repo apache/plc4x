@@ -149,7 +149,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 							default:
 								panic("Every code should be mapped here")
 							}
-							log.Trace().Msgf("Was no success %s:%s", fieldNameCopy, responseCode)
+							log.Trace().Msgf("Was no success %s:%v", fieldNameCopy, responseCode)
 							addResponseCode(fieldNameCopy, responseCode)
 							requestWasOk <- true
 							return transaction.EndRequest()
