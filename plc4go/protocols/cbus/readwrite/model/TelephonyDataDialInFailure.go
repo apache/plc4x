@@ -151,8 +151,8 @@ func TelephonyDataDialInFailureParse(readBuffer utils.ReadBuffer) (TelephonyData
 
 	// Create a partially initialized instance
 	_child := &_TelephonyDataDialInFailure{
-		Reason:         reason,
 		_TelephonyData: &_TelephonyData{},
+		Reason:         reason,
 	}
 	_child._TelephonyData._TelephonyDataChildRequirements = _child
 	return _child, nil

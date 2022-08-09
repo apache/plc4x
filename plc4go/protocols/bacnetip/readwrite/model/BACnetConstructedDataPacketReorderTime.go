@@ -182,11 +182,11 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPacketReorderTime{
-		PacketReorderTime: packetReorderTime,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		PacketReorderTime: packetReorderTime,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

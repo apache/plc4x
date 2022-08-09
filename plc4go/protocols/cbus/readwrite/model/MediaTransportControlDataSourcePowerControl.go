@@ -180,8 +180,8 @@ func MediaTransportControlDataSourcePowerControlParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataSourcePowerControl{
-		State:                      state,
 		_MediaTransportControlData: &_MediaTransportControlData{},
+		State:                      state,
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

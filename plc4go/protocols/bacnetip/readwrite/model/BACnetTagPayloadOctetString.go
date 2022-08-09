@@ -122,7 +122,10 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadOctetString(octets, actualLength), nil
+	return &_BACnetTagPayloadOctetString{
+		ActualLength: actualLength,
+		Octets:       octets,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) error {

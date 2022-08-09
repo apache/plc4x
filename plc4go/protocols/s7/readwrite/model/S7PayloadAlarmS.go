@@ -163,8 +163,8 @@ func S7PayloadAlarmSParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cp
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadAlarmS{
-		AlarmMessage:           alarmMessage,
 		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
+		AlarmMessage:           alarmMessage,
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil

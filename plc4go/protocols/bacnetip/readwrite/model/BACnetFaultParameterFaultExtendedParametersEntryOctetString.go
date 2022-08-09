@@ -150,8 +150,8 @@ func BACnetFaultParameterFaultExtendedParametersEntryOctetStringParse(readBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultExtendedParametersEntryOctetString{
-		OctetStringValue: octetStringValue,
 		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
+		OctetStringValue: octetStringValue,
 	}
 	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
 	return _child, nil

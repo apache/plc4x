@@ -248,15 +248,15 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersCommandFailure{
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 		InnerOpeningTag: innerOpeningTag,
 		CommandValue:    commandValue,
 		StatusFlags:     statusFlags,
 		FeedbackValue:   feedbackValue,
 		InnerClosingTag: innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{
-			TagNumber:          tagNumber,
-			ObjectTypeArgument: objectTypeArgument,
-		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

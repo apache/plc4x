@@ -170,7 +170,11 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 
 	// Create the instance
-	return NewBACnetAuthenticationFactor(formatType, formatClass, value), nil
+	return &_BACnetAuthenticationFactor{
+		FormatType:  formatType,
+		FormatClass: formatClass,
+		Value:       value,
+	}, nil
 }
 
 func (m *_BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) error {

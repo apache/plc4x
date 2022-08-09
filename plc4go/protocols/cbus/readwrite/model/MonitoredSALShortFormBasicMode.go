@@ -273,15 +273,15 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer, cBusOption
 
 	// Create a partially initialized instance
 	_child := &_MonitoredSALShortFormBasicMode{
+		_MonitoredSAL: &_MonitoredSAL{
+			CBusOptions: cBusOptions,
+		},
 		Counts:        counts,
 		BridgeCount:   bridgeCount,
 		NetworkNumber: networkNumber,
 		NoCounts:      noCounts,
 		Application:   application,
 		SalData:       salData,
-		_MonitoredSAL: &_MonitoredSAL{
-			CBusOptions: cBusOptions,
-		},
 	}
 	_child._MonitoredSAL._MonitoredSALChildRequirements = _child
 	return _child, nil

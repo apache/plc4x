@@ -181,7 +181,11 @@ func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error
 	}
 
 	// Create the instance
-	return NewBACnetActionList(innerOpeningTag, action, innerClosingTag), nil
+	return &_BACnetActionList{
+		InnerOpeningTag: innerOpeningTag,
+		Action:          action,
+		InnerClosingTag: innerClosingTag,
+	}, nil
 }
 
 func (m *_BACnetActionList) Serialize(writeBuffer utils.WriteBuffer) error {

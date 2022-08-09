@@ -145,8 +145,8 @@ func SecurityDataZoneIsolatedParse(readBuffer utils.ReadBuffer) (SecurityDataZon
 
 	// Create a partially initialized instance
 	_child := &_SecurityDataZoneIsolated{
-		ZoneNumber:    zoneNumber,
 		_SecurityData: &_SecurityData{},
+		ZoneNumber:    zoneNumber,
 	}
 	_child._SecurityData._SecurityDataChildRequirements = _child
 	return _child, nil

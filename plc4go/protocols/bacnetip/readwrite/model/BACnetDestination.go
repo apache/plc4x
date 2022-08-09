@@ -262,7 +262,15 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}
 
 	// Create the instance
-	return NewBACnetDestination(validDays, fromTime, toTime, recipient, processIdentifier, issueConfirmedNotifications, transitions), nil
+	return &_BACnetDestination{
+		ValidDays:                   validDays,
+		FromTime:                    fromTime,
+		ToTime:                      toTime,
+		Recipient:                   recipient,
+		ProcessIdentifier:           processIdentifier,
+		IssueConfirmedNotifications: issueConfirmedNotifications,
+		Transitions:                 transitions,
+	}, nil
 }
 
 func (m *_BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -222,11 +222,11 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (BACn
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultLifeSafety{
+		_BACnetFaultParameter: &_BACnetFaultParameter{},
 		OpeningTag:            openingTag,
 		ListOfFaultValues:     listOfFaultValues,
 		ModePropertyReference: modePropertyReference,
 		ClosingTag:            closingTag,
-		_BACnetFaultParameter: &_BACnetFaultParameter{},
 	}
 	_child._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _child
 	return _child, nil

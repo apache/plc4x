@@ -118,7 +118,9 @@ func BridgeAddressParse(readBuffer utils.ReadBuffer) (BridgeAddress, error) {
 	}
 
 	// Create the instance
-	return NewBridgeAddress(address), nil
+	return &_BridgeAddress{
+		Address: address,
+	}, nil
 }
 
 func (m *_BridgeAddress) Serialize(writeBuffer utils.WriteBuffer) error {

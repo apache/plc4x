@@ -147,10 +147,10 @@ func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandTerminalLevels{
-		TerminalLevels: terminalLevels,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		TerminalLevels: terminalLevels,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

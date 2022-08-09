@@ -65,6 +65,8 @@ type _CALReplyLong struct {
 	SerialInterfaceAddress SerialInterfaceAddress
 	ReservedByte           *byte
 	ReplyNetwork           ReplyNetwork
+	// Reserved Fields
+	reservedField0 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -222,6 +224,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -233,6 +236,8 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 				"expected value": byte(0x86),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -350,16 +355,17 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 
 	// Create a partially initialized instance
 	_child := &_CALReplyLong{
+		_CALReply: &_CALReply{
+			CBusOptions:    cBusOptions,
+			RequestContext: requestContext,
+		},
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
 		BridgeAddress:          bridgeAddress,
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_CALReply: &_CALReply{
-			CBusOptions:    cBusOptions,
-			RequestContext: requestContext,
-		},
+		reservedField0:         reservedField0,
 	}
 	_child._CALReply._CALReplyChildRequirements = _child
 	return _child, nil
@@ -375,7 +381,15 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x86))
+			var reserved byte = byte(0x86)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x86),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

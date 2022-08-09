@@ -137,7 +137,9 @@ func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointRe
 	}
 
 	// Create the instance
-	return NewBACnetSetpointReference(setPointReference), nil
+	return &_BACnetSetpointReference{
+		SetPointReference: setPointReference,
+	}, nil
 }
 
 func (m *_BACnetSetpointReference) Serialize(writeBuffer utils.WriteBuffer) error {

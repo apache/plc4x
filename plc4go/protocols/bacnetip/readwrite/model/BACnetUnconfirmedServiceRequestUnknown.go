@@ -148,10 +148,10 @@ func BACnetUnconfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, se
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnknown{
-		UnknownBytes: unknownBytes,
 		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		UnknownBytes: unknownBytes,
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil

@@ -270,13 +270,13 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterChangeOfLifeSavety{
+		_BACnetEventParameter:       &_BACnetEventParameter{},
 		OpeningTag:                  openingTag,
 		TimeDelay:                   timeDelay,
 		ListOfLifeSavetyAlarmValues: listOfLifeSavetyAlarmValues,
 		ListOfAlarmValues:           listOfAlarmValues,
 		ModePropertyReference:       modePropertyReference,
 		ClosingTag:                  closingTag,
-		_BACnetEventParameter:       &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

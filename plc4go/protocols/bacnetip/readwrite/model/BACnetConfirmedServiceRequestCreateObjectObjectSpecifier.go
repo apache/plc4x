@@ -285,7 +285,13 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag, rawObjectType, objectIdentifier, closingTag, tagNumber), nil
+	return &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{
+		TagNumber:        tagNumber,
+		OpeningTag:       openingTag,
+		RawObjectType:    rawObjectType,
+		ObjectIdentifier: objectIdentifier,
+		ClosingTag:       closingTag,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) Serialize(writeBuffer utils.WriteBuffer) error {

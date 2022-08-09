@@ -146,10 +146,10 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandFirmwareVersion{
-		FirmwareVersion: firmwareVersion,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		FirmwareVersion: firmwareVersion,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

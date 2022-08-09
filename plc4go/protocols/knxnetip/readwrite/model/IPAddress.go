@@ -119,7 +119,9 @@ func IPAddressParse(readBuffer utils.ReadBuffer) (IPAddress, error) {
 	}
 
 	// Create the instance
-	return NewIPAddress(addr), nil
+	return &_IPAddress{
+		Addr: addr,
+	}, nil
 }
 
 func (m *_IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -73,6 +73,8 @@ type _HVACModeAndFlags struct {
 	Setback        bool
 	Level          bool
 	Mode           HVACModeAndFlagsMode
+	// Reserved Fields
+	reservedField0 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -223,6 +225,7 @@ func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -234,6 +237,8 @@ func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -323,7 +328,14 @@ func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error
 	}
 
 	// Create the instance
-	return NewHVACModeAndFlags(auxiliaryLevel, guard, setback, level, mode), nil
+	return &_HVACModeAndFlags{
+		AuxiliaryLevel: auxiliaryLevel,
+		Guard:          guard,
+		Setback:        setback,
+		Level:          level,
+		Mode:           mode,
+		reservedField0: reservedField0,
+	}, nil
 }
 
 func (m *_HVACModeAndFlags) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -335,7 +347,15 @@ func (m *_HVACModeAndFlags) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

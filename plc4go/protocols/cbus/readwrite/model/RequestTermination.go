@@ -121,7 +121,7 @@ func RequestTerminationParse(readBuffer utils.ReadBuffer) (RequestTermination, e
 	}
 
 	// Create the instance
-	return NewRequestTermination(), nil
+	return &_RequestTermination{}, nil
 }
 
 func (m *_RequestTermination) Serialize(writeBuffer utils.WriteBuffer) error {

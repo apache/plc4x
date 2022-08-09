@@ -172,9 +172,9 @@ func ModbusPDUWriteSingleRegisterResponseParse(readBuffer utils.ReadBuffer, resp
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUWriteSingleRegisterResponse{
+		_ModbusPDU: &_ModbusPDU{},
 		Address:    address,
 		Value:      value,
-		_ModbusPDU: &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

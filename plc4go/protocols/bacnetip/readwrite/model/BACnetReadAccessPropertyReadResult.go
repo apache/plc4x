@@ -232,7 +232,14 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessPropertyReadResult(peekedTagHeader, propertyValue, propertyAccessError, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument), nil
+	return &_BACnetReadAccessPropertyReadResult{
+		ObjectTypeArgument:         objectTypeArgument,
+		PropertyIdentifierArgument: propertyIdentifierArgument,
+		ArrayIndexArgument:         arrayIndexArgument,
+		PeekedTagHeader:            peekedTagHeader,
+		PropertyValue:              propertyValue,
+		PropertyAccessError:        propertyAccessError,
+	}, nil
 }
 
 func (m *_BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBuffer) error {

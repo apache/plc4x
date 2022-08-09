@@ -146,8 +146,8 @@ func SecurityDataOnParse(readBuffer utils.ReadBuffer, commandTypeContainer Secur
 
 	// Create a partially initialized instance
 	_child := &_SecurityDataOn{
-		Data:          data,
 		_SecurityData: &_SecurityData{},
+		Data:          data,
 	}
 	_child._SecurityData._SecurityDataChildRequirements = _child
 	return _child, nil

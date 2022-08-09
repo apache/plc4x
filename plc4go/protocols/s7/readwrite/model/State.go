@@ -237,7 +237,16 @@ func StateParse(readBuffer utils.ReadBuffer) (State, error) {
 	}
 
 	// Create the instance
-	return NewState(SIG_8, SIG_7, SIG_6, SIG_5, SIG_4, SIG_3, SIG_2, SIG_1), nil
+	return &_State{
+		SIG_8: SIG_8,
+		SIG_7: SIG_7,
+		SIG_6: SIG_6,
+		SIG_5: SIG_5,
+		SIG_4: SIG_4,
+		SIG_3: SIG_3,
+		SIG_2: SIG_2,
+		SIG_1: SIG_1,
+	}, nil
 }
 
 func (m *_State) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -147,7 +147,10 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BAC
 	}
 
 	// Create the instance
-	return NewBACnetCredentialAuthenticationFactor(disable, authenticationFactor), nil
+	return &_BACnetCredentialAuthenticationFactor{
+		Disable:              disable,
+		AuthenticationFactor: authenticationFactor,
+	}, nil
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -50,6 +50,9 @@ type _StatusRequestLevel struct {
 	*_StatusRequest
 	Application               ApplicationIdContainer
 	StartingGroupAddressLabel byte
+	// Reserved Fields
+	reservedField0 *byte
+	reservedField1 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -149,6 +152,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -160,9 +164,12 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 				"expected value": byte(0x73),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
+	var reservedField1 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -174,6 +181,8 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 				"expected value": byte(0x07),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -208,9 +217,11 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 
 	// Create a partially initialized instance
 	_child := &_StatusRequestLevel{
+		_StatusRequest:            &_StatusRequest{},
 		Application:               application,
 		StartingGroupAddressLabel: startingGroupAddressLabel,
-		_StatusRequest:            &_StatusRequest{},
+		reservedField0:            reservedField0,
+		reservedField1:            reservedField1,
 	}
 	_child._StatusRequest._StatusRequestChildRequirements = _child
 	return _child, nil
@@ -226,7 +237,15 @@ func (m *_StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x73))
+			var reserved byte = byte(0x73)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x73),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -234,7 +253,15 @@ func (m *_StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x07))
+			var reserved byte = byte(0x07)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x07),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

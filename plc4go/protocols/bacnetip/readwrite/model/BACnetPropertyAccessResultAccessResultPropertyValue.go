@@ -150,12 +150,12 @@ func BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyAccessResultAccessResultPropertyValue{
-		PropertyValue: propertyValue,
 		_BACnetPropertyAccessResultAccessResult: &_BACnetPropertyAccessResultAccessResult{
 			ObjectTypeArgument:         objectTypeArgument,
 			PropertyIdentifierArgument: propertyIdentifierArgument,
 			PropertyArrayIndexArgument: propertyArrayIndexArgument,
 		},
+		PropertyValue: propertyValue,
 	}
 	_child._BACnetPropertyAccessResultAccessResult._BACnetPropertyAccessResultAccessResultChildRequirements = _child
 	return _child, nil

@@ -204,7 +204,12 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	}
 
 	// Create the instance
-	return NewBACnetWriteAccessSpecification(objectIdentifier, openingTag, listOfPropertyWriteDefinition, closingTag), nil
+	return &_BACnetWriteAccessSpecification{
+		ObjectIdentifier:              objectIdentifier,
+		OpeningTag:                    openingTag,
+		ListOfPropertyWriteDefinition: listOfPropertyWriteDefinition,
+		ClosingTag:                    closingTag,
+	}, nil
 }
 
 func (m *_BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffer) error {

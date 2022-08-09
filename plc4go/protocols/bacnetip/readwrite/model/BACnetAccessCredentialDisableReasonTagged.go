@@ -200,7 +200,13 @@ func BACnetAccessCredentialDisableReasonTaggedParse(readBuffer utils.ReadBuffer,
 	}
 
 	// Create the instance
-	return NewBACnetAccessCredentialDisableReasonTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetAccessCredentialDisableReasonTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetAccessCredentialDisableReasonTagged) Serialize(writeBuffer utils.WriteBuffer) error {

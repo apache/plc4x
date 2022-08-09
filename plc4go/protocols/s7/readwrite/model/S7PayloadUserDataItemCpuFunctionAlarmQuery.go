@@ -60,6 +60,9 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 	SyntaxId  SyntaxIdType
 	QueryType QueryType
 	AlarmType AlarmType
+	// Reserved Fields
+	reservedField0 *uint8
+	reservedField1 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -266,6 +269,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for syntaxId")
 	}
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -277,6 +281,8 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -293,6 +299,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(closeErr, "Error closing for queryType")
 	}
 
+	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -304,6 +311,8 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 				"expected value": uint8(0x34),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -326,10 +335,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemCpuFunctionAlarmQuery{
+		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 		SyntaxId:               syntaxId,
 		QueryType:              queryType,
 		AlarmType:              alarmType,
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
+		reservedField0:         reservedField0,
+		reservedField1:         reservedField1,
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil
@@ -381,7 +392,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) Serialize(writeBuffer util
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00))
+			var reserved uint8 = uint8(0x00)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x00),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -401,7 +420,15 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) Serialize(writeBuffer util
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x34))
+			var reserved uint8 = uint8(0x34)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x34),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -200,12 +200,12 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength u
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckVTData{
-		VtSessionIdentifier: vtSessionIdentifier,
-		VtNewData:           vtNewData,
-		VtDataFlag:          vtDataFlag,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		VtSessionIdentifier: vtSessionIdentifier,
+		VtNewData:           vtNewData,
+		VtDataFlag:          vtDataFlag,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

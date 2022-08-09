@@ -150,8 +150,8 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, peekedTagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesAction{
-		Action:                action,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		Action:                action,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

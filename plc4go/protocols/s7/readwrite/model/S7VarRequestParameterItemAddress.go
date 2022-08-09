@@ -162,8 +162,8 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRe
 
 	// Create a partially initialized instance
 	_child := &_S7VarRequestParameterItemAddress{
-		Address:                    address,
 		_S7VarRequestParameterItem: &_S7VarRequestParameterItem{},
+		Address:                    address,
 	}
 	_child._S7VarRequestParameterItem._S7VarRequestParameterItemChildRequirements = _child
 	return _child, nil

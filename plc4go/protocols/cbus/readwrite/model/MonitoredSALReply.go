@@ -150,11 +150,11 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 
 	// Create a partially initialized instance
 	_child := &_MonitoredSALReply{
-		MonitoredSAL: monitoredSAL,
 		_EncodedReply: &_EncodedReply{
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
+		MonitoredSAL: monitoredSAL,
 	}
 	_child._EncodedReply._EncodedReplyChildRequirements = _child
 	return _child, nil

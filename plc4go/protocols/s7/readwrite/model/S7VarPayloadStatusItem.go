@@ -124,7 +124,9 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadStatu
 	}
 
 	// Create the instance
-	return NewS7VarPayloadStatusItem(returnCode), nil
+	return &_S7VarPayloadStatusItem{
+		ReturnCode: returnCode,
+	}, nil
 }
 
 func (m *_S7VarPayloadStatusItem) Serialize(writeBuffer utils.WriteBuffer) error {

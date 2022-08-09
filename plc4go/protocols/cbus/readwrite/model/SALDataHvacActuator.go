@@ -154,8 +154,8 @@ func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId Applica
 
 	// Create a partially initialized instance
 	_child := &_SALDataHvacActuator{
-		VentilationData: ventilationData,
 		_SALData:        &_SALData{},
+		VentilationData: ventilationData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

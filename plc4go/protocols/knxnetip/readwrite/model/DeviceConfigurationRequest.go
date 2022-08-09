@@ -179,9 +179,9 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 
 	// Create a partially initialized instance
 	_child := &_DeviceConfigurationRequest{
+		_KnxNetIpMessage:                    &_KnxNetIpMessage{},
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
 		Cemi:                                cemi,
-		_KnxNetIpMessage:                    &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

@@ -180,8 +180,8 @@ func MediaTransportControlDataNextPreviousTrackParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataNextPreviousTrack{
-		Operation:                  operation,
 		_MediaTransportControlData: &_MediaTransportControlData{},
+		Operation:                  operation,
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

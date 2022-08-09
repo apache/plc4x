@@ -153,7 +153,11 @@ func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (AdsNotificationSam
 	}
 
 	// Create the instance
-	return NewAdsNotificationSample(notificationHandle, sampleSize, data), nil
+	return &_AdsNotificationSample{
+		NotificationHandle: notificationHandle,
+		SampleSize:         sampleSize,
+		Data:               data,
+	}, nil
 }
 
 func (m *_AdsNotificationSample) Serialize(writeBuffer utils.WriteBuffer) error {

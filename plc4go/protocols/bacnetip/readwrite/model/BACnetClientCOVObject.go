@@ -150,8 +150,8 @@ func BACnetClientCOVObjectParse(readBuffer utils.ReadBuffer) (BACnetClientCOVObj
 
 	// Create a partially initialized instance
 	_child := &_BACnetClientCOVObject{
-		RealIncrement:    realIncrement,
 		_BACnetClientCOV: &_BACnetClientCOV{},
+		RealIncrement:    realIncrement,
 	}
 	_child._BACnetClientCOV._BACnetClientCOVChildRequirements = _child
 	return _child, nil

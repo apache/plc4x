@@ -150,8 +150,8 @@ func BACnetLogDataLogDataEntryUnsignedValueParse(readBuffer utils.ReadBuffer) (B
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataEntryUnsignedValue{
-		UnsignedValue:              unsignedValue,
 		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
+		UnsignedValue:              unsignedValue,
 	}
 	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
 	return _child, nil

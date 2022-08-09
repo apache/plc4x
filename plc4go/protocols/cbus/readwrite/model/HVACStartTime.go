@@ -192,7 +192,9 @@ func HVACStartTimeParse(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
 	}
 
 	// Create the instance
-	return NewHVACStartTime(minutesSinceSunday12AM), nil
+	return &_HVACStartTime{
+		MinutesSinceSunday12AM: minutesSinceSunday12AM,
+	}, nil
 }
 
 func (m *_HVACStartTime) Serialize(writeBuffer utils.WriteBuffer) error {

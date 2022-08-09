@@ -320,7 +320,15 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	}
 
 	// Create the instance
-	return NewBACnetConstructedDataElement(peekedTagHeader, applicationTag, contextTag, constructedData, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument), nil
+	return &_BACnetConstructedDataElement{
+		ObjectTypeArgument:         objectTypeArgument,
+		PropertyIdentifierArgument: propertyIdentifierArgument,
+		ArrayIndexArgument:         arrayIndexArgument,
+		PeekedTagHeader:            peekedTagHeader,
+		ApplicationTag:             applicationTag,
+		ContextTag:                 contextTag,
+		ConstructedData:            constructedData,
+	}, nil
 }
 
 func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -236,15 +236,15 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, 
 
 	// Create a partially initialized instance
 	_child := &_MPropReadCon{
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 		Data:                data,
-		_CEMI: &_CEMI{
-			Size: size,
-		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

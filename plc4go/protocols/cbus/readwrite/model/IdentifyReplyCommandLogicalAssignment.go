@@ -167,10 +167,10 @@ func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, att
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandLogicalAssignment{
-		LogicAssigment: logicAssigment,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		LogicAssigment: logicAssigment,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

@@ -147,7 +147,10 @@ func BACnetAddressBindingParse(readBuffer utils.ReadBuffer) (BACnetAddressBindin
 	}
 
 	// Create the instance
-	return NewBACnetAddressBinding(deviceIdentifier, deviceAddress), nil
+	return &_BACnetAddressBinding{
+		DeviceIdentifier: deviceIdentifier,
+		DeviceAddress:    deviceAddress,
+	}, nil
 }
 
 func (m *_BACnetAddressBinding) Serialize(writeBuffer utils.WriteBuffer) error {

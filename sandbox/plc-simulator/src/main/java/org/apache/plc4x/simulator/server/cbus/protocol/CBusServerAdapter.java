@@ -20,12 +20,13 @@ package org.apache.plc4x.simulator.server.cbus.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.vavr.CheckedRunnable;
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -34,11 +35,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
+    private static final List<Byte> AVAILABLE_UNITS = Arrays.asList((byte) 0, (byte) 23, (byte) 48);
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CBusServerAdapter.class);
 
     private Context context;
 
-    private static final RequestContext requestContext = new RequestContext(false, false, false);
+    private static final RequestContext requestContext = new RequestContext(false);
 
     private static boolean connect;
     private static boolean smart;
@@ -53,7 +56,9 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
     private final Lock writeLock = new ReentrantLock();
 
-    private ScheduledFuture<?> sf;
+    private ScheduledFuture<?> salMonitorFuture;
+
+    private ScheduledFuture<?> mmiMonitorFuture;
 
     public CBusServerAdapter(Context context) {
         this.context = context;
@@ -68,8 +73,10 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (sf != null)
-            sf.cancel(false);
+        if (salMonitorFuture != null)
+            salMonitorFuture.cancel(false);
+        if (mmiMonitorFuture != null)
+            mmiMonitorFuture.cancel(false);
         super.channelInactive(ctx);
     }
 
@@ -78,10 +85,12 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         if (!(msg instanceof CBusMessage)) {
             return;
         }
+        // Serial is slow
+        TimeUnit.MILLISECONDS.sleep(100);
         if (!smart && !connect) {
             // In this mode every message will be echoed
             LOGGER.info("Sending echo");
-            ctx.writeAndFlush(msg);
+            ctx.write(msg);
         }
         try {
             writeLock.lock();
@@ -127,13 +136,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             InterfaceOptions1 interfaceOptions1 = ((ParameterValueInterfaceOptions1) calDataWrite.getParameterValue()).getValue();
                             idmon = interfaceOptions1.getIdmon();
                             monitor = interfaceOptions1.getMonitor();
-                            if (monitor) startMonitor(ctx);
-                            else stopMonitor();
+                            if (monitor) startMMIMonitor(ctx);
+                            else stopMMIMonitor();
                             smart = interfaceOptions1.getSmart();
                             srchk = interfaceOptions1.getSrchk();
                             // TODO: add support for xonxoff
                             // xonxoff = interfaceOptions1.getXonXoff();
                             connect = interfaceOptions1.getConnect();
+                            if (connect) startSALMonitor(ctx);
+                            else stopSALMonitor();
                             buildCBusOptions();
                             acknowledger.run();
                             return;
@@ -167,13 +178,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             InterfaceOptions1 interfaceOptions1PowerUpSettings = ((ParameterValueInterfaceOptions1PowerUpSettings) calDataWrite.getParameterValue()).getValue().getInterfaceOptions1();
                             idmon = interfaceOptions1PowerUpSettings.getIdmon();
                             monitor = interfaceOptions1PowerUpSettings.getMonitor();
-                            if (monitor) startMonitor(ctx);
-                            else stopMonitor();
+                            if (monitor) startMMIMonitor(ctx);
+                            else stopMMIMonitor();
                             smart = interfaceOptions1PowerUpSettings.getSmart();
                             srchk = interfaceOptions1PowerUpSettings.getSrchk();
                             // TODO: add support for xonxoff
                             // xonxoff = interfaceOptions1PowerUpSettings.getXonXoff();
                             connect = interfaceOptions1PowerUpSettings.getConnect();
+                            if (connect) startSALMonitor(ctx);
+                            else stopSALMonitor();
                             buildCBusOptions();
                             acknowledger.run();
                             return;
@@ -202,8 +215,133 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 LOGGER.info("Handling CBusCommand\n{}", cbusCommand);
                 if (cbusCommand instanceof CBusCommandPointToPoint) {
                     CBusCommandPointToPoint cBusCommandPointToPoint = (CBusCommandPointToPoint) cbusCommand;
-                    LOGGER.info("Handling CBusCommandPointToPoint\n{}", cBusCommandPointToPoint);
-                    // TODO: handle this
+                    CBusPointToPointCommand command = cBusCommandPointToPoint.getCommand();
+                    UnitAddress unitAddress = null;
+                    if (command instanceof CBusPointToPointCommandIndirect) {
+                        CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect = (CBusPointToPointCommandIndirect) command;
+                        // TODO: handle bridgeAddress
+                        // TODO: handle networkRoute
+                        unitAddress = cBusPointToPointCommandIndirect.getUnitAddress();
+                    }
+                    if (command instanceof CBusPointToPointCommandDirect) {
+                        CBusPointToPointCommandDirect cBusPointToPointCommandDirect = (CBusPointToPointCommandDirect) command;
+                        unitAddress = cBusPointToPointCommandDirect.getUnitAddress();
+                    }
+                    if (unitAddress == null) {
+                        throw new IllegalStateException("Unit address should be set at this point");
+                    }
+                    boolean knownUnit = AVAILABLE_UNITS.contains(unitAddress.getAddress());
+                    CALData calData = command.getCalData();
+                    // TODO: handle other Datatypes
+                    if (calData instanceof CALDataIdentify) {
+                        short numBytes = 0;
+                        IdentifyReplyCommand identifyReplyCommand;
+                        CALDataIdentify calDataIdentify = (CALDataIdentify) calData;
+                        switch (calDataIdentify.getAttribute()) {
+                            case Manufacturer:
+                                numBytes = 0x08;
+                                identifyReplyCommand = new IdentifyReplyCommandManufacturer("Apache", numBytes);
+                                break;
+                            case Type:
+                                numBytes = 0x08;
+                                identifyReplyCommand = new IdentifyReplyCommandType("plc4x-si", numBytes);
+                                break;
+                            case FirmwareVersion:
+                                numBytes = 0x08;
+                                identifyReplyCommand = new IdentifyReplyCommandFirmwareVersion("0.9", numBytes);
+                                break;
+                            case Summary:
+                                numBytes = 0x09;
+                                identifyReplyCommand = new IdentifyReplyCommandFirmwareSummary("0.9", (byte) 0xAF, "0.0", numBytes);
+                                break;
+                            case ExtendedDiagnosticSummary:
+                                numBytes = 0x0C;
+                                identifyReplyCommand = new IdentifyReplyCommandExtendedDiagnosticSummary(ApplicationIdContainer.FREE_USAGE_01, ApplicationIdContainer.FREE_USAGE_0F, (byte) 0x0, 0x0, 4711l, (byte) 0x13, false, false, false, true, false, false, false, false, false, false, false, false, false, numBytes);
+                                break;
+                            case NetworkTerminalLevels:
+                                numBytes = 0x0C;
+                                identifyReplyCommand = new IdentifyReplyCommandNetworkTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
+                                break;
+                            case TerminalLevel:
+                                numBytes = 0x0C;
+                                identifyReplyCommand = new IdentifyReplyCommandTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
+                                break;
+                            case NetworkVoltage:
+                                numBytes = 0x05;
+                                identifyReplyCommand = new IdentifyReplyCommandNetworkVoltage("48", "7", numBytes);
+                                break;
+                            case GAVValuesCurrent:
+                                numBytes = 0x10;
+                                identifyReplyCommand = new IdentifyReplyCommandGAVValuesCurrent(new byte[]{
+                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                                }, numBytes);
+                                break;
+                            case GAVValuesStored:
+                                numBytes = 0x10;
+                                identifyReplyCommand = new IdentifyReplyCommandGAVValuesStored(new byte[]{
+                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                                }, numBytes);
+                                break;
+                            case GAVPhysicalAddresses:
+                                numBytes = 0x10;
+                                identifyReplyCommand = new IdentifyReplyCommandGAVPhysicalAddresses(new byte[]{
+                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                                }, numBytes);
+                                break;
+                            case LogicalAssignment:
+                                numBytes = 0x0E;
+                                identifyReplyCommand = new IdentifyReplyCommandLogicalAssignment(List.of(new LogicAssignment(false, true, true, true, true, true)), numBytes);
+                                break;
+                            case Delays:
+                                numBytes = 0x0F;
+                                identifyReplyCommand = new IdentifyReplyCommandDelays(new byte[]{0x3}, (byte) 0x13, numBytes);
+                                break;
+                            case MinimumLevels:
+                                numBytes = 0x0E;
+                                identifyReplyCommand = new IdentifyReplyCommandMinimumLevels(new byte[]{0x3}, numBytes);
+                                break;
+                            case MaximumLevels:
+                                numBytes = 0x0F;
+                                identifyReplyCommand = new IdentifyReplyCommandMaximumLevels(new byte[]{0xF}, numBytes);
+                                break;
+                            case CurrentSenseLevels:
+                                numBytes = 0x10;
+                                identifyReplyCommand = new IdentifyReplyCommandCurrentSenseLevels(new byte[]{0xF}, numBytes);
+                                break;
+                            case OutputUnitSummary:
+                                numBytes = 0x12;
+                                identifyReplyCommand = new IdentifyReplyCommandOutputUnitSummary(new IdentifyReplyCommandUnitSummary(false, false, false, false, false, false, false, false), (byte) 0x4, (byte) 0x4, (short) 45, numBytes);
+                                break;
+                            case DSIStatus:
+                                numBytes = 0x12;
+                                identifyReplyCommand = new IdentifyReplyCommandDSIStatus(ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, UnitStatus.OK, (byte) 0x34, numBytes);
+                                break;
+                            default:
+                                throw new IllegalStateException("unmapped type " + calDataIdentify.getAttribute());
+                        }
+
+                        calData = new CALDataIdentifyReply(getReplyCommandType(numBytes + 1), null, ((CALDataIdentify) calData).getAttribute(), identifyReplyCommand, requestContext);
+                        CALReply calReply;
+                        if (exstat) {
+                            calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
+                        } else {
+                            calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+                        }
+                        EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+                        ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
+                        ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+                        Alpha alpha = requestCommand.getAlpha();
+                        if (alpha != null) {
+                            Confirmation confirmation = new Confirmation(alpha, null, ConfirmationType.CONFIRMATION_SUCCESSFUL);
+                            replyOrConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, replyOrConfirmation, cBusOptions, requestContext);
+                        }
+                        CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+                        LOGGER.info("Send identify response\n{}", response);
+                        ctx.writeAndFlush(response);
+                    }
                     return;
                 }
                 if (cbusCommand instanceof CBusCommandPointToMultiPoint) {
@@ -214,13 +352,21 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         StatusRequest statusRequest = cBusPointToMultiPointCommandStatus.getStatusRequest();
                         if (statusRequest instanceof StatusRequestBinaryState) {
                             StatusRequestBinaryState statusRequestBinaryState = (StatusRequestBinaryState) statusRequest;
-                            StatusHeader statusHeader = new StatusHeader((short) (2 + 1)); // 2 we have always + 1 as we got one status byte
-                            // TODO: map actuall values from simulator
-                            byte blockStart = 0x0;
-                            List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                            // TODO: this might be extended or standard depeding on exstat
-                            StandardFormatStatusReply standardFormatStatusReply = new StandardFormatStatusReply(statusHeader, statusRequestBinaryState.getApplication(), blockStart, statusBytes);
-                            EncodedReply encodedReply = new EncodedReplyStandardFormatStatusReply((byte) 0xC0, standardFormatStatusReply, cBusOptions, requestContext);
+                            CALReply calReply;
+                            if (exstat) {
+                                // TODO: map actuall values from simulator
+                                byte blockStart = 0x0;
+                                List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                                CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryState.getApplication(), blockStart, statusBytes, null, requestContext);
+                                calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
+                            } else {
+                                // TODO: map actuall values from simulator
+                                byte blockStart = 0x0;
+                                List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                                CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandReply_3Bytes, null, statusRequestBinaryState.getApplication(), blockStart, statusBytes, requestContext);
+                                calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+                            }
+                            EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
                             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
                             Alpha alpha = requestCommand.getAlpha();
@@ -241,13 +387,13 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         }
                         if (statusRequest instanceof StatusRequestLevel) {
                             StatusRequestLevel statusRequestLevel = (StatusRequestLevel) statusRequest;
-                            ExtendedStatusHeader statusHeader = new ExtendedStatusHeader((short) (3 + 2)); // 3 we have always (coding is extra opposed to the standard) + 2 as we got one level information
                             StatusCoding coding = StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE;
                             // TODO: map actuall values from simulator
                             byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
                             List<LevelInformation> levelInformations = List.of(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
-                            ExtendedFormatStatusReply extendedFormatStatusReply = new ExtendedFormatStatusReply(statusHeader, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations);
-                            EncodedReply encodedReply = new EncodedReplyExtendedFormatStatusReply((byte) 0xC0, extendedFormatStatusReply, cBusOptions, requestContext);
+                            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations, requestContext);
+                            CALReply calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
+                            EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
                             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
                             Alpha alpha = requestCommand.getAlpha();
@@ -312,6 +458,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 pun = false;
                 pcn = false;
                 srchk = false;
+                stopSALMonitor();
                 return;
             }
             if (request instanceof RequestSmartConnectShortcut) {
@@ -321,17 +468,18 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 return;
             }
         } finally {
+            ctx.flush();
             writeLock.unlock();
         }
     }
 
-    private void startMonitor(ChannelHandlerContext ctx) {
-        if (sf != null) {
-            LOGGER.debug("Monitor already running");
+    private void startSALMonitor(ChannelHandlerContext ctx) {
+        if (salMonitorFuture != null) {
+            LOGGER.debug("SAL Monitor already running");
             return;
         }
         LOGGER.info("Starting monitor");
-        sf = ctx.executor().scheduleAtFixedRate(() -> {
+        salMonitorFuture = ctx.executor().scheduleAtFixedRate(() -> {
             try {
                 writeLock.lock();
                 MonitoredSAL monitoredSAL;
@@ -368,7 +516,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
                 ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
                 CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
-                LOGGER.info("[Monitor] Sending out\n{}\n{}", message, encodedReply);
+                LOGGER.info("[SAL Monitor] Sending out\n{}\n{}", message, encodedReply);
                 ctx.writeAndFlush(message);
             } finally {
                 writeLock.unlock();
@@ -376,10 +524,70 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         }, 5, 5, TimeUnit.SECONDS);
     }
 
-    private void stopMonitor() {
+    private void stopMMIMonitor() {
+        if (salMonitorFuture == null) {
+            return;
+        }
+        LOGGER.info("Stopping SAL monitor");
+        salMonitorFuture.cancel(false);
+        salMonitorFuture = null;
+    }
+
+    private void startMMIMonitor(ChannelHandlerContext ctx) {
+        if (mmiMonitorFuture != null) {
+            LOGGER.debug("MMI Monitor already running");
+            return;
+        }
+        LOGGER.info("Starting MMI monitor");
+        mmiMonitorFuture = ctx.executor().scheduleAtFixedRate(() -> {
+            // TODO: for whatever reason those are not send with a crc
+            cBusOptions = new CBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn, false);
+            try {
+                writeLock.lock();
+                CALReply calReply;
+                if (cBusOptions.getExstat()) {
+                    List<StatusByte> statusBytes = new LinkedList<>();
+                    for (int i = 0; i < 22; i++) {
+                        statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                    }
+                    CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, StatusCoding.BINARY_BY_ELSEWHERE, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, null, requestContext);
+                    calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
+                } else {
+                    List<StatusByte> statusBytes = new LinkedList<>();
+                    for (int i = 0; i < 23; i++) {
+                        statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                    }
+                    CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandStatus_25Bytes, null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, requestContext);
+                    calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+                }
+                EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+                Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
+                ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
+                CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+                LOGGER.info("[MMI Monitor] Sending out\n{}\n{}", message, encodedReply);
+                ctx.writeAndFlush(message);
+            } finally {
+                writeLock.unlock();
+            }
+        }, 5, 5, TimeUnit.SECONDS);
+    }
+
+    private void stopSALMonitor() {
+        if (mmiMonitorFuture == null) {
+            return;
+        }
         LOGGER.info("Stopping monitor");
-        sf.cancel(false);
-        sf = null;
+        mmiMonitorFuture.cancel(false);
+        mmiMonitorFuture = null;
+    }
+
+    private CALCommandTypeContainer getReplyCommandType(int numBytes) {
+        for (CALCommandTypeContainer value : CALCommandTypeContainer.values()) {
+            if (value.getCommandType() == CALCommandType.REPLY && value.getNumBytes() == numBytes) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("No reply type for " + numBytes);
     }
 
 }

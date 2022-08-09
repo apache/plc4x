@@ -147,7 +147,10 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer utils.ReadBuff
 	}
 
 	// Create the instance
-	return NewBACnetLandingDoorStatusLandingDoorsListEntry(floorNumber, doorStatus), nil
+	return &_BACnetLandingDoorStatusLandingDoorsListEntry{
+		FloorNumber: floorNumber,
+		DoorStatus:  doorStatus,
+	}, nil
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) Serialize(writeBuffer utils.WriteBuffer) error {

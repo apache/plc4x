@@ -202,6 +202,16 @@
     [reserved       uint 8  '0x00']
 ]
 
+[type ReservedTypeTestParent
+    [reserved       uint 8  '0x00']
+    [simple  uint 8 simpleField]
+    [typeSwitch simpleField
+        ['0' ReservedTypeTestChild
+            [reserved       uint 8  '0x00']
+        ]
+    ]
+]
+
 // TODO: So far only trouble in GO, C seems OK.
 [type VirtualFieldTest
     [simple  uint 8 simpleField]

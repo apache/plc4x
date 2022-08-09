@@ -150,8 +150,8 @@ func BACnetPropertyStatesProtocolLevelParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesProtocolLevel{
-		ProtocolLevel:         protocolLevel,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		ProtocolLevel:         protocolLevel,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

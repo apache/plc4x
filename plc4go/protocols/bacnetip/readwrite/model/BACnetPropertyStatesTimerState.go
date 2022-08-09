@@ -150,8 +150,8 @@ func BACnetPropertyStatesTimerStateParse(readBuffer utils.ReadBuffer, peekedTagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesTimerState{
-		TimerState:            timerState,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		TimerState:            timerState,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

@@ -121,7 +121,7 @@ func AdsConstantsParse(readBuffer utils.ReadBuffer) (AdsConstants, error) {
 	}
 
 	// Create the instance
-	return NewAdsConstants(), nil
+	return &_AdsConstants{}, nil
 }
 
 func (m *_AdsConstants) Serialize(writeBuffer utils.WriteBuffer) error {

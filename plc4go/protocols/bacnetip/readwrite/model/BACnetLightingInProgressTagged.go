@@ -158,7 +158,12 @@ func BACnetLightingInProgressTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetLightingInProgressTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetLightingInProgressTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetLightingInProgressTagged) Serialize(writeBuffer utils.WriteBuffer) error {

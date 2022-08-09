@@ -169,7 +169,12 @@ func SerialNumberParse(readBuffer utils.ReadBuffer) (SerialNumber, error) {
 	}
 
 	// Create the instance
-	return NewSerialNumber(octet1, octet2, octet3, octet4), nil
+	return &_SerialNumber{
+		Octet1: octet1,
+		Octet2: octet2,
+		Octet3: octet3,
+		Octet4: octet4,
+	}, nil
 }
 
 func (m *_SerialNumber) Serialize(writeBuffer utils.WriteBuffer) error {

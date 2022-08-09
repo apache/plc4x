@@ -118,7 +118,9 @@ func ChecksumParse(readBuffer utils.ReadBuffer) (Checksum, error) {
 	}
 
 	// Create the instance
-	return NewChecksum(value), nil
+	return &_Checksum{
+		Value: value,
+	}, nil
 }
 
 func (m *_Checksum) Serialize(writeBuffer utils.WriteBuffer) error {

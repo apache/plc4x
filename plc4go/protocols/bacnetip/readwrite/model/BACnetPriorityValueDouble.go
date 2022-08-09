@@ -150,10 +150,10 @@ func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgum
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueDouble{
-		DoubleValue: doubleValue,
 		_BACnetPriorityValue: &_BACnetPriorityValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		DoubleValue: doubleValue,
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil

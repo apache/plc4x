@@ -232,12 +232,12 @@ func BACnetConstructedDataSubordinateAnnotationsParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSubordinateAnnotations{
-		NumberOfDataElements:   numberOfDataElements,
-		SubordinateAnnotations: subordinateAnnotations,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements:   numberOfDataElements,
+		SubordinateAnnotations: subordinateAnnotations,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

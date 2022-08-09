@@ -150,8 +150,8 @@ func BACnetPropertyStatesFileAccessMethodParse(readBuffer utils.ReadBuffer, peek
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesFileAccessMethod{
-		FileAccessMethod:      fileAccessMethod,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		FileAccessMethod:      fileAccessMethod,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

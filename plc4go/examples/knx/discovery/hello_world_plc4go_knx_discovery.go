@@ -70,9 +70,9 @@ func main() {
 
 		// Try to find all KNX devices on the current network
 		browseRequest, err := connection.BrowseRequestBuilder().
-			AddItem("allDevices", "[1-15].[1-15].[0-255]").
-			//AddItem("allMyDevices", "[1-3].[1-6].[0-60]").
-			//AddItem("onlyOneDevice", "1.1.20")
+			AddQuery("allDevices", "[1-15].[1-15].[0-255]").
+			//AddQuery("allMyDevices", "[1-3].[1-6].[0-60]").
+			//AddQuery("onlyOneDevice", "1.1.20")
 			Build()
 		if err != nil {
 			log.Error().Err(err).Msg("error creating browse request")
@@ -85,7 +85,7 @@ func main() {
 
 			// Try to get all the com-objects and the group addresses they are attached to.
 			browseRequest, err := connection.BrowseRequestBuilder().
-				AddItem("comObjects", knxAddress+"#com-obj").
+				AddQuery("comObjects", knxAddress+"#com-obj").
 				Build()
 			if err != nil {
 				log.Error().Err(err).Msg("error creating read request")

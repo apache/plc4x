@@ -150,8 +150,8 @@ func BACnetOptionalUnsignedValueParse(readBuffer utils.ReadBuffer) (BACnetOption
 
 	// Create a partially initialized instance
 	_child := &_BACnetOptionalUnsignedValue{
-		UnsignedValue:           unsignedValue,
 		_BACnetOptionalUnsigned: &_BACnetOptionalUnsigned{},
+		UnsignedValue:           unsignedValue,
 	}
 	_child._BACnetOptionalUnsigned._BACnetOptionalUnsignedChildRequirements = _child
 	return _child, nil

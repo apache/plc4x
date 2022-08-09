@@ -190,12 +190,26 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.udpConn != nil
 }
 
-func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
+func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
 	_, _ = m.reader.Peek(1)
 	return uint32(m.reader.Buffered()), nil
+}
+
+func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+	nBytes := uint32(1)
+	for {
+		_bytes, err := m.PeekReadableBytes(nBytes)
+		if err != nil {
+			return errors.Wrap(err, "Error while peeking")
+		}
+		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], m.reader); !keepGoing {
+			return nil
+		}
+		nBytes++
+	}
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {

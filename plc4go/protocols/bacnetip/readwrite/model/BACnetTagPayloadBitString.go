@@ -191,7 +191,12 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadBitString(unusedBits, data, unused, actualLength), nil
+	return &_BACnetTagPayloadBitString{
+		ActualLength: actualLength,
+		UnusedBits:   unusedBits,
+		Data:         data,
+		Unused:       unused,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) error {

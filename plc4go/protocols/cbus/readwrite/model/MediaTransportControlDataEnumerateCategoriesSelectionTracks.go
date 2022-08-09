@@ -224,9 +224,9 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(readBuffer
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
+		_MediaTransportControlData: &_MediaTransportControlData{},
 		EnumerateType:              enumerateType,
 		Start:                      start,
-		_MediaTransportControlData: &_MediaTransportControlData{},
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

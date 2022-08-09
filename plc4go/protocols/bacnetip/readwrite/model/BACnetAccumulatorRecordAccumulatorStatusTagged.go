@@ -158,7 +158,12 @@ func BACnetAccumulatorRecordAccumulatorStatusTaggedParse(readBuffer utils.ReadBu
 	}
 
 	// Create the instance
-	return NewBACnetAccumulatorRecordAccumulatorStatusTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error {

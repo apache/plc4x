@@ -147,7 +147,10 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (BACn
 	}
 
 	// Create the instance
-	return NewBACnetAuthenticationPolicyListEntry(credentialDataInput, index), nil
+	return &_BACnetAuthenticationPolicyListEntry{
+		CredentialDataInput: credentialDataInput,
+		Index:               index,
+	}, nil
 }
 
 func (m *_BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.WriteBuffer) error {

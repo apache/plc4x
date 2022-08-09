@@ -150,8 +150,8 @@ func BACnetLogDataLogDataEntryRealValueParse(readBuffer utils.ReadBuffer) (BACne
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataEntryRealValue{
-		RealValue:                  realValue,
 		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
+		RealValue:                  realValue,
 	}
 	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
 	return _child, nil

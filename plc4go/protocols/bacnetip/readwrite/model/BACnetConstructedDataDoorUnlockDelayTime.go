@@ -182,11 +182,11 @@ func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDoorUnlockDelayTime{
-		DoorUnlockDelayTime: doorUnlockDelayTime,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		DoorUnlockDelayTime: doorUnlockDelayTime,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

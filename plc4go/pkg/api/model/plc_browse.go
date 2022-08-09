@@ -19,35 +19,29 @@
 
 package model
 
+import "github.com/apache/plc4x/plc4go/pkg/api/values"
+
 type PlcBrowseRequestBuilder interface {
-	AddItem(name string, query string) PlcBrowseRequestBuilder
+	AddQuery(name string, query string) PlcBrowseRequestBuilder
 	Build() (PlcBrowseRequest, error)
 }
 
-type PlcBrowseQueryResult interface {
-	GetField() PlcField
-	GetName() string
-	IsReadable() bool
-	IsWritable() bool
-	IsSubscribable() bool
-	GetPossibleDataTypes() []string
-}
-
 type PlcBrowseRequest interface {
+	PlcRequest
 	// Execute Will not return until a potential scan is finished and will return all results in one block
 	Execute() <-chan PlcBrowseRequestResult
 	// ExecuteWithInterceptor Will call the given callback for every found resource
 	ExecuteWithInterceptor(interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
-	GetQueryNames() []string
-	GetQueryString(name string) string
-	PlcRequest
+	GetFieldNames() []string
+	GetField(name string) PlcField
 }
 
 type PlcBrowseResponse interface {
-	GetRequest() PlcBrowseRequest
-	GetQueryNames() []string
-	GetQueryResults(name string) []PlcBrowseQueryResult
 	PlcResponse
+	GetRequest() PlcBrowseRequest
+	GetFieldNames() []string
+	GetResponseCode(name string) PlcResponseCode
+	GetQueryResults(name string) []PlcBrowseFoundField
 }
 
 type PlcBrowseRequestResult interface {
@@ -58,7 +52,17 @@ type PlcBrowseRequestResult interface {
 
 type PlcBrowseEvent interface {
 	GetRequest() PlcBrowseRequest
-	GetQueryName() string
-	GetResult() PlcBrowseQueryResult
+	GetFieldName() string
+	GetResult() PlcBrowseFoundField
 	GetErr() error
+}
+
+type PlcBrowseFoundField interface {
+	GetField() PlcField
+	GetName() string
+	IsReadable() bool
+	IsWritable() bool
+	IsSubscribable() bool
+	GetPossibleDataTypes() []string
+	GetAttributes() map[string]values.PlcValue
 }

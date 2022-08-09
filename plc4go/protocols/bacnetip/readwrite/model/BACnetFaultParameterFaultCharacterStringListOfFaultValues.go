@@ -184,7 +184,12 @@ func BACnetFaultParameterFaultCharacterStringListOfFaultValuesParse(readBuffer u
 	}
 
 	// Create the instance
-	return NewBACnetFaultParameterFaultCharacterStringListOfFaultValues(openingTag, listOfFaultValues, closingTag, tagNumber), nil
+	return &_BACnetFaultParameterFaultCharacterStringListOfFaultValues{
+		TagNumber:         tagNumber,
+		OpeningTag:        openingTag,
+		ListOfFaultValues: listOfFaultValues,
+		ClosingTag:        closingTag,
+	}, nil
 }
 
 func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) Serialize(writeBuffer utils.WriteBuffer) error {

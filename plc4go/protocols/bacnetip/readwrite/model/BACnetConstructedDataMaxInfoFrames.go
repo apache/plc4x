@@ -182,11 +182,11 @@ func BACnetConstructedDataMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaxInfoFrames{
-		MaxInfoFrames: maxInfoFrames,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		MaxInfoFrames: maxInfoFrames,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

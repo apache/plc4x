@@ -162,7 +162,10 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	}
 
 	// Create the instance
-	return NewNetworkRoute(networkPCI, additionalBridgeAddresses), nil
+	return &_NetworkRoute{
+		NetworkPCI:                networkPCI,
+		AdditionalBridgeAddresses: additionalBridgeAddresses,
+	}, nil
 }
 
 func (m *_NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {

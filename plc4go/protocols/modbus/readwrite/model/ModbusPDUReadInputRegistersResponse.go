@@ -165,8 +165,8 @@ func ModbusPDUReadInputRegistersResponseParse(readBuffer utils.ReadBuffer, respo
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadInputRegistersResponse{
-		Value:      value,
 		_ModbusPDU: &_ModbusPDU{},
+		Value:      value,
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

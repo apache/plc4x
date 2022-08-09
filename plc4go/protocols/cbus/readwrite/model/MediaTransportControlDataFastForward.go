@@ -258,8 +258,8 @@ func MediaTransportControlDataFastForwardParse(readBuffer utils.ReadBuffer) (Med
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataFastForward{
-		Operation:                  operation,
 		_MediaTransportControlData: &_MediaTransportControlData{},
+		Operation:                  operation,
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

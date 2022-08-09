@@ -232,12 +232,12 @@ func BACnetConstructedDataControlGroupsParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataControlGroups{
-		NumberOfDataElements: numberOfDataElements,
-		ControlGroups:        controlGroups,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		ControlGroups:        controlGroups,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

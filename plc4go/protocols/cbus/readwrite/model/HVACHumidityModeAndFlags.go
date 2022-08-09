@@ -73,6 +73,8 @@ type _HVACHumidityModeAndFlags struct {
 	Setback        bool
 	Level          bool
 	Mode           HVACHumidityModeAndFlagsMode
+	// Reserved Fields
+	reservedField0 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -223,6 +225,7 @@ func HVACHumidityModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityMod
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -234,6 +237,8 @@ func HVACHumidityModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityMod
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -323,7 +328,14 @@ func HVACHumidityModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityMod
 	}
 
 	// Create the instance
-	return NewHVACHumidityModeAndFlags(auxiliaryLevel, guard, setback, level, mode), nil
+	return &_HVACHumidityModeAndFlags{
+		AuxiliaryLevel: auxiliaryLevel,
+		Guard:          guard,
+		Setback:        setback,
+		Level:          level,
+		Mode:           mode,
+		reservedField0: reservedField0,
+	}, nil
 }
 
 func (m *_HVACHumidityModeAndFlags) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -335,7 +347,15 @@ func (m *_HVACHumidityModeAndFlags) Serialize(writeBuffer utils.WriteBuffer) err
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

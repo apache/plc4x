@@ -266,13 +266,13 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 
 	// Create a partially initialized instance
 	_child := &_CEMIAdditionalInformationBusmonitorInfo{
+		_CEMIAdditionalInformation: &_CEMIAdditionalInformation{},
 		FrameErrorFlag:             frameErrorFlag,
 		BitErrorFlag:               bitErrorFlag,
 		ParityErrorFlag:            parityErrorFlag,
 		UnknownFlag:                unknownFlag,
 		LostFlag:                   lostFlag,
 		SequenceNumber:             sequenceNumber,
-		_CEMIAdditionalInformation: &_CEMIAdditionalInformation{},
 	}
 	_child._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _child
 	return _child, nil

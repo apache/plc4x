@@ -150,8 +150,8 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer)
 
 	// Create a partially initialized instance
 	_child := &_BACnetSpecialEventPeriodCalendarReference{
-		CalendarReference:         calendarReference,
 		_BACnetSpecialEventPeriod: &_BACnetSpecialEventPeriod{},
+		CalendarReference:         calendarReference,
 	}
 	_child._BACnetSpecialEventPeriod._BACnetSpecialEventPeriodChildRequirements = _child
 	return _child, nil

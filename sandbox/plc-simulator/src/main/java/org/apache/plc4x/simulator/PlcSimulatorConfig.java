@@ -21,7 +21,13 @@ package org.apache.plc4x.simulator;
 public class PlcSimulatorConfig {
     String host;
 
+    String s7Port;
+
     public String getHost() {
         return host;
+    }
+
+    public String getS7Port() {
+        return s7Port;
     }
 }

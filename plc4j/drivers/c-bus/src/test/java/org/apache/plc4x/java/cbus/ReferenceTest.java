@@ -33,69 +33,318 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReferenceTest {
 
+    public static final CBusOptions C_BUS_OPTIONS_WITH_SRCHK = new CBusOptions(false, false, false, false, false, false, false, false, true);
+
     RequestContext requestContext;
     CBusOptions cBusOptions;
 
     @BeforeEach
     void setUp() {
-        requestContext = new RequestContext(false, false, false);
+        requestContext = new RequestContext(false);
         cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, false);
     }
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/C-Bus%20Interface%20Requirements.pdf
     @Nested
     class InterfaceRequirementsTest {
-        // TODO: implement those
 
+        // 8.2
+        @Nested
+        class Level1InterfaceImplementationRequirements {
+
+            // 8.2.4
+            @Nested
+            class SerialInterfaceInitialisation {
+
+                @Test
+                void Step_1_Reset() throws Exception {
+                    byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_2_SetInterfaceOptions3() throws Exception {
+                    byte[] bytes = "@A3420002\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_3_SetInterfaceOptions1_PUN() throws Exception {
+                    byte[] bytes = "@A3410058\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_4_SetInterfaceOptions1() throws Exception {
+                    byte[] bytes = "@A3300058\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+
+            // 8.2.5
+            @Nested
+            class ConfirmationOfTransmission {
+                @Test
+                void SomeCommand() throws Exception {
+                    byte[] bytes = "\\0538000121A1g\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void success() throws Exception {
+                    byte[] bytes = "g.".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void checksumFailure() throws Exception {
+                    byte[] bytes = "g!".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void tooManyRetransmissions() throws Exception {
+                    byte[] bytes = "g#".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void corruptionInTransmission() throws Exception {
+                    byte[] bytes = "g$".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void noSystemClock() throws Exception {
+                    byte[] bytes = "g%".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+        }
+
+        // 8.3
+        @Nested
+        class Level2InterfaceImplementationRequirements {
+
+            // 8.3.4
+            @Nested
+            class SerialInterfaceInitialisation {
+                @Test
+                void Step_1_Reset() throws Exception {
+                    byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_2_AnyApplicationFilter() throws Exception {
+                    byte[] bytes = "@A3210038\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_3_SetInterfaceOptions3() throws Exception {
+                    byte[] bytes = "@A3420002\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_4_SetInterfaceOptions1_PUN() throws Exception {
+                    byte[] bytes = "@A3410059\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_5_SetInterfaceOptions1() throws Exception {
+                    byte[] bytes = "@A3300059\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+
+            // 8.3.5
+            @Nested
+            class ProgrammingTheSerialInterfaceToFilterSALMessageTraffic {
+
+                @Test
+                void Step_1_SelectOnlyLighting() throws Exception {
+                    byte[] bytes = "@A3210038\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_2_SelectHeatingAsSecondApplication() throws Exception {
+                    byte[] bytes = "@A3220088\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+        }
+
+        // 8.4
+        @Nested
+        class Level3InterfaceImplementationRequirements {
+            // No specific tests
+        }
 
         // 8.5
         @Nested
         class Level4InterfaceImplementationRequirements {
 
-            @Test
-            void Reset() throws Exception {
-                byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
-                assertMessageMatches(bytes, msg);
-            }
+            // 8.5.4
+            @Nested
+            class SerialInterfaceInitialisation {
+                @Test
+                void Step_1_Reset() throws Exception {
+                    byte[] bytes = "~~~\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
 
-            @Test
-            void SetInterfaceOptions3() throws Exception {
-                byte[] bytes = "@A342000A\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
-                System.out.println(((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData());
-                assertMessageMatches(bytes, msg);
-            }
+                    assertMessageMatches(bytes, msg);
+                }
 
-            @Test
-            void SetInterfaceOptions1_PUN() throws Exception {
-                byte[] bytes = "@A3410079\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
-                System.out.println(((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData());
-                assertMessageMatches(bytes, msg);
-            }
+                @Test
+                void Step_2_AnyApplicationFilter() throws Exception {
+                    byte[] bytes = "@A3210038\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
 
-            @Test
-            void SetInterfaceOptions1() throws Exception {
-                byte[] bytes = "@A3300079\r".getBytes(StandardCharsets.UTF_8);
-                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-                assertThat(msg).isNotNull();
-                System.out.println(msg);
-                System.out.println(((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData());
-                assertMessageMatches(bytes, msg);
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_3_SetInterfaceOptions3() throws Exception {
+                    byte[] bytes = "@A342000A\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_4_SetInterfaceOptions1_PUN() throws Exception {
+                    byte[] bytes = "@A3410079\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
+
+                @Test
+                void Step_5_SetInterfaceOptions1() throws Exception {
+                    byte[] bytes = "@A3300079\r".getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
+                }
             }
         }
 
+        // 8.6
+        @Nested
+        class Level5InterfaceImplementationRequirements {
+            // No specific tests
+        }
+
+        // 8.7
+        @Nested
+        class Level6InterfaceImplementationRequirements {
+            // No specific tests
+        }
     }
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf
@@ -111,6 +360,7 @@ public class ReferenceTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
                 assertThat(msg).isNotNull();
+
                 System.out.println(msg);
             }
 
@@ -120,6 +370,7 @@ public class ReferenceTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
                 assertThat(msg).isNotNull();
+
                 System.out.println(msg);
             }
 
@@ -129,6 +380,7 @@ public class ReferenceTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusHeader msg = CBusHeader.staticParse(readBufferByteBased);
                 assertThat(msg).isNotNull();
+
                 System.out.println(msg);
             }
 
@@ -145,6 +397,7 @@ public class ReferenceTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
+
                 System.out.println(msg);
             }
 
@@ -156,6 +409,7 @@ public class ReferenceTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
+
                 System.out.println(msg);
             }
 
@@ -166,6 +420,7 @@ public class ReferenceTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
+
                 System.out.println(msg);
             }
 
@@ -178,6 +433,7 @@ public class ReferenceTest {
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
+
                 System.out.println(msg);
             }
 
@@ -189,8 +445,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CALData calData = ((RequestDirectCommandAccess) ((CBusMessageToServer) msg).getRequest()).getCalData();
-                System.out.println(calData);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -203,8 +458,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CALData calData = ((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData();
-                System.out.println(calData);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -217,23 +471,25 @@ public class ReferenceTest {
             @Test
             void pointToPointCommandDirect() throws Exception {
                 byte[] bytes = "\\0603002102D4\r".getBytes(StandardCharsets.UTF_8);
+                cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
-                System.out.println(cbusCommand);
+
+                assertMessageMatches(bytes, msg);
             }
 
             @Test
             void pointToPointCommandBridged() throws Exception {
                 byte[] bytes = "\\06420903210289\r".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
-                System.out.println(cbusCommand);
+
+                assertMessageMatches(bytes, msg);
             }
         }
 
@@ -249,8 +505,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
-                System.out.println(cbusCommand);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -262,8 +517,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
-                System.out.println(cbusCommand);
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -279,8 +533,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
-                System.out.println(cbusCommand);
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -295,6 +548,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -302,11 +556,12 @@ public class ReferenceTest {
             void calReplyNormal() throws Exception {
                 byte[] bytes = "8902312E322E363620200A\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                requestContext = new RequestContext(true, false, false);
+                requestContext = new RequestContext(false);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -316,11 +571,12 @@ public class ReferenceTest {
                 //byte[] bytes = "860593008902312E322E363620207F\r\n".getBytes(StandardCharsets.UTF_8);
                 byte[] bytes = "860593008902312E322E36362020EC\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                requestContext = new RequestContext(true, false, false);
+                requestContext = new RequestContext(false);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -336,9 +592,7 @@ public class ReferenceTest {
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                EncodedReply encodedReply = ((ReplyEncodedReply) ((ReplyOrConfirmationReply) msg).getReply()).getEncodedReply();
-                MonitoredSAL monitoredSAL = ((MonitoredSALReply) encodedReply).getMonitoredSAL();
-                System.out.println(monitoredSAL);
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -353,6 +607,7 @@ public class ReferenceTest {
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -363,6 +618,7 @@ public class ReferenceTest {
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -373,6 +629,7 @@ public class ReferenceTest {
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -383,6 +640,7 @@ public class ReferenceTest {
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -393,6 +651,7 @@ public class ReferenceTest {
                 ReplyOrConfirmation msg = ReplyOrConfirmation.staticParse(readBufferByteBased, cBusOptions, requestContext);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -402,11 +661,12 @@ public class ReferenceTest {
         void StandardFormatStatusReply1() throws Exception {
             byte[] bytes = "D8380068AA0140550550001000000014000000000000000000CF\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -414,11 +674,12 @@ public class ReferenceTest {
         void StandardFormatStatusReply2() throws Exception {
             byte[] bytes = "D838580000000000000000000000000000000000000000000098\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -426,11 +687,12 @@ public class ReferenceTest {
         void StandardFormatStatusReply3() throws Exception {
             byte[] bytes = "D638B000000000FF00000000000000000000000000000043\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -439,12 +701,12 @@ public class ReferenceTest {
         void ExtendedFormatStatusReply1() throws Exception {
             byte[] bytes = "F9073800AAAA000095990000000055550000000000005555555548\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -452,11 +714,12 @@ public class ReferenceTest {
         void ExtendedFormatStatusReply2() throws Exception {
             byte[] bytes = "F907380B0000000000005555000000000000000000000000000013\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -464,11 +727,12 @@ public class ReferenceTest {
         void ExtendedFormatStatusReply3() throws Exception {
             byte[] bytes = "F70738160000000000000000000000000000000000000000B4\r\n".getBytes(StandardCharsets.UTF_8);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            requestContext = new RequestContext(false, true, false);
+            requestContext = new RequestContext(true);
             cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -483,6 +747,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -494,6 +759,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -501,13 +767,12 @@ public class ReferenceTest {
             void LightningStatusReply1() throws Exception {
                 byte[] bytes = "D83800A8AA02000000000000000000000000000000000000009C\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                requestContext = new RequestContext(false, true, false);
+                requestContext = new RequestContext(true);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                StandardFormatStatusReply reply = ((EncodedReplyStandardFormatStatusReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getReply();
-                System.out.println(reply);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -519,7 +784,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((EncodedReplyStandardFormatStatusReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getReply());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -531,46 +796,51 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((EncodedReplyStandardFormatStatusReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getReply());
+
                 assertMessageMatches(bytes, msg);
             }
 
             @Test
             void LightningStatusReply4() throws Exception {
-                byte[] bytes = "86999900F8003800A8AA0200000000000000000000000000000000000000C4\r\n".getBytes(StandardCharsets.UTF_8);
+                // TODO: the command header seems wrong as it is missing a byte
+                //byte[] bytes = "86999900F8003800A8AA0200000000000000000000000000000000000000C4\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "86999900F9003800A8AA0200000000000000000000000000000000000000C3\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((EncodedReplyCALReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getCalReply());
+
                 assertMessageMatches(bytes, msg);
             }
 
 
             @Test
             void LightningStatusReply5() throws Exception {
-                byte[] bytes = "86999900F800385800000000000000000000000000000000000000000000C0\r\n".getBytes(StandardCharsets.UTF_8);
+                // TODO: the command header seems wrong as it is missing a byte
+                // byte[] bytes = "86999900F800385800000000000000000000000000000000000000000000C0\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "86999900F900385800000000000000000000000000000000000000000000BF\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((EncodedReplyCALReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getCalReply());
+
                 assertMessageMatches(bytes, msg);
             }
 
             @Test
             void LightningStatusReply6() throws Exception {
                 // TODO: wrong checksum in this example???
+                // TODO: the command header seems wrong as it is missing a byte
                 //byte[] bytes = "86999900F60038B000000000000000000000000000000000000000008F\r\n".getBytes(StandardCharsets.UTF_8);
-                byte[] bytes = "86999900F60038B000000000000000000000000000000000000000006A\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "86999900F70038B0000000000000000000000000000000000000000069\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                cBusOptions = new CBusOptions(false, false, false, true, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((EncodedReplyCALReply) ((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply()).getCalReply());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -587,6 +857,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -600,7 +871,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -618,8 +889,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                CBusCommand cbusCommand = ((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand();
-                System.out.println(cbusCommand);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -631,6 +901,7 @@ public class ReferenceTest {
                 CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -656,6 +927,7 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -667,6 +939,7 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -678,7 +951,6 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
 
             assertMessageMatches(bytes, msg);
         }
@@ -697,7 +969,7 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -716,6 +988,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -725,39 +999,46 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
                 void writeSomethingResponse() throws Exception {
                     byte[] bytes = "g.322100AD\r\n".getBytes(StandardCharsets.UTF_8);
                     ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                    requestContext = new RequestContext(true, false, false);
+                    cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+                    requestContext = new RequestContext(false);
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
                 void writeSomething2() throws Exception {
                     byte[] bytes = "A3420002g\r".getBytes(StandardCharsets.UTF_8);
                     ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+                    cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
                 void writeSomethingResponse2() throws Exception {
                     byte[] bytes = "g.3242008C\r\n".getBytes(StandardCharsets.UTF_8);
                     ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                    requestContext = new RequestContext(true, false, false);
+                    requestContext = new RequestContext(false);
+                    cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -767,18 +1048,20 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
                 void writeSomethingResponse3() throws Exception {
-                    byte[] bytes = "g.8600000032300000\r\n".getBytes(StandardCharsets.UTF_8);
+                    byte[] bytes = "g.8600000032300018\r\n".getBytes(StandardCharsets.UTF_8);
                     ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-                    requestContext = new RequestContext(true, false, false);
+                    cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((ReplyOrConfirmationConfirmation) ((CBusMessageToClient) msg).getReply()).getEmbeddedReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
             }
 
@@ -790,7 +1073,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestObsolete) ((CBusMessageToServer) msg).getRequest()).getCalData());
+
+                assertMessageMatches(bytes, msg);
             }
         }
 
@@ -806,7 +1090,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
+                assertMessageMatches(bytes, msg);
             }
 
             // 6.2
@@ -818,7 +1103,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
+                assertMessageMatches(bytes, msg);
             }
 
             // 6.3
@@ -830,7 +1116,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
+                assertMessageMatches(bytes, msg);
             }
         }
 
@@ -846,7 +1133,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             // 7.1
@@ -858,7 +1146,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             // 7.2
@@ -870,7 +1159,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             // 7.2
@@ -882,7 +1172,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             // 7.3
@@ -894,7 +1185,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             // 7.3
@@ -906,7 +1198,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             @Disabled("Needs to be implemented")
@@ -922,7 +1215,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -934,7 +1228,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -946,7 +1241,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
             }
 
@@ -963,7 +1259,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             @Test
@@ -974,7 +1271,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
 
             @Test
@@ -985,7 +1283,8 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                assertMessageMatches(bytes, msg);
             }
         }
 
@@ -1002,7 +1301,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -1013,7 +1313,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -1024,7 +1325,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
+                    assertMessageMatches(bytes, msg);
                 }
             }
 
@@ -1038,7 +1340,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -1049,7 +1352,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
 
                 @Test
@@ -1060,7 +1364,8 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+                    assertMessageMatches(bytes, msg);
                 }
             }
         }
@@ -1081,7 +1386,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1092,7 +1397,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1103,7 +1408,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1117,7 +1422,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1128,7 +1433,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1139,7 +1444,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1150,7 +1455,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1161,7 +1466,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1172,7 +1477,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1183,7 +1488,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1201,7 +1506,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1213,7 +1518,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -1234,7 +1539,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1246,7 +1551,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1261,7 +1566,7 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -1274,7 +1579,7 @@ public class ReferenceTest {
             CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
             assertThat(msg).isNotNull();
             System.out.println(msg);
-            System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
             assertMessageMatches(bytes, msg);
         }
 
@@ -1290,7 +1595,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1302,7 +1607,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -1324,7 +1629,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1336,7 +1641,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1353,7 +1658,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1365,7 +1670,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1387,7 +1692,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1399,7 +1704,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -1420,7 +1725,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1434,7 +1739,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -1455,7 +1760,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -1483,7 +1788,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1495,7 +1800,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1507,7 +1812,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1519,7 +1824,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -1547,7 +1852,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1559,7 +1864,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1572,7 +1877,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1583,7 +1888,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
         }
@@ -1605,7 +1910,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1618,7 +1923,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1630,7 +1935,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1653,7 +1958,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1665,7 +1970,7 @@ public class ReferenceTest {
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                 assertThat(msg).isNotNull();
                 System.out.println(msg);
-                System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                 assertMessageMatches(bytes, msg);
             }
 
@@ -1680,7 +1985,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1691,7 +1996,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
             }
@@ -1705,7 +2010,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1716,7 +2021,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1727,7 +2032,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
 
@@ -1738,7 +2043,7 @@ public class ReferenceTest {
                     CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
                     assertThat(msg).isNotNull();
                     System.out.println(msg);
-                    System.out.println(((RequestCommand) ((CBusMessageToServer) msg).getRequest()).getCbusCommand());
+
                     assertMessageMatches(bytes, msg);
                 }
             }

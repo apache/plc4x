@@ -302,7 +302,17 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	}
 
 	// Create the instance
-	return NewDIBDeviceInfo(descriptionType, knxMedium, deviceStatus, knxAddress, projectInstallationIdentifier, knxNetIpDeviceSerialNumber, knxNetIpDeviceMulticastAddress, knxNetIpDeviceMacAddress, deviceFriendlyName), nil
+	return &_DIBDeviceInfo{
+		DescriptionType:                descriptionType,
+		KnxMedium:                      knxMedium,
+		DeviceStatus:                   deviceStatus,
+		KnxAddress:                     knxAddress,
+		ProjectInstallationIdentifier:  projectInstallationIdentifier,
+		KnxNetIpDeviceSerialNumber:     knxNetIpDeviceSerialNumber,
+		KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress,
+		KnxNetIpDeviceMacAddress:       knxNetIpDeviceMacAddress,
+		DeviceFriendlyName:             deviceFriendlyName,
+	}, nil
 }
 
 func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {

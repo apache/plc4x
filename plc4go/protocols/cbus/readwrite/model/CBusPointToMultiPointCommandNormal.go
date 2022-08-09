@@ -50,6 +50,8 @@ type _CBusPointToMultiPointCommandNormal struct {
 	*_CBusPointToMultiPointCommand
 	Application ApplicationIdContainer
 	SalData     SALData
+	// Reserved Fields
+	reservedField0 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,6 +161,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, cBusOp
 		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -170,6 +173,8 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, cBusOp
 				"expected value": byte(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -192,11 +197,12 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, cBusOp
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToMultiPointCommandNormal{
-		Application: application,
-		SalData:     salData,
 		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
 			CBusOptions: cBusOptions,
 		},
+		Application:    application,
+		SalData:        salData,
+		reservedField0: reservedField0,
 	}
 	_child._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _child
 	return _child, nil
@@ -224,7 +230,15 @@ func (m *_CBusPointToMultiPointCommandNormal) Serialize(writeBuffer utils.WriteB
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x00))
+			var reserved byte = byte(0x00)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x00),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -200,7 +200,13 @@ func BACnetAccessAuthenticationFactorDisableTaggedParse(readBuffer utils.ReadBuf
 	}
 
 	// Create the instance
-	return NewBACnetAccessAuthenticationFactorDisableTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetAccessAuthenticationFactorDisableTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) Serialize(writeBuffer utils.WriteBuffer) error {

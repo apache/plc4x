@@ -184,7 +184,12 @@ func BACnetLandingDoorStatusLandingDoorsListParse(readBuffer utils.ReadBuffer, t
 	}
 
 	// Create the instance
-	return NewBACnetLandingDoorStatusLandingDoorsList(openingTag, landingDoors, closingTag, tagNumber), nil
+	return &_BACnetLandingDoorStatusLandingDoorsList{
+		TagNumber:    tagNumber,
+		OpeningTag:   openingTag,
+		LandingDoors: landingDoors,
+		ClosingTag:   closingTag,
+	}, nil
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsList) Serialize(writeBuffer utils.WriteBuffer) error {

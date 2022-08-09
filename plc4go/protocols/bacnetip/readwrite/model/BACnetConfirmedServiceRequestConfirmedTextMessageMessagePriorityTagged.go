@@ -158,7 +158,12 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) Serialize(writeBuffer utils.WriteBuffer) error {

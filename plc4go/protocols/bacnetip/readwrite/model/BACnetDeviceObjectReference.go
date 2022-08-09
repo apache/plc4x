@@ -160,7 +160,10 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (BACnetDevice
 	}
 
 	// Create the instance
-	return NewBACnetDeviceObjectReference(deviceIdentifier, objectIdentifier), nil
+	return &_BACnetDeviceObjectReference{
+		DeviceIdentifier: deviceIdentifier,
+		ObjectIdentifier: objectIdentifier,
+	}, nil
 }
 
 func (m *_BACnetDeviceObjectReference) Serialize(writeBuffer utils.WriteBuffer) error {

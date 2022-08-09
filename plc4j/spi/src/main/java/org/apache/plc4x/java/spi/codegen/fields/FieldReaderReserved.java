@@ -36,8 +36,9 @@ public class FieldReaderReserved<T> implements FieldCommons {
         T reserved = dataReader.read(logicalName, readerArgs);
         if (!Objects.equals(reserved, referenceValue)) {
             LOGGER.info("Expected constant value {} but got {} for reserved field.", referenceValue, reserved);
+            return reserved;
         }
-        return reserved;
+        return null;
     }
 
 }

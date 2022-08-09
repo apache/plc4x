@@ -189,9 +189,9 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 
 	// Create a partially initialized instance
 	_child := &_VTCloseError{
+		_BACnetError:               &_BACnetError{},
 		ErrorType:                  errorType,
 		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
-		_BACnetError:               &_BACnetError{},
 	}
 	_child._BACnetError._BACnetErrorChildRequirements = _child
 	return _child, nil

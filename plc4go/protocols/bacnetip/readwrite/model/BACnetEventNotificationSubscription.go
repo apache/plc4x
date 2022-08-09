@@ -206,7 +206,12 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	}
 
 	// Create the instance
-	return NewBACnetEventNotificationSubscription(recipient, processIdentifier, issueConfirmedNotifications, timeRemaining), nil
+	return &_BACnetEventNotificationSubscription{
+		Recipient:                   recipient,
+		ProcessIdentifier:           processIdentifier,
+		IssueConfirmedNotifications: issueConfirmedNotifications,
+		TimeRemaining:               timeRemaining,
+	}, nil
 }
 
 func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteBuffer) error {

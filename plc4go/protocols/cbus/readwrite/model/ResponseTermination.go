@@ -138,7 +138,7 @@ func ResponseTerminationParse(readBuffer utils.ReadBuffer) (ResponseTermination,
 	}
 
 	// Create the instance
-	return NewResponseTermination(), nil
+	return &_ResponseTermination{}, nil
 }
 
 func (m *_ResponseTermination) Serialize(writeBuffer utils.WriteBuffer) error {

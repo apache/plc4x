@@ -168,7 +168,11 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (DeviceCo
 	}
 
 	// Create the instance
-	return NewDeviceConfigurationAckDataBlock(communicationChannelId, sequenceCounter, status), nil
+	return &_DeviceConfigurationAckDataBlock{
+		CommunicationChannelId: communicationChannelId,
+		SequenceCounter:        sequenceCounter,
+		Status:                 status,
+	}, nil
 }
 
 func (m *_DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {

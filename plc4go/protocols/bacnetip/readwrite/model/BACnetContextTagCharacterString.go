@@ -176,10 +176,10 @@ func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagCharacterString{
-		Payload: payload,
 		_BACnetContextTag: &_BACnetContextTag{
 			TagNumberArgument: tagNumberArgument,
 		},
+		Payload: payload,
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil

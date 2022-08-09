@@ -198,10 +198,10 @@ func BACnetEventParameterChangeOfDiscreteValueParse(readBuffer utils.ReadBuffer)
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterChangeOfDiscreteValue{
+		_BACnetEventParameter: &_BACnetEventParameter{},
 		OpeningTag:            openingTag,
 		TimeDelay:             timeDelay,
 		ClosingTag:            closingTag,
-		_BACnetEventParameter: &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

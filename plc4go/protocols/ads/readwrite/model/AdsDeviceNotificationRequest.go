@@ -207,10 +207,10 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 
 	// Create a partially initialized instance
 	_child := &_AdsDeviceNotificationRequest{
+		_AdsData:        &_AdsData{},
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
-		_AdsData:        &_AdsData{},
 	}
 	_child._AdsData._AdsDataChildRequirements = _child
 	return _child, nil

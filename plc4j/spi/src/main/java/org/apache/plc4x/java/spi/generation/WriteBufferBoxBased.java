@@ -228,7 +228,7 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
         } else if (value instanceof Serializable) {
             Serializable serializable = (Serializable) value;
             try {
-                WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(asciiBoxWriterLight, asciiBoxWriterLight, true, true);
+                WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(true, true);
                 serializable.serialize(writeBuffer);
                 virtualBox = asciiBoxWriterLight.boxBox(logicalName, writeBuffer.getBox(), 0);
             } catch (SerializationException e) {

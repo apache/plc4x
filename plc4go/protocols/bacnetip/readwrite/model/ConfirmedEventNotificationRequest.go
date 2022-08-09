@@ -446,7 +446,21 @@ func ConfirmedEventNotificationRequestParse(readBuffer utils.ReadBuffer) (Confir
 	}
 
 	// Create the instance
-	return NewConfirmedEventNotificationRequest(processIdentifier, initiatingDeviceIdentifier, eventObjectIdentifier, timestamp, notificationClass, priority, eventType, messageText, notifyType, ackRequired, fromState, toState, eventValues), nil
+	return &_ConfirmedEventNotificationRequest{
+		ProcessIdentifier:          processIdentifier,
+		InitiatingDeviceIdentifier: initiatingDeviceIdentifier,
+		EventObjectIdentifier:      eventObjectIdentifier,
+		Timestamp:                  timestamp,
+		NotificationClass:          notificationClass,
+		Priority:                   priority,
+		EventType:                  eventType,
+		MessageText:                messageText,
+		NotifyType:                 notifyType,
+		AckRequired:                ackRequired,
+		FromState:                  fromState,
+		ToState:                    toState,
+		EventValues:                eventValues,
+	}, nil
 }
 
 func (m *_ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {

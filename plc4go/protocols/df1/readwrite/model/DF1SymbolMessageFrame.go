@@ -252,10 +252,10 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFr
 
 	// Create a partially initialized instance
 	_child := &_DF1SymbolMessageFrame{
+		_DF1Symbol:         &_DF1Symbol{},
 		DestinationAddress: destinationAddress,
 		SourceAddress:      sourceAddress,
 		Command:            command,
-		_DF1Symbol:         &_DF1Symbol{},
 	}
 	_child._DF1Symbol._DF1SymbolChildRequirements = _child
 	return _child, nil

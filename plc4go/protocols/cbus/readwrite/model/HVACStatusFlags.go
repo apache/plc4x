@@ -67,6 +67,8 @@ type _HVACStatusFlags struct {
 	FanActive    bool
 	HeatingPlant bool
 	CoolingPlant bool
+	// Reserved Fields
+	reservedField0 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -216,6 +218,7 @@ func HVACStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) 
 	}
 	busy := _busy
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -227,6 +230,8 @@ func HVACStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) 
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -273,7 +278,16 @@ func HVACStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) 
 	}
 
 	// Create the instance
-	return NewHVACStatusFlags(expansion, error, busy, damperState, fanActive, heatingPlant, coolingPlant), nil
+	return &_HVACStatusFlags{
+		Expansion:      expansion,
+		Error:          error,
+		Busy:           busy,
+		DamperState:    damperState,
+		FanActive:      fanActive,
+		HeatingPlant:   heatingPlant,
+		CoolingPlant:   coolingPlant,
+		reservedField0: reservedField0,
+	}, nil
 }
 
 func (m *_HVACStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -306,7 +320,15 @@ func (m *_HVACStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

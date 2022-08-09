@@ -201,10 +201,10 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUWriteMultipleHoldingRegistersRequest{
+		_ModbusPDU:      &_ModbusPDU{},
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		Value:           value,
-		_ModbusPDU:      &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

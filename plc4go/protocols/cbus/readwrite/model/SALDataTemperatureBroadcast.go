@@ -154,8 +154,8 @@ func SALDataTemperatureBroadcastParse(readBuffer utils.ReadBuffer, applicationId
 
 	// Create a partially initialized instance
 	_child := &_SALDataTemperatureBroadcast{
-		TemperatureBroadcastData: temperatureBroadcastData,
 		_SALData:                 &_SALData{},
+		TemperatureBroadcastData: temperatureBroadcastData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

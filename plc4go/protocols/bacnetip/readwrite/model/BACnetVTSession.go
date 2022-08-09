@@ -170,7 +170,11 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	}
 
 	// Create the instance
-	return NewBACnetVTSession(localVtSessionId, removeVtSessionId, remoteVtAddress), nil
+	return &_BACnetVTSession{
+		LocalVtSessionId:  localVtSessionId,
+		RemoveVtSessionId: removeVtSessionId,
+		RemoteVtAddress:   remoteVtAddress,
+	}, nil
 }
 
 func (m *_BACnetVTSession) Serialize(writeBuffer utils.WriteBuffer) error {

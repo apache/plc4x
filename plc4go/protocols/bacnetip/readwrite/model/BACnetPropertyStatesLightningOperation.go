@@ -150,8 +150,8 @@ func BACnetPropertyStatesLightningOperationParse(readBuffer utils.ReadBuffer, pe
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesLightningOperation{
-		LightningOperation:    lightningOperation,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		LightningOperation:    lightningOperation,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

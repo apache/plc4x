@@ -144,8 +144,8 @@ func LightingDataOffParse(readBuffer utils.ReadBuffer) (LightingDataOff, error) 
 
 	// Create a partially initialized instance
 	_child := &_LightingDataOff{
-		Group:         group,
 		_LightingData: &_LightingData{},
+		Group:         group,
 	}
 	_child._LightingData._LightingDataChildRequirements = _child
 	return _child, nil

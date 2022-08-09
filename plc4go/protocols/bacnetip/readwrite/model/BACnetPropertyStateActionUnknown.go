@@ -150,8 +150,8 @@ func BACnetPropertyStateActionUnknownParse(readBuffer utils.ReadBuffer, peekedTa
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStateActionUnknown{
-		UnknownValue:          unknownValue,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		UnknownValue:          unknownValue,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

@@ -153,8 +153,8 @@ func ErrorReportingSystemCategoryTypeSupportUnitsParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_ErrorReportingSystemCategoryTypeSupportUnits{
-		CategoryForType:                   categoryForType,
 		_ErrorReportingSystemCategoryType: &_ErrorReportingSystemCategoryType{},
+		CategoryForType:                   categoryForType,
 	}
 	_child._ErrorReportingSystemCategoryType._ErrorReportingSystemCategoryTypeChildRequirements = _child
 	return _child, nil

@@ -145,8 +145,8 @@ func MeteringDataOtherWaterConsumptionParse(readBuffer utils.ReadBuffer) (Meteri
 
 	// Create a partially initialized instance
 	_child := &_MeteringDataOtherWaterConsumption{
-		KL:            kL,
 		_MeteringData: &_MeteringData{},
+		KL:            kL,
 	}
 	_child._MeteringData._MeteringDataChildRequirements = _child
 	return _child, nil

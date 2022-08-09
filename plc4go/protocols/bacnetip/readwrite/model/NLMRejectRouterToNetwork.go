@@ -172,11 +172,11 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 
 	// Create a partially initialized instance
 	_child := &_NLMRejectRouterToNetwork{
-		RejectReason:              rejectReason,
-		DestinationNetworkAddress: destinationNetworkAddress,
 		_NLM: &_NLM{
 			ApduLength: apduLength,
 		},
+		RejectReason:              rejectReason,
+		DestinationNetworkAddress: destinationNetworkAddress,
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil

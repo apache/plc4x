@@ -200,7 +200,13 @@ func BACnetNetworkPortCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetNetworkPortCommandTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetNetworkPortCommandTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetNetworkPortCommandTagged) Serialize(writeBuffer utils.WriteBuffer) error {

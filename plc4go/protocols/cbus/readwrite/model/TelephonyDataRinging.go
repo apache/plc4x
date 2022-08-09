@@ -47,6 +47,8 @@ type TelephonyDataRingingExactly interface {
 type _TelephonyDataRinging struct {
 	*_TelephonyData
 	Number string
+	// Reserved Fields
+	reservedField0 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -136,6 +138,7 @@ func TelephonyDataRingingParse(readBuffer utils.ReadBuffer, commandTypeContainer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -147,6 +150,8 @@ func TelephonyDataRingingParse(readBuffer utils.ReadBuffer, commandTypeContainer
 				"expected value": byte(0x01),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -163,8 +168,9 @@ func TelephonyDataRingingParse(readBuffer utils.ReadBuffer, commandTypeContainer
 
 	// Create a partially initialized instance
 	_child := &_TelephonyDataRinging{
-		Number:         number,
 		_TelephonyData: &_TelephonyData{},
+		Number:         number,
+		reservedField0: reservedField0,
 	}
 	_child._TelephonyData._TelephonyDataChildRequirements = _child
 	return _child, nil
@@ -180,7 +186,15 @@ func (m *_TelephonyDataRinging) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x01))
+			var reserved byte = byte(0x01)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x01),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

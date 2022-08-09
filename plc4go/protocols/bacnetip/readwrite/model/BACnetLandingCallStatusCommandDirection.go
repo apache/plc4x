@@ -150,8 +150,8 @@ func BACnetLandingCallStatusCommandDirectionParse(readBuffer utils.ReadBuffer) (
 
 	// Create a partially initialized instance
 	_child := &_BACnetLandingCallStatusCommandDirection{
-		Direction:                       direction,
 		_BACnetLandingCallStatusCommand: &_BACnetLandingCallStatusCommand{},
+		Direction:                       direction,
 	}
 	_child._BACnetLandingCallStatusCommand._BACnetLandingCallStatusCommandChildRequirements = _child
 	return _child, nil

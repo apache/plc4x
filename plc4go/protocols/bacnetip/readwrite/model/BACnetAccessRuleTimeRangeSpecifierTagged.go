@@ -158,7 +158,12 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParse(readBuffer utils.ReadBuffer, 
 	}
 
 	// Create the instance
-	return NewBACnetAccessRuleTimeRangeSpecifierTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetAccessRuleTimeRangeSpecifierTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) Serialize(writeBuffer utils.WriteBuffer) error {

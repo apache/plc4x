@@ -237,12 +237,12 @@ func BACnetConstructedDataCommandTimeArrayParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCommandTimeArray{
-		NumberOfDataElements: numberOfDataElements,
-		CommandTimeArray:     commandTimeArray,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		CommandTimeArray:     commandTimeArray,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

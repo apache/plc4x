@@ -31,16 +31,10 @@ import (
 type LightingLabelOptions interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetReservedBit7 returns ReservedBit7 (property field)
-	GetReservedBit7() bool
 	// GetLabelFlavour returns LabelFlavour (property field)
 	GetLabelFlavour() LightingLabelFlavour
-	// GetReservedBit3 returns ReservedBit3 (property field)
-	GetReservedBit3() bool
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() LightingLabelType
-	// GetReservedBit0 returns ReservedBit0 (property field)
-	GetReservedBit0() bool
 }
 
 // LightingLabelOptionsExactly can be used when we want exactly this type and not a type which fulfills LightingLabelOptions.
@@ -52,11 +46,13 @@ type LightingLabelOptionsExactly interface {
 
 // _LightingLabelOptions is the data-structure of this message
 type _LightingLabelOptions struct {
-	ReservedBit7 bool
 	LabelFlavour LightingLabelFlavour
-	ReservedBit3 bool
 	LabelType    LightingLabelType
-	ReservedBit0 bool
+	// Reserved Fields
+	reservedField0 *bool
+	reservedField1 *bool
+	reservedField2 *bool
+	reservedField3 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -64,24 +60,12 @@ type _LightingLabelOptions struct {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_LightingLabelOptions) GetReservedBit7() bool {
-	return m.ReservedBit7
-}
-
 func (m *_LightingLabelOptions) GetLabelFlavour() LightingLabelFlavour {
 	return m.LabelFlavour
 }
 
-func (m *_LightingLabelOptions) GetReservedBit3() bool {
-	return m.ReservedBit3
-}
-
 func (m *_LightingLabelOptions) GetLabelType() LightingLabelType {
 	return m.LabelType
-}
-
-func (m *_LightingLabelOptions) GetReservedBit0() bool {
-	return m.ReservedBit0
 }
 
 ///////////////////////
@@ -90,8 +74,8 @@ func (m *_LightingLabelOptions) GetReservedBit0() bool {
 ///////////////////////////////////////////////////////////
 
 // NewLightingLabelOptions factory function for _LightingLabelOptions
-func NewLightingLabelOptions(reservedBit7 bool, labelFlavour LightingLabelFlavour, reservedBit3 bool, labelType LightingLabelType, reservedBit0 bool) *_LightingLabelOptions {
-	return &_LightingLabelOptions{ReservedBit7: reservedBit7, LabelFlavour: labelFlavour, ReservedBit3: reservedBit3, LabelType: labelType, ReservedBit0: reservedBit0}
+func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
+	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
 }
 
 // Deprecated: use the interface for direct cast
@@ -116,7 +100,7 @@ func (m *_LightingLabelOptions) GetLengthInBits() uint16 {
 func (m *_LightingLabelOptions) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (reservedBit7)
+	// Reserved Field (reserved)
 	lengthInBits += 1
 
 	// Simple field (labelFlavour)
@@ -125,13 +109,13 @@ func (m *_LightingLabelOptions) GetLengthInBitsConditional(lastItem bool) uint16
 	// Reserved Field (reserved)
 	lengthInBits += 1
 
-	// Simple field (reservedBit3)
+	// Reserved Field (reserved)
 	lengthInBits += 1
 
 	// Simple field (labelType)
 	lengthInBits += 2
 
-	// Simple field (reservedBit0)
+	// Reserved Field (reserved)
 	lengthInBits += 1
 
 	return lengthInBits
@@ -150,12 +134,22 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reservedBit7)
-	_reservedBit7, _reservedBit7Err := readBuffer.ReadBit("reservedBit7")
-	if _reservedBit7Err != nil {
-		return nil, errors.Wrap(_reservedBit7Err, "Error parsing 'reservedBit7' field of LightingLabelOptions")
+	var reservedField0 *bool
+	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+	{
+		reserved, _err := readBuffer.ReadBit("reserved")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
+		}
+		if reserved != bool(false) {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
+		}
 	}
-	reservedBit7 := _reservedBit7
 
 	// Simple Field (labelFlavour)
 	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
@@ -170,6 +164,7 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 		return nil, errors.Wrap(closeErr, "Error closing for labelFlavour")
 	}
 
+	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -181,15 +176,27 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
-	// Simple Field (reservedBit3)
-	_reservedBit3, _reservedBit3Err := readBuffer.ReadBit("reservedBit3")
-	if _reservedBit3Err != nil {
-		return nil, errors.Wrap(_reservedBit3Err, "Error parsing 'reservedBit3' field of LightingLabelOptions")
+	var reservedField2 *bool
+	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+	{
+		reserved, _err := readBuffer.ReadBit("reserved")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
+		}
+		if reserved != bool(false) {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField2 = &reserved
+		}
 	}
-	reservedBit3 := _reservedBit3
 
 	// Simple Field (labelType)
 	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
@@ -204,19 +211,36 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 		return nil, errors.Wrap(closeErr, "Error closing for labelType")
 	}
 
-	// Simple Field (reservedBit0)
-	_reservedBit0, _reservedBit0Err := readBuffer.ReadBit("reservedBit0")
-	if _reservedBit0Err != nil {
-		return nil, errors.Wrap(_reservedBit0Err, "Error parsing 'reservedBit0' field of LightingLabelOptions")
+	var reservedField3 *bool
+	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+	{
+		reserved, _err := readBuffer.ReadBit("reserved")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
+		}
+		if reserved != bool(false) {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField3 = &reserved
+		}
 	}
-	reservedBit0 := _reservedBit0
 
 	if closeErr := readBuffer.CloseContext("LightingLabelOptions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LightingLabelOptions")
 	}
 
 	// Create the instance
-	return NewLightingLabelOptions(reservedBit7, labelFlavour, reservedBit3, labelType, reservedBit0), nil
+	return &_LightingLabelOptions{
+		LabelFlavour:   labelFlavour,
+		LabelType:      labelType,
+		reservedField0: reservedField0,
+		reservedField1: reservedField1,
+		reservedField2: reservedField2,
+		reservedField3: reservedField3,
+	}, nil
 }
 
 func (m *_LightingLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -226,11 +250,20 @@ func (m *_LightingLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(pushErr, "Error pushing for LightingLabelOptions")
 	}
 
-	// Simple Field (reservedBit7)
-	reservedBit7 := bool(m.GetReservedBit7())
-	_reservedBit7Err := writeBuffer.WriteBit("reservedBit7", (reservedBit7))
-	if _reservedBit7Err != nil {
-		return errors.Wrap(_reservedBit7Err, "Error serializing 'reservedBit7' field")
+	// Reserved Field (reserved)
+	{
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
+		if _err != nil {
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
+		}
 	}
 
 	// Simple Field (labelFlavour)
@@ -247,17 +280,34 @@ func (m *_LightingLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField1 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField1
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
-	// Simple Field (reservedBit3)
-	reservedBit3 := bool(m.GetReservedBit3())
-	_reservedBit3Err := writeBuffer.WriteBit("reservedBit3", (reservedBit3))
-	if _reservedBit3Err != nil {
-		return errors.Wrap(_reservedBit3Err, "Error serializing 'reservedBit3' field")
+	// Reserved Field (reserved)
+	{
+		var reserved bool = bool(false)
+		if m.reservedField2 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField2
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
+		if _err != nil {
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
+		}
 	}
 
 	// Simple Field (labelType)
@@ -272,11 +322,20 @@ func (m *_LightingLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_labelTypeErr, "Error serializing 'labelType' field")
 	}
 
-	// Simple Field (reservedBit0)
-	reservedBit0 := bool(m.GetReservedBit0())
-	_reservedBit0Err := writeBuffer.WriteBit("reservedBit0", (reservedBit0))
-	if _reservedBit0Err != nil {
-		return errors.Wrap(_reservedBit0Err, "Error serializing 'reservedBit0' field")
+	// Reserved Field (reserved)
+	{
+		var reserved bool = bool(false)
+		if m.reservedField3 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField3
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
+		if _err != nil {
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
+		}
 	}
 
 	if popErr := writeBuffer.PopContext("LightingLabelOptions"); popErr != nil {

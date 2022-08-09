@@ -118,7 +118,9 @@ func SerialInterfaceAddressParse(readBuffer utils.ReadBuffer) (SerialInterfaceAd
 	}
 
 	// Create the instance
-	return NewSerialInterfaceAddress(address), nil
+	return &_SerialInterfaceAddress{
+		Address: address,
+	}, nil
 }
 
 func (m *_SerialInterfaceAddress) Serialize(writeBuffer utils.WriteBuffer) error {

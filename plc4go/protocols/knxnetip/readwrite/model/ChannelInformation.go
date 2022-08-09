@@ -135,7 +135,10 @@ func ChannelInformationParse(readBuffer utils.ReadBuffer) (ChannelInformation, e
 	}
 
 	// Create the instance
-	return NewChannelInformation(numChannels, channelCode), nil
+	return &_ChannelInformation{
+		NumChannels: numChannels,
+		ChannelCode: channelCode,
+	}, nil
 }
 
 func (m *_ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {

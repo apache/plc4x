@@ -164,11 +164,11 @@ func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apd
 
 	// Create a partially initialized instance
 	_child := &_ApduDataMemoryRead{
-		NumBytes: numBytes,
-		Address:  address,
 		_ApduData: &_ApduData{
 			DataLength: dataLength,
 		},
+		NumBytes: numBytes,
+		Address:  address,
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

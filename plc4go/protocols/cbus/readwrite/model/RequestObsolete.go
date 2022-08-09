@@ -37,6 +37,8 @@ type RequestObsolete interface {
 	GetCalData() CALData
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
+	// GetCalDataDecoded returns CalDataDecoded (virtual field)
+	GetCalDataDecoded() CALData
 }
 
 // RequestObsoleteExactly can be used when we want exactly this type and not a type which fulfills RequestObsolete.
@@ -92,6 +94,21 @@ func (m *_RequestObsolete) GetAlpha() Alpha {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_RequestObsolete) GetCalDataDecoded() CALData {
+	alpha := m.Alpha
+	_ = alpha
+	return CastCALData(m.GetCalData())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewRequestObsolete factory function for _RequestObsolete
 func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestObsolete {
@@ -129,6 +146,8 @@ func (m *_RequestObsolete) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Manual Field (calData)
 	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
 
+	// A virtual field doesn't have any in- or output.
+
 	// Optional Field (alpha)
 	if m.Alpha != nil {
 		lengthInBits += m.Alpha.GetLengthInBits()
@@ -160,6 +179,11 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 		calData = _calData.(CALData)
 	}
 
+	// Virtual field
+	_calDataDecoded := calData
+	calDataDecoded := _calDataDecoded
+	_ = calDataDecoded
+
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil
 	{
@@ -188,11 +212,11 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 
 	// Create a partially initialized instance
 	_child := &_RequestObsolete{
-		CalData: calData,
-		Alpha:   alpha,
 		_Request: &_Request{
 			CBusOptions: cBusOptions,
 		},
+		CalData: calData,
+		Alpha:   alpha,
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil
@@ -210,6 +234,10 @@ func (m *_RequestObsolete) Serialize(writeBuffer utils.WriteBuffer) error {
 		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
 		if _calDataErr != nil {
 			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		}
+		// Virtual field
+		if _calDataDecodedErr := writeBuffer.WriteVirtual("calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
+			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
 		// Optional Field (alpha) (Can be skipped, if the value is null)

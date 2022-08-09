@@ -49,7 +49,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil)
 }
 
-func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, _ *net.UDPAddr) (transports.TransportInstance, error) {
 	var serialPortName = transportUrl.Path
 
 	var baudRate = uint(115200)
@@ -72,24 +72,16 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		}
 	}
 
-	transportInstance := NewTransportInstance(serialPortName, baudRate, connectTimeout, &m)
-
-	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-		if transportInstance, ok := typ.(transports.TransportInstance); ok {
-			return transportInstance, nil
-		}
-		return nil, errors.New("couldn't cast to TransportInstance")
-	}
-	return castFunc(transportInstance)
+	return NewTransportInstance(serialPortName, baudRate, connectTimeout, &m), nil
 }
 
 type TransportInstance struct {
+	transports.DefaultBufferedTransportInstance
 	SerialPortName string
 	BaudRate       uint
 	ConnectTimeout uint32
 	transport      *Transport
 	serialPort     io.ReadWriteCloser
-	reader         *bufio.Reader
 }
 
 func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport) *TransportInstance {
@@ -117,7 +109,7 @@ func (m *TransportInstance) Connect() error {
 		m.serialPort = utils.NewTransportLogger(m.serialPort, utils.WithLogger(fileLogger))
 		log.Trace().Msgf("Logging Transport to file %s", logFile.Name())
 	}*/
-	m.reader = bufio.NewReader(m.serialPort)
+	m.Reader = bufio.NewReader(m.serialPort)
 
 	return nil
 }
@@ -136,36 +128,6 @@ func (m *TransportInstance) Close() error {
 
 func (m *TransportInstance) IsConnected() bool {
 	return m.serialPort != nil
-}
-
-func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
-	if m.reader == nil {
-		return 0, nil
-	}
-	_, _ = m.reader.Peek(1)
-	return uint32(m.reader.Buffered()), nil
-}
-
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
-	if m.reader == nil {
-		return nil, errors.New("error peeking from transport. No reader available")
-	}
-	return m.reader.Peek(int(numBytes))
-}
-
-func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
-	if m.reader == nil {
-		return nil, errors.New("error reading from transport. No reader available")
-	}
-	data := make([]uint8, numBytes)
-	numBytesRead, err := m.reader.Read(data)
-	if err != nil {
-		return nil, errors.Wrap(err, "error reading")
-	}
-	if uint32(numBytesRead) != numBytes {
-		return nil, errors.Wrapf(err, "could only read %d of %d bytes", numBytesRead, numBytes)
-	}
-	return data, nil
 }
 
 func (m *TransportInstance) Write(data []uint8) error {

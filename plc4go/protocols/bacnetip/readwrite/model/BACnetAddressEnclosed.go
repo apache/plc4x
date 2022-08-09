@@ -173,7 +173,12 @@ func BACnetAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 
 	// Create the instance
-	return NewBACnetAddressEnclosed(openingTag, address, closingTag, tagNumber), nil
+	return &_BACnetAddressEnclosed{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		Address:    address,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

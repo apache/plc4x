@@ -124,7 +124,9 @@ func BACnetLandingDoorStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingDoo
 	}
 
 	// Create the instance
-	return NewBACnetLandingDoorStatus(landingDoors), nil
+	return &_BACnetLandingDoorStatus{
+		LandingDoors: landingDoors,
+	}, nil
 }
 
 func (m *_BACnetLandingDoorStatus) Serialize(writeBuffer utils.WriteBuffer) error {

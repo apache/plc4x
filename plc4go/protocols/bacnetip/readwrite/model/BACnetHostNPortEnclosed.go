@@ -173,7 +173,12 @@ func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 
 	// Create the instance
-	return NewBACnetHostNPortEnclosed(openingTag, bacnetHostNPort, closingTag, tagNumber), nil
+	return &_BACnetHostNPortEnclosed{
+		TagNumber:       tagNumber,
+		OpeningTag:      openingTag,
+		BacnetHostNPort: bacnetHostNPort,
+		ClosingTag:      closingTag,
+	}, nil
 }
 
 func (m *_BACnetHostNPortEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

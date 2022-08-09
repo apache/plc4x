@@ -184,7 +184,12 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 	}
 
 	// Create the instance
-	return NewVTCloseErrorListOfVTSessionIdentifiers(openingTag, listOfVtSessionIdentifiers, closingTag, tagNumber), nil
+	return &_VTCloseErrorListOfVTSessionIdentifiers{
+		TagNumber:                  tagNumber,
+		OpeningTag:                 openingTag,
+		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
+		ClosingTag:                 closingTag,
+	}, nil
 }
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.WriteBuffer) error {

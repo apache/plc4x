@@ -50,6 +50,8 @@ type _APDUSimpleAck struct {
 	*_APDU
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -148,6 +150,7 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 4)
@@ -159,6 +162,8 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -182,11 +187,12 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 
 	// Create a partially initialized instance
 	_child := &_APDUSimpleAck{
-		OriginalInvokeId: originalInvokeId,
-		ServiceChoice:    serviceChoice,
 		_APDU: &_APDU{
 			ApduLength: apduLength,
 		},
+		OriginalInvokeId: originalInvokeId,
+		ServiceChoice:    serviceChoice,
+		reservedField0:   reservedField0,
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -202,7 +208,15 @@ func (m *_APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(0))
+			var reserved uint8 = uint8(0)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 4, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

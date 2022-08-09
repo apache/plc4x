@@ -199,11 +199,11 @@ func MediaTransportControlDataSetTrackParse(readBuffer utils.ReadBuffer) (MediaT
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataSetTrack{
+		_MediaTransportControlData: &_MediaTransportControlData{},
 		TrackMSB:                   trackMSB,
 		TrackMMSB:                  trackMMSB,
 		TrackMLSB:                  trackMLSB,
 		TrackLSB:                   trackLSB,
-		_MediaTransportControlData: &_MediaTransportControlData{},
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

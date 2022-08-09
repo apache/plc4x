@@ -200,7 +200,13 @@ func BACnetDoorAlarmStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Create the instance
-	return NewBACnetDoorAlarmStateTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetDoorAlarmStateTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetDoorAlarmStateTagged) Serialize(writeBuffer utils.WriteBuffer) error {

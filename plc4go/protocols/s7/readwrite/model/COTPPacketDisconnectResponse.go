@@ -167,11 +167,11 @@ func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 
 	// Create a partially initialized instance
 	_child := &_COTPPacketDisconnectResponse{
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
 		_COTPPacket: &_COTPPacket{
 			CotpLen: cotpLen,
 		},
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil

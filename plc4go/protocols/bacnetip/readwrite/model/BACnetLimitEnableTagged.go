@@ -196,7 +196,12 @@ func BACnetLimitEnableTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Create the instance
-	return NewBACnetLimitEnableTagged(header, payload, tagNumber, tagClass), nil
+	return &_BACnetLimitEnableTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Payload:   payload,
+	}, nil
 }
 
 func (m *_BACnetLimitEnableTagged) Serialize(writeBuffer utils.WriteBuffer) error {

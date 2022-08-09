@@ -232,12 +232,12 @@ func BACnetConstructedDataNegativeAccessRulesParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNegativeAccessRules{
-		NumberOfDataElements: numberOfDataElements,
-		NegativeAccessRules:  negativeAccessRules,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		NegativeAccessRules:  negativeAccessRules,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -182,11 +182,11 @@ func BACnetConstructedDataIntegerValueCOVIncrementParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegerValueCOVIncrement{
-		CovIncrement: covIncrement,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		CovIncrement: covIncrement,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -50,6 +50,9 @@ type _CipRRData struct {
 
 	// Arguments.
 	PacketLength uint16
+	// Reserved Fields
+	reservedField0 *uint32
+	reservedField1 *uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -148,6 +151,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *uint32
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint32("reserved", 32)
@@ -159,9 +163,12 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 				"expected value": uint32(0x00000000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
+	var reservedField1 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -173,6 +180,8 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -195,8 +204,10 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 
 	// Create a partially initialized instance
 	_child := &_CipRRData{
-		Exchange:   exchange,
-		_EipPacket: &_EipPacket{},
+		_EipPacket:     &_EipPacket{},
+		Exchange:       exchange,
+		reservedField0: reservedField0,
+		reservedField1: reservedField1,
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
@@ -212,7 +223,15 @@ func (m *_CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint32("reserved", 32, uint32(0x00000000))
+			var reserved uint32 = uint32(0x00000000)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint32(0x00000000),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint32("reserved", 32, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -220,7 +239,15 @@ func (m *_CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0000))
+			var reserved uint16 = uint16(0x0000)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint16(0x0000),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

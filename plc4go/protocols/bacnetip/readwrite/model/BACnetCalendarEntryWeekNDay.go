@@ -150,8 +150,8 @@ func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetCalend
 
 	// Create a partially initialized instance
 	_child := &_BACnetCalendarEntryWeekNDay{
-		WeekNDay:             weekNDay,
 		_BACnetCalendarEntry: &_BACnetCalendarEntry{},
+		WeekNDay:             weekNDay,
 	}
 	_child._BACnetCalendarEntry._BACnetCalendarEntryChildRequirements = _child
 	return _child, nil

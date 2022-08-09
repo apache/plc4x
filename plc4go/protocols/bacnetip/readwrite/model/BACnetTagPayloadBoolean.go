@@ -143,7 +143,9 @@ func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadBoolean(actualLength), nil
+	return &_BACnetTagPayloadBoolean{
+		ActualLength: actualLength,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) error {

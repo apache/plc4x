@@ -181,8 +181,8 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 
 	// Create a partially initialized instance
 	_child := &_S7ParameterReadVarRequest{
-		Items:        items,
 		_S7Parameter: &_S7Parameter{},
+		Items:        items,
 	}
 	_child._S7Parameter._S7ParameterChildRequirements = _child
 	return _child, nil

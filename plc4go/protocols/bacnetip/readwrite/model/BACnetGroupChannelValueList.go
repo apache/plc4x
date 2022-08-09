@@ -184,7 +184,12 @@ func BACnetGroupChannelValueListParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 
 	// Create the instance
-	return NewBACnetGroupChannelValueList(openingTag, listOfEventSummaries, closingTag, tagNumber), nil
+	return &_BACnetGroupChannelValueList{
+		TagNumber:            tagNumber,
+		OpeningTag:           openingTag,
+		ListOfEventSummaries: listOfEventSummaries,
+		ClosingTag:           closingTag,
+	}, nil
 }
 
 func (m *_BACnetGroupChannelValueList) Serialize(writeBuffer utils.WriteBuffer) error {

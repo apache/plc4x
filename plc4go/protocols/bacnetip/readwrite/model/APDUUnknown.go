@@ -165,11 +165,11 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnkno
 
 	// Create a partially initialized instance
 	_child := &_APDUUnknown{
-		UnknownTypeRest: unknownTypeRest,
-		UnknownBytes:    unknownBytes,
 		_APDU: &_APDU{
 			ApduLength: apduLength,
 		},
+		UnknownTypeRest: unknownTypeRest,
+		UnknownBytes:    unknownBytes,
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil

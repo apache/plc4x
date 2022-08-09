@@ -144,8 +144,8 @@ func AirConditioningDataSetZoneGroupOnParse(readBuffer utils.ReadBuffer) (AirCon
 
 	// Create a partially initialized instance
 	_child := &_AirConditioningDataSetZoneGroupOn{
-		ZoneGroup:            zoneGroup,
 		_AirConditioningData: &_AirConditioningData{},
+		ZoneGroup:            zoneGroup,
 	}
 	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
 	return _child, nil

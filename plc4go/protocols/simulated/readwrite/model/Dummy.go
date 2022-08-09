@@ -118,7 +118,9 @@ func DummyParse(readBuffer utils.ReadBuffer) (Dummy, error) {
 	}
 
 	// Create the instance
-	return NewDummy(dummy), nil
+	return &_Dummy{
+		Dummy: dummy,
+	}, nil
 }
 
 func (m *_Dummy) Serialize(writeBuffer utils.WriteBuffer) error {

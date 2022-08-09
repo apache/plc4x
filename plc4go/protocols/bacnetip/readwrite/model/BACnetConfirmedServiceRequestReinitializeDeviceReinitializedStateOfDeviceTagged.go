@@ -158,7 +158,12 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) Serialize(writeBuffer utils.WriteBuffer) error {

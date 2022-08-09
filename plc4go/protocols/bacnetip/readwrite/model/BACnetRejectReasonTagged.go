@@ -166,7 +166,11 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	}
 
 	// Create the instance
-	return NewBACnetRejectReasonTagged(value, proprietaryValue, actualLength), nil
+	return &_BACnetRejectReasonTagged{
+		ActualLength:     actualLength,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetRejectReasonTagged) Serialize(writeBuffer utils.WriteBuffer) error {

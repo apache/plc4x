@@ -152,10 +152,10 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParse(readBuffer u
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned{
-		UnsignedValue: unsignedValue,
 		_BACnetFaultParameterFaultOutOfRangeMaxNormalValue: &_BACnetFaultParameterFaultOutOfRangeMaxNormalValue{
 			TagNumber: tagNumber,
 		},
+		UnsignedValue: unsignedValue,
 	}
 	_child._BACnetFaultParameterFaultOutOfRangeMaxNormalValue._BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildRequirements = _child
 	return _child, nil

@@ -150,10 +150,10 @@ func BACnetTimerStateChangeValueLightingCommandParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueLightingCommand{
-		LigthingCommandValue: ligthingCommandValue,
 		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		LigthingCommandValue: ligthingCommandValue,
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer u
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
-		BitStringValue: bitStringValue,
 		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
+		BitStringValue: bitStringValue,
 	}
 	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
 	return _child, nil

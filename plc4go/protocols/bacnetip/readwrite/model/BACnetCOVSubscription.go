@@ -229,7 +229,13 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	}
 
 	// Create the instance
-	return NewBACnetCOVSubscription(recipient, monitoredPropertyReference, issueConfirmedNotifications, timeRemaining, covIncrement), nil
+	return &_BACnetCOVSubscription{
+		Recipient:                   recipient,
+		MonitoredPropertyReference:  monitoredPropertyReference,
+		IssueConfirmedNotifications: issueConfirmedNotifications,
+		TimeRemaining:               timeRemaining,
+		CovIncrement:                covIncrement,
+	}, nil
 }
 
 func (m *_BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {

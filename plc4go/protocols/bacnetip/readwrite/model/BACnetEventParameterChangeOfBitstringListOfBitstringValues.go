@@ -184,7 +184,12 @@ func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParse(readBuffer 
 	}
 
 	// Create the instance
-	return NewBACnetEventParameterChangeOfBitstringListOfBitstringValues(openingTag, listOfBitstringValues, closingTag, tagNumber), nil
+	return &_BACnetEventParameterChangeOfBitstringListOfBitstringValues{
+		TagNumber:             tagNumber,
+		OpeningTag:            openingTag,
+		ListOfBitstringValues: listOfBitstringValues,
+		ClosingTag:            closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) Serialize(writeBuffer utils.WriteBuffer) error {

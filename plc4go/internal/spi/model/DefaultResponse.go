@@ -25,6 +25,10 @@ type DefaultResponse struct {
 	responseCodes map[string]model.PlcResponseCode
 }
 
+func (m DefaultResponse) IsAPlcMessage() bool {
+	return true
+}
+
 func (m DefaultResponse) GetResponseCode(name string) model.PlcResponseCode {
 	return m.responseCodes[name]
 }

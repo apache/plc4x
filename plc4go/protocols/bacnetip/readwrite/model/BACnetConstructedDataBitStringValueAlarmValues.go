@@ -232,12 +232,12 @@ func BACnetConstructedDataBitStringValueAlarmValuesParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBitStringValueAlarmValues{
-		NumberOfDataElements: numberOfDataElements,
-		AlarmValues:          alarmValues,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		AlarmValues:          alarmValues,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

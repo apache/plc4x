@@ -216,11 +216,11 @@ func AirConditioningDataSetHvacLowerGuardLimitParse(readBuffer utils.ReadBuffer)
 
 	// Create a partially initialized instance
 	_child := &_AirConditioningDataSetHvacLowerGuardLimit{
+		_AirConditioningData: &_AirConditioningData{},
 		ZoneGroup:            zoneGroup,
 		ZoneList:             zoneList,
 		Limit:                limit,
 		HvacModeAndFlags:     hvacModeAndFlags,
-		_AirConditioningData: &_AirConditioningData{},
 	}
 	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
 	return _child, nil

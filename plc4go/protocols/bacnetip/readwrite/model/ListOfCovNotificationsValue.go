@@ -220,7 +220,13 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}
 
 	// Create the instance
-	return NewListOfCovNotificationsValue(propertyIdentifier, arrayIndex, propertyValue, timeOfChange, objectTypeArgument), nil
+	return &_ListOfCovNotificationsValue{
+		ObjectTypeArgument: objectTypeArgument,
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+		PropertyValue:      propertyValue,
+		TimeOfChange:       timeOfChange,
+	}, nil
 }
 
 func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) error {

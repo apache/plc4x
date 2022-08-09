@@ -180,7 +180,11 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (BACnetT
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadObjectIdentifier(objectType, proprietaryValue, instanceNumber), nil
+	return &_BACnetTagPayloadObjectIdentifier{
+		ObjectType:       objectType,
+		ProprietaryValue: proprietaryValue,
+		InstanceNumber:   instanceNumber,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {

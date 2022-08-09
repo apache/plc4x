@@ -150,8 +150,8 @@ func BACnetLogDataLogDataEntryBitStringValueParse(readBuffer utils.ReadBuffer) (
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataEntryBitStringValue{
-		BitStringValue:             bitStringValue,
 		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
+		BitStringValue:             bitStringValue,
 	}
 	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
 	return _child, nil

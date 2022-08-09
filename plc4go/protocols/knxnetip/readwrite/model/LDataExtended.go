@@ -269,13 +269,13 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (LDataExtended, error) {
 
 	// Create a partially initialized instance
 	_child := &_LDataExtended{
+		_LDataFrame:         &_LDataFrame{},
 		GroupAddress:        groupAddress,
 		HopCount:            hopCount,
 		ExtendedFrameFormat: extendedFrameFormat,
 		SourceAddress:       sourceAddress,
 		DestinationAddress:  destinationAddress,
 		Apdu:                apdu,
-		_LDataFrame:         &_LDataFrame{},
 	}
 	_child._LDataFrame._LDataFrameChildRequirements = _child
 	return _child, nil

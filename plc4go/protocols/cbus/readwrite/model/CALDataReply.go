@@ -175,11 +175,11 @@ func CALDataReplyParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 
 	// Create a partially initialized instance
 	_child := &_CALDataReply{
-		ParamNo:        paramNo,
-		ParameterValue: parameterValue,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
+		ParamNo:        paramNo,
+		ParameterValue: parameterValue,
 	}
 	_child._CALData._CALDataChildRequirements = _child
 	return _child, nil

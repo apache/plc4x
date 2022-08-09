@@ -217,11 +217,11 @@ func TriggerControlDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContai
 
 	// Create a partially initialized instance
 	_child := &_TriggerControlDataLabel{
+		_TriggerControlData:   &_TriggerControlData{},
 		TriggerControlOptions: triggerControlOptions,
 		ActionSelector:        actionSelector,
 		Language:              language,
 		Data:                  data,
-		_TriggerControlData:   &_TriggerControlData{},
 	}
 	_child._TriggerControlData._TriggerControlDataChildRequirements = _child
 	return _child, nil

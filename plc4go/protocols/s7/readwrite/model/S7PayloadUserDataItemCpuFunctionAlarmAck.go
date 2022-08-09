@@ -206,9 +206,9 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemCpuFunctionAlarmAck{
+		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 		FunctionId:             functionId,
 		MessageObjects:         messageObjects,
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil

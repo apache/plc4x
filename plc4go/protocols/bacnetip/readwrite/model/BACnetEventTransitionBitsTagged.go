@@ -209,7 +209,12 @@ func BACnetEventTransitionBitsTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 
 	// Create the instance
-	return NewBACnetEventTransitionBitsTagged(header, payload, tagNumber, tagClass), nil
+	return &_BACnetEventTransitionBitsTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Payload:   payload,
+	}, nil
 }
 
 func (m *_BACnetEventTransitionBitsTagged) Serialize(writeBuffer utils.WriteBuffer) error {

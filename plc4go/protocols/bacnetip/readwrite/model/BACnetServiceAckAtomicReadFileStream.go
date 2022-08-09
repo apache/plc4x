@@ -176,9 +176,9 @@ func BACnetServiceAckAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BAC
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckAtomicReadFileStream{
+		_BACnetServiceAckAtomicReadFileStreamOrRecord: &_BACnetServiceAckAtomicReadFileStreamOrRecord{},
 		FileStartPosition: fileStartPosition,
 		FileData:          fileData,
-		_BACnetServiceAckAtomicReadFileStreamOrRecord: &_BACnetServiceAckAtomicReadFileStreamOrRecord{},
 	}
 	_child._BACnetServiceAckAtomicReadFileStreamOrRecord._BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements = _child
 	return _child, nil

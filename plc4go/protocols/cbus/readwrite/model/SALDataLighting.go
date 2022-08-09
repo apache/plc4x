@@ -154,8 +154,8 @@ func SALDataLightingParse(readBuffer utils.ReadBuffer, applicationId Application
 
 	// Create a partially initialized instance
 	_child := &_SALDataLighting{
-		LightingData: lightingData,
 		_SALData:     &_SALData{},
+		LightingData: lightingData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

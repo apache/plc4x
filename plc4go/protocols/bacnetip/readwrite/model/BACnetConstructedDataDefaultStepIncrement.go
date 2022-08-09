@@ -182,11 +182,11 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDefaultStepIncrement{
-		DefaultStepIncrement: defaultStepIncrement,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		DefaultStepIncrement: defaultStepIncrement,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

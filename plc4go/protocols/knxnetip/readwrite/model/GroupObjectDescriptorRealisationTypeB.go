@@ -249,7 +249,16 @@ func GroupObjectDescriptorRealisationTypeBParse(readBuffer utils.ReadBuffer) (Gr
 	}
 
 	// Create the instance
-	return NewGroupObjectDescriptorRealisationTypeB(updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
+	return &_GroupObjectDescriptorRealisationTypeB{
+		UpdateEnable:          updateEnable,
+		TransmitEnable:        transmitEnable,
+		SegmentSelectorEnable: segmentSelectorEnable,
+		WriteEnable:           writeEnable,
+		ReadEnable:            readEnable,
+		CommunicationEnable:   communicationEnable,
+		Priority:              priority,
+		ValueType:             valueType,
+	}, nil
 }
 
 func (m *_GroupObjectDescriptorRealisationTypeB) Serialize(writeBuffer utils.WriteBuffer) error {

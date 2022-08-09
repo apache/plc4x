@@ -57,6 +57,8 @@ type _CIPEncapsulationPacket struct {
 	Status        uint32
 	SenderContext []uint8
 	Options       uint32
+	// Reserved Fields
+	reservedField0 *uint32
 }
 
 type _CIPEncapsulationPacketChildRequirements interface {
@@ -224,6 +226,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	}
 	options := _options
 
+	var reservedField0 *uint32
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint32("reserved", 32)
@@ -235,6 +238,8 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 				"expected value": uint32(0x00000000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -270,6 +275,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 
 	// Finish initializing
 	_child.InitializeParent(_child, sessionHandle, status, senderContext, options)
+	_child.GetParent().(*_CIPEncapsulationPacket).reservedField0 = reservedField0
 	return _child, nil
 }
 
@@ -335,7 +341,15 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint32("reserved", 32, uint32(0x00000000))
+		var reserved uint32 = uint32(0x00000000)
+		if pm.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint32(0x00000000),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *pm.reservedField0
+		}
+		_err := writeBuffer.WriteUint32("reserved", 32, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

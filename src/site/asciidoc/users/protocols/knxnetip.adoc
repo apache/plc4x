@@ -18,7 +18,7 @@
 :icons: font
 
 == KNXnet/IP
-
+image::knx_banner.png[banner,512,167]
 === Connection String Options
 
 [cols="2,2a,5a"]

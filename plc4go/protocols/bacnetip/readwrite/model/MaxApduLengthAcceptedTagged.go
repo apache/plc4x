@@ -158,7 +158,12 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 
 	// Create the instance
-	return NewMaxApduLengthAcceptedTagged(header, value, tagNumber, tagClass), nil
+	return &_MaxApduLengthAcceptedTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_MaxApduLengthAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) error {

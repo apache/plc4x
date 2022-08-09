@@ -194,7 +194,11 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetA
 	}
 
 	// Create the instance
-	return NewBACnetAuthenticationFactorFormat(formatType, vendorId, vendorFormat), nil
+	return &_BACnetAuthenticationFactorFormat{
+		FormatType:   formatType,
+		VendorId:     vendorId,
+		VendorFormat: vendorFormat,
+	}, nil
 }
 
 func (m *_BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuffer) error {

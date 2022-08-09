@@ -232,12 +232,12 @@ func BACnetConstructedDataShedLevelDescriptionsParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataShedLevelDescriptions{
-		NumberOfDataElements:  numberOfDataElements,
-		ShedLevelDescriptions: shedLevelDescriptions,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements:  numberOfDataElements,
+		ShedLevelDescriptions: shedLevelDescriptions,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

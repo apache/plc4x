@@ -174,12 +174,12 @@ func ReplyOrConfirmationReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBus
 
 	// Create a partially initialized instance
 	_child := &_ReplyOrConfirmationReply{
-		Reply:       reply,
-		Termination: termination,
 		_ReplyOrConfirmation: &_ReplyOrConfirmation{
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
+		Reply:       reply,
+		Termination: termination,
 	}
 	_child._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetShedLevelAmountParse(readBuffer utils.ReadBuffer) (BACnetShedLevelAmo
 
 	// Create a partially initialized instance
 	_child := &_BACnetShedLevelAmount{
-		Amount:           amount,
 		_BACnetShedLevel: &_BACnetShedLevel{},
+		Amount:           amount,
 	}
 	_child._BACnetShedLevel._BACnetShedLevelChildRequirements = _child
 	return _child, nil

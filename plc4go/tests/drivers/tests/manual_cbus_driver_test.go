@@ -24,18 +24,29 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
+	"os"
 	"testing"
 	"time"
 )
 
 func TestManualCBusDriver(t *testing.T) {
+	log.Logger = log.
+		With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+		Level(zerolog.TraceLevel)
+	config.TraceTransactionManagerWorkers = true
+	config.TraceTransactionManagerTransactions = true
+	config.TraceDefaultMessageCodecWorker = true
 	t.Skip()
 
-	connectionString := "c-bus://192.168.178.101?srchk=true"
+	connectionString := "c-bus://192.168.178.101"
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(cbus.NewDriver())
 	transports.RegisterTcpTransport(driverManager)
@@ -81,4 +92,34 @@ func TestManualCBusDriver(t *testing.T) {
 		}
 		t.Logf("Got %d monitors", monitorCount)
 	})
+}
+
+func TestManualCBusBrowse(t *testing.T) {
+	log.Logger = log.
+		With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+		Level(zerolog.TraceLevel)
+	config.TraceTransactionManagerWorkers = true
+	config.TraceTransactionManagerTransactions = true
+	config.TraceDefaultMessageCodecWorker = true
+	t.Skip()
+
+	connectionString := "c-bus://192.168.178.101?Monitor=false"
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(cbus.NewDriver())
+	transports.RegisterTcpTransport(driverManager)
+	connectionResult := <-driverManager.GetConnection(connectionString)
+	if err := connectionResult.GetErr(); err != nil {
+		panic(err)
+	}
+	connection := connectionResult.GetConnection()
+	defer connection.Close()
+	browseRequest, err := connection.BrowseRequestBuilder().
+		AddQuery("asd", "info/*/*").
+		Build()
+	if err != nil {
+		panic(err)
+	}
+	browseRequestResult := <-browseRequest.Execute()
+	fmt.Printf("%s", browseRequestResult)
 }

@@ -176,9 +176,9 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
-		ReferenceSequenceNumber: referenceSequenceNumber,
-		Count:                   count,
 		_BACnetConfirmedServiceRequestReadRangeRange: &_BACnetConfirmedServiceRequestReadRangeRange{},
+		ReferenceSequenceNumber:                      referenceSequenceNumber,
+		Count:                                        count,
 	}
 	_child._BACnetConfirmedServiceRequestReadRangeRange._BACnetConfirmedServiceRequestReadRangeRangeChildRequirements = _child
 	return _child, nil

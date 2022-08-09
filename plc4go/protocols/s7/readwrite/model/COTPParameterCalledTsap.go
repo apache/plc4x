@@ -146,10 +146,10 @@ func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (COTP
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterCalledTsap{
-		TsapId: tsapId,
 		_COTPParameter: &_COTPParameter{
 			Rest: rest,
 		},
+		TsapId: tsapId,
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil

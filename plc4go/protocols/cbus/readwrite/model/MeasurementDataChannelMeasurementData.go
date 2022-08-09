@@ -275,13 +275,13 @@ func MeasurementDataChannelMeasurementDataParse(readBuffer utils.ReadBuffer) (Me
 
 	// Create a partially initialized instance
 	_child := &_MeasurementDataChannelMeasurementData{
+		_MeasurementData: &_MeasurementData{},
 		DeviceId:         deviceId,
 		Channel:          channel,
 		Units:            units,
 		Multiplier:       multiplier,
 		Msb:              msb,
 		Lsb:              lsb,
-		_MeasurementData: &_MeasurementData{},
 	}
 	_child._MeasurementData._MeasurementDataChildRequirements = _child
 	return _child, nil

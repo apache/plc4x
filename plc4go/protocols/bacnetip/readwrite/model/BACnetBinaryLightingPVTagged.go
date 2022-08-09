@@ -200,7 +200,13 @@ func BACnetBinaryLightingPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Create the instance
-	return NewBACnetBinaryLightingPVTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetBinaryLightingPVTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetBinaryLightingPVTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -158,7 +158,12 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedP
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -146,8 +146,8 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (Kn
 
 	// Create a partially initialized instance
 	_child := &_KnxNetRemoteConfigurationAndDiagnosis{
-		Version:    version,
 		_ServiceId: &_ServiceId{},
+		Version:    version,
 	}
 	_child._ServiceId._ServiceIdChildRequirements = _child
 	return _child, nil

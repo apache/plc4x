@@ -184,7 +184,12 @@ func BACnetEventSummariesListParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	}
 
 	// Create the instance
-	return NewBACnetEventSummariesList(openingTag, listOfEventSummaries, closingTag, tagNumber), nil
+	return &_BACnetEventSummariesList{
+		TagNumber:            tagNumber,
+		OpeningTag:           openingTag,
+		ListOfEventSummaries: listOfEventSummaries,
+		ClosingTag:           closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventSummariesList) Serialize(writeBuffer utils.WriteBuffer) error {

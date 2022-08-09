@@ -150,8 +150,8 @@ func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readB
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
-		ObjectidentifierValue:                             objectidentifierValue,
 		_BACnetFaultParameterFaultExtendedParametersEntry: &_BACnetFaultParameterFaultExtendedParametersEntry{},
+		ObjectidentifierValue:                             objectidentifierValue,
 	}
 	_child._BACnetFaultParameterFaultExtendedParametersEntry._BACnetFaultParameterFaultExtendedParametersEntryChildRequirements = _child
 	return _child, nil

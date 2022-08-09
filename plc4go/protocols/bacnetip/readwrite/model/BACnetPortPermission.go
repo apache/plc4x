@@ -160,7 +160,10 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (BACnetPortPermissio
 	}
 
 	// Create the instance
-	return NewBACnetPortPermission(port, enable), nil
+	return &_BACnetPortPermission{
+		Port:   port,
+		Enable: enable,
+	}, nil
 }
 
 func (m *_BACnetPortPermission) Serialize(writeBuffer utils.WriteBuffer) error {

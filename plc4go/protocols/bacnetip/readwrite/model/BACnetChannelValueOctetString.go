@@ -150,8 +150,8 @@ func BACnetChannelValueOctetStringParse(readBuffer utils.ReadBuffer) (BACnetChan
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueOctetString{
-		OctetStringValue:    octetStringValue,
 		_BACnetChannelValue: &_BACnetChannelValue{},
+		OctetStringValue:    octetStringValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

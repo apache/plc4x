@@ -182,11 +182,11 @@ func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNetworkInterfaceName{
-		NetworkInterfaceName: networkInterfaceName,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NetworkInterfaceName: networkInterfaceName,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

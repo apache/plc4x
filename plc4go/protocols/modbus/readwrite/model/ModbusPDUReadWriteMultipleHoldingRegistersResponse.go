@@ -165,8 +165,8 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadWriteMultipleHoldingRegistersResponse{
-		Value:      value,
 		_ModbusPDU: &_ModbusPDU{},
+		Value:      value,
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

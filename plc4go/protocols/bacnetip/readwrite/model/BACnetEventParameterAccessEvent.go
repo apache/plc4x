@@ -222,11 +222,11 @@ func BACnetEventParameterAccessEventParse(readBuffer utils.ReadBuffer) (BACnetEv
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterAccessEvent{
+		_BACnetEventParameter:    &_BACnetEventParameter{},
 		OpeningTag:               openingTag,
 		ListOfAccessEvents:       listOfAccessEvents,
 		AccessEventTimeReference: accessEventTimeReference,
 		ClosingTag:               closingTag,
-		_BACnetEventParameter:    &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

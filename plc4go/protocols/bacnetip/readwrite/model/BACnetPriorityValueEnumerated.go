@@ -150,10 +150,10 @@ func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeA
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueEnumerated{
-		EnumeratedValue: enumeratedValue,
 		_BACnetPriorityValue: &_BACnetPriorityValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		EnumeratedValue: enumeratedValue,
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil

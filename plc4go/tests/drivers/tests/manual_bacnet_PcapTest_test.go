@@ -37,7 +37,7 @@ import (
 	"time"
 )
 
-func Test(t *testing.T) {
+func TestBacnetDriverWithPcap(t *testing.T) {
 	t.Skip() // Manual test don't check in un-skipped
 
 	config.TraceTransactionManagerWorkers = false

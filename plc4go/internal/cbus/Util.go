@@ -38,12 +38,9 @@ func CreateRequestContextWithInfoCallback(cBusMessage readwriteModel.CBusMessage
 			case readwriteModel.CALDataIdentifyExactly:
 				sendIdentifyRequestBefore = true
 			}
-			return readwriteModel.NewRequestContext(true, false, sendIdentifyRequestBefore)
+			return readwriteModel.NewRequestContext(sendIdentifyRequestBefore)
 		case readwriteModel.RequestCommandExactly:
 			switch command := request.GetCbusCommand().(type) {
-			case readwriteModel.CBusCommandDeviceManagementExactly:
-				infoCallBack("CAL request detected")
-				return readwriteModel.NewRequestContext(true, false, false)
 			case readwriteModel.CBusCommandPointToPointExactly:
 				sendIdentifyRequestBefore := false
 				infoCallBack("CAL request detected")
@@ -51,29 +48,7 @@ func CreateRequestContextWithInfoCallback(cBusMessage readwriteModel.CBusMessage
 				case readwriteModel.CALDataIdentifyExactly:
 					sendIdentifyRequestBefore = true
 				}
-				return readwriteModel.NewRequestContext(true, false, sendIdentifyRequestBefore)
-			case readwriteModel.CBusCommandPointToMultiPointExactly:
-				switch command := command.GetCommand().(type) {
-				case readwriteModel.CBusPointToMultiPointCommandStatusExactly:
-					var sendStatusRequestLevelBefore bool
-					switch command.GetStatusRequest().(type) {
-					case readwriteModel.StatusRequestLevelExactly:
-						sendStatusRequestLevelBefore = true
-					}
-					infoCallBack("SAL status request detected")
-					return readwriteModel.NewRequestContext(false, sendStatusRequestLevelBefore, false)
-				}
-			case readwriteModel.CBusCommandPointToPointToMultiPointExactly:
-				switch command := command.GetCommand().(type) {
-				case readwriteModel.CBusPointToPointToMultiPointCommandStatusExactly:
-					var sendStatusRequestLevelBefore bool
-					switch command.GetStatusRequest().(type) {
-					case readwriteModel.StatusRequestLevelExactly:
-						sendStatusRequestLevelBefore = true
-					}
-					infoCallBack("SAL status request detected")
-					return readwriteModel.NewRequestContext(false, sendStatusRequestLevelBefore, false)
-				}
+				return readwriteModel.NewRequestContext(sendIdentifyRequestBefore)
 			}
 		case readwriteModel.RequestObsoleteExactly:
 			sendIdentifyRequestBefore := false
@@ -82,11 +57,11 @@ func CreateRequestContextWithInfoCallback(cBusMessage readwriteModel.CBusMessage
 			case readwriteModel.CALDataIdentifyExactly:
 				sendIdentifyRequestBefore = true
 			}
-			return readwriteModel.NewRequestContext(true, false, sendIdentifyRequestBefore)
+			return readwriteModel.NewRequestContext(sendIdentifyRequestBefore)
 		}
 	case readwriteModel.CBusMessageToClientExactly:
 		// We received a request so we need to reset our flags
-		return readwriteModel.NewRequestContext(false, false, false)
+		return readwriteModel.NewRequestContext(false)
 	}
-	return readwriteModel.NewRequestContext(false, false, false)
+	return readwriteModel.NewRequestContext(false)
 }

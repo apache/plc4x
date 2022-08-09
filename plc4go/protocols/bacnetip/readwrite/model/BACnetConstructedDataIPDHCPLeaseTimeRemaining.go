@@ -182,11 +182,11 @@ func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
-		IpDhcpLeaseTimeRemaining: ipDhcpLeaseTimeRemaining,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		IpDhcpLeaseTimeRemaining: ipDhcpLeaseTimeRemaining,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

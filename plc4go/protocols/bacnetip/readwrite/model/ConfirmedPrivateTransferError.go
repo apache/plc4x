@@ -237,11 +237,11 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 
 	// Create a partially initialized instance
 	_child := &_ConfirmedPrivateTransferError{
+		_BACnetError:    &_BACnetError{},
 		ErrorType:       errorType,
 		VendorId:        vendorId,
 		ServiceNumber:   serviceNumber,
 		ErrorParameters: errorParameters,
-		_BACnetError:    &_BACnetError{},
 	}
 	_child._BACnetError._BACnetErrorChildRequirements = _child
 	return _child, nil

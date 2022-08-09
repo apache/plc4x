@@ -173,7 +173,12 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 
 	// Create the instance
-	return NewBACnetDateRangeEnclosed(openingTag, dateRange, closingTag, tagNumber), nil
+	return &_BACnetDateRangeEnclosed{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		DateRange:  dateRange,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetDateRangeEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

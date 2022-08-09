@@ -158,7 +158,12 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Create the instance
-	return NewBACnetFileAccessMethodTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetFileAccessMethodTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetFileAccessMethodTagged) Serialize(writeBuffer utils.WriteBuffer) error {

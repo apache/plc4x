@@ -154,8 +154,8 @@ func SALDataMediaTransportParse(readBuffer utils.ReadBuffer, applicationId Appli
 
 	// Create a partially initialized instance
 	_child := &_SALDataMediaTransport{
-		MediaTransportControlData: mediaTransportControlData,
 		_SALData:                  &_SALData{},
+		MediaTransportControlData: mediaTransportControlData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

@@ -775,7 +775,26 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 
 	// Create the instance
-	return NewBACnetNotificationParametersExtendedParameters(openingTag, peekedTagHeader, nullValue, realValue, unsignedValue, booleanValue, integerValue, doubleValue, octetStringValue, characterStringValue, bitStringValue, enumeratedValue, dateValue, timeValue, objectIdentifier, reference, closingTag, tagNumber), nil
+	return &_BACnetNotificationParametersExtendedParameters{
+		TagNumber:            tagNumber,
+		OpeningTag:           openingTag,
+		PeekedTagHeader:      peekedTagHeader,
+		NullValue:            nullValue,
+		RealValue:            realValue,
+		UnsignedValue:        unsignedValue,
+		BooleanValue:         booleanValue,
+		IntegerValue:         integerValue,
+		DoubleValue:          doubleValue,
+		OctetStringValue:     octetStringValue,
+		CharacterStringValue: characterStringValue,
+		BitStringValue:       bitStringValue,
+		EnumeratedValue:      enumeratedValue,
+		DateValue:            dateValue,
+		TimeValue:            timeValue,
+		ObjectIdentifier:     objectIdentifier,
+		Reference:            reference,
+		ClosingTag:           closingTag,
+	}, nil
 }
 
 func (m *_BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer utils.WriteBuffer) error {

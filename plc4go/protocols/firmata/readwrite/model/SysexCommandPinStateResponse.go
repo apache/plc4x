@@ -186,10 +186,10 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 
 	// Create a partially initialized instance
 	_child := &_SysexCommandPinStateResponse{
+		_SysexCommand: &_SysexCommand{},
 		Pin:           pin,
 		PinMode:       pinMode,
 		PinState:      pinState,
-		_SysexCommand: &_SysexCommand{},
 	}
 	_child._SysexCommand._SysexCommandChildRequirements = _child
 	return _child, nil

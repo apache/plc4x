@@ -50,7 +50,7 @@ func WithLogger(log zerolog.Logger) Option {
 func (t *TransportLogger) Read(p []byte) (int, error) {
 	bytesRead, err := t.source.Read(p)
 	if bytesRead > 0 {
-		t.log.Printf("Read: %s", p[:bytesRead])
+		t.log.Printf("Read: %+q", p[:bytesRead])
 	}
 	return bytesRead, err
 }
@@ -58,7 +58,7 @@ func (t *TransportLogger) Read(p []byte) (int, error) {
 func (t *TransportLogger) Write(p []byte) (int, error) {
 	bytesWritten, err := t.source.Write(p)
 	if bytesWritten > 0 {
-		t.log.Printf("Write: %s", p[:bytesWritten])
+		t.log.Printf("Write: %+q", p[:bytesWritten])
 	}
 	return bytesWritten, err
 }

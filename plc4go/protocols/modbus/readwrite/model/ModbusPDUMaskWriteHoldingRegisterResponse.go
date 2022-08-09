@@ -190,10 +190,10 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUMaskWriteHoldingRegisterResponse{
+		_ModbusPDU:       &_ModbusPDU{},
 		ReferenceAddress: referenceAddress,
 		AndMask:          andMask,
 		OrMask:           orMask,
-		_ModbusPDU:       &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

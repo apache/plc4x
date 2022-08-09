@@ -150,8 +150,8 @@ func BACnetChannelValueBooleanParse(readBuffer utils.ReadBuffer) (BACnetChannelV
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueBoolean{
-		BooleanValue:        booleanValue,
 		_BACnetChannelValue: &_BACnetChannelValue{},
+		BooleanValue:        booleanValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

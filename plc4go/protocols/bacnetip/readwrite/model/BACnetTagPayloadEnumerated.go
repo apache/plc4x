@@ -144,7 +144,10 @@ func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength u
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadEnumerated(data, actualLength), nil
+	return &_BACnetTagPayloadEnumerated{
+		ActualLength: actualLength,
+		Data:         data,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {

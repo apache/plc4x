@@ -140,7 +140,9 @@ func HVACTemperatureParse(readBuffer utils.ReadBuffer) (HVACTemperature, error) 
 	}
 
 	// Create the instance
-	return NewHVACTemperature(temperatureValue), nil
+	return &_HVACTemperature{
+		TemperatureValue: temperatureValue,
+	}, nil
 }
 
 func (m *_HVACTemperature) Serialize(writeBuffer utils.WriteBuffer) error {

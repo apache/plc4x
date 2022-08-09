@@ -258,7 +258,16 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (DateAndTime, error) {
 	}
 
 	// Create the instance
-	return NewDateAndTime(year, month, day, hour, minutes, seconds, msec, dow), nil
+	return &_DateAndTime{
+		Year:    year,
+		Month:   month,
+		Day:     day,
+		Hour:    hour,
+		Minutes: minutes,
+		Seconds: seconds,
+		Msec:    msec,
+		Dow:     dow,
+	}, nil
 }
 
 func (m *_DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {

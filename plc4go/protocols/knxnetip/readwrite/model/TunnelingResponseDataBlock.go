@@ -168,7 +168,11 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingResp
 	}
 
 	// Create the instance
-	return NewTunnelingResponseDataBlock(communicationChannelId, sequenceCounter, status), nil
+	return &_TunnelingResponseDataBlock{
+		CommunicationChannelId: communicationChannelId,
+		SequenceCounter:        sequenceCounter,
+		Status:                 status,
+	}, nil
 }
 
 func (m *_TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {

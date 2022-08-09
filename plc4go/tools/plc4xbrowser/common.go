@@ -17,28 +17,15 @@
  * under the License.
  */
 
-package drivers
+package main
 
 import (
-	"encoding/hex"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
+	"github.com/rs/zerolog"
+	"strings"
 )
 
-func TestS7(t *testing.T) {
-	t.Skip()
-	request, err := hex.DecodeString("000a00000006010300000004")
-	if err != nil {
-		// Output an error ...
-	}
-	rb := utils.NewReadBufferByteBased(request)
-	adu, err := model.TPKTPacketParse(rb)
-	if err != nil {
-		t.Errorf("Error parsing: %s", err)
-	}
-	if adu != nil {
-		// Output success ...
-	}
-}
+const protocols = "ads,bacnetip,c-bus,s7"
+
+var protocolList = strings.Split(protocols, ",")
+
+var plc4xBrowserLog = zerolog.Nop()

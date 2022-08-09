@@ -48,6 +48,8 @@ type DeviceConfigurationRequestDataBlockExactly interface {
 type _DeviceConfigurationRequestDataBlock struct {
 	CommunicationChannelId uint8
 	SequenceCounter        uint8
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -144,6 +146,7 @@ func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (Devi
 	}
 	sequenceCounter := _sequenceCounter
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -155,6 +158,8 @@ func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (Devi
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -163,7 +168,11 @@ func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (Devi
 	}
 
 	// Create the instance
-	return NewDeviceConfigurationRequestDataBlock(communicationChannelId, sequenceCounter), nil
+	return &_DeviceConfigurationRequestDataBlock{
+		CommunicationChannelId: communicationChannelId,
+		SequenceCounter:        sequenceCounter,
+		reservedField0:         reservedField0,
+	}, nil
 }
 
 func (m *_DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -196,7 +205,15 @@ func (m *_DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.Write
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00))
+		var reserved uint8 = uint8(0x00)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint8(0x00),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

@@ -34,9 +34,9 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 	// GetUnitFlags returns UnitFlags (property field)
 	GetUnitFlags() IdentifyReplyCommandUnitSummary
 	// GetGavStoreEnabledByte1 returns GavStoreEnabledByte1 (property field)
-	GetGavStoreEnabledByte1() byte
+	GetGavStoreEnabledByte1() *byte
 	// GetGavStoreEnabledByte2 returns GavStoreEnabledByte2 (property field)
-	GetGavStoreEnabledByte2() byte
+	GetGavStoreEnabledByte2() *byte
 	// GetTimeFromLastRecoverOfMainsInSeconds returns TimeFromLastRecoverOfMainsInSeconds (property field)
 	GetTimeFromLastRecoverOfMainsInSeconds() uint8
 }
@@ -52,8 +52,8 @@ type IdentifyReplyCommandOutputUnitSummaryExactly interface {
 type _IdentifyReplyCommandOutputUnitSummary struct {
 	*_IdentifyReplyCommand
 	UnitFlags                           IdentifyReplyCommandUnitSummary
-	GavStoreEnabledByte1                byte
-	GavStoreEnabledByte2                byte
+	GavStoreEnabledByte1                *byte
+	GavStoreEnabledByte2                *byte
 	TimeFromLastRecoverOfMainsInSeconds uint8
 }
 
@@ -86,11 +86,11 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetUnitFlags() IdentifyReplyCom
 	return m.UnitFlags
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetGavStoreEnabledByte1() byte {
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetGavStoreEnabledByte1() *byte {
 	return m.GavStoreEnabledByte1
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetGavStoreEnabledByte2() byte {
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetGavStoreEnabledByte2() *byte {
 	return m.GavStoreEnabledByte2
 }
 
@@ -104,7 +104,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetTimeFromLastRecoverOfMainsIn
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
-func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 byte, gavStoreEnabledByte2 byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
+func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
 	_result := &_IdentifyReplyCommandOutputUnitSummary{
 		UnitFlags:                           unitFlags,
 		GavStoreEnabledByte1:                gavStoreEnabledByte1,
@@ -141,11 +141,15 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBitsConditional(last
 	// Simple field (unitFlags)
 	lengthInBits += m.UnitFlags.GetLengthInBits()
 
-	// Simple field (gavStoreEnabledByte1)
-	lengthInBits += 8
+	// Optional Field (gavStoreEnabledByte1)
+	if m.GavStoreEnabledByte1 != nil {
+		lengthInBits += 8
+	}
 
-	// Simple field (gavStoreEnabledByte2)
-	lengthInBits += 8
+	// Optional Field (gavStoreEnabledByte2)
+	if m.GavStoreEnabledByte2 != nil {
+		lengthInBits += 8
+	}
 
 	// Simple field (timeFromLastRecoverOfMainsInSeconds)
 	lengthInBits += 8
@@ -179,19 +183,25 @@ func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, att
 		return nil, errors.Wrap(closeErr, "Error closing for unitFlags")
 	}
 
-	// Simple Field (gavStoreEnabledByte1)
-	_gavStoreEnabledByte1, _gavStoreEnabledByte1Err := readBuffer.ReadByte("gavStoreEnabledByte1")
-	if _gavStoreEnabledByte1Err != nil {
-		return nil, errors.Wrap(_gavStoreEnabledByte1Err, "Error parsing 'gavStoreEnabledByte1' field of IdentifyReplyCommandOutputUnitSummary")
+	// Optional Field (gavStoreEnabledByte1) (Can be skipped, if a given expression evaluates to false)
+	var gavStoreEnabledByte1 *byte = nil
+	if bool((numBytes) > (1)) {
+		_val, _err := readBuffer.ReadByte("gavStoreEnabledByte1")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'gavStoreEnabledByte1' field of IdentifyReplyCommandOutputUnitSummary")
+		}
+		gavStoreEnabledByte1 = &_val
 	}
-	gavStoreEnabledByte1 := _gavStoreEnabledByte1
 
-	// Simple Field (gavStoreEnabledByte2)
-	_gavStoreEnabledByte2, _gavStoreEnabledByte2Err := readBuffer.ReadByte("gavStoreEnabledByte2")
-	if _gavStoreEnabledByte2Err != nil {
-		return nil, errors.Wrap(_gavStoreEnabledByte2Err, "Error parsing 'gavStoreEnabledByte2' field of IdentifyReplyCommandOutputUnitSummary")
+	// Optional Field (gavStoreEnabledByte2) (Can be skipped, if a given expression evaluates to false)
+	var gavStoreEnabledByte2 *byte = nil
+	if bool((numBytes) > (2)) {
+		_val, _err := readBuffer.ReadByte("gavStoreEnabledByte2")
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'gavStoreEnabledByte2' field of IdentifyReplyCommandOutputUnitSummary")
+		}
+		gavStoreEnabledByte2 = &_val
 	}
-	gavStoreEnabledByte2 := _gavStoreEnabledByte2
 
 	// Simple Field (timeFromLastRecoverOfMainsInSeconds)
 	_timeFromLastRecoverOfMainsInSeconds, _timeFromLastRecoverOfMainsInSecondsErr := readBuffer.ReadUint8("timeFromLastRecoverOfMainsInSeconds", 8)
@@ -206,13 +216,13 @@ func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, att
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandOutputUnitSummary{
+		_IdentifyReplyCommand: &_IdentifyReplyCommand{
+			NumBytes: numBytes,
+		},
 		UnitFlags:                           unitFlags,
 		GavStoreEnabledByte1:                gavStoreEnabledByte1,
 		GavStoreEnabledByte2:                gavStoreEnabledByte2,
 		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
-		_IdentifyReplyCommand: &_IdentifyReplyCommand{
-			NumBytes: numBytes,
-		},
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil
@@ -238,18 +248,24 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(_unitFlagsErr, "Error serializing 'unitFlags' field")
 		}
 
-		// Simple Field (gavStoreEnabledByte1)
-		gavStoreEnabledByte1 := byte(m.GetGavStoreEnabledByte1())
-		_gavStoreEnabledByte1Err := writeBuffer.WriteByte("gavStoreEnabledByte1", (gavStoreEnabledByte1))
-		if _gavStoreEnabledByte1Err != nil {
-			return errors.Wrap(_gavStoreEnabledByte1Err, "Error serializing 'gavStoreEnabledByte1' field")
+		// Optional Field (gavStoreEnabledByte1) (Can be skipped, if the value is null)
+		var gavStoreEnabledByte1 *byte = nil
+		if m.GetGavStoreEnabledByte1() != nil {
+			gavStoreEnabledByte1 = m.GetGavStoreEnabledByte1()
+			_gavStoreEnabledByte1Err := writeBuffer.WriteByte("gavStoreEnabledByte1", *(gavStoreEnabledByte1))
+			if _gavStoreEnabledByte1Err != nil {
+				return errors.Wrap(_gavStoreEnabledByte1Err, "Error serializing 'gavStoreEnabledByte1' field")
+			}
 		}
 
-		// Simple Field (gavStoreEnabledByte2)
-		gavStoreEnabledByte2 := byte(m.GetGavStoreEnabledByte2())
-		_gavStoreEnabledByte2Err := writeBuffer.WriteByte("gavStoreEnabledByte2", (gavStoreEnabledByte2))
-		if _gavStoreEnabledByte2Err != nil {
-			return errors.Wrap(_gavStoreEnabledByte2Err, "Error serializing 'gavStoreEnabledByte2' field")
+		// Optional Field (gavStoreEnabledByte2) (Can be skipped, if the value is null)
+		var gavStoreEnabledByte2 *byte = nil
+		if m.GetGavStoreEnabledByte2() != nil {
+			gavStoreEnabledByte2 = m.GetGavStoreEnabledByte2()
+			_gavStoreEnabledByte2Err := writeBuffer.WriteByte("gavStoreEnabledByte2", *(gavStoreEnabledByte2))
+			if _gavStoreEnabledByte2Err != nil {
+				return errors.Wrap(_gavStoreEnabledByte2Err, "Error serializing 'gavStoreEnabledByte2' field")
+			}
 		}
 
 		// Simple Field (timeFromLastRecoverOfMainsInSeconds)

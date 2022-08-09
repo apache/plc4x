@@ -34,12 +34,6 @@ type EncodedReply interface {
 	GetPeekedByte() byte
 	// GetIsMonitoredSAL returns IsMonitoredSAL (virtual field)
 	GetIsMonitoredSAL() bool
-	// GetIsCalCommand returns IsCalCommand (virtual field)
-	GetIsCalCommand() bool
-	// GetIsStandardFormatStatus returns IsStandardFormatStatus (virtual field)
-	GetIsStandardFormatStatus() bool
-	// GetIsExtendedFormatStatus returns IsExtendedFormatStatus (virtual field)
-	GetIsExtendedFormatStatus() bool
 }
 
 // EncodedReplyExactly can be used when we want exactly this type and not a type which fulfills EncodedReply.
@@ -98,19 +92,7 @@ func (m *_EncodedReply) GetPeekedByte() byte {
 ///////////////////////
 
 func (m *_EncodedReply) GetIsMonitoredSAL() bool {
-	return bool(bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))
-}
-
-func (m *_EncodedReply) GetIsCalCommand() bool {
-	return bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x06))) || bool(m.RequestContext.GetSendCalCommandBefore()))
-}
-
-func (m *_EncodedReply) GetIsStandardFormatStatus() bool {
-	return bool(bool(bool((m.GetPeekedByte()&0xC0) == (0xC0))) && bool(!(m.CBusOptions.GetExstat())))
-}
-
-func (m *_EncodedReply) GetIsExtendedFormatStatus() bool {
-	return bool(bool(bool((m.GetPeekedByte()&0xE0) == (0xE0))) && bool((bool(m.CBusOptions.GetExstat()) || bool(m.RequestContext.GetSendStatusRequestLevelBefore()))))
+	return bool(bool((bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))) && bool(!(m.RequestContext.GetSendIdentifyRequestBefore())))
 }
 
 ///////////////////////
@@ -143,12 +125,6 @@ func (m *_EncodedReply) GetParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
 	return lengthInBits
 }
 
@@ -175,24 +151,9 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isMonitoredSAL := bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00)))
+	_isMonitoredSAL := bool((bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00))))) && bool(!(requestContext.GetSendIdentifyRequestBefore()))
 	isMonitoredSAL := bool(_isMonitoredSAL)
 	_ = isMonitoredSAL
-
-	// Virtual field
-	_isCalCommand := bool(bool((peekedByte&0x3F) == (0x06))) || bool(requestContext.GetSendCalCommandBefore())
-	isCalCommand := bool(_isCalCommand)
-	_ = isCalCommand
-
-	// Virtual field
-	_isStandardFormatStatus := bool(bool((peekedByte&0xC0) == (0xC0))) && bool(!(cBusOptions.GetExstat()))
-	isStandardFormatStatus := bool(_isStandardFormatStatus)
-	_ = isStandardFormatStatus
-
-	// Virtual field
-	_isExtendedFormatStatus := bool(bool((peekedByte&0xE0) == (0xE0))) && bool((bool(cBusOptions.GetExstat()) || bool(requestContext.GetSendStatusRequestLevelBefore())))
-	isExtendedFormatStatus := bool(_isExtendedFormatStatus)
-	_ = isExtendedFormatStatus
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type EncodedReplyChildSerializeRequirement interface {
@@ -204,16 +165,12 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	var _child EncodedReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case isMonitoredSAL == bool(true) && isCalCommand == bool(false) && isStandardFormatStatus == bool(false): // MonitoredSALReply
+	case isMonitoredSAL == bool(true): // MonitoredSALReply
 		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, cBusOptions, requestContext)
-	case 0 == 0 && 1 == 1 && isStandardFormatStatus == bool(true) && isExtendedFormatStatus == bool(false): // EncodedReplyStandardFormatStatusReply
-		_childTemp, typeSwitchError = EncodedReplyStandardFormatStatusReplyParse(readBuffer, cBusOptions, requestContext)
-	case 0 == 0 && 1 == 1 && 2 == 2 && isExtendedFormatStatus == bool(true): // EncodedReplyExtendedFormatStatusReply
-		_childTemp, typeSwitchError = EncodedReplyExtendedFormatStatusReplyParse(readBuffer, cBusOptions, requestContext)
-	case 0 == 0 && isCalCommand == bool(true) && 2 == 2 && 3 == 3: // EncodedReplyCALReply
+	case 0 == 0: // EncodedReplyCALReply
 		_childTemp, typeSwitchError = EncodedReplyCALReplyParse(readBuffer, cBusOptions, requestContext)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v, isCalCommand=%v, isStandardFormatStatus=%v, isExtendedFormatStatus=%v]", isMonitoredSAL, isCalCommand, isStandardFormatStatus, isExtendedFormatStatus)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v]", isMonitoredSAL)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of EncodedReply")
@@ -241,18 +198,6 @@ func (pm *_EncodedReply) SerializeParent(writeBuffer utils.WriteBuffer, child En
 	// Virtual field
 	if _isMonitoredSALErr := writeBuffer.WriteVirtual("isMonitoredSAL", m.GetIsMonitoredSAL()); _isMonitoredSALErr != nil {
 		return errors.Wrap(_isMonitoredSALErr, "Error serializing 'isMonitoredSAL' field")
-	}
-	// Virtual field
-	if _isCalCommandErr := writeBuffer.WriteVirtual("isCalCommand", m.GetIsCalCommand()); _isCalCommandErr != nil {
-		return errors.Wrap(_isCalCommandErr, "Error serializing 'isCalCommand' field")
-	}
-	// Virtual field
-	if _isStandardFormatStatusErr := writeBuffer.WriteVirtual("isStandardFormatStatus", m.GetIsStandardFormatStatus()); _isStandardFormatStatusErr != nil {
-		return errors.Wrap(_isStandardFormatStatusErr, "Error serializing 'isStandardFormatStatus' field")
-	}
-	// Virtual field
-	if _isExtendedFormatStatusErr := writeBuffer.WriteVirtual("isExtendedFormatStatus", m.GetIsExtendedFormatStatus()); _isExtendedFormatStatusErr != nil {
-		return errors.Wrap(_isExtendedFormatStatusErr, "Error serializing 'isExtendedFormatStatus' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

@@ -46,12 +46,12 @@
 ]
 
 [type LightingLabelOptions
-    [simple   bit                   reservedBit7] // only for dynamic icon loading can switch to 1 (note this could use mspec reserved field but sadly this discards data)
+    [reserved bit                   'false'     ] // only for dynamic icon loading can switch to 1
     [simple   LightingLabelFlavour  labelFlavour]
     [reserved bit                   'false'     ]
-    [simple   bit                   reservedBit3] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
+    [reserved bit                   'false'     ] // For Lighting, this bit must be 0
     [simple   LightingLabelType     labelType   ]
-    [simple   bit                   reservedBit0] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
+    [reserved bit                   'false'     ] // For Lighting, this bit must be 0
 ]
 
 [enum uint 2 LightingLabelFlavour

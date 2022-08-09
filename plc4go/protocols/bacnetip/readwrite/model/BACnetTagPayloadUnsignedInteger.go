@@ -579,7 +579,17 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64, actualLength), nil
+	return &_BACnetTagPayloadUnsignedInteger{
+		ActualLength: actualLength,
+		ValueUint8:   valueUint8,
+		ValueUint16:  valueUint16,
+		ValueUint24:  valueUint24,
+		ValueUint32:  valueUint32,
+		ValueUint40:  valueUint40,
+		ValueUint48:  valueUint48,
+		ValueUint56:  valueUint56,
+		ValueUint64:  valueUint64,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {

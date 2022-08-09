@@ -150,8 +150,8 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (BACnetRecipientDev
 
 	// Create a partially initialized instance
 	_child := &_BACnetRecipientDevice{
-		DeviceValue:      deviceValue,
 		_BACnetRecipient: &_BACnetRecipient{},
+		DeviceValue:      deviceValue,
 	}
 	_child._BACnetRecipient._BACnetRecipientChildRequirements = _child
 	return _child, nil

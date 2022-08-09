@@ -150,8 +150,8 @@ func BACnetApplicationTagDateParse(readBuffer utils.ReadBuffer) (BACnetApplicati
 
 	// Create a partially initialized instance
 	_child := &_BACnetApplicationTagDate{
-		Payload:               payload,
 		_BACnetApplicationTag: &_BACnetApplicationTag{},
+		Payload:               payload,
 	}
 	_child._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _child
 	return _child, nil

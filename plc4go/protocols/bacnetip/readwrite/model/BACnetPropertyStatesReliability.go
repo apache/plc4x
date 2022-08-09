@@ -150,8 +150,8 @@ func BACnetPropertyStatesReliabilityParse(readBuffer utils.ReadBuffer, peekedTag
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesReliability{
-		Reliability:           reliability,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		Reliability:           reliability,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

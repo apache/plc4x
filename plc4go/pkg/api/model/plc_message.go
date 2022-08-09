@@ -20,4 +20,5 @@
 package model
 
 type PlcMessage interface {
+	IsAPlcMessage() bool
 }

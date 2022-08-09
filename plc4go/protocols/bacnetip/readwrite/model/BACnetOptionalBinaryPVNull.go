@@ -150,8 +150,8 @@ func BACnetOptionalBinaryPVNullParse(readBuffer utils.ReadBuffer) (BACnetOptiona
 
 	// Create a partially initialized instance
 	_child := &_BACnetOptionalBinaryPVNull{
-		NullValue:               nullValue,
 		_BACnetOptionalBinaryPV: &_BACnetOptionalBinaryPV{},
+		NullValue:               nullValue,
 	}
 	_child._BACnetOptionalBinaryPV._BACnetOptionalBinaryPVChildRequirements = _child
 	return _child, nil

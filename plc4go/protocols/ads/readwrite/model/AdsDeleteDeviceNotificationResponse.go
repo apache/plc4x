@@ -156,8 +156,8 @@ func AdsDeleteDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, comma
 
 	// Create a partially initialized instance
 	_child := &_AdsDeleteDeviceNotificationResponse{
-		Result:   result,
 		_AdsData: &_AdsData{},
+		Result:   result,
 	}
 	_child._AdsData._AdsDataChildRequirements = _child
 	return _child, nil

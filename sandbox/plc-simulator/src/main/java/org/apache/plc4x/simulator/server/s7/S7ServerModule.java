@@ -87,7 +87,11 @@ public class S7ServerModule implements ServerModule {
                 }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            bootstrap.bind(config.getHost(),ISO_ON_TCP_PORT).sync();
+            int port = ISO_ON_TCP_PORT;
+            if (config.getS7Port() != null) {
+                port = Integer.parseInt(config.getS7Port());
+            }
+            bootstrap.bind(config.getHost(), port).sync();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new SimulatorException(e);

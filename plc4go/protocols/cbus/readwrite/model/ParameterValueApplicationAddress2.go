@@ -32,7 +32,9 @@ type ParameterValueApplicationAddress2 interface {
 	utils.Serializable
 	ParameterValue
 	// GetValue returns Value (property field)
-	GetValue() ApplicationAddress1
+	GetValue() ApplicationAddress2
+	// GetData returns Data (property field)
+	GetData() []byte
 }
 
 // ParameterValueApplicationAddress2Exactly can be used when we want exactly this type and not a type which fulfills ParameterValueApplicationAddress2.
@@ -45,7 +47,8 @@ type ParameterValueApplicationAddress2Exactly interface {
 // _ParameterValueApplicationAddress2 is the data-structure of this message
 type _ParameterValueApplicationAddress2 struct {
 	*_ParameterValue
-	Value ApplicationAddress1
+	Value ApplicationAddress2
+	Data  []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,8 +76,12 @@ func (m *_ParameterValueApplicationAddress2) GetParent() ParameterValue {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ParameterValueApplicationAddress2) GetValue() ApplicationAddress1 {
+func (m *_ParameterValueApplicationAddress2) GetValue() ApplicationAddress2 {
 	return m.Value
+}
+
+func (m *_ParameterValueApplicationAddress2) GetData() []byte {
+	return m.Data
 }
 
 ///////////////////////
@@ -83,9 +90,10 @@ func (m *_ParameterValueApplicationAddress2) GetValue() ApplicationAddress1 {
 ///////////////////////////////////////////////////////////
 
 // NewParameterValueApplicationAddress2 factory function for _ParameterValueApplicationAddress2
-func NewParameterValueApplicationAddress2(value ApplicationAddress1, numBytes uint8) *_ParameterValueApplicationAddress2 {
+func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte, numBytes uint8) *_ParameterValueApplicationAddress2 {
 	_result := &_ParameterValueApplicationAddress2{
 		Value:           value,
+		Data:            data,
 		_ParameterValue: NewParameterValue(numBytes),
 	}
 	_result._ParameterValue._ParameterValueChildRequirements = _result
@@ -117,6 +125,11 @@ func (m *_ParameterValueApplicationAddress2) GetLengthInBitsConditional(lastItem
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits()
 
+	// Array field
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
+	}
+
 	return lengthInBits
 }
 
@@ -134,7 +147,7 @@ func ParameterValueApplicationAddress2Parse(readBuffer utils.ReadBuffer, paramet
 	_ = currentPos
 
 	// Validation
-	if !(bool((numBytes) == (1))) {
+	if !(bool((numBytes) >= (1))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"ApplicationAddress2 has exactly one byte"})
 	}
 
@@ -142,13 +155,19 @@ func ParameterValueApplicationAddress2Parse(readBuffer utils.ReadBuffer, paramet
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := ApplicationAddress1Parse(readBuffer)
+	_value, _valueErr := ApplicationAddress2Parse(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueApplicationAddress2")
 	}
-	value := _value.(ApplicationAddress1)
+	value := _value.(ApplicationAddress2)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for value")
+	}
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(1)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueApplicationAddress2")
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueApplicationAddress2"); closeErr != nil {
@@ -157,10 +176,11 @@ func ParameterValueApplicationAddress2Parse(readBuffer utils.ReadBuffer, paramet
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueApplicationAddress2{
-		Value: value,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Value: value,
+		Data:  data,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil
@@ -184,6 +204,12 @@ func (m *_ParameterValueApplicationAddress2) Serialize(writeBuffer utils.WriteBu
 		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		}
+
+		// Array Field (data)
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterValueApplicationAddress2"); popErr != nil {

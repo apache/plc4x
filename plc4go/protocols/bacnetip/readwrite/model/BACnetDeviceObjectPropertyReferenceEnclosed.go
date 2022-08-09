@@ -173,7 +173,12 @@ func BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffe
 	}
 
 	// Create the instance
-	return NewBACnetDeviceObjectPropertyReferenceEnclosed(openingTag, value, closingTag, tagNumber), nil
+	return &_BACnetDeviceObjectPropertyReferenceEnclosed{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		Value:      value,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

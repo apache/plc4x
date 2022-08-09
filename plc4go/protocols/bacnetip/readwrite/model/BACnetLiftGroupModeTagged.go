@@ -158,7 +158,12 @@ func BACnetLiftGroupModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewBACnetLiftGroupModeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetLiftGroupModeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetLiftGroupModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

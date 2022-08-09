@@ -151,10 +151,10 @@ func CALDataIdentifyParse(readBuffer utils.ReadBuffer, requestContext RequestCon
 
 	// Create a partially initialized instance
 	_child := &_CALDataIdentify{
-		Attribute: attribute,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
+		Attribute: attribute,
 	}
 	_child._CALData._CALDataChildRequirements = _child
 	return _child, nil

@@ -154,8 +154,8 @@ func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 
 	// Create a partially initialized instance
 	_child := &_SALDataHeating{
-		HeatingData: heatingData,
 		_SALData:    &_SALData{},
+		HeatingData: heatingData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

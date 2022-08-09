@@ -145,8 +145,8 @@ func MediaTransportControlDataSetCategoryParse(readBuffer utils.ReadBuffer) (Med
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataSetCategory{
-		CategoryNumber:             categoryNumber,
 		_MediaTransportControlData: &_MediaTransportControlData{},
+		CategoryNumber:             categoryNumber,
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

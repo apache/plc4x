@@ -224,14 +224,14 @@ func BACnetNotificationParametersChangeOfStateParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfState{
-		InnerOpeningTag: innerOpeningTag,
-		ChangeOfState:   changeOfState,
-		StatusFlags:     statusFlags,
-		InnerClosingTag: innerClosingTag,
 		_BACnetNotificationParameters: &_BACnetNotificationParameters{
 			TagNumber:          tagNumber,
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		InnerOpeningTag: innerOpeningTag,
+		ChangeOfState:   changeOfState,
+		StatusFlags:     statusFlags,
+		InnerClosingTag: innerClosingTag,
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

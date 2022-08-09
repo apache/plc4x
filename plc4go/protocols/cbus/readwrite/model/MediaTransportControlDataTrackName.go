@@ -145,8 +145,8 @@ func MediaTransportControlDataTrackNameParse(readBuffer utils.ReadBuffer, comman
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataTrackName{
-		TrackName:                  trackName,
 		_MediaTransportControlData: &_MediaTransportControlData{},
+		TrackName:                  trackName,
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

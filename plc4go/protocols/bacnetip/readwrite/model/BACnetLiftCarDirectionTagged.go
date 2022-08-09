@@ -200,7 +200,13 @@ func BACnetLiftCarDirectionTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Create the instance
-	return NewBACnetLiftCarDirectionTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetLiftCarDirectionTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetLiftCarDirectionTagged) Serialize(writeBuffer utils.WriteBuffer) error {

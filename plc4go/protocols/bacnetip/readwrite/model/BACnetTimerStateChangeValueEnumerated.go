@@ -150,10 +150,10 @@ func BACnetTimerStateChangeValueEnumeratedParse(readBuffer utils.ReadBuffer, obj
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueEnumerated{
-		EnumeratedValue: enumeratedValue,
 		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		EnumeratedValue: enumeratedValue,
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil

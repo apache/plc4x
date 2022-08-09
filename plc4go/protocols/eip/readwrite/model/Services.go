@@ -194,7 +194,12 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, e
 	}
 
 	// Create the instance
-	return NewServices(serviceNb, offsets, services, servicesLen), nil
+	return &_Services{
+		ServicesLen: servicesLen,
+		ServiceNb:   serviceNb,
+		Offsets:     offsets,
+		Services:    services,
+	}, nil
 }
 
 func (m *_Services) Serialize(writeBuffer utils.WriteBuffer) error {

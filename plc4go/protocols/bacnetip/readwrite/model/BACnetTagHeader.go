@@ -368,7 +368,15 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	}
 
 	// Create the instance
-	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength), nil
+	return &_BACnetTagHeader{
+		TagNumber:       tagNumber,
+		TagClass:        tagClass,
+		LengthValueType: lengthValueType,
+		ExtTagNumber:    extTagNumber,
+		ExtLength:       extLength,
+		ExtExtLength:    extExtLength,
+		ExtExtExtLength: extExtExtLength,
+	}, nil
 }
 
 func (m *_BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {

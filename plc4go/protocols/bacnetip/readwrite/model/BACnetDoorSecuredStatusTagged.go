@@ -158,7 +158,12 @@ func BACnetDoorSecuredStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 
 	// Create the instance
-	return NewBACnetDoorSecuredStatusTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetDoorSecuredStatusTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetDoorSecuredStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error {

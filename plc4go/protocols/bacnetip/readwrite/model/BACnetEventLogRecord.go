@@ -147,7 +147,10 @@ func BACnetEventLogRecordParse(readBuffer utils.ReadBuffer) (BACnetEventLogRecor
 	}
 
 	// Create the instance
-	return NewBACnetEventLogRecord(timestamp, logDatum), nil
+	return &_BACnetEventLogRecord{
+		Timestamp: timestamp,
+		LogDatum:  logDatum,
+	}, nil
 }
 
 func (m *_BACnetEventLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {

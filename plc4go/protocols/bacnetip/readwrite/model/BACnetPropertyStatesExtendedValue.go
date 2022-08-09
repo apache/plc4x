@@ -150,8 +150,8 @@ func BACnetPropertyStatesExtendedValueParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesExtendedValue{
-		ExtendedValue:         extendedValue,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		ExtendedValue:         extendedValue,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

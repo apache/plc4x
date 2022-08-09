@@ -118,7 +118,9 @@ func BACnetTagPayloadDoubleParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadD
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadDouble(value), nil
+	return &_BACnetTagPayloadDouble{
+		Value: value,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadDouble) Serialize(writeBuffer utils.WriteBuffer) error {

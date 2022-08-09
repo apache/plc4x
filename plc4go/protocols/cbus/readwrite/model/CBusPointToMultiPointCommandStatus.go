@@ -47,6 +47,9 @@ type CBusPointToMultiPointCommandStatusExactly interface {
 type _CBusPointToMultiPointCommandStatus struct {
 	*_CBusPointToMultiPointCommand
 	StatusRequest StatusRequest
+	// Reserved Fields
+	reservedField0 *byte
+	reservedField1 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -138,6 +141,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOp
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -149,9 +153,12 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOp
 				"expected value": byte(0xFF),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
+	var reservedField1 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -163,6 +170,8 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOp
 				"expected value": byte(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -185,10 +194,12 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOp
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToMultiPointCommandStatus{
-		StatusRequest: statusRequest,
 		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
 			CBusOptions: cBusOptions,
 		},
+		StatusRequest:  statusRequest,
+		reservedField0: reservedField0,
+		reservedField1: reservedField1,
 	}
 	_child._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _child
 	return _child, nil
@@ -204,7 +215,15 @@ func (m *_CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteB
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0xFF))
+			var reserved byte = byte(0xFF)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0xFF),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -212,7 +231,15 @@ func (m *_CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteB
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x00))
+			var reserved byte = byte(0x00)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x00),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

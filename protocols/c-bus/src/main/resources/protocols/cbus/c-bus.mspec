@@ -22,10 +22,6 @@
 ]
 
 [type RequestContext
-    // Useful for response parsing: Set this to true if you send a CAL before. This will change the way the response will be parsed
-    [simple   bit       sendCalCommandBefore        ]
-    // Useful for response parsing: Set this to true if you send a SAL status request request level before. This will change the way the response will be parsed
-    [simple   bit       sendStatusRequestLevelBefore  ]
     // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
     [simple   bit       sendIdentifyRequestBefore   ]
 ]
@@ -89,19 +85,25 @@
                         'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '(calData.lengthInBytes*2)*8'                       ]
+            [virtual  CALData
+                              calDataDecoded 'calData'                      ]
         ]
         ['REQUEST_COMMAND' *Command
-            [const    byte  initiator 0x5C                                  ] // 0x5C == "/"
+            [const    byte  initiator 0x5C                                  ] // 0x5C == "\"
             [manual   CBusCommand
                               cbusCommand
                         'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
                         '(cbusCommand.lengthInBytes*2)*8'                   ]
+            [virtual  CBusCommand
+                              cbusCommandDecoded 'cbusCommand'              ]
             [manual   Checksum
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, cbusCommand, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, cbusCommand, cBusOptions.srchk)'
                         '(cBusOptions.srchk)?(16):(0)'                      ]
+            [virtual  Checksum
+                              chksumDecoded 'chksum'                        ]
             [optional Alpha         alpha                                   ]
         ]
         ['NULL' *Null
@@ -116,6 +118,8 @@
                         'STATIC_CALL("readCALData", readBuffer)'
                         'STATIC_CALL("writeCALData", writeBuffer, calData)'
                         '(calData.lengthInBytes*2)*8'                       ]
+            [virtual  CALData
+                              calDataDecoded 'calData'                      ]
             [optional Alpha   alpha                                         ]
         ]
     ]
@@ -584,20 +588,30 @@
             [simple uint 8    code                                                          ]
         ]
         ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer)               // Reply
-            [simple ApplicationIdContainer application                                                 ]
-            [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ]
+            [simple     ApplicationIdContainer
+                                application                                 ]
+            [simple     uint 8  blockStart                                  ]
+            [array      StatusByte
+                                statusBytes
+                                    count
+                                    'commandTypeContainer.numBytes - 2'     ]
         ]
         ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer)       // Reply
-            [simple uint 8                 coding                                                      ]
-            [virtual bit                   isBinaryBySerialInterface 'coding == 0x00'                  ]
-            [virtual bit                   isBinaryByElsewhere       'coding == 0x40'                  ]
-            [virtual bit                   isLevelBySerialInterface  'coding == 0x07'                  ]
-            [virtual bit                   isLevelByElsewhere        'coding == 0x47'                  ]
-            [virtual bit                   isReserved                '!isBinaryBySerialInterface && !isBinaryByElsewhere && !isLevelBySerialInterface && !isLevelByElsewhere']
-            [simple ApplicationIdContainer application                                                 ]
-            [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ] // TODO: this should be -3 but somehow it is -2 with the examples
+            [simple     StatusCoding
+                                coding                                      ]
+            [simple     ApplicationIdContainer
+                                application                                 ]
+            [simple     uint 8  blockStart                                  ]
+            [virtual    uint 5  numberOfStatusBytes '(coding == StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.BINARY_BY_ELSEWHERE)?(commandTypeContainer.numBytes - 3):(0)']
+            [virtual    uint 5  numberOfLevelInformation '(coding == StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.LEVEL_BY_ELSEWHERE)?((commandTypeContainer.numBytes - 3) / 2):(0)']
+            [array      StatusByte
+                                statusBytes
+                                    count
+                                    'numberOfStatusBytes'                   ]
+            [array      LevelInformation
+                                levelInformation
+                                    count
+                                    'numberOfLevelInformation'              ]
         ]
     ]
     // Note: we omit the request context as it is only useful for the first element
@@ -887,39 +901,53 @@
 [type ParameterValue(ParameterType parameterType, uint 8 numBytes)
     [typeSwitch parameterType
         ['APPLICATION_ADDRESS_1'    *ApplicationAddress1
-            [validation 'numBytes == 1' "ApplicationAddress1 has exactly one byte"  ]
+            [validation 'numBytes >= 1' "ApplicationAddress1 has exactly one byte"  ]
             [simple ApplicationAddress1 value                                       ]
+            // TODO: find out what additional bytes mean here... would that be application address 2 then?
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['APPLICATION_ADDRESS_2'    *ApplicationAddress2
-            [validation 'numBytes == 1' "ApplicationAddress2 has exactly one byte"  ]
-            [simple ApplicationAddress1 value                                       ]
+            [validation 'numBytes >= 1' "ApplicationAddress2 has exactly one byte"  ]
+            [simple ApplicationAddress2 value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['INTERFACE_OPTIONS_1'      *InterfaceOptions1
-            [validation 'numBytes == 1' "InterfaceOptions1 has exactly one byte"    ]
+            [validation 'numBytes >= 1' "InterfaceOptions1 has exactly one byte"    ]
             [simple InterfaceOptions1   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['BAUD_RATE_SELECTOR'       *BaudRateSelector
-            [validation 'numBytes == 1' "BaudRateSelector has exactly one byte"     ]
+            [validation 'numBytes >= 1' "BaudRateSelector has exactly one byte"     ]
             [simple BaudRateSelector    value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['INTERFACE_OPTIONS_2'      *InterfaceOptions2
-            [validation 'numBytes == 1' "InterfaceOptions2 has exactly one byte"    ]
+            [validation 'numBytes >= 1' "InterfaceOptions2 has exactly one byte"    ]
             [simple InterfaceOptions2   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['INTERFACE_OPTIONS_1_POWER_UP_SETTINGS'    *InterfaceOptions1PowerUpSettings
-            [validation 'numBytes == 1' "InterfaceOptions1PowerUpSettings has exactly one byte" ]
+            [validation 'numBytes >= 1' "InterfaceOptions1PowerUpSettings has exactly one byte" ]
             [simple InterfaceOptions1PowerUpSettings   value                                    ]
         ]
         ['INTERFACE_OPTIONS_3'      *InterfaceOptions3
-            [validation 'numBytes == 1' "InterfaceOptions3 has exactly one byte"    ]
+            [validation 'numBytes >= 1' "InterfaceOptions3 has exactly one byte"    ]
             [simple InterfaceOptions3   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
         ]
         ['CUSTOM_MANUFACTURER'      *CustomManufacturer
             [simple CustomManufacturer('numBytes')   value                          ]
         ]
         ['SERIAL_NUMBER'            *SerialNumber
-            [validation 'numBytes == 4' "SerialNumber has exactly four bytes"       ]
+            [validation 'numBytes >= 4' "SerialNumber has exactly four bytes"       ]
             [simple SerialNumber   value                                            ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-4'                        ]
         ]
         ['CUSTOM_TYPE'              *CustomTypes
             [simple CustomTypes('numBytes')   value                                 ]
@@ -1103,11 +1131,10 @@
             [array  byte        currentSenseLevels  count 'numBytes'       ]
         ]
         ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
-            // TODO: we can use the bytes from above, but how is that dynamic? repeat the complete block here?
             [simple   IdentifyReplyCommandUnitSummary
                              unitFlags                              ]
-            [simple   byte   gavStoreEnabledByte1                   ]
-            [simple   byte   gavStoreEnabledByte2                   ]
+            [optional byte   gavStoreEnabledByte1  'numBytes>1'     ]
+            [optional byte   gavStoreEnabledByte2  'numBytes>2'     ]
             [simple   uint 8 timeFromLastRecoverOfMainsInSeconds    ]
         ]
         ['DSIStatus'                    IdentifyReplyCommandDSIStatus
@@ -1164,10 +1191,10 @@
 // The invalid packets are receiving a value of 13 / 0x0D -> Short form command: length = 5 (no idea what the bit number 4 means, which is set)
 [enum uint 8 CALCommandTypeContainer(CALCommandType commandType, uint 5 numBytes)
     ['0x08' CALCommandReset                  ['RESET',            '0']]
-    ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
-    ['0x21' CALCommandIdentify               ['IDENTIFY',         '0']]
-    ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '0']]
-    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '0']]
+    ['0x1A' CALCommandRecall                 ['RECALL',           '2']]
+    ['0x21' CALCommandIdentify               ['IDENTIFY',         '1']]
+    ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '2']]
+    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '2']]
     ['0x80' CALCommandReply_0Bytes           ['REPLY',            '0']]
     ['0x81' CALCommandReply_1Bytes           ['REPLY',            '1']]
     ['0x82' CALCommandReply_2Bytes           ['REPLY',            '2']]
@@ -1427,25 +1454,29 @@
     [peek    byte peekedByte                                                                ]
     [typeSwitch peekedByte
         ['0x2B' PowerUpReply // is a +
-            [simple PowerUp isA]
+            [simple PowerUp powerUpIndicator                                ]
         ]
         ['0x3D' ParameterChangeReply // is a =
-            [simple ParameterChange isA                 ]
+            [simple ParameterChange parameterChange                         ]
         ]
         ['0x21' ServerErrorReply // is a !
-            [const  byte    errorMarker     0x21        ]
+            [const  byte    errorMarker     0x21                            ]
         ]
         [*      *EncodedReply
             [manual   EncodedReply
                               encodedReply
                                     'STATIC_CALL("readEncodedReply", readBuffer, cBusOptions, requestContext, cBusOptions.srchk)'
                                     'STATIC_CALL("writeEncodedReply", writeBuffer, encodedReply)'
-                                    '(encodedReply.lengthInBytes*2)*8'                                   ]
+                                    '(encodedReply.lengthInBytes*2)*8'      ]
+            [virtual  EncodedReply
+                              encodedReplyDecoded 'encodedReply'            ]
             [manual   Checksum
                               chksum
                         'STATIC_CALL("readAndValidateChecksum", readBuffer, encodedReply, cBusOptions.srchk)'
                         'STATIC_CALL("calculateChecksum", writeBuffer, encodedReply, cBusOptions.srchk)'
-                        '(cBusOptions.srchk)?(16):(0)'        ]
+                        '(cBusOptions.srchk)?(16):(0)'                      ]
+            [virtual  Checksum
+                              chksumDecoded 'chksum'                        ]
         ]
     ]
 ]
@@ -1453,21 +1484,12 @@
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                        ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
-    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00'] // First check if it is in long mode, second for short mode, third for bridged short mode
-    [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'    ] // The 0x3F and 0x06 doesn't seem to work always
-    [virtual bit  isStandardFormatStatus    '(peekedByte & 0xC0) == 0xC0 && !cBusOptions.exstat'                    ]
-    [virtual bit  isExtendedFormatStatus    '(peekedByte & 0xE0) == 0xE0 && (cBusOptions.exstat || requestContext.sendStatusRequestLevelBefore)']
-    [typeSwitch isMonitoredSAL, isCalCommand, isStandardFormatStatus, isExtendedFormatStatus
-        ['true', 'false', 'false'   MonitoredSALReply
+    [virtual bit  isMonitoredSAL            '((peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00) && !requestContext.sendIdentifyRequestBefore'] // First check if it is in long mode, second for short mode, third for bridged short mode
+    [typeSwitch isMonitoredSAL
+        ['true'  MonitoredSALReply
             [simple   MonitoredSAL('cBusOptions')                   monitoredSAL    ]
         ]
-        [*, *, 'true', 'false'      *StandardFormatStatusReply
-            [simple   StandardFormatStatusReply                     reply           ]
-        ]
-        [*, *, *, 'true'            *ExtendedFormatStatusReply
-            [simple   ExtendedFormatStatusReply                     reply           ]
-        ]
-        [*, 'true', *, *            *CALReply
+        [*       *CALReply
             [simple   CALReply('cBusOptions', 'requestContext')     calReply        ]
         ]
     ]
@@ -1535,6 +1557,7 @@
     ['0x24'    NOT_TRANSMITTED_CORRUPTION               ] // "$"
     ['0x25'    NOT_TRANSMITTED_SYNC_LOSS                ] // "%"
     ['0x27'    NOT_TRANSMITTED_TOO_LONG                 ] // "'"
+    ['0x21'    CHECKSUM_FAILURE                         ] // "!"
 ]
 
 [type PowerUp
@@ -1554,48 +1577,6 @@
 
 [type Checksum
     [simple byte value]
-]
-
-[type StandardFormatStatusReply
-    [simple     StatusHeader
-                        statusHeader                                ]
-    [simple     ApplicationIdContainer
-                        application                                 ]
-    [simple     uint 8  blockStart                                  ]
-    [array      StatusByte
-                        statusBytes
-                        count
-                        'statusHeader.numberOfCharacterPairs - 2'   ]
-]
-
-[type StatusHeader
-    [reserved   uint 2                 '0x3'                        ]
-    [simple     uint 6  numberOfCharacterPairs                      ]
-]
-
-[type ExtendedFormatStatusReply
-    [simple     ExtendedStatusHeader
-                        statusHeader                                ]
-    [simple     StatusCoding
-                        coding                                      ]
-    [simple     ApplicationIdContainer
-                        application                                 ]
-    [simple     uint 8  blockStart                                  ]
-    [virtual    uint 5  numberOfStatusBytes '(coding == StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.BINARY_BY_ELSEWHERE)?(statusHeader.numberOfCharacterPairs - 3):(0)']
-    [virtual    uint 5  numberOfLevelInformation '(coding == StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.LEVEL_BY_ELSEWHERE)?((statusHeader.numberOfCharacterPairs - 3) / 2):(0)']
-    [array      StatusByte
-                        statusBytes
-                            count
-                            'numberOfStatusBytes'                   ]
-    [array      LevelInformation
-                        levelInformation
-                            count
-                            'numberOfLevelInformation'              ]
-]
-
-[type ExtendedStatusHeader
-    [reserved   uint 3                 '0x7'                        ]
-    [simple     uint 5  numberOfCharacterPairs                      ]
 ]
 
 [enum byte StatusCoding

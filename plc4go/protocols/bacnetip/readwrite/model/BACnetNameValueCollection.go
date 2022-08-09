@@ -184,7 +184,12 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewBACnetNameValueCollection(openingTag, members, closingTag, tagNumber), nil
+	return &_BACnetNameValueCollection{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		Members:    members,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) error {

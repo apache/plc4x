@@ -21,6 +21,7 @@ package tcp
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
@@ -84,29 +85,21 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	}
 
 	// Potentially resolve the ip address, if a hostname was provided
-	tcpAddr, err := net.ResolveTCPAddr("tcp", address+":"+strconv.Itoa(port))
+	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", address, port))
 	if err != nil {
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	transportInstance := NewTcpTransportInstance(tcpAddr, connectTimeout, &m)
-
-	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-		if transportInstance, ok := typ.(transports.TransportInstance); ok {
-			return transportInstance, nil
-		}
-		return nil, errors.New("couldn't cast to TransportInstance")
-	}
-	return castFunc(transportInstance)
+	return NewTcpTransportInstance(tcpAddr, connectTimeout, &m), nil
 }
 
 type TransportInstance struct {
+	transports.DefaultBufferedTransportInstance
 	RemoteAddress  *net.TCPAddr
 	LocalAddress   *net.TCPAddr
 	ConnectTimeout uint32
 	transport      *Transport
 	tcpConn        net.Conn
-	reader         *bufio.Reader
 }
 
 func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
@@ -126,7 +119,7 @@ func (m *TransportInstance) Connect() error {
 
 	m.LocalAddress = m.tcpConn.LocalAddr().(*net.TCPAddr)
 
-	m.reader = bufio.NewReader(m.tcpConn)
+	m.Reader = bufio.NewReader(m.tcpConn)
 
 	return nil
 }
@@ -145,36 +138,6 @@ func (m *TransportInstance) Close() error {
 
 func (m *TransportInstance) IsConnected() bool {
 	return m.tcpConn != nil
-}
-
-func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
-	if m.reader == nil {
-		return 0, nil
-	}
-	_, _ = m.reader.Peek(1)
-	return uint32(m.reader.Buffered()), nil
-}
-
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
-	if m.reader == nil {
-		return nil, errors.New("error peeking from transport. No reader available")
-	}
-	return m.reader.Peek(int(numBytes))
-}
-
-func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
-	if m.reader == nil {
-		return nil, errors.New("error reading from transport. No reader available")
-	}
-	data := make([]uint8, numBytes)
-	for i := uint32(0); i < numBytes; i++ {
-		val, err := m.reader.ReadByte()
-		if err != nil {
-			return nil, errors.Wrap(err, "error reading")
-		}
-		data[i] = val
-	}
-	return data, nil
 }
 
 func (m *TransportInstance) Write(data []uint8) error {

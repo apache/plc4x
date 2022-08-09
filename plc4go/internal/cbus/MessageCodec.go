@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"bufio"
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
@@ -41,10 +42,10 @@ type MessageCodec struct {
 	hashEncountered uint
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance, srchk bool) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
 	codec := &MessageCodec{
-		requestContext: readwriteModel.NewRequestContext(false, false, false),
-		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, srchk),
+		requestContext: readwriteModel.NewRequestContext(false),
+		cbusOptions:    readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false),
 		monitoredSALs:  make(chan readwriteModel.MonitoredSAL, 100),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _default.WithCustomMessageHandler(func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
@@ -98,7 +99,18 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	log.Trace().Msg("receiving")
 
 	ti := m.GetTransportInstance()
-	readableBytes, err := ti.GetNumReadableBytes()
+	if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
+		hitCr := currentByte == '\r'
+		if hitCr {
+			// Make sure we peek one more
+			_, _ = reader.Peek(1)
+			return false
+		}
+		return true
+	}); err != nil {
+		return nil, err
+	}
+	readableBytes, err := ti.GetNumBytesAvailableInBuffer()
 	if err != nil {
 		log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
@@ -106,6 +118,11 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	if readableBytes == 0 {
 		log.Trace().Msg("Nothing to read")
 		return nil, nil
+	}
+	if bytes, err := ti.PeekReadableBytes(1); err != nil && (bytes[0] == '!') {
+		_, _ = ti.Read(1)
+		// TODO: a exclamation mark doesn't have a CR&LF in contrast to the documentation
+		return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased([]byte("!\r\n")), true, m.requestContext, m.cbusOptions)
 	}
 	// TODO: we might get a simple confirmation like g# without anything other... so we might need to handle that
 
@@ -153,7 +170,9 @@ lookingForTheEnd:
 		} else {
 			// after 90ms we give up finding a lf
 			m.lastPackageHash, m.hashEncountered = 0, 0
-			requestToPci = true
+			if indexOfCR >= 0 {
+				requestToPci = true
+			}
 		}
 	}
 	if !pciResponse && !requestToPci {
@@ -178,6 +197,28 @@ lookingForTheEnd:
 	rb := utils.NewReadBufferByteBased(read)
 	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
+		log.Debug().Err(err).Msg("First Parse Failed")
+		{ // Try SAL
+			rb := utils.NewReadBufferByteBased(read)
+			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false), m.cbusOptions)
+			if secondErr == nil {
+				return cBusMessage, nil
+			} else {
+				log.Debug().Err(secondErr).Msg("SAL parse failed too")
+			}
+		}
+		{ // Try MMI
+			requestContext := readwriteModel.NewRequestContext(false)
+			cbusOptions := readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
+			rb := utils.NewReadBufferByteBased(read)
+			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, true, requestContext, cbusOptions)
+			if secondErr == nil {
+				return cBusMessage, nil
+			} else {
+				log.Debug().Err(secondErr).Msg("CAL parse failed too")
+			}
+		}
+
 		log.Warn().Err(err).Msg("error parsing")
 		// TODO: Possibly clean up ...
 		return nil, nil

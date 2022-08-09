@@ -147,7 +147,10 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	}
 
 	// Create the instance
-	return NewReplyNetwork(networkRoute, unitAddress), nil
+	return &_ReplyNetwork{
+		NetworkRoute: networkRoute,
+		UnitAddress:  unitAddress,
+	}, nil
 }
 
 func (m *_ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {

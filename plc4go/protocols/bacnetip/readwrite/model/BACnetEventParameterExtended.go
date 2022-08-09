@@ -246,12 +246,12 @@ func BACnetEventParameterExtendedParse(readBuffer utils.ReadBuffer) (BACnetEvent
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterExtended{
+		_BACnetEventParameter: &_BACnetEventParameter{},
 		OpeningTag:            openingTag,
 		VendorId:              vendorId,
 		ExtendedEventType:     extendedEventType,
 		Parameters:            parameters,
 		ClosingTag:            closingTag,
-		_BACnetEventParameter: &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

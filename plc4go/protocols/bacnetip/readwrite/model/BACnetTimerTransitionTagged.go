@@ -158,7 +158,12 @@ func BACnetTimerTransitionTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 
 	// Create the instance
-	return NewBACnetTimerTransitionTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetTimerTransitionTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetTimerTransitionTagged) Serialize(writeBuffer utils.WriteBuffer) error {

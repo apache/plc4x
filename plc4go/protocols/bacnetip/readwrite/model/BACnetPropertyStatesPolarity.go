@@ -150,8 +150,8 @@ func BACnetPropertyStatesPolarityParse(readBuffer utils.ReadBuffer, peekedTagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesPolarity{
-		Polarity:              polarity,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		Polarity:              polarity,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

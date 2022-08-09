@@ -146,8 +146,8 @@ func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (KnxNetRemoteLogging,
 
 	// Create a partially initialized instance
 	_child := &_KnxNetRemoteLogging{
-		Version:    version,
 		_ServiceId: &_ServiceId{},
+		Version:    version,
 	}
 	_child._ServiceId._ServiceIdChildRequirements = _child
 	return _child, nil

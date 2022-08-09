@@ -246,12 +246,12 @@ func BACnetEventParameterChangeOfTimerParse(readBuffer utils.ReadBuffer) (BACnet
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterChangeOfTimer{
+		_BACnetEventParameter: &_BACnetEventParameter{},
 		OpeningTag:            openingTag,
 		TimeDelay:             timeDelay,
 		AlarmValues:           alarmValues,
 		UpdateTimeReference:   updateTimeReference,
 		ClosingTag:            closingTag,
-		_BACnetEventParameter: &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

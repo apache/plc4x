@@ -146,8 +146,8 @@ func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (KnxNetObjectServer, e
 
 	// Create a partially initialized instance
 	_child := &_KnxNetObjectServer{
-		Version:    version,
 		_ServiceId: &_ServiceId{},
+		Version:    version,
 	}
 	_child._ServiceId._ServiceIdChildRequirements = _child
 	return _child, nil

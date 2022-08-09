@@ -124,7 +124,9 @@ func InterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBuffer) (Interfa
 	}
 
 	// Create the instance
-	return NewInterfaceOptions1PowerUpSettings(interfaceOptions1), nil
+	return &_InterfaceOptions1PowerUpSettings{
+		InterfaceOptions1: interfaceOptions1,
+	}, nil
 }
 
 func (m *_InterfaceOptions1PowerUpSettings) Serialize(writeBuffer utils.WriteBuffer) error {

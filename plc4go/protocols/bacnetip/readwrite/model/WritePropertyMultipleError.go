@@ -176,9 +176,9 @@ func WritePropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorChoice BA
 
 	// Create a partially initialized instance
 	_child := &_WritePropertyMultipleError{
+		_BACnetError:            &_BACnetError{},
 		ErrorType:               errorType,
 		FirstFailedWriteAttempt: firstFailedWriteAttempt,
-		_BACnetError:            &_BACnetError{},
 	}
 	_child._BACnetError._BACnetErrorChildRequirements = _child
 	return _child, nil

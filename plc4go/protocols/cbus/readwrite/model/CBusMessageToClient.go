@@ -152,11 +152,11 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 
 	// Create a partially initialized instance
 	_child := &_CBusMessageToClient{
-		Reply: reply,
 		_CBusMessage: &_CBusMessage{
 			RequestContext: requestContext,
 			CBusOptions:    cBusOptions,
 		},
+		Reply: reply,
 	}
 	_child._CBusMessage._CBusMessageChildRequirements = _child
 	return _child, nil

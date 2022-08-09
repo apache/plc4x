@@ -180,8 +180,8 @@ func TelephonyDataRecallLastNumberRequestParse(readBuffer utils.ReadBuffer) (Tel
 
 	// Create a partially initialized instance
 	_child := &_TelephonyDataRecallLastNumberRequest{
-		RecallLastNumberType: recallLastNumberType,
 		_TelephonyData:       &_TelephonyData{},
+		RecallLastNumberType: recallLastNumberType,
 	}
 	_child._TelephonyData._TelephonyDataChildRequirements = _child
 	return _child, nil

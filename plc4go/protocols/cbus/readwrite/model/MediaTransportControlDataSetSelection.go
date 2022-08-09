@@ -163,9 +163,9 @@ func MediaTransportControlDataSetSelectionParse(readBuffer utils.ReadBuffer) (Me
 
 	// Create a partially initialized instance
 	_child := &_MediaTransportControlDataSetSelection{
+		_MediaTransportControlData: &_MediaTransportControlData{},
 		SelectionHi:                selectionHi,
 		SelectionLo:                selectionLo,
-		_MediaTransportControlData: &_MediaTransportControlData{},
 	}
 	_child._MediaTransportControlData._MediaTransportControlDataChildRequirements = _child
 	return _child, nil

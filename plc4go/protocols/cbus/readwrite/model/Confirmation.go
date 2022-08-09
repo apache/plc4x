@@ -207,7 +207,11 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	}
 
 	// Create the instance
-	return NewConfirmation(alpha, secondAlpha, confirmationType), nil
+	return &_Confirmation{
+		Alpha:            alpha,
+		SecondAlpha:      secondAlpha,
+		ConfirmationType: confirmationType,
+	}, nil
 }
 
 func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {

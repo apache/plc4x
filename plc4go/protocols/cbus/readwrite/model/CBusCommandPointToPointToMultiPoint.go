@@ -150,10 +150,10 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusO
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToPointToMultiPoint{
-		Command: command,
 		_CBusCommand: &_CBusCommand{
 			CBusOptions: cBusOptions,
 		},
+		Command: command,
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child
 	return _child, nil

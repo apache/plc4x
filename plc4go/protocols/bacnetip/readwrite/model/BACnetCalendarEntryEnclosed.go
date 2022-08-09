@@ -173,7 +173,12 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 
 	// Create the instance
-	return NewBACnetCalendarEntryEnclosed(openingTag, calendarEntry, closingTag, tagNumber), nil
+	return &_BACnetCalendarEntryEnclosed{
+		TagNumber:     tagNumber,
+		OpeningTag:    openingTag,
+		CalendarEntry: calendarEntry,
+		ClosingTag:    closingTag,
+	}, nil
 }
 
 func (m *_BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

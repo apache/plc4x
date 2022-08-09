@@ -150,8 +150,8 @@ func BACnetValueSourceAddressParse(readBuffer utils.ReadBuffer) (BACnetValueSour
 
 	// Create a partially initialized instance
 	_child := &_BACnetValueSourceAddress{
-		Address:            address,
 		_BACnetValueSource: &_BACnetValueSource{},
+		Address:            address,
 	}
 	_child._BACnetValueSource._BACnetValueSourceChildRequirements = _child
 	return _child, nil

@@ -182,11 +182,11 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTransactionNotificationClass{
-		TransactionNotificationClass: transactionNotificationClass,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		TransactionNotificationClass: transactionNotificationClass,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

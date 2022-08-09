@@ -152,10 +152,10 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
-		ChangedBits: changedBits,
 		_BACnetNotificationParametersChangeOfValueNewValue: &_BACnetNotificationParametersChangeOfValueNewValue{
 			TagNumber: tagNumber,
 		},
+		ChangedBits: changedBits,
 	}
 	_child._BACnetNotificationParametersChangeOfValueNewValue._BACnetNotificationParametersChangeOfValueNewValueChildRequirements = _child
 	return _child, nil

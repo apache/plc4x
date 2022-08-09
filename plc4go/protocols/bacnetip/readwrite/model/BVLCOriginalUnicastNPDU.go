@@ -155,8 +155,8 @@ func BVLCOriginalUnicastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength
 
 	// Create a partially initialized instance
 	_child := &_BVLCOriginalUnicastNPDU{
-		Npdu:  npdu,
 		_BVLC: &_BVLC{},
+		Npdu:  npdu,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

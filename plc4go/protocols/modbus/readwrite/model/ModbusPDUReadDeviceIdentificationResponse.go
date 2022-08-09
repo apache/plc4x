@@ -322,13 +322,13 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadDeviceIdentificationResponse{
+		_ModbusPDU:       &_ModbusPDU{},
 		Level:            level,
 		IndividualAccess: individualAccess,
 		ConformityLevel:  conformityLevel,
 		MoreFollows:      moreFollows,
 		NextObjectId:     nextObjectId,
 		Objects:          objects,
-		_ModbusPDU:       &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

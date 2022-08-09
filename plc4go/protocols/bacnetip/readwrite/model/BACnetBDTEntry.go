@@ -160,7 +160,10 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 	}
 
 	// Create the instance
-	return NewBACnetBDTEntry(bbmdAddress, broadcastMask), nil
+	return &_BACnetBDTEntry{
+		BbmdAddress:   bbmdAddress,
+		BroadcastMask: broadcastMask,
+	}, nil
 }
 
 func (m *_BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {

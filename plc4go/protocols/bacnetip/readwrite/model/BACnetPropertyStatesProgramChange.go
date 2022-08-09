@@ -150,8 +150,8 @@ func BACnetPropertyStatesProgramChangeParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesProgramChange{
-		ProgramState:          programState,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		ProgramState:          programState,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

@@ -151,10 +151,10 @@ func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, s
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestRequestKey{
-		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		BytesOfRemovedService: bytesOfRemovedService,
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

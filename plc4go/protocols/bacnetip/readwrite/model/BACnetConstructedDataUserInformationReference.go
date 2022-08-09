@@ -182,11 +182,11 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUserInformationReference{
-		UserInformationReference: userInformationReference,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		UserInformationReference: userInformationReference,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

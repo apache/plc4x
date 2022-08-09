@@ -142,7 +142,10 @@ func BACnetClosingTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	}
 
 	// Create the instance
-	return NewBACnetClosingTag(header, tagNumberArgument), nil
+	return &_BACnetClosingTag{
+		TagNumberArgument: tagNumberArgument,
+		Header:            header,
+	}, nil
 }
 
 func (m *_BACnetClosingTag) Serialize(writeBuffer utils.WriteBuffer) error {

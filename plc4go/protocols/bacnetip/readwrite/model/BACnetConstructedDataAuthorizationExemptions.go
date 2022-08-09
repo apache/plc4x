@@ -171,11 +171,11 @@ func BACnetConstructedDataAuthorizationExemptionsParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAuthorizationExemptions{
-		AuthorizationExemption: authorizationExemption,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		AuthorizationExemption: authorizationExemption,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

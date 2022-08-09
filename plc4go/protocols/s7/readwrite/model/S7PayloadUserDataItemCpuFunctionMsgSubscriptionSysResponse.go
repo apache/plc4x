@@ -175,9 +175,9 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer 
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 		Result:                 result,
 		Reserved01:             reserved01,
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil

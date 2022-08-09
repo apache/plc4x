@@ -140,7 +140,9 @@ func HVACHumidityParse(readBuffer utils.ReadBuffer) (HVACHumidity, error) {
 	}
 
 	// Create the instance
-	return NewHVACHumidity(humidityValue), nil
+	return &_HVACHumidity{
+		HumidityValue: humidityValue,
+	}, nil
 }
 
 func (m *_HVACHumidity) Serialize(writeBuffer utils.WriteBuffer) error {

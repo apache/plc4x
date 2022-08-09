@@ -60,6 +60,9 @@ type _DF1ResponseMessage struct {
 
 	// Arguments.
 	PayloadLength uint16
+	// Reserved Fields
+	reservedField0 *uint8
+	reservedField1 *uint8
 }
 
 type _DF1ResponseMessageChildRequirements interface {
@@ -168,6 +171,7 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -179,6 +183,8 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -196,6 +202,7 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	}
 	sourceAddress := _sourceAddress
 
+	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -207,6 +214,8 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -256,6 +265,8 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 
 	// Finish initializing
 	_child.InitializeParent(_child, destinationAddress, sourceAddress, status, transactionCounter)
+	_child.GetParent().(*_DF1ResponseMessage).reservedField0 = reservedField0
+	_child.GetParent().(*_DF1ResponseMessage).reservedField1 = reservedField1
 	return _child, nil
 }
 
@@ -271,7 +282,15 @@ func (pm *_DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, ch
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00))
+		var reserved uint8 = uint8(0x00)
+		if pm.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint8(0x00),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *pm.reservedField0
+		}
+		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -293,7 +312,15 @@ func (pm *_DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, ch
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00))
+		var reserved uint8 = uint8(0x00)
+		if pm.reservedField1 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint8(0x00),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *pm.reservedField1
+		}
+		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

@@ -181,7 +181,12 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	}
 
 	// Create the instance
-	return NewCBusHeader(priorityClass, dp, rc, destinationAddressType), nil
+	return &_CBusHeader{
+		PriorityClass:          priorityClass,
+		Dp:                     dp,
+		Rc:                     rc,
+		DestinationAddressType: destinationAddressType,
+	}, nil
 }
 
 func (m *_CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {

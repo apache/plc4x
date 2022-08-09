@@ -200,7 +200,13 @@ func BACnetSilencedStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewBACnetSilencedStateTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetSilencedStateTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetSilencedStateTagged) Serialize(writeBuffer utils.WriteBuffer) error {

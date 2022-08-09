@@ -150,8 +150,8 @@ func BACnetChannelValueRealParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueReal{
-		RealValue:           realValue,
 		_BACnetChannelValue: &_BACnetChannelValue{},
+		RealValue:           realValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

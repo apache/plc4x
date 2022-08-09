@@ -158,7 +158,12 @@ func BACnetFaultTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 
 	// Create the instance
-	return NewBACnetFaultTypeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetFaultTypeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetFaultTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -147,7 +147,10 @@ func BACnetTimeValueParse(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) 
 	}
 
 	// Create the instance
-	return NewBACnetTimeValue(timeValue, value), nil
+	return &_BACnetTimeValue{
+		TimeValue: timeValue,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetTimeValue) Serialize(writeBuffer utils.WriteBuffer) error {

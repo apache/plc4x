@@ -160,8 +160,8 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUE
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUError{
-		ExceptionCode: exceptionCode,
 		_ModbusPDU:    &_ModbusPDU{},
+		ExceptionCode: exceptionCode,
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetChannelValueDateParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueDate{
-		DateValue:           dateValue,
 		_BACnetChannelValue: &_BACnetChannelValue{},
+		DateValue:           dateValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

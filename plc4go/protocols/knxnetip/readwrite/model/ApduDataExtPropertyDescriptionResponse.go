@@ -68,6 +68,9 @@ type _ApduDataExtPropertyDescriptionResponse struct {
 	MaxNrOfElements  uint16
 	ReadLevel        AccessLevel
 	WriteLevel       AccessLevel
+	// Reserved Fields
+	reservedField0 *uint8
+	reservedField1 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -245,6 +248,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	}
 	writeEnabled := _writeEnabled
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 1)
@@ -256,6 +260,8 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 				"expected value": uint8(0x0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -272,6 +278,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 		return nil, errors.Wrap(closeErr, "Error closing for propertyDataType")
 	}
 
+	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 4)
@@ -283,6 +290,8 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 				"expected value": uint8(0x0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField1 = &reserved
 		}
 	}
 
@@ -325,6 +334,9 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtPropertyDescriptionResponse{
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 		ObjectIndex:      objectIndex,
 		PropertyId:       propertyId,
 		Index:            index,
@@ -333,9 +345,8 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 		MaxNrOfElements:  maxNrOfElements,
 		ReadLevel:        readLevel,
 		WriteLevel:       writeLevel,
-		_ApduDataExt: &_ApduDataExt{
-			Length: length,
-		},
+		reservedField0:   reservedField0,
+		reservedField1:   reservedField1,
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -379,7 +390,15 @@ func (m *_ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wr
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(0x0))
+			var reserved uint8 = uint8(0x0)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x0),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -399,7 +418,15 @@ func (m *_ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wr
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(0x0))
+			var reserved uint8 = uint8(0x0)
+			if m.reservedField1 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x0),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField1
+			}
+			_err := writeBuffer.WriteUint8("reserved", 4, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

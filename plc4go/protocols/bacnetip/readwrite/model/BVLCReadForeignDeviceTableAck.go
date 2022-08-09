@@ -167,8 +167,8 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 
 	// Create a partially initialized instance
 	_child := &_BVLCReadForeignDeviceTableAck{
-		Table: table,
 		_BVLC: &_BVLC{},
+		Table: table,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

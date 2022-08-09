@@ -200,12 +200,12 @@ func BACnetEventLogRecordLogDatumNotificationParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventLogRecordLogDatumNotification{
-		InnerOpeningTag: innerOpeningTag,
-		Notification:    notification,
-		InnerClosingTag: innerClosingTag,
 		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{
 			TagNumber: tagNumber,
 		},
+		InnerOpeningTag: innerOpeningTag,
+		Notification:    notification,
+		InnerClosingTag: innerClosingTag,
 	}
 	_child._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _child
 	return _child, nil

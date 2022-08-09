@@ -124,7 +124,9 @@ func BACnetLiftCarCallListParse(readBuffer utils.ReadBuffer) (BACnetLiftCarCallL
 	}
 
 	// Create the instance
-	return NewBACnetLiftCarCallList(floorNumbers), nil
+	return &_BACnetLiftCarCallList{
+		FloorNumbers: floorNumbers,
+	}, nil
 }
 
 func (m *_BACnetLiftCarCallList) Serialize(writeBuffer utils.WriteBuffer) error {

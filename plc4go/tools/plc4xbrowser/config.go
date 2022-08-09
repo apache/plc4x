@@ -20,6 +20,8 @@
 package main
 
 import (
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -33,9 +35,14 @@ var config Config
 
 type Config struct {
 	History struct {
-		Last10Hosts []string `yaml:"last_hosts"`
+		Last10Hosts    []string `yaml:"last_hosts"`
+		Last10Commands []string `yaml:"last_commands"`
 	}
-	lastUpdated time.Time `yaml:"last_updated"`
+	AutoRegisterDrivers []string  `yaml:"auto_register_driver"`
+	LastUpdated         time.Time `yaml:"last_updated"`
+	LogLevel            string    `yaml:"log_level"`
+	MaxConsoleLines     int       `yaml:"max_console_lines"`
+	MaxOutputLines      int       `yaml:"max_output_lines"`
 }
 
 func init() {
@@ -74,7 +81,7 @@ func loadConfig() {
 }
 
 func saveConfig() {
-	config.lastUpdated = time.Now()
+	config.LastUpdated = time.Now()
 	f, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		log.Warn().Err(err).Msg("Can't save config file")
@@ -93,7 +100,7 @@ func saveConfig() {
 	}
 }
 
-func addHost(host string) {
+func addHostHistoryEntry(host string) {
 	existingIndex := -1
 	for i, lastHost := range config.History.Last10Hosts {
 		if lastHost == host {
@@ -108,4 +115,64 @@ func addHost(host string) {
 		config.History.Last10Hosts = config.History.Last10Hosts[1:]
 	}
 	config.History.Last10Hosts = append(config.History.Last10Hosts, host)
+}
+
+func addCommandHistoryEntry(command string) {
+	switch command {
+	case "clear":
+		return
+	case "history":
+		return
+	}
+	existingIndex := -1
+	for i, lastCommand := range config.History.Last10Commands {
+		if lastCommand == command {
+			existingIndex = i
+			break
+		}
+	}
+	if existingIndex >= 0 {
+		config.History.Last10Commands = append(config.History.Last10Commands[:existingIndex], config.History.Last10Commands[existingIndex+1:]...)
+	}
+	if len(config.History.Last10Commands) >= 10 {
+		config.History.Last10Commands = config.History.Last10Commands[1:]
+	}
+	config.History.Last10Commands = append(config.History.Last10Commands, command)
+}
+
+func setLevel(level zerolog.Level) {
+	config.LogLevel = level.String()
+}
+
+func enableAutoRegister(driver string) error {
+	if err := validateDriverParam(driver); err != nil {
+		return err
+	}
+	for _, autoRegisterDriver := range config.AutoRegisterDrivers {
+		if autoRegisterDriver == driver {
+			return errors.Errorf("%s already registered for auto register", driver)
+		}
+	}
+	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers, driver)
+	log.Info().Msgf("Auto register enabled for %s", driver)
+	return nil
+}
+
+func disableAutoRegister(driver string) error {
+	if err := validateDriverParam(driver); err != nil {
+		return err
+	}
+	index := -1
+	for i, autoRegisterDriver := range config.AutoRegisterDrivers {
+		if autoRegisterDriver == driver {
+			index = i
+			break
+		}
+	}
+	if index < 0 {
+		return errors.Errorf("%s not registered for auto register", driver)
+	}
+	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers[:index], config.AutoRegisterDrivers[index+1:]...)
+	log.Info().Msgf("Auto register disabled for %s", driver)
+	return nil
 }

@@ -243,7 +243,12 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTim
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadTime(hour, minute, second, fractional), nil
+	return &_BACnetTagPayloadTime{
+		Hour:       hour,
+		Minute:     minute,
+		Second:     second,
+		Fractional: fractional,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {

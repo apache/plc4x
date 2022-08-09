@@ -150,8 +150,8 @@ func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (BACnetValueSourc
 
 	// Create a partially initialized instance
 	_child := &_BACnetValueSourceObject{
-		Object:             object,
 		_BACnetValueSource: &_BACnetValueSource{},
+		Object:             object,
 	}
 	_child._BACnetValueSource._BACnetValueSourceChildRequirements = _child
 	return _child, nil

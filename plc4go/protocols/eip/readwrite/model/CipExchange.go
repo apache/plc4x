@@ -200,7 +200,10 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	}
 
 	// Create the instance
-	return NewCipExchange(service, exchangeLen), nil
+	return &_CipExchange{
+		ExchangeLen: exchangeLen,
+		Service:     service,
+	}, nil
 }
 
 func (m *_CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {

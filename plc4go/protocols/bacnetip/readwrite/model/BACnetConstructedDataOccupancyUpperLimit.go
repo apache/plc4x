@@ -182,11 +182,11 @@ func BACnetConstructedDataOccupancyUpperLimitParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOccupancyUpperLimit{
-		OccupancyUpperLimit: occupancyUpperLimit,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		OccupancyUpperLimit: occupancyUpperLimit,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

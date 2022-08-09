@@ -158,7 +158,12 @@ func BACnetSecurityPolicyTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Create the instance
-	return NewBACnetSecurityPolicyTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetSecurityPolicyTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetSecurityPolicyTagged) Serialize(writeBuffer utils.WriteBuffer) error {

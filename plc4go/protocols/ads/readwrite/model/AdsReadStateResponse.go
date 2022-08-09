@@ -192,10 +192,10 @@ func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 
 	// Create a partially initialized instance
 	_child := &_AdsReadStateResponse{
+		_AdsData:    &_AdsData{},
 		Result:      result,
 		AdsState:    adsState,
 		DeviceState: deviceState,
-		_AdsData:    &_AdsData{},
 	}
 	_child._AdsData._AdsDataChildRequirements = _child
 	return _child, nil

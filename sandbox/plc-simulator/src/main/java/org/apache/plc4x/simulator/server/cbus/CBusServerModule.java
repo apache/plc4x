@@ -81,7 +81,7 @@ public class CBusServerModule implements ServerModule {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new GeneratedProtocolMessageCodec<>(CBusMessage.class,
                             CBusMessage::staticParse, ByteOrder.BIG_ENDIAN,
-                            new Object[]{false, new RequestContext(false, false, false), new CBusOptions(false, false, false, false, false, false, false, false, false)},
+                            new Object[]{false, new RequestContext(false), new CBusOptions(false, false, false, false, false, false, false, false, false)},
                             new CBusDriver.ByteLengthEstimator(),
                             new CBusDriver.CorruptPackageCleaner()));
                         pipeline.addLast(new CBusServerAdapter(context));

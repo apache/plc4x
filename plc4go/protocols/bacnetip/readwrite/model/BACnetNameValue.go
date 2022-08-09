@@ -160,7 +160,10 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (BACnetNameValue, error) 
 	}
 
 	// Create the instance
-	return NewBACnetNameValue(name, value), nil
+	return &_BACnetNameValue{
+		Name:  name,
+		Value: value,
+	}, nil
 }
 
 func (m *_BACnetNameValue) Serialize(writeBuffer utils.WriteBuffer) error {

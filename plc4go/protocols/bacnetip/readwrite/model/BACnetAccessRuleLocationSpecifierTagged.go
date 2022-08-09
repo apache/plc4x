@@ -158,7 +158,12 @@ func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, t
 	}
 
 	// Create the instance
-	return NewBACnetAccessRuleLocationSpecifierTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetAccessRuleLocationSpecifierTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetAccessRuleLocationSpecifierTagged) Serialize(writeBuffer utils.WriteBuffer) error {

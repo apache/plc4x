@@ -33,6 +33,8 @@ type ParameterValueApplicationAddress1 interface {
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() ApplicationAddress1
+	// GetData returns Data (property field)
+	GetData() []byte
 }
 
 // ParameterValueApplicationAddress1Exactly can be used when we want exactly this type and not a type which fulfills ParameterValueApplicationAddress1.
@@ -46,6 +48,7 @@ type ParameterValueApplicationAddress1Exactly interface {
 type _ParameterValueApplicationAddress1 struct {
 	*_ParameterValue
 	Value ApplicationAddress1
+	Data  []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,15 +80,20 @@ func (m *_ParameterValueApplicationAddress1) GetValue() ApplicationAddress1 {
 	return m.Value
 }
 
+func (m *_ParameterValueApplicationAddress1) GetData() []byte {
+	return m.Data
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewParameterValueApplicationAddress1 factory function for _ParameterValueApplicationAddress1
-func NewParameterValueApplicationAddress1(value ApplicationAddress1, numBytes uint8) *_ParameterValueApplicationAddress1 {
+func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte, numBytes uint8) *_ParameterValueApplicationAddress1 {
 	_result := &_ParameterValueApplicationAddress1{
 		Value:           value,
+		Data:            data,
 		_ParameterValue: NewParameterValue(numBytes),
 	}
 	_result._ParameterValue._ParameterValueChildRequirements = _result
@@ -117,6 +125,11 @@ func (m *_ParameterValueApplicationAddress1) GetLengthInBitsConditional(lastItem
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits()
 
+	// Array field
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
+	}
+
 	return lengthInBits
 }
 
@@ -134,7 +147,7 @@ func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, paramet
 	_ = currentPos
 
 	// Validation
-	if !(bool((numBytes) == (1))) {
+	if !(bool((numBytes) >= (1))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"ApplicationAddress1 has exactly one byte"})
 	}
 
@@ -150,6 +163,12 @@ func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, paramet
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for value")
 	}
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(1)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueApplicationAddress1")
+	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueApplicationAddress1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ParameterValueApplicationAddress1")
@@ -157,10 +176,11 @@ func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, paramet
 
 	// Create a partially initialized instance
 	_child := &_ParameterValueApplicationAddress1{
-		Value: value,
 		_ParameterValue: &_ParameterValue{
 			NumBytes: numBytes,
 		},
+		Value: value,
+		Data:  data,
 	}
 	_child._ParameterValue._ParameterValueChildRequirements = _child
 	return _child, nil
@@ -184,6 +204,12 @@ func (m *_ParameterValueApplicationAddress1) Serialize(writeBuffer utils.WriteBu
 		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		}
+
+		// Array Field (data)
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterValueApplicationAddress1"); popErr != nil {

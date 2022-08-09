@@ -53,6 +53,8 @@ type _APDUAbort struct {
 	Server           bool
 	OriginalInvokeId uint8
 	AbortReason      BACnetAbortReasonTagged
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,6 +161,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 3)
@@ -170,6 +173,8 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -206,12 +211,13 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 
 	// Create a partially initialized instance
 	_child := &_APDUAbort{
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		AbortReason:      abortReason,
 		_APDU: &_APDU{
 			ApduLength: apduLength,
 		},
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		AbortReason:      abortReason,
+		reservedField0:   reservedField0,
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -227,7 +233,15 @@ func (m *_APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteUint8("reserved", 3, uint8(0x00))
+			var reserved uint8 = uint8(0x00)
+			if m.reservedField0 != nil {
+				log.Info().Fields(map[string]interface{}{
+					"expected value": uint8(0x00),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteUint8("reserved", 3, reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

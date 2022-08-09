@@ -165,11 +165,11 @@ func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attr
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandDelays{
-		TerminalLevels: terminalLevels,
-		ReStrikeDelay:  reStrikeDelay,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		TerminalLevels: terminalLevels,
+		ReStrikeDelay:  reStrikeDelay,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil

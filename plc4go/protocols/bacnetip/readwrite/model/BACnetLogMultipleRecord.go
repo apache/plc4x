@@ -147,7 +147,10 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipl
 	}
 
 	// Create the instance
-	return NewBACnetLogMultipleRecord(timestamp, logData), nil
+	return &_BACnetLogMultipleRecord{
+		Timestamp: timestamp,
+		LogData:   logData,
+	}, nil
 }
 
 func (m *_BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) error {

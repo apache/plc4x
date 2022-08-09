@@ -193,7 +193,12 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	}
 
 	// Create the instance
-	return NewBACnetAccumulatorRecord(timestamp, presentValue, accumulatedValue, accumulatorStatus), nil
+	return &_BACnetAccumulatorRecord{
+		Timestamp:         timestamp,
+		PresentValue:      presentValue,
+		AccumulatedValue:  accumulatedValue,
+		AccumulatorStatus: accumulatorStatus,
+	}, nil
 }
 
 func (m *_BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) error {

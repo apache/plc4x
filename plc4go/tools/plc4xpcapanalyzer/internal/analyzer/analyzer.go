@@ -63,7 +63,6 @@ func Analyze(pcapFile, protocolType string) {
 		analyzer.Init()
 		packageParse = analyzer.PackageParse
 		serializePackage = analyzer.SerializePackage
-		prettyPrint = analyzer.PrettyPrint
 		mapPackets = analyzer.MapPackets
 		if !config.AnalyzeConfigInstance.NoCustomMapping {
 			byteOutput = analyzer.ByteOutput
@@ -126,6 +125,8 @@ func Analyze(pcapFile, protocolType string) {
 				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is unterminated", realPacketNumber)
 			case common.ErrEmptyPackage:
 				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is empty", realPacketNumber)
+			case common.ErrEcho:
+				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is echo", realPacketNumber)
 			default:
 				parseFails++
 				// TODO: write report to xml or something

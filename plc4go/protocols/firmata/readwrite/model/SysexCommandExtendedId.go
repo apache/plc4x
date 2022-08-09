@@ -168,8 +168,8 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (Sy
 
 	// Create a partially initialized instance
 	_child := &_SysexCommandExtendedId{
-		Id:            id,
 		_SysexCommand: &_SysexCommand{},
+		Id:            id,
 	}
 	_child._SysexCommand._SysexCommandChildRequirements = _child
 	return _child, nil

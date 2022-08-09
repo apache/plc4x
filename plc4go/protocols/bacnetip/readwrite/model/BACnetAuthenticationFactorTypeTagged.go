@@ -158,7 +158,12 @@ func BACnetAuthenticationFactorTypeTaggedParse(readBuffer utils.ReadBuffer, tagN
 	}
 
 	// Create the instance
-	return NewBACnetAuthenticationFactorTypeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetAuthenticationFactorTypeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetAuthenticationFactorTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

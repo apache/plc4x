@@ -185,7 +185,13 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	}
 
 	// Create the instance
-	return NewBACnetPropertyValues(innerOpeningTag, data, innerClosingTag, tagNumber, objectTypeArgument), nil
+	return &_BACnetPropertyValues{
+		TagNumber:          tagNumber,
+		ObjectTypeArgument: objectTypeArgument,
+		InnerOpeningTag:    innerOpeningTag,
+		Data:               data,
+		InnerClosingTag:    innerClosingTag,
+	}, nil
 }
 
 func (m *_BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {

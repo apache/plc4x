@@ -216,11 +216,11 @@ func LightingDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer Li
 
 	// Create a partially initialized instance
 	_child := &_LightingDataLabel{
+		_LightingData: &_LightingData{},
 		Group:         group,
 		LabelOptions:  labelOptions,
 		Language:      language,
 		Data:          data,
-		_LightingData: &_LightingData{},
 	}
 	_child._LightingData._LightingDataChildRequirements = _child
 	return _child, nil

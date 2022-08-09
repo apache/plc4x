@@ -200,7 +200,13 @@ func ErrorClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClas
 	}
 
 	// Create the instance
-	return NewErrorClassTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_ErrorClassTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_ErrorClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {

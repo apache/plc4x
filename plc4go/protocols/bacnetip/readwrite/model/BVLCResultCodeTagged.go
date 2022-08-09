@@ -158,7 +158,12 @@ func BVLCResultCodeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Create the instance
-	return NewBVLCResultCodeTagged(header, value, tagNumber, tagClass), nil
+	return &_BVLCResultCodeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BVLCResultCodeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

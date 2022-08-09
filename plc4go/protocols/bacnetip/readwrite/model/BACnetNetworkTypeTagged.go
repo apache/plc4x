@@ -200,7 +200,13 @@ func BACnetNetworkTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Create the instance
-	return NewBACnetNetworkTypeTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetNetworkTypeTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetNetworkTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

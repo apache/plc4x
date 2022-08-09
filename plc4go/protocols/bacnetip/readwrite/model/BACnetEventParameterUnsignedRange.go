@@ -246,12 +246,12 @@ func BACnetEventParameterUnsignedRangeParse(readBuffer utils.ReadBuffer) (BACnet
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterUnsignedRange{
+		_BACnetEventParameter: &_BACnetEventParameter{},
 		OpeningTag:            openingTag,
 		TimeDelay:             timeDelay,
 		LowLimit:              lowLimit,
 		HighLimit:             highLimit,
 		ClosingTag:            closingTag,
-		_BACnetEventParameter: &_BACnetEventParameter{},
 	}
 	_child._BACnetEventParameter._BACnetEventParameterChildRequirements = _child
 	return _child, nil

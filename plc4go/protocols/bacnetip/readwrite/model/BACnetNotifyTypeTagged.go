@@ -158,7 +158,12 @@ func BACnetNotifyTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	}
 
 	// Create the instance
-	return NewBACnetNotifyTypeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetNotifyTypeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetNotifyTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

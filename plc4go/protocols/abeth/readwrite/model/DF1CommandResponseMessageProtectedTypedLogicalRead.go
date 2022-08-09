@@ -167,10 +167,10 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
-		Data: data,
 		_DF1ResponseMessage: &_DF1ResponseMessage{
 			PayloadLength: payloadLength,
 		},
+		Data: data,
 	}
 	_child._DF1ResponseMessage._DF1ResponseMessageChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetPropertyStatesSystemStatusParse(readBuffer utils.ReadBuffer, peekedTa
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesSystemStatus{
-		SystemStatus:          systemStatus,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		SystemStatus:          systemStatus,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

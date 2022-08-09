@@ -323,6 +323,7 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 
 	// Create a partially initialized instance
 	_child := &_AirConditioningDataSetPlantHvacLevel{
+		_AirConditioningData: &_AirConditioningData{},
 		ZoneGroup:            zoneGroup,
 		ZoneList:             zoneList,
 		HvacModeAndFlags:     hvacModeAndFlags,
@@ -330,7 +331,6 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 		Level:                level,
 		RawLevel:             rawLevel,
 		AuxLevel:             auxLevel,
-		_AirConditioningData: &_AirConditioningData{},
 	}
 	_child._AirConditioningData._AirConditioningDataChildRequirements = _child
 	return _child, nil

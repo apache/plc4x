@@ -49,6 +49,8 @@ type TPKTPacketExactly interface {
 // _TPKTPacket is the data-structure of this message
 type _TPKTPacket struct {
 	Payload COTPPacket
+	// Reserved Fields
+	reservedField0 *uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -142,6 +144,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", TPKTPacket_PROTOCOLID) + " but got " + fmt.Sprintf("%d", protocolId))
 	}
 
+	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint8("reserved", 8)
@@ -153,6 +156,8 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -181,7 +186,10 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	}
 
 	// Create the instance
-	return NewTPKTPacket(payload), nil
+	return &_TPKTPacket{
+		Payload:        payload,
+		reservedField0: reservedField0,
+	}, nil
 }
 
 func (m *_TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -199,7 +207,15 @@ func (m *_TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00))
+		var reserved uint8 = uint8(0x00)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint8(0x00),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

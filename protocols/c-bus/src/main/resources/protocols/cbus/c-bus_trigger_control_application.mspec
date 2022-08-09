@@ -107,12 +107,12 @@
 
 // TODO: maybe can be merged with lightning labels
 [type TriggerControlLabelOptions
-    [simple   bit                           reservedBit7] // only for dynamic icon loading can switch to 1 (note this could use mspec reserved field but sadly this discards data)
+    [reserved bit                           'false'     ] // only for dynamic icon loading can switch to 1
     [simple   TriggerControlLabelFlavour    labelFlavour]
     [reserved bit                           'false'     ]
-    [simple   bit                           reservedBit3] // For Control Trigger, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
+    [reserved bit                           'false'     ] // For Control Trigger, this bit must be 0
     [simple   TriggerControlLabelType       labelType   ]
-    [simple   bit                           reservedBit0] // For Control Trigger, this bit must be 1 (note this could use mspec reserved field but sadly this discards data)
+    [reserved bit                           'false'     ] // For Control Trigger, this bit must be 1
 ]
 
 // TODO: maybe can be merged with lightning labels

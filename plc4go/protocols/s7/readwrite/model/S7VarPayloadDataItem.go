@@ -200,7 +200,11 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadDataIte
 	}
 
 	// Create the instance
-	return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
+	return &_S7VarPayloadDataItem{
+		ReturnCode:    returnCode,
+		TransportSize: transportSize,
+		Data:          data,
+	}, nil
 }
 
 func (m *_S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -173,7 +173,12 @@ func BACnetPropertyStatesEnclosedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Create the instance
-	return NewBACnetPropertyStatesEnclosed(openingTag, propertyState, closingTag, tagNumber), nil
+	return &_BACnetPropertyStatesEnclosed{
+		TagNumber:     tagNumber,
+		OpeningTag:    openingTag,
+		PropertyState: propertyState,
+		ClosingTag:    closingTag,
+	}, nil
 }
 
 func (m *_BACnetPropertyStatesEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {

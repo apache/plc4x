@@ -160,7 +160,10 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 	}
 
 	// Create the instance
-	return NewBACnetRecipientProcess(recipient, processIdentifier), nil
+	return &_BACnetRecipientProcess{
+		Recipient:         recipient,
+		ProcessIdentifier: processIdentifier,
+	}, nil
 }
 
 func (m *_BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error {

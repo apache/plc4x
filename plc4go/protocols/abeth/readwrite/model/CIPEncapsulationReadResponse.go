@@ -160,8 +160,8 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, packetLen ui
 
 	// Create a partially initialized instance
 	_child := &_CIPEncapsulationReadResponse{
-		Response:                response,
 		_CIPEncapsulationPacket: &_CIPEncapsulationPacket{},
+		Response:                response,
 	}
 	_child._CIPEncapsulationPacket._CIPEncapsulationPacketChildRequirements = _child
 	return _child, nil

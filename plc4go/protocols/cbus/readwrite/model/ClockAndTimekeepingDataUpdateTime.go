@@ -260,11 +260,11 @@ func ClockAndTimekeepingDataUpdateTimeParse(readBuffer utils.ReadBuffer) (ClockA
 
 	// Create a partially initialized instance
 	_child := &_ClockAndTimekeepingDataUpdateTime{
+		_ClockAndTimekeepingData: &_ClockAndTimekeepingData{},
 		Hours:                    hours,
 		Minute:                   minute,
 		Second:                   second,
 		DaylightSaving:           daylightSaving,
-		_ClockAndTimekeepingData: &_ClockAndTimekeepingData{},
 	}
 	_child._ClockAndTimekeepingData._ClockAndTimekeepingDataChildRequirements = _child
 	return _child, nil

@@ -175,11 +175,11 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 
 	// Create a partially initialized instance
 	_child := &_ApduDataMemoryResponse{
-		Address: address,
-		Data:    data,
 		_ApduData: &_ApduData{
 			DataLength: dataLength,
 		},
+		Address: address,
+		Data:    data,
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (BACnet
 
 	// Create a partially initialized instance
 	_child := &_BACnetChannelValueLightingCommand{
-		LigthingCommandValue: ligthingCommandValue,
 		_BACnetChannelValue:  &_BACnetChannelValue{},
+		LigthingCommandValue: ligthingCommandValue,
 	}
 	_child._BACnetChannelValue._BACnetChannelValueChildRequirements = _child
 	return _child, nil

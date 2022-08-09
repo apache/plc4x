@@ -184,7 +184,12 @@ func BACnetLiftCarCallListFloorListParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetLiftCarCallListFloorList(openingTag, floorNumbers, closingTag, tagNumber), nil
+	return &_BACnetLiftCarCallListFloorList{
+		TagNumber:    tagNumber,
+		OpeningTag:   openingTag,
+		FloorNumbers: floorNumbers,
+		ClosingTag:   closingTag,
+	}, nil
 }
 
 func (m *_BACnetLiftCarCallListFloorList) Serialize(writeBuffer utils.WriteBuffer) error {

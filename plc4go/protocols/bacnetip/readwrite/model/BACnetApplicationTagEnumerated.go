@@ -172,8 +172,8 @@ func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, header BAC
 
 	// Create a partially initialized instance
 	_child := &_BACnetApplicationTagEnumerated{
-		Payload:               payload,
 		_BACnetApplicationTag: &_BACnetApplicationTag{},
+		Payload:               payload,
 	}
 	_child._BACnetApplicationTag._BACnetApplicationTagChildRequirements = _child
 	return _child, nil

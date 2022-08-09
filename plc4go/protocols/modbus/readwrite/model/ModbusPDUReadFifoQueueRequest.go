@@ -154,8 +154,8 @@ func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer, response bo
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadFifoQueueRequest{
-		FifoPointerAddress: fifoPointerAddress,
 		_ModbusPDU:         &_ModbusPDU{},
+		FifoPointerAddress: fifoPointerAddress,
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil

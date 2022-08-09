@@ -57,6 +57,8 @@ type _DF1RequestMessage struct {
 	SourceAddress      uint8
 	Status             uint8
 	TransactionCounter uint16
+	// Reserved Fields
+	reservedField0 *uint16
 }
 
 type _DF1RequestMessageChildRequirements interface {
@@ -176,6 +178,7 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, err
 	}
 	sourceAddress := _sourceAddress
 
+	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -187,6 +190,8 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, err
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -236,6 +241,7 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, err
 
 	// Finish initializing
 	_child.InitializeParent(_child, destinationAddress, sourceAddress, status, transactionCounter)
+	_child.GetParent().(*_DF1RequestMessage).reservedField0 = reservedField0
 	return _child, nil
 }
 
@@ -265,7 +271,15 @@ func (pm *_DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, chi
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0000))
+		var reserved uint16 = uint16(0x0000)
+		if pm.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint16(0x0000),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *pm.reservedField0
+		}
+		_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

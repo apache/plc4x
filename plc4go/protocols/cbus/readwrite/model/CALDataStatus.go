@@ -35,8 +35,8 @@ type CALDataStatus interface {
 	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
-	// GetData returns Data (property field)
-	GetData() []byte
+	// GetStatusBytes returns StatusBytes (property field)
+	GetStatusBytes() []StatusByte
 }
 
 // CALDataStatusExactly can be used when we want exactly this type and not a type which fulfills CALDataStatus.
@@ -51,7 +51,7 @@ type _CALDataStatus struct {
 	*_CALData
 	Application ApplicationIdContainer
 	BlockStart  uint8
-	Data        []byte
+	StatusBytes []StatusByte
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,8 +86,8 @@ func (m *_CALDataStatus) GetBlockStart() uint8 {
 	return m.BlockStart
 }
 
-func (m *_CALDataStatus) GetData() []byte {
-	return m.Data
+func (m *_CALDataStatus) GetStatusBytes() []StatusByte {
+	return m.StatusBytes
 }
 
 ///////////////////////
@@ -96,11 +96,11 @@ func (m *_CALDataStatus) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataStatus factory function for _CALDataStatus
-func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatus {
+func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatus {
 	_result := &_CALDataStatus{
 		Application: application,
 		BlockStart:  blockStart,
-		Data:        data,
+		StatusBytes: statusBytes,
 		_CALData:    NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
@@ -136,8 +136,11 @@ func (m *_CALDataStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+	if len(m.StatusBytes) > 0 {
+		for i, element := range m.StatusBytes {
+			last := i == len(m.StatusBytes)-1
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		}
 	}
 
 	return lengthInBits
@@ -175,11 +178,28 @@ func CALDataStatusParse(readBuffer utils.ReadBuffer, requestContext RequestConte
 		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of CALDataStatus")
 	}
 	blockStart := _blockStart
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(2)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataStatus")
+
+	// Array field (statusBytes)
+	if pullErr := readBuffer.PullContext("statusBytes", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
+	}
+	// Count array
+	statusBytes := make([]StatusByte, uint16(commandTypeContainer.NumBytes())-uint16(uint16(2)))
+	// This happens when the size is set conditional to 0
+	if len(statusBytes) == 0 {
+		statusBytes = nil
+	}
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(commandTypeContainer.NumBytes())-uint16(uint16(2))); curItem++ {
+			_item, _err := StatusByteParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field of CALDataStatus")
+			}
+			statusBytes[curItem] = _item.(StatusByte)
+		}
+	}
+	if closeErr := readBuffer.CloseContext("statusBytes", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for statusBytes")
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataStatus"); closeErr != nil {
@@ -188,12 +208,12 @@ func CALDataStatusParse(readBuffer utils.ReadBuffer, requestContext RequestConte
 
 	// Create a partially initialized instance
 	_child := &_CALDataStatus{
-		Application: application,
-		BlockStart:  blockStart,
-		Data:        data,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
+		Application: application,
+		BlockStart:  blockStart,
+		StatusBytes: statusBytes,
 	}
 	_child._CALData._CALDataChildRequirements = _child
 	return _child, nil
@@ -226,10 +246,18 @@ func (m *_CALDataStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
-			return errors.Wrap(err, "Error serializing 'data' field")
+		// Array Field (statusBytes)
+		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for statusBytes")
+		}
+		for _, _element := range m.GetStatusBytes() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
+			}
+		}
+		if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for statusBytes")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataStatus"); popErr != nil {

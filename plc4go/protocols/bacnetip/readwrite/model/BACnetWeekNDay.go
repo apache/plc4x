@@ -96,7 +96,7 @@ func BACnetWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {
 	}
 
 	// Create the instance
-	return NewBACnetWeekNDay(), nil
+	return &_BACnetWeekNDay{}, nil
 }
 
 func (m *_BACnetWeekNDay) Serialize(writeBuffer utils.WriteBuffer) error {

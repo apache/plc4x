@@ -158,7 +158,12 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -171,9 +171,9 @@ func AccessControlDataInvalidAccessRequestParse(readBuffer utils.ReadBuffer, com
 
 	// Create a partially initialized instance
 	_child := &_AccessControlDataInvalidAccessRequest{
+		_AccessControlData:     &_AccessControlData{},
 		AccessControlDirection: accessControlDirection,
 		Data:                   data,
-		_AccessControlData:     &_AccessControlData{},
 	}
 	_child._AccessControlData._AccessControlDataChildRequirements = _child
 	return _child, nil

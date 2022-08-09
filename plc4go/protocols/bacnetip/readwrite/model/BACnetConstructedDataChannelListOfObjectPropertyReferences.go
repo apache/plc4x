@@ -232,12 +232,12 @@ func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(readBuffer 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
-		NumberOfDataElements: numberOfDataElements,
-		References:           references,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		NumberOfDataElements: numberOfDataElements,
+		References:           references,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

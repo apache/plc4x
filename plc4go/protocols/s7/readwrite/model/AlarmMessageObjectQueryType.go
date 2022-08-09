@@ -70,6 +70,8 @@ type _AlarmMessageObjectQueryType struct {
 	ValueComing    AssociatedValueType
 	TimeGoing      DateAndTime
 	ValueGoing     AssociatedValueType
+	// Reserved Fields
+	reservedField0 *uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -207,6 +209,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	}
 	lengthDataset := _lengthDataset
 
+	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -218,6 +221,8 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -326,7 +331,17 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	}
 
 	// Create the instance
-	return NewAlarmMessageObjectQueryType(lengthDataset, eventState, ackStateGoing, ackStateComing, timeComing, valueComing, timeGoing, valueGoing), nil
+	return &_AlarmMessageObjectQueryType{
+		LengthDataset:  lengthDataset,
+		EventState:     eventState,
+		AckStateGoing:  ackStateGoing,
+		AckStateComing: ackStateComing,
+		TimeComing:     timeComing,
+		ValueComing:    valueComing,
+		TimeGoing:      timeGoing,
+		ValueGoing:     valueGoing,
+		reservedField0: reservedField0,
+	}, nil
 }
 
 func (m *_AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -345,7 +360,15 @@ func (m *_AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) 
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0000))
+		var reserved uint16 = uint16(0x0000)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": uint16(0x0000),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

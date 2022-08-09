@@ -146,8 +146,8 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (KnxNetIpTunneling, err
 
 	// Create a partially initialized instance
 	_child := &_KnxNetIpTunneling{
-		Version:    version,
 		_ServiceId: &_ServiceId{},
+		Version:    version,
 	}
 	_child._ServiceId._ServiceIdChildRequirements = _child
 	return _child, nil

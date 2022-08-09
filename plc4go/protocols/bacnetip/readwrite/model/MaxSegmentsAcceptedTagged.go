@@ -158,7 +158,12 @@ func MaxSegmentsAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewMaxSegmentsAcceptedTagged(header, value, tagNumber, tagClass), nil
+	return &_MaxSegmentsAcceptedTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_MaxSegmentsAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) error {

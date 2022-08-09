@@ -145,8 +145,8 @@ func SecurityDataDisplayMessageParse(readBuffer utils.ReadBuffer, commandTypeCon
 
 	// Create a partially initialized instance
 	_child := &_SecurityDataDisplayMessage{
-		Message:       message,
 		_SecurityData: &_SecurityData{},
+		Message:       message,
 	}
 	_child._SecurityData._SecurityDataChildRequirements = _child
 	return _child, nil

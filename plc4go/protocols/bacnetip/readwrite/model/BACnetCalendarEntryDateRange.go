@@ -150,8 +150,8 @@ func BACnetCalendarEntryDateRangeParse(readBuffer utils.ReadBuffer) (BACnetCalen
 
 	// Create a partially initialized instance
 	_child := &_BACnetCalendarEntryDateRange{
-		DateRange:            dateRange,
 		_BACnetCalendarEntry: &_BACnetCalendarEntry{},
+		DateRange:            dateRange,
 	}
 	_child._BACnetCalendarEntry._BACnetCalendarEntryChildRequirements = _child
 	return _child, nil

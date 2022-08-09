@@ -200,10 +200,10 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 
 	// Create a partially initialized instance
 	_child := &_SearchResponse{
+		_KnxNetIpMessage:    &_KnxNetIpMessage{},
 		HpaiControlEndpoint: hpaiControlEndpoint,
 		DibDeviceInfo:       dibDeviceInfo,
 		DibSuppSvcFamilies:  dibSuppSvcFamilies,
-		_KnxNetIpMessage:    &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil

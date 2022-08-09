@@ -231,7 +231,13 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	}
 
 	// Create the instance
-	return NewBACnetPropertyValue(propertyIdentifier, propertyArrayIndex, propertyValue, priority, objectTypeArgument), nil
+	return &_BACnetPropertyValue{
+		ObjectTypeArgument: objectTypeArgument,
+		PropertyIdentifier: propertyIdentifier,
+		PropertyArrayIndex: propertyArrayIndex,
+		PropertyValue:      propertyValue,
+		Priority:           priority,
+	}, nil
 }
 
 func (m *_BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {

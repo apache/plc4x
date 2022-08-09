@@ -167,8 +167,8 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 
 	// Create a partially initialized instance
 	_child := &_BVLCWriteBroadcastDistributionTable{
-		Table: table,
 		_BVLC: &_BVLC{},
+		Table: table,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil

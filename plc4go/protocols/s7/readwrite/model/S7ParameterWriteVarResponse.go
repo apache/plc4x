@@ -150,8 +150,8 @@ func S7ParameterWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType u
 
 	// Create a partially initialized instance
 	_child := &_S7ParameterWriteVarResponse{
-		NumItems:     numItems,
 		_S7Parameter: &_S7Parameter{},
+		NumItems:     numItems,
 	}
 	_child._S7Parameter._S7ParameterChildRequirements = _child
 	return _child, nil

@@ -135,7 +135,10 @@ func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (ProjectIns
 	}
 
 	// Create the instance
-	return NewProjectInstallationIdentifier(projectNumber, installationNumber), nil
+	return &_ProjectInstallationIdentifier{
+		ProjectNumber:      projectNumber,
+		InstallationNumber: installationNumber,
+	}, nil
 }
 
 func (m *_ProjectInstallationIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {

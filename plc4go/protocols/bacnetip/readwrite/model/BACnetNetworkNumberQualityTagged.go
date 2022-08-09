@@ -158,7 +158,12 @@ func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 
 	// Create the instance
-	return NewBACnetNetworkNumberQualityTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetNetworkNumberQualityTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetNetworkNumberQualityTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -150,8 +150,8 @@ func BACnetPropertyStatesAuthenticationStatusParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesAuthenticationStatus{
-		AuthenticationStatus:  authenticationStatus,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		AuthenticationStatus:  authenticationStatus,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

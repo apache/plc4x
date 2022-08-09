@@ -67,6 +67,8 @@ type _HVACHumidityStatusFlags struct {
 	FanActive          bool
 	DehumidifyingPlant bool
 	HumidifyingPlant   bool
+	// Reserved Fields
+	reservedField0 *bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -216,6 +218,7 @@ func HVACHumidityStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityStat
 	}
 	busy := _busy
 
+	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadBit("reserved")
@@ -227,6 +230,8 @@ func HVACHumidityStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityStat
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -273,7 +278,16 @@ func HVACHumidityStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityStat
 	}
 
 	// Create the instance
-	return NewHVACHumidityStatusFlags(expansion, error, busy, damperState, fanActive, dehumidifyingPlant, humidifyingPlant), nil
+	return &_HVACHumidityStatusFlags{
+		Expansion:          expansion,
+		Error:              error,
+		Busy:               busy,
+		DamperState:        damperState,
+		FanActive:          fanActive,
+		DehumidifyingPlant: dehumidifyingPlant,
+		HumidifyingPlant:   humidifyingPlant,
+		reservedField0:     reservedField0,
+	}, nil
 }
 
 func (m *_HVACHumidityStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -306,7 +320,15 @@ func (m *_HVACHumidityStatusFlags) Serialize(writeBuffer utils.WriteBuffer) erro
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteBit("reserved", bool(false))
+		var reserved bool = bool(false)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": bool(false),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

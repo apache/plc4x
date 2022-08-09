@@ -240,7 +240,13 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (BACnetAccessRule, error
 	}
 
 	// Create the instance
-	return NewBACnetAccessRule(timeRangeSpecifier, timeRange, locationSpecifier, location, enable), nil
+	return &_BACnetAccessRule{
+		TimeRangeSpecifier: timeRangeSpecifier,
+		TimeRange:          timeRange,
+		LocationSpecifier:  locationSpecifier,
+		Location:           location,
+		Enable:             enable,
+	}, nil
 }
 
 func (m *_BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {

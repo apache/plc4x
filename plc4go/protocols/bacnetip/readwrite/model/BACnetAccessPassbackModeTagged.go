@@ -158,7 +158,12 @@ func BACnetAccessPassbackModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetAccessPassbackModeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetAccessPassbackModeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetAccessPassbackModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

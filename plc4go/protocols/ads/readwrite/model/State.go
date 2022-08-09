@@ -69,6 +69,8 @@ type _State struct {
 	NoReturn            bool
 	Response            bool
 	Broadcast           bool
+	// Reserved Fields
+	reservedField0 *int8
 }
 
 ///////////////////////////////////////////////////////////
@@ -253,6 +255,7 @@ func StateParse(readBuffer utils.ReadBuffer) (State, error) {
 	}
 	broadcast := _broadcast
 
+	var reservedField0 *int8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadInt8("reserved", 7)
@@ -264,6 +267,8 @@ func StateParse(readBuffer utils.ReadBuffer) (State, error) {
 				"expected value": int8(0x0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -272,7 +277,18 @@ func StateParse(readBuffer utils.ReadBuffer) (State, error) {
 	}
 
 	// Create the instance
-	return NewState(initCommand, updCommand, timestampAdded, highPriorityCommand, systemCommand, adsCommand, noReturn, response, broadcast), nil
+	return &_State{
+		InitCommand:         initCommand,
+		UpdCommand:          updCommand,
+		TimestampAdded:      timestampAdded,
+		HighPriorityCommand: highPriorityCommand,
+		SystemCommand:       systemCommand,
+		AdsCommand:          adsCommand,
+		NoReturn:            noReturn,
+		Response:            response,
+		Broadcast:           broadcast,
+		reservedField0:      reservedField0,
+	}, nil
 }
 
 func (m *_State) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -347,7 +363,15 @@ func (m *_State) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteInt8("reserved", 7, int8(0x0))
+		var reserved int8 = int8(0x0)
+		if m.reservedField0 != nil {
+			log.Info().Fields(map[string]interface{}{
+				"expected value": int8(0x0),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *m.reservedField0
+		}
+		_err := writeBuffer.WriteInt8("reserved", 7, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

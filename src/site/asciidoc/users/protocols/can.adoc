@@ -18,6 +18,7 @@
 :icons: font
 
 == CAN Bus Driver Adapter
+image::can_banner.png[banner,512,167]
 
 The CAN Bus driver is a special kind of driver which does not bring any logic.
 Its responsibility is to combine link:../transports/can.html[CAN transport facade] and custom application layer protocols.

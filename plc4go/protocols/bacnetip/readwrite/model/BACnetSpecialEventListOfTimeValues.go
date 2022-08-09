@@ -184,7 +184,12 @@ func BACnetSpecialEventListOfTimeValuesParse(readBuffer utils.ReadBuffer, tagNum
 	}
 
 	// Create the instance
-	return NewBACnetSpecialEventListOfTimeValues(openingTag, listOfTimeValues, closingTag, tagNumber), nil
+	return &_BACnetSpecialEventListOfTimeValues{
+		TagNumber:        tagNumber,
+		OpeningTag:       openingTag,
+		ListOfTimeValues: listOfTimeValues,
+		ClosingTag:       closingTag,
+	}, nil
 }
 
 func (m *_BACnetSpecialEventListOfTimeValues) Serialize(writeBuffer utils.WriteBuffer) error {

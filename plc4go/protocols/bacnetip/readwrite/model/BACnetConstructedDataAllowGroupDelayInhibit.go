@@ -182,11 +182,11 @@ func BACnetConstructedDataAllowGroupDelayInhibitParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAllowGroupDelayInhibit{
-		AllowGroupDelayInhibit: allowGroupDelayInhibit,
 		_BACnetConstructedData: &_BACnetConstructedData{
 			TagNumber:          tagNumber,
 			ArrayIndexArgument: arrayIndexArgument,
 		},
+		AllowGroupDelayInhibit: allowGroupDelayInhibit,
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

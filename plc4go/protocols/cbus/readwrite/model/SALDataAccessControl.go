@@ -154,8 +154,8 @@ func SALDataAccessControlParse(readBuffer utils.ReadBuffer, applicationId Applic
 
 	// Create a partially initialized instance
 	_child := &_SALDataAccessControl{
-		AccessControlData: accessControlData,
 		_SALData:          &_SALData{},
+		AccessControlData: accessControlData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil

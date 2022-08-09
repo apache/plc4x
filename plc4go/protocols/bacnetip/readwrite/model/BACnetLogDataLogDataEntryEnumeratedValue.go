@@ -150,8 +150,8 @@ func BACnetLogDataLogDataEntryEnumeratedValueParse(readBuffer utils.ReadBuffer) 
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataEntryEnumeratedValue{
-		EnumeratedValue:            enumeratedValue,
 		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
+		EnumeratedValue:            enumeratedValue,
 	}
 	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
 	return _child, nil

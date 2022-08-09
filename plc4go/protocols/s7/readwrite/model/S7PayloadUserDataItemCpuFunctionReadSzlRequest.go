@@ -181,9 +181,9 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 		SzlId:                  szlId,
 		SzlIndex:               szlIndex,
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil

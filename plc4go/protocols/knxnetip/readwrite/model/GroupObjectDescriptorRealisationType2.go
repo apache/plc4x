@@ -266,7 +266,17 @@ func GroupObjectDescriptorRealisationType2Parse(readBuffer utils.ReadBuffer) (Gr
 	}
 
 	// Create the instance
-	return NewGroupObjectDescriptorRealisationType2(dataPointer, updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
+	return &_GroupObjectDescriptorRealisationType2{
+		DataPointer:           dataPointer,
+		UpdateEnable:          updateEnable,
+		TransmitEnable:        transmitEnable,
+		SegmentSelectorEnable: segmentSelectorEnable,
+		WriteEnable:           writeEnable,
+		ReadEnable:            readEnable,
+		CommunicationEnable:   communicationEnable,
+		Priority:              priority,
+		ValueType:             valueType,
+	}, nil
 }
 
 func (m *_GroupObjectDescriptorRealisationType2) Serialize(writeBuffer utils.WriteBuffer) error {

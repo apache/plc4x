@@ -213,12 +213,12 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckConfirmedPrivateTransfer{
-		VendorId:      vendorId,
-		ServiceNumber: serviceNumber,
-		ResultBlock:   resultBlock,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		VendorId:      vendorId,
+		ServiceNumber: serviceNumber,
+		ResultBlock:   resultBlock,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

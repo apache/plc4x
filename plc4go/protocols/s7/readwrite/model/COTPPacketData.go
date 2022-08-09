@@ -167,11 +167,11 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacke
 
 	// Create a partially initialized instance
 	_child := &_COTPPacketData{
-		Eot:     eot,
-		TpduRef: tpduRef,
 		_COTPPacket: &_COTPPacket{
 			CotpLen: cotpLen,
 		},
+		Eot:     eot,
+		TpduRef: tpduRef,
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil

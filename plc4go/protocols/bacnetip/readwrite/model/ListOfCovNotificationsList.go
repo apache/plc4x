@@ -184,7 +184,12 @@ func ListOfCovNotificationsListParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Create the instance
-	return NewListOfCovNotificationsList(openingTag, specifications, closingTag, tagNumber), nil
+	return &_ListOfCovNotificationsList{
+		TagNumber:      tagNumber,
+		OpeningTag:     openingTag,
+		Specifications: specifications,
+		ClosingTag:     closingTag,
+	}, nil
 }
 
 func (m *_ListOfCovNotificationsList) Serialize(writeBuffer utils.WriteBuffer) error {

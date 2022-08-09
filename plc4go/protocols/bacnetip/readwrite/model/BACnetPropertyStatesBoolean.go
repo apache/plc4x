@@ -150,8 +150,8 @@ func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, peekedTagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesBoolean{
-		BooleanValue:          booleanValue,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		BooleanValue:          booleanValue,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

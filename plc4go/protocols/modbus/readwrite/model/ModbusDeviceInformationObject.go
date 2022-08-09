@@ -146,7 +146,10 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (ModbusDevi
 	}
 
 	// Create the instance
-	return NewModbusDeviceInformationObject(objectId, data), nil
+	return &_ModbusDeviceInformationObject{
+		ObjectId: objectId,
+		Data:     data,
+	}, nil
 }
 
 func (m *_ModbusDeviceInformationObject) Serialize(writeBuffer utils.WriteBuffer) error {

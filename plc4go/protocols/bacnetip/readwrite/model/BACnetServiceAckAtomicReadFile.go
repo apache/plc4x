@@ -176,11 +176,11 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckAtomicReadFile{
-		EndOfFile:    endOfFile,
-		AccessMethod: accessMethod,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		EndOfFile:    endOfFile,
+		AccessMethod: accessMethod,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

@@ -150,8 +150,8 @@ func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedT
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesEscalatorMode{
-		EscalatorMode:         escalatorMode,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		EscalatorMode:         escalatorMode,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

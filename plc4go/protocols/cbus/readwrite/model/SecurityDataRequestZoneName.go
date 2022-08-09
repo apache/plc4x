@@ -145,8 +145,8 @@ func SecurityDataRequestZoneNameParse(readBuffer utils.ReadBuffer) (SecurityData
 
 	// Create a partially initialized instance
 	_child := &_SecurityDataRequestZoneName{
-		ZoneNumber:    zoneNumber,
 		_SecurityData: &_SecurityData{},
+		ZoneNumber:    zoneNumber,
 	}
 	_child._SecurityData._SecurityDataChildRequirements = _child
 	return _child, nil

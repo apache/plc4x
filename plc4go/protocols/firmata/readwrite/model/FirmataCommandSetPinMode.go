@@ -170,11 +170,11 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSetPinMode{
-		Pin:  pin,
-		Mode: mode,
 		_FirmataCommand: &_FirmataCommand{
 			Response: response,
 		},
+		Pin:  pin,
+		Mode: mode,
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil

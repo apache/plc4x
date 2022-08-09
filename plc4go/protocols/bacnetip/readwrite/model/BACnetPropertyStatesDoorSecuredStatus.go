@@ -150,8 +150,8 @@ func BACnetPropertyStatesDoorSecuredStatusParse(readBuffer utils.ReadBuffer, pee
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesDoorSecuredStatus{
-		DoorSecuredStatus:     doorSecuredStatus,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		DoorSecuredStatus:     doorSecuredStatus,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

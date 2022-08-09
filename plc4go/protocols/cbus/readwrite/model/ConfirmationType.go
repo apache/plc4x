@@ -40,6 +40,7 @@ const (
 	ConfirmationType_NOT_TRANSMITTED_CORRUPTION               ConfirmationType = 0x24
 	ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS                ConfirmationType = 0x25
 	ConfirmationType_NOT_TRANSMITTED_TOO_LONG                 ConfirmationType = 0x27
+	ConfirmationType_CHECKSUM_FAILURE                         ConfirmationType = 0x21
 )
 
 var ConfirmationTypeValues []ConfirmationType
@@ -52,11 +53,14 @@ func init() {
 		ConfirmationType_NOT_TRANSMITTED_CORRUPTION,
 		ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS,
 		ConfirmationType_NOT_TRANSMITTED_TOO_LONG,
+		ConfirmationType_CHECKSUM_FAILURE,
 	}
 }
 
 func ConfirmationTypeByValue(value byte) (enum ConfirmationType, ok bool) {
 	switch value {
+	case 0x21:
+		return ConfirmationType_CHECKSUM_FAILURE, true
 	case 0x23:
 		return ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS, true
 	case 0x24:
@@ -73,6 +77,8 @@ func ConfirmationTypeByValue(value byte) (enum ConfirmationType, ok bool) {
 
 func ConfirmationTypeByName(value string) (enum ConfirmationType, ok bool) {
 	switch value {
+	case "CHECKSUM_FAILURE":
+		return ConfirmationType_CHECKSUM_FAILURE, true
 	case "NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS":
 		return ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS, true
 	case "NOT_TRANSMITTED_CORRUPTION":
@@ -134,6 +140,8 @@ func (e ConfirmationType) Serialize(writeBuffer utils.WriteBuffer) error {
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ConfirmationType) PLC4XEnumName() string {
 	switch e {
+	case ConfirmationType_CHECKSUM_FAILURE:
+		return "CHECKSUM_FAILURE"
 	case ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
 		return "NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS"
 	case ConfirmationType_NOT_TRANSMITTED_CORRUPTION:

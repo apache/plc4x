@@ -184,7 +184,12 @@ func BACnetAuthenticationPolicyListParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 
 	// Create the instance
-	return NewBACnetAuthenticationPolicyList(openingTag, entries, closingTag, tagNumber), nil
+	return &_BACnetAuthenticationPolicyList{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		Entries:    entries,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetAuthenticationPolicyList) Serialize(writeBuffer utils.WriteBuffer) error {

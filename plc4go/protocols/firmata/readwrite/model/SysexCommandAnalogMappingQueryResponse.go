@@ -150,8 +150,8 @@ func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, re
 
 	// Create a partially initialized instance
 	_child := &_SysexCommandAnalogMappingQueryResponse{
-		Pin:           pin,
 		_SysexCommand: &_SysexCommand{},
+		Pin:           pin,
 	}
 	_child._SysexCommand._SysexCommandChildRequirements = _child
 	return _child, nil

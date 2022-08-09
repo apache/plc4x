@@ -150,8 +150,8 @@ func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peeke
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesLifeSafetyState{
-		LifeSafetyState:       lifeSafetyState,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		LifeSafetyState:       lifeSafetyState,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

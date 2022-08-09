@@ -261,14 +261,14 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckGetEnrollmentSummary{
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 		ObjectIdentifier:  objectIdentifier,
 		EventType:         eventType,
 		EventState:        eventState,
 		Priority:          priority,
 		NotificationClass: notificationClass,
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

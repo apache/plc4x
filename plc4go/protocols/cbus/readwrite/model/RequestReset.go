@@ -222,13 +222,13 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 
 	// Create a partially initialized instance
 	_child := &_RequestReset{
+		_Request: &_Request{
+			CBusOptions: cBusOptions,
+		},
 		TildePeek:   tildePeek,
 		SecondTilde: secondTilde,
 		TildePeek2:  tildePeek2,
 		ThirdTilde:  thirdTilde,
-		_Request: &_Request{
-			CBusOptions: cBusOptions,
-		},
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil

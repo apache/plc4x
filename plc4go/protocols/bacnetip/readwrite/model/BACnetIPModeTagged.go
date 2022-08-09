@@ -158,7 +158,12 @@ func BACnetIPModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagCl
 	}
 
 	// Create the instance
-	return NewBACnetIPModeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetIPModeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetIPModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {

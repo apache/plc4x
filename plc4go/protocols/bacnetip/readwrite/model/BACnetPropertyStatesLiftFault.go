@@ -150,8 +150,8 @@ func BACnetPropertyStatesLiftFaultParse(readBuffer utils.ReadBuffer, peekedTagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesLiftFault{
-		LiftFault:             liftFault,
 		_BACnetPropertyStates: &_BACnetPropertyStates{},
+		LiftFault:             liftFault,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil

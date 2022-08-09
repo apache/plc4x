@@ -200,7 +200,13 @@ func BACnetLifeSafetyStateTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 
 	// Create the instance
-	return NewBACnetLifeSafetyStateTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetLifeSafetyStateTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetLifeSafetyStateTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -200,7 +200,13 @@ func BACnetRestartReasonTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewBACnetRestartReasonTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetRestartReasonTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetRestartReasonTagged) Serialize(writeBuffer utils.WriteBuffer) error {
