@@ -20,6 +20,7 @@
 package bacnetanalyzer
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
@@ -27,7 +28,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
+func PackageParse(packetInformation common.PacketInformation, payload []byte) (spi.Message, error) {
 	log.Debug().Msgf("Parsing %s", packetInformation)
 	parse, err := model.BVLCParse(utils.NewReadBufferByteBased(payload))
 	if err != nil {
@@ -37,7 +38,7 @@ func PackageParse(packetInformation common.PacketInformation, payload []byte) (i
 	return parse, nil
 }
 
-func SerializePackage(bvlc interface{}) ([]byte, error) {
+func SerializePackage(bvlc spi.Message) ([]byte, error) {
 	if bvlc, ok := bvlc.(model.BVLC); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", bvlc)
 		panic("unreachable statement")

@@ -56,7 +56,9 @@ TODO: document me
 		} else {
 			log.Info().Msg("All filtering disabled")
 		}
-		analyzer.Analyze(pcapFile, "c-bus")
+		if err := analyzer.Analyze(pcapFile, "c-bus"); err != nil {
+			panic(err)
+		}
 		println("Done")
 	},
 }

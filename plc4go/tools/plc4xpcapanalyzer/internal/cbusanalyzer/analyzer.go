@@ -22,6 +22,7 @@ package cbusanalyzer
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
+	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
@@ -58,7 +59,7 @@ func (a *Analyzer) Init() {
 	a.initialized = true
 }
 
-func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
+func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (spi.Message, error) {
 	if !a.initialized {
 		log.Warn().Msg("Not initialized... doing that now")
 		a.Init()
@@ -214,7 +215,7 @@ func filterXOnXOff(payload []byte) []byte {
 	return payload[:n]
 }
 
-func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {
+func (a *Analyzer) SerializePackage(message spi.Message) ([]byte, error) {
 	if message, ok := message.(model.CBusMessage); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")

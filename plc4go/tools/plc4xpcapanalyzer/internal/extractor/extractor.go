@@ -27,21 +27,30 @@ import (
 	"github.com/fatih/color"
 	"github.com/google/gopacket/layers"
 	"github.com/k0kubun/go-ansi"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/schollz/progressbar/v3"
+	"io"
 	"net"
 )
 
-func Extract(pcapFile, protocolType string) {
+func Extract(pcapFile, protocolType string) error {
+	return ExtractWithOutput(pcapFile, protocolType, ansi.NewAnsiStdout(), ansi.NewAnsiStderr())
+}
+
+func ExtractWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) error {
 	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.ExtractConfigInstance.Filter)
 
-	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, config.ExtractConfigInstance.Filter)
+	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.ExtractConfigInstance.Filter)
+	if err != nil {
+		return errors.Wrap(err, "Error getting handle")
+	}
 	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
 	defer handle.Close()
 	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
 	source := pcaphandler.GetPacketSource(handle)
 	var printPayload = func(packetInformation common.PacketInformation, item []byte) {
-		fmt.Printf("%x\n", item)
+		_, _ = fmt.Fprintf(stdout, "%x\n", item)
 	}
 	switch protocolType {
 	case "bacnet":
@@ -49,8 +58,6 @@ func Extract(pcapFile, protocolType string) {
 	case "c-bus":
 		// c-bus is string based so we consume the string and print it
 		clientIp := net.ParseIP(config.ExtractConfigInstance.Client)
-		stdout := ansi.NewAnsiStdout()
-		stderr := ansi.NewAnsiStderr()
 		serverResponseWriter := color.New(color.FgRed)
 		serverResponseIndicatorWriter := color.New(color.FgHiRed)
 		clientRequestWriter := color.New(color.FgGreen)
@@ -143,7 +150,8 @@ func Extract(pcapFile, protocolType string) {
 			printPayload(packetInformation, payload)
 		}
 	}
-	println()
+	_, _ = fmt.Fprintf(stdout, "\n")
 
 	log.Info().Msgf("Done evaluating %d of %d packages (%d failed to parse, %d failed to serialize and %d failed in byte comparison)", currentPackageNum, numberOfPackage, parseFails, serializeFails, compareFails)
+	return nil
 }
