@@ -50,6 +50,7 @@ import org.apache.nifi.serialization.RecordSetWriterFactory;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
@@ -106,13 +107,30 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public void onScheduled(final ProcessContext context) {
         super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
-    }
+		addressMap = new HashMap<>();
+		
+		String addressMapSelector = context.getProperty(PLC_ADDRESS_SELECTOR.getName()).getValue();
+		
+		if (addressMapSelector.equals(USE_PLC_ADRESS_STRING)) { //if variables are passed as a single string on the dedicated property
+			PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
+			if (addresses.getValue()!=null && !addresses.getValue().isEmpty()) {
+				addressMap = Plc4xCommon.parseAddressString(connectionString, addresses);
+			}else {
+				throw new PlcRuntimeException("Invalid address specification method");
+			}
+		}else if (addressMapSelector.equals(USE_PLC_ADDRESS_DYN_PROPS)) {//if variables are passed as dynamic properties
+			context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
+					t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
+			if (addressMap.isEmpty()) {
+				throw new PlcRuntimeException("Invalid address specification method");
+			}
+		}
+	}
 	
 	@Override
 	public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
 		FlowFile fileToProcess = null;
-		// TODO: In the future the processor will be configurable to get the address and
-		// the connection from incoming flowfile
+		// TODO: In the future the processor will be configurable to get the address and the connection from incoming flowfile
 		if (context.hasIncomingConnection()) {
 			fileToProcess = session.get();
 			// If we have no FlowFile, and all incoming connections are self-loops then we
@@ -123,10 +141,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				return;
 			}
 		}
-
-		// TODO: this could be enhanced checking if address map should be updated (via a cache boolean, checking property values is a nifi expression language, etc)
-		PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
-		Map<String, String> addressMap = Plc4xCommon.parseAddressString(connectionString, addresses);
 		
 		Plc4xWriter plc4xWriter = new RecordPlc4xWriter(context.getProperty(PLC_RECORD_WRITER_FACTORY).asControllerService(RecordSetWriterFactory.class), fileToProcess == null ? Collections.emptyMap() : fileToProcess.getAttributes());
 		final ComponentLog logger = getLogger();
@@ -150,8 +164,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			}
 
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
-			addressMap.keySet().forEach(field -> {
-				String address = addressMap.get(field);
+			getFields().forEach(field -> {
+				String address = getAddress(field);
 				if (address != null) {
 					builder.addItem(field, address);
 				}

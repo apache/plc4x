@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.SchemaBuilder.FieldAssembler;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -258,34 +259,43 @@ public class Plc4xCommon {
 	 * @param addresses
 	 * @return
 	 */
-	public static Map<String, String> parseAddressString(String connectionString, PropertyValue addresses){
+	public static Map<String, String> parseAddressString(String connectionString, PropertyValue addressesProp){
 		Map<String, String> addressMap = new HashMap<>();
-		//TODO OPCUA var adresses sintax
+		String addresses = addressesProp.getValue();
+		
         if (connectionString.contains("opcua")) {  //TODO get protocol identifier from protocol definition, not hardcoded
-        	List<String> list = new ArrayList(Arrays.asList(addresses.getValue().split("'")));
-			
-    		for (int i=0;i<list.size();i++) {
-    			if (list.get(i).isEmpty())
-    				list.remove(i);			
-    		}
-    		
-    		for (int i=0; i<list.size();i=i+4) {
-    			if (list.get(i+1).equals("=")) {
-    				 addressMap.put(list.get(i), list.get(i+2));
-    			}
-    			if ((i+3<list.size()) && (list.get(i+3).equals(";"))) {
-    				//continue;
-    			} else {
-    				break;
-    			}
-    				
-    		}
+        	String wrapStr = "\'"; //this could passed as a param in the future
+        	
+        	// double check varname and address format is correctly built using char delimiters ''='';''='';
+        	String symbols = addresses;
+        	char[] allowedSymbols = new char[]{wrapStr.charAt(0), '=', ';' };
+        	String[] varItems = StringUtils.substringsBetween(addresses, wrapStr, wrapStr);
+        	for (String item: varItems) 
+        		symbols = StringUtils.replaceIgnoreCase(symbols, item, "");
+        	if (!StringUtils.containsOnly(symbols, allowedSymbols)) 
+        		throw new ProcessException(String.format("Invalid address format, should be built using the following delimiter characters: %s, %s and %s ", wrapStr, "=", ";"));
+        	if (!StringUtils.startsWith(symbols, wrapStr) || !StringUtils.endsWith(symbols, wrapStr)) 
+        		throw new ProcessException("Invalid address format, wrong placed delimiters");
+        	     	
+        	//get var name and address info
+        	String[] items = null;
+        	String[] varArr = StringUtils.splitByWholeSeparator(addresses, wrapStr+";"+wrapStr);
+        	for (String var: varArr) {
+        		items = StringUtils.splitByWholeSeparator(var, wrapStr+"="+wrapStr);
+        		if (items.length != 2)
+        			throw new ProcessException("Invalid address format, expected two elements, got " + String.join(", ", items));
+        		items[0] = StringUtils.replace(items[0], wrapStr, "");
+        		items[1] = StringUtils.replace(items[1], wrapStr, "");
+        		addressMap.put(items[0],items[1]);
+        	}
     		return addressMap;
+        
         }else {
-	        for (String segment : addresses.getValue().split(";")) {
-	            String[] parts = segment.split("=");
+        	String[] parts = null;
+	        for (String segment : addresses.split(";")) {
+	            parts = segment.split("=");
 	            if(parts.length != 2) {
-	                throw new ProcessException("Invalid address format");
+	                throw new ProcessException("Invalid address format, expected two elements, got " + String.join(", ", parts));
 	            }
 	            addressMap.put(parts[0], parts[1]);
 	        }

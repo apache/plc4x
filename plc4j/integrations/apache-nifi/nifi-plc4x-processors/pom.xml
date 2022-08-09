@@ -110,6 +110,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- This one is for test purpouses only, drivers are included in the nar -->
 		<dependency>
@@ -177,6 +182,10 @@
 				<exclusion>
 					<groupId>org.osgi</groupId>
 					<artifactId>org.osgi.core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>commons-compress</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
