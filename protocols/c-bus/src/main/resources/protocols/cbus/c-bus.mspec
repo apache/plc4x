@@ -1438,12 +1438,15 @@
 [type ReplyOrConfirmation(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'    ]
-    [typeSwitch isAlpha
-        ['true' *Confirmation
+    [typeSwitch isAlpha, peekedByte
+        ['false', '0x21' ServerErrorReply // is a !
+            [const  byte    errorMarker     0x21                            ]
+        ]
+        ['true'         *Confirmation
             [simple   Confirmation                      confirmation        ]
             [optional ReplyOrConfirmation('cBusOptions', 'requestContext') embeddedReply]
         ]
-        ['false' *Reply
+        ['false'        *Reply
             [simple   Reply('cBusOptions', 'requestContext')    reply               ]
             [simple   ResponseTermination               termination         ]
         ]
@@ -1458,9 +1461,6 @@
         ]
         ['0x3D' ParameterChangeReply // is a =
             [simple ParameterChange parameterChange                         ]
-        ]
-        ['0x21' ServerErrorReply // is a !
-            [const  byte    errorMarker     0x21                            ]
         ]
         [*      *EncodedReply
             [manual   EncodedReply

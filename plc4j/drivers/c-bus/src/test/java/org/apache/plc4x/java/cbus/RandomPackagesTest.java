@@ -388,4 +388,16 @@ public class RandomPackagesTest {
         assertMessageMatches(bytes, msg);
     }
 
+    @Test
+    void justAnError() throws Exception {
+        byte[] bytes = ("!").getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+
+        assertMessageMatches(bytes, msg);
+    }
+
 }

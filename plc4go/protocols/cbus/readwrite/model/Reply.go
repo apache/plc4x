@@ -147,8 +147,6 @@ func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestCon
 		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, cBusOptions, requestContext)
 	case peekedByte == 0x3D: // ParameterChangeReply
 		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, cBusOptions, requestContext)
-	case peekedByte == 0x21: // ServerErrorReply
-		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, requestContext)
 	case 0 == 0: // ReplyEncodedReply
 		_childTemp, typeSwitchError = ReplyEncodedReplyParse(readBuffer, cBusOptions, requestContext)
 	default:

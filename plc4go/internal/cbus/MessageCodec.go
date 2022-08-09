@@ -121,8 +121,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	}
 	if bytes, err := ti.PeekReadableBytes(1); err != nil && (bytes[0] == '!') {
 		_, _ = ti.Read(1)
-		// TODO: a exclamation mark doesn't have a CR&LF in contrast to the documentation
-		return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased([]byte("!\r\n")), true, m.requestContext, m.cbusOptions)
+		return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased(bytes), true, m.requestContext, m.cbusOptions)
 	}
 	// TODO: we might get a simple confirmation like g# without anything other... so we might need to handle that
 

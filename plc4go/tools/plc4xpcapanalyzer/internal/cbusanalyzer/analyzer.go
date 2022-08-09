@@ -121,7 +121,6 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 	if len(payload) == 0 {
 		return nil, common.ErrEmptyPackage
 	}
-	// Check if we have a termination in the middle
 	currentPayload := currentInboundPayloads[srcUip]
 	if currentPayload != nil {
 		log.Debug().Func(func(e *zerolog.Event) {
@@ -131,6 +130,11 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 	} else {
 		currentPayload = payload
 	}
+	if len(currentPayload) == 1 && currentPayload[0] == '!' {
+		// This is an errormessage from the server
+		return currentPayload, nil
+	}
+	// Check if we have a termination in the middle
 	isMergedMessage, shouldClearInboundPayload := mergeCheck(&currentPayload, srcUip, mergeCallback, currentInboundPayloads, lastPayload)
 	if !isMergedMessage {
 		// When we have a merge message we already set the current payload to the tail

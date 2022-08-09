@@ -162,7 +162,8 @@ var rootCommand = Command{
 				pcapFile := strings.TrimPrefix(protocolTypeAndPcapFile, protocolType+" ")
 				cliConfig.PcapConfigInstance.Client = config.HostIp
 				cliConfig.RootConfigInstance.HideProgressBar = true
-				cliConfig.RootConfigInstance.Verbosity = 4
+				// disabled as we get this output anyway with the message call back
+				//cliConfig.RootConfigInstance.Verbosity = 4
 				return analyzer.AnalyzeWithOutputAndCallback(pcapFile, protocolType, tview.ANSIWriter(messageOutput), tview.ANSIWriter(messageOutput), func(parsed spi.Message) {
 					spiNumberOfMessagesReceived++
 					spiMessageReceived(spiNumberOfMessagesReceived, time.Now(), parsed)
@@ -215,7 +216,7 @@ var rootCommand = Command{
 				{
 					Name: "get",
 					action: func(_ Command, host string) error {
-						_, _ = fmt.Fprintf(consoleOutput, "current set host %s", config.HostIp)
+						_, _ = fmt.Fprintf(commandOutput, "current set host %s", config.HostIp)
 						return nil
 					},
 				},

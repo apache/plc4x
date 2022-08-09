@@ -165,12 +165,14 @@ func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptio
 	var _child ReplyOrConfirmationChildSerializeRequirement
 	var typeSwitchError error
 	switch {
+	case isAlpha == bool(false) && peekedByte == 0x21: // ServerErrorReply
+		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
 		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParse(readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
 		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParse(readBuffer, cBusOptions, requestContext)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v]", isAlpha)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v, peekedByte=%v]", isAlpha, peekedByte)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ReplyOrConfirmation")
