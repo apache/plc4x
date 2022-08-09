@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package main
+package ui
 
 import (
 	"fmt"
@@ -30,7 +30,7 @@ import (
 	"time"
 )
 
-func setupApplication() *tview.Application {
+func SetupApplication() *tview.Application {
 	application := tview.NewApplication()
 
 	newPrimitive := func(text string) tview.Primitive {

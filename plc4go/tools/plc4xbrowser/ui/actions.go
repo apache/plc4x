@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package main
+package ui
 
 import (
 	"fmt"
@@ -33,7 +33,7 @@ import (
 	"github.com/sruehl/tview"
 )
 
-func initSubsystem() {
+func InitSubsystem() {
 	logLevel := zerolog.InfoLevel
 	if configuredLevel := config.LogLevel; configuredLevel != "" {
 		if parsedLevel, err := zerolog.ParseLevel(configuredLevel); err != nil {

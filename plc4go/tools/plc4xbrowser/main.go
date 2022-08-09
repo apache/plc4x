@@ -20,68 +20,16 @@
 package main
 
 import (
-	"io"
-	"sync"
-	"time"
-
-	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	plc4goModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/tools/plc4xbrowser/ui"
 )
-
-var driverManager plc4go.PlcDriverManager
-var driverAdded func(string)
-var connections map[string]plc4go.PlcConnection
-var connectionsChanged func()
-
-var messageReceived func(messageNumber int, receiveTime time.Time, message plc4goModel.PlcMessage)
-var numberOfMessagesReceived int
-var messageOutput io.Writer
-var messageOutputClear func()
-
-var consoleOutput io.Writer
-var consoleOutputClear func()
-
-var commandsExecuted int
-var commandOutput io.Writer
-var commandOutputClear func()
-
-type inputMode int
-
-const (
-	normalMode inputMode = iota
-	readEditMode
-	writeEditMode
-	subscribeEditMode
-)
-
-func init() {
-	hasShutdown = false
-	connections = make(map[string]plc4go.PlcConnection)
-}
-
-var shutdownMutex sync.Mutex
-var hasShutdown bool
-
-func shutdown() {
-	shutdownMutex.Lock()
-	defer shutdownMutex.Unlock()
-	if hasShutdown {
-		return
-	}
-	for _, connection := range connections {
-		connection.Close()
-	}
-	saveConfig()
-	hasShutdown = true
-}
 
 func main() {
-	loadConfig()
-	application := setupApplication()
-	initSubsystem()
+	ui.LoadConfig()
+	application := ui.SetupApplication()
+	ui.InitSubsystem()
 
 	if err := application.Run(); err != nil {
 		panic(err)
 	}
-	shutdown()
+	ui.Shutdown()
 }

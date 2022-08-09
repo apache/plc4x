@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package main
+package ui
 
 import (
 	"github.com/pkg/errors"
@@ -60,7 +60,7 @@ func init() {
 	configFile = path.Join(plc4xBrowserConfigDir, "config.yml")
 }
 
-func loadConfig() {
+func LoadConfig() {
 	f, err := os.Open(configFile)
 	if err != nil {
 		log.Info().Err(err).Msg("No config file found")
