@@ -157,6 +157,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                 } else {
                     throw new PlcException("Unexpected response");
                 }
+            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
+                throw new PlcException("Device rejected connection request");
             } else {
                 throw new PlcException("Unexpected response");
             }
