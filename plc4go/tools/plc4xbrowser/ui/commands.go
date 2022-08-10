@@ -271,7 +271,7 @@ var rootCommand = Command{
 					}
 					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
 						numberOfMessagesReceived++
-						messageReceived(numberOfMessagesReceived, time.Now(), browseRequest)
+						messageReceived(numberOfMessagesReceived, time.Now(), result)
 						return true
 					})
 					if err := browseRequestResult.GetErr(); err != nil {

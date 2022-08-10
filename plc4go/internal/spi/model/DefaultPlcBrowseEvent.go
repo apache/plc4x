@@ -32,6 +32,10 @@ type DefaultPlcBrowseEvent struct {
 	Err       error
 }
 
+func (d *DefaultPlcBrowseEvent) IsAPlcMessage() bool {
+	return true
+}
+
 func (d *DefaultPlcBrowseEvent) GetRequest() model.PlcBrowseRequest {
 	return d.Request
 }
