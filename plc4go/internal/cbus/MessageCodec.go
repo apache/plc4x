@@ -102,13 +102,14 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	// Fill the buffer
 	{
 		if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
-			hitCr := currentByte == '\r'
-			if hitCr {
-				// Make sure we peek one more
-				_, _ = reader.Peek(1)
+			switch currentByte {
+			case '\r':
+				fallthrough
+			case '!':
 				return false
+			default:
+				return true
 			}
-			return true
 		}); err != nil {
 			return nil, err
 		}
@@ -130,7 +131,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	}
 
 	// Check for an isolated error
-	if bytes, err := ti.PeekReadableBytes(1); err != nil && (bytes[0] == '!') {
+	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == '!') {
 		_, _ = ti.Read(1)
 		return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased(bytes), true, m.requestContext, m.cbusOptions)
 	}
