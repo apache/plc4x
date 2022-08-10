@@ -44,7 +44,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.

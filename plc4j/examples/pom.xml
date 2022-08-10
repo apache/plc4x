@@ -50,8 +50,9 @@
     <module>hello-opm</module>
     <module>hello-webservice</module>
     <module>hello-world-kotlin</module>
-    <module>hello-world-plc4x</module>
-    <module>hello-world-plc4x-subscription</module>
+    <module>hello-world-plc4x-discover-and-browse</module>
+    <module>hello-world-plc4x-read</module>
+    <module>hello-world-plc4x-subscribe</module>
     <module>hello-world-plc4x-write</module>
     <module>poll-loop</module>
     <module>plc4j-s7event</module>

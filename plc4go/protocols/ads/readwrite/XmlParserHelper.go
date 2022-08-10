@@ -53,6 +53,8 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		}
 		stringLength := int32(parsedInt1)
 		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataFormatName, stringLength)
+	case "AdsTableSizes":
+		return model.AdsTableSizesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsMultiRequestItem":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
@@ -62,10 +64,14 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return model.AdsMultiRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeArrayInfo":
+		return model.AdsDataTypeArrayInfoParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsData":
 		commandId, _ := model.CommandIdByName(parserArguments[0])
 		response := parserArguments[1] == "true"
 		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), commandId, response)
+	case "AdsDataTypeTableEntry":
+		return model.AdsDataTypeTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsNetId":
 		return model.AmsNetIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsStampHeader":
@@ -76,6 +82,8 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return model.AdsConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsNotificationSample":
 		return model.AdsNotificationSampleParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsSymbolTableEntry":
+		return model.AdsSymbolTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "State":

@@ -74,6 +74,13 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         List<PlcDiscoveryItem> values = new ArrayList<>();
         try {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
+                // It turned out on some MAC network devices without any ip addresses
+                // the compiling of the filter expression was causing errors. As
+                // currently there was no other way to detect this, this check seems
+                // to be sufficient.
+                if(dev.getAddresses().size() == 0) {
+                    continue;
+                }
                 if (!dev.isLoopBack()) {
                     for (LinkLayerAddress linkLayerAddress : dev.getLinkLayerAddresses()) {
                         org.pcap4j.util.MacAddress macAddress = (org.pcap4j.util.MacAddress) linkLayerAddress;

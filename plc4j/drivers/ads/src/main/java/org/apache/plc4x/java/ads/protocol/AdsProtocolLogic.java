@@ -56,7 +56,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements HasConfiguration<AdsConfiguration>, PlcSubscriber {
+public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements HasConfiguration<AdsConfiguration>, PlcSubscriber, PlcBrowser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsProtocolLogic.class);
 
@@ -191,6 +191,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             if(throwable != null) {
                 LOGGER.error("Error fetching symbol and datatype table sizes");
             } else {
+                // TODO: Link the datatypes to the symbols.
                 for (AdsSymbolTableEntry symbol : symbols) {
                     System.out.println(symbol.getName());
                 }
@@ -206,6 +207,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     public void onDisconnect(ConversationContext<AmsTCPPacket> context) {
         super.onDisconnect(context);
         // TODO: Here we have to clean up all of the handles this connection acquired.
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        return null;
     }
 
     @Override

@@ -74,6 +74,6 @@ func (d *Driver) SupportsDiscovery() bool {
 	return false
 }
 
-func (d *Driver) Discover(_ func(event model.PlcDiscoveryEvent), _ ...options.WithDiscoveryOption) error {
+func (d *Driver) Discover(_ func(event model.PlcDiscoveryItem), _ ...options.WithDiscoveryOption) error {
 	return errors.New("unsupported operation")
 }

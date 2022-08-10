@@ -113,9 +113,9 @@
               <data>
                 <AdsData>
                   <AdsReadRequest>
-                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">8</indexOffset>
-                    <length dataType="uint" bitLength="32">1</length>
+                    <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
+                    <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                    <length dataType="uint" bitLength="32">24</length>
                   </AdsReadRequest>
                 </AdsData>
               </data>
@@ -238,7 +238,7 @@
       <outgoing-plc-message name="Send Ads Read Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">72</length>
+          <length dataType="uint" bitLength="32">44</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -264,7 +264,7 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
               <state>
                 <State>
@@ -280,34 +280,16 @@
                   <reserved dataType="int" bitLength="7">0</reserved>
                 </State>
               </state>
-              <length dataType="uint" bitLength="32">40</length>
+              <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <data>
                 <AdsData>
-                  <AdsReadWriteRequest>
-                    <indexGroup dataType="uint" bitLength="32">61568</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">2</indexOffset>
-                    <readLength dataType="uint" bitLength="32">10</readLength>
-                    <writeLength dataType="uint" bitLength="32">24</writeLength>
-                    <items isList="true">
-                      <AdsMultiRequestItem>
-                        <AdsMultiRequestItemRead>
-                          <itemIndexGroup dataType="uint" bitLength="32">4040</itemIndexGroup>
-                          <itemIndexOffset dataType="uint" bitLength="32">8</itemIndexOffset>
-                          <itemReadLength dataType="uint" bitLength="32">1</itemReadLength>
-                        </AdsMultiRequestItemRead>
-                      </AdsMultiRequestItem>
-                      <AdsMultiRequestItem>
-                        <AdsMultiRequestItemRead>
-                          <itemIndexGroup dataType="uint" bitLength="32">4040</itemIndexGroup>
-                          <itemIndexOffset dataType="uint" bitLength="32">12</itemIndexOffset>
-                          <itemReadLength dataType="uint" bitLength="32">1</itemReadLength>
-                        </AdsMultiRequestItemRead>
-                      </AdsMultiRequestItem>
-                    </items>
-                    <data dataType="byte" bitLength="0">0x</data>
-                  </AdsReadWriteRequest>
+                  <AdsReadRequest>
+                    <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
+                    <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                    <length dataType="uint" bitLength="32">24</length>
+                  </AdsReadRequest>
                 </AdsData>
               </data>
             </AmsPacket>
@@ -441,7 +423,7 @@
       <outgoing-plc-message name="Send Resolve Symbolic Address Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">74</length>
+          <length dataType="uint" bitLength="32">44</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -467,7 +449,7 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
               <state>
                 <State>
@@ -483,20 +465,16 @@
                   <reserved dataType="int" bitLength="7">0</reserved>
                 </State>
               </state>
-              <length dataType="uint" bitLength="32">42</length>
+              <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <data>
                 <AdsData>
-                  <AdsReadWriteRequest>
-                    <indexGroup dataType="uint" bitLength="32">61443</indexGroup>
+                  <AdsReadRequest>
+                    <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
                     <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                    <readLength dataType="uint" bitLength="32">4</readLength>
-                    <writeLength dataType="uint" bitLength="32">26</writeLength>
-                    <items isList="true">
-                    </items>
-                    <data dataType="byte" bitLength="208">0x6d61696e2e665f74726967446174656947656c6573656e2e4d00</data>
-                  </AdsReadWriteRequest>
+                    <length dataType="uint" bitLength="32">24</length>
+                  </AdsReadRequest>
                 </AdsData>
               </data>
             </AmsPacket>
@@ -737,7 +715,7 @@
       <outgoing-plc-message name="Send Resolve Symbolic Address Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">74</length>
+          <length dataType="uint" bitLength="32">44</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -763,7 +741,7 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
               <state>
                 <State>
@@ -779,20 +757,16 @@
                   <reserved dataType="int" bitLength="7">0</reserved>
                 </State>
               </state>
-              <length dataType="uint" bitLength="32">42</length>
+              <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
               <data>
                 <AdsData>
-                  <AdsReadWriteRequest>
-                    <indexGroup dataType="uint" bitLength="32">61443</indexGroup>
+                  <AdsReadRequest>
+                    <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
                     <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                    <readLength dataType="uint" bitLength="32">4</readLength>
-                    <writeLength dataType="uint" bitLength="32">26</writeLength>
-                    <items isList="true">
-                    </items>
-                    <data dataType="byte" bitLength="208">0x6d61696e2e665f74726967446174656947656c6573656e2e4d00</data>
-                  </AdsReadWriteRequest>
+                    <length dataType="uint" bitLength="32">24</length>
+                  </AdsReadRequest>
                 </AdsData>
               </data>
             </AmsPacket>

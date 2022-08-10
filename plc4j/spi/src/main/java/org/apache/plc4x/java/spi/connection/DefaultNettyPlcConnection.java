@@ -64,12 +64,12 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected Channel channel;
     protected boolean connected;
 
-    public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
+    public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse,
                                      PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
                                      boolean awaitSessionDisconnectComplete, boolean awaitSessionDiscoverComplete,
                                      ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
-        super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
+        super(canRead, canWrite, canSubscribe, canBrowse, fieldHandler, valueHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;

@@ -40,7 +40,7 @@ func main() {
 	var connectionStrings []string
 	if len(os.Args) < 2 {
 		// Try to auto-find KNX gateways via broadcast-message discovery
-		_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
+		_ = driverManager.Discover(func(event model.PlcDiscoveryItem) {
 			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
 			log.Info().Str("connection string", connStr).Msg("Found KNX Gateway")
 

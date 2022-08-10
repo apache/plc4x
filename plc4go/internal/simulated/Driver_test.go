@@ -73,7 +73,7 @@ func TestDriver_Discover(t *testing.T) {
 		valueHandler ValueHandler
 	}
 	type args struct {
-		callback         func(event model.PlcDiscoveryEvent)
+		callback         func(event model.PlcDiscoveryItem)
 		discoveryOptions []options.WithDiscoveryOption
 	}
 	tests := []struct {

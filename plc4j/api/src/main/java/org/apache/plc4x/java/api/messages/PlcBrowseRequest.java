@@ -29,7 +29,7 @@ public interface PlcBrowseRequest extends PlcRequest {
         @Override
         PlcBrowseRequest build();
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery);
+        Builder addQuery(String name, String query);
 
     }
 

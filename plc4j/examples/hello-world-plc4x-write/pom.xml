@@ -29,7 +29,7 @@
 
   <artifactId>plc4j-examples-hello-world-plc4x-write</artifactId>
   <name>PLC4J: Examples: Hello-World PLC4X (Write)</name>
-  <description>Hello world application for PLC4X using the write API.</description>
+  <description>Hello world application for PLC4X using the write-API.</description>
 
   <properties>
     <app.main.class>org.apache.plc4x.java.examples.helloplc4x.write.HelloPlc4xWrite</app.main.class>

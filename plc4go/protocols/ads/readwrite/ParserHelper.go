@@ -44,6 +44,8 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.DataItemParse(io, dataFormatName, stringLength)
+	case "AdsTableSizes":
+		return model.AdsTableSizesParse(io)
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])
 		if err != nil {
@@ -52,6 +54,8 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return model.AdsMultiRequestItemParse(io, indexGroup)
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(io)
+	case "AdsDataTypeArrayInfo":
+		return model.AdsDataTypeArrayInfoParse(io)
 	case "AdsData":
 		commandId, _ := model.CommandIdByName(arguments[0])
 		response, err := utils.StrToBool(arguments[1])
@@ -59,6 +63,8 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.AdsDataParse(io, commandId, response)
+	case "AdsDataTypeTableEntry":
+		return model.AdsDataTypeTableEntryParse(io)
 	case "AmsNetId":
 		return model.AmsNetIdParse(io)
 	case "AdsStampHeader":
@@ -69,6 +75,8 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return model.AdsConstantsParse(io)
 	case "AdsNotificationSample":
 		return model.AdsNotificationSampleParse(io)
+	case "AdsSymbolTableEntry":
+		return model.AdsSymbolTableEntryParse(io)
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(io)
 	case "State":

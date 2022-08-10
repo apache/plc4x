@@ -25,5 +25,5 @@ import (
 )
 
 type PlcDiscoverer interface {
-	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
+	Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
 }

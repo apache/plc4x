@@ -26,16 +26,9 @@ import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.PlcReader;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.PlcWriter;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -47,11 +40,12 @@ import java.util.function.Consumer;
  * Concrete implementations should override the methods indicating connection capabilities
  * and for obtaining respective request builders.
  */
-public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter , PlcSubscriber {
+public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
 
     private boolean canRead = false;
     private boolean canWrite = false;
     private boolean canSubscribe = false;
+    private boolean canBrowse = false;
     private PlcFieldHandler fieldHandler;
     private PlcValueHandler valueHandler;
     private Plc4xProtocolBase<?> protocol;
@@ -64,11 +58,12 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     protected AbstractPlcConnection() {
     }
 
-    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
+    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
                                  BaseOptimizer optimizer) {
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
+        this.canBrowse = canBrowse;
         this.fieldHandler = fieldHandler;
         this.valueHandler = valueHandler;
         this.optimizer = optimizer;
@@ -103,6 +98,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public boolean canSubscribe() {
         return canSubscribe;
+    }
+
+    @Override
+    public boolean canBrowse() {
+        return canBrowse;
     }
 
     public PlcFieldHandler getPlcFieldHandler() {
@@ -146,6 +146,14 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     }
 
     @Override
+    public PlcBrowseRequest.Builder browseRequestBuilder() {
+        if (!canBrowse) {
+            throw new PlcUnsupportedOperationException("The connection does not support browsing");
+        }
+        return new DefaultPlcBrowseRequest.Builder(this);
+    }
+
+    @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         if(optimizer != null) {
             return optimizer.optimizedRead(readRequest, protocol);
@@ -184,6 +192,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public void unregister(PlcConsumerRegistration registration) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
         throw new NotImplementedException("");
     }
 

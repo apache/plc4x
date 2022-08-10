@@ -48,5 +48,5 @@ type PlcDriver interface {
 
 	// Discover TODO: document me
 	// FIXME: this leaks spi in the signature move to spi driver or create interfaces. Can also be done by moving spi in a proper module
-	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
+	Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
 }

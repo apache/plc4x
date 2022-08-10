@@ -21,6 +21,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"net/url"
 )
 
@@ -30,6 +31,7 @@ type DefaultPlcDiscoveryEvent struct {
 	TransportUrl  url.URL
 	Options       map[string][]string
 	Name          string
+	Attributes    map[string]values.PlcValue
 }
 
 func (d *DefaultPlcDiscoveryEvent) GetProtocolCode() string {
@@ -52,7 +54,11 @@ func (d *DefaultPlcDiscoveryEvent) GetName() string {
 	return d.Name
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetConnectionString() string {
+func (d *DefaultPlcDiscoveryEvent) GetAttributes() map[string]values.PlcValue {
+	return d.Attributes
+}
+
+func (d *DefaultPlcDiscoveryEvent) GetConnectionUrl() string {
 	if d.Options != nil {
 		panic("Not implemented")
 	}
@@ -60,5 +66,5 @@ func (d *DefaultPlcDiscoveryEvent) GetConnectionString() string {
 }
 
 func (d *DefaultPlcDiscoveryEvent) String() string {
-	return fmt.Sprintf("PlcDiscoveryEvent{Name:%s,%s}", d.Name, d.GetConnectionString())
+	return fmt.Sprintf("PlcDiscoveryEvent{Name:%s,%s}", d.Name, d.GetConnectionUrl())
 }

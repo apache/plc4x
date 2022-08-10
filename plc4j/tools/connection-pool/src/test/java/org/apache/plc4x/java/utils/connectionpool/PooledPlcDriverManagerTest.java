@@ -26,10 +26,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.assertj.core.api.WithAssertions;
@@ -332,6 +329,11 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
 
         @Override
+        public boolean canBrowse() {
+            return false;
+        }
+
+        @Override
         public void close() {
             connected = false;
         }
@@ -354,6 +356,11 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         @Override
         public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
+        }
+
+        @Override
+        public PlcBrowseRequest.Builder browseRequestBuilder() {
+            throw new PlcUnsupportedOperationException("The connection does not support browsing");
         }
 
         @Override

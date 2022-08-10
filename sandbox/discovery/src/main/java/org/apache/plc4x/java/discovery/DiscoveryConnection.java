@@ -29,9 +29,7 @@ import org.apache.plc4x.java.spi.discovery.ActiveDiscovery;
 import org.apache.plc4x.java.spi.discovery.BroadcastDiscovery;
 import org.apache.plc4x.java.spi.discovery.SupportsDiscovery;
 import org.apache.plc4x.java.spi.discovery.PassiveDiscovery;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.messages.*;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +38,7 @@ import java.util.ServiceLoader;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class DiscoveryConnection implements PlcConnection, PlcSubscriber {
+public class DiscoveryConnection implements PlcConnection, PlcSubscriber, PlcBrowser {
 
     private boolean connected = false;
     private Map<String, ActiveDiscovery> activeDiscovery;
@@ -110,6 +108,11 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber {
             public boolean canSubscribe() {
                 return true;
             }
+
+            @Override
+            public boolean canBrowse() {
+                return true;
+            }
         };
     }
 
@@ -141,6 +144,11 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber {
     }
 
     @Override
+    public PlcBrowseRequest.Builder browseRequestBuilder() {
+        return new DefaultPlcBrowseRequest.Builder(this);
+    }
+
+    @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         // TODO: Implement ...
         return null;
@@ -161,6 +169,12 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber {
     @Override
     public void unregister(PlcConsumerRegistration registration) {
         // TODO: Implement ...
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        // TODO: Implement ...
+        return null;
     }
 
 }

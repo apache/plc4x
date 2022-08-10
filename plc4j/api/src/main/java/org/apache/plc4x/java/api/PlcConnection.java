@@ -101,8 +101,6 @@ public interface PlcConnection extends AutoCloseable {
      * @return browse request builder.
      * @throws PlcUnsupportedOperationException if the connection does not support browsing
      */
-    default PlcBrowseRequest.Builder browseRequestBuilder() {
-        throw new PlcNotImplementedException("Not implemented for this connection / driver");
-    }
+    PlcBrowseRequest.Builder browseRequestBuilder();
 
 }

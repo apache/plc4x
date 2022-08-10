@@ -25,6 +25,7 @@ import org.apache.plc4x.java.ads.field.AdsFieldHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -74,6 +75,11 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
+    protected boolean canBrowse() {
+        return true;
+    }
+
+    @Override
     protected Class<? extends Configuration> getConfigurationType() {
         return AdsConfiguration.class;
     }
@@ -91,6 +97,16 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     @Override
     protected PlcValueHandler getValueHandler() {
         return new IEC61131ValueHandler();
+    }
+
+    @Override
+    public PlcDriverMetadata getMetadata() {
+        return new PlcDriverMetadata() {
+            @Override
+            public boolean canDiscover() {
+                return true;
+            }
+        };
     }
 
     /**

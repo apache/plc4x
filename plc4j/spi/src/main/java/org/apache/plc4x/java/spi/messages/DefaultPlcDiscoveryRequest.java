@@ -20,11 +20,12 @@ package org.apache.plc4x.java.spi.messages;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -32,14 +33,29 @@ public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, Serializ
 
     private final PlcDiscoverer discoverer;
 
+    private final LinkedHashMap<String, String> queries;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcDiscoveryRequest(@JsonProperty("discoverer") PlcDiscoverer discoverer) {
+    public DefaultPlcDiscoveryRequest(@JsonProperty("discoverer") PlcDiscoverer discoverer,
+                                      @JsonProperty("queries") LinkedHashMap<String, String> queries) {
         this.discoverer = discoverer;
+        this.queries = queries;
     }
 
     @Override
+    @JsonIgnore
     public CompletableFuture<? extends PlcDiscoveryResponse> execute() {
         return discoverer.discover(this);
+    }
+
+    @JsonIgnore
+    public PlcDiscoverer getDiscoverer() {
+        return discoverer;
+    }
+
+    @JsonIgnore
+    public Map<String, String> getQueries() {
+        return queries;
     }
 
     @Override
@@ -60,13 +76,22 @@ public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, Serializ
 
         private final PlcDiscoverer discoverer;
 
+        private final LinkedHashMap<String, String> queries;
+
         public Builder(PlcDiscoverer discoverer) {
             this.discoverer = discoverer;
+            queries = new LinkedHashMap<>();
+        }
+
+        @Override
+        public PlcDiscoveryRequest.Builder addQuery(String name, String query) {
+            queries.put(name, query);
+            return this;
         }
 
         @Override
         public PlcDiscoveryRequest build() {
-            return new DefaultPlcDiscoveryRequest(discoverer);
+            return new DefaultPlcDiscoveryRequest(discoverer, queries);
         }
 
     }

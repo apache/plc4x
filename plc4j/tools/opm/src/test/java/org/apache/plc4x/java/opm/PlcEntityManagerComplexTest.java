@@ -217,6 +217,12 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
             public boolean canSubscribe() {
                 return true;
             }
+
+            @Override
+            public boolean canBrowse() {
+                return true;
+            }
+
         });
 
         PlcReader reader = readRequest -> {

@@ -58,6 +58,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         return false;
     }
 
+    protected boolean canBrowse() {
+        return false;
+    }
+
     protected boolean awaitSetupComplete() {
         return true;
     }
@@ -164,7 +168,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(),
+            canRead(), canWrite(), canSubscribe(), canBrowse(),
             getFieldHandler(),
             getValueHandler(),
             configuration,

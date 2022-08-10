@@ -41,7 +41,7 @@ type PlcDriverManager interface {
 	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
 
 	// Discover Execute all available discovery methods on all available drivers using all transports
-	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...WithDiscoveryOption) error
+	Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
 }
 
 func NewPlcDriverManager() PlcDriverManager {
@@ -282,7 +282,7 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	return driver.GetConnection(transportUrl, m.transports, configOptions)
 }
 
-func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...WithDiscoveryOption) error {
+func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
 	// Check if we've got at least one option to restrict to certain protocols only.
 	// If there is at least one, we only check that protocol, if there are none, all
 	// available protocols are checked.

@@ -87,7 +87,7 @@ func (d *defaultDriver) SupportsDiscovery() bool {
 	return false
 }
 
-func (d *defaultDriver) Discover(_ func(event apiModel.PlcDiscoveryEvent), _ ...options.WithDiscoveryOption) error {
+func (d *defaultDriver) Discover(_ func(event apiModel.PlcDiscoveryItem), _ ...options.WithDiscoveryOption) error {
 	panic("not available")
 }
 
