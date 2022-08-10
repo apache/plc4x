@@ -36,7 +36,6 @@ import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.logging.ComponentLog;
@@ -55,7 +54,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
-import org.apache.plc4x.nifi.util.Plc4xCommon;
 
 @Tags({ "plc4x-source" })
 @InputRequirement(InputRequirement.Requirement.INPUT_ALLOWED)
@@ -71,18 +69,18 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public static final String RESULT_ERROR_MESSAGE = "plc4x.read.error.message";
 
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder().name("plc4x-record-writer").displayName("Record Writer")
-			.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
-					+ "an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.")
-			.identifiesControllerService(RecordSetWriterFactory.class)
-			.required(true)
-			.build();
+		.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
+				+ "an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.")
+		.identifiesControllerService(RecordSetWriterFactory.class)
+		.required(true)
+		.build();
 	
 	public static final PropertyDescriptor PLC_READ_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-read-timeout").displayName("Read timeout (miliseconds)")
-			.description("Read timeout in miliseconds")
-			.defaultValue("10000")
-			.required(true)
-			.addValidator(StandardValidators.INTEGER_VALIDATOR)
-			.build();
+		.description("Read timeout in miliseconds")
+		.defaultValue("10000")
+		.required(true)
+		.addValidator(StandardValidators.INTEGER_VALIDATOR)
+		.build();
 
 	Integer readTimeout;
 	public Plc4xSourceRecordProcessor() {
@@ -108,23 +106,12 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
         super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
 		addressMap = new HashMap<>();
-		
-		String addressMapSelector = context.getProperty(PLC_ADDRESS_SELECTOR.getName()).getValue();
-		
-		if (addressMapSelector.equals(USE_PLC_ADRESS_STRING)) { //if variables are passed as a single string on the dedicated property
-			PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
-			if (addresses.getValue()!=null && !addresses.getValue().isEmpty()) {
-				addressMap = Plc4xCommon.parseAddressString(connectionString, addresses);
-			}else {
-				throw new PlcRuntimeException("Invalid address specification method");
-			}
-		}else if (addressMapSelector.equals(USE_PLC_ADDRESS_DYN_PROPS)) {//if variables are passed as dynamic properties
-			context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
-					t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
-			if (addressMap.isEmpty()) {
-				throw new PlcRuntimeException("Invalid address specification method");
-			}
-		}
+		//variables are passed as dynamic properties
+		context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
+				t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
+		if (addressMap.isEmpty()) {
+			throw new PlcRuntimeException("No address specified");
+		}	
 	}
 	
 	@Override

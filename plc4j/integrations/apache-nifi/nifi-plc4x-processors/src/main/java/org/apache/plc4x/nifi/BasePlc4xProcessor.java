@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.components.ValidationContext;
 import org.apache.nifi.components.ValidationResult;
 import org.apache.nifi.components.Validator;
@@ -42,7 +41,6 @@ import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
-import org.apache.plc4x.nifi.util.Plc4xCommon;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
@@ -54,32 +52,11 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .addValidator(new Plc4xConnectionStringValidator())
         .build();
 	
-	protected static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
-        .Builder().name("PLC_ADDRESS_STRING")
-        .displayName("PLC resource address String")
-        .description("PLC4X address string used identify the resource to read/write on a given PLC device " +
-            "(Multiple values supported). The expected format is: {name}={address}(;{name}={address})*  \n" + 
-        	"Alternatively, variables can also be added as dynamic properties ." )
-        .required(false)
-        .addValidator(new Plc4xAddressStringValidator())
-        .build();
-	
-	protected static final String USE_PLC_ADRESS_STRING = "Use PlcAdressString";
-	protected static final String USE_PLC_ADDRESS_DYN_PROPS = "Use Dynamic Properties";
-	
-	protected static final PropertyDescriptor PLC_ADDRESS_SELECTOR = new PropertyDescriptor
-	        .Builder().name("PLC_ADDRESS_SELECTOR")
-	        .displayName("PLC address specification method")
-	        .description("Specification method for the PLC4X addresses. This can be done throught the 'PLC Address String' property or using dynamic properties " )
-	        .required(true)
-	        .allowableValues(USE_PLC_ADRESS_STRING, USE_PLC_ADDRESS_DYN_PROPS)
-            .defaultValue(USE_PLC_ADRESS_STRING)
-	        .build();
-
     protected static final Relationship REL_SUCCESS = new Relationship.Builder()
 	    .name("success")
 	    .description("Successfully processed")
 	    .build();
+    
     protected static final Relationship REL_FAILURE = new Relationship.Builder()
         .name("failure")
         .description("An error occurred processing")
@@ -99,8 +76,6 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected void init(final ProcessorInitializationContext context) {
     	final List<PropertyDescriptor> properties = new ArrayList<>();
     	properties.add(PLC_CONNECTION_STRING);
-    	properties.add(PLC_ADDRESS_STRING);
-    	properties.add(PLC_ADDRESS_SELECTOR);
         this.properties = Collections.unmodifiableList(properties);
 
     	
@@ -124,9 +99,8 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     String getAddress(String field) {
         return addressMap.get(field);
     }
-
-
-    @Override
+    
+	@Override
     public Set<Relationship> getRelationships() {
         return this.relationships;
     }
@@ -153,22 +127,12 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     public void onScheduled(final ProcessContext context) {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
 		addressMap = new HashMap<>();
-		String addressMapSelector = context.getProperty(PLC_ADDRESS_SELECTOR.getName()).getValue();
-		
-		if (addressMapSelector.equals(USE_PLC_ADRESS_STRING)) { //if variables are passed as a single string on the dedicated property
-			PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
-			if (addresses.getValue()!=null && !addresses.getValue().isEmpty()) {
-				addressMap = Plc4xCommon.parseAddressString(connectionString, addresses);
-			}else {
-				throw new PlcRuntimeException("Invalid address specification method");
-			}
-		}else if (addressMapSelector.equals(USE_PLC_ADDRESS_DYN_PROPS)) {//if variables are passed as dynamic properties
-			context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
-					t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
-			if (addressMap.isEmpty()) {
-				throw new PlcRuntimeException("Invalid address specification method");
-			}
-		}
+		//variables are passed as dynamic properties
+		context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
+				t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
+		if (addressMap.isEmpty()) {
+			throw new PlcRuntimeException("No address specified");
+		}	
     }
 
     @Override

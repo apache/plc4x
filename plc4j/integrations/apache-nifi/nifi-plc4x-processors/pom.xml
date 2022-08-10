@@ -110,12 +110,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- This one is for test purpouses only, drivers are included in the nar -->
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>

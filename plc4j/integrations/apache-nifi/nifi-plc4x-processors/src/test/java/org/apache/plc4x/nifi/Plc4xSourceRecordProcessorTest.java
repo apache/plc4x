@@ -23,7 +23,6 @@ import org.apache.nifi.reporting.InitializationException;
 import org.apache.nifi.serialization.record.MockRecordWriter;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
-import org.apache.plc4x.nifi.Plc4xSourceRecordProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +40,11 @@ public class Plc4xSourceRecordProcessorTest {
     	testRunner.setValidateExpressionUsage(false);
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_READ_FUTURE_TIMEOUT_MILISECONDS, "100");
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_CONNECTION_STRING, "s7://10.105.143.7:102?remote-rack=0&remote-slot=1&controller-type=S7_1200");
-    	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_ADDRESS_STRING, "var1=%DB1:DBX0.0:BOOL;var2=%DB1:DBX0.1:BOOL;var3=%DB1:DBB01:BYTE;var4=%DB1:DBW02:WORD;var5=%DB1:DBW04:INT");
+    	testRunner.setProperty("var1", "%DB1:DBX0.0:BOOL");
+    	testRunner.setProperty("var2", "%DB1:DBX0.1:BOOL");
+    	testRunner.setProperty("var3", "%DB1:DBB01:BYTE");
+    	testRunner.setProperty("var4", "%DB1:DBW02:WORD");
+    	testRunner.setProperty("var5", "%DB1:DBW04:INT");
     	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_SUCCESS);
     	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_FAILURE);
     }
