@@ -98,8 +98,6 @@ func (m *MessageCodec) Send(message spi.Message) error {
 }
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
-	log.Trace().Msg("receiving")
-
 	ti := m.GetTransportInstance()
 	// Fill the buffer
 	{
