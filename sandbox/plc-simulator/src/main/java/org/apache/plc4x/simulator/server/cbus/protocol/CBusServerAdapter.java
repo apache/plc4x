@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
 
-    private static final List<Byte> AVAILABLE_UNITS = Arrays.asList((byte) 0, (byte) 23, (byte) 48);
+    private static final List<Byte> AVAILABLE_UNITS = Arrays.asList((byte) 3, (byte) 23, (byte) 48);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CBusServerAdapter.class);
 
@@ -52,6 +52,10 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     private static boolean pun;
     private static boolean pcn;
     private static boolean srchk;
+
+    private static byte monitorApplicationAddress1;
+
+    private static byte monitorApplicationAddress2;
     private static CBusOptions cBusOptions;
 
     private final Lock writeLock = new ReentrantLock();
@@ -125,11 +129,13 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     };
                     switch (calDataWrite.getParamNo().getParameterType()) {
                         case APPLICATION_ADDRESS_1:
-                            // TODO: check settings for subscription etc.
+                            ApplicationAddress1 applicationAddress1 = ((ParameterValueApplicationAddress1) calDataWrite.getParameterValue()).getValue();
+                            monitorApplicationAddress1 = applicationAddress1.getAddress();
                             acknowledger.run();
                             return;
                         case APPLICATION_ADDRESS_2:
-                            // TODO: check settings for subscription etc.
+                            ApplicationAddress2 applicationAddress2 = ((ParameterValueApplicationAddress2) calDataWrite.getParameterValue()).getValue();
+                            monitorApplicationAddress2 = applicationAddress2.getAddress();
                             acknowledger.run();
                             return;
                         case INTERFACE_OPTIONS_1:
@@ -231,6 +237,13 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         throw new IllegalStateException("Unit address should be set at this point");
                     }
                     boolean knownUnit = AVAILABLE_UNITS.contains(unitAddress.getAddress());
+                    if (!knownUnit) {
+                        LOGGER.warn("{} not a known unit", unitAddress);
+                        ReplyOrConfirmation replyOrConfirmation = new ServerErrorReply((byte) 0x0, cBusOptions, requestContext);
+                        CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+                        ctx.writeAndFlush(cBusMessageToClient);
+                        return;
+                    }
                     CALData calData = command.getCalData();
                     // TODO: handle other Datatypes
                     if (calData instanceof CALDataIdentify) {
@@ -480,6 +493,10 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         }
         LOGGER.info("Starting monitor");
         salMonitorFuture = ctx.executor().scheduleAtFixedRate(() -> {
+            if (monitorApplicationAddress1 != 0x38 && monitorApplicationAddress2 != 0x38 && monitorApplicationAddress1 != (byte) 0xFF && monitorApplicationAddress2 != (byte) 0xFF) {
+                LOGGER.debug("Filtered because monitor application address 1 {} monitor application address 1 {}", monitorApplicationAddress1, monitorApplicationAddress2);
+                return;
+            }
             try {
                 writeLock.lock();
                 MonitoredSAL monitoredSAL;
