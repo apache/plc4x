@@ -27,6 +27,13 @@ An *example* of these properties for reading values from a S7-1200:
 - *var4:* *%DB1:DBW02:WORD*
 - *var5:* *%DB1:DBW04:INT*
 
+Another *example* of these properties for reading values using OPCUA:
+- *PLC connection String:* *opcua:tcp://10.105.143.6:4840?discovery=false*
+- *Record Writer:* *PLC4x Embedded - AvroRecordSetWriter*
+- *Read timeout (miliseconds):* *10000*
+- *AcyclicReceiveBit00:* *ns=2;i=11*
+- *MaxCurrentI_max:* *ns=2;i=33*
+
 For the **Record Writer** property, any writer included in NiFi could be used, such as JSON, CSV, etc (also custom writers can be created). In this example, an Avro Writer is supplied, configured as follows:
 
 - *Schema Write Strategy:* Embed Avro Schema
