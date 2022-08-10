@@ -104,7 +104,7 @@ func TestManualCBusBrowse(t *testing.T) {
 	config.TraceDefaultMessageCodecWorker = true
 	t.Skip()
 
-	connectionString := "c-bus://192.168.178.101?Monitor=false"
+	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(cbus.NewDriver())
 	transports.RegisterTcpTransport(driverManager)
