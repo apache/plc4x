@@ -784,6 +784,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return toCeilVariableExpression(field, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
         }
         // All uppercase names are not fields, but utility methods.
+        // TODO: It seems we also run into this, in case of using enum constants in type-switches.
         else if (variableLiteralName.equals(variableLiteralName.toUpperCase())) {
             tracer = tracer.dive("utility");
             return toUppercaseVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);

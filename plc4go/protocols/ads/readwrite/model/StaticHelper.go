@@ -28,7 +28,7 @@ func ParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string) (s
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
-		multiplier = 0
+		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}
@@ -39,9 +39,13 @@ func SerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLengt
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
-		multiplier = 0
+		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
+}
+
+func STR_LEN(str string) int {
+	return len(str)
 }

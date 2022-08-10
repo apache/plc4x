@@ -34,17 +34,17 @@ type IAdsSignificantGroupAddresses interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
-	AdsSignificantGroupAddresses_SYMBOL_TABLE    AdsSignificantGroupAddresses = 0x0000F00B
+const(
+	AdsSignificantGroupAddresses_SYMBOL_TABLE AdsSignificantGroupAddresses = 0x0000F00B
 	AdsSignificantGroupAddresses_DATA_TYPE_TABLE AdsSignificantGroupAddresses = 0x0000F00E
-	AdsSignificantGroupAddresses_TABLE_SIZES     AdsSignificantGroupAddresses = 0x0000F00F
+	AdsSignificantGroupAddresses_TABLE_SIZES AdsSignificantGroupAddresses = 0x0000F00F
 )
 
 var AdsSignificantGroupAddressesValues []AdsSignificantGroupAddresses
 
 func init() {
 	_ = errors.New
-	AdsSignificantGroupAddressesValues = []AdsSignificantGroupAddresses{
+	AdsSignificantGroupAddressesValues = []AdsSignificantGroupAddresses {
 		AdsSignificantGroupAddresses_SYMBOL_TABLE,
 		AdsSignificantGroupAddresses_DATA_TYPE_TABLE,
 		AdsSignificantGroupAddresses_TABLE_SIZES,
@@ -53,12 +53,12 @@ func init() {
 
 func AdsSignificantGroupAddressesByValue(value uint32) (enum AdsSignificantGroupAddresses, ok bool) {
 	switch value {
-	case 0x0000F00B:
-		return AdsSignificantGroupAddresses_SYMBOL_TABLE, true
-	case 0x0000F00E:
-		return AdsSignificantGroupAddresses_DATA_TYPE_TABLE, true
-	case 0x0000F00F:
-		return AdsSignificantGroupAddresses_TABLE_SIZES, true
+		case 0x0000F00B:
+			return AdsSignificantGroupAddresses_SYMBOL_TABLE, true
+		case 0x0000F00E:
+			return AdsSignificantGroupAddresses_DATA_TYPE_TABLE, true
+		case 0x0000F00F:
+			return AdsSignificantGroupAddresses_TABLE_SIZES, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func AdsSignificantGroupAddressesByName(value string) (enum AdsSignificantGroupA
 	return 0, false
 }
 
-func AdsSignificantGroupAddressesKnows(value uint32) bool {
+func AdsSignificantGroupAddressesKnows(value uint32)  bool {
 	for _, typeValue := range AdsSignificantGroupAddressesValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAdsSignificantGroupAddresses(structType interface{}) AdsSignificantGroupAddresses {
@@ -135,3 +135,4 @@ func (e AdsSignificantGroupAddresses) PLC4XEnumName() string {
 func (e AdsSignificantGroupAddresses) String() string {
 	return e.PLC4XEnumName()
 }
+

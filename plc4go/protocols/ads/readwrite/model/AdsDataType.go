@@ -36,54 +36,54 @@ type IAdsDataType interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
-	AdsDataType_BOOL          AdsDataType = 0x01
-	AdsDataType_BIT           AdsDataType = 0x02
-	AdsDataType_BIT8          AdsDataType = 0x03
-	AdsDataType_BYTE          AdsDataType = 0x04
-	AdsDataType_BITARR8       AdsDataType = 0x05
-	AdsDataType_WORD          AdsDataType = 0x06
-	AdsDataType_BITARR16      AdsDataType = 0x07
-	AdsDataType_DWORD         AdsDataType = 0x08
-	AdsDataType_BITARR32      AdsDataType = 0x09
-	AdsDataType_SINT          AdsDataType = 0x0A
-	AdsDataType_INT8          AdsDataType = 0x0B
-	AdsDataType_USINT         AdsDataType = 0x0C
-	AdsDataType_UINT8         AdsDataType = 0x0D
-	AdsDataType_INT           AdsDataType = 0x0E
-	AdsDataType_INT16         AdsDataType = 0x0F
-	AdsDataType_UINT          AdsDataType = 0x10
-	AdsDataType_UINT16        AdsDataType = 0x11
-	AdsDataType_DINT          AdsDataType = 0x12
-	AdsDataType_INT32         AdsDataType = 0x13
-	AdsDataType_UDINT         AdsDataType = 0x14
-	AdsDataType_UINT32        AdsDataType = 0x15
-	AdsDataType_LINT          AdsDataType = 0x16
-	AdsDataType_INT64         AdsDataType = 0x17
-	AdsDataType_ULINT         AdsDataType = 0x18
-	AdsDataType_UINT64        AdsDataType = 0x19
-	AdsDataType_REAL          AdsDataType = 0x1A
-	AdsDataType_FLOAT         AdsDataType = 0x1B
-	AdsDataType_LREAL         AdsDataType = 0x1C
-	AdsDataType_DOUBLE        AdsDataType = 0x1D
-	AdsDataType_CHAR          AdsDataType = 0x1E
-	AdsDataType_WCHAR         AdsDataType = 0x1F
-	AdsDataType_STRING        AdsDataType = 0x20
-	AdsDataType_WSTRING       AdsDataType = 0x21
-	AdsDataType_TIME          AdsDataType = 0x22
-	AdsDataType_LTIME         AdsDataType = 0x23
-	AdsDataType_DATE          AdsDataType = 0x24
-	AdsDataType_TIME_OF_DAY   AdsDataType = 0x25
-	AdsDataType_TOD           AdsDataType = 0x26
+const(
+	AdsDataType_BOOL AdsDataType = 0x01
+	AdsDataType_BIT AdsDataType = 0x02
+	AdsDataType_BIT8 AdsDataType = 0x03
+	AdsDataType_BYTE AdsDataType = 0x04
+	AdsDataType_BITARR8 AdsDataType = 0x05
+	AdsDataType_WORD AdsDataType = 0x06
+	AdsDataType_BITARR16 AdsDataType = 0x07
+	AdsDataType_DWORD AdsDataType = 0x08
+	AdsDataType_BITARR32 AdsDataType = 0x09
+	AdsDataType_SINT AdsDataType = 0x0A
+	AdsDataType_INT8 AdsDataType = 0x0B
+	AdsDataType_USINT AdsDataType = 0x0C
+	AdsDataType_UINT8 AdsDataType = 0x0D
+	AdsDataType_INT AdsDataType = 0x0E
+	AdsDataType_INT16 AdsDataType = 0x0F
+	AdsDataType_UINT AdsDataType = 0x10
+	AdsDataType_UINT16 AdsDataType = 0x11
+	AdsDataType_DINT AdsDataType = 0x12
+	AdsDataType_INT32 AdsDataType = 0x13
+	AdsDataType_UDINT AdsDataType = 0x14
+	AdsDataType_UINT32 AdsDataType = 0x15
+	AdsDataType_LINT AdsDataType = 0x16
+	AdsDataType_INT64 AdsDataType = 0x17
+	AdsDataType_ULINT AdsDataType = 0x18
+	AdsDataType_UINT64 AdsDataType = 0x19
+	AdsDataType_REAL AdsDataType = 0x1A
+	AdsDataType_FLOAT AdsDataType = 0x1B
+	AdsDataType_LREAL AdsDataType = 0x1C
+	AdsDataType_DOUBLE AdsDataType = 0x1D
+	AdsDataType_CHAR AdsDataType = 0x1E
+	AdsDataType_WCHAR AdsDataType = 0x1F
+	AdsDataType_STRING AdsDataType = 0x20
+	AdsDataType_WSTRING AdsDataType = 0x21
+	AdsDataType_TIME AdsDataType = 0x22
+	AdsDataType_LTIME AdsDataType = 0x23
+	AdsDataType_DATE AdsDataType = 0x24
+	AdsDataType_TIME_OF_DAY AdsDataType = 0x25
+	AdsDataType_TOD AdsDataType = 0x26
 	AdsDataType_DATE_AND_TIME AdsDataType = 0x27
-	AdsDataType_DT            AdsDataType = 0x28
+	AdsDataType_DT AdsDataType = 0x28
 )
 
 var AdsDataTypeValues []AdsDataType
 
 func init() {
 	_ = errors.New
-	AdsDataTypeValues = []AdsDataType{
+	AdsDataTypeValues = []AdsDataType {
 		AdsDataType_BOOL,
 		AdsDataType_BIT,
 		AdsDataType_BIT8,
@@ -127,170 +127,130 @@ func init() {
 	}
 }
 
+
 func (e AdsDataType) NumBytes() uint16 {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return 1
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return 1
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 1
+		case 0x02: { /* '0x02' */
+            return 1
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 1
+		case 0x03: { /* '0x03' */
+            return 1
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 1
+		case 0x04: { /* '0x04' */
+            return 1
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return 1
+		case 0x05: { /* '0x05' */
+            return 1
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return 2
+		case 0x06: { /* '0x06' */
+            return 2
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return 2
+		case 0x07: { /* '0x07' */
+            return 2
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return 4
+		case 0x08: { /* '0x08' */
+            return 4
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 4
+		case 0x09: { /* '0x09' */
+            return 4
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 1
+		case 0x0A: { /* '0x0A' */
+            return 1
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return 1
+		case 0x0B: { /* '0x0B' */
+            return 1
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 1
+		case 0x0C: { /* '0x0C' */
+            return 1
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 1
+		case 0x0D: { /* '0x0D' */
+            return 1
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return 2
+		case 0x0E: { /* '0x0E' */
+            return 2
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return 2
+		case 0x0F: { /* '0x0F' */
+            return 2
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return 2
+		case 0x10: { /* '0x10' */
+            return 2
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return 2
+		case 0x11: { /* '0x11' */
+            return 2
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return 4
+		case 0x12: { /* '0x12' */
+            return 4
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return 4
+		case 0x13: { /* '0x13' */
+            return 4
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return 4
+		case 0x14: { /* '0x14' */
+            return 4
 		}
-	case 0x15:
-		{ /* '0x15' */
-			return 4
+		case 0x15: { /* '0x15' */
+            return 4
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return 8
+		case 0x16: { /* '0x16' */
+            return 8
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return 8
+		case 0x17: { /* '0x17' */
+            return 8
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return 8
+		case 0x18: { /* '0x18' */
+            return 8
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 8
+		case 0x19: { /* '0x19' */
+            return 8
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return 4
+		case 0x1A: { /* '0x1A' */
+            return 4
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return 4
+		case 0x1B: { /* '0x1B' */
+            return 4
 		}
-	case 0x1C:
-		{ /* '0x1C' */
-			return 8
+		case 0x1C: { /* '0x1C' */
+            return 8
 		}
-	case 0x1D:
-		{ /* '0x1D' */
-			return 8
+		case 0x1D: { /* '0x1D' */
+            return 8
 		}
-	case 0x1E:
-		{ /* '0x1E' */
-			return 1
+		case 0x1E: { /* '0x1E' */
+            return 1
 		}
-	case 0x1F:
-		{ /* '0x1F' */
-			return 2
+		case 0x1F: { /* '0x1F' */
+            return 2
 		}
-	case 0x20:
-		{ /* '0x20' */
-			return 256
+		case 0x20: { /* '0x20' */
+            return 256
 		}
-	case 0x21:
-		{ /* '0x21' */
-			return 512
+		case 0x21: { /* '0x21' */
+            return 512
 		}
-	case 0x22:
-		{ /* '0x22' */
-			return 4
+		case 0x22: { /* '0x22' */
+            return 4
 		}
-	case 0x23:
-		{ /* '0x23' */
-			return 8
+		case 0x23: { /* '0x23' */
+            return 8
 		}
-	case 0x24:
-		{ /* '0x24' */
-			return 4
+		case 0x24: { /* '0x24' */
+            return 4
 		}
-	case 0x25:
-		{ /* '0x25' */
-			return 4
+		case 0x25: { /* '0x25' */
+            return 4
 		}
-	case 0x26:
-		{ /* '0x26' */
-			return 4
+		case 0x26: { /* '0x26' */
+            return 4
 		}
-	case 0x27:
-		{ /* '0x27' */
-			return 4
+		case 0x27: { /* '0x27' */
+            return 4
 		}
-	case 0x28:
-		{ /* '0x28' */
-			return 4
+		case 0x28: { /* '0x28' */
+            return 4
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -306,169 +266,128 @@ func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (AdsDataType, error) {
 }
 
 func (e AdsDataType) DataFormatName() string {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return "IEC61131_BOOL"
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return "IEC61131_BOOL"
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return "IEC61131_BOOL"
+		case 0x02: { /* '0x02' */
+            return "IEC61131_BOOL"
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return "IEC61131_BYTE"
+		case 0x03: { /* '0x03' */
+            return "IEC61131_BYTE"
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return "IEC61131_BYTE"
+		case 0x04: { /* '0x04' */
+            return "IEC61131_BYTE"
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return "IEC61131_BYTE"
+		case 0x05: { /* '0x05' */
+            return "IEC61131_BYTE"
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return "IEC61131_WORD"
+		case 0x06: { /* '0x06' */
+            return "IEC61131_WORD"
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return "IEC61131_WORD"
+		case 0x07: { /* '0x07' */
+            return "IEC61131_WORD"
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return "IEC61131_DWORD"
+		case 0x08: { /* '0x08' */
+            return "IEC61131_DWORD"
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return "IEC61131_DWORD"
+		case 0x09: { /* '0x09' */
+            return "IEC61131_DWORD"
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return "IEC61131_SINT"
+		case 0x0A: { /* '0x0A' */
+            return "IEC61131_SINT"
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return "IEC61131_SINT"
+		case 0x0B: { /* '0x0B' */
+            return "IEC61131_SINT"
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return "IEC61131_USINT"
+		case 0x0C: { /* '0x0C' */
+            return "IEC61131_USINT"
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return "IEC61131_USINT"
+		case 0x0D: { /* '0x0D' */
+            return "IEC61131_USINT"
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return "IEC61131_INT"
+		case 0x0E: { /* '0x0E' */
+            return "IEC61131_INT"
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return "IEC61131_INT"
+		case 0x0F: { /* '0x0F' */
+            return "IEC61131_INT"
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return "IEC61131_UINT"
+		case 0x10: { /* '0x10' */
+            return "IEC61131_UINT"
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return "IEC61131_UINT"
+		case 0x11: { /* '0x11' */
+            return "IEC61131_UINT"
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return "IEC61131_DINT"
+		case 0x12: { /* '0x12' */
+            return "IEC61131_DINT"
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return "IEC61131_DINT"
+		case 0x13: { /* '0x13' */
+            return "IEC61131_DINT"
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return "IEC61131_UDINT"
+		case 0x14: { /* '0x14' */
+            return "IEC61131_UDINT"
 		}
-	case 0x15:
-		{ /* '0x15' */
-			return "IEC61131_UDINT"
+		case 0x15: { /* '0x15' */
+            return "IEC61131_UDINT"
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return "IEC61131_LINT"
+		case 0x16: { /* '0x16' */
+            return "IEC61131_LINT"
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return "IEC61131_LINT"
+		case 0x17: { /* '0x17' */
+            return "IEC61131_LINT"
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return "IEC61131_ULINT"
+		case 0x18: { /* '0x18' */
+            return "IEC61131_ULINT"
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return "IEC61131_ULINT"
+		case 0x19: { /* '0x19' */
+            return "IEC61131_ULINT"
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return "IEC61131_REAL"
+		case 0x1A: { /* '0x1A' */
+            return "IEC61131_REAL"
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return "IEC61131_REAL"
+		case 0x1B: { /* '0x1B' */
+            return "IEC61131_REAL"
 		}
-	case 0x1C:
-		{ /* '0x1C' */
-			return "IEC61131_LREAL"
+		case 0x1C: { /* '0x1C' */
+            return "IEC61131_LREAL"
 		}
-	case 0x1D:
-		{ /* '0x1D' */
-			return "IEC61131_LREAL"
+		case 0x1D: { /* '0x1D' */
+            return "IEC61131_LREAL"
 		}
-	case 0x1E:
-		{ /* '0x1E' */
-			return "IEC61131_CHAR"
+		case 0x1E: { /* '0x1E' */
+            return "IEC61131_CHAR"
 		}
-	case 0x1F:
-		{ /* '0x1F' */
-			return "IEC61131_WCHAR"
+		case 0x1F: { /* '0x1F' */
+            return "IEC61131_WCHAR"
 		}
-	case 0x20:
-		{ /* '0x20' */
-			return "IEC61131_STRING"
+		case 0x20: { /* '0x20' */
+            return "IEC61131_STRING"
 		}
-	case 0x21:
-		{ /* '0x21' */
-			return "IEC61131_WSTRING"
+		case 0x21: { /* '0x21' */
+            return "IEC61131_WSTRING"
 		}
-	case 0x22:
-		{ /* '0x22' */
-			return "IEC61131_TIME"
+		case 0x22: { /* '0x22' */
+            return "IEC61131_TIME"
 		}
-	case 0x23:
-		{ /* '0x23' */
-			return "IEC61131_LTIME"
+		case 0x23: { /* '0x23' */
+            return "IEC61131_LTIME"
 		}
-	case 0x24:
-		{ /* '0x24' */
-			return "IEC61131_DATE"
+		case 0x24: { /* '0x24' */
+            return "IEC61131_DATE"
 		}
-	case 0x25:
-		{ /* '0x25' */
-			return "IEC61131_TIME_OF_DAY"
+		case 0x25: { /* '0x25' */
+            return "IEC61131_TIME_OF_DAY"
 		}
-	case 0x26:
-		{ /* '0x26' */
-			return "IEC61131_TIME_OF_DAY"
+		case 0x26: { /* '0x26' */
+            return "IEC61131_TIME_OF_DAY"
 		}
-	case 0x27:
-		{ /* '0x27' */
-			return "IEC61131_DATE_AND_TIME"
+		case 0x27: { /* '0x27' */
+            return "IEC61131_DATE_AND_TIME"
 		}
-	case 0x28:
-		{ /* '0x28' */
-			return "IEC61131_DATE_AND_TIME"
+		case 0x28: { /* '0x28' */
+            return "IEC61131_DATE_AND_TIME"
 		}
-	default:
-		{
+		default: {
 			return ""
 		}
 	}
@@ -484,86 +403,86 @@ func AdsDataTypeFirstEnumForFieldDataFormatName(value string) (AdsDataType, erro
 }
 func AdsDataTypeByValue(value int8) (enum AdsDataType, ok bool) {
 	switch value {
-	case 0x01:
-		return AdsDataType_BOOL, true
-	case 0x02:
-		return AdsDataType_BIT, true
-	case 0x03:
-		return AdsDataType_BIT8, true
-	case 0x04:
-		return AdsDataType_BYTE, true
-	case 0x05:
-		return AdsDataType_BITARR8, true
-	case 0x06:
-		return AdsDataType_WORD, true
-	case 0x07:
-		return AdsDataType_BITARR16, true
-	case 0x08:
-		return AdsDataType_DWORD, true
-	case 0x09:
-		return AdsDataType_BITARR32, true
-	case 0x0A:
-		return AdsDataType_SINT, true
-	case 0x0B:
-		return AdsDataType_INT8, true
-	case 0x0C:
-		return AdsDataType_USINT, true
-	case 0x0D:
-		return AdsDataType_UINT8, true
-	case 0x0E:
-		return AdsDataType_INT, true
-	case 0x0F:
-		return AdsDataType_INT16, true
-	case 0x10:
-		return AdsDataType_UINT, true
-	case 0x11:
-		return AdsDataType_UINT16, true
-	case 0x12:
-		return AdsDataType_DINT, true
-	case 0x13:
-		return AdsDataType_INT32, true
-	case 0x14:
-		return AdsDataType_UDINT, true
-	case 0x15:
-		return AdsDataType_UINT32, true
-	case 0x16:
-		return AdsDataType_LINT, true
-	case 0x17:
-		return AdsDataType_INT64, true
-	case 0x18:
-		return AdsDataType_ULINT, true
-	case 0x19:
-		return AdsDataType_UINT64, true
-	case 0x1A:
-		return AdsDataType_REAL, true
-	case 0x1B:
-		return AdsDataType_FLOAT, true
-	case 0x1C:
-		return AdsDataType_LREAL, true
-	case 0x1D:
-		return AdsDataType_DOUBLE, true
-	case 0x1E:
-		return AdsDataType_CHAR, true
-	case 0x1F:
-		return AdsDataType_WCHAR, true
-	case 0x20:
-		return AdsDataType_STRING, true
-	case 0x21:
-		return AdsDataType_WSTRING, true
-	case 0x22:
-		return AdsDataType_TIME, true
-	case 0x23:
-		return AdsDataType_LTIME, true
-	case 0x24:
-		return AdsDataType_DATE, true
-	case 0x25:
-		return AdsDataType_TIME_OF_DAY, true
-	case 0x26:
-		return AdsDataType_TOD, true
-	case 0x27:
-		return AdsDataType_DATE_AND_TIME, true
-	case 0x28:
-		return AdsDataType_DT, true
+		case 0x01:
+			return AdsDataType_BOOL, true
+		case 0x02:
+			return AdsDataType_BIT, true
+		case 0x03:
+			return AdsDataType_BIT8, true
+		case 0x04:
+			return AdsDataType_BYTE, true
+		case 0x05:
+			return AdsDataType_BITARR8, true
+		case 0x06:
+			return AdsDataType_WORD, true
+		case 0x07:
+			return AdsDataType_BITARR16, true
+		case 0x08:
+			return AdsDataType_DWORD, true
+		case 0x09:
+			return AdsDataType_BITARR32, true
+		case 0x0A:
+			return AdsDataType_SINT, true
+		case 0x0B:
+			return AdsDataType_INT8, true
+		case 0x0C:
+			return AdsDataType_USINT, true
+		case 0x0D:
+			return AdsDataType_UINT8, true
+		case 0x0E:
+			return AdsDataType_INT, true
+		case 0x0F:
+			return AdsDataType_INT16, true
+		case 0x10:
+			return AdsDataType_UINT, true
+		case 0x11:
+			return AdsDataType_UINT16, true
+		case 0x12:
+			return AdsDataType_DINT, true
+		case 0x13:
+			return AdsDataType_INT32, true
+		case 0x14:
+			return AdsDataType_UDINT, true
+		case 0x15:
+			return AdsDataType_UINT32, true
+		case 0x16:
+			return AdsDataType_LINT, true
+		case 0x17:
+			return AdsDataType_INT64, true
+		case 0x18:
+			return AdsDataType_ULINT, true
+		case 0x19:
+			return AdsDataType_UINT64, true
+		case 0x1A:
+			return AdsDataType_REAL, true
+		case 0x1B:
+			return AdsDataType_FLOAT, true
+		case 0x1C:
+			return AdsDataType_LREAL, true
+		case 0x1D:
+			return AdsDataType_DOUBLE, true
+		case 0x1E:
+			return AdsDataType_CHAR, true
+		case 0x1F:
+			return AdsDataType_WCHAR, true
+		case 0x20:
+			return AdsDataType_STRING, true
+		case 0x21:
+			return AdsDataType_WSTRING, true
+		case 0x22:
+			return AdsDataType_TIME, true
+		case 0x23:
+			return AdsDataType_LTIME, true
+		case 0x24:
+			return AdsDataType_DATE, true
+		case 0x25:
+			return AdsDataType_TIME_OF_DAY, true
+		case 0x26:
+			return AdsDataType_TOD, true
+		case 0x27:
+			return AdsDataType_DATE_AND_TIME, true
+		case 0x28:
+			return AdsDataType_DT, true
 	}
 	return 0, false
 }
@@ -654,13 +573,13 @@ func AdsDataTypeByName(value string) (enum AdsDataType, ok bool) {
 	return 0, false
 }
 
-func AdsDataTypeKnows(value int8) bool {
+func AdsDataTypeKnows(value int8)  bool {
 	for _, typeValue := range AdsDataTypeValues {
 		if int8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAdsDataType(structType interface{}) AdsDataType {
@@ -788,3 +707,4 @@ func (e AdsDataType) PLC4XEnumName() string {
 func (e AdsDataType) String() string {
 	return e.PLC4XEnumName()
 }
+

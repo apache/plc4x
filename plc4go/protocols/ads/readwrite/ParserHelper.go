@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -57,7 +57,7 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	case "AdsDataTypeArrayInfo":
 		return model.AdsDataTypeArrayInfoParse(io)
 	case "AdsData":
-		commandId, _ := model.CommandIdByName(arguments[0])
+        commandId, _ := model.CommandIdByName(arguments[0])
 		response, err := utils.StrToBool(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")

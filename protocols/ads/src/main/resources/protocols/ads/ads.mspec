@@ -135,22 +135,22 @@
     [simple     uint        32  errorCode                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
-    [simple     uint        32  invokeId                                 ]
+    [simple     uint        32  invokeId                                  ]
     // The payload
-    [simple     AdsData('commandId', 'state.response')    data           ]
+    [simple     AdsData('commandId', 'state.response')    data            ]
 ]
 
 [enum uint 16 CommandId
-    ['0x0000' INVALID]
-    ['0x0001' ADS_READ_DEVICE_INFO]
-    ['0x0002' ADS_READ]
-    ['0x0003' ADS_WRITE]
-    ['0x0004' ADS_READ_STATE]
-    ['0x0005' ADS_WRITE_CONTROL]
-    ['0x0006' ADS_ADD_DEVICE_NOTIFICATION]
+    ['0x0000' INVALID                       ]
+    ['0x0001' ADS_READ_DEVICE_INFO          ]
+    ['0x0002' ADS_READ                      ]
+    ['0x0003' ADS_WRITE                     ]
+    ['0x0004' ADS_READ_STATE                ]
+    ['0x0005' ADS_WRITE_CONTROL             ]
+    ['0x0006' ADS_ADD_DEVICE_NOTIFICATION   ]
     ['0x0007' ADS_DELETE_DEVICE_NOTIFICATION]
-    ['0x0008' ADS_DEVICE_NOTIFICATION]
-    ['0x0009' ADS_READ_WRITE]
+    ['0x0008' ADS_DEVICE_NOTIFICATION       ]
+    ['0x0009' ADS_READ_WRITE                ]
 ]
 
 [type State
@@ -163,7 +163,7 @@
     [simple     bit noReturn              ]
     [simple     bit response              ]
     [simple     bit broadcast             ]
-    [reserved   int 7 '0x0'                 ]
+    [reserved   int 7 '0x0'               ]
 ]
 
 // It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
@@ -756,46 +756,46 @@
 ]
 
 [type AdsSymbolTableEntry byteOrder='LITTLE_ENDIAN'
-  	[simple   uint 32                      entryLength                           ]
-    [simple   uint 32                      group                                 ]
-    [simple   uint 32                      offset                                ]
-    [simple   uint 32                      size                                  ]
-    [simple   uint 32                      dataType                              ]
+  	[simple   uint 32                          entryLength                                     ]
+    [simple   uint 32                          group                                           ]
+    [simple   uint 32                          offset                                          ]
+    [simple   uint 32                          size                                            ]
+    [simple   uint 32                          dataType                                        ]
     // Start: Flags
     // https://github.com/jisotalo/ads-server/blob/master/src/ads-commons.ts#L631
     // Order of the bits if read Little-Endian and then accessing the bit flags
     // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8  |  23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
-    [simple   bit                          flagMethodDeref                       ]
-    [simple   bit                          flagItfMethodAccess                   ]
-    [simple   bit                          flagReadOnly                          ]
-    [simple   bit                          flagTComInterfacePointer              ]
-    [simple   bit                          flagTypeGuid                          ]
-    [simple   bit                          flagReferenceTo                       ]
-    [simple   bit                          flagBitValue                          ]
-    [simple   bit                          flagPersistent                        ]
-    [reserved uint 3                       '0x00'                                ]
-    [simple   bit                          flagExtendedFlags                     ]
-    [simple   bit                          flagInitOnReset                       ]
-    [simple   bit                          flagStatic                            ]
-    [simple   bit                          flagAttributes                        ]
-    [simple   bit                          flagContextMask                       ]
-    [reserved uint 16                      '0x0000'                              ]
+    [simple   bit                              flagMethodDeref                                 ]
+    [simple   bit                              flagItfMethodAccess                             ]
+    [simple   bit                              flagReadOnly                                    ]
+    [simple   bit                              flagTComInterfacePointer                        ]
+    [simple   bit                              flagTypeGuid                                    ]
+    [simple   bit                              flagReferenceTo                                 ]
+    [simple   bit                              flagBitValue                                    ]
+    [simple   bit                              flagPersistent                                  ]
+    [reserved uint 3                           '0x00'                                          ]
+    [simple   bit                              flagExtendedFlags                               ]
+    [simple   bit                              flagInitOnReset                                 ]
+    [simple   bit                              flagStatic                                      ]
+    [simple   bit                              flagAttributes                                  ]
+    [simple   bit                              flagContextMask                                 ]
+    [reserved uint 16                          '0x0000'                                        ]
     // End: Flags
-    [implicit uint 16                      nameLength         'STR_LEN(name)'    ]
-    [implicit uint 16                      typeNameLength     'STR_LEN(typeName)']
-    [implicit uint 16                      commentLength      'STR_LEN(comment)' ]
-	[simple   vstring 'nameLength * 8'     name                                  ]
-	[const    uint 8                       nameTerminator     0x00               ]
-	[simple   vstring 'typeNameLength * 8' typeName                              ]
-	[const    uint 8                       typeNameTerminator 0x00               ]
-	[simple   vstring 'commentLength * 8'  comment                               ]
-	[const    uint 8                       commentTerminator  0x00               ]
+    [implicit uint 16                          nameLength               'STR_LEN(name)'        ]
+    [implicit uint 16                          dataTypeNameLength       'STR_LEN(dataTypeName)']
+    [implicit uint 16                          commentLength            'STR_LEN(comment)'     ]
+	[simple   vstring 'nameLength * 8'         name                                            ]
+	[const    uint 8                           nameTerminator           0x00                   ]
+	[simple   vstring 'dataTypeNameLength * 8' dataTypeName                                    ]
+	[const    uint 8                           dataTypeNameTerminator   0x00                   ]
+	[simple   vstring 'commentLength * 8'      comment                                         ]
+	[const    uint 8                           commentTerminator        0x00                   ]
 	// Gobbling up the rest, but it seems there is content in here, when looking
 	// at the data in wireshark, it seems to be related to the flags field.
 	// Will have to continue searching for more details on how to decode this.
 	// I would assume that we'll have some "optional" fields here which depend
 	// on values in the flags section.
-	[array    byte                         rest               length 'entryLength - curPos']
+	[array    byte                             rest             length 'entryLength - curPos'  ]
 ]
 
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
