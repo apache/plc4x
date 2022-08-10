@@ -78,6 +78,6 @@ func Shutdown() {
 	for _, connection := range connections {
 		connection.Close()
 	}
-	saveConfig()
 	hasShutdown = true
+	saveConfig()
 }

@@ -77,6 +77,6 @@ func Shutdown() {
 	if hasShutdown {
 		return
 	}
-	saveConfig()
 	hasShutdown = true
+	saveConfig()
 }
