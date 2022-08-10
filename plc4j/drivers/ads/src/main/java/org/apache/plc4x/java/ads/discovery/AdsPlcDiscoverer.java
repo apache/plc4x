@@ -60,7 +60,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
             for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
                 if (!networkInterface.isLoopback()) {
                     for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                        if (interfaceAddress.getAddress() instanceof Inet4Address) {
+                        if ((interfaceAddress.getBroadcast() != null) && (interfaceAddress.getAddress() instanceof Inet4Address)) {
                             Inet4Address inet4Address = (Inet4Address) interfaceAddress.getAddress();
                             // Open a listening socket on the AMS discovery default port for taking in responses.
                             DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT, inet4Address);
@@ -112,8 +112,8 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
 
                                             if (hostNameBlock != null) {
                                                 Map<String, String> options = new HashMap<>();
-                                                options.put("sourceAmsNetId", "65534");
-                                                options.put("sourceAmsPort", inet4Address.getHostAddress() + ".1.1");
+                                                options.put("sourceAmsNetId", inet4Address.getHostAddress() + ".1.1");
+                                                options.put("sourceAmsPort", "65534");
                                                 options.put("targetAmsNetId", remoteAmsNetId.getOctet1() + "." + remoteAmsNetId.getOctet2() + "." + remoteAmsNetId.getOctet3() + "." + remoteAmsNetId.getOctet4() + "." + remoteAmsNetId.getOctet5() + "." + remoteAmsNetId.getOctet6());
                                                 // TODO: Check if this is legit, or if we can get the information from somewhere.
                                                 options.put("targetAmsPort", "851");

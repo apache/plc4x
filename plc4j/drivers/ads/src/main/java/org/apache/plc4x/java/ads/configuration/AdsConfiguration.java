@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.ads.AdsPlcDriver;
 import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
 import org.apache.plc4x.java.spi.configuration.Configuration;

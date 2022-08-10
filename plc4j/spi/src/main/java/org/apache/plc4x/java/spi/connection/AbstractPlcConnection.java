@@ -197,7 +197,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
-        throw new NotImplementedException("");
+        return protocol.browse(browseRequest);
     }
 
 }

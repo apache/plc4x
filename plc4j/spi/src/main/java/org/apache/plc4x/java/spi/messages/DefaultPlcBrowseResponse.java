@@ -21,10 +21,7 @@ package org.apache.plc4x.java.spi.messages;
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
-import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -47,14 +44,30 @@ public class DefaultPlcBrowseResponse implements PlcBrowseResponse, Serializable
 
     private final PlcBrowseRequest request;
 
+    private final PlcResponseCode responseCode;
+
+    private final List<PlcBrowseItem> values;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcBrowseResponse(@JsonProperty("request") PlcBrowseRequest request) {
+    public DefaultPlcBrowseResponse(@JsonProperty("request") PlcBrowseRequest request, @JsonProperty("responseCode") PlcResponseCode responseCode, @JsonProperty("values") List<PlcBrowseItem> values) {
         this.request = request;
+        this.responseCode = responseCode;
+        this.values = values;
     }
 
     @Override
     public PlcBrowseRequest getRequest() {
         return request;
+    }
+
+    @Override
+    public PlcResponseCode getResponseCode() {
+        return responseCode;
+    }
+
+    @Override
+    public List<PlcBrowseItem> getValues() {
+        return values;
     }
 
     @Override

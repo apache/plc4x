@@ -72,9 +72,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private final ConcurrentHashMap<SymbolicAdsField, DirectAdsField> symbolicFieldMapping;
     private final ConcurrentHashMap<SymbolicAdsField, CompletableFuture<Void>> pendingResolutionRequests;
 
+    private final Map<String, AdsSymbolTableEntry> symbolTable;
+    private final Map<String, AdsDataTypeTableEntry> dataTypeTable;
+
     public AdsProtocolLogic() {
         symbolicFieldMapping = new ConcurrentHashMap<>();
         pendingResolutionRequests = new ConcurrentHashMap<>();
+        symbolTable = new HashMap<>();
+        dataTypeTable = new HashMap<>();
 
         // Initialize Transaction Manager.
         // Until the number of concurrent requests is successfully negotiated we set it to a
@@ -121,7 +126,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData());
                     try {
                         AdsTableSizes adsTableSizes = AdsTableSizes.staticParse(readBuffer);
-                        LOGGER.info("PLC contains {} symbols and {} datatypes", adsTableSizes.getSymbolCount(), adsTableSizes.getDataTypeCount());
+                        LOGGER.debug("PLC contains {} symbols and {} data-types", adsTableSizes.getSymbolCount(), adsTableSizes.getDataTypeCount());
 
                         // Now we load the datatype definitions.
                         AdsData adsReadTypeTableData = new AdsReadRequest(AdsSignificantGroupAddresses.DATA_TYPE_TABLE.getValue(), 0x00000000, adsTableSizes.getDataTypeLength());
@@ -191,13 +196,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             if(throwable != null) {
                 LOGGER.error("Error fetching symbol and datatype table sizes");
             } else {
-                // TODO: Link the datatypes to the symbols.
-                for (AdsSymbolTableEntry symbol : symbols) {
-                    System.out.println(symbol.getName());
+                for (AdsDataTypeTableEntry dataType : dataTypes) {
+                    dataTypeTable.put(dataType.getTypeName(), dataType);
                 }
-                /*for (AdsDataTypeTableEntry dataType : dataTypes) {
-                    System.out.println(dataType);
-                }*/
+                for (AdsSymbolTableEntry symbol : symbols) {
+                    symbolTable.put(symbol.getName(), symbol);
+                }
                 context.fireConnected();
             }
         });
@@ -211,7 +215,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
-        return null;
+        CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
+        List<PlcBrowseItem> values = new ArrayList<>(symbolTable.size());
+        for (AdsSymbolTableEntry symbol : symbolTable.values()) {
+            values.add(new DefaultPlcBrowseItem(symbol.getName(), symbol.getDataTypeName()));
+        }
+        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
+        future.complete(response);
+        return future;
     }
 
     @Override

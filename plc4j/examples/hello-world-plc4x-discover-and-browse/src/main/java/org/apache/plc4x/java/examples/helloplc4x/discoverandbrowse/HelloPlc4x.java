@@ -19,15 +19,17 @@
 package org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse;
 
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
+import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 
 public class HelloPlc4x {
 
@@ -35,24 +37,39 @@ public class HelloPlc4x {
 
     public static void main(String[] args) throws Exception {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)
-        PlcDriverManager plcDriverManager = new PlcDriverManager();
-        for (String protocolCode : plcDriverManager.listDrivers()) {
+        PlcDriverManager driverManager = new PlcDriverManager();
+        for (String protocolCode : driverManager.listDrivers()) {
             // For some reason modbus is failing on my machine ... investigate
             if(protocolCode.startsWith("modbus")) {
                 continue;
             }
-            PlcDriver driver = plcDriverManager.getDriver(protocolCode);
+            PlcDriver driver = driverManager.getDriver(protocolCode);
             if(driver.getMetadata().canDiscover()) {
                 logger.info("Performing discovery for {} protocol", driver.getProtocolName());
 
                 PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
 
-                PlcDiscoveryResponse discoveryResponse = discoveryRequest.execute().get(60, TimeUnit.SECONDS);
-                if(discoveryResponse.getResponseCode() == PlcResponseCode.OK) {
-                    for (PlcDiscoveryItem value : discoveryResponse.getValues()) {
-                        logger.info(" - Found device with connection-url {}", value.getConnectionUrl());
+                discoveryRequest.executeWithHandler(discoveryItem -> {
+                    logger.info(" - Found device with connection-url {}", discoveryItem.getConnectionUrl());
+                    try (PlcConnection connection = driverManager.getConnection(discoveryItem.getConnectionUrl())) {
+                        if(connection.getMetadata().canBrowse()) {
+                            PlcBrowseRequest browseRequest = connection.browseRequestBuilder().build();
+                            browseRequest.execute().whenComplete((browseResponse, throwable) -> {
+                                if(throwable != null) {
+                                    throwable.printStackTrace();
+                                } else {
+                                    for (PlcBrowseItem value : browseResponse.getValues()) {
+                                        System.out.println(String.format("%60s : %60s", value.getAddress(), value.getDataType()));
+                                    }
+                                }
+                            });
+                        }
+                    } catch (PlcConnectionException e) {
+                        throw new RuntimeException(e);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                }
+                });
             }
         }
     }

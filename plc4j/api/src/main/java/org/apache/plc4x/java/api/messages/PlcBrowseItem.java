@@ -18,16 +18,16 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.types.PlcResponseCode;
+public interface PlcBrowseItem {
 
-import java.util.List;
+    /**
+     * @return returns the address of this item
+     */
+    String getAddress();
 
-public interface PlcBrowseResponse extends PlcResponse {
-
-    PlcBrowseRequest getRequest();
-
-    PlcResponseCode getResponseCode();
-
-    List<PlcBrowseItem> getValues();
+    /**
+     * @return returns the data-type of this item
+     */
+    String getDataType();
 
 }

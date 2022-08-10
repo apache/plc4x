@@ -27,8 +27,11 @@
     </encoder>
   </appender>
 
-  <!-- Pcap4j seems to be quite chatty -->
+  <!-- Remove the messages we're not interested in -->
+  <logger name="io.netty.channel" level="ERROR"/>
   <logger name="org.pcap4j" level="WARN"/>
+  <logger name="org.apache.plc4x.java.transport" level="WARN"/>
+  <logger name="org.apache.plc4x.java.spi" level="WARN"/>
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />
