@@ -134,6 +134,14 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 		// This is an errormessage from the server
 		return currentPayload, nil
 	}
+	containsError := false
+	// We ensure that there are no random ! in the string
+	currentPayload, containsError = filterOneServerError(currentPayload)
+	if containsError {
+		// Save the current inbound payload for the next try
+		currentInboundPayloads[srcUip] = currentPayload
+		return []byte{'!'}, nil
+	}
 	// Check if we have a termination in the middle
 	isMergedMessage, shouldClearInboundPayload := mergeCheck(&currentPayload, srcUip, mergeCallback, currentInboundPayloads, lastPayload)
 	if !isMergedMessage {
@@ -217,6 +225,16 @@ func filterXOnXOff(payload []byte) []byte {
 		}
 	}
 	return payload[:n]
+}
+
+func filterOneServerError(unfilteredPayload []byte) (filteredPayload []byte, containsError bool) {
+	for i, b := range unfilteredPayload {
+		if b == '!' {
+			return append(unfilteredPayload[:i], unfilteredPayload[i+1:]...), true
+
+		}
+	}
+	return unfilteredPayload, false
 }
 
 func (a *Analyzer) SerializePackage(message spi.Message) ([]byte, error) {
