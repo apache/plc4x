@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package main
+package ui
 
 import (
 	"fmt"

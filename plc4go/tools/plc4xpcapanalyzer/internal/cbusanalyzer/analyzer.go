@@ -22,6 +22,7 @@ package cbusanalyzer
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
+	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
@@ -58,7 +59,7 @@ func (a *Analyzer) Init() {
 	a.initialized = true
 }
 
-func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
+func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (spi.Message, error) {
 	if !a.initialized {
 		log.Warn().Msg("Not initialized... doing that now")
 		a.Init()
@@ -120,7 +121,6 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 	if len(payload) == 0 {
 		return nil, common.ErrEmptyPackage
 	}
-	// Check if we have a termination in the middle
 	currentPayload := currentInboundPayloads[srcUip]
 	if currentPayload != nil {
 		log.Debug().Func(func(e *zerolog.Event) {
@@ -130,6 +130,19 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 	} else {
 		currentPayload = payload
 	}
+	if len(currentPayload) == 1 && currentPayload[0] == '!' {
+		// This is an errormessage from the server
+		return currentPayload, nil
+	}
+	containsError := false
+	// We ensure that there are no random ! in the string
+	currentPayload, containsError = filterOneServerError(currentPayload)
+	if containsError {
+		// Save the current inbound payload for the next try
+		currentInboundPayloads[srcUip] = currentPayload
+		return []byte{'!'}, nil
+	}
+	// Check if we have a termination in the middle
 	isMergedMessage, shouldClearInboundPayload := mergeCheck(&currentPayload, srcUip, mergeCallback, currentInboundPayloads, lastPayload)
 	if !isMergedMessage {
 		// When we have a merge message we already set the current payload to the tail
@@ -214,7 +227,17 @@ func filterXOnXOff(payload []byte) []byte {
 	return payload[:n]
 }
 
-func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {
+func filterOneServerError(unfilteredPayload []byte) (filteredPayload []byte, containsError bool) {
+	for i, b := range unfilteredPayload {
+		if b == '!' {
+			return append(unfilteredPayload[:i], unfilteredPayload[i+1:]...), true
+
+		}
+	}
+	return unfilteredPayload, false
+}
+
+func (a *Analyzer) SerializePackage(message spi.Message) ([]byte, error) {
 	if message, ok := message.(model.CBusMessage); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")

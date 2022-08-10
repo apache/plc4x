@@ -231,11 +231,11 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	}
 	{
 		log.Debug().Msg("Set application filter to all")
-		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(0xFF), nil, 1)
+		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(c.configuration.MonitoredApplication1), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
 			return
 		}
-		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(0xFF), nil, 1)
+		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(c.configuration.MonitoredApplication2), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
 			return
 		}
@@ -275,8 +275,8 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 
 	log.Debug().Msg("Starting subscription handler")
 	go func() {
+		log.Debug().Msg("Subscription handler stated")
 		for c.IsConnected() {
-			log.Debug().Msg("Handling incoming message")
 			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSal(monitoredSal); ok {
@@ -285,16 +285,14 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 				}
 			}
 		}
+		log.Info().Msg("Ending subscription handler")
 	}()
-	log.Debug().Msg("Subscription handler stated")
 
 	log.Debug().Msg("Starting default incoming message handler")
 	go func() {
+		log.Debug().Msg("default incoming message handler started")
 		for c.IsConnected() {
-			log.Debug().Msg("Polling data")
-			incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
-			select {
-			case message := <-incomingMessageChannel:
+			for message := range c.messageCodec.GetDefaultIncomingMessageChannel() {
 				switch message := message.(type) {
 				case readWriteModel.CBusMessageToClientExactly:
 					switch reply := message.GetReply().(type) {
@@ -307,19 +305,18 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 									calReply := encodedReply.GetCalReply()
 									if ok := subscriber.handleMonitoredMMI(calReply); ok {
 										log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
+										continue
 									}
 								}
 							}
 						}
 					}
 				}
-				log.Debug().Msgf("Received \n%v", message)
-			case <-time.After(20 * time.Millisecond):
+				log.Debug().Msgf("Received unhandled \n%v", message)
 			}
 		}
 		log.Info().Msg("Ending default incoming message handler")
 	}()
-	log.Debug().Msg("default incoming message handler started")
 }
 
 func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {

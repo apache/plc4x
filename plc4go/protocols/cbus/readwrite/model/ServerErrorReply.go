@@ -34,7 +34,7 @@ const ServerErrorReply_ERRORMARKER byte = 0x21
 type ServerErrorReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	ReplyOrConfirmation
 }
 
 // ServerErrorReplyExactly can be used when we want exactly this type and not a type which fulfills ServerErrorReply.
@@ -46,7 +46,7 @@ type ServerErrorReplyExactly interface {
 
 // _ServerErrorReply is the data-structure of this message
 type _ServerErrorReply struct {
-	*_Reply
+	*_ReplyOrConfirmation
 }
 
 ///////////////////////////////////////////////////////////
@@ -59,12 +59,12 @@ type _ServerErrorReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerErrorReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_ServerErrorReply) InitializeParent(parent ReplyOrConfirmation, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_ServerErrorReply) GetParent() Reply {
-	return m._Reply
+func (m *_ServerErrorReply) GetParent() ReplyOrConfirmation {
+	return m._ReplyOrConfirmation
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,9 +84,9 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 // NewServerErrorReply factory function for _ServerErrorReply
 func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_Reply: NewReply(peekedByte, cBusOptions, requestContext),
+		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _result
 	return _result
 }
 
@@ -146,12 +146,12 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions,
 
 	// Create a partially initialized instance
 	_child := &_ServerErrorReply{
-		_Reply: &_Reply{
+		_ReplyOrConfirmation: &_ReplyOrConfirmation{
 			CBusOptions:    cBusOptions,
 			RequestContext: requestContext,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _child
 	return _child, nil
 }
 

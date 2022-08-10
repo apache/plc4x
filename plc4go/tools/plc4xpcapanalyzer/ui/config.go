@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package main
+package ui
 
 import (
 	"github.com/pkg/errors"
@@ -29,13 +29,14 @@ import (
 	"time"
 )
 
-var plc4xBrowserConfigDir string
+var plc4xpcapanalyzerConfigDir string
 var configFile string
 var config Config
 
 type Config struct {
+	HostIp  string `yaml:"host_ip"`
 	History struct {
-		Last10Hosts    []string `yaml:"last_hosts"`
+		Last10Files    []string `yaml:"last_hosts"`
 		Last10Commands []string `yaml:"last_commands"`
 	}
 	AutoRegisterDrivers []string  `yaml:"auto_register_driver"`
@@ -50,17 +51,17 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	plc4xBrowserConfigDir = path.Join(userConfigDir, "plc4xbrowser")
-	if _, err := os.Stat(plc4xBrowserConfigDir); os.IsNotExist(err) {
-		err := os.Mkdir(plc4xBrowserConfigDir, os.ModeDir|os.ModePerm)
+	plc4xpcapanalyzerConfigDir = path.Join(userConfigDir, "plc4xpcapanalyzer")
+	if _, err := os.Stat(plc4xpcapanalyzerConfigDir); os.IsNotExist(err) {
+		err := os.Mkdir(plc4xpcapanalyzerConfigDir, os.ModeDir|os.ModePerm)
 		if err != nil {
 			panic(err)
 		}
 	}
-	configFile = path.Join(plc4xBrowserConfigDir, "config.yml")
+	configFile = path.Join(plc4xpcapanalyzerConfigDir, "config.yml")
 }
 
-func loadConfig() {
+func LoadConfig() {
 	f, err := os.Open(configFile)
 	if err != nil {
 		log.Info().Err(err).Msg("No config file found")
@@ -100,21 +101,21 @@ func saveConfig() {
 	}
 }
 
-func addHostHistoryEntry(host string) {
+func addRecentFilesEntry(pcapFile string) {
 	existingIndex := -1
-	for i, lastHost := range config.History.Last10Hosts {
-		if lastHost == host {
+	for i, lastPcapFile := range config.History.Last10Files {
+		if lastPcapFile == pcapFile {
 			existingIndex = i
 			break
 		}
 	}
 	if existingIndex >= 0 {
-		config.History.Last10Hosts = append(config.History.Last10Hosts[:existingIndex], config.History.Last10Hosts[existingIndex+1:]...)
+		config.History.Last10Files = append(config.History.Last10Files[:existingIndex], config.History.Last10Files[existingIndex+1:]...)
 	}
-	if len(config.History.Last10Hosts) >= 10 {
-		config.History.Last10Hosts = config.History.Last10Hosts[1:]
+	if len(config.History.Last10Files) >= 10 {
+		config.History.Last10Files = config.History.Last10Files[1:]
 	}
-	config.History.Last10Hosts = append(config.History.Last10Hosts, host)
+	config.History.Last10Files = append(config.History.Last10Files, pcapFile)
 }
 
 func addCommandHistoryEntry(command string) {

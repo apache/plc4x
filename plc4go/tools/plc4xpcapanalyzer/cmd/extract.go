@@ -32,7 +32,7 @@ import (
 var extractCmd = &cobra.Command{
 	Use:   "extract [protocolType] [pcapfile]",
 	Short: "extract a pcap file using a driver supplied driver",
-	Long: `Analyzes a pcap file using a driver
+	Long: `Extract a pcap file using a driver
 TODO: document me
 `,
 	Args: func(cmd *cobra.Command, args []string) error {
@@ -51,7 +51,9 @@ TODO: document me
 	Run: func(cmd *cobra.Command, args []string) {
 		protocolType := args[0]
 		pcapFile := args[1]
-		extractor.Extract(pcapFile, protocolType)
+		if err := extractor.Extract(pcapFile, protocolType); err != nil {
+			panic(err)
+		}
 		println("Done")
 	},
 }

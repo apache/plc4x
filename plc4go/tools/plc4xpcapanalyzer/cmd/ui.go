@@ -20,8 +20,7 @@
 package cmd
 
 import (
-	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
-	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/analyzer"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/ui"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"os"
@@ -29,16 +28,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// bacnetCmd represents the bacnet command
-var bacnetCmd = &cobra.Command{
-	Use:   "bacnet [pcapfile]",
-	Short: "analyzes a pcap file using a bacnet driver",
+// uiCmd represents the ui command
+var uiCmd = &cobra.Command{
+	Use:   "ui [pcapfile]",
+	Short: "Start the ui with optional pcapfile",
 	Long: `Analyzes a pcap file using a bacnet driver
 TODO: document me
 `,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
-			return errors.New("requires exactly one arguments")
+			return nil
 		}
 		pcapFile := args[0]
 		if _, err := os.Stat(pcapFile); errors.Is(err, os.ErrNotExist) {
@@ -47,26 +46,26 @@ TODO: document me
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		pcapFile := args[0]
-		if !config.BacnetConfigInstance.NoFilter {
-			if config.BacnetConfigInstance.Filter == "" && config.BacnetConfigInstance.BacnetFilter != "" {
-				log.Debug().Str("filter", config.BacnetConfigInstance.Filter).Msg("Setting bacnet filter")
-				config.BacnetConfigInstance.Filter = config.BacnetConfigInstance.BacnetFilter
-			}
-		} else {
-			log.Info().Msg("All filtering disabled")
+		ui.LoadConfig()
+		application := ui.SetupApplication()
+		ui.InitSubsystem()
+		if len(args) > 0 {
+			pcapFile := args[0]
+			go func() {
+				err := ui.OpenFile(pcapFile)
+				if err != nil {
+					log.Error().Err(err).Msg("Error opening argument file")
+				}
+			}()
 		}
-		if err := analyzer.Analyze(pcapFile, "bacnet"); err != nil {
+
+		if err := application.Run(); err != nil {
 			panic(err)
 		}
-		println("Done")
+		ui.Shutdown()
 	},
 }
 
 func init() {
-	analyzeCmd.AddCommand(bacnetCmd)
-
-	bacnetCmd.PersistentFlags().StringVarP(&config.BacnetConfigInstance.BacnetFilter, "default-bacnet-filter", "", "udp port 47808 and udp[4:2] > 29", "Defines the default filter when bacnet is selected")
-
-	addAnalyzeFlags(bacnetCmd)
+	rootCmd.AddCommand(uiCmd)
 }

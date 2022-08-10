@@ -40,6 +40,8 @@ type MessageCodec struct {
 	monitoredSALs   chan readwriteModel.MonitoredSAL
 	lastPackageHash uint32
 	hashEncountered uint
+
+	currentlyReportedServerErrors uint
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
@@ -96,33 +98,41 @@ func (m *MessageCodec) Send(message spi.Message) error {
 }
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
-	log.Trace().Msg("receiving")
-
 	ti := m.GetTransportInstance()
-	if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
-		hitCr := currentByte == '\r'
-		if hitCr {
-			// Make sure we peek one more
-			_, _ = reader.Peek(1)
-			return false
+	// Fill the buffer
+	{
+		if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
+			hitCr := currentByte == '\r'
+			if hitCr {
+				// Make sure we peek one more
+				_, _ = reader.Peek(1)
+				return false
+			}
+			return true
+		}); err != nil {
+			return nil, err
 		}
-		return true
-	}); err != nil {
-		return nil, err
 	}
-	readableBytes, err := ti.GetNumBytesAvailableInBuffer()
-	if err != nil {
-		log.Warn().Err(err).Msg("Got error reading")
-		return nil, nil
+
+	// Check how many readable bytes we have
+	var readableBytes uint32
+	{
+		numBytesAvailableInBuffer, err := ti.GetNumBytesAvailableInBuffer()
+		if err != nil {
+			log.Warn().Err(err).Msg("Got error reading")
+			return nil, nil
+		}
+		if numBytesAvailableInBuffer == 0 {
+			log.Trace().Msg("Nothing to read")
+			return nil, nil
+		}
+		readableBytes = numBytesAvailableInBuffer
 	}
-	if readableBytes == 0 {
-		log.Trace().Msg("Nothing to read")
-		return nil, nil
-	}
+
+	// Check for an isolated error
 	if bytes, err := ti.PeekReadableBytes(1); err != nil && (bytes[0] == '!') {
 		_, _ = ti.Read(1)
-		// TODO: a exclamation mark doesn't have a CR&LF in contrast to the documentation
-		return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased([]byte("!\r\n")), true, m.requestContext, m.cbusOptions)
+		return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased(bytes), true, m.requestContext, m.cbusOptions)
 	}
 	// TODO: we might get a simple confirmation like g# without anything other... so we might need to handle that
 
@@ -180,6 +190,7 @@ lookingForTheEnd:
 		return nil, nil
 	}
 
+	// Build length
 	packetLength := indexOfCR + 1
 	if pciResponse {
 		packetLength = indexOfLF + 1
@@ -190,16 +201,58 @@ lookingForTheEnd:
 		panic("Invalid state... Can not be response and request at the same time")
 	}
 
-	read, err := ti.Read(uint32(packetLength))
-	if err != nil {
-		panic("Invalid state... If we have peeked that before we should be able to read that now")
+	// We need to ensure that there is no ! till the first /r
+	{
+		peekedBytes, err := ti.PeekReadableBytes(readableBytes)
+		if err != nil {
+			return nil, err
+		}
+		// We check in the current stream for reported errors
+		foundErrors := uint(0)
+		for _, peekedByte := range peekedBytes {
+			if peekedByte == '!' {
+				foundErrors++
+			}
+			if peekedByte == '\r' {
+				// We only look for errors within
+			}
+		}
+		// Now we report the errors one by one so for every request we get a proper rejection
+		if foundErrors > m.currentlyReportedServerErrors {
+			log.Debug().Msgf("We found %d errors in the current message. We have %d reported already", foundErrors, m.currentlyReportedServerErrors)
+			m.currentlyReportedServerErrors++
+			return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased([]byte{'!'}), true, m.requestContext, m.cbusOptions)
+		}
+		if foundErrors > 0 {
+			log.Debug().Msgf("We should have reported all errors by now (%d in total which we reported %d), so we resetting the count", foundErrors, m.currentlyReportedServerErrors)
+			m.currentlyReportedServerErrors = 0
+		}
+		log.Trace().Msgf("currentlyReportedServerErrors %d should be 0", m.currentlyReportedServerErrors)
 	}
-	rb := utils.NewReadBufferByteBased(read)
+
+	var rawInput []byte
+	{
+		read, err := ti.Read(uint32(packetLength))
+		if err != nil {
+			panic("Invalid state... If we have peeked that before we should be able to read that now")
+		}
+		rawInput = read
+	}
+	var sanitizedInput []byte
+	// We remove every error marker we find
+	{
+		for _, b := range rawInput {
+			if b != '!' {
+				sanitizedInput = append(sanitizedInput, b)
+			}
+		}
+	}
+	rb := utils.NewReadBufferByteBased(sanitizedInput)
 	cBusMessage, err := readwriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
 		log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
-			rb := utils.NewReadBufferByteBased(read)
+			rb := utils.NewReadBufferByteBased(sanitizedInput)
 			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, pciResponse, readwriteModel.NewRequestContext(false), m.cbusOptions)
 			if secondErr == nil {
 				return cBusMessage, nil
@@ -210,7 +263,7 @@ lookingForTheEnd:
 		{ // Try MMI
 			requestContext := readwriteModel.NewRequestContext(false)
 			cbusOptions := readwriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-			rb := utils.NewReadBufferByteBased(read)
+			rb := utils.NewReadBufferByteBased(sanitizedInput)
 			cBusMessage, secondErr := readwriteModel.CBusMessageParse(rb, true, requestContext, cbusOptions)
 			if secondErr == nil {
 				return cBusMessage, nil

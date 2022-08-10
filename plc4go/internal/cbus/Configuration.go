@@ -38,19 +38,34 @@ type Configuration struct {
 	Smart    bool
 	XonXoff  bool
 	Connect  bool
+
+	MonitoredApplication1 byte
+	MonitoredApplication2 byte
 }
 
 func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
 	for i := 0; i < reflectConfiguration.NumField(); i++ {
-		key := reflectConfiguration.Type().Field(i).Name
+		field := reflectConfiguration.Type().Field(i)
+		key := field.Name
 		if optionValue := getFromOptions(options, key); optionValue != "" {
-			parseBool, err := strconv.ParseBool(optionValue)
-			if err != nil {
-				return Configuration{}, errors.Wrapf(err, "Error parsing %s", key)
+			switch field.Type.Kind() {
+			case reflect.Uint8:
+				parseUint, err := strconv.ParseUint(optionValue, 0, 8)
+				if err != nil {
+					return Configuration{}, errors.Wrapf(err, "Error parsing %s", key)
+				}
+				reflectConfiguration.FieldByName(key).SetUint(parseUint)
+			case reflect.Bool:
+				parseBool, err := strconv.ParseBool(optionValue)
+				if err != nil {
+					return Configuration{}, errors.Wrapf(err, "Error parsing %s", key)
+				}
+				reflectConfiguration.FieldByName(key).SetBool(parseBool)
+			default:
+				return configuration, errors.Errorf("%s not yet supported", field.Type.Kind())
 			}
-			reflectConfiguration.FieldByName(key).SetBool(parseBool)
 		}
 	}
 	return configuration, nil
@@ -65,6 +80,9 @@ func createDefaultConfiguration() Configuration {
 		Smart:    true,
 		Srchk:    true,
 		Connect:  true,
+
+		MonitoredApplication1: 0xFF,
+		MonitoredApplication2: 0xFF,
 	}
 }
 
