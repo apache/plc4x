@@ -98,10 +98,10 @@ func TestManualCBusBrowse(t *testing.T) {
 	log.Logger = log.
 		With().Caller().Logger().
 		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.TraceLevel)
-	config.TraceTransactionManagerWorkers = true
-	config.TraceTransactionManagerTransactions = true
-	config.TraceDefaultMessageCodecWorker = true
+		Level(zerolog.InfoLevel)
+	config.TraceTransactionManagerWorkers = false
+	config.TraceTransactionManagerTransactions = false
+	config.TraceDefaultMessageCodecWorker = false
 	t.Skip()
 
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
@@ -110,7 +110,8 @@ func TestManualCBusBrowse(t *testing.T) {
 	transports.RegisterTcpTransport(driverManager)
 	connectionResult := <-driverManager.GetConnection(connectionString)
 	if err := connectionResult.GetErr(); err != nil {
-		panic(err)
+		t.Error(err)
+		t.FailNow()
 	}
 	connection := connectionResult.GetConnection()
 	defer connection.Close()
@@ -120,6 +121,9 @@ func TestManualCBusBrowse(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	browseRequestResult := <-browseRequest.Execute()
-	fmt.Printf("%s", browseRequestResult)
+	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
+		fmt.Printf("%s", result)
+		return true
+	})
+	fmt.Printf("%s", browseRequestResult.GetResponse())
 }

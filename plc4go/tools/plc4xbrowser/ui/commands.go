@@ -269,7 +269,11 @@ var rootCommand = Command{
 					if err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
-					browseRequestResult := <-browseRequest.Execute()
+					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
+						numberOfMessagesReceived++
+						messageReceived(numberOfMessagesReceived, time.Now(), browseRequest)
+						return true
+					})
 					if err := browseRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}

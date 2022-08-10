@@ -66,3 +66,7 @@ func (m PlcResponseCode) GetName() string {
 		return ""
 	}
 }
+
+func (m PlcResponseCode) String() string {
+	return m.GetName()
+}

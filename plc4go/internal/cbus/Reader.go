@@ -126,7 +126,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
 						messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
 						if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
-							log.Debug().Msg("We got a server failure")
+							log.Trace().Msg("We got a server failure")
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_INVALID_DATA)
 							requestWasOk <- false
 							return transaction.EndRequest()
