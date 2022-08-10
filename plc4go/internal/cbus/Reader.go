@@ -108,17 +108,14 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						if !ok {
 							return false
 						}
+						// Check if this errored
+						if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+							// This means we must handle this below
+							return true
+						}
+
 						confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
 						if !ok {
-							reply, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
-							if !ok {
-								return false
-							}
-							_, ok = reply.GetReply().(readWriteModel.ServerErrorReplyExactly)
-							if ok {
-								// This means we must handle this below
-								return true
-							}
 							return false
 						}
 						return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
@@ -128,7 +125,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						log.Trace().Msg("convert response to ")
 						cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
 						messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
-						if _, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationReplyExactly); ok {
+						if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
 							log.Debug().Msg("We got a server failure")
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_INVALID_DATA)
 							requestWasOk <- false
