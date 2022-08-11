@@ -355,7 +355,7 @@
           <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>10.5</version>
+            <version>11.4</version>
           </dependency>
         </dependencies>
       </plugin>
