@@ -20,9 +20,9 @@
 package simulated
 
 import (
-	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	values2 "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
 	"reflect"
 	"testing"

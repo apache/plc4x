@@ -21,12 +21,12 @@ package bacnetip
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	spiModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	spiValues "github.com/apache/plc4x/plc4go/internal/spi/values"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"

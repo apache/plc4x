@@ -21,11 +21,11 @@ package cbus
 
 import (
 	"bufio"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	readwriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"hash/crc32"
@@ -99,16 +99,27 @@ func (m *MessageCodec) Send(message spi.Message) error {
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	ti := m.GetTransportInstance()
+	confirmation := false
 	// Fill the buffer
 	{
 		if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
-			hitCr := currentByte == '\r'
-			if hitCr {
-				// Make sure we peek one more
-				_, _ = reader.Peek(1)
+			switch currentByte {
+			case
+				readwriteModel.ResponseTermination_CR,
+				readwriteModel.ResponseTermination_LF:
 				return false
+			case
+				byte(readwriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL),
+				byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
+				byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION),
+				byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS),
+				byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG),
+				byte(readwriteModel.ConfirmationType_CHECKSUM_FAILURE):
+				confirmation = true
+				return false
+			default:
+				return true
 			}
-			return true
 		}); err != nil {
 			return nil, err
 		}
@@ -130,19 +141,29 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	}
 
 	// Check for an isolated error
-	if bytes, err := ti.PeekReadableBytes(1); err != nil && (bytes[0] == '!') {
+	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readwriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
 		_, _ = ti.Read(1)
 		return readwriteModel.CBusMessageParse(utils.NewReadBufferByteBased(bytes), true, m.requestContext, m.cbusOptions)
 	}
-	// TODO: we might get a simple confirmation like g# without anything other... so we might need to handle that
 
 	peekedBytes, err := ti.PeekReadableBytes(readableBytes)
 	pciResponse, requestToPci := false, false
 	indexOfCR := -1
 	indexOfLF := -1
+	indexOfConfirmation := -1
 lookingForTheEnd:
 	for i, peekedByte := range peekedBytes {
 		switch peekedByte {
+		case
+			byte(readwriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL),
+			byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
+			byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION),
+			byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS),
+			byte(readwriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG),
+			byte(readwriteModel.ConfirmationType_CHECKSUM_FAILURE):
+			if indexOfConfirmation < 0 {
+				indexOfConfirmation = i
+			}
 		case '\r':
 			if indexOfCR >= 0 {
 				// We found the next <cr> so we know we have a package
@@ -185,7 +206,7 @@ lookingForTheEnd:
 			}
 		}
 	}
-	if !pciResponse && !requestToPci {
+	if !pciResponse && !requestToPci && !confirmation {
 		// Apparently we have not found any message yet
 		return nil, nil
 	}
@@ -194,6 +215,9 @@ lookingForTheEnd:
 	packetLength := indexOfCR + 1
 	if pciResponse {
 		packetLength = indexOfLF + 1
+	}
+	if !pciResponse && !requestToPci {
+		packetLength = indexOfConfirmation + 1
 	}
 
 	// Sanity check

@@ -1100,9 +1100,9 @@
             [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
         ]
         ['NetworkVoltage'               IdentifyReplyCommandNetworkVoltage
-           [simple string 2     volts                   ]
+           [simple string 16    volts                   ]
            [const  byte         dot     0x2C            ]
-           [simple string 2     voltsDecimalPlace       ]
+           [simple string 16    voltsDecimalPlace       ]
            [const  byte         v       0x56            ]
         ]
         ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent

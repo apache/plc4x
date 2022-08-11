@@ -21,8 +21,8 @@ package ui
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/gdamore/tcell/v2"
 	"github.com/pkg/errors"
 	"github.com/sruehl/tview"

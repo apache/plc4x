@@ -21,8 +21,8 @@ package ui
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
 	plc4x_config "github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi"
 	cliConfig "github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/analyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/extractor"

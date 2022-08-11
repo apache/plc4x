@@ -21,12 +21,12 @@ package simulated
 
 import (
 	s7 "github.com/apache/plc4x/plc4go/internal/s7"
-	model3 "github.com/apache/plc4x/plc4go/internal/spi/model"
-	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	model4 "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	model3 "github.com/apache/plc4x/plc4go/spi/model"
+	values2 "github.com/apache/plc4x/plc4go/spi/values"
 	"reflect"
 	"testing"
 	"time"

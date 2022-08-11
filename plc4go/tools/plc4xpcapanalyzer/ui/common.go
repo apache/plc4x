@@ -20,9 +20,9 @@
 package ui
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	plc4goModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/rs/zerolog"
 	"io"
 	"os"

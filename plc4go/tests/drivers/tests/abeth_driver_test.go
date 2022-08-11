@@ -21,8 +21,8 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/ads"
-	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
 	abethIO "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )

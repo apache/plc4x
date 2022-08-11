@@ -51,6 +51,7 @@ type PlcBrowseRequestResult interface {
 }
 
 type PlcBrowseEvent interface {
+	PlcMessage
 	GetRequest() PlcBrowseRequest
 	GetFieldName() string
 	GetResult() PlcBrowseFoundField

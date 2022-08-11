@@ -21,11 +21,11 @@ package cbus
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -111,21 +111,37 @@ func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, 
 							}
 							continue unitLoop
 						}
-						queryResults = append(queryResults, &model.DefaultPlcBrowseQueryResult{
+						response := requestResult.GetResponse()
+						if code := response.GetResponseCode(readFieldName); code != apiModel.PlcResponseCode_OK {
+							event.Msgf("unit %d: error reading field %s. Code %s", unitAddress, attribute, code)
+							continue unitLoop
+						}
+						queryResult := &model.DefaultPlcBrowseQueryResult{
 							Field:        NewCALIdentifyField(unit, attribute, 1),
 							Name:         fieldName,
 							Readable:     true,
 							Writable:     false,
 							Subscribable: false,
 							Attributes: map[string]values.PlcValue{
-								"CurrentValue": requestResult.GetResponse().GetValue(readFieldName),
+								"CurrentValue": response.GetValue(readFieldName),
 							},
-						})
+						}
+						if interceptor != nil {
+							interceptor(&model.DefaultPlcBrowseEvent{
+								Request:   browseRequest,
+								FieldName: readFieldName,
+								Result:    queryResult,
+								Err:       nil,
+							})
+						}
+						queryResults = append(queryResults, queryResult)
 					}
 				}
+				responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 			default:
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 			}
+			results[fieldName] = queryResults
 		}
 		result <- &model.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,

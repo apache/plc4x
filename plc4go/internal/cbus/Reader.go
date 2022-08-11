@@ -21,12 +21,12 @@ package cbus
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	spiModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	spiValues "github.com/apache/plc4x/plc4go/internal/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"sync"
@@ -126,7 +126,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
 						messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
 						if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
-							log.Debug().Msg("We got a server failure")
+							log.Trace().Msg("We got a server failure")
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_INVALID_DATA)
 							requestWasOk <- false
 							return transaction.EndRequest()
@@ -266,10 +266,9 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 	return result
 }
 
-var defaultRequestContext = readWriteModel.NewRequestContext(false)
-var defaultOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-
 func (m *Reader) fieldToCBusMessage(field model.PlcField) (readWriteModel.CBusMessage, error) {
+	cbusOptions := m.messageCodec.(*MessageCodec).cbusOptions
+	requestContext := m.messageCodec.(*MessageCodec).requestContext
 	switch field := field.(type) {
 	case *statusField:
 		var statusRequest readWriteModel.StatusRequest
@@ -279,35 +278,35 @@ func (m *Reader) fieldToCBusMessage(field model.PlcField) (readWriteModel.CBusMe
 		case StatusRequestTypeLevel:
 			statusRequest = readWriteModel.NewStatusRequestLevel(field.application, *field.startingGroupAddressLabel, 0x73)
 		}
-		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(field.application), defaultOptions)
+		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(field.application), cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	case *calRecallField:
-		calData := readWriteModel.NewCALDataRecall(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, defaultRequestContext)
+		calData := readWriteModel.NewCALDataRecall(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	case *calIdentifyField:
-		calData := readWriteModel.NewCALDataIdentify(field.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, defaultRequestContext)
+		calData := readWriteModel.NewCALDataIdentify(field.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	case *calGetstatusField:
-		calData := readWriteModel.NewCALDataGetStatus(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, defaultRequestContext)
+		calData := readWriteModel.NewCALDataGetStatus(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	default:
 		return nil, errors.Errorf("Unmapped type %T", field)
 	}

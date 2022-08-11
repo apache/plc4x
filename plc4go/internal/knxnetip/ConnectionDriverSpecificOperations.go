@@ -24,10 +24,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	values2 "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )

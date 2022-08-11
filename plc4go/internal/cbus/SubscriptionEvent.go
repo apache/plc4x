@@ -20,9 +20,9 @@
 package cbus
 
 import (
-	internalMode "github.com/apache/plc4x/plc4go/internal/spi/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	internalMode "github.com/apache/plc4x/plc4go/spi/model"
 	"time"
 )
 

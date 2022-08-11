@@ -20,8 +20,8 @@
 package eip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	readWrite "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type EIPPlcField interface {

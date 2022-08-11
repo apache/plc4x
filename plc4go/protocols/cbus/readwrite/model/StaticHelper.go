@@ -21,8 +21,8 @@ package model
 
 import (
 	"encoding/hex"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -141,7 +141,7 @@ func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, srchk boo
 		readBuffer.Reset(readBuffer.GetPos() - 2)
 		rawBytes = rawBytes[:len(rawBytes)-1]
 	}
-	log.Debug().Msgf("%d bytes decoded", n)
+	log.Trace().Msgf("%d bytes decoded", n)
 	return rawBytes, nil
 }
 
@@ -177,7 +177,7 @@ func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, bytesToWrite 
 	// usually you use hex.Encode but we want the encoding in uppercase
 	//n := hex.Encode(hexBytes, wbbb.GetBytes())
 	n := encodeHexUpperCase(hexBytes, bytesToWrite)
-	log.Debug().Msgf("%d bytes encoded", n)
+	log.Trace().Msgf("%d bytes encoded", n)
 	return writeBuffer.WriteByteArray(logicalName, hexBytes)
 }
 

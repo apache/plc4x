@@ -21,11 +21,11 @@ package cbus
 
 import (
 	"fmt"
-	spiModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	spiValues "github.com/apache/plc4x/plc4go/internal/spi/values"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
 	"time"
 )
