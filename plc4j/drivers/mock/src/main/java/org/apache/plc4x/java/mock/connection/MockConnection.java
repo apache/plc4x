@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -120,7 +121,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending browse request to MockDevice");
-            return new DefaultPlcBrowseResponse(browseRequest);
+            return new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, Collections.emptyList());
         });
     }
 

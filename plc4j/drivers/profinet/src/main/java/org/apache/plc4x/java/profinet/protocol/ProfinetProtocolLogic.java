@@ -152,7 +152,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                         // Update the raw-socket transports filter expression.
                         ((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(profinetDriverContext.getRemoteMacAddress().getAddress()));
                     } else {
-                        throw new PlcException("Unexpected type of frist block.");
+                        throw new PlcException("Unexpected type of first block.");
                     }
                 } else {
                     throw new PlcException("Unexpected response");
@@ -172,7 +172,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             e.printStackTrace();
         }
 
-        System.out.println(rawSocketChannel);
+        //System.out.println(rawSocketChannel);
     }
 
     @Override

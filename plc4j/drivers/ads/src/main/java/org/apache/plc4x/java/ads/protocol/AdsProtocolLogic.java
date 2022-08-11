@@ -197,7 +197,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 LOGGER.error("Error fetching symbol and datatype table sizes");
             } else {
                 for (AdsDataTypeTableEntry dataType : dataTypes) {
-                    dataTypeTable.put(dataType.getTypeName(), dataType);
+                    dataTypeTable.put(dataType.getName(), dataType);
                 }
                 for (AdsSymbolTableEntry symbol : symbols) {
                     symbolTable.put(symbol.getName(), symbol);
@@ -218,11 +218,38 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
         List<PlcBrowseItem> values = new ArrayList<>(symbolTable.size());
         for (AdsSymbolTableEntry symbol : symbolTable.values()) {
+            // Add the type itself.
             values.add(new DefaultPlcBrowseItem(symbol.getName(), symbol.getDataTypeName()));
+            AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
+            if(dataType == null) {
+                System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
+                continue;
+            }
+            // Recursively add all children of the current datatype.
+            values.addAll(getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), dataType));
         }
         DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
         future.complete(response);
         return future;
+    }
+
+    protected List<PlcBrowseItem> getBrowseItems(String basePath, long baseGroupId, long baseOffset, AdsDataTypeTableEntry dataType) {
+        if(dataType.getNumChildren() == 0) {
+            return Collections.emptyList();
+        }
+
+        List<PlcBrowseItem> values = new ArrayList<>(dataType.getNumChildren());
+        for (AdsDataTypeTableEntry child : dataType.getChildren()) {
+            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getName(), child.getDataTypeName()));
+            AdsDataTypeTableEntry childDataType = dataTypeTable.get(child.getDataTypeName());
+            if(childDataType == null) {
+                System.out.printf("couldn't find datatype: %s%n", child.getDataTypeName());
+                continue;
+            }
+            // Recursively add all children of the current datatype.
+            values.addAll(getBrowseItems(child.getName(), baseGroupId, baseOffset + child.getOffset(), childDataType));
+        }
+        return values;
     }
 
     @Override

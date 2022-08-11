@@ -800,33 +800,33 @@
 
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
 [discriminatedType AdsDataTypeTableEntry byteOrder='LITTLE_ENDIAN'
-	[simple   uint 32                      entryLength                                                  ]
-	[simple   uint 32                      version                                                      ]
-	[simple   uint 32                      hashValue                                                    ]
-	[simple   uint 32                      typeHashValue                                                ]
-	[simple   uint 32                      size                                                         ]
-	[simple   uint 32                      offs                                                         ]
-	[simple   uint 32                      dataType                                                     ]
-	[simple   uint 32                      flags                                                        ]
-	[implicit uint 16                      nameLength         'STR_LEN(name)'                           ]
-	[implicit uint 16                      typeNameLength     'STR_LEN(typeName)'                       ]
-	[implicit uint 16                      commentLength      'STR_LEN(comment)'                        ]
-	[simple   uint 16                      arrayDimensions                                              ]
-	[simple   uint 16                      numChildren                                                  ]
-	[simple   vstring 'nameLength * 8'     name                                                         ]
-	[const    uint 8                       nameTerminator     0x00                                      ]
-	[simple   vstring 'typeNameLength * 8' typeName                                                     ]
-	[const    uint 8                       typeNameTerminator 0x00                                      ]
-	[simple   vstring 'commentLength * 8'  comment                                                      ]
-	[const    uint 8                       commentTerminator  0x00                                      ]
-    [array    AdsDataTypeArrayInfo         arrayInfo          count               'arrayDimensions'     ]
-   	[array    AdsDataTypeTableEntry        children           count               'numChildren'         ]
+	[simple   uint 32                          entryLength                                                            ]
+	[simple   uint 32                          version                                                                ]
+	[simple   uint 32                          hashValue                                                              ]
+	[simple   uint 32                          typeHashValue                                                          ]
+	[simple   uint 32                          size                                                                   ]
+	[simple   uint 32                          offset                                                                 ]
+	[simple   uint 32                          dataType                                                               ]
+	[simple   uint 32                          flags                                                                  ]
+	[implicit uint 16                          nameLength               'STR_LEN(name)'                               ]
+	[implicit uint 16                          dataTypeNameLength       'STR_LEN(dataTypeName)'                       ]
+	[implicit uint 16                          commentLength            'STR_LEN(comment)'                            ]
+	[simple   uint 16                          arrayDimensions                                                        ]
+	[simple   uint 16                          numChildren                                                            ]
+	[simple   vstring 'nameLength * 8'         name                                                                   ]
+	[const    uint 8                           nameTerminator           0x00                                          ]
+	[simple   vstring 'dataTypeNameLength * 8' dataTypeName                                                           ]
+	[const    uint 8                           dataTypeNameTerminator   0x00                                          ]
+	[simple   vstring 'commentLength * 8'      comment                                                                ]
+	[const    uint 8                           commentTerminator        0x00                                          ]
+    [array    AdsDataTypeArrayInfo             arrayInfo                count                   'arrayDimensions'     ]
+   	[array    AdsDataTypeTableEntry            children                 count                   'numChildren'         ]
 	// Gobbling up the rest, but it seems there is content in here, when looking
 	// at the data in wireshark, it seems to be related to the flags field.
 	// Will have to continue searching for more details on how to decode this.
 	// I would assume that we'll have some "optional" fields here which depend
 	// on values in the flags section.
-	[array    byte                         rest               length              'entryLength - curPos']
+	[array    byte                             rest                     length                  'entryLength - curPos']
 ]
 
 [type AdsDataTypeArrayInfo byteOrder='LITTLE_ENDIAN'

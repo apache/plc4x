@@ -29,7 +29,7 @@ import (
 
 // Constant values.
 const AdsDataTypeTableEntry_NAMETERMINATOR uint8 = 0x00
-const AdsDataTypeTableEntry_TYPENAMETERMINATOR uint8 = 0x00
+const AdsDataTypeTableEntry_DATATYPENAMETERMINATOR uint8 = 0x00
 const AdsDataTypeTableEntry_COMMENTTERMINATOR uint8 = 0x00
 
 // AdsDataTypeTableEntry is the corresponding interface of AdsDataTypeTableEntry
@@ -46,8 +46,8 @@ type AdsDataTypeTableEntry interface {
 	GetTypeHashValue() uint32
 	// GetSize returns Size (property field)
 	GetSize() uint32
-	// GetOffs returns Offs (property field)
-	GetOffs() uint32
+	// GetOffset returns Offset (property field)
+	GetOffset() uint32
 	// GetDataType returns DataType (property field)
 	GetDataType() uint32
 	// GetFlags returns Flags (property field)
@@ -58,8 +58,8 @@ type AdsDataTypeTableEntry interface {
 	GetNumChildren() uint16
 	// GetName returns Name (property field)
 	GetName() string
-	// GetTypeName returns TypeName (property field)
-	GetTypeName() string
+	// GetDataTypeName returns DataTypeName (property field)
+	GetDataTypeName() string
 	// GetComment returns Comment (property field)
 	GetComment() string
 	// GetArrayInfo returns ArrayInfo (property field)
@@ -84,13 +84,13 @@ type _AdsDataTypeTableEntry struct {
 	HashValue       uint32
 	TypeHashValue   uint32
 	Size            uint32
-	Offs            uint32
+	Offset          uint32
 	DataType        uint32
 	Flags           uint32
 	ArrayDimensions uint16
 	NumChildren     uint16
 	Name            string
-	TypeName        string
+	DataTypeName    string
 	Comment         string
 	ArrayInfo       []AdsDataTypeArrayInfo
 	Children        []AdsDataTypeTableEntry
@@ -122,8 +122,8 @@ func (m *_AdsDataTypeTableEntry) GetSize() uint32 {
 	return m.Size
 }
 
-func (m *_AdsDataTypeTableEntry) GetOffs() uint32 {
-	return m.Offs
+func (m *_AdsDataTypeTableEntry) GetOffset() uint32 {
+	return m.Offset
 }
 
 func (m *_AdsDataTypeTableEntry) GetDataType() uint32 {
@@ -146,8 +146,8 @@ func (m *_AdsDataTypeTableEntry) GetName() string {
 	return m.Name
 }
 
-func (m *_AdsDataTypeTableEntry) GetTypeName() string {
-	return m.TypeName
+func (m *_AdsDataTypeTableEntry) GetDataTypeName() string {
+	return m.DataTypeName
 }
 
 func (m *_AdsDataTypeTableEntry) GetComment() string {
@@ -179,8 +179,8 @@ func (m *_AdsDataTypeTableEntry) GetNameTerminator() uint8 {
 	return AdsDataTypeTableEntry_NAMETERMINATOR
 }
 
-func (m *_AdsDataTypeTableEntry) GetTypeNameTerminator() uint8 {
-	return AdsDataTypeTableEntry_TYPENAMETERMINATOR
+func (m *_AdsDataTypeTableEntry) GetDataTypeNameTerminator() uint8 {
+	return AdsDataTypeTableEntry_DATATYPENAMETERMINATOR
 }
 
 func (m *_AdsDataTypeTableEntry) GetCommentTerminator() uint8 {
@@ -193,8 +193,8 @@ func (m *_AdsDataTypeTableEntry) GetCommentTerminator() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsDataTypeTableEntry factory function for _AdsDataTypeTableEntry
-func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offs uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, name string, typeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, rest []byte) *_AdsDataTypeTableEntry {
-	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offs: offs, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, Name: name, TypeName: typeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
+func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, name string, dataTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, rest []byte) *_AdsDataTypeTableEntry {
+	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, Name: name, DataTypeName: dataTypeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
 }
 
 // Deprecated: use the interface for direct cast
@@ -234,7 +234,7 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBitsConditional(lastItem bool) uint1
 	// Simple field (size)
 	lengthInBits += 32
 
-	// Simple field (offs)
+	// Simple field (offset)
 	lengthInBits += 32
 
 	// Simple field (dataType)
@@ -246,7 +246,7 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBitsConditional(lastItem bool) uint1
 	// Implicit Field (nameLength)
 	lengthInBits += 16
 
-	// Implicit Field (typeNameLength)
+	// Implicit Field (dataTypeNameLength)
 	lengthInBits += 16
 
 	// Implicit Field (commentLength)
@@ -264,10 +264,10 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBitsConditional(lastItem bool) uint1
 	// Const Field (nameTerminator)
 	lengthInBits += 8
 
-	// Simple field (typeName)
-	lengthInBits += uint16(int32(GetSTR_LEN()(m.GetTypeName())) * int32(int32(8)))
+	// Simple field (dataTypeName)
+	lengthInBits += uint16(int32(GetSTR_LEN()(m.GetDataTypeName())) * int32(int32(8)))
 
-	// Const Field (typeNameTerminator)
+	// Const Field (dataTypeNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (comment)
@@ -350,12 +350,12 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 	}
 	size := _size
 
-	// Simple Field (offs)
-	_offs, _offsErr := readBuffer.ReadUint32("offs", 32)
-	if _offsErr != nil {
-		return nil, errors.Wrap(_offsErr, "Error parsing 'offs' field of AdsDataTypeTableEntry")
+	// Simple Field (offset)
+	_offset, _offsetErr := readBuffer.ReadUint32("offset", 32)
+	if _offsetErr != nil {
+		return nil, errors.Wrap(_offsetErr, "Error parsing 'offset' field of AdsDataTypeTableEntry")
 	}
-	offs := _offs
+	offset := _offset
 
 	// Simple Field (dataType)
 	_dataType, _dataTypeErr := readBuffer.ReadUint32("dataType", 32)
@@ -378,11 +378,11 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 		return nil, errors.Wrap(_nameLengthErr, "Error parsing 'nameLength' field of AdsDataTypeTableEntry")
 	}
 
-	// Implicit Field (typeNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	typeNameLength, _typeNameLengthErr := readBuffer.ReadUint16("typeNameLength", 16)
-	_ = typeNameLength
-	if _typeNameLengthErr != nil {
-		return nil, errors.Wrap(_typeNameLengthErr, "Error parsing 'typeNameLength' field of AdsDataTypeTableEntry")
+	// Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	dataTypeNameLength, _dataTypeNameLengthErr := readBuffer.ReadUint16("dataTypeNameLength", 16)
+	_ = dataTypeNameLength
+	if _dataTypeNameLengthErr != nil {
+		return nil, errors.Wrap(_dataTypeNameLengthErr, "Error parsing 'dataTypeNameLength' field of AdsDataTypeTableEntry")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -422,20 +422,20 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsDataTypeTableEntry_NAMETERMINATOR) + " but got " + fmt.Sprintf("%d", nameTerminator))
 	}
 
-	// Simple Field (typeName)
-	_typeName, _typeNameErr := readBuffer.ReadString("typeName", uint32((typeNameLength)*(8)))
-	if _typeNameErr != nil {
-		return nil, errors.Wrap(_typeNameErr, "Error parsing 'typeName' field of AdsDataTypeTableEntry")
+	// Simple Field (dataTypeName)
+	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)))
+	if _dataTypeNameErr != nil {
+		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsDataTypeTableEntry")
 	}
-	typeName := _typeName
+	dataTypeName := _dataTypeName
 
-	// Const Field (typeNameTerminator)
-	typeNameTerminator, _typeNameTerminatorErr := readBuffer.ReadUint8("typeNameTerminator", 8)
-	if _typeNameTerminatorErr != nil {
-		return nil, errors.Wrap(_typeNameTerminatorErr, "Error parsing 'typeNameTerminator' field of AdsDataTypeTableEntry")
+	// Const Field (dataTypeNameTerminator)
+	dataTypeNameTerminator, _dataTypeNameTerminatorErr := readBuffer.ReadUint8("dataTypeNameTerminator", 8)
+	if _dataTypeNameTerminatorErr != nil {
+		return nil, errors.Wrap(_dataTypeNameTerminatorErr, "Error parsing 'dataTypeNameTerminator' field of AdsDataTypeTableEntry")
 	}
-	if typeNameTerminator != AdsDataTypeTableEntry_TYPENAMETERMINATOR {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsDataTypeTableEntry_TYPENAMETERMINATOR) + " but got " + fmt.Sprintf("%d", typeNameTerminator))
+	if dataTypeNameTerminator != AdsDataTypeTableEntry_DATATYPENAMETERMINATOR {
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsDataTypeTableEntry_DATATYPENAMETERMINATOR) + " but got " + fmt.Sprintf("%d", dataTypeNameTerminator))
 	}
 
 	// Simple Field (comment)
@@ -517,13 +517,13 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 		HashValue:       hashValue,
 		TypeHashValue:   typeHashValue,
 		Size:            size,
-		Offs:            offs,
+		Offset:          offset,
 		DataType:        dataType,
 		Flags:           flags,
 		ArrayDimensions: arrayDimensions,
 		NumChildren:     numChildren,
 		Name:            name,
-		TypeName:        typeName,
+		DataTypeName:    dataTypeName,
 		Comment:         comment,
 		ArrayInfo:       arrayInfo,
 		Children:        children,
@@ -573,11 +573,11 @@ func (m *_AdsDataTypeTableEntry) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 	}
 
-	// Simple Field (offs)
-	offs := uint32(m.GetOffs())
-	_offsErr := writeBuffer.WriteUint32("offs", 32, (offs))
-	if _offsErr != nil {
-		return errors.Wrap(_offsErr, "Error serializing 'offs' field")
+	// Simple Field (offset)
+	offset := uint32(m.GetOffset())
+	_offsetErr := writeBuffer.WriteUint32("offset", 32, (offset))
+	if _offsetErr != nil {
+		return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
 	}
 
 	// Simple Field (dataType)
@@ -601,11 +601,11 @@ func (m *_AdsDataTypeTableEntry) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(_nameLengthErr, "Error serializing 'nameLength' field")
 	}
 
-	// Implicit Field (typeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	typeNameLength := uint16(GetSTR_LEN()(m.GetTypeName()))
-	_typeNameLengthErr := writeBuffer.WriteUint16("typeNameLength", 16, (typeNameLength))
-	if _typeNameLengthErr != nil {
-		return errors.Wrap(_typeNameLengthErr, "Error serializing 'typeNameLength' field")
+	// Implicit Field (dataTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	dataTypeNameLength := uint16(GetSTR_LEN()(m.GetDataTypeName()))
+	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, (dataTypeNameLength))
+	if _dataTypeNameLengthErr != nil {
+		return errors.Wrap(_dataTypeNameLengthErr, "Error serializing 'dataTypeNameLength' field")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -642,17 +642,17 @@ func (m *_AdsDataTypeTableEntry) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(_nameTerminatorErr, "Error serializing 'nameTerminator' field")
 	}
 
-	// Simple Field (typeName)
-	typeName := string(m.GetTypeName())
-	_typeNameErr := writeBuffer.WriteString("typeName", uint32((GetSTR_LEN()(m.GetTypeName()))*(8)), "UTF-8", (typeName))
-	if _typeNameErr != nil {
-		return errors.Wrap(_typeNameErr, "Error serializing 'typeName' field")
+	// Simple Field (dataTypeName)
+	dataTypeName := string(m.GetDataTypeName())
+	_dataTypeNameErr := writeBuffer.WriteString("dataTypeName", uint32((GetSTR_LEN()(m.GetDataTypeName()))*(8)), "UTF-8", (dataTypeName))
+	if _dataTypeNameErr != nil {
+		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
 	}
 
-	// Const Field (typeNameTerminator)
-	_typeNameTerminatorErr := writeBuffer.WriteUint8("typeNameTerminator", 8, 0x00)
-	if _typeNameTerminatorErr != nil {
-		return errors.Wrap(_typeNameTerminatorErr, "Error serializing 'typeNameTerminator' field")
+	// Const Field (dataTypeNameTerminator)
+	_dataTypeNameTerminatorErr := writeBuffer.WriteUint8("dataTypeNameTerminator", 8, 0x00)
+	if _dataTypeNameTerminatorErr != nil {
+		return errors.Wrap(_dataTypeNameTerminatorErr, "Error serializing 'dataTypeNameTerminator' field")
 	}
 
 	// Simple Field (comment)
