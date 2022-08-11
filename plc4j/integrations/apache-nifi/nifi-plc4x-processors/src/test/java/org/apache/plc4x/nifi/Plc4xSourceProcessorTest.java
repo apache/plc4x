@@ -24,7 +24,6 @@ import org.apache.plc4x.nifi.Plc4xSourceProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class Plc4xSourceProcessorTest {
 
     private TestRunner testRunner;

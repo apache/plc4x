@@ -34,17 +34,17 @@
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-api</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-connection-pool</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-spi</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
@@ -69,8 +69,7 @@
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-avro-record-utils</artifactId>
-			<version>${nifi.version}</version>
-			<exclusions>
+      <!--exclusions>
 				<exclusion>
 					<groupId>org.checkerframework</groupId>
 					<artifactId>checker-qual</artifactId>
@@ -79,13 +78,17 @@
 					<groupId>com.google.errorprone</groupId>
 					<artifactId>error_prone_annotations</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions-->
 		</dependency>
 
-		<dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+    </dependency>
+
+    <dependency>
 			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-record-serialization-services</artifactId>
-			<version>${nifi.version}</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -114,93 +117,62 @@
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-modbus</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-opcua</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-s7</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-simulated</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-pcap-replay</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-raw-socket</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-serial</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-tcp</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-udp</artifactId>
-			<version>${nifi-plc4x.version}</version>
+			<version>0.10.0-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- mvn -Drat.skip=true verify -X -->
-		<dependency>
-			<groupId>org.apache.avro</groupId>
-			<artifactId>avro</artifactId>
-			<version>${nifi-plc4x-avro.version}</version>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.osgi</groupId>
-					<artifactId>org.osgi.core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-compress</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-standard-nar</artifactId>
-			<version>${nifi.version}</version>
 			<type>nar</type>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.nifi</groupId>
-			<artifactId>nifi-record</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.nifi</groupId>
-			<artifactId>nifi-record-serialization-service-api</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-
 	</dependencies>
 </project>
