@@ -22,18 +22,18 @@ package knxnetip
 import (
 	"bytes"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
 
 type Discoverer struct {

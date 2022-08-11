@@ -20,9 +20,9 @@
 package bacnetip
 
 import (
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Subscriber struct {

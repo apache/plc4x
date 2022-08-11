@@ -21,10 +21,10 @@ package cache
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/viney-shih/go-lock"

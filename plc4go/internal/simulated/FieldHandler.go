@@ -21,9 +21,9 @@ package simulated
 
 import (
 	"errors"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"regexp"
 	"strconv"
 )

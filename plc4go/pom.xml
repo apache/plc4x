@@ -475,7 +475,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/spi/testutils/steptype_string.go</package>
+                <package>spi/testutils/steptype_string.go</package>
               </packages>
             </configuration>
           </execution>

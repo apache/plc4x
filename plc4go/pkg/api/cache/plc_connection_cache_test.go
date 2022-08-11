@@ -21,9 +21,9 @@ package cache
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/simulated"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/stretchr/testify/assert"
 	"github.com/viney-shih/go-lock"
 	"testing"

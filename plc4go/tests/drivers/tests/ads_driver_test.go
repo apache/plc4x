@@ -21,10 +21,10 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/ads"
-	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	adsIO "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
 	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )

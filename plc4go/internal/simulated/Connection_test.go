@@ -20,11 +20,11 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"reflect"
 	"testing"
 	"time"

@@ -22,11 +22,11 @@ package tests
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
-	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

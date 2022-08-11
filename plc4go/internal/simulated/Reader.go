@@ -20,10 +20,10 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	model2 "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi"
+	model2 "github.com/apache/plc4x/plc4go/spi/model"
 	"strconv"
 	"time"
 )

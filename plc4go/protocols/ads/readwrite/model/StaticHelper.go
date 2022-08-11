@@ -20,8 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func ParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
