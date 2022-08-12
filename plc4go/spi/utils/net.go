@@ -133,13 +133,13 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 				// Schedule a discovery operation for this ip.
 				ip := net.IP(arp.SourceProtAddress)
 				log.Trace().Msgf("Scheduling discovery for IP %s", ip)
-				go func() {
+				go func(ip net.IP) {
 					select {
 					case <-ctx.Done():
-					case foundIps <- ip:
+					case foundIps <- DuplicateIP(ip):
 					case <-time.After(2 * time.Second):
 					}
-				}()
+				}(DuplicateIP(ip))
 			}
 		}
 	}(handle, netInterface, stop)
@@ -176,7 +176,7 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 		}
 		log.Debug().Msgf("Sending ARP requests to all devices in network: %s", addr.String())
 		// Send one ARP packet for every possible address.
-		for ip := incrementIP(addr.IP.Mask(ipNet.Mask)); addr.Contains(ip) && addr.Contains(incrementIP(duplicateIP(ip))); ip = incrementIP(ip) {
+		for ip := IncrementIP(addr.IP.Mask(ipNet.Mask)); addr.Contains(ip) && addr.Contains(IncrementIP(DuplicateIP(ip))); ip = IncrementIP(ip) {
 			// Check if context has been cancelled before continuing
 			select {
 			case <-ctx.Done():
@@ -206,7 +206,7 @@ func lookupIps(ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP) erro
 	log.Debug().Msgf("Scanning all IP addresses for network: %s", ipnet)
 	// expand CIDR-block into one target for each IP
 	// Remark: The last IP address a network contains is a special broadcast address. We don't want to check that one.
-	for ip := incrementIP(ipnet.IP.Mask(ipnet.Mask)); ipnet.Contains(ip) && ipnet.Contains(incrementIP(duplicateIP(ip))); ip = incrementIP(ip) {
+	for ip := IncrementIP(ipnet.IP.Mask(ipnet.Mask)); ipnet.Contains(ip) && ipnet.Contains(IncrementIP(DuplicateIP(ip))); ip = IncrementIP(ip) {
 		// Check if context has been cancelled before continuing
 		select {
 		case <-ctx.Done():
@@ -214,13 +214,13 @@ func lookupIps(ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP) erro
 		default:
 		}
 
-		go func() {
+		go func(ip net.IP) {
 			select {
 			case <-ctx.Done():
 			case foundIps <- ip:
 			case <-time.After(2 * time.Second):
 			}
-		}()
+		}(DuplicateIP(ip))
 		log.Trace().Stringer("IP", ip).Msg("Expanded CIDR")
 	}
 
@@ -229,7 +229,7 @@ func lookupIps(ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP) erro
 	return nil
 }
 
-func incrementIP(ip net.IP) net.IP {
+func IncrementIP(ip net.IP) net.IP {
 	for j := len(ip) - 1; j >= 0; j-- {
 		ip[j]++
 		if ip[j] > 0 {
@@ -240,7 +240,7 @@ func incrementIP(ip net.IP) net.IP {
 	return ip
 }
 
-func duplicateIP(ip net.IP) net.IP {
+func DuplicateIP(ip net.IP) net.IP {
 	dup := make(net.IP, len(ip))
 	copy(dup, ip)
 	return dup
