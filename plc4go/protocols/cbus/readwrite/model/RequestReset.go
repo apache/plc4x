@@ -34,11 +34,11 @@ type RequestReset interface {
 	// GetTildePeek returns TildePeek (property field)
 	GetTildePeek() RequestType
 	// GetSecondTilde returns SecondTilde (property field)
-	GetSecondTilde() *byte
+	GetSecondTilde() *RequestType
 	// GetTildePeek2 returns TildePeek2 (property field)
 	GetTildePeek2() RequestType
 	// GetThirdTilde returns ThirdTilde (property field)
-	GetThirdTilde() *byte
+	GetThirdTilde() *RequestType
 }
 
 // RequestResetExactly can be used when we want exactly this type and not a type which fulfills RequestReset.
@@ -52,9 +52,9 @@ type RequestResetExactly interface {
 type _RequestReset struct {
 	*_Request
 	TildePeek   RequestType
-	SecondTilde *byte
+	SecondTilde *RequestType
 	TildePeek2  RequestType
-	ThirdTilde  *byte
+	ThirdTilde  *RequestType
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ func (m *_RequestReset) GetTildePeek() RequestType {
 	return m.TildePeek
 }
 
-func (m *_RequestReset) GetSecondTilde() *byte {
+func (m *_RequestReset) GetSecondTilde() *RequestType {
 	return m.SecondTilde
 }
 
@@ -96,7 +96,7 @@ func (m *_RequestReset) GetTildePeek2() RequestType {
 	return m.TildePeek2
 }
 
-func (m *_RequestReset) GetThirdTilde() *byte {
+func (m *_RequestReset) GetThirdTilde() *RequestType {
 	return m.ThirdTilde
 }
 
@@ -106,7 +106,7 @@ func (m *_RequestReset) GetThirdTilde() *byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestReset factory function for _RequestReset
-func NewRequestReset(tildePeek RequestType, secondTilde *byte, tildePeek2 RequestType, thirdTilde *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestReset {
+func NewRequestReset(tildePeek RequestType, secondTilde *RequestType, tildePeek2 RequestType, thirdTilde *RequestType, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestReset {
 	_result := &_RequestReset{
 		TildePeek:   tildePeek,
 		SecondTilde: secondTilde,
@@ -182,13 +182,19 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 	readBuffer.Reset(currentPos)
 
 	// Optional Field (secondTilde) (Can be skipped, if a given expression evaluates to false)
-	var secondTilde *byte = nil
+	var secondTilde *RequestType = nil
 	if bool((tildePeek) == (RequestType_RESET)) {
-		_val, _err := readBuffer.ReadByte("secondTilde")
+		if pullErr := readBuffer.PullContext("secondTilde"); pullErr != nil {
+			return nil, errors.Wrap(pullErr, "Error pulling for secondTilde")
+		}
+		_val, _err := RequestTypeParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'secondTilde' field of RequestReset")
 		}
 		secondTilde = &_val
+		if closeErr := readBuffer.CloseContext("secondTilde"); closeErr != nil {
+			return nil, errors.Wrap(closeErr, "Error closing for secondTilde")
+		}
 	}
 
 	// Peek Field (tildePeek2)
@@ -207,13 +213,19 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 	readBuffer.Reset(currentPos)
 
 	// Optional Field (thirdTilde) (Can be skipped, if a given expression evaluates to false)
-	var thirdTilde *byte = nil
+	var thirdTilde *RequestType = nil
 	if bool((tildePeek2) == (RequestType_RESET)) {
-		_val, _err := readBuffer.ReadByte("thirdTilde")
+		if pullErr := readBuffer.PullContext("thirdTilde"); pullErr != nil {
+			return nil, errors.Wrap(pullErr, "Error pulling for thirdTilde")
+		}
+		_val, _err := RequestTypeParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'thirdTilde' field of RequestReset")
 		}
 		thirdTilde = &_val
+		if closeErr := readBuffer.CloseContext("thirdTilde"); closeErr != nil {
+			return nil, errors.Wrap(closeErr, "Error closing for thirdTilde")
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("RequestReset"); closeErr != nil {
@@ -243,20 +255,32 @@ func (m *_RequestReset) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Optional Field (secondTilde) (Can be skipped, if the value is null)
-		var secondTilde *byte = nil
+		var secondTilde *RequestType = nil
 		if m.GetSecondTilde() != nil {
+			if pushErr := writeBuffer.PushContext("secondTilde"); pushErr != nil {
+				return errors.Wrap(pushErr, "Error pushing for secondTilde")
+			}
 			secondTilde = m.GetSecondTilde()
-			_secondTildeErr := writeBuffer.WriteByte("secondTilde", *(secondTilde))
+			_secondTildeErr := writeBuffer.WriteSerializable(secondTilde)
+			if popErr := writeBuffer.PopContext("secondTilde"); popErr != nil {
+				return errors.Wrap(popErr, "Error popping for secondTilde")
+			}
 			if _secondTildeErr != nil {
 				return errors.Wrap(_secondTildeErr, "Error serializing 'secondTilde' field")
 			}
 		}
 
 		// Optional Field (thirdTilde) (Can be skipped, if the value is null)
-		var thirdTilde *byte = nil
+		var thirdTilde *RequestType = nil
 		if m.GetThirdTilde() != nil {
+			if pushErr := writeBuffer.PushContext("thirdTilde"); pushErr != nil {
+				return errors.Wrap(pushErr, "Error pushing for thirdTilde")
+			}
 			thirdTilde = m.GetThirdTilde()
-			_thirdTildeErr := writeBuffer.WriteByte("thirdTilde", *(thirdTilde))
+			_thirdTildeErr := writeBuffer.WriteSerializable(thirdTilde)
+			if popErr := writeBuffer.PopContext("thirdTilde"); popErr != nil {
+				return errors.Wrap(popErr, "Error popping for thirdTilde")
+			}
 			if _thirdTildeErr != nil {
 				return errors.Wrap(_thirdTildeErr, "Error serializing 'thirdTilde' field")
 			}

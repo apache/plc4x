@@ -74,9 +74,9 @@
         ]
         ['RESET' *Reset
             [peek     RequestType tildePeek                                     ]
-            [optional byte        secondTilde 'tildePeek == RequestType.RESET'  ]
+            [optional RequestType secondTilde 'tildePeek == RequestType.RESET'  ]
             [peek     RequestType tildePeek2                                    ]
-            [optional byte        thirdTilde 'tildePeek2 == RequestType.RESET'  ]
+            [optional RequestType thirdTilde 'tildePeek2 == RequestType.RESET'  ]
         ]
         ['DIRECT_COMMAND' *DirectCommandAccess
             [const    byte    at        0x40                                ]
@@ -87,6 +87,7 @@
                         '(calData.lengthInBytes*2)*8'                       ]
             [virtual  CALData
                               calDataDecoded 'calData'                      ]
+            [optional Alpha         alpha                                   ]
         ]
         ['REQUEST_COMMAND' *Command
             [const    byte  initiator 0x5C                                  ] // 0x5C == "\"
