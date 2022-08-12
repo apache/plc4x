@@ -45,6 +45,28 @@ var rootCommand = Command{
 	Name: rootCommandIndicator,
 	subCommands: []Command{
 		{
+			Name:        "discover",
+			Description: "Discovers devices",
+			action: func(_ Command, driverId string) error {
+				if driver, ok := registeredDrivers[driverId]; ok {
+					if !driver.SupportsDiscovery() {
+						return errors.Errorf("%s doesn't support discovery", driverId)
+					}
+					return driver.Discover(func(event model.PlcDiscoveryEvent) {
+						_, _ = fmt.Fprintf(messageOutput, "%v\n", event)
+					})
+				} else {
+					return errors.Errorf("%s not registered", driverId)
+				}
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for _, protocol := range protocolList {
+					entries = append(entries, protocol)
+				}
+				return
+			},
+		},
+		{
 			Name:        "connect",
 			Description: "Connects to a device",
 			action: func(_ Command, connectionString string) error {

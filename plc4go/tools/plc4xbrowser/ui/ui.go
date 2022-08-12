@@ -21,6 +21,7 @@ package ui
 
 import (
 	"fmt"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/gdamore/tcell/v2"
 	"github.com/pkg/errors"
@@ -92,9 +93,9 @@ func buildConnectionArea(newPrimitive func(text string) tview.Primitive, applica
 				AddItem(registeredDriverAreaHeader, 0, 0, 1, 1, 0, 0, false)
 			{
 				driverList := tview.NewList()
-				driverAdded = func(driver string) {
+				driverAdded = func(driver plc4go.PlcDriver) {
 					application.QueueUpdateDraw(func() {
-						driverList.AddItem(driver, "", 0x0, func() {
+						driverList.AddItem(driver.GetProtocolCode(), tview.Escape(fmt.Sprintf("%s", driver)), 0x0, func() {
 							//TODO: disconnect popup
 						})
 					})
@@ -137,6 +138,10 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 			case tcell.KeyCtrlC:
 				commandInputField.SetText("")
 				application.SetFocus(commandInputField)
+				return nil
+			case tcell.KeyCtrlD:
+				// TODO: maybe add a modal here
+				application.Stop()
 				return nil
 			}
 			return event
