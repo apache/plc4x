@@ -103,7 +103,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 				}
 				addresses, err := utils.GetIPAddresses(context.TODO(), netInterface, false)
 				if err != nil {
-					log.Warn().Err(err).Msgf("Can't get addresses for %s", netInterface)
+					log.Warn().Err(err).Msgf("Can't get addresses for %v", netInterface)
 					continue
 				}
 				go func() {
