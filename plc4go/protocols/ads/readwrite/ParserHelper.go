@@ -71,6 +71,8 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return model.AdsStampHeaderParse(io)
 	case "AmsSerialResetFrame":
 		return model.AmsSerialResetFrameParse(io)
+	case "AdsDataTypeTableChildEntry":
+		return model.AdsDataTypeTableChildEntryParse(io)
 	case "AdsConstants":
 		return model.AdsConstantsParse(io)
 	case "AdsNotificationSample":

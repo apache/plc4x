@@ -197,7 +197,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 LOGGER.error("Error fetching symbol and datatype table sizes");
             } else {
                 for (AdsDataTypeTableEntry dataType : dataTypes) {
-                    dataTypeTable.put(dataType.getName(), dataType);
+                    dataTypeTable.put(dataType.getDataTypeName(), dataType);
                 }
                 for (AdsSymbolTableEntry symbol : symbols) {
                     symbolTable.put(symbol.getName(), symbol);
@@ -239,15 +239,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
 
         List<PlcBrowseItem> values = new ArrayList<>(dataType.getNumChildren());
-        for (AdsDataTypeTableEntry child : dataType.getChildren()) {
-            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getName(), child.getDataTypeName()));
+        for (AdsDataTypeTableChildEntry child : dataType.getChildren()) {
+            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), child.getDataTypeName()));
             AdsDataTypeTableEntry childDataType = dataTypeTable.get(child.getDataTypeName());
             if(childDataType == null) {
                 System.out.printf("couldn't find datatype: %s%n", child.getDataTypeName());
                 continue;
             }
             // Recursively add all children of the current datatype.
-            values.addAll(getBrowseItems(child.getName(), baseGroupId, baseOffset + child.getOffset(), childDataType));
+            values.addAll(getBrowseItems(child.getDataTypeName(), baseGroupId, baseOffset + child.getOffset(), childDataType));
         }
         return values;
     }

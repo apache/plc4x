@@ -78,6 +78,8 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return model.AdsStampHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsSerialResetFrame":
 		return model.AmsSerialResetFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeTableChildEntry":
+		return model.AdsDataTypeTableChildEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsConstants":
 		return model.AdsConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsNotificationSample":
