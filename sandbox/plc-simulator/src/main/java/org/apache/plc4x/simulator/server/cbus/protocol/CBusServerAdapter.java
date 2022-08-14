@@ -122,8 +122,11 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         CALReplyShort calReply = new CALReplyShort((byte) 0x0, calDataAcknowledge, cBusOptions, requestContext);
                         EncodedReplyCALReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
                         ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
-                        ReplyOrConfirmationReply replyOrConfirmationReply = new ReplyOrConfirmationReply((byte) 0x0, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
-                        CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmationReply, requestContext, cBusOptions);
+                        ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x0, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+                        if (requestDirectCommandAccess.getAlpha() != null) {
+                            replyOrConfirmation = new ReplyOrConfirmationConfirmation((byte) 0x0, new Confirmation(requestDirectCommandAccess.getAlpha(), null, ConfirmationType.CONFIRMATION_SUCCESSFUL), replyOrConfirmation, cBusOptions, requestContext);
+                        }
+                        CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
                         LOGGER.info("Sending ack\n{}\n{}", cBusMessageToClient, encodedReply);
                         ctx.writeAndFlush(cBusMessageToClient);
                     };
@@ -212,6 +215,9 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                             throw new IllegalStateException("Unmapped type");
                     }
                 }
+                if (calData instanceof CALDataIdentify) {
+                    handleCalDataIdentify(ctx, (CALDataIdentify) calData, requestDirectCommandAccess.getAlpha());
+                }
                 return;
             }
             if (request instanceof RequestCommand) {
@@ -247,113 +253,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     CALData calData = command.getCalData();
                     // TODO: handle other Datatypes
                     if (calData instanceof CALDataIdentify) {
-                        short numBytes = 0;
-                        IdentifyReplyCommand identifyReplyCommand;
-                        CALDataIdentify calDataIdentify = (CALDataIdentify) calData;
-                        switch (calDataIdentify.getAttribute()) {
-                            case Manufacturer:
-                                numBytes = 0x08;
-                                identifyReplyCommand = new IdentifyReplyCommandManufacturer("Apache", numBytes);
-                                break;
-                            case Type:
-                                numBytes = 0x08;
-                                identifyReplyCommand = new IdentifyReplyCommandType("plc4x-si", numBytes);
-                                break;
-                            case FirmwareVersion:
-                                numBytes = 0x08;
-                                identifyReplyCommand = new IdentifyReplyCommandFirmwareVersion("0.9", numBytes);
-                                break;
-                            case Summary:
-                                numBytes = 0x09;
-                                identifyReplyCommand = new IdentifyReplyCommandFirmwareSummary("0.9", (byte) 0xAF, "0.0", numBytes);
-                                break;
-                            case ExtendedDiagnosticSummary:
-                                numBytes = 0x0C;
-                                identifyReplyCommand = new IdentifyReplyCommandExtendedDiagnosticSummary(ApplicationIdContainer.FREE_USAGE_01, ApplicationIdContainer.FREE_USAGE_0F, (byte) 0x0, 0x0, 4711l, (byte) 0x13, false, false, false, true, false, false, false, false, false, false, false, false, false, numBytes);
-                                break;
-                            case NetworkTerminalLevels:
-                                numBytes = 0x0C;
-                                identifyReplyCommand = new IdentifyReplyCommandNetworkTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
-                                break;
-                            case TerminalLevel:
-                                numBytes = 0x0C;
-                                identifyReplyCommand = new IdentifyReplyCommandTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
-                                break;
-                            case NetworkVoltage:
-                                numBytes = 0x05;
-                                identifyReplyCommand = new IdentifyReplyCommandNetworkVoltage("48", "7", numBytes);
-                                break;
-                            case GAVValuesCurrent:
-                                numBytes = 0x10;
-                                identifyReplyCommand = new IdentifyReplyCommandGAVValuesCurrent(new byte[]{
-                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-                                }, numBytes);
-                                break;
-                            case GAVValuesStored:
-                                numBytes = 0x10;
-                                identifyReplyCommand = new IdentifyReplyCommandGAVValuesStored(new byte[]{
-                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-                                }, numBytes);
-                                break;
-                            case GAVPhysicalAddresses:
-                                numBytes = 0x10;
-                                identifyReplyCommand = new IdentifyReplyCommandGAVPhysicalAddresses(new byte[]{
-                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-                                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-                                }, numBytes);
-                                break;
-                            case LogicalAssignment:
-                                numBytes = 0x0E;
-                                identifyReplyCommand = new IdentifyReplyCommandLogicalAssignment(List.of(new LogicAssignment(false, true, true, true, true, true)), numBytes);
-                                break;
-                            case Delays:
-                                numBytes = 0x0F;
-                                identifyReplyCommand = new IdentifyReplyCommandDelays(new byte[]{0x3}, (byte) 0x13, numBytes);
-                                break;
-                            case MinimumLevels:
-                                numBytes = 0x0E;
-                                identifyReplyCommand = new IdentifyReplyCommandMinimumLevels(new byte[]{0x3}, numBytes);
-                                break;
-                            case MaximumLevels:
-                                numBytes = 0x0F;
-                                identifyReplyCommand = new IdentifyReplyCommandMaximumLevels(new byte[]{0xF}, numBytes);
-                                break;
-                            case CurrentSenseLevels:
-                                numBytes = 0x10;
-                                identifyReplyCommand = new IdentifyReplyCommandCurrentSenseLevels(new byte[]{0xF}, numBytes);
-                                break;
-                            case OutputUnitSummary:
-                                numBytes = 0x12;
-                                identifyReplyCommand = new IdentifyReplyCommandOutputUnitSummary(new IdentifyReplyCommandUnitSummary(false, false, false, false, false, false, false, false), (byte) 0x4, (byte) 0x4, (short) 45, numBytes);
-                                break;
-                            case DSIStatus:
-                                numBytes = 0x12;
-                                identifyReplyCommand = new IdentifyReplyCommandDSIStatus(ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, UnitStatus.OK, (byte) 0x34, numBytes);
-                                break;
-                            default:
-                                throw new IllegalStateException("unmapped type " + calDataIdentify.getAttribute());
-                        }
-
-                        calData = new CALDataIdentifyReply(getReplyCommandType(numBytes + 1), null, ((CALDataIdentify) calData).getAttribute(), identifyReplyCommand, requestContext);
-                        CALReply calReply;
-                        if (exstat) {
-                            calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
-                        } else {
-                            calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
-                        }
-                        EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
-                        ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
-                        ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
-                        Alpha alpha = requestCommand.getAlpha();
-                        if (alpha != null) {
-                            Confirmation confirmation = new Confirmation(alpha, null, ConfirmationType.CONFIRMATION_SUCCESSFUL);
-                            replyOrConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, replyOrConfirmation, cBusOptions, requestContext);
-                        }
-                        CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
-                        LOGGER.info("Send identify response\n{}", response);
-                        ctx.writeAndFlush(response);
+                        handleCalDataIdentify(ctx, (CALDataIdentify) calData, requestCommand.getAlpha());
                     }
                     return;
                 }
@@ -484,6 +384,114 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             ctx.flush();
             writeLock.unlock();
         }
+    }
+
+    private void handleCalDataIdentify(ChannelHandlerContext ctx, CALDataIdentify calDataIdentify, Alpha alpha) {
+        short numBytes = 0;
+        IdentifyReplyCommand identifyReplyCommand;
+        switch (calDataIdentify.getAttribute()) {
+            case Manufacturer:
+                numBytes = 0x08;
+                identifyReplyCommand = new IdentifyReplyCommandManufacturer("Apache", numBytes);
+                break;
+            case Type:
+                numBytes = 0x08;
+                identifyReplyCommand = new IdentifyReplyCommandType("plc4x-si", numBytes);
+                break;
+            case FirmwareVersion:
+                numBytes = 0x08;
+                identifyReplyCommand = new IdentifyReplyCommandFirmwareVersion("0.9", numBytes);
+                break;
+            case Summary:
+                numBytes = 0x09;
+                identifyReplyCommand = new IdentifyReplyCommandFirmwareSummary("0.9", (byte) 0xAF, "0.0", numBytes);
+                break;
+            case ExtendedDiagnosticSummary:
+                numBytes = 0x0C;
+                identifyReplyCommand = new IdentifyReplyCommandExtendedDiagnosticSummary(ApplicationIdContainer.FREE_USAGE_01, ApplicationIdContainer.FREE_USAGE_0F, (byte) 0x0, 0x0, 4711l, (byte) 0x13, false, false, false, true, false, false, false, false, false, false, false, false, false, numBytes);
+                break;
+            case NetworkTerminalLevels:
+                numBytes = 0x0C;
+                identifyReplyCommand = new IdentifyReplyCommandNetworkTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
+                break;
+            case TerminalLevel:
+                numBytes = 0x0C;
+                identifyReplyCommand = new IdentifyReplyCommandTerminalLevels(new byte[]{0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13}, numBytes);
+                break;
+            case NetworkVoltage:
+                numBytes = 0x05;
+                identifyReplyCommand = new IdentifyReplyCommandNetworkVoltage("48", "7", numBytes);
+                break;
+            case GAVValuesCurrent:
+                numBytes = 0x10;
+                identifyReplyCommand = new IdentifyReplyCommandGAVValuesCurrent(new byte[]{
+                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                }, numBytes);
+                break;
+            case GAVValuesStored:
+                numBytes = 0x10;
+                identifyReplyCommand = new IdentifyReplyCommandGAVValuesStored(new byte[]{
+                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                }, numBytes);
+                break;
+            case GAVPhysicalAddresses:
+                numBytes = 0x10;
+                identifyReplyCommand = new IdentifyReplyCommandGAVPhysicalAddresses(new byte[]{
+                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
+                }, numBytes);
+                break;
+            case LogicalAssignment:
+                numBytes = 0x0E;
+                identifyReplyCommand = new IdentifyReplyCommandLogicalAssignment(List.of(new LogicAssignment(false, true, true, true, true, true)), numBytes);
+                break;
+            case Delays:
+                numBytes = 0x0F;
+                identifyReplyCommand = new IdentifyReplyCommandDelays(new byte[]{0x3}, (byte) 0x13, numBytes);
+                break;
+            case MinimumLevels:
+                numBytes = 0x0E;
+                identifyReplyCommand = new IdentifyReplyCommandMinimumLevels(new byte[]{0x3}, numBytes);
+                break;
+            case MaximumLevels:
+                numBytes = 0x0F;
+                identifyReplyCommand = new IdentifyReplyCommandMaximumLevels(new byte[]{0xF}, numBytes);
+                break;
+            case CurrentSenseLevels:
+                numBytes = 0x10;
+                identifyReplyCommand = new IdentifyReplyCommandCurrentSenseLevels(new byte[]{0xF}, numBytes);
+                break;
+            case OutputUnitSummary:
+                numBytes = 0x12;
+                identifyReplyCommand = new IdentifyReplyCommandOutputUnitSummary(new IdentifyReplyCommandUnitSummary(false, false, false, false, false, false, false, false), (byte) 0x4, (byte) 0x4, (short) 45, numBytes);
+                break;
+            case DSIStatus:
+                numBytes = 0x12;
+                identifyReplyCommand = new IdentifyReplyCommandDSIStatus(ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, ChannelStatus.OK, UnitStatus.OK, (byte) 0x34, numBytes);
+                break;
+            default:
+                throw new IllegalStateException("unmapped type " + calDataIdentify.getAttribute());
+        }
+
+        CALData calData = new CALDataIdentifyReply(getReplyCommandType(numBytes + 1), null, calDataIdentify.getAttribute(), identifyReplyCommand, requestContext);
+        CALReply calReply;
+        if (exstat) {
+            calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
+        } else {
+            calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+        }
+        EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+        ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
+        ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+        if (alpha != null) {
+            Confirmation confirmation = new Confirmation(alpha, null, ConfirmationType.CONFIRMATION_SUCCESSFUL);
+            replyOrConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, replyOrConfirmation, cBusOptions, requestContext);
+        }
+        CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+        LOGGER.info("Send identify response\n{}", response);
+        ctx.writeAndFlush(response);
     }
 
     private void startSALMonitor(ChannelHandlerContext ctx) {

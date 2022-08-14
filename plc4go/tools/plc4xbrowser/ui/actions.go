@@ -80,23 +80,46 @@ func validateDriverParam(driver string) error {
 	return errors.Errorf("protocol %s not found", driver)
 }
 
-func registerDriver(driver string) error {
-	switch driver {
-	case "ads":
-		driverManager.RegisterDriver(ads.NewDriver())
-		transports.RegisterTcpTransport(driverManager)
-	case "bacnetip":
-		driverManager.RegisterDriver(bacnetip.NewDriver())
-		transports.RegisterUdpTransport(driverManager)
-	case "c-bus":
-		driverManager.RegisterDriver(cbus.NewDriver())
-		transports.RegisterTcpTransport(driverManager)
-	case "s7":
-		driverManager.RegisterDriver(s7.NewDriver())
-		transports.RegisterTcpTransport(driverManager)
-	default:
-		return errors.Errorf("Unknown driver %s", driver)
+var tcpRegistered, udpRegistered bool
+
+func registerDriver(driverId string) error {
+	if _, ok := registeredDrivers[driverId]; ok {
+		return errors.Errorf("%s already registered", driverId)
 	}
+	var driver plc4go.PlcDriver
+	switch driverId {
+	case "ads":
+		driver = ads.NewDriver()
+		driverManager.RegisterDriver(driver)
+		if !tcpRegistered {
+			transports.RegisterTcpTransport(driverManager)
+			tcpRegistered = true
+		}
+	case "bacnetip":
+		driver = bacnetip.NewDriver()
+		driverManager.RegisterDriver(driver)
+		if !udpRegistered {
+			transports.RegisterUdpTransport(driverManager)
+			udpRegistered = true
+		}
+	case "c-bus":
+		driver = cbus.NewDriver()
+		driverManager.RegisterDriver(driver)
+		if !tcpRegistered {
+			transports.RegisterTcpTransport(driverManager)
+			tcpRegistered = true
+		}
+	case "s7":
+		driver = s7.NewDriver()
+		driverManager.RegisterDriver(driver)
+		if !tcpRegistered {
+			transports.RegisterTcpTransport(driverManager)
+			tcpRegistered = true
+		}
+	default:
+		return errors.Errorf("Unknown driver %s", driverId)
+	}
+	registeredDrivers[driverId] = driver
 	go driverAdded(driver)
 	return nil
 }

@@ -21,16 +21,18 @@ package cbus
 
 import (
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 type Reader struct {

@@ -20,6 +20,7 @@
 package _default
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -29,6 +30,7 @@ import (
 )
 
 type DefaultDriver interface {
+	fmt.Stringer
 	plc4go.PlcDriver
 	spi.PlcDiscoverer
 	GetPlcFieldHandler() spi.PlcFieldHandler
@@ -93,4 +95,8 @@ func (d *defaultDriver) Discover(_ func(event apiModel.PlcDiscoveryItem), _ ...o
 
 func (d *defaultDriver) GetPlcFieldHandler() spi.PlcFieldHandler {
 	return d.plcFieldHandler
+}
+
+func (d *defaultDriver) String() string {
+	return fmt.Sprintf("%s (%s) [%s]", d.protocolName, d.protocolCode, d.defaultTransport)
 }

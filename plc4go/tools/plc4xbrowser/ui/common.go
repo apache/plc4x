@@ -36,7 +36,8 @@ var protocolList = strings.Split(protocols, ",")
 var plc4xBrowserLog = zerolog.Nop()
 
 var driverManager plc4go.PlcDriverManager
-var driverAdded func(string)
+var registeredDrivers map[string]plc4go.PlcDriver
+var driverAdded func(driver plc4go.PlcDriver)
 var connections map[string]plc4go.PlcConnection
 var connectionsChanged func()
 
@@ -63,6 +64,7 @@ const (
 
 func init() {
 	hasShutdown = false
+	registeredDrivers = make(map[string]plc4go.PlcDriver)
 	connections = make(map[string]plc4go.PlcConnection)
 }
 

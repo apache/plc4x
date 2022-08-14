@@ -21,9 +21,11 @@ package cbus
 
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -109,4 +111,12 @@ func (m *Driver) SetAwaitSetupComplete(awaitComplete bool) {
 
 func (m *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
 	m.awaitDisconnectComplete = awaitComplete
+}
+
+func (m *Driver) SupportsDiscovery() bool {
+	return true
+}
+
+func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+	return NewDiscoverer().Discover(callback, discoveryOptions...)
 }

@@ -1405,6 +1405,8 @@ const (
 	BACnetVendorId_ZED_BEE_TECHNOLOGIES_PVT_LTD                                                 BACnetVendorId = 1372
 	BACnetVendorId_WINMATE_TECHNOLOGY_SOLUTIONS_PVT_LTD                                         BACnetVendorId = 1373
 	BACnetVendorId_SENTICON_LTD                                                                 BACnetVendorId = 1374
+	BACnetVendorId_ROSSAKERAB                                                                   BACnetVendorId = 1375
+	BACnetVendorId_OPIT_SOLUTIONS_LTD                                                           BACnetVendorId = 1376
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2781,6 +2783,8 @@ func init() {
 		BACnetVendorId_ZED_BEE_TECHNOLOGIES_PVT_LTD,
 		BACnetVendorId_WINMATE_TECHNOLOGY_SOLUTIONS_PVT_LTD,
 		BACnetVendorId_SENTICON_LTD,
+		BACnetVendorId_ROSSAKERAB,
+		BACnetVendorId_OPIT_SOLUTIONS_LTD,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4462,6 +4466,14 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1374:
 		{ /* '1374' */
 			return 1374
+		}
+	case 1375:
+		{ /* '1375' */
+			return 1375
+		}
+	case 1376:
+		{ /* '1376' */
+			return 1376
 		}
 	case 138:
 		{ /* '138' */
@@ -9957,6 +9969,14 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1374' */
 			return "Senticon Ltd."
 		}
+	case 1375:
+		{ /* '1375' */
+			return "Rossaker AB"
+		}
+	case 1376:
+		{ /* '1376' */
+			return "OPIT Solutions Ltd"
+		}
 	case 138:
 		{ /* '138' */
 			return "PowerCold Comfort Air Solutions, Inc."
@@ -14612,6 +14632,10 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_WINMATE_TECHNOLOGY_SOLUTIONS_PVT_LTD, true
 	case 1374:
 		return BACnetVendorId_SENTICON_LTD, true
+	case 1375:
+		return BACnetVendorId_ROSSAKERAB, true
+	case 1376:
+		return BACnetVendorId_OPIT_SOLUTIONS_LTD, true
 	case 138:
 		return BACnetVendorId_POWER_COLD_COMFORT_AIR_SOLUTIONS_INC, true
 	case 139:
@@ -17356,6 +17380,10 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_WINMATE_TECHNOLOGY_SOLUTIONS_PVT_LTD, true
 	case "SENTICON_LTD":
 		return BACnetVendorId_SENTICON_LTD, true
+	case "ROSSAKERAB":
+		return BACnetVendorId_ROSSAKERAB, true
+	case "OPIT_SOLUTIONS_LTD":
+		return BACnetVendorId_OPIT_SOLUTIONS_LTD, true
 	case "POWER_COLD_COMFORT_AIR_SOLUTIONS_INC":
 		return BACnetVendorId_POWER_COLD_COMFORT_AIR_SOLUTIONS_INC, true
 	case "I_CONTROLS":
@@ -20145,6 +20173,10 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "WINMATE_TECHNOLOGY_SOLUTIONS_PVT_LTD"
 	case BACnetVendorId_SENTICON_LTD:
 		return "SENTICON_LTD"
+	case BACnetVendorId_ROSSAKERAB:
+		return "ROSSAKERAB"
+	case BACnetVendorId_OPIT_SOLUTIONS_LTD:
+		return "OPIT_SOLUTIONS_LTD"
 	case BACnetVendorId_POWER_COLD_COMFORT_AIR_SOLUTIONS_INC:
 		return "POWER_COLD_COMFORT_AIR_SOLUTIONS_INC"
 	case BACnetVendorId_I_CONTROLS:
