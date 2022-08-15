@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
@@ -138,6 +139,10 @@ func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 	}()
 
 	return resultChannel
+}
+
+func (m DefaultPlcReadRequest) ExecuteWithContext(_ context.Context) <-chan model.PlcReadRequestResult {
+	return m.Execute()
 }
 
 func (m DefaultPlcReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {

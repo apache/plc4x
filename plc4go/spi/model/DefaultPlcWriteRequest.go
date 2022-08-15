@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -163,6 +164,10 @@ func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 	}()
 
 	return resultChannel
+}
+
+func (m DefaultPlcWriteRequest) ExecuteWithContext(_ context.Context) <-chan model.PlcWriteRequestResult {
+	return m.Execute()
 }
 
 func (m DefaultPlcWriteRequest) GetWriter() spi.PlcWriter {

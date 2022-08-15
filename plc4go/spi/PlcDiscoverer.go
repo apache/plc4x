@@ -20,10 +20,12 @@
 package spi
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type PlcDiscoverer interface {
 	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
+	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
 }

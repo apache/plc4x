@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -82,6 +83,10 @@ func NewDefaultPlcBrowseRequest(fields map[string]model.PlcField, fieldNames []s
 
 func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
 	return d.browser.Browse(d)
+}
+
+func (d DefaultPlcBrowseRequest) ExecuteWithContext(_ context.Context) <-chan model.PlcBrowseRequestResult {
+	return d.Execute()
 }
 
 func (d DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {

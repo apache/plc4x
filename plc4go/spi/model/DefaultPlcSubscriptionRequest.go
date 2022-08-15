@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -137,6 +138,10 @@ func NewDefaultPlcSubscriptionRequest(fields map[string]model.PlcField, fieldNam
 
 func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {
 	return m.subscriber.Subscribe(m)
+}
+
+func (m DefaultPlcSubscriptionRequest) ExecuteWithContext(_ context.Context) <-chan model.PlcSubscriptionRequestResult {
+	return m.Execute()
 }
 
 func (m DefaultPlcSubscriptionRequest) GetEventHandler() model.PlcSubscriptionEventHandler {
