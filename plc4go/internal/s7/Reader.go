@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
@@ -46,7 +47,8 @@ func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm *
 	}
 }
 
-func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	// TODO: handle ctx
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {

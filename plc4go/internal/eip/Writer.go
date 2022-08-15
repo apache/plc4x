@@ -20,6 +20,7 @@
 package eip
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -50,7 +51,8 @@ func NewWriter(messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager,
 	}
 }
 
-func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
 		items := make([]readWriteModel.CipService, len(writeRequest.GetFieldNames()))

@@ -161,7 +161,7 @@ func TestReader_Read(t *testing.T) {
 			r := NewReader(tt.fields.device, tt.fields.options, nil)
 			readRequest := model3.NewDefaultPlcReadRequest(tt.args.fields, tt.args.fieldNames, r, nil)
 			timeBeforeReadRequest := time.Now()
-			readResponseChannel := r.Read(readRequest)
+			readResponseChannel := r.Read(nil, readRequest)
 			select {
 			case readResponse := <-readResponseChannel:
 				timeAfterReadRequest := time.Now()

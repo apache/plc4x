@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -49,7 +50,8 @@ func NewReader(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm 
 	}
 }
 
-func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	// TODO: handle ctx
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {

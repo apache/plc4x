@@ -173,7 +173,7 @@ func TestWriter_Write(t *testing.T) {
 			w := NewWriter(tt.fields.device, tt.fields.options, nil)
 			writeRequest := model3.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
 			timeBeforeWriteRequest := time.Now()
-			writeResponseChannel := w.Write(writeRequest)
+			writeResponseChannel := w.Write(nil, writeRequest)
 			select {
 			case writeResponse := <-writeResponseChannel:
 				timeAfterWriteRequest := time.Now()

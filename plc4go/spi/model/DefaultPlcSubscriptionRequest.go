@@ -137,11 +137,11 @@ func NewDefaultPlcSubscriptionRequest(fields map[string]model.PlcField, fieldNam
 }
 
 func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {
-	return m.subscriber.Subscribe(m)
+	return m.ExecuteWithContext(context.TODO())
 }
 
-func (m DefaultPlcSubscriptionRequest) ExecuteWithContext(_ context.Context) <-chan model.PlcSubscriptionRequestResult {
-	return m.Execute()
+func (m DefaultPlcSubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcSubscriptionRequestResult {
+	return m.subscriber.Subscribe(ctx, m)
 }
 
 func (m DefaultPlcSubscriptionRequest) GetEventHandler() model.PlcSubscriptionEventHandler {

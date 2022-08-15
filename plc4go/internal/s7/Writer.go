@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
@@ -45,7 +46,8 @@ func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm *
 	}
 }
 
-func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
 		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetFieldNames()))

@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -66,7 +67,8 @@ func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCod
 	}
 }
 
-func (m *Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+	// TODO: handle ctx
 	log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult)
 	go func() {

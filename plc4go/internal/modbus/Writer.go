@@ -20,6 +20,7 @@
 package modbus
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -46,7 +47,8 @@ func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec) Writer {
 	}
 }
 
-func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
 		// If we are requesting only one field, use a

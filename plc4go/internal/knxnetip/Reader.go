@@ -20,6 +20,7 @@
 package knxnetip
 
 import (
+	"context"
 	"errors"
 	"strconv"
 	"strings"
@@ -43,7 +44,8 @@ func NewReader(connection *Connection) *Reader {
 	}
 }
 
-func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+	// TODO: handle ctx
 	resultChan := make(chan apiModel.PlcReadRequestResult)
 	go func() {
 		responseCodes := map[string]apiModel.PlcResponseCode{}

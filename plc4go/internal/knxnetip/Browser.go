@@ -20,8 +20,10 @@
 package knxnetip
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"strconv"
 	"strings"
 	"time"
@@ -37,61 +39,44 @@ import (
 )
 
 type Browser struct {
+	_default.DefaultBrowser
 	connection      *Connection
 	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
 }
 
 func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser {
-	return &Browser{
+	browser := Browser{
 		connection:      connection,
 		messageCodec:    messageCodec,
 		sequenceCounter: 0,
 	}
+	browser.DefaultBrowser = _default.NewDefaultBrowser(browser)
+	return &browser
 }
 
-func (m Browser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return m.BrowseWithInterceptor(browseRequest, func(result apiModel.PlcBrowseEvent) bool {
-		return true
-	})
-}
-
-func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
-	result := make(chan apiModel.PlcBrowseRequestResult)
-	go func() {
-		responseCodes := map[string]apiModel.PlcResponseCode{}
-		results := map[string][]apiModel.PlcBrowseFoundField{}
-		for _, fieldName := range browseRequest.GetFieldNames() {
-			field := browseRequest.GetField(fieldName)
-
-			switch field.(type) {
-			case DeviceQueryField:
-				queryResults, err := m.executeDeviceQuery(field.(DeviceQueryField), browseRequest, fieldName, interceptor)
-				if err != nil {
-					log.Warn().Err(err).Msg("Error executing device query")
-					responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-				} else {
-					results[fieldName] = queryResults
-				}
-			case CommunicationObjectQueryField:
-				queryResults, err := m.executeCommunicationObjectQuery(field.(CommunicationObjectQueryField))
-				if err != nil {
-					log.Warn().Err(err).Msg("Error executing device query")
-					responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-				} else {
-					results[fieldName] = queryResults
-				}
-			default:
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			}
+func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool, fieldName string, field apiModel.PlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField) {
+	// TODO: handle ctx
+	switch field.(type) {
+	case DeviceQueryField:
+		queryResults, err := m.executeDeviceQuery(field.(DeviceQueryField), browseRequest, fieldName, interceptor)
+		if err != nil {
+			log.Warn().Err(err).Msg("Error executing device query")
+			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+		} else {
+			return apiModel.PlcResponseCode_OK, queryResults
 		}
-		result <- &model.DefaultPlcBrowseRequestResult{
-			Request:  browseRequest,
-			Response: model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes),
-			Err:      nil,
+	case CommunicationObjectQueryField:
+		queryResults, err := m.executeCommunicationObjectQuery(field.(CommunicationObjectQueryField))
+		if err != nil {
+			log.Warn().Err(err).Msg("Error executing device query")
+			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+		} else {
+			return apiModel.PlcResponseCode_OK, queryResults
 		}
-	}()
-	return result
+	default:
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+	}
 }
 
 func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiModel.PlcBrowseRequest, fieldName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseFoundField, error) {

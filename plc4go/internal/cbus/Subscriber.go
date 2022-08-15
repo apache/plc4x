@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"context"
 	"fmt"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -42,7 +43,8 @@ func NewSubscriber(connection *Connection) *Subscriber {
 	}
 }
 
-func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
+func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
+	// TODO: handle context
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
 		// Add this subscriber to the connection.
@@ -66,7 +68,8 @@ func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionReque
 	return result
 }
 
-func (m *Subscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
+func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
+	// TODO: handle context
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
 
 	// TODO: As soon as we establish a connection, we start getting data...

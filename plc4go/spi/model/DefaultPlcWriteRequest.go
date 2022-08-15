@@ -127,23 +127,27 @@ func NewDefaultPlcWriteRequest(fields map[string]model.PlcField, fieldNames []st
 }
 
 func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
+	return m.ExecuteWithContext(context.TODO())
+}
+
+func (m DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcWriteRequestResult {
 	// Shortcut, if no interceptor is defined
 	if m.writeRequestInterceptor == nil {
-		return m.writer.Write(m)
+		return m.writer.Write(ctx, m)
 	}
 
 	// Split the requests up into multiple ones.
-	writeRequests := m.writeRequestInterceptor.InterceptWriteRequest(m)
+	writeRequests := m.writeRequestInterceptor.InterceptWriteRequest(ctx, m)
 	// Shortcut for single-request-requests
 	if len(writeRequests) == 1 {
-		return m.writer.Write(writeRequests[0])
+		return m.writer.Write(ctx, writeRequests[0])
 	}
 	// Create a sub-result-channel slice
 	var subResultChannels []<-chan model.PlcWriteRequestResult
 
 	// Iterate over all requests and add the result-channels to the list
 	for _, subRequest := range writeRequests {
-		subResultChannels = append(subResultChannels, m.writer.Write(subRequest))
+		subResultChannels = append(subResultChannels, m.writer.Write(ctx, subRequest))
 		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
 		time.Sleep(time.Millisecond * 4)
 	}
@@ -154,20 +158,21 @@ func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 		var subResults []model.PlcWriteRequestResult
 		// Iterate over all sub-results
 		for _, subResultChannel := range subResultChannels {
-			subResult := <-subResultChannel
-			subResults = append(subResults, subResult)
+			select {
+			case <-ctx.Done():
+				resultChannel <- &DefaultPlcWriteRequestResult{Request: m, Err: ctx.Err()}
+				return
+			case subResult := <-subResultChannel:
+				subResults = append(subResults, subResult)
+			}
 		}
 		// As soon as all are done, process the results
-		result := m.writeRequestInterceptor.ProcessWriteResponses(m, subResults)
+		result := m.writeRequestInterceptor.ProcessWriteResponses(ctx, m, subResults)
 		// Return the final result
 		resultChannel <- result
 	}()
 
 	return resultChannel
-}
-
-func (m DefaultPlcWriteRequest) ExecuteWithContext(_ context.Context) <-chan model.PlcWriteRequestResult {
-	return m.Execute()
 }
 
 func (m DefaultPlcWriteRequest) GetWriter() spi.PlcWriter {

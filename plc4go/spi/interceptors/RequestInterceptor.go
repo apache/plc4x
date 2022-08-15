@@ -20,17 +20,18 @@
 package interceptors
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 type ReadRequestInterceptor interface {
-	InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest
-	ProcessReadResponses(readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult
+	InterceptReadRequest(ctx context.Context, readRequest model.PlcReadRequest) []model.PlcReadRequest
+	ProcessReadResponses(ctx context.Context, readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult
 }
 
 type WriteRequestInterceptor interface {
-	InterceptWriteRequest(writeRequest model.PlcWriteRequest) []model.PlcWriteRequest
-	ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult
+	InterceptWriteRequest(ctx context.Context, writeRequest model.PlcWriteRequest) []model.PlcWriteRequest
+	ProcessWriteResponses(ctx context.Context, writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult
 }
 
 type RequestInterceptor interface {

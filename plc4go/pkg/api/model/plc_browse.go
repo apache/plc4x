@@ -37,6 +37,8 @@ type PlcBrowseRequest interface {
 	ExecuteWithContext(ctx context.Context) <-chan PlcBrowseRequestResult
 	// ExecuteWithInterceptor Will call the given callback for every found resource
 	ExecuteWithInterceptor(interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
+	// ExecuteWithInterceptorWithContext Will call the given callback for every found resource
+	ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
 	GetFieldNames() []string
 	GetField(name string) PlcField
 }
