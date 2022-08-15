@@ -181,91 +181,21 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	cbusOptions := &c.messageCodec.(*MessageCodec).cbusOptions
 	requestContext := &c.messageCodec.(*MessageCodec).requestContext
 
-	{
-		log.Debug().Msg("Send a reset")
-		requestTypeReset := readWriteModel.RequestType_RESET
-		requestReset := readWriteModel.NewRequestReset(requestTypeReset, &requestTypeReset, requestTypeReset, &requestTypeReset, requestTypeReset, nil, &requestTypeReset, requestTypeReset, readWriteModel.NewRequestTermination(), *cbusOptions)
-		cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset, *requestContext, *cbusOptions)
-
-		receivedResetEchoChan := make(chan bool)
-		receivedResetEchoErrorChan := make(chan error)
-		if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
-			cbusMessageToServer, ok := message.(readWriteModel.CBusMessageToServerExactly)
-			if !ok {
-				return false
-			}
-			_, ok = cbusMessageToServer.GetRequest().(readWriteModel.RequestResetExactly)
-			return ok
-		}, func(message spi.Message) error {
-			receivedResetEchoChan <- true
-			return nil
-		}, func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-				log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				c.Close()
-			}
-			receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request")
-			return nil
-		}, c.GetTtl()); err != nil {
-			c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
-			return
-		}
-
-		startTime := time.Now()
-		select {
-		case <-receivedResetEchoChan:
-			log.Debug().Msgf("We received the echo")
-		case err := <-receivedResetEchoErrorChan:
-			c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
-			return
-		case timeout := <-time.After(time.Second * 2):
-			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
-			return
-		}
-		log.Debug().Msg("Reset done")
+	// TODO: Sometimes we get a power up and we need a second reset
+	if !c.sendReset(ctx, ch, cbusOptions, requestContext) {
+		return
 	}
-	{
-		log.Debug().Msg("Set application filter to all")
-		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(c.configuration.MonitoredApplication1), nil, 1)
-		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
-			return
-		}
-		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(c.configuration.MonitoredApplication2), nil, 1)
-		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
-			return
-		}
-		log.Debug().Msg("Application filter set")
+	if !c.setApplicationFilter(ctx, ch, requestContext, cbusOptions) {
+		return
 	}
-	{
-		log.Debug().Msg("Set interface options 3")
-		interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(c.configuration.Exstat, c.configuration.Pun, c.configuration.LocalSal, c.configuration.Pcn), nil, 1)
-		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
-			return
-		}
-		// TODO: add localsal to the options
-		*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, c.configuration.Exstat, false, false, c.configuration.Pun, c.configuration.Pcn, false)
-		log.Debug().Msg("Interface options 3 set")
+	if !c.setInterfaceOptions3(ctx, ch, requestContext, cbusOptions) {
+		return
 	}
-	{
-		log.Debug().Msg("Set interface options 1 power up settings")
-		interfaceOptions1PowerUpSettings := readWriteModel.NewParameterValueInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect)), 1)
-		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
-			return
-		}
-		// TODO: what is with monall
-		*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
-		log.Debug().Msg("Interface options 1 power up settings set")
+	if !c.setInterface1PowerUpSettings(ctx, ch, requestContext, cbusOptions) {
+		return
 	}
-	{
-		log.Debug().Msg("Set interface options 1")
-		interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect), nil, 1)
-		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
-			return
-		}
-		// TODO: what is with monall
-		*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
-		log.Debug().Msg("Interface options 1 set")
+	if !c.setInterfaceOptions1(ctx, ch, requestContext, cbusOptions) {
+		return
 	}
 	c.fireConnected(ch)
 
@@ -313,6 +243,102 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		}
 		log.Info().Msg("Ending default incoming message handler")
 	}()
+}
+
+func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, cbusOptions *readWriteModel.CBusOptions, requestContext *readWriteModel.RequestContext) (ok bool) {
+	log.Debug().Msg("Send a reset")
+	requestTypeReset := readWriteModel.RequestType_RESET
+	requestReset := readWriteModel.NewRequestReset(requestTypeReset, &requestTypeReset, requestTypeReset, &requestTypeReset, requestTypeReset, nil, &requestTypeReset, requestTypeReset, readWriteModel.NewRequestTermination(), *cbusOptions)
+	cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset, *requestContext, *cbusOptions)
+
+	receivedResetEchoChan := make(chan bool)
+	receivedResetEchoErrorChan := make(chan error)
+	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
+		cbusMessageToServer, ok := message.(readWriteModel.CBusMessageToServerExactly)
+		if !ok {
+			return false
+		}
+		_, ok = cbusMessageToServer.GetRequest().(readWriteModel.RequestResetExactly)
+		return ok
+	}, func(message spi.Message) error {
+		receivedResetEchoChan <- true
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+			c.Close()
+		}
+		receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request")
+		return nil
+	}, c.GetTtl()); err != nil {
+		c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
+		return false
+	}
+
+	startTime := time.Now()
+	select {
+	case <-receivedResetEchoChan:
+		log.Debug().Msgf("We received the echo")
+	case err := <-receivedResetEchoErrorChan:
+		c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
+		return false
+	case timeout := <-time.After(time.Second * 2):
+		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
+		return false
+	}
+	log.Debug().Msg("Reset done")
+	return true
+}
+
+func (c *Connection) setApplicationFilter(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) (ok bool) {
+	log.Debug().Msg("Set application filter to all")
+	applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(c.configuration.MonitoredApplication1), nil, 1)
+	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
+		return false
+	}
+	applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(c.configuration.MonitoredApplication2), nil, 1)
+	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
+		return false
+	}
+	log.Debug().Msg("Application filter set")
+	return true
+}
+
+func (c *Connection) setInterfaceOptions3(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) (ok bool) {
+	log.Debug().Msg("Set interface options 3")
+	interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(c.configuration.Exstat, c.configuration.Pun, c.configuration.LocalSal, c.configuration.Pcn), nil, 1)
+	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
+		return false
+	}
+	// TODO: add localsal to the options
+	*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, c.configuration.Exstat, false, false, c.configuration.Pun, c.configuration.Pcn, false)
+	log.Debug().Msg("Interface options 3 set")
+	return true
+}
+
+func (c *Connection) setInterface1PowerUpSettings(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) (ok bool) {
+	log.Debug().Msg("Set interface options 1 power up settings")
+	interfaceOptions1PowerUpSettings := readWriteModel.NewParameterValueInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect)), 1)
+	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
+		return false
+	}
+	// TODO: what is with monall
+	*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
+	log.Debug().Msg("Interface options 1 power up settings set")
+	return true
+}
+
+func (c *Connection) setInterfaceOptions1(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
+	log.Debug().Msg("Set interface options 1")
+	interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect), nil, 1)
+	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
+		return true
+	}
+	// TODO: what is with monall
+	*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
+	log.Debug().Msg("Interface options 1 set")
+	return false
 }
 
 // This is used for connection setup
