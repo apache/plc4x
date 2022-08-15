@@ -183,18 +183,23 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 
 	// TODO: Sometimes we get a power up and we need a second reset
 	if !c.sendReset(ctx, ch, cbusOptions, requestContext) {
+		log.Trace().Msg("Reset failed")
 		return
 	}
 	if !c.setApplicationFilter(ctx, ch, requestContext, cbusOptions) {
+		log.Trace().Msg("Set application filter failed")
 		return
 	}
 	if !c.setInterfaceOptions3(ctx, ch, requestContext, cbusOptions) {
+		log.Trace().Msg("Set interface options 3 failed")
 		return
 	}
 	if !c.setInterface1PowerUpSettings(ctx, ch, requestContext, cbusOptions) {
+		log.Trace().Msg("Set interface options 1 power up settings failed")
 		return
 	}
 	if !c.setInterfaceOptions1(ctx, ch, requestContext, cbusOptions) {
+		log.Trace().Msg("Set interface options 1 failed")
 		return
 	}
 	c.fireConnected(ch)
@@ -333,12 +338,12 @@ func (c *Connection) setInterfaceOptions1(ctx context.Context, ch chan plc4go.Pl
 	log.Debug().Msg("Set interface options 1")
 	interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect), nil, 1)
 	if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
-		return true
+		return false
 	}
 	// TODO: what is with monall
 	*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
 	log.Debug().Msg("Interface options 1 set")
-	return false
+	return true
 }
 
 // This is used for connection setup
