@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -106,6 +107,8 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
@@ -116,7 +119,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 		// For testing purposes we can skip the waiting for a complete connection
 		if !c.driverContext.awaitSetupComplete {
-			go c.setupConnection(ch)
+			go c.setupConnection(ctx, ch)
 			log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
 			// Here we write directly and don't wait till the connection is "really" connected
 			// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
@@ -125,7 +128,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			return
 		}
 
-		c.setupConnection(ch)
+		c.setupConnection(ctx, ch)
 	}()
 	return ch
 }
@@ -174,7 +177,7 @@ func (c *Connection) String() string {
 	return fmt.Sprintf("cbus.Connection")
 }
 
-func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) {
+func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
 	cbusOptions := &c.messageCodec.(*MessageCodec).cbusOptions
 	requestContext := &c.messageCodec.(*MessageCodec).requestContext
 
@@ -186,31 +189,25 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 
 		receivedResetEchoChan := make(chan bool)
 		receivedResetEchoErrorChan := make(chan error)
-		if err := c.messageCodec.SendRequest(
-			cBusMessage,
-			func(message spi.Message) bool {
-				cbusMessageToServer, ok := message.(readWriteModel.CBusMessageToServerExactly)
-				if !ok {
-					return false
-				}
-				_, ok = cbusMessageToServer.GetRequest().(readWriteModel.RequestResetExactly)
-				return ok
-			},
-			func(message spi.Message) error {
-				receivedResetEchoChan <- true
-				return nil
-			},
-			func(err error) error {
-				// If this is a timeout, do a check if the connection requires a reconnection
-				if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-					log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-					c.Close()
-				}
-				receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request")
-				return nil
-			},
-			c.GetTtl(),
-		); err != nil {
+		if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
+			cbusMessageToServer, ok := message.(readWriteModel.CBusMessageToServerExactly)
+			if !ok {
+				return false
+			}
+			_, ok = cbusMessageToServer.GetRequest().(readWriteModel.RequestResetExactly)
+			return ok
+		}, func(message spi.Message) error {
+			receivedResetEchoChan <- true
+			return nil
+		}, func(err error) error {
+			// If this is a timeout, do a check if the connection requires a reconnection
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+				log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+				c.Close()
+			}
+			receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request")
+			return nil
+		}, c.GetTtl()); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
 			return
 		}
@@ -231,11 +228,11 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	{
 		log.Debug().Msg("Set application filter to all")
 		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(c.configuration.MonitoredApplication1), nil, 1)
-		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
+		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
 			return
 		}
 		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(c.configuration.MonitoredApplication2), nil, 1)
-		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
+		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
 			return
 		}
 		log.Debug().Msg("Application filter set")
@@ -243,7 +240,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	{
 		log.Debug().Msg("Set interface options 3")
 		interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(c.configuration.Exstat, c.configuration.Pun, c.configuration.LocalSal, c.configuration.Pcn), nil, 1)
-		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
+		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
 			return
 		}
 		// TODO: add localsal to the options
@@ -253,7 +250,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	{
 		log.Debug().Msg("Set interface options 1 power up settings")
 		interfaceOptions1PowerUpSettings := readWriteModel.NewParameterValueInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect)), 1)
-		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
+		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
 			return
 		}
 		// TODO: what is with monall
@@ -263,7 +260,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	{
 		log.Debug().Msg("Set interface options 1")
 		interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect), nil, 1)
-		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
+		if !c.sendCalDataWrite(ctx, ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
 			return
 		}
 		// TODO: what is with monall
@@ -319,7 +316,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 }
 
 // This is used for connection setup
-func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
+func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
 	// TODO: we assume that is always a one byte request otherwise we need to map the length here
 	calData := readWriteModel.NewCALDataWrite(paramNo, 0x0, parameterValue, readWriteModel.CALCommandTypeContainer_CALCommandWrite_3Bytes, nil, *requestContext)
 	directCommand := readWriteModel.NewRequestDirectCommandAccess(calData /*we don't want a alpha otherwise the PCI will auto-switch*/, nil, 0x40, nil, nil, 0x0, readWriteModel.NewRequestTermination(), *cbusOptions)
@@ -327,61 +324,55 @@ func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult,
 
 	directCommandAckChan := make(chan bool)
 	directCommandAckErrorChan := make(chan error)
-	if err := c.messageCodec.SendRequest(
-		cBusMessage,
-		func(message spi.Message) bool {
-			switch message := message.(type) {
-			case readWriteModel.CBusMessageToClientExactly:
-				switch reply := message.GetReply().(type) {
-				case readWriteModel.ReplyOrConfirmationReplyExactly:
-					switch reply := reply.GetReply().(type) {
-					case readWriteModel.ReplyEncodedReplyExactly:
-						switch encodedReply := reply.GetEncodedReply().(type) {
-						case readWriteModel.EncodedReplyCALReplyExactly:
-							switch data := encodedReply.GetCalReply().GetCalData().(type) {
-							case readWriteModel.CALDataAcknowledgeExactly:
-								if data.GetParamNo() == paramNo {
-									return true
-								}
+	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
+		switch message := message.(type) {
+		case readWriteModel.CBusMessageToClientExactly:
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReplyExactly:
+				switch reply := reply.GetReply().(type) {
+				case readWriteModel.ReplyEncodedReplyExactly:
+					switch encodedReply := reply.GetEncodedReply().(type) {
+					case readWriteModel.EncodedReplyCALReplyExactly:
+						switch data := encodedReply.GetCalReply().GetCalData().(type) {
+						case readWriteModel.CALDataAcknowledgeExactly:
+							if data.GetParamNo() == paramNo {
+								return true
 							}
 						}
 					}
 				}
 			}
-			return false
-		},
-		func(message spi.Message) error {
-			switch message := message.(type) {
-			case readWriteModel.CBusMessageToClientExactly:
-				switch reply := message.GetReply().(type) {
-				case readWriteModel.ReplyOrConfirmationReplyExactly:
-					switch reply := reply.GetReply().(type) {
-					case readWriteModel.ReplyEncodedReplyExactly:
-						switch encodedReply := reply.GetEncodedReply().(type) {
-						case readWriteModel.EncodedReplyCALReplyExactly:
-							switch data := encodedReply.GetCalReply().GetCalData().(type) {
-							case readWriteModel.CALDataAcknowledgeExactly:
-								if data.GetParamNo() == paramNo {
-									directCommandAckChan <- true
-								}
+		}
+		return false
+	}, func(message spi.Message) error {
+		switch message := message.(type) {
+		case readWriteModel.CBusMessageToClientExactly:
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReplyExactly:
+				switch reply := reply.GetReply().(type) {
+				case readWriteModel.ReplyEncodedReplyExactly:
+					switch encodedReply := reply.GetEncodedReply().(type) {
+					case readWriteModel.EncodedReplyCALReplyExactly:
+						switch data := encodedReply.GetCalReply().GetCalData().(type) {
+						case readWriteModel.CALDataAcknowledgeExactly:
+							if data.GetParamNo() == paramNo {
+								directCommandAckChan <- true
 							}
 						}
 					}
 				}
 			}
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-				log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				c.Close()
-			}
-			directCommandAckErrorChan <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		c.GetTtl(),
-	); err != nil {
+		}
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+			c.Close()
+		}
+		directCommandAckErrorChan <- errors.Wrap(err, "got error processing request")
+		return nil
+	}, c.GetTtl()); err != nil {
 		c.fireConnectionError(errors.Wrap(err, "Error during sending of write request"), ch)
 		return false
 	}

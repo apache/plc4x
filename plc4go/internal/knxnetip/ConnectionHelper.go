@@ -20,6 +20,7 @@
 package knxnetip
 
 import (
+	"context"
 	"fmt"
 	"math"
 	"net"
@@ -50,7 +51,7 @@ func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 	return driverModel.NewIPAddress(ip[len(ip)-4:])
 }
 
-func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest driverModel.TunnelingRequest) {
+func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunnelingRequest driverModel.TunnelingRequest) {
 	go func() {
 		lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 		if lDataInd == nil {
@@ -83,7 +84,7 @@ func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest driverModel
 					targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
 					if targetAddress == m.ClientKnxAddress {
 						log.Info().Msg("Acknowleding an unhandled data message.")
-						_ = m.sendDeviceAck(dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
+						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
 				}
 			case driverModel.ApduControlContainer:
@@ -94,7 +95,7 @@ func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest driverModel
 				targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
 				if targetAddress == m.ClientKnxAddress {
 					log.Info().Msg("Acknowleding an unhandled contol message.")
-					_ = m.sendDeviceAck(dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
+					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 				}
 			}
 		default:

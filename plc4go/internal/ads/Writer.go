@@ -83,7 +83,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 				log.Debug().Msgf("Invalid field item type %T", field)
 				return
 			}
-			field, err = m.reader.resolveField(adsField)
+			field, err = m.reader.resolveField(ctx, adsField)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
@@ -159,39 +159,34 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 		amsTcpPaket := readWriteModel.NewAmsTCPPacket(userdata)
 
 		// Send the TCP Paket over the wire
-		err = m.messageCodec.SendRequest(
-			amsTcpPaket,
-			func(message spi.Message) bool {
-				paket := readWriteModel.CastAmsTCPPacket(message)
-				return paket.GetUserdata().GetInvokeId() == transactionIdentifier
-			},
-			func(message spi.Message) error {
-				// Convert the response into an responseAmsTcpPaket
-				responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
-				// Convert the ads response into a PLC4X response
-				readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, responseAmsTcpPaket, writeRequest)
+		err = m.messageCodec.SendRequest(ctx, amsTcpPaket, func(message spi.Message) bool {
+			paket := readWriteModel.CastAmsTCPPacket(message)
+			return paket.GetUserdata().GetInvokeId() == transactionIdentifier
+		}, func(message spi.Message) error {
+			// Convert the response into an responseAmsTcpPaket
+			responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
+			// Convert the ads response into a PLC4X response
+			readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, responseAmsTcpPaket, writeRequest)
 
-				if err != nil {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
-				} else {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: readResponse,
-					}
-				}
-				return nil
-			},
-			func(err error) error {
+			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
-					Err:     errors.New("got timeout while waiting for response"),
+					Err:     errors.Wrap(err, "Error decoding response"),
 				}
-				return nil
-			},
-			time.Second*1)
+			} else {
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: readResponse,
+				}
+			}
+			return nil
+		}, func(err error) error {
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				Request: writeRequest,
+				Err:     errors.New("got timeout while waiting for response"),
+			}
+			return nil
+		}, time.Second*1)
 	}()
 	return result
 }

@@ -118,43 +118,38 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 
 		// Send the ADU over the wire
 		log.Trace().Msg("Send ADU")
-		if err = m.messageCodec.SendRequest(
-			requestAdu,
-			func(message spi.Message) bool {
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
-					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
-			},
-			func(message spi.Message) error {
-				// Convert the response into an ADU
-				log.Trace().Msg("convert response to ADU")
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				// Convert the modbus response into a PLC4X response
-				log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
+		if err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
+		}, func(message spi.Message) error {
+			// Convert the response into an ADU
+			log.Trace().Msg("convert response to ADU")
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			// Convert the modbus response into a PLC4X response
+			log.Trace().Msg("convert response to PLC4X response")
+			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
-				if err != nil {
-					result <- &plc4goModel.DefaultPlcReadRequestResult{
-						Request: readRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
-					// TODO: should we return the error here?
-					return nil
-				}
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: readResponse,
-				}
-				return nil
-			},
-			func(err error) error {
+			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
-					Err:     errors.Wrap(err, "got timeout while waiting for response"),
+					Err:     errors.Wrap(err, "Error decoding response"),
 				}
+				// TODO: should we return the error here?
 				return nil
-			},
-			time.Second*1); err != nil {
+			}
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
+				Request:  readRequest,
+				Response: readResponse,
+			}
+			return nil
+		}, func(err error) error {
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
+				Request: readRequest,
+				Err:     errors.Wrap(err, "got timeout while waiting for response"),
+			}
+			return nil
+		}, time.Second*1); err != nil {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,

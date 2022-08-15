@@ -115,60 +115,55 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			transaction.Submit(func() {
 				// Send the  over the wire
 				log.Trace().Msg("Send ")
-				if err := m.messageCodec.SendRequest(
-					pkt,
-					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacket)
-						if eipPacket == nil {
-							return false
-						}
-						cipRRData := eipPacket.(readWriteModel.CipRRData)
-						if cipRRData == nil {
-							return false
-						}
-						if eipPacket.GetSessionHandle() != *m.sessionHandle {
-							return false
-						}
-						multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
-						if multipleServiceResponse == nil {
-							return false
-						}
-						if multipleServiceResponse.GetServiceNb() != nb {
-							return false
-						}
-						return true
-					},
-					func(message spi.Message) error {
-						// Convert the response into an
-						log.Trace().Msg("convert response to ")
-						eipPacket := message.(readWriteModel.EipPacket)
-						cipRRData := eipPacket.(readWriteModel.CipRRData)
-						multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
-						// Convert the eip response into a PLC4X response
-						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xReadResponse(multipleServiceResponse, readRequest)
+				if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
+					eipPacket := message.(readWriteModel.EipPacket)
+					if eipPacket == nil {
+						return false
+					}
+					cipRRData := eipPacket.(readWriteModel.CipRRData)
+					if cipRRData == nil {
+						return false
+					}
+					if eipPacket.GetSessionHandle() != *m.sessionHandle {
+						return false
+					}
+					multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
+					if multipleServiceResponse == nil {
+						return false
+					}
+					if multipleServiceResponse.GetServiceNb() != nb {
+						return false
+					}
+					return true
+				}, func(message spi.Message) error {
+					// Convert the response into an
+					log.Trace().Msg("convert response to ")
+					eipPacket := message.(readWriteModel.EipPacket)
+					cipRRData := eipPacket.(readWriteModel.CipRRData)
+					multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
+					// Convert the eip response into a PLC4X response
+					log.Trace().Msg("convert response to PLC4X response")
+					readResponse, err := m.ToPlc4xReadResponse(multipleServiceResponse, readRequest)
 
-						if err != nil {
-							result <- &plc4goModel.DefaultPlcReadRequestResult{
-								Request: readRequest,
-								Err:     errors.Wrap(err, "Error decoding response"),
-							}
-							return transaction.EndRequest()
-						}
-						result <- &plc4goModel.DefaultPlcReadRequestResult{
-							Request:  readRequest,
-							Response: readResponse,
-						}
-						return transaction.EndRequest()
-					},
-					func(err error) error {
+					if err != nil {
 						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
-							Err:     errors.Wrap(err, "got timeout while waiting for response"),
+							Err:     errors.Wrap(err, "Error decoding response"),
 						}
 						return transaction.EndRequest()
-					},
-					time.Second*1); err != nil {
+					}
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
+						Request:  readRequest,
+						Response: readResponse,
+					}
+					return transaction.EndRequest()
+				}, func(err error) error {
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
+						Request: readRequest,
+						Err:     errors.Wrap(err, "got timeout while waiting for response"),
+					}
+					return transaction.EndRequest()
+				}, time.Second*1); err != nil {
 					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: nil,
@@ -201,57 +196,52 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			transaction.Submit(func() {
 				// Send the  over the wire
 				log.Trace().Msg("Send ")
-				if err := m.messageCodec.SendRequest(
-					pkt,
-					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacket)
-						if eipPacket == nil {
-							return false
-						}
-						cipRRData := eipPacket.(readWriteModel.CipRRData)
-						if cipRRData == nil {
-							return false
-						}
-						if eipPacket.GetSessionHandle() != *m.sessionHandle {
-							return false
-						}
-						cipReadResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipReadResponse)
-						if cipReadResponse == nil {
-							return false
-						}
-						return true
-					},
-					func(message spi.Message) error {
-						// Convert the response into an
-						log.Trace().Msg("convert response to ")
-						eipPacket := message.(readWriteModel.EipPacket)
-						cipRRData := eipPacket.(readWriteModel.CipRRData)
-						cipReadResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipReadResponse)
-						// Convert the eip response into a PLC4X response
-						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xReadResponse(cipReadResponse, readRequest)
+				if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
+					eipPacket := message.(readWriteModel.EipPacket)
+					if eipPacket == nil {
+						return false
+					}
+					cipRRData := eipPacket.(readWriteModel.CipRRData)
+					if cipRRData == nil {
+						return false
+					}
+					if eipPacket.GetSessionHandle() != *m.sessionHandle {
+						return false
+					}
+					cipReadResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipReadResponse)
+					if cipReadResponse == nil {
+						return false
+					}
+					return true
+				}, func(message spi.Message) error {
+					// Convert the response into an
+					log.Trace().Msg("convert response to ")
+					eipPacket := message.(readWriteModel.EipPacket)
+					cipRRData := eipPacket.(readWriteModel.CipRRData)
+					cipReadResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipReadResponse)
+					// Convert the eip response into a PLC4X response
+					log.Trace().Msg("convert response to PLC4X response")
+					readResponse, err := m.ToPlc4xReadResponse(cipReadResponse, readRequest)
 
-						if err != nil {
-							result <- &plc4goModel.DefaultPlcReadRequestResult{
-								Request: readRequest,
-								Err:     errors.Wrap(err, "Error decoding response"),
-							}
-							return transaction.EndRequest()
-						}
-						result <- &plc4goModel.DefaultPlcReadRequestResult{
-							Request:  readRequest,
-							Response: readResponse,
-						}
-						return transaction.EndRequest()
-					},
-					func(err error) error {
+					if err != nil {
 						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
-							Err:     errors.Wrap(err, "got timeout while waiting for response"),
+							Err:     errors.Wrap(err, "Error decoding response"),
 						}
 						return transaction.EndRequest()
-					},
-					time.Second*1); err != nil {
+					}
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
+						Request:  readRequest,
+						Response: readResponse,
+					}
+					return transaction.EndRequest()
+				}, func(err error) error {
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
+						Request: readRequest,
+						Err:     errors.Wrap(err, "got timeout while waiting for response"),
+					}
+					return transaction.EndRequest()
+				}, time.Second*1); err != nil {
 					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: nil,

@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -105,6 +106,8 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
@@ -122,7 +125,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 		// For testing purposes we can skip the waiting for a complete connection
 		if !m.driverContext.awaitSetupComplete {
-			go m.setupConnection(ch)
+			go m.setupConnection(ctx, ch)
 			log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
 			// Here we write directly and don't wait till the connection is "really" connected
 			// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
@@ -134,43 +137,37 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		// Only the TCP transport supports login.
 		log.Info().Msg("S7 Driver running in ACTIVE mode.")
 
-		m.setupConnection(ch)
+		m.setupConnection(ctx, ch)
 	}()
 	return ch
 }
 
-func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) {
+func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
 	log.Debug().Msg("Sending COTP Connection Request")
 	// Open the session on ISO Transport Protocol first.
 	cotpConnectionResult := make(chan readWriteModel.COTPPacketConnectionResponse)
 	cotpConnectionErrorChan := make(chan error)
-	if err := m.messageCodec.SendRequest(
-		readWriteModel.NewTPKTPacket(m.createCOTPConnectionRequest()),
-		func(message spi.Message) bool {
-			tpktPacket := message.(readWriteModel.TPKTPacket)
-			if tpktPacket == nil {
-				return false
-			}
-			cotpPacketConnectionResponse := tpktPacket.GetPayload().(readWriteModel.COTPPacketConnectionResponse)
-			return cotpPacketConnectionResponse != nil
-		},
-		func(message spi.Message) error {
-			tpktPacket := message.(readWriteModel.TPKTPacket)
-			cotpPacketConnectionResponse := tpktPacket.GetPayload().(readWriteModel.COTPPacketConnectionResponse)
-			cotpConnectionResult <- cotpPacketConnectionResponse
-			return nil
-		},
-		func(err error) error {
-			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-				log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-				m.Close()
-			}
-			cotpConnectionErrorChan <- errors.Wrap(err, "got error processing request")
-			return nil
-		},
-		m.GetTtl(),
-	); err != nil {
+	if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewTPKTPacket(m.createCOTPConnectionRequest()), func(message spi.Message) bool {
+		tpktPacket := message.(readWriteModel.TPKTPacket)
+		if tpktPacket == nil {
+			return false
+		}
+		cotpPacketConnectionResponse := tpktPacket.GetPayload().(readWriteModel.COTPPacketConnectionResponse)
+		return cotpPacketConnectionResponse != nil
+	}, func(message spi.Message) error {
+		tpktPacket := message.(readWriteModel.TPKTPacket)
+		cotpPacketConnectionResponse := tpktPacket.GetPayload().(readWriteModel.COTPPacketConnectionResponse)
+		cotpConnectionResult <- cotpPacketConnectionResponse
+		return nil
+	}, func(err error) error {
+		// If this is a timeout, do a check if the connection requires a reconnection
+		if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+			m.Close()
+		}
+		cotpConnectionErrorChan <- errors.Wrap(err, "got error processing request")
+		return nil
+	}, m.GetTtl()); err != nil {
 		m.fireConnectionError(errors.Wrap(err, "Error during sending of COTP Connection Request"), ch)
 	}
 	select {
@@ -181,43 +178,37 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		// Send an S7 login message.
 		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication)
 		s7ConnectionErrorChan := make(chan error)
-		if err := m.messageCodec.SendRequest(
-			m.createS7ConnectionRequest(cotpPacketConnectionResponse),
-			func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
-				if !ok {
-					return false
-				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
-				if !ok {
-					return false
-				}
-				messageResponseData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseDataExactly)
-				if !ok {
-					return false
-				}
-				_, ok = messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunicationExactly)
-				return ok
-			},
-			func(message spi.Message) error {
-				tpktPacket := message.(readWriteModel.TPKTPacket)
-				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				messageResponseData := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseData)
-				setupCommunication := messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunication)
-				s7ConnectionResult <- setupCommunication
-				return nil
-			},
-			func(err error) error {
-				// If this is a timeout, do a check if the connection requires a reconnection
-				if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-					log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-					m.Close()
-				}
-				s7ConnectionErrorChan <- errors.Wrap(err, "got error processing request")
-				return nil
-			},
-			m.GetTtl(),
-		); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, m.createS7ConnectionRequest(cotpPacketConnectionResponse), func(message spi.Message) bool {
+			tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+			if !ok {
+				return false
+			}
+			cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+			if !ok {
+				return false
+			}
+			messageResponseData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseDataExactly)
+			if !ok {
+				return false
+			}
+			_, ok = messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunicationExactly)
+			return ok
+		}, func(message spi.Message) error {
+			tpktPacket := message.(readWriteModel.TPKTPacket)
+			cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+			messageResponseData := cotpPacketData.GetPayload().(readWriteModel.S7MessageResponseData)
+			setupCommunication := messageResponseData.GetParameter().(readWriteModel.S7ParameterSetupCommunication)
+			s7ConnectionResult <- setupCommunication
+			return nil
+		}, func(err error) error {
+			// If this is a timeout, do a check if the connection requires a reconnection
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+				log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+				m.Close()
+			}
+			s7ConnectionErrorChan <- errors.Wrap(err, "got error processing request")
+			return nil
+		}, m.GetTtl()); err != nil {
 			m.fireConnectionError(errors.Wrap(err, "Error during sending of S7 Connection Request"), ch)
 		}
 		select {
@@ -248,42 +239,36 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			log.Debug().Msg("Sending S7 Identification Request")
 			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData)
 			s7IdentificationErrorChan := make(chan error)
-			if err := m.messageCodec.SendRequest(
-				m.createIdentifyRemoteMessage(),
-				func(message spi.Message) bool {
-					tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
-					if !ok {
-						return false
-					}
-					cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
-					if !ok {
-						return false
-					}
-					messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserDataExactly)
-					if !ok {
-						return false
-					}
-					_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserDataExactly)
-					return ok
-				},
-				func(message spi.Message) error {
-					tpktPacket := message.(readWriteModel.TPKTPacket)
-					cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-					messageUserData := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
-					s7IdentificationResult <- messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
-					return nil
-				},
-				func(err error) error {
-					// If this is a timeout, do a check if the connection requires a reconnection
-					if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-						log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-						m.Close()
-					}
-					s7IdentificationErrorChan <- errors.Wrap(err, "got error processing request")
-					return nil
-				},
-				m.GetTtl(),
-			); err != nil {
+			if err := m.messageCodec.SendRequest(ctx, m.createIdentifyRemoteMessage(), func(message spi.Message) bool {
+				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				if !ok {
+					return false
+				}
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				if !ok {
+					return false
+				}
+				messageUserData, ok := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserDataExactly)
+				if !ok {
+					return false
+				}
+				_, ok = messageUserData.GetPayload().(readWriteModel.S7PayloadUserDataExactly)
+				return ok
+			}, func(message spi.Message) error {
+				tpktPacket := message.(readWriteModel.TPKTPacket)
+				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+				messageUserData := cotpPacketData.GetPayload().(readWriteModel.S7MessageUserData)
+				s7IdentificationResult <- messageUserData.GetPayload().(readWriteModel.S7PayloadUserData)
+				return nil
+			}, func(err error) error {
+				// If this is a timeout, do a check if the connection requires a reconnection
+				if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+					log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+					m.Close()
+				}
+				s7IdentificationErrorChan <- errors.Wrap(err, "got error processing request")
+				return nil
+			}, m.GetTtl()); err != nil {
 				m.fireConnectionError(errors.Wrap(err, "Error during sending of identify remote Request"), ch)
 			}
 			select {

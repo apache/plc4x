@@ -102,54 +102,49 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		transaction := m.tm.StartTransaction()
 		transaction.Submit(func() {
 			// Send the  over the wire
-			if err := m.messageCodec.SendRequest(
-				tpktPacket,
-				func(message spi.Message) bool {
-					tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
-					if !ok {
-						return false
-					}
-					cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
-					if !ok {
-						return false
-					}
-					payload := cotpPacketData.GetPayload()
-					if payload == nil {
-						return false
-					}
-					return payload.GetTpduReference() == tpduId
-				},
-				func(message spi.Message) error {
-					// Convert the response into an
-					log.Trace().Msg("convert response to ")
-					tpktPacket := message.(readWriteModel.TPKTPacket)
-					cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-					payload := cotpPacketData.GetPayload()
-					// Convert the s7 response into a PLC4X response
-					log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
+			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
+				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				if !ok {
+					return false
+				}
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				if !ok {
+					return false
+				}
+				payload := cotpPacketData.GetPayload()
+				if payload == nil {
+					return false
+				}
+				return payload.GetTpduReference() == tpduId
+			}, func(message spi.Message) error {
+				// Convert the response into an
+				log.Trace().Msg("convert response to ")
+				tpktPacket := message.(readWriteModel.TPKTPacket)
+				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+				payload := cotpPacketData.GetPayload()
+				// Convert the s7 response into a PLC4X response
+				log.Trace().Msg("convert response to PLC4X response")
+				readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
 
-					if err != nil {
-						result <- &plc4goModel.DefaultPlcWriteRequestResult{
-							Request: writeRequest,
-							Err:     errors.Wrap(err, "Error decoding response"),
-						}
-						return transaction.EndRequest()
-					}
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: readResponse,
-					}
-					return transaction.EndRequest()
-				},
-				func(err error) error {
+				if err != nil {
 					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request: writeRequest,
-						Err:     errors.New("got timeout while waiting for response"),
+						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 					return transaction.EndRequest()
-				},
-				time.Second*1); err != nil {
+				}
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: readResponse,
+				}
+				return transaction.EndRequest()
+			}, func(err error) error {
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+					Request: writeRequest,
+					Err:     errors.New("got timeout while waiting for response"),
+				}
+				return transaction.EndRequest()
+			}, time.Second*1); err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,

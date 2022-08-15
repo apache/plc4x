@@ -101,84 +101,105 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 
 				// Send the  over the wire
 				log.Trace().Msg("Send ")
-				if err := m.messageCodec.SendRequest(
-					messageToSend,
-					func(receivedMessage spi.Message) bool {
-						cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessageExactly)
-						if !ok {
-							return false
-						}
-						messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
-						if !ok {
-							return false
-						}
-						// Check if this errored
-						if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
-							// This means we must handle this below
-							return true
-						}
+				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
+					cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessageExactly)
+					if !ok {
+						return false
+					}
+					messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
+					if !ok {
+						return false
+					}
+					// Check if this errored
+					if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+						// This means we must handle this below
+						return true
+					}
 
-						confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
-						if !ok {
-							return false
+					confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+					if !ok {
+						return false
+					}
+					return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
+				}, func(receivedMessage spi.Message) error {
+					// Convert the response into an
+					log.Trace().Msg("convert response to ")
+					cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
+					messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
+					if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+						log.Trace().Msg("We got a server failure")
+						addResponseCode(fieldNameCopy, model.PlcResponseCode_INVALID_DATA)
+						requestWasOk <- false
+						return transaction.EndRequest()
+					}
+					replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+					if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
+						var responseCode model.PlcResponseCode
+						switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
+						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
+							responseCode = model.PlcResponseCode_REMOTE_ERROR
+						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION:
+							responseCode = model.PlcResponseCode_INVALID_DATA
+						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS:
+							responseCode = model.PlcResponseCode_REMOTE_BUSY
+						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
+							responseCode = model.PlcResponseCode_INVALID_DATA
+						default:
+							panic("Every code should be mapped here")
 						}
-						return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
-					},
-					func(receivedMessage spi.Message) error {
-						// Convert the response into an
-						log.Trace().Msg("convert response to ")
-						cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
-						messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
-						if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
-							log.Trace().Msg("We got a server failure")
-							addResponseCode(fieldNameCopy, model.PlcResponseCode_INVALID_DATA)
-							requestWasOk <- false
-							return transaction.EndRequest()
-						}
-						replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
-						if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
-							var responseCode model.PlcResponseCode
-							switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
-							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
-								responseCode = model.PlcResponseCode_REMOTE_ERROR
-							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION:
-								responseCode = model.PlcResponseCode_INVALID_DATA
-							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS:
-								responseCode = model.PlcResponseCode_REMOTE_BUSY
-							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
-								responseCode = model.PlcResponseCode_INVALID_DATA
-							default:
-								panic("Every code should be mapped here")
-							}
-							log.Trace().Msgf("Was no success %s:%v", fieldNameCopy, responseCode)
-							addResponseCode(fieldNameCopy, responseCode)
-							requestWasOk <- true
-							return transaction.EndRequest()
-						}
+						log.Trace().Msgf("Was no success %s:%v", fieldNameCopy, responseCode)
+						addResponseCode(fieldNameCopy, responseCode)
+						requestWasOk <- true
+						return transaction.EndRequest()
+					}
 
-						alpha := replyOrConfirmationConfirmation.GetConfirmation().GetAlpha()
-						// TODO: it could be double confirmed but this is not implemented yet
-						embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
-						if !ok {
-							log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
-							addResponseCode(fieldNameCopy, model.PlcResponseCode_NOT_FOUND)
-							requestWasOk <- true
-							return transaction.EndRequest()
-						}
+					alpha := replyOrConfirmationConfirmation.GetConfirmation().GetAlpha()
+					// TODO: it could be double confirmed but this is not implemented yet
+					embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
+					if !ok {
+						log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
+						addResponseCode(fieldNameCopy, model.PlcResponseCode_NOT_FOUND)
+						requestWasOk <- true
+						return transaction.EndRequest()
+					}
 
-						log.Trace().Msg("Handling confirmed data")
-						switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
-						case readWriteModel.EncodedReplyCALReplyExactly:
-							calData := reply.GetCalReply().GetCalData()
+					log.Trace().Msg("Handling confirmed data")
+					switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
+					case readWriteModel.EncodedReplyCALReplyExactly:
+						calData := reply.GetCalReply().GetCalData()
+						addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+						switch calData := calData.(type) {
+						case readWriteModel.CALDataStatusExactly:
+							application := calData.GetApplication()
+							// TODO: verify application... this should be the same
+							_ = application
+							blockStart := calData.GetBlockStart()
+							// TODO: verify application... this should be the same
+							_ = blockStart
+							statusBytes := calData.GetStatusBytes()
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-							switch calData := calData.(type) {
-							case readWriteModel.CALDataStatusExactly:
-								application := calData.GetApplication()
-								// TODO: verify application... this should be the same
-								_ = application
-								blockStart := calData.GetBlockStart()
-								// TODO: verify application... this should be the same
-								_ = blockStart
+							plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+							for i, statusByte := range statusBytes {
+								plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
+								plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
+								plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
+								plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
+							}
+							addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
+						case readWriteModel.CALDataStatusExtendedExactly:
+							coding := calData.GetCoding()
+							// TODO: verify coding... this should be the same
+							_ = coding
+							application := calData.GetApplication()
+							// TODO: verify application... this should be the same
+							_ = application
+							blockStart := calData.GetBlockStart()
+							// TODO: verify application... this should be the same
+							_ = blockStart
+							switch coding {
+							case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
+								fallthrough
+							case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
 								statusBytes := calData.GetStatusBytes()
 								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
 								plcListValues := make([]values.PlcValue, len(statusBytes)*4)
@@ -189,67 +210,41 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 									plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 								}
 								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
-							case readWriteModel.CALDataStatusExtendedExactly:
-								coding := calData.GetCoding()
-								// TODO: verify coding... this should be the same
-								_ = coding
-								application := calData.GetApplication()
-								// TODO: verify application... this should be the same
-								_ = application
-								blockStart := calData.GetBlockStart()
-								// TODO: verify application... this should be the same
-								_ = blockStart
-								switch coding {
-								case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
-									fallthrough
-								case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
-									statusBytes := calData.GetStatusBytes()
-									addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-									plcListValues := make([]values.PlcValue, len(statusBytes)*4)
-									for i, statusByte := range statusBytes {
-										plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
-										plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
-										plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
-										plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
+							case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
+								fallthrough
+							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
+								levelInformation := calData.GetLevelInformation()
+								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+								plcListValues := make([]values.PlcValue, len(levelInformation))
+								for i, levelInformation := range levelInformation {
+									switch levelInformation := levelInformation.(type) {
+									case readWriteModel.LevelInformationAbsentExactly:
+										plcListValues[i] = spiValues.NewPlcSTRING("is absent")
+									case readWriteModel.LevelInformationCorruptedExactly:
+										plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
+									case readWriteModel.LevelInformationNormalExactly:
+										plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
+									default:
+										panic("Impossible case")
 									}
-									addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
-								case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
-									fallthrough
-								case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
-									levelInformation := calData.GetLevelInformation()
-									addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-									plcListValues := make([]values.PlcValue, len(levelInformation))
-									for i, levelInformation := range levelInformation {
-										switch levelInformation := levelInformation.(type) {
-										case readWriteModel.LevelInformationAbsentExactly:
-											plcListValues[i] = spiValues.NewPlcSTRING("is absent")
-										case readWriteModel.LevelInformationCorruptedExactly:
-											plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
-										case readWriteModel.LevelInformationNormalExactly:
-											plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
-										default:
-											panic("Impossible case")
-										}
-									}
-									addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 								}
+								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 							}
-							// TODO: how should we serialize that???
-							addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
-						default:
-							panic(fmt.Sprintf("All types should be mapped here. Not mapped: %T", reply))
 						}
-						requestWasOk <- true
-						return transaction.EndRequest()
-					},
-					func(err error) error {
-						log.Debug().Msgf("Error waiting for field %s", fieldNameCopy)
-						addResponseCode(fieldNameCopy, model.PlcResponseCode_REQUEST_TIMEOUT)
-						// TODO: ok or not ok?
-						requestWasOk <- true
-						return transaction.EndRequest()
-					},
-					time.Second*1); err != nil {
+						// TODO: how should we serialize that???
+						addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
+					default:
+						panic(fmt.Sprintf("All types should be mapped here. Not mapped: %T", reply))
+					}
+					requestWasOk <- true
+					return transaction.EndRequest()
+				}, func(err error) error {
+					log.Debug().Msgf("Error waiting for field %s", fieldNameCopy)
+					addResponseCode(fieldNameCopy, model.PlcResponseCode_REQUEST_TIMEOUT)
+					// TODO: ok or not ok?
+					requestWasOk <- true
+					return transaction.EndRequest()
+				}, time.Second*1); err != nil {
 					log.Debug().Err(err).Msgf("Error sending message for field %s", fieldNameCopy)
 					addResponseCode(fieldNameCopy, model.PlcResponseCode_INTERNAL_ERROR)
 					_ = transaction.EndRequest()

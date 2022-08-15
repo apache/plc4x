@@ -188,63 +188,58 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 			// Send the  over the wire
 			log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(
-				bvlc,
-				func(message spi.Message) bool {
-					bvlc, ok := message.(readWriteModel.BVLC)
-					if !ok {
-						log.Debug().Msgf("Received strange type %T", bvlc)
-						return false
-					}
-					var npdu readWriteModel.NPDU
-					if npduRetriever, ok := bvlc.(interface{ GetNpdu() readWriteModel.NPDU }); ok {
-						npdu = npduRetriever.GetNpdu()
-					} else {
-						log.Debug().Msgf("bvlc has no way to give a npdu %T", bvlc)
-						return false
-					}
-					if npdu.GetControl().GetMessageTypeFieldPresent() {
-						return false
-					}
-					if invokeIdFromApdu, err := getInvokeIdFromApdu(npdu.GetApdu()); err != nil {
-						log.Debug().Err(err).Msg("Error getting invoke id")
-						return false
-					} else {
-						return invokeIdFromApdu == invokeId
-					}
-				},
-				func(message spi.Message) error {
-					// Convert the response into an
-					log.Trace().Msg("convert response to ")
-					apdu := message.(readWriteModel.BVLC).(interface{ GetNpdu() readWriteModel.NPDU }).GetNpdu().GetApdu()
+			if err := m.messageCodec.SendRequest(ctx, bvlc, func(message spi.Message) bool {
+				bvlc, ok := message.(readWriteModel.BVLC)
+				if !ok {
+					log.Debug().Msgf("Received strange type %T", bvlc)
+					return false
+				}
+				var npdu readWriteModel.NPDU
+				if npduRetriever, ok := bvlc.(interface{ GetNpdu() readWriteModel.NPDU }); ok {
+					npdu = npduRetriever.GetNpdu()
+				} else {
+					log.Debug().Msgf("bvlc has no way to give a npdu %T", bvlc)
+					return false
+				}
+				if npdu.GetControl().GetMessageTypeFieldPresent() {
+					return false
+				}
+				if invokeIdFromApdu, err := getInvokeIdFromApdu(npdu.GetApdu()); err != nil {
+					log.Debug().Err(err).Msg("Error getting invoke id")
+					return false
+				} else {
+					return invokeIdFromApdu == invokeId
+				}
+			}, func(message spi.Message) error {
+				// Convert the response into an
+				log.Trace().Msg("convert response to ")
+				apdu := message.(readWriteModel.BVLC).(interface{ GetNpdu() readWriteModel.NPDU }).GetNpdu().GetApdu()
 
-					// TODO: implement segment handling
+				// TODO: implement segment handling
 
-					// Convert the bacnet response into a PLC4X response
-					log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xReadResponse(apdu, readRequest)
+				// Convert the bacnet response into a PLC4X response
+				log.Trace().Msg("convert response to PLC4X response")
+				readResponse, err := m.ToPlc4xReadResponse(apdu, readRequest)
 
-					if err != nil {
-						result <- &spiModel.DefaultPlcReadRequestResult{
-							Request: readRequest,
-							Err:     errors.Wrap(err, "Error decoding response"),
-						}
-						return transaction.EndRequest()
-					}
-					result <- &spiModel.DefaultPlcReadRequestResult{
-						Request:  readRequest,
-						Response: readResponse,
-					}
-					return transaction.EndRequest()
-				},
-				func(err error) error {
+				if err != nil {
 					result <- &spiModel.DefaultPlcReadRequestResult{
 						Request: readRequest,
-						Err:     errors.Wrap(err, "got timeout while waiting for response"),
+						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 					return transaction.EndRequest()
-				},
-				time.Second*1); err != nil {
+				}
+				result <- &spiModel.DefaultPlcReadRequestResult{
+					Request:  readRequest,
+					Response: readResponse,
+				}
+				return transaction.EndRequest()
+			}, func(err error) error {
+				result <- &spiModel.DefaultPlcReadRequestResult{
+					Request: readRequest,
+					Err:     errors.Wrap(err, "got timeout while waiting for response"),
+				}
+				return transaction.EndRequest()
+			}, time.Second*1); err != nil {
 				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,

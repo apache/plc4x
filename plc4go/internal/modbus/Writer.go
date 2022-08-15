@@ -129,40 +129,35 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu, false)
 
 		// Send the ADU over the wire
-		err = m.messageCodec.SendRequest(
-			requestAdu,
-			func(message spi.Message) bool {
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
-					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
-			},
-			func(message spi.Message) error {
-				// Convert the response into an ADU
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				// Convert the modbus response into a PLC4X response
-				readResponse, err := m.ToPlc4xWriteResponse(requestAdu, responseAdu, writeRequest)
+		err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
+		}, func(message spi.Message) error {
+			// Convert the response into an ADU
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			// Convert the modbus response into a PLC4X response
+			readResponse, err := m.ToPlc4xWriteResponse(requestAdu, responseAdu, writeRequest)
 
-				if err != nil {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
-				} else {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: readResponse,
-					}
-				}
-				return nil
-			},
-			func(err error) error {
+			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
-					Err:     errors.New("got timeout while waiting for response"),
+					Err:     errors.Wrap(err, "Error decoding response"),
 				}
-				return nil
-			},
-			time.Second*1)
+			} else {
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: readResponse,
+				}
+			}
+			return nil
+		}, func(err error) error {
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				Request: writeRequest,
+				Err:     errors.New("got timeout while waiting for response"),
+			}
+			return nil
+		}, time.Second*1)
 	}()
 	return result
 }
