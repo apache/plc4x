@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"context"
 	s7 "github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -173,7 +174,7 @@ func TestWriter_Write(t *testing.T) {
 			w := NewWriter(tt.fields.device, tt.fields.options, nil)
 			writeRequest := model3.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
 			timeBeforeWriteRequest := time.Now()
-			writeResponseChannel := w.Write(nil, writeRequest)
+			writeResponseChannel := w.Write(context.TODO(), writeRequest)
 			select {
 			case writeResponse := <-writeResponseChannel:
 				timeAfterWriteRequest := time.Now()
