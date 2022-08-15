@@ -33,7 +33,7 @@
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
   <properties>
-    <camel.version>3.18.0</camel.version>
+    <camel.version>3.18.1</camel.version>
   </properties>
 
   <build>
