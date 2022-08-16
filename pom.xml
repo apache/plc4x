@@ -894,6 +894,10 @@
             -->
             <exclude>org.apache.calcite.avatica:avatica-core</exclude>
             <exclude>javax.ws.rs:javax.ws.rs-api</exclude>
+            <!--
+              With 4.7.0 this gets falsely detected as junit 4.7.0 which the produces a unrelated CVE-2020-15250
+            -->
+            <exclude>org.mockito:mockito-junit-jupiter</exclude>
           </excludes>
         </configuration>
       </plugin>
