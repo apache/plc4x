@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/pkg/errors"
@@ -44,7 +45,8 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+	// TODO: handle ctx
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.

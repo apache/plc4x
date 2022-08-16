@@ -95,7 +95,7 @@ func (d *defaultDriver) Discover(_ func(event apiModel.PlcDiscoveryEvent), _ ...
 }
 
 func (d *defaultDriver) DiscoverWithContext(_ context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
-	return d.Discover(callback, discoveryOptions...)
+	panic("not available")
 }
 
 func (d *defaultDriver) GetPlcFieldHandler() spi.PlcFieldHandler {

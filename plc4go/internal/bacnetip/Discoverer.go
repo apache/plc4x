@@ -48,7 +48,8 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+	// TODO: handle ctx
 	interfaces, err := extractInterfaces(discoveryOptions)
 	if err != nil {
 		return errors.Wrap(err, "error extracting interfaces")
@@ -65,7 +66,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 	}
 
 	// TODO: make adjustable
-	ctx, cancelFunc := context.WithTimeout(context.TODO(), time.Second*60)
+	ctx, cancelFunc := context.WithTimeout(ctx, time.Second*60)
 	defer func() {
 		cancelFunc()
 	}()
