@@ -636,7 +636,7 @@
       <dependency>
         <groupId>jakarta.activation</groupId>
         <artifactId>jakarta.activation-api</artifactId>
-        <version>1.2.2</version>
+        <version>2.1.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -1109,7 +1109,7 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.0</version>
+          <version>4.4.1</version>
         </plugin>
 
         <plugin>
@@ -1341,7 +1341,7 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.22.1-b1</version>
+          <version>3.23.2-b1</version>
         </plugin>
 
         <plugin>
