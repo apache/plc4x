@@ -235,6 +235,7 @@ type unitInfoField struct {
 ///////////////////////////////////////
 
 func (m statusField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d[%d]", m.fieldType, m.numElements)
 }
 
@@ -306,6 +307,7 @@ func (c calRecallField) GetCount() uint8 {
 }
 
 func (c calRecallField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
 }
 
@@ -353,6 +355,7 @@ func (c calIdentifyField) GetAttribute() readWriteModel.Attribute {
 }
 
 func (c calIdentifyField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
 }
 
@@ -400,6 +403,7 @@ func (c calGetstatusField) GetCount() uint8 {
 }
 
 func (c calGetstatusField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
 }
 
@@ -443,6 +447,7 @@ func (c calGetstatusField) String() string {
 }
 
 func (s salMonitorField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d/%s%s[%d]", s.fieldType, s.unitAddress, s.application, s.numElements)
 }
 
@@ -489,6 +494,7 @@ func (s salMonitorField) String() string {
 }
 
 func (m mmiMonitorField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d/%s%s[%d]", m.fieldType, m.unitAddress, m.application, m.numElements)
 }
 
@@ -543,7 +549,15 @@ func (u unitInfoField) GetAttribute() *readWriteModel.Attribute {
 }
 
 func (u unitInfoField) GetAddressString() string {
-	return fmt.Sprintf("%d[%d]", u.fieldType, u.numElements)
+	unitAddressString := "*"
+	if u.unitAddress != nil {
+		unitAddressString = fmt.Sprintf("%d", *u.unitAddress)
+	}
+	attributeString := "*"
+	if u.attribute != nil {
+		unitAddressString = u.attribute.String()
+	}
+	return fmt.Sprintf("cal/%s/identify=%s", unitAddressString, attributeString)
 }
 
 func (u unitInfoField) GetTypeName() string {
