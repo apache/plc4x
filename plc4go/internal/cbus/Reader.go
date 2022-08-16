@@ -350,17 +350,6 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetTerminalLevels()))
 							case readWriteModel.IdentifyReplyCommandTypeExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
-							case readWriteModel.IdentifyReplyCommandUnitSummaryExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]values.PlcValue{
-									"AssertingNetworkBurden": spiValues.NewPlcBOOL(identifyReplyCommand.GetAssertingNetworkBurden()),
-									"RestrikeTimingActive":   spiValues.NewPlcBOOL(identifyReplyCommand.GetRestrikeTimingActive()),
-									"RemoteOFFInputAsserted": spiValues.NewPlcBOOL(identifyReplyCommand.GetRemoteOFFInputAsserted()),
-									"RemoteONInputAsserted":  spiValues.NewPlcBOOL(identifyReplyCommand.GetRemoteONInputAsserted()),
-									"LocalToggleEnabled":     spiValues.NewPlcBOOL(identifyReplyCommand.GetLocalToggleEnabled()),
-									"LocalToggleActiveState": spiValues.NewPlcBOOL(identifyReplyCommand.GetLocalToggleActiveState()),
-									"ClockGenerationEnabled": spiValues.NewPlcBOOL(identifyReplyCommand.GetClockGenerationEnabled()),
-									"UnitGeneratingClock":    spiValues.NewPlcBOOL(identifyReplyCommand.GetUnitGeneratingClock()),
-								}))
 							default:
 								log.Error().Msgf("Unmapped type %T", identifyReplyCommand)
 								requestWasOk <- false
