@@ -1095,7 +1095,7 @@
             [simple   bit                     microPowerReset        ]
         ]
         ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
-            [array  byte        minimumLevels        count 'numBytes'       ] // TODO: check datatype
+            [array  byte        networkTerminalLevels  count 'numBytes'       ] // TODO: check datatype
         ]
         ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
             [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
