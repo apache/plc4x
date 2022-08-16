@@ -355,8 +355,7 @@ func (c calIdentifyField) GetAttribute() readWriteModel.Attribute {
 }
 
 func (c calIdentifyField) GetAddressString() string {
-	// TODO: this is nonsense... fix that
-	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
+	return fmt.Sprintf("cal/%d/identify=%s", c.unitAddress.GetAddress(), c.GetAttribute())
 }
 
 func (c calIdentifyField) GetTypeName() string {
