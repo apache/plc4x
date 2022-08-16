@@ -276,9 +276,9 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 									"InternalStackOverflow":  spiValues.NewPlcBOOL(identifyReplyCommand.GetInternalStackOverflow()),
 									"MicroPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
 								}))
-							case readWriteModel.IdentifyReplyCommandFirmwareSummaryExactly:
+							case readWriteModel.IdentifyReplyCommandSummaryExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]values.PlcValue{
-									"FirmwareVersion": spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()),
+									"PartName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
 									"UnitServiceType": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetUnitServiceType())),
 									"Version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
 								}))

@@ -125,8 +125,8 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute,
 		_childTemp, typeSwitchError = IdentifyReplyCommandTypeParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_FirmwareVersion: // IdentifyReplyCommandFirmwareVersion
 		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareVersionParse(readBuffer, attribute, numBytes)
-	case attribute == Attribute_Summary: // IdentifyReplyCommandFirmwareSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareSummaryParse(readBuffer, attribute, numBytes)
+	case attribute == Attribute_Summary: // IdentifyReplyCommandSummary
+		_childTemp, typeSwitchError = IdentifyReplyCommandSummaryParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_ExtendedDiagnosticSummary: // IdentifyReplyCommandExtendedDiagnosticSummary
 		_childTemp, typeSwitchError = IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_NetworkTerminalLevels: // IdentifyReplyCommandNetworkTerminalLevels

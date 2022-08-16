@@ -1064,8 +1064,8 @@
         ['FirmwareVersion'              IdentifyReplyCommandFirmwareVersion
             [simple string 64  firmwareVersion  ]
         ]
-        ['Summary'                      IdentifyReplyCommandFirmwareSummary
-            [simple string 48  firmwareVersion  ]
+        ['Summary'                      IdentifyReplyCommandSummary
+            [simple string 48  partName         ]
             [simple byte       unitServiceType  ]
             [simple string 32  version          ]
         ]
