@@ -1341,7 +1341,7 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.22.1-b1</version>
+          <version>3.23.2-b1</version>
         </plugin>
 
         <plugin>
