@@ -20,6 +20,7 @@
 package knxnetip
 
 import (
+	"context"
 	"errors"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
@@ -38,7 +39,8 @@ func NewWriter(messageCodec spi.MessageCodec) Writer {
 	}
 }
 
-func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	// If we are requesting only one field, use a
 	if len(writeRequest.GetFieldNames()) == 1 {

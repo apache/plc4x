@@ -74,6 +74,13 @@ func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (interfac
 	return withRootTypeParser{rootTypeParser: rootTypeParser}
 }
 
+type TestTransportInstance interface {
+	transports.TransportInstance
+	FillReadBuffer(data []uint8) error
+	GetNumDrainableBytes() uint32
+	DrainWriteBuffer(numBytes uint32) ([]uint8, error)
+}
+
 type withRootTypeParser struct {
 	option
 	rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)
@@ -136,7 +143,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 	if !ok {
 		return errors.New("couldn't access connections transport instance")
 	}
-	testTransportInstance, ok := mc.GetTransportInstance().(transports.TestTransportInstance)
+	testTransportInstance, ok := mc.GetTransportInstance().(TestTransportInstance)
 	if !ok {
 		return errors.New("transport must be of type TestTransport")
 	}

@@ -19,6 +19,8 @@
 
 package model
 
+import "context"
+
 type PlcUnsubscriptionRequestBuilder interface {
 	// TODO: Implement
 }
@@ -31,6 +33,7 @@ type PlcUnsubscriptionRequestResult interface {
 
 type PlcUnsubscriptionRequest interface {
 	Execute() <-chan PlcUnsubscriptionRequestResult
+	ExecuteWithContext(ctx context.Context) <-chan PlcUnsubscriptionRequestResult
 	PlcRequest
 }
 

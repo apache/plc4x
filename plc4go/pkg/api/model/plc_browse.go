@@ -19,7 +19,10 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/values"
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+)
 
 type PlcBrowseRequestBuilder interface {
 	AddQuery(name string, query string) PlcBrowseRequestBuilder
@@ -30,8 +33,12 @@ type PlcBrowseRequest interface {
 	PlcRequest
 	// Execute Will not return until a potential scan is finished and will return all results in one block
 	Execute() <-chan PlcBrowseRequestResult
+	// ExecuteWithContext is the same as Execute but handles the Context if implemented for Driver
+	ExecuteWithContext(ctx context.Context) <-chan PlcBrowseRequestResult
 	// ExecuteWithInterceptor Will call the given callback for every found resource
 	ExecuteWithInterceptor(interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
+	// ExecuteWithInterceptorWithContext Will call the given callback for every found resource
+	ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
 	GetFieldNames() []string
 	GetField(name string) PlcField
 }

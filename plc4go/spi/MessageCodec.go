@@ -20,16 +20,18 @@
 package spi
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
 
 type Expectation interface {
+	fmt.Stringer
+	GetContext() context.Context
 	GetExpiration() time.Time
 	GetAcceptsMessage() AcceptsMessage
 	GetHandleMessage() HandleMessage
 	GetHandleError() HandleError
-	fmt.Stringer
 }
 
 // AcceptsMessage If this function returns true, the message is forwarded to the message handler
@@ -44,6 +46,8 @@ type HandleError func(err error) error
 type MessageCodec interface {
 	// Connect connects this codec
 	Connect() error
+	// ConnectWithContext connects this codec with the supplied context
+	ConnectWithContext(ctx context.Context) error
 	// Disconnect disconnects this codec
 	Disconnect() error
 	// IsRunning returns tur if the codec (workers are running)
@@ -53,9 +57,9 @@ type MessageCodec interface {
 	Send(message Message) error
 	// Expect Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
 	// and is then forwarded to the 'handleMessage' function
-	Expect(acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
-	// SendRequest A combination that sends a message first and then waits for a response
-	SendRequest(message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
+	Expect(ctx context.Context, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
+	// SendRequest A combination that sends a message first and then waits for a response. !!!Important note: the callbacks are blocking calls
+	SendRequest(ctx context.Context, message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
 
 	// GetDefaultIncomingMessageChannel gives back the chan where unexpected messages arrive
 	GetDefaultIncomingMessageChannel() chan Message

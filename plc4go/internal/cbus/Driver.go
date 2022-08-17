@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -118,5 +119,9 @@ func (m *Driver) SupportsDiscovery() bool {
 }
 
 func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
-	return NewDiscoverer().Discover(callback, discoveryOptions...)
+	return m.DiscoverWithContext(context.TODO(), callback, discoveryOptions...)
+}
+
+func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+	return NewDiscoverer().Discover(ctx, callback, discoveryOptions...)
 }

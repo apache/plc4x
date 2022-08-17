@@ -20,6 +20,7 @@
 package _default
 
 import (
+	"context"
 	"fmt"
 	"runtime/debug"
 	"time"
@@ -54,6 +55,7 @@ func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance tr
 }
 
 type DefaultExpectation struct {
+	Context        context.Context
 	Expiration     time.Time
 	AcceptsMessage spi.AcceptsMessage
 	HandleMessage  spi.HandleMessage
@@ -111,6 +113,10 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 ///////////////////////////////////////
 ///////////////////////////////////////
 
+func (m *DefaultExpectation) GetContext() context.Context {
+	return m.Context
+}
+
 func (m *DefaultExpectation) GetExpiration() time.Time {
 	return m.Expiration
 }
@@ -140,9 +146,13 @@ func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
 }
 
 func (m *defaultCodec) Connect() error {
+	return m.ConnectWithContext(context.Background())
+}
+
+func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	log.Trace().Msg("Connecting")
 	if !m.transportInstance.IsConnected() {
-		if err := m.transportInstance.Connect(); err != nil {
+		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
 			return err
 		}
 	} else {
@@ -167,8 +177,9 @@ func (m *defaultCodec) IsRunning() bool {
 	return m.running
 }
 
-func (m *defaultCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	expectation := &DefaultExpectation{
+		Context:        ctx,
 		Expiration:     time.Now().Add(ttl),
 		AcceptsMessage: acceptsMessage,
 		HandleMessage:  handleMessage,
@@ -178,14 +189,17 @@ func (m *defaultCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage s
 	return nil
 }
 
-func (m *defaultCodec) SendRequest(message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+	if err := ctx.Err(); err != nil {
+		return errors.Wrap(err, "Not sending message as context is aborted")
+	}
 	log.Trace().Msg("Sending request")
 	// Send the actual message
 	err := m.Send(message)
 	if err != nil {
 		return errors.Wrap(err, "Error sending the request")
 	}
-	return m.Expect(acceptsMessage, handleMessage, handleError, ttl)
+	return m.Expect(ctx, acceptsMessage, handleMessage, handleError, ttl)
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) {
@@ -195,11 +209,18 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			// Remove this expectation from the list.
 			m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
 			// Call the error handler.
-			// TODO: decouple from worker thread
-			err := expectation.GetHandleError()(plcerrors.NewTimeoutError(now.Sub(expectation.GetExpiration())))
-			if err != nil {
-				log.Error().Err(err).Msg("Got an error handling error on expectation")
-			}
+			go func() {
+				if err := expectation.GetHandleError()(plcerrors.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
+					log.Error().Err(err).Msg("Got an error handling error on expectation")
+				}
+			}()
+		}
+		if err := expectation.GetContext().Err(); err != nil {
+			go func() {
+				if err := expectation.GetHandleError()(err); err != nil {
+					log.Error().Err(err).Msg("Got an error handling error on expectation")
+				}
+			}()
 		}
 	}
 }

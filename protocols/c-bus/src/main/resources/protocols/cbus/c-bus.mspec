@@ -1064,8 +1064,8 @@
         ['FirmwareVersion'              IdentifyReplyCommandFirmwareVersion
             [simple string 64  firmwareVersion  ]
         ]
-        ['Summary'                      IdentifyReplyCommandFirmwareSummary
-            [simple string 48  firmwareVersion  ]
+        ['Summary'                      IdentifyReplyCommandSummary
+            [simple string 48  partName         ]
             [simple byte       unitServiceType  ]
             [simple string 32  version          ]
         ]
@@ -1095,7 +1095,7 @@
             [simple   bit                     microPowerReset        ]
         ]
         ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
-            [array  byte        minimumLevels        count 'numBytes'       ] // TODO: check datatype
+            [array  byte        networkTerminalLevels  count 'numBytes'       ] // TODO: check datatype
         ]
         ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
             [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
@@ -1385,7 +1385,7 @@
             [simple LightingData poolsSpaPondsFountainsData]
         ]
         ['HEATING'                              *Heating
-            // Note: the documentation states that the data for ventilation uses LightingData
+            // Note: the documentation states that the data for heating uses LightingData
             [simple LightingData heatingData]
         ]
         ['AIR_CONDITIONING'                     *AirConditioning
@@ -1398,7 +1398,7 @@
             [simple EnableControlData enableControlData]
         ]
         ['AUDIO_AND_VIDEO'                      *AudioAndVideo
-             // Note: the documentation states that the data for ventilation uses LightingData
+             // Note: the documentation states that the data for audio video data uses LightingData
             [simple LightingData audioVideoData]
         ]
         ['SECURITY'                             *Security

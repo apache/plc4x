@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
 )
@@ -54,6 +55,7 @@ type PlcSubscriptionRequestResult interface {
 
 type PlcSubscriptionRequest interface {
 	Execute() <-chan PlcSubscriptionRequestResult
+	ExecuteWithContext(ctx context.Context) <-chan PlcSubscriptionRequestResult
 	GetFieldNames() []string
 	GetField(name string) PlcField
 	GetEventHandler() PlcSubscriptionEventHandler

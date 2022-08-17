@@ -82,15 +82,18 @@ type TransportInstance struct {
 	ConnectTimeout uint32
 	transport      *Transport
 	serialPort     io.ReadWriteCloser
+	reader         *bufio.Reader
 }
 
 func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport) *TransportInstance {
-	return &TransportInstance{
+	transportInstance := &TransportInstance{
 		SerialPortName: serialPortName,
 		BaudRate:       baudRate,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 	}
+	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
+	return transportInstance
 }
 
 func (m *TransportInstance) Connect() error {
@@ -109,7 +112,7 @@ func (m *TransportInstance) Connect() error {
 		m.serialPort = utils.NewTransportLogger(m.serialPort, utils.WithLogger(fileLogger))
 		log.Trace().Msgf("Logging Transport to file %s", logFile.Name())
 	}*/
-	m.Reader = bufio.NewReader(m.serialPort)
+	m.reader = bufio.NewReader(m.serialPort)
 
 	return nil
 }
@@ -142,4 +145,8 @@ func (m *TransportInstance) Write(data []uint8) error {
 		return errors.New("error writing: not all bytes written")
 	}
 	return nil
+}
+
+func (m *TransportInstance) GetReader() *bufio.Reader {
+	return m.reader
 }

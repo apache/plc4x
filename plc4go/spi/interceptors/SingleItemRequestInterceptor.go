@@ -20,6 +20,7 @@
 package interceptors
 
 import (
+	"context"
 	"errors"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -109,7 +110,8 @@ func (d *interceptedPlcWriteRequestResult) GetErr() error {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest {
+func (m SingleItemRequestInterceptor) InterceptReadRequest(ctx context.Context, readRequest model.PlcReadRequest) []model.PlcReadRequest {
+	// TODO: handle ctx
 	// If this request just has one field, go the shortcut
 	if len(readRequest.GetFieldNames()) == 1 {
 		log.Debug().Msg("We got only one request, no splitting required")
@@ -132,7 +134,8 @@ func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest model.Plc
 	return readRequests
 }
 
-func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult {
+func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult {
+	// TODO: handle ctx
 	if len(readResults) == 1 {
 		log.Debug().Msg("We got only one response, no merging required")
 		return readResults[0]
@@ -168,7 +171,8 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest model.Plc
 	}
 }
 
-func (m SingleItemRequestInterceptor) InterceptWriteRequest(writeRequest model.PlcWriteRequest) []model.PlcWriteRequest {
+func (m SingleItemRequestInterceptor) InterceptWriteRequest(ctx context.Context, writeRequest model.PlcWriteRequest) []model.PlcWriteRequest {
+	// TODO: handle ctx
 	// If this request just has one field, go the shortcut
 	if len(writeRequest.GetFieldNames()) == 1 {
 		log.Debug().Msg("We got only one request, no splitting required")
@@ -192,7 +196,8 @@ func (m SingleItemRequestInterceptor) InterceptWriteRequest(writeRequest model.P
 	return writeRequests
 }
 
-func (m SingleItemRequestInterceptor) ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult {
+func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context, writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult {
+	// TODO: handle ctx
 	if len(writeResults) == 1 {
 		log.Debug().Msg("We got only one response, no merging required")
 		return writeResults[0]

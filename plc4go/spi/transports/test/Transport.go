@@ -22,6 +22,7 @@ package test
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -68,6 +69,10 @@ func (m *TransportInstance) Connect() error {
 	log.Trace().Msg("Connect")
 	m.connected = true
 	return nil
+}
+
+func (m *TransportInstance) ConnectWithContext(_ context.Context) error {
+	return m.Connect()
 }
 
 func (m *TransportInstance) Close() error {

@@ -21,6 +21,7 @@ package cbus
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -38,6 +39,7 @@ const (
 	CAL_RECALL
 	CAL_IDENTIFY
 	CAL_GETSTATUS
+	SAL
 	SAL_MONITOR
 	MMI_STATUS_MONITOR
 	UNIT_INFO
@@ -50,6 +52,7 @@ func (i FieldType) GetName() string {
 type FieldHandler struct {
 	statusRequestPattern *regexp.Regexp
 	calPattern           *regexp.Regexp
+	salPattern           *regexp.Regexp
 	salMonitorPattern    *regexp.Regexp
 	mmiMonitorPattern    *regexp.Regexp
 	unityQuery           *regexp.Regexp
@@ -59,10 +62,45 @@ func NewFieldHandler() FieldHandler {
 	return FieldHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
 		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+))`),
+		salPattern:           regexp.MustCompile(`^sal/(?P<application>.*)/(?P<salCommand>.*)`),
 		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
 		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
 		unityQuery:           regexp.MustCompile(`^info/(?P<unitAddress>.+)/(?P<identifyAttribute>.+)`),
 	}
+}
+
+func ms2s[T fmt.Stringer](t []T) []string {
+	result := make([]string, len(t))
+	for i, stringer := range t {
+		result[i] = stringer.String()
+	}
+	return result
+}
+
+var PossibleSalCommands = map[readWriteModel.ApplicationId][]string{
+	readWriteModel.ApplicationId_RESERVED:                           nil, // TODO: Not yet implemented
+	readWriteModel.ApplicationId_FREE_USAGE:                         nil, // TODO: Not yet implemented
+	readWriteModel.ApplicationId_TEMPERATURE_BROADCAST:              ms2s(readWriteModel.TemperatureBroadcastCommandTypeValues),
+	readWriteModel.ApplicationId_ROOM_CONTROL_SYSTEM:                nil, // TODO: Not yet implemented
+	readWriteModel.ApplicationId_LIGHTING:                           ms2s(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_VENTILATION:                        ms2s(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_IRRIGATION_CONTROL:                 ms2s(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: ms2s(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_HEATING:                            ms2s(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_AIR_CONDITIONING:                   ms2s(readWriteModel.AirConditioningCommandTypeValues),
+	readWriteModel.ApplicationId_TRIGGER_CONTROL:                    ms2s(readWriteModel.TriggerControlCommandTypeValues),
+	readWriteModel.ApplicationId_ENABLE_CONTROL:                     ms2s(readWriteModel.EnableControlCommandTypeValues),
+	readWriteModel.ApplicationId_AUDIO_AND_VIDEO:                    ms2s(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_SECURITY:                           ms2s(readWriteModel.SecurityCommandTypeValues),
+	readWriteModel.ApplicationId_METERING:                           ms2s(readWriteModel.MeteringCommandTypeValues),
+	readWriteModel.ApplicationId_ACCESS_CONTROL:                     ms2s(readWriteModel.AccessControlCommandTypeValues),
+	readWriteModel.ApplicationId_CLOCK_AND_TIMEKEEPING:              ms2s(readWriteModel.ClockAndTimekeepingCommandTypeValues),
+	readWriteModel.ApplicationId_TELEPHONY_STATUS_AND_CONTROL:       ms2s(readWriteModel.TelephonyCommandTypeValues),
+	readWriteModel.ApplicationId_MEASUREMENT:                        ms2s(readWriteModel.MeasurementCommandTypeValues),
+	readWriteModel.ApplicationId_TESTING:                            nil, // TODO: Not yet implemented
+	readWriteModel.ApplicationId_MEDIA_TRANSPORT_CONTROL:            ms2s(readWriteModel.MediaTransportControlCommandTypeValues),
+	readWriteModel.ApplicationId_ERROR_REPORTING:                    ms2s(readWriteModel.ErrorReportingCommandTypeValues),
+	readWriteModel.ApplicationId_HVAC_ACTUATOR:                      ms2s(readWriteModel.LightingCommandTypeValues),
 }
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
@@ -200,6 +238,23 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		default:
 			return nil, errors.Errorf("Invalid cal type %s", calTypeArgument)
 		}
+	} else if match := utils.GetSubgroupMatches(m.salPattern, query); match != nil {
+		application, err := applicationIdFromArgument(match["application"])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error getting application id from argument")
+		}
+		salCommand := match["salCommand"]
+		if salCommand == "" {
+			return nil, errors.Wrap(err, "Error getting salCommand from argument")
+		}
+		isValid := false
+		for _, request := range PossibleSalCommands[application.ApplicationId()] {
+			isValid = isValid || strings.HasPrefix(salCommand, request)
+		}
+		if !isValid {
+			return nil, errors.Errorf("Invalid sal command %s for %s. Allowed requests: %s", salCommand, application, PossibleSalCommands[application.ApplicationId()])
+		}
+		panic("Implement me")
 	} else if match := utils.GetSubgroupMatches(m.salMonitorPattern, query); match != nil {
 		var unitAddress readWriteModel.UnitAddress
 		{

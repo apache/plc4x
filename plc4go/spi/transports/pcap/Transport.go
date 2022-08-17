@@ -88,16 +88,19 @@ type TransportInstance struct {
 	transport     *Transport
 	handle        *pcap.Handle
 	mutex         sync.Mutex
+	reader        *bufio.Reader
 }
 
 func NewPcapTransportInstance(transportFile string, transportType TransportType, portRange string, speedFactor float32, transport *Transport) *TransportInstance {
-	return &TransportInstance{
+	transportInstance := &TransportInstance{
 		transportFile: transportFile,
 		transportType: transportType,
 		portRange:     portRange,
 		speedFactor:   speedFactor,
 		transport:     transport,
 	}
+	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
+	return transportInstance
 }
 
 func (m *TransportInstance) Connect() error {
@@ -118,7 +121,7 @@ func (m *TransportInstance) Connect() error {
 	m.handle = handle
 	m.connected = true
 	buffer := new(bytes.Buffer)
-	m.Reader = bufio.NewReader(buffer)
+	m.reader = bufio.NewReader(buffer)
 
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
 		packageCount := 0
@@ -185,4 +188,8 @@ func (m *TransportInstance) IsConnected() bool {
 
 func (m *TransportInstance) Write(_ []uint8) error {
 	panic("Write to pcap not supported")
+}
+
+func (m *TransportInstance) GetReader() *bufio.Reader {
+	return m.reader
 }

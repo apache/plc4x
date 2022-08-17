@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"bytes"
+	"context"
 	"encoding/hex"
 	"fmt"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -214,6 +215,8 @@ func (m *Connection) GetTracer() *spi.Tracer {
 }
 
 func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionConnectResult)
 	sendResult := func(connection plc4go.PlcConnection, err error) {
 		result <- _default.NewDefaultPlcConnectionConnectResult(connection, err)
@@ -228,7 +231,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		}
 
 		// Send a search request before connecting to the device.
-		searchResponse, err := m.sendGatewaySearchRequest()
+		searchResponse, err := m.sendGatewaySearchRequest(ctx)
 		if err != nil {
 			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error discovering device capabilities")) })
 			return
@@ -261,7 +264,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		// Via this connection we then get access to the entire KNX network this Gateway is connected to.
 		if supportsTunneling {
 			// As soon as we got a successful search-response back, send a connection request.
-			connectionResponse, err := m.sendGatewayConnectionRequest()
+			connectionResponse, err := m.sendGatewayConnectionRequest(ctx)
 			if err != nil {
 				m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error connecting to device")) })
 				return
@@ -334,7 +337,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 								}
 							}
 						} else {
-							m.handleIncomingTunnelingRequest(tunnelingRequest)
+							m.handleIncomingTunnelingRequest(ctx, tunnelingRequest)
 						}
 					}
 					log.Warn().Msg("Tunneling handler shat down")
@@ -379,6 +382,8 @@ func (m *Connection) BlockingClose() {
 }
 
 func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult)
 
 	go func() {
@@ -390,7 +395,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		// Disconnect from all knx devices we are still connected to.
 		for targetAddress := range m.DeviceConnections {
 			ttlTimer := time.NewTimer(m.defaultTtl)
-			disconnects := m.DeviceDisconnect(targetAddress)
+			disconnects := m.DeviceDisconnect(ctx, targetAddress)
 			select {
 			case _ = <-disconnects:
 				if !ttlTimer.Stop() {
@@ -404,7 +409,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		}
 
 		// Send a disconnect request from the gateway.
-		_, err := m.sendGatewayDisconnectionRequest()
+		_, err := m.sendGatewayDisconnectionRequest(ctx)
 		if err != nil {
 			result <- _default.NewDefaultPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
 		} else {
@@ -435,11 +440,13 @@ func (m *Connection) IsConnected() bool {
 }
 
 func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionPingResult)
 
 	go func() {
 		// Send the connection state request
-		_, err := m.sendConnectionStateRequest()
+		_, err := m.sendConnectionStateRequest(ctx)
 		if err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got an error"))
 		} else {

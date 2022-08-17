@@ -117,6 +117,22 @@ func NewCALGetstatusField(unitAddress readWriteModel.UnitAddress, parameter read
 	}
 }
 
+// SALField can be used to send SAL commands
+type SALField interface {
+	model.PlcField
+	GetApplication() readWriteModel.ApplicationIdContainer
+	GetSALCommand() string
+}
+
+func NewSALField(application readWriteModel.ApplicationIdContainer, salCommand string, numElements uint16) SALField {
+	return &salField{
+		fieldType:   SAL,
+		application: application,
+		salCommand:  salCommand,
+		numElements: numElements,
+	}
+}
+
 // SALMonitorField can be used to monitor sal fields
 type SALMonitorField interface {
 	model.PlcField
@@ -207,6 +223,12 @@ type calGetstatusField struct {
 	numElements uint16
 }
 
+type salField struct {
+	fieldType   FieldType
+	application readWriteModel.ApplicationIdContainer
+	salCommand  string
+	numElements uint16
+}
 type salMonitorField struct {
 	fieldType   FieldType
 	unitAddress readWriteModel.UnitAddress
@@ -235,6 +257,7 @@ type unitInfoField struct {
 ///////////////////////////////////////
 
 func (m statusField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d[%d]", m.fieldType, m.numElements)
 }
 
@@ -306,6 +329,7 @@ func (c calRecallField) GetCount() uint8 {
 }
 
 func (c calRecallField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
 }
 
@@ -353,7 +377,7 @@ func (c calIdentifyField) GetAttribute() readWriteModel.Attribute {
 }
 
 func (c calIdentifyField) GetAddressString() string {
-	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
+	return fmt.Sprintf("cal/%d/identify=%s", c.unitAddress.GetAddress(), c.GetAttribute())
 }
 
 func (c calIdentifyField) GetTypeName() string {
@@ -400,6 +424,7 @@ func (c calGetstatusField) GetCount() uint8 {
 }
 
 func (c calGetstatusField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
 }
 
@@ -442,7 +467,55 @@ func (c calGetstatusField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
+func (s salField) GetApplication() readWriteModel.ApplicationIdContainer {
+	return s.application
+}
+
+func (s salField) GetSALCommand() string {
+	return s.salCommand
+}
+
+func (s salField) GetAddressString() string {
+	return fmt.Sprintf("sal/%s/%s", s.application, s.salCommand)
+}
+
+func (s salField) GetTypeName() string {
+	return s.fieldType.GetName()
+}
+
+func (s salField) GetQuantity() uint16 {
+	return s.numElements
+}
+
+func (s salField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
+		return err
+	}
+
+	if err := s.application.Serialize(writeBuffer); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("salCommand", uint32(len(s.salCommand)*8), "UTF-8", s.salCommand); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s salField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(s); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
+}
+
 func (s salMonitorField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d/%s%s[%d]", s.fieldType, s.unitAddress, s.application, s.numElements)
 }
 
@@ -489,6 +562,7 @@ func (s salMonitorField) String() string {
 }
 
 func (m mmiMonitorField) GetAddressString() string {
+	// TODO: this is nonsense... fix that
 	return fmt.Sprintf("%d/%s%s[%d]", m.fieldType, m.unitAddress, m.application, m.numElements)
 }
 
@@ -543,7 +617,15 @@ func (u unitInfoField) GetAttribute() *readWriteModel.Attribute {
 }
 
 func (u unitInfoField) GetAddressString() string {
-	return fmt.Sprintf("%d[%d]", u.fieldType, u.numElements)
+	unitAddressString := "*"
+	if u.unitAddress != nil {
+		unitAddressString = fmt.Sprintf("%d", *u.unitAddress)
+	}
+	attributeString := "*"
+	if u.attribute != nil {
+		unitAddressString = u.attribute.String()
+	}
+	return fmt.Sprintf("cal/%s/identify=%s", unitAddressString, attributeString)
 }
 
 func (u unitInfoField) GetTypeName() string {

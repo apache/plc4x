@@ -203,7 +203,7 @@ type RequestTransaction struct {
 	transactionLog zerolog.Logger
 }
 
-func (t RequestTransaction) String() string {
+func (t *RequestTransaction) String() string {
 	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
 }
 

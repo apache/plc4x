@@ -21,6 +21,7 @@ package udp
 
 import (
 	"bufio"
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/libp2p/go-reuseport"
@@ -127,10 +128,15 @@ func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr,
 }
 
 func (m *TransportInstance) Connect() error {
+	return m.ConnectWithContext(context.Background())
+}
+
+func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 	// If we haven't provided a local address, have the system figure it out by dialing
 	// the remote address and then using that connections local address as local address.
 	if m.LocalAddress == nil {
-		udpTest, err := net.Dial("udp", m.RemoteAddress.String())
+		var d net.Dialer
+		udpTest, err := d.DialContext(ctx, "udp", m.RemoteAddress.String())
 		if err != nil {
 			return errors.Wrap(err, "error connecting to remote address")
 		}

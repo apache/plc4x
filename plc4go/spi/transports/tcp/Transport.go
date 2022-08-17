@@ -21,6 +21,7 @@ package tcp
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -100,26 +101,34 @@ type TransportInstance struct {
 	ConnectTimeout uint32
 	transport      *Transport
 	tcpConn        net.Conn
+	reader         *bufio.Reader
 }
 
 func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
-	return &TransportInstance{
+	transportInstance := &TransportInstance{
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 	}
+	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
+	return transportInstance
 }
 
 func (m *TransportInstance) Connect() error {
+	return m.ConnectWithContext(context.Background())
+}
+
+func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 	var err error
-	m.tcpConn, err = net.Dial("tcp", m.RemoteAddress.String())
+	var d net.Dialer
+	m.tcpConn, err = d.DialContext(ctx, "tcp", m.RemoteAddress.String())
 	if err != nil {
 		return errors.Wrap(err, "error connecting to remote address")
 	}
 
 	m.LocalAddress = m.tcpConn.LocalAddr().(*net.TCPAddr)
 
-	m.Reader = bufio.NewReader(m.tcpConn)
+	m.reader = bufio.NewReader(m.tcpConn)
 
 	return nil
 }
@@ -152,4 +161,8 @@ func (m *TransportInstance) Write(data []uint8) error {
 		return errors.New("error writing: not all bytes written")
 	}
 	return nil
+}
+
+func (m *TransportInstance) GetReader() *bufio.Reader {
+	return m.reader
 }

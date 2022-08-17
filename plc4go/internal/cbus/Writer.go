@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
@@ -40,7 +41,8 @@ func NewWriter(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm 
 	}
 }
 
-func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
 		result <- &plc4goModel.DefaultPlcWriteRequestResult{

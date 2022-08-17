@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	model2 "github.com/apache/plc4x/plc4go/spi/model"
@@ -41,7 +42,8 @@ func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) 
 	}
 }
 
-func (w Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	ch := make(chan model.PlcWriteRequestResult)
 	go func() {
 		var txId string

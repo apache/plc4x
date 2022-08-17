@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -81,11 +82,19 @@ func NewDefaultPlcBrowseRequest(fields map[string]model.PlcField, fieldNames []s
 }
 
 func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
-	return d.browser.Browse(d)
+	return d.browser.Browse(context.TODO(), d)
+}
+
+func (d DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcBrowseRequestResult {
+	return d.browser.Browse(ctx, d)
 }
 
 func (d DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
-	return d.browser.BrowseWithInterceptor(d, interceptor)
+	return d.ExecuteWithInterceptorWithContext(context.TODO(), interceptor)
+}
+
+func (d DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
+	return d.browser.BrowseWithInterceptor(ctx, d, interceptor)
 }
 
 func (d DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -160,6 +160,15 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 		t.cacheLock.Lock()
 		defer t.cacheLock.Unlock()
 
+		if len(t.connections) == 0 {
+			select {
+			case ch <- newDefaultPlcConnectionCacheCloseResult(t, nil):
+			case <-time.After(time.Millisecond * 10):
+			}
+			log.Debug().Msg("Closing connection cache finished.")
+			return
+		}
+
 		for _, cc := range t.connections {
 			// Mark the connection as being closed to not try to re-establish it.
 			cc.closed = true

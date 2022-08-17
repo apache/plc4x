@@ -20,6 +20,7 @@
 package knxnetip
 
 import (
+	"context"
 	"errors"
 	"strconv"
 	"strings"
@@ -43,7 +44,8 @@ func NewReader(connection *Connection) *Reader {
 	}
 }
 
-func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+	// TODO: handle ctx
 	resultChan := make(chan apiModel.PlcReadRequestResult)
 	go func() {
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -106,7 +108,7 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 					propertyField := field.(DevicePropertyAddressPlcField)
 
 					timeout := time.NewTimer(m.connection.defaultTtl)
-					results := m.connection.DeviceReadProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
+					results := m.connection.DeviceReadProperty(ctx, deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
 					select {
 					case result := <-results:
 						if !timeout.Stop() {
@@ -127,7 +129,7 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 				case DeviceMemoryAddressPlcField:
 					timeout := time.NewTimer(m.connection.defaultTtl)
 					memoryField := field.(DeviceMemoryAddressPlcField)
-					results := m.connection.DeviceReadMemory(deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
+					results := m.connection.DeviceReadMemory(ctx, deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
 					select {
 					case result := <-results:
 						if !timeout.Stop() {
@@ -151,7 +153,7 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 
 		// Get the group address values from the cache
 		for fieldName, field := range groupAddresses {
-			responseCode, plcValue := m.readGroupAddress(field)
+			responseCode, plcValue := m.readGroupAddress(ctx, field)
 			responseCodes[fieldName] = responseCode
 			plcValues[fieldName] = plcValue
 		}
@@ -167,7 +169,7 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 	return resultChan
 }
 
-func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseCode, apiValues.PlcValue) {
+func (m Reader) readGroupAddress(ctx context.Context, field GroupAddressField) (apiModel.PlcResponseCode, apiValues.PlcValue) {
 	rawAddresses, err := m.resolveAddresses(field)
 	if err != nil {
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
@@ -191,7 +193,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 		// Otherwise respond with values from the cache.
 		if !ok {
 			addr := []byte{byte(numericAddress >> 8), byte(numericAddress & 0xFF)}
-			rrc := m.connection.ReadGroupAddress(addr, field.GetFieldType())
+			rrc := m.connection.ReadGroupAddress(ctx, addr, field.GetFieldType())
 			select {
 			case readResult := <-rrc:
 				if readResult.value != nil {

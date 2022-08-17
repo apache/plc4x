@@ -19,9 +19,12 @@
 
 package spi
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+)
 
 type PlcSubscriber interface {
-	Subscribe(subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult
-	Unsubscribe(unsubscriptionRequest model.PlcUnsubscriptionRequest) <-chan model.PlcUnsubscriptionRequestResult
+	Subscribe(ctx context.Context, subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult
+	Unsubscribe(ctx context.Context, unsubscriptionRequest model.PlcUnsubscriptionRequest) <-chan model.PlcUnsubscriptionRequestResult
 }

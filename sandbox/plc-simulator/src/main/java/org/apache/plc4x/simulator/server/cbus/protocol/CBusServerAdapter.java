@@ -404,7 +404,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 break;
             case Summary:
                 numBytes = 0x09;
-                identifyReplyCommand = new IdentifyReplyCommandFirmwareSummary("0.9", (byte) 0xAF, "0.0", numBytes);
+                identifyReplyCommand = new IdentifyReplyCommandSummary("0.9", (byte) 0xAF, "0.0", numBytes);
                 break;
             case ExtendedDiagnosticSummary:
                 numBytes = 0x0C;
