@@ -1385,7 +1385,7 @@
             [simple LightingData poolsSpaPondsFountainsData]
         ]
         ['HEATING'                              *Heating
-            // Note: the documentation states that the data for ventilation uses LightingData
+            // Note: the documentation states that the data for heating uses LightingData
             [simple LightingData heatingData]
         ]
         ['AIR_CONDITIONING'                     *AirConditioning
@@ -1398,7 +1398,7 @@
             [simple EnableControlData enableControlData]
         ]
         ['AUDIO_AND_VIDEO'                      *AudioAndVideo
-             // Note: the documentation states that the data for ventilation uses LightingData
+             // Note: the documentation states that the data for audio video data uses LightingData
             [simple LightingData audioVideoData]
         ]
         ['SECURITY'                             *Security
