@@ -24,10 +24,11 @@ import (
 	"fmt"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
+	"strings"
 	"time"
 )
 
@@ -78,10 +79,10 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 	return result
 }
 
-func (m *Subscriber) handleMonitoredMMI(calReply model.CALReply) bool {
+func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 	var unitAddressString string
 	switch calReply := calReply.(type) {
-	case model.CALReplyLongExactly:
+	case readWriteModel.CALReplyLongExactly:
 		if calReply.GetIsUnitAddress() {
 			unitAddressString = fmt.Sprintf("u%d", calReply.GetUnitAddress().GetAddress())
 		} else {
@@ -96,7 +97,6 @@ func (m *Subscriber) handleMonitoredMMI(calReply model.CALReply) bool {
 		unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
 	}
 	calData := calReply.GetCalData()
-	// TODO: filter
 	for _, subscriptionRequest := range m.subscriptionRequests {
 		fields := map[string]apiModel.PlcField{}
 		types := map[string]spiModel.SubscriptionType{}
@@ -114,7 +114,11 @@ func (m *Subscriber) handleMonitoredMMI(calReply model.CALReply) bool {
 				continue
 			}
 			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
-				// TODO: filter in unit address
+				unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
+				if !strings.HasSuffix(unitAddressString, unitSuffix) {
+					log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
+					continue
+				}
 			}
 			application := field.GetApplication()
 			// TODO: filter in unit address
@@ -130,20 +134,70 @@ func (m *Subscriber) handleMonitoredMMI(calReply model.CALReply) bool {
 
 			var applicationString string
 
+			isLevel := true
+			blockStart := byte(0x0)
 			switch calData := calData.(type) {
-			case model.CALDataStatusExactly:
+			case readWriteModel.CALDataStatusExactly:
 				applicationString = calData.GetApplication().ApplicationId().String()
-			case model.CALDataStatusExtendedExactly:
+				blockStart = calData.GetBlockStart()
+
+				statusBytes := calData.GetStatusBytes()
+				responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+				plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+				for i, statusByte := range statusBytes {
+					plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
+					plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
+					plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
+					plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
+				}
+				plcValues[fieldName] = spiValues.NewPlcList(plcListValues)
+			case readWriteModel.CALDataStatusExtendedExactly:
 				applicationString = calData.GetApplication().ApplicationId().String()
+				isLevel = calData.GetCoding() == readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE || calData.GetCoding() == readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE
+				blockStart = calData.GetBlockStart()
+				coding := calData.GetCoding()
+				switch coding {
+				case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
+					fallthrough
+				case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
+					statusBytes := calData.GetStatusBytes()
+					responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+					plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+					for i, statusByte := range statusBytes {
+						plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
+						plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
+						plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
+						plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
+					}
+					plcValues[fieldName] = spiValues.NewPlcList(plcListValues)
+				case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
+					fallthrough
+				case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
+					levelInformation := calData.GetLevelInformation()
+					responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+					plcListValues := make([]values.PlcValue, len(levelInformation))
+					for i, levelInformation := range levelInformation {
+						switch levelInformation := levelInformation.(type) {
+						case readWriteModel.LevelInformationAbsentExactly:
+							plcListValues[i] = spiValues.NewPlcSTRING("is absent")
+						case readWriteModel.LevelInformationCorruptedExactly:
+							plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
+						case readWriteModel.LevelInformationNormalExactly:
+							plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
+						default:
+							panic("Impossible case")
+						}
+					}
+					plcValues[fieldName] = spiValues.NewPlcList(plcListValues)
+				}
 			default:
 				return false
 			}
-			// TODO: we might need to encode more data into the address from sal data
-			address[fieldName] = fmt.Sprintf("/%s/%s", unitAddressString, applicationString)
-
-			// TODO: map values properly
-			plcValues[fieldName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData))
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+			statusType := "binary"
+			if isLevel {
+				statusType = fmt.Sprintf("level=0x%X", blockStart)
+			}
+			address[fieldName] = fmt.Sprintf("status/%s/%s", statusType, applicationString)
 
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
@@ -156,7 +210,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply model.CALReply) bool {
 	return true
 }
 
-func (m *Subscriber) handleMonitoredSal(sal model.MonitoredSAL) bool {
+func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 	// TODO: filter
 	for _, subscriptionRequest := range m.subscriptionRequests {
 		fields := map[string]apiModel.PlcField{}
@@ -174,12 +228,6 @@ func (m *Subscriber) handleMonitoredSal(sal model.MonitoredSAL) bool {
 				plcValues[fieldName] = nil
 				continue
 			}
-			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
-				// TODO: filter in unit address
-			}
-			application := field.GetApplication()
-			// TODO: filter in unit address
-			_ = application
 
 			subscriptionType := subscriptionRequest.GetType(fieldName)
 			// TODO: handle subscriptionType
@@ -189,10 +237,10 @@ func (m *Subscriber) handleMonitoredSal(sal model.MonitoredSAL) bool {
 			types[fieldName] = subscriptionRequest.GetType(fieldName)
 			intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
 
-			var salData model.SALData
+			var salData readWriteModel.SALData
 			var unitAddressString, applicationString string
 			switch sal := sal.(type) {
-			case model.MonitoredSALLongFormSmartModeExactly:
+			case readWriteModel.MonitoredSALLongFormSmartModeExactly:
 				if sal.GetIsUnitAddress() {
 					unitAddressString = fmt.Sprintf("u%d", sal.GetUnitAddress().GetAddress())
 				} else {
@@ -205,13 +253,28 @@ func (m *Subscriber) handleMonitoredSal(sal model.MonitoredSAL) bool {
 				}
 				applicationString = sal.GetApplication().ApplicationId().String()
 				salData = sal.GetSalData()
-			case model.MonitoredSALShortFormBasicModeExactly:
+			case readWriteModel.MonitoredSALShortFormBasicModeExactly:
 				unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
 				applicationString = sal.GetApplication().ApplicationId().String()
 				salData = sal.GetSalData()
 			}
-			// TODO: we might need to encode more data into the address from sal data
-			address[fieldName] = fmt.Sprintf("/%s/%s", unitAddressString, applicationString)
+			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
+				unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
+				if !strings.HasSuffix(unitAddressString, unitSuffix) {
+					log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
+					continue
+				}
+			}
+
+			if application := field.GetApplication(); application != readWriteModel.ApplicationIdContainer_RESERVED_FF {
+				if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
+					log.Debug().Msgf("Current application id %s  doesn't matchactual id %s", unitAddressString, actualApplicationIdString)
+					continue
+				}
+			}
+
+			// TODO: we need to map commands e.g. if we get a MeteringDataElectricityConsumption we can map that to MeteringDataMeasureElectricity
+			address[fieldName] = fmt.Sprintf("sal/%s/%s", applicationString, "TODO")
 
 			// TODO: map values properly
 			plcValues[fieldName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))

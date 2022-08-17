@@ -29,14 +29,15 @@ func _() {
 	_ = x[CAL_RECALL-1]
 	_ = x[CAL_IDENTIFY-2]
 	_ = x[CAL_GETSTATUS-3]
-	_ = x[SAL_MONITOR-4]
-	_ = x[MMI_STATUS_MONITOR-5]
-	_ = x[UNIT_INFO-6]
+	_ = x[SAL-4]
+	_ = x[SAL_MONITOR-5]
+	_ = x[MMI_STATUS_MONITOR-6]
+	_ = x[UNIT_INFO-7]
 }
 
-const _FieldType_name = "STATUSCAL_RECALLCAL_IDENTIFYCAL_GETSTATUSSAL_MONITORMMI_STATUS_MONITORUNIT_INFO"
+const _FieldType_name = "STATUSCAL_RECALLCAL_IDENTIFYCAL_GETSTATUSSALSAL_MONITORMMI_STATUS_MONITORUNIT_INFO"
 
-var _FieldType_index = [...]uint8{0, 6, 16, 28, 41, 52, 70, 79}
+var _FieldType_index = [...]uint8{0, 6, 16, 28, 41, 44, 55, 73, 82}
 
 func (i FieldType) String() string {
 	if i >= FieldType(len(_FieldType_index)-1) {

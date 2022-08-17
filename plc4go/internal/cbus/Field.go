@@ -117,6 +117,22 @@ func NewCALGetstatusField(unitAddress readWriteModel.UnitAddress, parameter read
 	}
 }
 
+// SALField can be used to send SAL commands
+type SALField interface {
+	model.PlcField
+	GetApplication() readWriteModel.ApplicationIdContainer
+	GetSALCommand() string
+}
+
+func NewSALField(application readWriteModel.ApplicationIdContainer, salCommand string, numElements uint16) SALField {
+	return &salField{
+		fieldType:   SAL,
+		application: application,
+		salCommand:  salCommand,
+		numElements: numElements,
+	}
+}
+
 // SALMonitorField can be used to monitor sal fields
 type SALMonitorField interface {
 	model.PlcField
@@ -207,6 +223,12 @@ type calGetstatusField struct {
 	numElements uint16
 }
 
+type salField struct {
+	fieldType   FieldType
+	application readWriteModel.ApplicationIdContainer
+	salCommand  string
+	numElements uint16
+}
 type salMonitorField struct {
 	fieldType   FieldType
 	unitAddress readWriteModel.UnitAddress
@@ -440,6 +462,53 @@ func (c calGetstatusField) Serialize(writeBuffer utils.WriteBuffer) error {
 func (c calGetstatusField) String() string {
 	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
+}
+
+func (s salField) GetApplication() readWriteModel.ApplicationIdContainer {
+	return s.application
+}
+
+func (s salField) GetSALCommand() string {
+	return s.salCommand
+}
+
+func (s salField) GetAddressString() string {
+	return fmt.Sprintf("sal/%s/%s", s.application, s.salCommand)
+}
+
+func (s salField) GetTypeName() string {
+	return s.fieldType.GetName()
+}
+
+func (s salField) GetQuantity() uint16 {
+	return s.numElements
+}
+
+func (s salField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
+		return err
+	}
+
+	if err := s.application.Serialize(writeBuffer); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("salCommand", uint32(len(s.salCommand)*8), "UTF-8", s.salCommand); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s salField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(s); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()
