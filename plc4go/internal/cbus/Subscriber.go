@@ -106,11 +106,9 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 		plcValues := map[string]values.PlcValue{}
 
 		for _, fieldName := range subscriptionRequest.GetFieldNames() {
-			field, ok := subscriptionRequest.GetField(fieldName).(MMIMonitorField)
+			field, ok := subscriptionRequest.GetField(fieldName).(*mmiMonitorField)
 			if !ok {
-				log.Warn().Msgf("Unusable field for subscription %s", field)
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
-				plcValues[fieldName] = nil
+				log.Debug().Msgf("Unusable field for mmi subscription %s", field)
 				continue
 			}
 			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
@@ -223,9 +221,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 		for _, fieldName := range subscriptionRequest.GetFieldNames() {
 			field, ok := subscriptionRequest.GetField(fieldName).(SALMonitorField)
 			if !ok {
-				log.Warn().Msgf("Unusable field for subscription %s", field)
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
-				plcValues[fieldName] = nil
+				log.Debug().Msgf("Unusable field for sal subscription %s", field)
 				continue
 			}
 
