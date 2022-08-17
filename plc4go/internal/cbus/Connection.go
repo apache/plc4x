@@ -181,10 +181,13 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	cbusOptions := &c.messageCodec.(*MessageCodec).cbusOptions
 	requestContext := &c.messageCodec.(*MessageCodec).requestContext
 
-	// TODO: Sometimes we get a power up and we need a second reset
-	if !c.sendReset(ctx, ch, cbusOptions, requestContext) {
-		log.Trace().Msg("Reset failed")
-		return
+	if !c.sendReset(ctx, ch, cbusOptions, requestContext, false) {
+		log.Warn().Msg("First reset failed")
+		// We try a second reset in case we get a power up
+		if !c.sendReset(ctx, ch, cbusOptions, requestContext, true) {
+			log.Trace().Msg("Reset failed")
+			return
+		}
 	}
 	if !c.setApplicationFilter(ctx, ch, requestContext, cbusOptions) {
 		log.Trace().Msg("Set application filter failed")
@@ -250,8 +253,8 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	}()
 }
 
-func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, cbusOptions *readWriteModel.CBusOptions, requestContext *readWriteModel.RequestContext) (ok bool) {
-	log.Debug().Msg("Send a reset")
+func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, cbusOptions *readWriteModel.CBusOptions, requestContext *readWriteModel.RequestContext, sendOutErrorNotification bool) (ok bool) {
+	log.Debug().Msgf("Send a reset (sendOutErrorNotification: %t)", sendOutErrorNotification)
 	requestTypeReset := readWriteModel.RequestType_RESET
 	requestReset := readWriteModel.NewRequestReset(requestTypeReset, &requestTypeReset, requestTypeReset, &requestTypeReset, requestTypeReset, nil, &requestTypeReset, requestTypeReset, readWriteModel.NewRequestTermination(), *cbusOptions)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset, *requestContext, *cbusOptions)
@@ -259,14 +262,28 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	receivedResetEchoChan := make(chan bool)
 	receivedResetEchoErrorChan := make(chan error)
 	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
-		cbusMessageToServer, ok := message.(readWriteModel.CBusMessageToServerExactly)
-		if !ok {
-			return false
+		switch message := message.(type) {
+		case readWriteModel.CBusMessageToClientExactly:
+			if reply, ok := message.GetReply().(readWriteModel.ReplyOrConfirmationReplyExactly); ok {
+				_, ok := reply.GetReply().(readWriteModel.PowerUpReplyExactly)
+				return ok
+			}
+		case readWriteModel.CBusMessageToServerExactly:
+			_, ok = message.GetRequest().(readWriteModel.RequestResetExactly)
+			return ok
 		}
-		_, ok = cbusMessageToServer.GetRequest().(readWriteModel.RequestResetExactly)
-		return ok
+		return false
 	}, func(message spi.Message) error {
-		receivedResetEchoChan <- true
+		switch message.(type) {
+		case readWriteModel.CBusMessageToClientExactly:
+			// This is the powerup notification
+			go func() { receivedResetEchoChan <- false }()
+		case readWriteModel.CBusMessageToServerExactly:
+			// This is the echo
+			go func() { receivedResetEchoChan <- true }()
+		default:
+			return errors.Errorf("Unmapped type %T", message)
+		}
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
@@ -277,7 +294,11 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 		receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request")
 		return nil
 	}, c.GetTtl()); err != nil {
-		c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
+		if sendOutErrorNotification {
+			c.fireConnectionError(errors.Wrap(err, "Error during sending of Reset Request"), ch)
+		} else {
+			log.Warn().Err(err).Msg("connect failed")
+		}
 		return false
 	}
 
@@ -286,10 +307,18 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	case <-receivedResetEchoChan:
 		log.Debug().Msgf("We received the echo")
 	case err := <-receivedResetEchoErrorChan:
-		c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
+		if sendOutErrorNotification {
+			c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
+		} else {
+			log.Trace().Err(err).Msg("connect failed")
+		}
 		return false
-	case timeout := <-time.After(time.Second * 2):
-		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
+	case timeout := <-time.After(time.Millisecond * 500):
+		if sendOutErrorNotification {
+			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
+		} else {
+			log.Trace().Msg("timeout")
+		}
 		return false
 	}
 	log.Debug().Msg("Reset done")

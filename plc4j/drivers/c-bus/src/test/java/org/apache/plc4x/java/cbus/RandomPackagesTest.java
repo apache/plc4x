@@ -344,6 +344,7 @@ public class RandomPackagesTest {
     @Disabled("Not clear yet what this is")
     @Test
     void closestFitIsAStatusRequestButWeDonTHaveAnyBytesBeforeThat() throws Exception {
+        // TODO: this seem to be BinaryStateDeprecated for all applications
         byte[] bytes = "FAFF00r\r".getBytes(StandardCharsets.UTF_8);
         ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
         CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
