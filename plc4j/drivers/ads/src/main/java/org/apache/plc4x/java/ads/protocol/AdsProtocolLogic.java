@@ -107,7 +107,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         List<AdsDataTypeTableEntry> dataTypes = new ArrayList<>();
         List<AdsSymbolTableEntry> symbols = new ArrayList<>();
         // Initialize the request.
-        AdsData adsData = new AdsReadRequest(AdsSignificantGroupAddresses.TABLE_SIZES.getValue(), 0x00000000, 24);
+        AdsData adsData = new AdsReadRequest(ReservedIndexGroups.ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES.getValue(), 0x00000000, 24);
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
@@ -129,7 +129,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         LOGGER.debug("PLC contains {} symbols and {} data-types", adsTableSizes.getSymbolCount(), adsTableSizes.getDataTypeCount());
 
                         // Now we load the datatype definitions.
-                        AdsData adsReadTypeTableData = new AdsReadRequest(AdsSignificantGroupAddresses.DATA_TYPE_TABLE.getValue(), 0x00000000, adsTableSizes.getDataTypeLength());
+                        AdsData adsReadTypeTableData = new AdsReadRequest(ReservedIndexGroups.ADSIGRP_DATA_TYPE_TABLE_UPLOAD.getValue(), 0x00000000, adsTableSizes.getDataTypeLength());
                         AmsPacket amsReadTablePacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
                             CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsReadTypeTableData);
@@ -155,7 +155,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                         }
                                     }
 
-                                    AdsData adsReadSymbolTableData = new AdsReadRequest(AdsSignificantGroupAddresses.SYMBOL_TABLE.getValue(), 0x00000000, adsTableSizes.getSymbolLength());
+                                    AdsData adsReadSymbolTableData = new AdsReadRequest(ReservedIndexGroups.ADSIGRP_SYM_UPLOAD.getValue(), 0x00000000, adsTableSizes.getSymbolLength());
                                     AmsPacket amsReadSymbolTablePacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                                         configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
                                         CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsReadSymbolTableData);

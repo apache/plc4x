@@ -569,6 +569,10 @@
     ['0x28' DT             ['4', '"IEC61131_DATE_AND_TIME"']]
 ]
 
+// https://github.com/Beckhoff/ADS/blob/master/AdsLib/standalone/AdsDef.h
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/ads.go#L145
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/connection.go#L109
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L222
 [enum uint 32 ReservedIndexGroups
     ['0x0000F000' ADSIGRP_SYMTAB]
     ['0x0000F001' ADSIGRP_SYMNAME]
@@ -579,10 +583,18 @@
     ['0x0000F006' ADSIGRP_SYM_RELEASEHND]
     ['0x0000F007' ADSIGRP_SYM_INFOBYNAME]
     ['0x0000F008' ADSIGRP_SYM_VERSION]
+    // We can use this GID to read the type information of a given variable
+    // in the operation mode in which we don't read the entire structures on
+    // connection start.
     ['0x0000F009' ADSIGRP_SYM_INFOBYNAMEEX]
     ['0x0000F00A' ADSIGRP_SYM_DOWNLOAD]
+    // Read the symbol-table (All variables defined in the PLC)
     ['0x0000F00B' ADSIGRP_SYM_UPLOAD]
     ['0x0000F00C' ADSIGRP_SYM_UPLOADINFO]
+    // Read the data-type-table (All data-types defined in the PLC)
+    ['0x0000F00E' ADSIGRP_DATA_TYPE_TABLE_UPLOAD]
+    // Read the sizes of the symbol and data-type-tables
+    ['0x0000F00F' ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES]
     ['0x0000F010' ADSIGRP_SYMNOTE]
     ['0x0000F020' ADSIGRP_IOIMAGE_RWIB]
     ['0x0000F021' ADSIGRP_IOIMAGE_RWIX]
@@ -734,16 +746,6 @@
     ['0x274C' WSAETIMEDOUT]
     ['0x274D' WSAECONNREFUSED]
     ['0x2751' WSAEHOSTUNREACH]
-]
-
-// https://github.com/Beckhoff/ADS/blob/master/AdsLib/standalone/AdsDef.h
-// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/ads.go#L145
-// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/connection.go#L109
-// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L222
-[enum uint 32 AdsSignificantGroupAddresses
-    ['0x0000F00B' SYMBOL_TABLE   ]
-    ['0x0000F00E' DATA_TYPE_TABLE]
-    ['0x0000F00F' TABLE_SIZES    ]
 ]
 
 [type AdsTableSizes byteOrder='LITTLE_ENDIAN'
