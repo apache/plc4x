@@ -206,45 +206,12 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	}
 	c.fireConnected(ch)
 	c.startSubscriptionHandler()
-	c.startDefaultIncomingMessageHandler()
-}
-
-func (c *Connection) startDefaultIncomingMessageHandler() {
-	log.Debug().Msg("Starting default incoming message handler")
-	go func() {
-		log.Debug().Msg("default incoming message handler started")
-		for c.IsConnected() {
-			for message := range c.messageCodec.GetDefaultIncomingMessageChannel() {
-				switch message := message.(type) {
-				case readWriteModel.CBusMessageToClientExactly:
-					switch reply := message.GetReply().(type) {
-					case readWriteModel.ReplyOrConfirmationReplyExactly:
-						switch reply := reply.GetReply().(type) {
-						case readWriteModel.ReplyEncodedReplyExactly:
-							switch encodedReply := reply.GetEncodedReply().(type) {
-							case readWriteModel.EncodedReplyCALReplyExactly:
-								for _, subscriber := range c.subscribers {
-									calReply := encodedReply.GetCalReply()
-									if ok := subscriber.handleMonitoredMMI(calReply); ok {
-										log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
-										continue
-									}
-								}
-							}
-						}
-					}
-				}
-				log.Debug().Msgf("Received unhandled \n%v", message)
-			}
-		}
-		log.Info().Msg("Ending default incoming message handler")
-	}()
 }
 
 func (c *Connection) startSubscriptionHandler() {
-	log.Debug().Msg("Starting subscription handler")
+	log.Debug().Msg("Starting SAL handler")
 	go func() {
-		log.Debug().Msg("Subscription handler stated")
+		log.Debug().Msg("SAL handler stated")
 		for c.IsConnected() {
 			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
 				for _, subscriber := range c.subscribers {
@@ -254,7 +221,22 @@ func (c *Connection) startSubscriptionHandler() {
 				}
 			}
 		}
-		log.Info().Msg("Ending subscription handler")
+		log.Info().Msg("Ending SAL handler")
+	}()
+	log.Debug().Msg("Starting MMI handler")
+	go func() {
+		log.Debug().Msg("default MMI started")
+		for c.IsConnected() {
+			for calReply := range c.messageCodec.(*MessageCodec).monitoredMMIs {
+				for _, subscriber := range c.subscribers {
+					if ok := subscriber.handleMonitoredMMI(calReply); ok {
+						log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
+						continue
+					}
+				}
+			}
+		}
+		log.Info().Msg("Ending MMI handler")
 	}()
 }
 
