@@ -158,3 +158,24 @@ func TestManualCBusRead(t *testing.T) {
 	readRequestResult := <-readRequest.Execute()
 	fmt.Printf("%s", readRequestResult.GetResponse())
 }
+
+func TestManualDiscovery(t *testing.T) {
+	log.Logger = log.
+		With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+		Level(zerolog.TraceLevel)
+	config.TraceTransactionManagerWorkers = false
+	config.TraceTransactionManagerTransactions = false
+	config.TraceDefaultMessageCodecWorker = false
+	t.Skip()
+
+	driverManager := plc4go.NewPlcDriverManager()
+	driver := cbus.NewDriver()
+	driverManager.RegisterDriver(driver)
+	transports.RegisterTcpTransport(driverManager)
+	err := driver.Discover(func(event model.PlcDiscoveryEvent) {
+		println(event.(fmt.Stringer).String())
+	})
+	require.NoError(t, err)
+
+}
