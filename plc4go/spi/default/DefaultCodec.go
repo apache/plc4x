@@ -146,9 +146,13 @@ func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
 }
 
 func (m *defaultCodec) Connect() error {
+	return m.ConnectWithContext(context.Background())
+}
+
+func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	log.Trace().Msg("Connecting")
 	if !m.transportInstance.IsConnected() {
-		if err := m.transportInstance.Connect(); err != nil {
+		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
 			return err
 		}
 	} else {

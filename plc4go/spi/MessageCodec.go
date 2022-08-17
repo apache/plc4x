@@ -46,6 +46,8 @@ type HandleError func(err error) error
 type MessageCodec interface {
 	// Connect connects this codec
 	Connect() error
+	// ConnectWithContext connects this codec with the supplied context
+	ConnectWithContext(ctx context.Context) error
 	// Disconnect disconnects this codec
 	Disconnect() error
 	// IsRunning returns tur if the codec (workers are running)
