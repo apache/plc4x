@@ -28,7 +28,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/plcerrors"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"sync"
@@ -286,11 +285,6 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 		}
 		return nil
 	}, func(err error) error {
-		// If this is a timeout, do a check if the connection requires a reconnection
-		if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-			log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-			c.Close()
-		}
 		receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request")
 		return nil
 	}, c.GetTtl()); err != nil {
@@ -425,11 +419,6 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 		}
 		return nil
 	}, func(err error) error {
-		// If this is a timeout, do a check if the connection requires a reconnection
-		if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-			log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-			c.Close()
-		}
 		directCommandAckErrorChan <- errors.Wrap(err, "got error processing request")
 		return nil
 	}, c.GetTtl()); err != nil {
