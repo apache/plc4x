@@ -21,10 +21,14 @@ package cbus
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
+	"sync"
+	"time"
 )
 
 type Writer struct {
@@ -41,14 +45,104 @@ func NewWriter(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm 
 	}
 }
 
-func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
-	// TODO: handle context
-	result := make(chan model.PlcWriteRequestResult)
+func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+	log.Trace().Msg("Writing")
+	result := make(chan apiModel.PlcWriteRequestResult)
 	go func() {
-		result <- &plc4goModel.DefaultPlcWriteRequestResult{
+		numFields := len(writeRequest.GetFieldNames())
+		if numFields > 20 { // letters g-z
+			result <- &spiModel.DefaultPlcWriteRequestResult{
+				Request:  writeRequest,
+				Response: nil,
+				Err:      errors.New("Only 20 fields can be handled at once"),
+			}
+			return
+		}
+
+		messages := make(map[string]readWriteModel.CBusMessage)
+		for _, fieldName := range writeRequest.GetFieldNames() {
+			field := writeRequest.GetField(fieldName)
+			plcValue := writeRequest.GetValue(fieldName)
+			message, _, supportsWrite, _, err := FieldToCBusMessage(field, plcValue, m.alphaGenerator, m.messageCodec.(*MessageCodec))
+			if !supportsWrite {
+				result <- &spiModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: nil,
+					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s. Field is not meant to be written.", fieldName),
+				}
+				return
+			}
+			if err != nil {
+				result <- &spiModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: nil,
+					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s", fieldName),
+				}
+				return
+			}
+			messages[fieldName] = message
+		}
+		responseMu := sync.Mutex{}
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		addResponseCode := func(name string, responseCode apiModel.PlcResponseCode) {
+			responseMu.Lock()
+			defer responseMu.Unlock()
+			responseCodes[name] = responseCode
+		}
+		for fieldName, messageToSend := range messages {
+			if err := ctx.Err(); err != nil {
+				result <- &spiModel.DefaultPlcWriteRequestResult{
+					Request: writeRequest,
+					Err:     err,
+				}
+				return
+			}
+			fieldNameCopy := fieldName
+			// Start a new request-transaction (Is ended in the response-handler)
+			transaction := m.tm.StartTransaction()
+			transaction.Submit(func() {
+				// Send the  over the wire
+				log.Trace().Msg("Send ")
+				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
+					cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessageExactly)
+					if !ok {
+						return false
+					}
+					messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
+					if !ok {
+						return false
+					}
+					// Check if this errored
+					if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+						// This means we must handle this below
+						return true
+					}
+
+					confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+					if !ok {
+						return false
+					}
+					return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
+				}, func(receivedMessage spi.Message) error {
+					// Convert the response into an
+					addResponseCode(fieldName, apiModel.PlcResponseCode_OK)
+					return transaction.EndRequest()
+				}, func(err error) error {
+					log.Debug().Msgf("Error waiting for field %s", fieldNameCopy)
+					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
+					// TODO: ok or not ok?
+					return transaction.EndRequest()
+				}, time.Second*1); err != nil {
+					log.Debug().Err(err).Msgf("Error sending message for field %s", fieldNameCopy)
+					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
+					_ = transaction.EndRequest()
+				}
+			})
+		}
+		readResponse := spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes)
+		result <- &spiModel.DefaultPlcWriteRequestResult{
 			Request:  writeRequest,
-			Response: nil,
-			Err:      errors.New("Not yet implemented"),
+			Response: readResponse,
 		}
 	}()
 	return result
