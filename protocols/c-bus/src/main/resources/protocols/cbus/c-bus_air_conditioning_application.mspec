@@ -30,8 +30,8 @@
             [simple   byte                format              ]
             [simple   HVACModeAndFlags    hvacModeAndFlags    ]
             [simple   HVACStartTime       startTime           ]
-            [optional HVACTemperature     level 'hvacModeAndFlags.isLevelTemperature'   ]
-            [optional HVACRawLevels       rawLevel 'hvacModeAndFlags.isLevelRaw'        ]
+            [optional HVACTemperature     level               'hvacModeAndFlags.isLevelTemperature'   ]
+            [optional HVACRawLevels       rawLevel            'hvacModeAndFlags.isLevelRaw'           ]
         ]
         ['HUMIDITY_SCHEDULE_ENTRY'          *HumidityScheduleEntry
             [simple   byte                      zoneGroup               ]
@@ -40,8 +40,8 @@
             [simple   byte                      format                  ]
             [simple   HVACHumidityModeAndFlags  humidityModeAndFlags    ]
             [simple   HVACStartTime             startTime               ]
-            [optional HVACHumidity              level    'humidityModeAndFlags.isLevelHumidity'   ]
-            [optional HVACRawLevels             rawLevel 'humidityModeAndFlags.isLevelRaw'        ]
+            [optional HVACHumidity              level                   'humidityModeAndFlags.isLevelHumidity'   ]
+            [optional HVACRawLevels             rawLevel                'humidityModeAndFlags.isLevelRaw'        ]
         ]
         ['REFRESH'                          *Refresh
             [simple   byte                      zoneGroup               ]
