@@ -86,10 +86,6 @@ const (
 type IEC61131ValueHandler struct {
 }
 
-func NewIEC61131ValueHandler() IEC61131ValueHandler {
-	return IEC61131ValueHandler{}
-}
-
 func (m IEC61131ValueHandler) NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error) {
 	typeName := field.GetTypeName()
 	quantity := field.GetQuantity()
@@ -110,7 +106,7 @@ func (m IEC61131ValueHandler) NewPlcValue(field model.PlcField, value interface{
 		var plcValues []values.PlcValue
 		for i := uint16(0); i < quantity; i++ {
 			curValue := curValues[i]
-			plcValue, err := m.newPlcValue(typeName, 1, curValue)
+			plcValue, err := m.NewPlcValueFromType(typeName, curValue)
 			if err != nil {
 				return nil, errors.New("error parsing PlcValue: " + err.Error())
 			}
@@ -118,11 +114,10 @@ func (m IEC61131ValueHandler) NewPlcValue(field model.PlcField, value interface{
 		}
 		return NewPlcList(plcValues), nil
 	}
-	return m.newPlcValue(typeName, 1, value)
+	return m.NewPlcValueFromType(typeName, value)
 }
 
-func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, value interface{}) (values.PlcValue, error) {
-
+func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interface{}) (values.PlcValue, error) {
 	stringValue, isString := value.(string)
 	switch typeName {
 	// Bit & Bit-Strings

@@ -26,18 +26,23 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[STATUS-0]
-	_ = x[CAL_RECALL-1]
-	_ = x[CAL_IDENTIFY-2]
-	_ = x[CAL_GETSTATUS-3]
-	_ = x[SAL-4]
-	_ = x[SAL_MONITOR-5]
-	_ = x[MMI_STATUS_MONITOR-6]
-	_ = x[UNIT_INFO-7]
+	_ = x[CAL_RESET-1]
+	_ = x[CAL_RECALL-2]
+	_ = x[CAL_IDENTIFY-3]
+	_ = x[CAL_GETSTATUS-4]
+	_ = x[CAL_WRITE-5]
+	_ = x[CAL_IDENTIFY_REPLY-6]
+	_ = x[CAL_STATUS-7]
+	_ = x[CAL_STATUS_EXTENDED-8]
+	_ = x[SAL-9]
+	_ = x[SAL_MONITOR-10]
+	_ = x[MMI_STATUS_MONITOR-11]
+	_ = x[UNIT_INFO-12]
 }
 
-const _FieldType_name = "STATUSCAL_RECALLCAL_IDENTIFYCAL_GETSTATUSSALSAL_MONITORMMI_STATUS_MONITORUNIT_INFO"
+const _FieldType_name = "STATUSCAL_RESETCAL_RECALLCAL_IDENTIFYCAL_GETSTATUSCAL_WRITECAL_IDENTIFY_REPLYCAL_STATUSCAL_STATUS_EXTENDEDSALSAL_MONITORMMI_STATUS_MONITORUNIT_INFO"
 
-var _FieldType_index = [...]uint8{0, 6, 16, 28, 41, 44, 55, 73, 82}
+var _FieldType_index = [...]uint8{0, 6, 15, 25, 37, 50, 59, 77, 87, 106, 109, 120, 138, 147}
 
 func (i FieldType) String() string {
 	if i >= FieldType(len(_FieldType_index)-1) {

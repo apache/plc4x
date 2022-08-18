@@ -36,9 +36,19 @@ type FieldType uint8
 //go:generate stringer -type FieldType
 const (
 	STATUS FieldType = iota
+	// TODO: implement
+	CAL_RESET
 	CAL_RECALL
 	CAL_IDENTIFY
 	CAL_GETSTATUS
+	// TODO: implement
+	CAL_WRITE
+	// TODO: implement
+	CAL_IDENTIFY_REPLY
+	// TODO: implement
+	CAL_STATUS
+	// TODO: implement
+	CAL_STATUS_EXTENDED
 	SAL
 	SAL_MONITOR
 	MMI_STATUS_MONITOR
@@ -61,7 +71,7 @@ type FieldHandler struct {
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
-		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+))`),
+		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+), ?(?P<getstatusCount>\d+)|getstatus=(?P<getstatusParamNo>\w+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))`),
 		salPattern:           regexp.MustCompile(`^sal/(?P<application>.*)/(?P<salCommand>.*)`),
 		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
 		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
@@ -69,38 +79,36 @@ func NewFieldHandler() FieldHandler {
 	}
 }
 
-func ms2s[T fmt.Stringer](t []T) []string {
-	result := make([]string, len(t))
-	for i, stringer := range t {
-		result[i] = stringer.String()
-	}
-	return result
+type CommandAndArgumentsCount interface {
+	fmt.Stringer
+	PLC4XEnumName() string
+	NumberOfArguments() uint8
 }
 
-var PossibleSalCommands = map[readWriteModel.ApplicationId][]string{
+var PossibleSalCommands = map[readWriteModel.ApplicationId][]CommandAndArgumentsCount{
 	readWriteModel.ApplicationId_RESERVED:                           nil, // TODO: Not yet implemented
 	readWriteModel.ApplicationId_FREE_USAGE:                         nil, // TODO: Not yet implemented
-	readWriteModel.ApplicationId_TEMPERATURE_BROADCAST:              ms2s(readWriteModel.TemperatureBroadcastCommandTypeValues),
+	readWriteModel.ApplicationId_TEMPERATURE_BROADCAST:              c2nl(readWriteModel.TemperatureBroadcastCommandTypeValues),
 	readWriteModel.ApplicationId_ROOM_CONTROL_SYSTEM:                nil, // TODO: Not yet implemented
-	readWriteModel.ApplicationId_LIGHTING:                           ms2s(readWriteModel.LightingCommandTypeValues),
-	readWriteModel.ApplicationId_VENTILATION:                        ms2s(readWriteModel.LightingCommandTypeValues),
-	readWriteModel.ApplicationId_IRRIGATION_CONTROL:                 ms2s(readWriteModel.LightingCommandTypeValues),
-	readWriteModel.ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: ms2s(readWriteModel.LightingCommandTypeValues),
-	readWriteModel.ApplicationId_HEATING:                            ms2s(readWriteModel.LightingCommandTypeValues),
-	readWriteModel.ApplicationId_AIR_CONDITIONING:                   ms2s(readWriteModel.AirConditioningCommandTypeValues),
-	readWriteModel.ApplicationId_TRIGGER_CONTROL:                    ms2s(readWriteModel.TriggerControlCommandTypeValues),
-	readWriteModel.ApplicationId_ENABLE_CONTROL:                     ms2s(readWriteModel.EnableControlCommandTypeValues),
-	readWriteModel.ApplicationId_AUDIO_AND_VIDEO:                    ms2s(readWriteModel.LightingCommandTypeValues),
-	readWriteModel.ApplicationId_SECURITY:                           ms2s(readWriteModel.SecurityCommandTypeValues),
-	readWriteModel.ApplicationId_METERING:                           ms2s(readWriteModel.MeteringCommandTypeValues),
-	readWriteModel.ApplicationId_ACCESS_CONTROL:                     ms2s(readWriteModel.AccessControlCommandTypeValues),
-	readWriteModel.ApplicationId_CLOCK_AND_TIMEKEEPING:              ms2s(readWriteModel.ClockAndTimekeepingCommandTypeValues),
-	readWriteModel.ApplicationId_TELEPHONY_STATUS_AND_CONTROL:       ms2s(readWriteModel.TelephonyCommandTypeValues),
-	readWriteModel.ApplicationId_MEASUREMENT:                        ms2s(readWriteModel.MeasurementCommandTypeValues),
+	readWriteModel.ApplicationId_LIGHTING:                           c2nl(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_VENTILATION:                        c2nl(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_IRRIGATION_CONTROL:                 c2nl(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: c2nl(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_HEATING:                            c2nl(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_AIR_CONDITIONING:                   c2nl(readWriteModel.AirConditioningCommandTypeValues),
+	readWriteModel.ApplicationId_TRIGGER_CONTROL:                    c2nl(readWriteModel.TriggerControlCommandTypeValues),
+	readWriteModel.ApplicationId_ENABLE_CONTROL:                     c2nl(readWriteModel.EnableControlCommandTypeValues),
+	readWriteModel.ApplicationId_AUDIO_AND_VIDEO:                    c2nl(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_SECURITY:                           c2nl(readWriteModel.SecurityCommandTypeValues),
+	readWriteModel.ApplicationId_METERING:                           c2nl(readWriteModel.MeteringCommandTypeValues),
+	readWriteModel.ApplicationId_ACCESS_CONTROL:                     c2nl(readWriteModel.AccessControlCommandTypeValues),
+	readWriteModel.ApplicationId_CLOCK_AND_TIMEKEEPING:              c2nl(readWriteModel.ClockAndTimekeepingCommandTypeValues),
+	readWriteModel.ApplicationId_TELEPHONY_STATUS_AND_CONTROL:       c2nl(readWriteModel.TelephonyCommandTypeValues),
+	readWriteModel.ApplicationId_MEASUREMENT:                        c2nl(readWriteModel.MeasurementCommandTypeValues),
 	readWriteModel.ApplicationId_TESTING:                            nil, // TODO: Not yet implemented
-	readWriteModel.ApplicationId_MEDIA_TRANSPORT_CONTROL:            ms2s(readWriteModel.MediaTransportControlCommandTypeValues),
-	readWriteModel.ApplicationId_ERROR_REPORTING:                    ms2s(readWriteModel.ErrorReportingCommandTypeValues),
-	readWriteModel.ApplicationId_HVAC_ACTUATOR:                      ms2s(readWriteModel.LightingCommandTypeValues),
+	readWriteModel.ApplicationId_MEDIA_TRANSPORT_CONTROL:            c2nl(readWriteModel.MediaTransportControlCommandTypeValues),
+	readWriteModel.ApplicationId_ERROR_REPORTING:                    c2nl(readWriteModel.ErrorReportingCommandTypeValues),
+	readWriteModel.ApplicationId_HVAC_ACTUATOR:                      c2nl(readWriteModel.LightingCommandTypeValues),
 }
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
@@ -169,6 +177,8 @@ func (m FieldHandler) handleCalPattern(match map[string]string) (model.PlcField,
 
 	calTypeArgument := match["calType"]
 	switch {
+	case strings.HasPrefix(calTypeArgument, "reset"):
+		panic("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "recall="):
 		var recalParamNo readWriteModel.Parameter
 		recallParamNoArgument := match["recallParamNo"]
@@ -254,6 +264,16 @@ func (m FieldHandler) handleCalPattern(match map[string]string) (model.PlcField,
 		}
 		count = uint8(atoi)
 		return NewCALGetstatusField(unitAddress, recalParamNo, count, 1), nil
+	case strings.HasPrefix(calTypeArgument, "write="):
+		panic("Not implemented") // TODO: implement me
+	case strings.HasPrefix(calTypeArgument, "identifyReply="):
+		panic("Not implemented") // TODO: implement me
+	case strings.HasPrefix(calTypeArgument, "reply="):
+		panic("Not implemented") // TODO: implement me
+	case strings.HasPrefix(calTypeArgument, "status="):
+		panic("Not implemented") // TODO: implement me
+	case strings.HasPrefix(calTypeArgument, "statusExtended="):
+		panic("Not implemented") // TODO: implement me
 	default:
 		return nil, errors.Errorf("Invalid cal type %s", calTypeArgument)
 	}
@@ -269,13 +289,18 @@ func (m FieldHandler) handleSALPattern(match map[string]string) (model.PlcField,
 		return nil, errors.Wrap(err, "Error getting salCommand from argument")
 	}
 	isValid := false
+	numElements := uint16(0)
 	for _, request := range PossibleSalCommands[application.ApplicationId()] {
-		isValid = isValid || strings.HasPrefix(salCommand, request)
+		if salCommand == request.PLC4XEnumName() {
+			isValid = true
+			numElements = uint16(request.NumberOfArguments())
+			break
+		}
 	}
 	if !isValid {
 		return nil, errors.Errorf("Invalid sal command %s for %s. Allowed requests: %s", salCommand, application, PossibleSalCommands[application.ApplicationId()])
 	}
-	return NewSALField(application, salCommand, 1), nil
+	return NewSALField(application, salCommand, numElements), nil
 }
 
 func (m FieldHandler) handleSALMonitorPattern(match map[string]string) (model.PlcField, error) {
@@ -489,4 +514,12 @@ func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.App
 		}
 		return applicationIdByName, nil
 	}
+}
+
+func c2nl[T CommandAndArgumentsCount](t []T) []CommandAndArgumentsCount {
+	result := make([]CommandAndArgumentsCount, len(t))
+	for i, e := range t {
+		result[i] = e
+	}
+	return result
 }

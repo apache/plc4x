@@ -104,8 +104,14 @@ func FieldToCBusMessage(field model.PlcField, value values.PlcValue, alphaGenera
 			salData = readWriteModel.NewSALDataTemperatureBroadcast(temperatureBroadcastData, nil)
 		case readWriteModel.ApplicationId_ROOM_CONTROL_SYSTEM:
 			panic("Implement me")
-		case readWriteModel.ApplicationId_LIGHTING:
-			// TODO: is this more are write?? maybe we a wrong here at the reader
+		case
+			readWriteModel.ApplicationId_LIGHTING,
+			readWriteModel.ApplicationId_VENTILATION,
+			readWriteModel.ApplicationId_IRRIGATION_CONTROL,
+			readWriteModel.ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL,
+			readWriteModel.ApplicationId_HEATING,
+			readWriteModel.ApplicationId_AUDIO_AND_VIDEO,
+			readWriteModel.ApplicationId_HVAC_ACTUATOR:
 			var lightingData readWriteModel.LightingData
 			switch salCommand {
 			case readWriteModel.LightingCommandType_OFF.PLC4XEnumName():
@@ -154,21 +160,11 @@ func FieldToCBusMessage(field model.PlcField, value values.PlcValue, alphaGenera
 				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
 			}
 			salData = readWriteModel.NewSALDataLighting(lightingData, nil)
-		case readWriteModel.ApplicationId_VENTILATION:
-			panic("Implement me")
-		case readWriteModel.ApplicationId_IRRIGATION_CONTROL:
-			panic("Implement me")
-		case readWriteModel.ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL:
-			panic("Implement me")
-		case readWriteModel.ApplicationId_HEATING:
-			panic("Implement me")
 		case readWriteModel.ApplicationId_AIR_CONDITIONING:
 			panic("Implement me")
 		case readWriteModel.ApplicationId_TRIGGER_CONTROL:
 			panic("Implement me")
 		case readWriteModel.ApplicationId_ENABLE_CONTROL:
-			panic("Implement me")
-		case readWriteModel.ApplicationId_AUDIO_AND_VIDEO:
 			panic("Implement me")
 		case readWriteModel.ApplicationId_SECURITY:
 			panic("Implement me")
@@ -187,8 +183,6 @@ func FieldToCBusMessage(field model.PlcField, value values.PlcValue, alphaGenera
 		case readWriteModel.ApplicationId_MEDIA_TRANSPORT_CONTROL:
 			panic("Implement me")
 		case readWriteModel.ApplicationId_ERROR_REPORTING:
-			panic("Implement me")
-		case readWriteModel.ApplicationId_HVAC_ACTUATOR:
 			panic("Implement me")
 		default:
 			return nil, false, false, false, errors.Errorf("No support for %s", field.application)
