@@ -135,7 +135,7 @@
     <httpclient.version>4.5.13</httpclient.version>
     <httpcore.version>4.4.15</httpcore.version>
     <jackson.version>2.13.3</jackson.version>
-    <woodstox-core.version>6.3.0</woodstox-core.version>
+    <woodstox-core.version>6.3.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.0</jaxb.version>
     <jetty-util.version>11.0.11</jetty-util.version>
