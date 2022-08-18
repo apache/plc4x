@@ -108,7 +108,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <byte-buddy.version>1.12.12</byte-buddy.version>
+    <byte-buddy.version>1.12.13</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -135,12 +135,12 @@
     <httpclient.version>4.5.13</httpclient.version>
     <httpcore.version>4.4.15</httpcore.version>
     <jackson.version>2.13.3</jackson.version>
-    <woodstox-core.version>6.3.0</woodstox-core.version>
+    <woodstox-core.version>6.3.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.0</jaxb.version>
     <jetty-util.version>11.0.11</jetty-util.version>
     <jna.version>5.12.1</jna.version>
-    <joda-time.version>2.10.14</joda-time.version>
+    <joda-time.version>2.11.0</joda-time.version>
     <jserialcom.version>2.9.2</jserialcom.version>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
@@ -1244,7 +1244,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <!-- If we go to version 4.0.0-M3, we get doxia errors -->
-          <version>3.12.0</version>
+          <version>3.12.1</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>
@@ -1292,7 +1292,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.0</version>
+          <version>3.4.1</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
