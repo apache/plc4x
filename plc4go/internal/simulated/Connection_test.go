@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"reflect"
 	"testing"
 	"time"
@@ -122,6 +123,8 @@ func TestConnection_Connect(t *testing.T) {
 			}
 			timeBeforeConnect := time.Now()
 			connectionChan := c.Connect()
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case connectResult := <-connectionChan:
 				timeAfterConnect := time.Now()
@@ -142,7 +145,7 @@ func TestConnection_Connect(t *testing.T) {
 						t.Errorf("TestConnection.Connect() = %v, want %v", connectResult, tt.want)
 					}
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("TestConnection.Connect() got timeout")
 			}
 		})
@@ -237,6 +240,8 @@ func TestConnection_Close(t *testing.T) {
 			}
 			timeBeforeClose := time.Now()
 			closeChan := c.Close()
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case closeResult := <-closeChan:
 				timeAfterClose := time.Now()
@@ -256,7 +261,7 @@ func TestConnection_Close(t *testing.T) {
 						t.Errorf("TestConnection.Close() = %v, want %v", closeResult, tt.want)
 					}
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("TestConnection.Close() got timeout")
 			}
 		})
@@ -330,6 +335,8 @@ func TestConnection_BlockingClose(t *testing.T) {
 				}()
 				return ch
 			}
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case <-executor():
 				timeAfterClose := time.Now()
@@ -341,7 +348,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 						t.Errorf("TestConnection.Close() connected too fast. Expected at least %v but connected after %v", tt.delayAtLeast, connectionTime)
 					}
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("TestConnection.Close() got timeout")
 			}
 		})
@@ -499,6 +506,8 @@ func TestConnection_Ping(t *testing.T) {
 			}
 			timeBeforePing := time.Now()
 			pingChan := c.Ping()
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case pingResult := <-pingChan:
 				timeAfterPing := time.Now()
@@ -513,7 +522,7 @@ func TestConnection_Ping(t *testing.T) {
 				if !reflect.DeepEqual(pingResult, tt.want) {
 					t.Errorf("TestConnection.Ping() = %v, want %v", pingResult, tt.want)
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("TestConnection.Ping() got timeout")
 			}
 		})

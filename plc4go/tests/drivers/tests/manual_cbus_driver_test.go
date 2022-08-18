@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -73,13 +74,14 @@ func TestManualCBusDriver(t *testing.T) {
 			Build()
 		require.NoError(t, err)
 		subscriptionRequest.Execute()
-		timeout := time.After(30 * time.Second)
+		timeout := time.NewTimer(30 * time.Second)
+		defer utils.CleanupTimer(timeout)
 		// We expect couple monitors
 		monitorCount := 0
 	waitingForMonitors:
 		for {
 			select {
-			case at := <-timeout:
+			case at := <-timeout.C:
 				t.Errorf("timeout at %s", at)
 				break waitingForMonitors
 			case <-gotMonitor:
