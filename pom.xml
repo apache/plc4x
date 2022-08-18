@@ -1244,7 +1244,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <!-- If we go to version 4.0.0-M3, we get doxia errors -->
-          <version>3.12.0</version>
+          <version>3.12.1</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>
