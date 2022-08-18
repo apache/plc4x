@@ -31,6 +31,7 @@ import (
 type TriggerControlCommandType uint8
 
 type ITriggerControlCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -55,6 +56,43 @@ func init() {
 	}
 }
 
+func (e TriggerControlCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 1
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 0
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 0
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return 0
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return 4
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func TriggerControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TriggerControlCommandType, error) {
+	for _, sizeValue := range TriggerControlCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func TriggerControlCommandTypeByValue(value uint8) (enum TriggerControlCommandType, ok bool) {
 	switch value {
 	case 0x00:

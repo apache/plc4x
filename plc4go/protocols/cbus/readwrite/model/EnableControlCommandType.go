@@ -31,6 +31,7 @@ import (
 type EnableControlCommandType uint8
 
 type IEnableControlCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,6 +48,27 @@ func init() {
 	}
 }
 
+func (e EnableControlCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 1
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func EnableControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (EnableControlCommandType, error) {
+	for _, sizeValue := range EnableControlCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func EnableControlCommandTypeByValue(value uint8) (enum EnableControlCommandType, ok bool) {
 	switch value {
 	case 0x00:

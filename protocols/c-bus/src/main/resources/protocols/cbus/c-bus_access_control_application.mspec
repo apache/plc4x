@@ -121,15 +121,15 @@
     ['0xDF' AccessControlCommandInvalidAccessRequest_31Bytes    ['SYSTEM_ACTIVITY', 'INVALID_ACCESS',          '31']]
 ]
 
-[enum uint 4 AccessControlCommandType
-    ['0x00' CLOSE_ACCESS_POINT          ]
-    ['0x01' LOCK_ACCESS_POINT           ]
-    ['0x02' ACCESS_POINT_LEFT_OPEN      ]
-    ['0x03' ACCESS_POINT_FORCED_OPEN    ]
-    ['0x04' ACCESS_POINT_CLOSED         ]
-    ['0x05' REQUEST_TO_EXIT             ]
-    ['0x06' VALID_ACCESS                ]
-    ['0x07' INVALID_ACCESS              ]
+[enum uint 4 AccessControlCommandType(uint 8 numberOfArguments)
+    ['0x00' CLOSE_ACCESS_POINT          ['0']]
+    ['0x01' LOCK_ACCESS_POINT           ['0']]
+    ['0x02' ACCESS_POINT_LEFT_OPEN      ['0']]
+    ['0x03' ACCESS_POINT_FORCED_OPEN    ['0']]
+    ['0x04' ACCESS_POINT_CLOSED         ['0']]
+    ['0x05' REQUEST_TO_EXIT             ['0']]
+    ['0x06' VALID_ACCESS                ['2']]
+    ['0x07' INVALID_ACCESS              ['2']]
 ]
 
 [enum uint 4 AccessControlCategory

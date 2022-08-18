@@ -31,6 +31,7 @@ import (
 type AirConditioningCommandType uint8
 
 type IAirConditioningCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -83,6 +84,99 @@ func init() {
 	}
 }
 
+func (e AirConditioningCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 5
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 5
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return 4
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return 4
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return 1
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return 5
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return 5
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return 5
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return 5
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return 4
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return 4
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return 4
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return 4
+		}
+	case 0x0E:
+		{ /* '0x0E' */
+			return 4
+		}
+	case 0x0F:
+		{ /* '0x0F' */
+			return 1
+		}
+	case 0x10:
+		{ /* '0x10' */
+			return 1
+		}
+	case 0x11:
+		{ /* '0x11' */
+			return 7
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return 7
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func AirConditioningCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (AirConditioningCommandType, error) {
+	for _, sizeValue := range AirConditioningCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func AirConditioningCommandTypeByValue(value uint8) (enum AirConditioningCommandType, ok bool) {
 	switch value {
 	case 0x00:

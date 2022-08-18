@@ -293,10 +293,10 @@
     ['0xFF' SecurityCommandLongOn_31Bytes                ['ON',    '31']]
 ]
 
-[enum uint 4 SecurityCommandType
-    ['0x00' OFF     ]
-    ['0x01' ON      ]
-    ['0x02' EVENT   ]
+[enum uint 4 SecurityCommandType(uint 8 numberOfArguments)
+    ['0x00' OFF     ['0']]
+    ['0x01' ON      ['1']]
+    ['0x02' EVENT   ['0xFF']]
 ]
 
 [type SecurityArmCode

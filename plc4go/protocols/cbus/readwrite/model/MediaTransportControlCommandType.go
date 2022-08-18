@@ -31,6 +31,7 @@ import (
 type MediaTransportControlCommandType uint8
 
 type IMediaTransportControlCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -87,6 +88,79 @@ func init() {
 	}
 }
 
+func (e MediaTransportControlCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 0
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 1
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return 1
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return 2
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return 4
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return 1
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return 1
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return 1
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return 1
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return 3
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return 1
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return 1
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return 1
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func MediaTransportControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MediaTransportControlCommandType, error) {
+	for _, sizeValue := range MediaTransportControlCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func MediaTransportControlCommandTypeByValue(value uint8) (enum MediaTransportControlCommandType, ok bool) {
 	switch value {
 	case 0x00:

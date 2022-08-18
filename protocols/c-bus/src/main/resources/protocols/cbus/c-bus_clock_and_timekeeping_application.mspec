@@ -58,7 +58,7 @@
     ['0x11' MediaTransportControlCommandRequestRefresh                  ['REQUEST_REFRESH',         '1']]
 ]
 
-[enum uint 4 ClockAndTimekeepingCommandType
-    ['0x00' UPDATE_NETWORK_VARIABLE ]
-    ['0x01' REQUEST_REFRESH         ]
+[enum uint 4 ClockAndTimekeepingCommandType(uint 8 numberOfArguments)
+    ['0x00' UPDATE_NETWORK_VARIABLE ['0xFF']]
+    ['0x01' REQUEST_REFRESH         ['0']]
 ]

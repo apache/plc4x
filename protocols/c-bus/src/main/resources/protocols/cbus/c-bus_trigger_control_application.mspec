@@ -97,12 +97,12 @@
     ['0xBF' TriggerControlCommandLabel_31Bytes              ['LABEL',          '31']]
 ]
 
-[enum uint 4 TriggerControlCommandType
-    ['0x00' TRIGGER_EVENT   ]
-    ['0x01' TRIGGER_MIN     ]
-    ['0x02' TRIGGER_MAX     ]
-    ['0x03' INDICATOR_KILL  ]
-    ['0x04' LABEL           ]
+[enum uint 4 TriggerControlCommandType(uint 8 numberOfArguments)
+    ['0x00' TRIGGER_EVENT   ['1']]
+    ['0x01' TRIGGER_MIN     ['0']]
+    ['0x02' TRIGGER_MAX     ['0']]
+    ['0x03' INDICATOR_KILL  ['0']]
+    ['0x04' LABEL           ['4']]
 ]
 
 // TODO: maybe can be merged with lightning labels

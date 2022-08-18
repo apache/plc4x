@@ -194,10 +194,10 @@
     ['0xBF' LightingCommandLabel_32Bytes             ['LABEL',          '31' ]]
 ]
 
-[enum uint 4 LightingCommandType
-    ['0x00' OFF           ]
-    ['0x01' ON            ]
-    ['0x02' RAMP_TO_LEVEL ]
-    ['0x03' TERMINATE_RAMP]
-    ['0x04' LABEL         ]
+[enum uint 4 LightingCommandType(uint 8 numberOfArguments)
+    ['0x00' OFF            ['1']]
+    ['0x01' ON             ['1']]
+    ['0x02' RAMP_TO_LEVEL  ['2']]
+    ['0x03' TERMINATE_RAMP ['1']]
+    ['0x04' LABEL          ['4']]
 ]

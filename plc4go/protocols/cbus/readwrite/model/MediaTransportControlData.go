@@ -230,6 +230,8 @@ func MediaTransportControlDataParse(readBuffer utils.ReadBuffer) (MediaTransport
 		_childTemp, typeSwitchError = MediaTransportControlDataTrackNameParse(readBuffer, commandTypeContainer)
 	case commandType == MediaTransportControlCommandType_SELECTION_NAME: // MediaTransportControlDataSelectionName
 		_childTemp, typeSwitchError = MediaTransportControlDataSelectionNameParse(readBuffer, commandTypeContainer)
+	case commandType == MediaTransportControlCommandType_CATEGORY_NAME: // MediaTransportControlDataCategoryName
+		_childTemp, typeSwitchError = MediaTransportControlDataCategoryNameParse(readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

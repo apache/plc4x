@@ -31,6 +31,7 @@ import (
 type TelephonyCommandType uint8
 
 type ITelephonyCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,6 +48,27 @@ func init() {
 	}
 }
 
+func (e TelephonyCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0xFF
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func TelephonyCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TelephonyCommandType, error) {
+	for _, sizeValue := range TelephonyCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func TelephonyCommandTypeByValue(value uint8) (enum TelephonyCommandType, ok bool) {
 	switch value {
 	case 0x00:

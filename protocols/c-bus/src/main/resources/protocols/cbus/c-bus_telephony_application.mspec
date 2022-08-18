@@ -104,8 +104,8 @@
     ['0xBF' TelephonyCommandLineOffHook_31Bytes   ['EVENT', '31']]
 ]
 
-[enum uint 4 TelephonyCommandType
-    ['0x00' EVENT ]
+[enum uint 4 TelephonyCommandType(uint 8 numberOfArguments)
+    ['0x00' EVENT ['0xFF']]
 ]
 
 [enum uint 8 LineOffHookReason

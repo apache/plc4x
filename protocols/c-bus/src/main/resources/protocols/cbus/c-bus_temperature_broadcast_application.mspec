@@ -46,6 +46,6 @@
     ['0x7A' TemperatureBroadcastCommandSetBroadcastEvent15_2Bytes      ['BROADCAST_EVENT',   '2']]
 ]
 
-[enum uint 4 TemperatureBroadcastCommandType
-    ['0x00' BROADCAST_EVENT   ]
+[enum uint 4 TemperatureBroadcastCommandType(uint 8 numberOfArguments)
+    ['0x00' BROADCAST_EVENT   ['2']]
 ]

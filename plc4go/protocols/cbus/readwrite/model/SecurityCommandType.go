@@ -31,6 +31,7 @@ import (
 type SecurityCommandType uint8
 
 type ISecurityCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,6 +52,35 @@ func init() {
 	}
 }
 
+func (e SecurityCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 1
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 0xFF
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func SecurityCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (SecurityCommandType, error) {
+	for _, sizeValue := range SecurityCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func SecurityCommandTypeByValue(value uint8) (enum SecurityCommandType, ok bool) {
 	switch value {
 	case 0x00:

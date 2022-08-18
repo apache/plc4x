@@ -31,6 +31,7 @@ import (
 type ClockAndTimekeepingCommandType uint8
 
 type IClockAndTimekeepingCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,6 +50,31 @@ func init() {
 	}
 }
 
+func (e ClockAndTimekeepingCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0xFF
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 0
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func ClockAndTimekeepingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (ClockAndTimekeepingCommandType, error) {
+	for _, sizeValue := range ClockAndTimekeepingCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func ClockAndTimekeepingCommandTypeByValue(value uint8) (enum ClockAndTimekeepingCommandType, ok bool) {
 	switch value {
 	case 0x00:
