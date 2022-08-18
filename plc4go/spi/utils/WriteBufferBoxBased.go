@@ -53,7 +53,7 @@ func NewWriteBufferBoxBasedWithOptions(mergeSingleBoxes bool, omitEmptyBoxes boo
 //
 
 type boxedWriteBuffer struct {
-	bufferCommons
+	BufferCommons
 	*list.List
 	desiredWidth        int
 	currentWidth        int
@@ -86,7 +86,7 @@ func (b *boxedWriteBuffer) GetPos() uint16 {
 }
 
 func (b *boxedWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	asInt := 0
 	if value {
 		asInt = 1
@@ -97,7 +97,7 @@ func (b *boxedWriteBuffer) WriteBit(logicalName string, value bool, writerArgs .
 }
 
 func (b *boxedWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	printSafeChar := value
 	if value < 32 || value > 126 {
 		printSafeChar = '.'
@@ -108,7 +108,7 @@ func (b *boxedWriteBuffer) WriteByte(logicalName string, value byte, writerArgs 
 }
 
 func (b *boxedWriteBuffer) WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	if additionalStringRepresentation != "" {
 		additionalStringRepresentation += "\n"
 	}
@@ -118,98 +118,98 @@ func (b *boxedWriteBuffer) WriteByteArray(logicalName string, data []byte, write
 }
 
 func (b *boxedWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteUint64(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteInt8(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteInt16(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteInt32(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteInt64(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %f%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %f%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%#0*x %f%s", bitLength/4, value, value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint32, _ string, value string, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	b.PushBack(b.asciiBoxWriter.BoxString(logicalName, fmt.Sprintf("%s%s", value, additionalStringRepresentation), 0))
 	b.move(uint(bitLength))
 	return nil
 }
 
 func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
-	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	if value == nil {
 		return nil
 	}
@@ -282,7 +282,7 @@ findTheBox:
 }
 
 func (b *boxedWriteBuffer) extractAdditionalStringRepresentation(readerWriterArgs ...WithReaderWriterArgs) string {
-	representation := b.bufferCommons.extractAdditionalStringRepresentation(readerWriterArgs...)
+	representation := b.BufferCommons.ExtractAdditionalStringRepresentation(readerWriterArgs...)
 	if representation != "" {
 		return " " + representation
 	}

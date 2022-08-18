@@ -247,7 +247,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
 							case readWriteModel.IdentifyReplyCommandDelaysExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-									"ReStrikeDelay": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetReStrikeDelay())),
+									"ReStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
 									"TerminalLevel": spiValues.NewPlcByteArray(identifyReplyCommand.GetTerminalLevels()),
 								}))
 							case readWriteModel.IdentifyReplyCommandDSIStatusExactly:
@@ -261,16 +261,16 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 									"ChannelStatus7":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus7().String()),
 									"ChannelStatus8":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus8().String()),
 									"UnitStatus":              spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitStatus().String()),
-									"DimmingUCRevisionNumber": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetDimmingUCRevisionNumber())),
+									"DimmingUCRevisionNumber": spiValues.NewPlcUSINT(identifyReplyCommand.GetDimmingUCRevisionNumber()),
 								}))
 							case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummaryExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"LowApplication":         spiValues.NewPlcSTRING(identifyReplyCommand.GetLowApplication().String()),
 									"HighApplication":        spiValues.NewPlcSTRING(identifyReplyCommand.GetHighApplication().String()),
-									"Area":                   spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetArea())),
+									"Area":                   spiValues.NewPlcUSINT(identifyReplyCommand.GetArea()),
 									"Crc":                    spiValues.NewPlcUINT(identifyReplyCommand.GetCrc()),
 									"SerialNumber":           spiValues.NewPlcUDINT(identifyReplyCommand.GetSerialNumber()),
-									"NetworkVoltage":         spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetNetworkVoltage())),
+									"NetworkVoltage":         spiValues.NewPlcUSINT(identifyReplyCommand.GetNetworkVoltage()),
 									"UnitInLearnMode":        spiValues.NewPlcBOOL(identifyReplyCommand.GetUnitInLearnMode()),
 									"NetworkVoltageLow":      spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageLow()),
 									"NetworkVoltageMarginal": spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageMarginal()),
@@ -288,7 +288,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							case readWriteModel.IdentifyReplyCommandSummaryExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"PartName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
-									"UnitServiceType": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetUnitServiceType())),
+									"UnitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
 									"Version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
 								}))
 							case readWriteModel.IdentifyReplyCommandFirmwareVersionExactly:
@@ -346,13 +346,13 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 										"ClockGenerationEnabled": spiValues.NewPlcBOOL(unitFlags.GetClockGenerationEnabled()),
 										"UnitGeneratingClock":    spiValues.NewPlcBOOL(unitFlags.GetUnitGeneratingClock()),
 									}),
-									"TimeFromLastRecoverOfMainsInSeconds": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetTimeFromLastRecoverOfMainsInSeconds())),
+									"TimeFromLastRecoverOfMainsInSeconds": spiValues.NewPlcUSINT(identifyReplyCommand.GetTimeFromLastRecoverOfMainsInSeconds()),
 								}
 								if gavStoreEnabledByte1 := identifyReplyCommand.GetGavStoreEnabledByte1(); gavStoreEnabledByte1 != nil {
-									structContent["GavStoreEnabledByte1"] = spiValues.NewPlcUINT(uint16(*gavStoreEnabledByte1))
+									structContent["GavStoreEnabledByte1"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte1)
 								}
 								if gavStoreEnabledByte2 := identifyReplyCommand.GetGavStoreEnabledByte2(); gavStoreEnabledByte2 != nil {
-									structContent["GavStoreEnabledByte2"] = spiValues.NewPlcUINT(uint16(*gavStoreEnabledByte2))
+									structContent["GavStoreEnabledByte2"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte2)
 								}
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(structContent))
 							case readWriteModel.IdentifyReplyCommandTerminalLevelsExactly:

@@ -35,17 +35,17 @@ const (
 	rwIsListKey               = "isList"
 )
 
-type bufferCommons struct {
+type BufferCommons struct {
 }
 
-func (b bufferCommons) sanitizeLogicalName(logicalName string) string {
+func (b BufferCommons) SanitizeLogicalName(logicalName string) string {
 	if logicalName == "" {
 		return "value"
 	}
 	return logicalName
 }
 
-func (b bufferCommons) isToBeRenderedAsList(readerWriterArgs ...WithReaderWriterArgs) bool {
+func (b BufferCommons) IsToBeRenderedAsList(readerWriterArgs ...WithReaderWriterArgs) bool {
 	for _, arg := range readerWriterArgs {
 		if !arg.isWriterArgs() && !arg.isReaderArgs() {
 			panic("not a reader or writer arg")
@@ -58,7 +58,7 @@ func (b bufferCommons) isToBeRenderedAsList(readerWriterArgs ...WithReaderWriter
 	return false
 }
 
-func (b bufferCommons) extractAdditionalStringRepresentation(readerWriterArgs ...WithReaderWriterArgs) string {
+func (b BufferCommons) ExtractAdditionalStringRepresentation(readerWriterArgs ...WithReaderWriterArgs) string {
 	for _, arg := range readerWriterArgs {
 		if !arg.isWriterArgs() && !arg.isReaderArgs() {
 			panic("not a reader or writer arg")
@@ -71,16 +71,16 @@ func (b bufferCommons) extractAdditionalStringRepresentation(readerWriterArgs ..
 	return ""
 }
 
-type stack struct {
+type Stack struct {
 	list.List
 }
 
-func (s *stack) Push(value interface{}) interface{} {
+func (s *Stack) Push(value interface{}) interface{} {
 	s.PushBack(value)
 	return value
 }
 
-func (s *stack) Pop() interface{} {
+func (s *Stack) Pop() interface{} {
 	if s.Len() <= 0 {
 		return nil
 	}
@@ -92,7 +92,7 @@ func (s *stack) Pop() interface{} {
 	return element.Value
 }
 
-func (s *stack) Peek() interface{} {
+func (s *Stack) Peek() interface{} {
 	back := s.Back()
 	if back == nil {
 		return nil
@@ -100,6 +100,6 @@ func (s *stack) Peek() interface{} {
 	return back.Value
 }
 
-func (s stack) Empty() bool {
+func (s Stack) Empty() bool {
 	return s.Len() == 0
 }

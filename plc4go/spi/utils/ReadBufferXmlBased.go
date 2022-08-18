@@ -56,7 +56,7 @@ func NewStrictXmlReadBuffer(reader io.Reader, validateAttr bool, validateList bo
 //
 
 type xmlReadBuffer struct {
-	bufferCommons
+	BufferCommons
 	*xml.Decoder
 	pos            uint
 	doValidateAttr bool
@@ -344,7 +344,7 @@ func (x *xmlReadBuffer) validateIfList(readerArgs []WithReaderArgs, startElement
 	if !x.doValidateList {
 		return nil
 	}
-	if x.isToBeRenderedAsList(upcastReaderArgs(readerArgs...)...) {
+	if x.IsToBeRenderedAsList(UpcastReaderArgs(readerArgs...)...) {
 		for _, attr := range startElement.Attr {
 			switch attr.Name.Local {
 			case rwIsListKey:
@@ -358,7 +358,7 @@ func (x *xmlReadBuffer) validateIfList(readerArgs []WithReaderArgs, startElement
 }
 
 func (x *xmlReadBuffer) validateStartElement(startElement xml.StartElement, logicalName string, dataType string, bitLength uint, readerArgs ...WithReaderArgs) error {
-	logicalName = x.sanitizeLogicalName(logicalName)
+	logicalName = x.SanitizeLogicalName(logicalName)
 	if startElement.Name.Local != logicalName {
 		return errors.Errorf("unexpected start element '%s'. Expected '%s'", startElement.Name.Local, logicalName)
 	} else if err := x.validateAttr(startElement.Attr, dataType, bitLength, readerArgs...); err != nil {

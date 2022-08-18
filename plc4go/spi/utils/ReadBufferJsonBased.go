@@ -62,8 +62,8 @@ func NewStrictJsonReadBuffer(reader io.Reader, validateAttr bool) ReadBuffer {
 //
 
 type jsonReadBuffer struct {
-	bufferCommons
-	stack
+	BufferCommons
+	Stack
 	rootElement    map[string]interface{}
 	pos            uint
 	doValidateAttr bool
@@ -93,7 +93,7 @@ func (j *jsonReadBuffer) PullContext(logicalName string, readerArgs ...WithReade
 	if j.err != nil {
 		return j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	if j.Empty() {
 		if context, ok := j.rootElement[logicalName]; ok {
 			j.Push(context)
@@ -132,7 +132,7 @@ func (j *jsonReadBuffer) ReadBit(logicalName string, readerArgs ...WithReaderArg
 	if j.err != nil {
 		return false, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(1)
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "bit", 1, readerArgs...); err != nil {
@@ -149,7 +149,7 @@ func (j *jsonReadBuffer) ReadByte(logicalName string, readerArgs ...WithReaderAr
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(8)
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "byte", 8, readerArgs...); err != nil {
@@ -175,7 +175,7 @@ func (j *jsonReadBuffer) ReadByteArray(logicalName string, numberOfBytes int, re
 	if j.err != nil {
 		return nil, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(numberOfBytes / 8))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "byte", uint(numberOfBytes*8), readerArgs...); err != nil {
@@ -201,7 +201,7 @@ func (j *jsonReadBuffer) ReadUint8(logicalName string, bitLength uint8, readerAr
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
@@ -218,7 +218,7 @@ func (j *jsonReadBuffer) ReadUint16(logicalName string, bitLength uint8, readerA
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
@@ -235,7 +235,7 @@ func (j *jsonReadBuffer) ReadUint32(logicalName string, bitLength uint8, readerA
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
@@ -252,7 +252,7 @@ func (j *jsonReadBuffer) ReadUint64(logicalName string, bitLength uint8, readerA
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
@@ -269,7 +269,7 @@ func (j *jsonReadBuffer) ReadInt8(logicalName string, bitLength uint8, readerArg
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
@@ -286,7 +286,7 @@ func (j *jsonReadBuffer) ReadInt16(logicalName string, bitLength uint8, readerAr
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
@@ -303,7 +303,7 @@ func (j *jsonReadBuffer) ReadInt32(logicalName string, bitLength uint8, readerAr
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
@@ -320,7 +320,7 @@ func (j *jsonReadBuffer) ReadInt64(logicalName string, bitLength uint8, readerAr
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
@@ -337,8 +337,8 @@ func (j *jsonReadBuffer) ReadBigInt(logicalName string, bitLength uint64, reader
 	if j.err != nil {
 		return nil, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	peek, element := j.getElement(logicalName)
 	// TODO: not enough bits
 	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
@@ -357,7 +357,7 @@ func (j *jsonReadBuffer) ReadFloat32(logicalName string, bitLength uint8, reader
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
@@ -374,7 +374,7 @@ func (j *jsonReadBuffer) ReadFloat64(logicalName string, bitLength uint8, reader
 	if j.err != nil {
 		return 0, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
@@ -391,7 +391,7 @@ func (j *jsonReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, reade
 	if j.err != nil {
 		return nil, j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
@@ -410,7 +410,7 @@ func (j *jsonReadBuffer) ReadString(logicalName string, bitLength uint32, reader
 	if j.err != nil {
 		return "", j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "string", uint(bitLength), readerArgs...); err != nil {
@@ -427,11 +427,11 @@ func (j *jsonReadBuffer) CloseContext(logicalName string, readerArgs ...WithRead
 	if j.err != nil {
 		return j.err
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	if j.Empty() {
 		return errors.Errorf("Required context close %s not found in %v", logicalName, j.rootElement)
 	}
-	// Delete us from stack
+	// Delete us from Stack
 	_ = j.Pop()
 	if j.Empty() {
 		return nil
@@ -450,7 +450,7 @@ func (j *jsonReadBuffer) CloseContext(logicalName string, readerArgs ...WithRead
 }
 
 func (j *jsonReadBuffer) getElement(logicalName string) (interface{}, map[string]interface{}) {
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	peek := j.Peek()
 	var element map[string]interface{}
 	switch peek.(type) {
