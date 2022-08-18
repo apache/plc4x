@@ -1292,7 +1292,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.0</version>
+          <version>3.4.1</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
