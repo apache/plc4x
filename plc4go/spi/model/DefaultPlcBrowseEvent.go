@@ -103,7 +103,7 @@ func (d *DefaultPlcBrowseEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (d *DefaultPlcBrowseEvent) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(d); err != nil {
 		return err.Error()
 	}

@@ -880,7 +880,7 @@ func TestS7MessageBytes(t *testing.T) {
 				}
 			})
 			t.Run("Simple 2 Box", func(t *testing.T) {
-				boxWriter := utils.NewBoxedWriteBuffer()
+				boxWriter := utils.NewWriteBufferBoxBased()
 				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
 					t.Error(err)
 				}
@@ -890,7 +890,7 @@ func TestS7MessageBytes(t *testing.T) {
 				}
 			})
 			t.Run("Simple 2 Compact Box", func(t *testing.T) {
-				boxWriter := utils.NewBoxedWriteBufferWithOptions(true, true)
+				boxWriter := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
 					t.Error(err)
 				}

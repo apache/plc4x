@@ -30,11 +30,11 @@ type WriteBufferBoxBased interface {
 	GetBox() AsciiBox
 }
 
-func NewBoxedWriteBuffer() WriteBufferBoxBased {
-	return NewBoxedWriteBufferWithOptions(false, false)
+func NewWriteBufferBoxBased() WriteBufferBoxBased {
+	return NewWriteBufferBoxBasedWithOptions(false, false)
 }
 
-func NewBoxedWriteBufferWithOptions(mergeSingleBoxes bool, omitEmptyBoxes bool) WriteBufferBoxBased {
+func NewWriteBufferBoxBasedWithOptions(mergeSingleBoxes bool, omitEmptyBoxes bool) WriteBufferBoxBased {
 	return &boxedWriteBuffer{
 		List:                list.New(),
 		desiredWidth:        120,
@@ -222,7 +222,7 @@ func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 	case float32, float64:
 		asciiBox = b.asciiBoxWriterLight.BoxString(logicalName, fmt.Sprintf("%x %f%s", value, value, additionalStringRepresentation), 0)
 	case Serializable:
-		virtualBoxedWriteBuffer := NewBoxedWriteBuffer()
+		virtualBoxedWriteBuffer := NewWriteBufferBoxBased()
 		if err := value.(Serializable).Serialize(virtualBoxedWriteBuffer); err == nil {
 			asciiBox = b.asciiBoxWriterLight.BoxBox(logicalName, virtualBoxedWriteBuffer.GetBox(), 0)
 		} else {

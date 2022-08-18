@@ -478,7 +478,7 @@ func (m *_AlarmMessageObjectQueryType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
