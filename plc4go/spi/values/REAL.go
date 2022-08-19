@@ -50,6 +50,14 @@ func (m PlcREAL) GetBoolean() bool {
 	return true
 }
 
+func (m PlcREAL) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcREAL) GetByte() byte {
+	return m.GetUint8()
+}
+
 func (m PlcREAL) IsUint8() bool {
 	return m.value >= 0 && m.value <= math.MaxUint8
 }
@@ -161,4 +169,8 @@ func (m PlcREAL) GetPLCValueType() apiValues.PLCValueType {
 
 func (m PlcREAL) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteFloat32("PlcREAL", 32, m.value)
+}
+
+func (m PlcREAL) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 32, m.value)
 }

@@ -20,14 +20,15 @@
 package values
 
 import (
+	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"unicode/utf16"
 )
 
 type PlcWCHAR struct {
-	value []rune
 	PlcSimpleValueAdapter
+	value []rune
 }
 
 func NewPlcWCHAR(value uint16) PlcWCHAR {
@@ -56,4 +57,8 @@ func (m PlcWCHAR) GetPLCValueType() apiValues.PLCValueType {
 
 func (m PlcWCHAR) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteString("PlcSTRING", uint32(len(m.value)*8), "UTF-8", string(m.value))
+}
+
+func (m PlcWCHAR) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len(m.value)*8), m.value)
 }

@@ -168,3 +168,7 @@ func (m PlcLREAL) GetPLCValueType() apiValues.PLCValueType {
 func (m PlcLREAL) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteFloat64("PlcLREAL", 64, m.value)
 }
+
+func (m PlcLREAL) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 64, m.value)
+}

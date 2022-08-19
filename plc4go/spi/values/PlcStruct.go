@@ -20,6 +20,7 @@
 package values
 
 import (
+	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -107,4 +108,10 @@ func (m PlcStruct) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	return writeBuffer.PopContext("PlcStruct")
+}
+
+func (m PlcStruct) String() string {
+	allBits := 0
+	// TODO: do we want to aggregate the bit length?
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), allBits, m.values)
 }

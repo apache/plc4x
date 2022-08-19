@@ -20,6 +20,7 @@
 package values
 
 import (
+	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
@@ -48,6 +49,14 @@ func (m PlcLINT) GetBoolean() bool {
 		return false
 	}
 	return true
+}
+
+func (m PlcLINT) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcLINT) GetByte() byte {
+	return m.GetUint8()
 }
 
 func (m PlcLINT) IsUint8() bool {
@@ -151,4 +160,8 @@ func (m PlcLINT) GetPLCValueType() apiValues.PLCValueType {
 
 func (m PlcLINT) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteInt64("PlcLINT", 64, m.value)
+}
+
+func (m PlcLINT) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 64, m.value)
 }

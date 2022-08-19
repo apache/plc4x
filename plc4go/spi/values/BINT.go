@@ -20,6 +20,7 @@
 package values
 
 import (
+	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
@@ -28,8 +29,8 @@ import (
 )
 
 type PlcBINT struct {
-	value *big.Int
 	PlcSimpleNumericValueAdapter
+	value *big.Int
 }
 
 func NewPlcBINT(value *big.Int) PlcBINT {
@@ -47,6 +48,14 @@ func (m PlcBINT) GetBoolean() bool {
 		return false
 	}
 	return true
+}
+
+func (m PlcBINT) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcBINT) GetByte() byte {
+	return m.GetUint8()
 }
 
 func (m PlcBINT) IsUint8() bool {
@@ -149,4 +158,8 @@ func (m PlcBINT) isLowerOrEqual(other int64) bool {
 
 func (m PlcBINT) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteBigInt("PlcBINT", uint8(m.value.BitLen()), m.value)
+}
+
+func (m PlcBINT) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), m.value.BitLen(), m.value)
 }

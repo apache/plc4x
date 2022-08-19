@@ -21,6 +21,7 @@ package values
 
 import (
 	"encoding/hex"
+	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -30,9 +31,9 @@ type PlcValueDecoder interface {
 }
 
 type RawPlcValue struct {
+	PlcValueAdapter
 	readBuffer utils.ReadBuffer
 	decoder    PlcValueDecoder
-	PlcValueAdapter
 }
 
 func NewRawPlcValue(readBuffer utils.ReadBuffer, decoder PlcValueDecoder) RawPlcValue {
@@ -84,4 +85,8 @@ func (m RawPlcValue) GetString() string {
 
 func (m RawPlcValue) GetPLCValueType() apiValues.PLCValueType {
 	return apiValues.RAW_PLC_VALUE
+}
+
+func (m RawPlcValue) String() string {
+	return fmt.Sprintf("%s", m.GetPLCValueType())
 }

@@ -179,9 +179,79 @@ const (
 	TIME_OF_DAY
 	UDINT
 	UINT
-	USINT
 	ULINT
+	USINT
 	WCHAR
 	WORD
 	WSTRING
 )
+
+func (p PLCValueType) String() string {
+	switch {
+	case p == BINT:
+		return "BINT"
+	case p == BIT_STRING:
+		return "BIT_STRING"
+	case p == BOOL:
+		return "BOOL"
+	case p == BREAL:
+		return "BREAL"
+	case p == BYTE:
+		return "BYTE"
+	case p == BYTE_ARRAY:
+		return "BYTE_ARRAY"
+	case p == CHAR:
+		return "CHAR"
+	case p == DATE:
+		return "DATE"
+	case p == DATE_AND_TIME:
+		return "DATE_AND_TIME"
+	case p == DINT:
+		return "DINT"
+	case p == DWORD:
+		return "DWORD"
+	case p == INT:
+		return "INT"
+	case p == LINT:
+		return "LINT"
+	case p == LIST:
+		return "LIST"
+	case p == LREAL:
+		return "LREAL"
+	case p == LTIME:
+		return "LTIME"
+	case p == LWORD:
+		return "LWORD"
+	case p == NULL:
+		return "NULL"
+	case p == RAW_PLC_VALUE:
+		return "RAW_PLC_VALUE"
+	case p == REAL:
+		return "REAL"
+	case p == STRUCT:
+		return "STRUCT"
+	case p == SINT:
+		return "SINT"
+	case p == STRING:
+		return "STRING"
+	case p == TIME:
+		return "TIME"
+	case p == TIME_OF_DAY:
+		return "TIME_OF_DAY"
+	case p == UDINT:
+		return "UDINT"
+	case p == UINT:
+		return "UINT"
+	case p == ULINT:
+		return "ULINT"
+	case p == USINT:
+		return "USINT"
+	case p == WCHAR:
+		return "WCHAR"
+	case p == WORD:
+		return "WORD"
+	case p == WSTRING:
+		return "WSTRING"
+	}
+	return "Unknown"
+}

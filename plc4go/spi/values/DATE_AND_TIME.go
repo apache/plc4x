@@ -47,7 +47,7 @@ func (m PlcDATE_AND_TIME) IsDateTime() bool {
 	return true
 }
 func (m PlcDATE_AND_TIME) GetDateTime() time.Time {
-	return time.Time{}.Add(m.GetDuration())
+	return m.value
 }
 
 func (m PlcDATE_AND_TIME) GetString() string {
@@ -60,4 +60,8 @@ func (m PlcDATE_AND_TIME) GetPLCValueType() apiValues.PLCValueType {
 
 func (m PlcDATE_AND_TIME) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+}
+
+func (m PlcDATE_AND_TIME) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }
