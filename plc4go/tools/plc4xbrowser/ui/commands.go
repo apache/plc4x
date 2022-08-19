@@ -382,7 +382,7 @@ var rootCommand = Command{
 					if err := subscriptionRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't subscribe", connectionsString)
 					}
-					log.Info().Msgf("subscription result %s", subscriptionRequestResult.GetResponse())
+					log.Info().Msgf("subscription result\n%s", subscriptionRequestResult.GetResponse())
 				}
 				return nil
 			},

@@ -540,9 +540,12 @@ func (s salMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := s.unitAddress.Serialize(writeBuffer); err != nil {
-		return err
+	if unitAddress := s.unitAddress; unitAddress != nil {
+		if err := unitAddress.Serialize(writeBuffer); err != nil {
+			return err
+		}
 	}
+
 	if err := s.application.Serialize(writeBuffer); err != nil {
 		return err
 	}
@@ -587,8 +590,10 @@ func (m mmiMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := m.unitAddress.Serialize(writeBuffer); err != nil {
-		return err
+	if unitAddress := m.unitAddress; unitAddress != nil {
+		if err := unitAddress.Serialize(writeBuffer); err != nil {
+			return err
+		}
 	}
 	if err := m.application.Serialize(writeBuffer); err != nil {
 		return err
