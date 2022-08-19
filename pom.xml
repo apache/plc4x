@@ -140,7 +140,7 @@
     <jaxb.version>4.0.0</jaxb.version>
     <jetty-util.version>11.0.11</jetty-util.version>
     <jna.version>5.12.1</jna.version>
-    <joda-time.version>2.10.14</joda-time.version>
+    <joda-time.version>2.11.0</joda-time.version>
     <jserialcom.version>2.9.2</jserialcom.version>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
