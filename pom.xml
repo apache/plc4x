@@ -148,7 +148,7 @@
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
-    <milo.version>0.6.6</milo.version>
+    <milo.version>0.6.7</milo.version>
     <mockito.version>4.7.0</mockito.version>
     <netty.version>4.1.79.Final</netty.version>
     <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
