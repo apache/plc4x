@@ -63,19 +63,19 @@ func (m PlcSimpleNumericValueAdapter) IsUint64() bool {
 	return true
 }
 
-func (m PlcSimpleNumericValueAdapter) IsUnt8() bool {
+func (m PlcSimpleNumericValueAdapter) IsInt8() bool {
 	return true
 }
 
-func (m PlcSimpleNumericValueAdapter) IsUnt16() bool {
+func (m PlcSimpleNumericValueAdapter) IsInt16() bool {
 	return true
 }
 
-func (m PlcSimpleNumericValueAdapter) IsUnt32() bool {
+func (m PlcSimpleNumericValueAdapter) IsInt32() bool {
 	return true
 }
 
-func (m PlcSimpleNumericValueAdapter) IsUnt64() bool {
+func (m PlcSimpleNumericValueAdapter) IsInt64() bool {
 	return true
 }
 

@@ -95,6 +95,8 @@ type PlcValue interface {
 
 	IsTime() bool
 	GetTime() time.Time
+	IsDuration() bool
+	GetDuration() time.Duration
 	IsDate() bool
 	GetDate() time.Time
 	IsDateTime() bool
