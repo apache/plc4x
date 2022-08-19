@@ -1127,7 +1127,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>1.7.0</version>
+          <version>3.0.0</version>
         </plugin>
 
         <plugin>
