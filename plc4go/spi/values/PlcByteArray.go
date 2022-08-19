@@ -20,7 +20,7 @@
 package values
 
 import (
-	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -47,16 +47,20 @@ func (m PlcByteArray) GetLength() uint32 {
 	return uint32(len(m.Values))
 }
 
-func (m PlcByteArray) GetIndex(i uint32) api.PlcValue {
+func (m PlcByteArray) GetIndex(i uint32) apiValues.PlcValue {
 	return NewPlcUSINT(m.Values[i])
 }
 
-func (m PlcByteArray) GetList() []api.PlcValue {
-	var plcValues []api.PlcValue
+func (m PlcByteArray) GetList() []apiValues.PlcValue {
+	var plcValues []apiValues.PlcValue
 	for _, value := range m.Values {
 		plcValues = append(plcValues, NewPlcUSINT(value))
 	}
 	return plcValues
+}
+
+func (m PlcByteArray) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.BYTE_ARRAY
 }
 
 func (m PlcByteArray) Serialize(writeBuffer utils.WriteBuffer) error {

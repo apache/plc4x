@@ -129,6 +129,8 @@ type PlcValue interface {
 	GetStruct() map[string]PlcValue
 	//
 	///
+
+	GetPLCValueType() PLCValueType
 }
 
 // RawPlcValue This type is used in cases where the driver doesn't have access to type information and therefore can't decode
@@ -144,3 +146,40 @@ type RawPlcValue interface {
 	// RawReset Reset the internal read-buffer (For the case that a raw plc-value has to be parsed multiple times)
 	RawReset()
 }
+
+type PLCValueType uint8
+
+const (
+	BINT PLCValueType = iota
+	BIT_STRING
+	BOOL
+	BREAL
+	BYTE
+	BYTE_ARRAY
+	CHAR
+	DATE
+	DATE_AND_TIME
+	DINT
+	DWORD
+	INT
+	LINT
+	LIST
+	LREAL
+	LTIME
+	LWORD
+	NULL
+	RAW_PLC_VALUE
+	REAL
+	STRUCT
+	SINT
+	STRING
+	TIME
+	TIME_OF_DAY
+	UDINT
+	UINT
+	USINT
+	ULINT
+	WCHAR
+	WORD
+	WSTRING
+)

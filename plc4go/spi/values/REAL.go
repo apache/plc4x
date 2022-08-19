@@ -21,6 +21,7 @@ package values
 
 import (
 	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
 )
@@ -152,6 +153,10 @@ func (m PlcREAL) IsString() bool {
 
 func (m PlcREAL) GetString() string {
 	return fmt.Sprintf("%g", m.GetFloat32())
+}
+
+func (m PlcREAL) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.REAL
 }
 
 func (m PlcREAL) Serialize(writeBuffer utils.WriteBuffer) error {

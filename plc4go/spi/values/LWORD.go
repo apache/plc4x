@@ -20,6 +20,7 @@
 package values
 
 import (
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -111,6 +112,10 @@ func (m PlcLWORD) GetString() string {
 		}
 	}
 	return strVal
+}
+
+func (m PlcLWORD) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.LWORD
 }
 
 func (m PlcLWORD) Serialize(writeBuffer utils.WriteBuffer) error {

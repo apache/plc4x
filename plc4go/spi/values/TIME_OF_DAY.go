@@ -20,6 +20,7 @@
 package values
 
 import (
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
@@ -67,6 +68,10 @@ func (m PlcTIME_OF_DAY) GetTime() time.Time {
 
 func (m PlcTIME_OF_DAY) GetString() string {
 	return m.value.Format("15:04:05.000")
+}
+
+func (m PlcTIME_OF_DAY) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.TIME_OF_DAY
 }
 
 func (m PlcTIME_OF_DAY) Serialize(writeBuffer utils.WriteBuffer) error {

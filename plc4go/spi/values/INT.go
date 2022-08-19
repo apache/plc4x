@@ -20,6 +20,7 @@
 package values
 
 import (
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
 	"strconv"
@@ -128,6 +129,10 @@ func (m PlcINT) GetFloat64() float64 {
 
 func (m PlcINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
+}
+
+func (m PlcINT) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.INT
 }
 
 func (m PlcINT) Serialize(writeBuffer utils.WriteBuffer) error {

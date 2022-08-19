@@ -20,7 +20,7 @@
 package values
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -29,17 +29,17 @@ import (
 )
 
 type PlcList struct {
-	Values []values.PlcValue
+	Values []apiValues.PlcValue
 	PlcValueAdapter
 }
 
-func NewPlcList(values []values.PlcValue) values.PlcValue {
+func NewPlcList(values []apiValues.PlcValue) apiValues.PlcValue {
 	return PlcList{
 		Values: values,
 	}
 }
 
-func singleOrAdapter[R any](plcList PlcList, f func(values.PlcValue) R) R {
+func singleOrAdapter[R any](plcList PlcList, f func(apiValues.PlcValue) R) R {
 	if len(plcList.Values) == 1 {
 		return f(plcList.Values[0])
 	} else {
@@ -50,9 +50,9 @@ func singleOrAdapter[R any](plcList PlcList, f func(values.PlcValue) R) R {
 ////
 // Simple Types
 
-func (m PlcList) IsSimple() bool   { return singleOrAdapter(m, values.PlcValue.IsSimple) }
-func (m PlcList) IsNullable() bool { return singleOrAdapter(m, values.PlcValue.IsNullable) }
-func (m PlcList) IsNull() bool     { return singleOrAdapter(m, values.PlcValue.IsNull) }
+func (m PlcList) IsSimple() bool   { return singleOrAdapter(m, apiValues.PlcValue.IsSimple) }
+func (m PlcList) IsNullable() bool { return singleOrAdapter(m, apiValues.PlcValue.IsNullable) }
+func (m PlcList) IsNull() bool     { return singleOrAdapter(m, apiValues.PlcValue.IsNull) }
 
 //
 ///
@@ -60,13 +60,13 @@ func (m PlcList) IsNull() bool     { return singleOrAdapter(m, values.PlcValue.I
 ////
 // Boolean
 
-func (m PlcList) IsBool() bool          { return singleOrAdapter(m, values.PlcValue.IsBool) }
-func (m PlcList) GetBoolLength() uint32 { return singleOrAdapter(m, values.PlcValue.GetBoolLength) }
-func (m PlcList) GetBool() bool         { return singleOrAdapter(m, values.PlcValue.GetBool) }
+func (m PlcList) IsBool() bool          { return singleOrAdapter(m, apiValues.PlcValue.IsBool) }
+func (m PlcList) GetBoolLength() uint32 { return singleOrAdapter(m, apiValues.PlcValue.GetBoolLength) }
+func (m PlcList) GetBool() bool         { return singleOrAdapter(m, apiValues.PlcValue.GetBool) }
 func (m PlcList) GetBoolAt(index uint32) bool {
 	return m.PlcValueAdapter.GetBoolAt(index)
 }
-func (m PlcList) GetBoolArray() []bool { return singleOrAdapter(m, values.PlcValue.GetBoolArray) }
+func (m PlcList) GetBoolArray() []bool { return singleOrAdapter(m, apiValues.PlcValue.GetBoolArray) }
 
 //
 ///
@@ -74,8 +74,8 @@ func (m PlcList) GetBoolArray() []bool { return singleOrAdapter(m, values.PlcVal
 ////
 // Byte
 
-func (m PlcList) IsByte() bool  { return singleOrAdapter(m, values.PlcValue.IsByte) }
-func (m PlcList) GetByte() byte { return singleOrAdapter(m, values.PlcValue.GetByte) }
+func (m PlcList) IsByte() bool  { return singleOrAdapter(m, apiValues.PlcValue.IsByte) }
+func (m PlcList) GetByte() byte { return singleOrAdapter(m, apiValues.PlcValue.GetByte) }
 
 //
 ///
@@ -83,22 +83,22 @@ func (m PlcList) GetByte() byte { return singleOrAdapter(m, values.PlcValue.GetB
 ////
 // Integer
 
-func (m PlcList) IsUint8() bool     { return singleOrAdapter(m, values.PlcValue.IsUint8) }
-func (m PlcList) GetUint8() uint8   { return singleOrAdapter(m, values.PlcValue.GetUint8) }
-func (m PlcList) IsUint16() bool    { return singleOrAdapter(m, values.PlcValue.IsUint16) }
-func (m PlcList) GetUint16() uint16 { return singleOrAdapter(m, values.PlcValue.GetUint16) }
-func (m PlcList) IsUint32() bool    { return singleOrAdapter(m, values.PlcValue.IsUint32) }
-func (m PlcList) GetUint32() uint32 { return singleOrAdapter(m, values.PlcValue.GetUint32) }
-func (m PlcList) IsUint64() bool    { return singleOrAdapter(m, values.PlcValue.IsUint64) }
-func (m PlcList) GetUint64() uint64 { return singleOrAdapter(m, values.PlcValue.GetUint64) }
-func (m PlcList) IsInt8() bool      { return singleOrAdapter(m, values.PlcValue.IsInt8) }
-func (m PlcList) GetInt8() int8     { return singleOrAdapter(m, values.PlcValue.GetInt8) }
-func (m PlcList) IsInt16() bool     { return singleOrAdapter(m, values.PlcValue.IsInt16) }
-func (m PlcList) GetInt16() int16   { return singleOrAdapter(m, values.PlcValue.GetInt16) }
-func (m PlcList) IsInt32() bool     { return singleOrAdapter(m, values.PlcValue.IsInt32) }
-func (m PlcList) GetInt32() int32   { return singleOrAdapter(m, values.PlcValue.GetInt32) }
-func (m PlcList) IsInt64() bool     { return singleOrAdapter(m, values.PlcValue.IsInt64) }
-func (m PlcList) GetInt64() int64   { return singleOrAdapter(m, values.PlcValue.GetInt64) }
+func (m PlcList) IsUint8() bool     { return singleOrAdapter(m, apiValues.PlcValue.IsUint8) }
+func (m PlcList) GetUint8() uint8   { return singleOrAdapter(m, apiValues.PlcValue.GetUint8) }
+func (m PlcList) IsUint16() bool    { return singleOrAdapter(m, apiValues.PlcValue.IsUint16) }
+func (m PlcList) GetUint16() uint16 { return singleOrAdapter(m, apiValues.PlcValue.GetUint16) }
+func (m PlcList) IsUint32() bool    { return singleOrAdapter(m, apiValues.PlcValue.IsUint32) }
+func (m PlcList) GetUint32() uint32 { return singleOrAdapter(m, apiValues.PlcValue.GetUint32) }
+func (m PlcList) IsUint64() bool    { return singleOrAdapter(m, apiValues.PlcValue.IsUint64) }
+func (m PlcList) GetUint64() uint64 { return singleOrAdapter(m, apiValues.PlcValue.GetUint64) }
+func (m PlcList) IsInt8() bool      { return singleOrAdapter(m, apiValues.PlcValue.IsInt8) }
+func (m PlcList) GetInt8() int8     { return singleOrAdapter(m, apiValues.PlcValue.GetInt8) }
+func (m PlcList) IsInt16() bool     { return singleOrAdapter(m, apiValues.PlcValue.IsInt16) }
+func (m PlcList) GetInt16() int16   { return singleOrAdapter(m, apiValues.PlcValue.GetInt16) }
+func (m PlcList) IsInt32() bool     { return singleOrAdapter(m, apiValues.PlcValue.IsInt32) }
+func (m PlcList) GetInt32() int32   { return singleOrAdapter(m, apiValues.PlcValue.GetInt32) }
+func (m PlcList) IsInt64() bool     { return singleOrAdapter(m, apiValues.PlcValue.IsInt64) }
+func (m PlcList) GetInt64() int64   { return singleOrAdapter(m, apiValues.PlcValue.GetInt64) }
 
 //
 ///
@@ -106,10 +106,10 @@ func (m PlcList) GetInt64() int64   { return singleOrAdapter(m, values.PlcValue.
 ////
 // Floating Point
 
-func (m PlcList) IsFloat32() bool     { return singleOrAdapter(m, values.PlcValue.IsFloat32) }
-func (m PlcList) GetFloat32() float32 { return singleOrAdapter(m, values.PlcValue.GetFloat32) }
-func (m PlcList) IsFloat64() bool     { return singleOrAdapter(m, values.PlcValue.IsFloat64) }
-func (m PlcList) GetFloat64() float64 { return singleOrAdapter(m, values.PlcValue.GetFloat64) }
+func (m PlcList) IsFloat32() bool     { return singleOrAdapter(m, apiValues.PlcValue.IsFloat32) }
+func (m PlcList) GetFloat32() float32 { return singleOrAdapter(m, apiValues.PlcValue.GetFloat32) }
+func (m PlcList) IsFloat64() bool     { return singleOrAdapter(m, apiValues.PlcValue.IsFloat64) }
+func (m PlcList) GetFloat64() float64 { return singleOrAdapter(m, apiValues.PlcValue.GetFloat64) }
 
 //
 ///
@@ -117,7 +117,7 @@ func (m PlcList) GetFloat64() float64 { return singleOrAdapter(m, values.PlcValu
 ////
 // String
 
-func (m PlcList) IsString() bool { return singleOrAdapter(m, values.PlcValue.IsString) }
+func (m PlcList) IsString() bool { return singleOrAdapter(m, apiValues.PlcValue.IsString) }
 func (m PlcList) GetString() string {
 	stringValues := make([]string, len(m.Values))
 	for i, v := range m.Values {
@@ -132,12 +132,12 @@ func (m PlcList) GetString() string {
 ////
 // Time
 
-func (m PlcList) IsTime() bool           { return singleOrAdapter(m, values.PlcValue.IsTime) }
-func (m PlcList) GetTime() time.Time     { return singleOrAdapter(m, values.PlcValue.GetTime) }
-func (m PlcList) IsDate() bool           { return singleOrAdapter(m, values.PlcValue.IsDate) }
-func (m PlcList) GetDate() time.Time     { return singleOrAdapter(m, values.PlcValue.GetDate) }
-func (m PlcList) IsDateTime() bool       { return singleOrAdapter(m, values.PlcValue.IsDateTime) }
-func (m PlcList) GetDateTime() time.Time { return singleOrAdapter(m, values.PlcValue.GetDateTime) }
+func (m PlcList) IsTime() bool           { return singleOrAdapter(m, apiValues.PlcValue.IsTime) }
+func (m PlcList) GetTime() time.Time     { return singleOrAdapter(m, apiValues.PlcValue.GetTime) }
+func (m PlcList) IsDate() bool           { return singleOrAdapter(m, apiValues.PlcValue.IsDate) }
+func (m PlcList) GetDate() time.Time     { return singleOrAdapter(m, apiValues.PlcValue.GetDate) }
+func (m PlcList) IsDateTime() bool       { return singleOrAdapter(m, apiValues.PlcValue.IsDateTime) }
+func (m PlcList) GetDateTime() time.Time { return singleOrAdapter(m, apiValues.PlcValue.GetDateTime) }
 
 //
 ///
@@ -164,10 +164,10 @@ func (m PlcList) IsList() bool { return true }
 func (m PlcList) GetLength() uint32 {
 	return uint32(len(m.Values))
 }
-func (m PlcList) GetIndex(i uint32) values.PlcValue {
+func (m PlcList) GetIndex(i uint32) apiValues.PlcValue {
 	return m.Values[i]
 }
-func (m PlcList) GetList() []values.PlcValue {
+func (m PlcList) GetList() []apiValues.PlcValue {
 	return m.Values
 }
 
@@ -177,8 +177,8 @@ func (m PlcList) GetList() []values.PlcValue {
 ////
 // Struct Methods
 
-func (m PlcList) IsStruct() bool    { return singleOrAdapter(m, values.PlcValue.IsStruct) }
-func (m PlcList) GetKeys() []string { return singleOrAdapter(m, values.PlcValue.GetKeys) }
+func (m PlcList) IsStruct() bool    { return singleOrAdapter(m, apiValues.PlcValue.IsStruct) }
+func (m PlcList) GetKeys() []string { return singleOrAdapter(m, apiValues.PlcValue.GetKeys) }
 func (m PlcList) HasKey(key string) bool {
 	if len(m.Values) == 1 {
 		return m.Values[0].HasKey(key)
@@ -187,19 +187,23 @@ func (m PlcList) HasKey(key string) bool {
 	}
 
 }
-func (m PlcList) GetValue(key string) values.PlcValue {
+func (m PlcList) GetValue(key string) apiValues.PlcValue {
 	if len(m.Values) == 1 {
 		return m.Values[0].GetValue(key)
 	} else {
 		return m.PlcValueAdapter.GetValue(key)
 	}
 }
-func (m PlcList) GetStruct() map[string]values.PlcValue {
-	return singleOrAdapter(m, values.PlcValue.GetStruct)
+func (m PlcList) GetStruct() map[string]apiValues.PlcValue {
+	return singleOrAdapter(m, apiValues.PlcValue.GetStruct)
 }
 
 //
 ///
+
+func (m PlcList) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.LIST
+}
 
 func (m PlcList) Serialize(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcList"); err != nil {

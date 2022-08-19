@@ -21,6 +21,7 @@ package values
 
 import (
 	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
@@ -56,6 +57,10 @@ func (m PlcLTIME) IsString() bool {
 
 func (m PlcLTIME) GetString() string {
 	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
+}
+
+func (m PlcLTIME) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.LTIME
 }
 
 func (m PlcLTIME) Serialize(writeBuffer utils.WriteBuffer) error {

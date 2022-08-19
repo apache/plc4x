@@ -21,6 +21,7 @@ package values
 
 import (
 	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
 	"math/big"
@@ -154,6 +155,10 @@ func (m PlcBREAL) IsString() bool {
 
 func (m PlcBREAL) GetString() string {
 	return fmt.Sprintf("%g", m.GetFloat64())
+}
+
+func (m PlcBREAL) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.BREAL
 }
 
 func (m PlcBREAL) isZero() bool {

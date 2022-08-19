@@ -19,7 +19,10 @@
 
 package values
 
-import "github.com/apache/plc4x/plc4go/spi/utils"
+import (
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type PlcBOOL struct {
 	value bool
@@ -72,6 +75,10 @@ func (m PlcBOOL) GetString() string {
 	} else {
 		return "false"
 	}
+}
+
+func (m PlcBOOL) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.BOOL
 }
 
 func (m PlcBOOL) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -20,6 +20,7 @@
 package values
 
 import (
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"unicode/utf16"
 )
@@ -47,6 +48,10 @@ func (m PlcWCHAR) IsString() bool {
 
 func (m PlcWCHAR) GetString() string {
 	return string(m.value)
+}
+
+func (m PlcWCHAR) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.WCHAR
 }
 
 func (m PlcWCHAR) Serialize(writeBuffer utils.WriteBuffer) error {

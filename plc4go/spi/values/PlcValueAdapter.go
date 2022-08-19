@@ -20,7 +20,7 @@
 package values
 
 import (
-	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
 )
 
@@ -197,10 +197,10 @@ func (m PlcValueAdapter) IsList() bool {
 func (m PlcValueAdapter) GetLength() uint32 {
 	panic("GetLength not implemented")
 }
-func (m PlcValueAdapter) GetIndex(i uint32) api.PlcValue {
+func (m PlcValueAdapter) GetIndex(i uint32) apiValues.PlcValue {
 	return nil
 }
-func (m PlcValueAdapter) GetList() []api.PlcValue {
+func (m PlcValueAdapter) GetList() []apiValues.PlcValue {
 	panic("GetList not implemented")
 }
 
@@ -218,10 +218,10 @@ func (m PlcValueAdapter) GetKeys() []string {
 func (m PlcValueAdapter) HasKey(_ string) bool {
 	return false
 }
-func (m PlcValueAdapter) GetValue(_ string) api.PlcValue {
+func (m PlcValueAdapter) GetValue(_ string) apiValues.PlcValue {
 	panic("GetValue not implemented")
 }
-func (m PlcValueAdapter) GetStruct() map[string]api.PlcValue {
+func (m PlcValueAdapter) GetStruct() map[string]apiValues.PlcValue {
 	panic("GetStruct not implemented")
 }
 func (m PlcValueAdapter) IsDate() bool {
@@ -235,4 +235,8 @@ func (m PlcValueAdapter) IsDateTime() bool {
 }
 func (m PlcValueAdapter) GetDateTime() time.Time {
 	panic("GetDateTime not implemented")
+}
+
+func (m PlcValueAdapter) GetPLCValueType() apiValues.PLCValueType {
+	panic("GetPLCValueType not implemented")
 }
