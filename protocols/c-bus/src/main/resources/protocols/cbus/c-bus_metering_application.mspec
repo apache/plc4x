@@ -63,6 +63,6 @@
     ['0x0F' MeteringCommandEvent_7Bytes                    ['EVENT',  '7']]
 ]
 
-[enum uint 4 MeteringCommandType
-    ['0x00' EVENT     ]
+[enum uint 4 MeteringCommandType(uint 8 numberOfArguments)
+    ['0x00' EVENT     ['0xFF']]
 ]

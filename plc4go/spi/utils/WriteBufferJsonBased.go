@@ -33,17 +33,10 @@ type WriteBufferJsonBased interface {
 }
 
 func NewJsonWriteBuffer() WriteBufferJsonBased {
-	var jsonString strings.Builder
-	encoder := json.NewEncoder(&jsonString)
-	encoder.SetIndent("", "  ")
-	return &jsonWriteBuffer{
-		jsonString:   &jsonString,
-		Encoder:      encoder,
-		doRenderAttr: true,
-	}
+	return NewJsonWriteBufferWithOptions(true)
 }
 
-func NewConfiguredJsonWriteBuffer(renderAttr bool) WriteBufferJsonBased {
+func NewJsonWriteBufferWithOptions(renderAttr bool) WriteBufferJsonBased {
 	var jsonString strings.Builder
 	encoder := json.NewEncoder(&jsonString)
 	encoder.SetIndent("", "  ")
@@ -61,14 +54,13 @@ func NewConfiguredJsonWriteBuffer(renderAttr bool) WriteBufferJsonBased {
 //
 
 type jsonWriteBuffer struct {
-	bufferCommons
-	stack
+	BufferCommons
+	Stack
 	*json.Encoder
-	jsonString    *strings.Builder
-	rootNode      interface{}
-	doRenderLists bool
-	doRenderAttr  bool
-	pos           uint
+	jsonString   *strings.Builder
+	rootNode     interface{}
+	doRenderAttr bool
+	pos          uint
 }
 
 type elementContext struct {
@@ -88,7 +80,7 @@ type listContext struct {
 ///////////////////////////////////////
 
 func (j *jsonWriteBuffer) PushContext(logicalName string, writerArgs ...WithWriterArgs) error {
-	renderedAsList := j.isToBeRenderedAsList(upcastWriterArgs(writerArgs...)...)
+	renderedAsList := j.IsToBeRenderedAsList(UpcastWriterArgs(writerArgs...)...)
 	if renderedAsList {
 		j.Push(&listContext{logicalName, make([]interface{}, 0)})
 	} else {
@@ -253,7 +245,7 @@ func (j *jsonWriteBuffer) GetJsonString() (string, error) {
 }
 
 func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr map[string]interface{}, _ ...WithWriterArgs) error {
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	peek := j.Peek()
 	switch peek.(type) {
 	case *elementContext:
@@ -273,7 +265,13 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr
 		context.list = append(context.list, m)
 		return nil
 	default:
-		panic("broken context")
+		context := &elementContext{logicalName, make(map[string]interface{})}
+		context.properties[logicalName] = value
+		for key, attrValue := range attr {
+			context.properties[key] = attrValue
+		}
+		j.Push(context)
+		return nil
 	}
 }
 
@@ -282,10 +280,10 @@ func (j *jsonWriteBuffer) generateAttr(logicalName string, dataType string, bitL
 	if !j.doRenderAttr {
 		return attr
 	}
-	logicalName = j.sanitizeLogicalName(logicalName)
+	logicalName = j.SanitizeLogicalName(logicalName)
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwDataTypeKey)] = dataType
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwBitLengthKey)] = bitLength
-	additionalStringRepresentation := j.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	additionalStringRepresentation := j.ExtractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	if additionalStringRepresentation != "" {
 		attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwStringRepresentationKey)] = additionalStringRepresentation
 	}

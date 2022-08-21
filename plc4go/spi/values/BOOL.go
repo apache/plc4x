@@ -19,11 +19,15 @@
 
 package values
 
-import "github.com/apache/plc4x/plc4go/spi/utils"
+import (
+	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type PlcBOOL struct {
-	value bool
 	PlcSimpleValueAdapter
+	value bool
 }
 
 func NewPlcBOOL(value bool) PlcBOOL {
@@ -74,6 +78,14 @@ func (m PlcBOOL) GetString() string {
 	}
 }
 
+func (m PlcBOOL) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.BOOL
+}
+
 func (m PlcBOOL) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteBit("PlcBOOL", m.value)
+}
+
+func (m PlcBOOL) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 1, m.value)
 }

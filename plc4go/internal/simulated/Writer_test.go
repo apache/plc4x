@@ -27,6 +27,7 @@ import (
 	model4 "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	model3 "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
 	"reflect"
 	"testing"
@@ -175,6 +176,8 @@ func TestWriter_Write(t *testing.T) {
 			writeRequest := model3.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
 			timeBeforeWriteRequest := time.Now()
 			writeResponseChannel := w.Write(context.TODO(), writeRequest)
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case writeResponse := <-writeResponseChannel:
 				timeAfterWriteRequest := time.Now()
@@ -199,7 +202,7 @@ func TestWriter_Write(t *testing.T) {
 					t.Errorf("Writer.Write() Device State = %v, want %v",
 						tt.fields.device.State, tt.newState)
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("Reader.Read() got timeout")
 			}
 		})

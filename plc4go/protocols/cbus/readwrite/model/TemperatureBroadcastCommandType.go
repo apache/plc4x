@@ -31,6 +31,7 @@ import (
 type TemperatureBroadcastCommandType uint8
 
 type ITemperatureBroadcastCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,6 +48,27 @@ func init() {
 	}
 }
 
+func (e TemperatureBroadcastCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 2
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func TemperatureBroadcastCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TemperatureBroadcastCommandType, error) {
+	for _, sizeValue := range TemperatureBroadcastCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func TemperatureBroadcastCommandTypeByValue(value uint8) (enum TemperatureBroadcastCommandType, ok bool) {
 	switch value {
 	case 0x00:

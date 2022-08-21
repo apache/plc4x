@@ -62,24 +62,24 @@ type withRenderAsList struct {
 	renderAsList bool
 }
 
-func upcastReaderArgs(args ...WithReaderArgs) []WithReaderWriterArgs {
-	result := make([]WithReaderWriterArgs, len(args))
-	for i, arg := range args {
-		result[i] = arg.(WithReaderWriterArgs)
-	}
-	return result
-}
-
-func upcastWriterArgs(args ...WithWriterArgs) []WithReaderWriterArgs {
-	result := make([]WithReaderWriterArgs, len(args))
-	for i, arg := range args {
-		result[i] = arg.(WithReaderWriterArgs)
-	}
-	return result
-}
-
 //
 // Internal section
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+func UpcastReaderArgs(args ...WithReaderArgs) []WithReaderWriterArgs {
+	result := make([]WithReaderWriterArgs, len(args))
+	for i, arg := range args {
+		result[i] = arg.(WithReaderWriterArgs)
+	}
+	return result
+}
+
+func UpcastWriterArgs(args ...WithWriterArgs) []WithReaderWriterArgs {
+	result := make([]WithReaderWriterArgs, len(args))
+	for i, arg := range args {
+		result[i] = arg.(WithReaderWriterArgs)
+	}
+	return result
+}

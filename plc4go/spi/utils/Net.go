@@ -143,11 +143,14 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 				// Schedule a discovery operation for this ip.
 				ip := net.IP(arp.SourceProtAddress)
 				log.Trace().Msgf("Scheduling discovery for IP %s", ip)
+				timeout := time.NewTimer(2 * time.Second)
 				go func(ip net.IP) {
 					select {
 					case <-ctx.Done():
+						CleanupTimer(timeout)
 					case foundIps <- DuplicateIP(ip):
-					case <-time.After(2 * time.Second):
+						CleanupTimer(timeout)
+					case <-timeout.C:
 					}
 				}(DuplicateIP(ip))
 			}
@@ -226,12 +229,15 @@ func lookupIps(ctx context.Context, ipnet *net.IPNet, foundIps chan net.IP, wg *
 		}
 
 		wg.Add(1)
+		timeout := time.NewTimer(2 * time.Second)
 		go func(ip net.IP) {
 			defer func() { wg.Done() }()
 			select {
 			case <-ctx.Done():
+				CleanupTimer(timeout)
 			case foundIps <- ip:
-			case <-time.After(2 * time.Second):
+				CleanupTimer(timeout)
+			case <-timeout.C:
 			}
 		}(DuplicateIP(ip))
 		log.Trace().Stringer("IP", ip).Msg("Expanded CIDR")

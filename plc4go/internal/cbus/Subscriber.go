@@ -272,8 +272,15 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			// TODO: we need to map commands e.g. if we get a MeteringDataElectricityConsumption we can map that to MeteringDataMeasureElectricity
 			address[fieldName] = fmt.Sprintf("sal/%s/%s", applicationString, "TODO")
 
-			// TODO: map values properly
-			plcValues[fieldName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))
+			rbvb := spiValues.NewWriteBufferPlcValueBased()
+			err := salData.Serialize(rbvb)
+			if err != nil {
+				log.Error().Err(err).Msg("Error serializing to plc value... just returning it as string")
+				plcValues[fieldName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))
+			} else {
+				plcValues[fieldName] = rbvb.GetPlcValue()
+			}
+
 			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 
 			// Assemble a PlcSubscription event

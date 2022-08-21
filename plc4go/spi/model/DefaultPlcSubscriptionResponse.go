@@ -21,7 +21,6 @@ package model
 
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,10 +51,6 @@ func (m DefaultPlcSubscriptionResponse) GetFieldNames() []string {
 	return fieldNames
 }
 
-func (m DefaultPlcSubscriptionResponse) GetValue(name string) values.PlcValue {
-	panic("not implemented: implement me")
-}
-
 func (m DefaultPlcSubscriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcSubscriptionResponse"); err != nil {
 		return err
@@ -73,10 +68,6 @@ func (m DefaultPlcSubscriptionResponse) Serialize(writeBuffer utils.WriteBuffer)
 		if err := writeBuffer.PushContext(fieldName); err != nil {
 			return err
 		}
-		valueResponse := m.GetValue(fieldName)
-		if err := valueResponse.(utils.Serializable).Serialize(writeBuffer); err != nil {
-			return err
-		}
 		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
@@ -91,7 +82,7 @@ func (m DefaultPlcSubscriptionResponse) Serialize(writeBuffer utils.WriteBuffer)
 }
 
 func (m DefaultPlcSubscriptionResponse) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

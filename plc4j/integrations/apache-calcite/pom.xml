@@ -32,7 +32,7 @@
   <name>PLC4J: Integrations: Apache Calcite</name>
 
   <properties>
-    <calcite-core.version>1.30.0</calcite-core.version>
+    <calcite-core.version>1.31.0</calcite-core.version>
   </properties>
 
   <build>
@@ -158,12 +158,12 @@
       <dependency>
         <groupId>org.checkerframework</groupId>
         <artifactId>checker-qual</artifactId>
-        <version>3.21.4</version>
+        <version>3.24.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
-        <version>2.14.0</version>
+        <version>2.15.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

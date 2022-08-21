@@ -21,18 +21,19 @@ package values
 
 import (
 	"encoding/hex"
-	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcValueDecoder interface {
-	Decode(typeName string) api.PlcValue
+	Decode(typeName string) apiValues.PlcValue
 }
 
 type RawPlcValue struct {
+	PlcValueAdapter
 	readBuffer utils.ReadBuffer
 	decoder    PlcValueDecoder
-	PlcValueAdapter
 }
 
 func NewRawPlcValue(readBuffer utils.ReadBuffer, decoder PlcValueDecoder) RawPlcValue {
@@ -54,19 +55,19 @@ func (m RawPlcValue) GetLength() uint32 {
 	return uint32(m.readBuffer.(utils.ReadBufferByteBased).GetTotalBytes())
 }
 
-func (m RawPlcValue) GetIndex(i uint32) api.PlcValue {
+func (m RawPlcValue) GetIndex(i uint32) apiValues.PlcValue {
 	return NewPlcUSINT(m.readBuffer.(utils.ReadBufferByteBased).GetBytes()[i])
 }
 
-func (m RawPlcValue) GetList() []api.PlcValue {
-	var plcValues []api.PlcValue
+func (m RawPlcValue) GetList() []apiValues.PlcValue {
+	var plcValues []apiValues.PlcValue
 	for _, value := range m.readBuffer.(utils.ReadBufferByteBased).GetBytes() {
 		plcValues = append(plcValues, NewPlcUSINT(value))
 	}
 	return plcValues
 }
 
-func (m RawPlcValue) RawDecodeValue(typeName string) api.PlcValue {
+func (m RawPlcValue) RawDecodeValue(typeName string) apiValues.PlcValue {
 	return m.decoder.Decode(typeName)
 }
 
@@ -80,4 +81,12 @@ func (m RawPlcValue) RawReset() {
 
 func (m RawPlcValue) GetString() string {
 	return hex.EncodeToString(m.GetRaw())
+}
+
+func (m RawPlcValue) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.RAW_PLC_VALUE
+}
+
+func (m RawPlcValue) String() string {
+	return fmt.Sprintf("%s", m.GetPLCValueType())
 }

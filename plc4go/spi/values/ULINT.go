@@ -20,6 +20,8 @@
 package values
 
 import (
+	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
 	"strconv"
@@ -47,6 +49,14 @@ func (m PlcULINT) GetBoolean() bool {
 		return false
 	}
 	return true
+}
+
+func (m PlcULINT) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcULINT) GetByte() byte {
+	return m.GetUint8()
 }
 
 func (m PlcULINT) IsUint8() bool {
@@ -144,6 +154,14 @@ func (m PlcULINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
 }
 
+func (m PlcULINT) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.ULINT
+}
+
 func (m PlcULINT) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint64("PlcUINT", 64, m.value)
+}
+
+func (m PlcULINT) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 64, m.value)
 }

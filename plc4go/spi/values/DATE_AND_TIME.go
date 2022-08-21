@@ -21,6 +21,7 @@ package values
 
 import (
 	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
@@ -46,13 +47,21 @@ func (m PlcDATE_AND_TIME) IsDateTime() bool {
 	return true
 }
 func (m PlcDATE_AND_TIME) GetDateTime() time.Time {
-	return time.Time{}.Add(m.GetDuration())
+	return m.value
 }
 
 func (m PlcDATE_AND_TIME) GetString() string {
 	return fmt.Sprintf("%v", m.GetDateTime())
 }
 
+func (m PlcDATE_AND_TIME) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.DATE_AND_TIME
+}
+
 func (m PlcDATE_AND_TIME) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+}
+
+func (m PlcDATE_AND_TIME) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

@@ -313,7 +313,7 @@ func (c calField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (c calField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
 	}
@@ -365,7 +365,7 @@ func (c calRecallField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (c calRecallField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
 	}
@@ -408,7 +408,7 @@ func (c calIdentifyField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (c calIdentifyField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
 	}
@@ -460,7 +460,7 @@ func (c calGetstatusField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (c calGetstatusField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
 	}
@@ -507,7 +507,7 @@ func (s salField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (s salField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(s); err != nil {
 		return err.Error()
 	}
@@ -540,9 +540,12 @@ func (s salMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := s.unitAddress.Serialize(writeBuffer); err != nil {
-		return err
+	if unitAddress := s.unitAddress; unitAddress != nil {
+		if err := unitAddress.Serialize(writeBuffer); err != nil {
+			return err
+		}
 	}
+
 	if err := s.application.Serialize(writeBuffer); err != nil {
 		return err
 	}
@@ -554,7 +557,7 @@ func (s salMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (s salMonitorField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(s); err != nil {
 		return err.Error()
 	}
@@ -587,8 +590,10 @@ func (m mmiMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := m.unitAddress.Serialize(writeBuffer); err != nil {
-		return err
+	if unitAddress := m.unitAddress; unitAddress != nil {
+		if err := unitAddress.Serialize(writeBuffer); err != nil {
+			return err
+		}
 	}
 	if err := m.application.Serialize(writeBuffer); err != nil {
 		return err
@@ -601,7 +606,7 @@ func (m mmiMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m mmiMonitorField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
@@ -660,7 +665,7 @@ func (u unitInfoField) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (u unitInfoField) String() string {
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(u); err != nil {
 		return err.Error()
 	}

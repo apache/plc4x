@@ -31,6 +31,7 @@ import (
 type ErrorReportingCommandType uint8
 
 type IErrorReportingCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,6 +54,39 @@ func init() {
 	}
 }
 
+func (e ErrorReportingCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 8
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 8
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 8
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return 8
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func ErrorReportingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (ErrorReportingCommandType, error) {
+	for _, sizeValue := range ErrorReportingCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func ErrorReportingCommandTypeByValue(value uint8) (enum ErrorReportingCommandType, ok bool) {
 	switch value {
 	case 0x00:

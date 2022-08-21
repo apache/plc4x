@@ -21,6 +21,7 @@ package simulated
 
 import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"net/url"
 	"testing"
 	"time"
@@ -133,6 +134,8 @@ func TestDriver_GetConnection(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver()
 			connectionChan := d.GetConnection(tt.args.in0, tt.args.in1, tt.args.options)
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case connectResult := <-connectionChan:
 				if tt.wantErr && (connectResult.GetErr() == nil) {
@@ -140,7 +143,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				} else if connectResult.GetErr() != nil {
 					t.Errorf("PlcConnectionPool.GetConnection() error = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("PlcConnectionPool.GetConnection() got timeout")
 			}
 		})

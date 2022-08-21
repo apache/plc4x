@@ -871,9 +871,9 @@ func BenchmarkExpandBox(b *testing.B) {
 }
 
 func trimBox(box AsciiBox) AsciiBox {
-	return AsciiBox{strings.Trim(box.String(), "\n"), AsciiBoxWriterDefault.(*asciiBoxWriter)}
+	return AsciiBox{strings.Trim(box.String(), "\n"), AsciiBoxWriterDefault.(*asciiBoxWriter), AsciiBoxWriterDefault.(*asciiBoxWriter).compressBoxSet()}
 }
 
 func asciiBox(value string) AsciiBox {
-	return AsciiBox{value, AsciiBoxWriterDefault.(*asciiBoxWriter)}
+	return AsciiBox{value, AsciiBoxWriterDefault.(*asciiBoxWriter), AsciiBoxWriterDefault.(*asciiBoxWriter).compressBoxSet()}
 }

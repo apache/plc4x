@@ -21,13 +21,14 @@ package values
 
 import (
 	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
 
 type PlcTIME struct {
-	value uint32
 	PlcSimpleValueAdapter
+	value uint32
 }
 
 func NewPlcTIME(value uint32) PlcTIME {
@@ -58,6 +59,14 @@ func (m PlcTIME) GetString() string {
 	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
 }
 
+func (m PlcTIME) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.TIME
+}
+
 func (m PlcTIME) Serialize(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+}
+
+func (m PlcTIME) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

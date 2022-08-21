@@ -21,6 +21,7 @@ package values
 
 import (
 	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
 	"math/big"
@@ -94,6 +95,14 @@ func (m PlcBREAL) GetUint64() uint64 {
 	return 0
 }
 
+func (m PlcBREAL) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcBREAL) GetByte() byte {
+	return m.GetUint8()
+}
+
 func (m PlcBREAL) IsInt8() bool {
 	return m.isGreaterOrEqual(math.MinInt8) && m.isLowerOrEqual(math.MaxInt8)
 }
@@ -156,6 +165,10 @@ func (m PlcBREAL) GetString() string {
 	return fmt.Sprintf("%g", m.GetFloat64())
 }
 
+func (m PlcBREAL) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.BREAL
+}
+
 func (m PlcBREAL) isZero() bool {
 	return m.value.Cmp(big.NewFloat(0.0)) == 0.0
 }
@@ -175,4 +188,8 @@ func (m PlcBREAL) isLowerOrEqual(other float64) bool {
 func (m PlcBREAL) Serialize(writeBuffer utils.WriteBuffer) error {
 	// TODO: fix this a insert a valid bit length calculation
 	return writeBuffer.WriteBigFloat("PlcBREAL", uint8(m.value.MinPrec()), m.value)
+}
+
+func (m PlcBREAL) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), m.value.MinPrec(), m.value)
 }

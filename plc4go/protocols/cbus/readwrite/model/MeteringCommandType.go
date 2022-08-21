@@ -31,6 +31,7 @@ import (
 type MeteringCommandType uint8
 
 type IMeteringCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,6 +48,27 @@ func init() {
 	}
 }
 
+func (e MeteringCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0xFF
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func MeteringCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MeteringCommandType, error) {
+	for _, sizeValue := range MeteringCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func MeteringCommandTypeByValue(value uint8) (enum MeteringCommandType, ok bool) {
 	switch value {
 	case 0x00:

@@ -45,6 +45,6 @@
     ['0x7A' EnableControlCommandSetNetworkVariable15_2Bytes      ['SET_NETWORK_VARIABLE',   '2']]
 ]
 
-[enum uint 4 EnableControlCommandType
-    ['0x00' SET_NETWORK_VARIABLE   ]
+[enum uint 4 EnableControlCommandType(uint 8 numberOfArguments)
+    ['0x00' SET_NETWORK_VARIABLE   ['1']]
 ]

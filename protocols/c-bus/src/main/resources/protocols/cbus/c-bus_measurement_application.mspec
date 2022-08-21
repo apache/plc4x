@@ -40,8 +40,8 @@
     ['0x0E' MeasurementCommandChannelMeasurementData    ['MEASUREMENT_EVENT',  '6']]
 ]
 
-[enum uint 4 MeasurementCommandType
-    ['0x00' MEASUREMENT_EVENT              ]
+[enum uint 4 MeasurementCommandType(uint 8 numberOfArguments)
+    ['0x00' MEASUREMENT_EVENT              ['6']]
 ]
 
 [enum uint 8 MeasurementUnits

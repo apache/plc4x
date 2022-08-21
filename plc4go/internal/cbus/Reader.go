@@ -26,8 +26,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
@@ -51,13 +51,12 @@ func NewReader(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm 
 	}
 }
 
-func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
-	// TODO: handle ctx
+func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	log.Trace().Msg("Reading")
-	result := make(chan model.PlcReadRequestResult)
+	result := make(chan apiModel.PlcReadRequestResult)
 	go func() {
 		numFields := len(readRequest.GetFieldNames())
-		if numFields > 20 {
+		if numFields > 20 { // letters g-z
 			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
@@ -68,7 +67,15 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		messages := make(map[string]readWriteModel.CBusMessage)
 		for _, fieldName := range readRequest.GetFieldNames() {
 			field := readRequest.GetField(fieldName)
-			message, err := m.fieldToCBusMessage(field)
+			message, supportsRead, _, _, err := FieldToCBusMessage(field, nil, m.alphaGenerator, m.messageCodec.(*MessageCodec))
+			if !supportsRead {
+				result <- &spiModel.DefaultPlcReadRequestResult{
+					Request:  readRequest,
+					Response: nil,
+					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s. Field is not meant to be read.", fieldName),
+				}
+				return
+			}
 			if err != nil {
 				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
@@ -80,26 +87,31 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			messages[fieldName] = message
 		}
 		responseMu := sync.Mutex{}
-		responseCodes := map[string]model.PlcResponseCode{}
-		addResponseCode := func(name string, responseCode model.PlcResponseCode) {
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		addResponseCode := func(name string, responseCode apiModel.PlcResponseCode) {
 			responseMu.Lock()
 			defer responseMu.Unlock()
 			responseCodes[name] = responseCode
 		}
 		valueMu := sync.Mutex{}
-		plcValues := map[string]values.PlcValue{}
-		addPlcValue := func(name string, plcValue values.PlcValue) {
+		plcValues := map[string]apiValues.PlcValue{}
+		addPlcValue := func(name string, plcValue apiValues.PlcValue) {
 			valueMu.Lock()
 			defer valueMu.Unlock()
 			plcValues[name] = plcValue
 		}
 		for fieldName, messageToSend := range messages {
+			if err := ctx.Err(); err != nil {
+				result <- &spiModel.DefaultPlcReadRequestResult{
+					Request: readRequest,
+					Err:     err,
+				}
+				return
+			}
 			fieldNameCopy := fieldName
 			// Start a new request-transaction (Is ended in the response-handler)
-			requestWasOk := make(chan bool)
 			transaction := m.tm.StartTransaction()
 			transaction.Submit(func() {
-
 				// Send the  over the wire
 				log.Trace().Msg("Send ")
 				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
@@ -129,28 +141,26 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 					messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
 					if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
 						log.Trace().Msg("We got a server failure")
-						addResponseCode(fieldNameCopy, model.PlcResponseCode_INVALID_DATA)
-						requestWasOk <- false
+						addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INVALID_DATA)
 						return transaction.EndRequest()
 					}
 					replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
 					if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
-						var responseCode model.PlcResponseCode
+						var responseCode apiModel.PlcResponseCode
 						switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
 						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
-							responseCode = model.PlcResponseCode_REMOTE_ERROR
+							responseCode = apiModel.PlcResponseCode_REMOTE_ERROR
 						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION:
-							responseCode = model.PlcResponseCode_INVALID_DATA
+							responseCode = apiModel.PlcResponseCode_INVALID_DATA
 						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS:
-							responseCode = model.PlcResponseCode_REMOTE_BUSY
+							responseCode = apiModel.PlcResponseCode_REMOTE_BUSY
 						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
-							responseCode = model.PlcResponseCode_INVALID_DATA
+							responseCode = apiModel.PlcResponseCode_INVALID_DATA
 						default:
 							panic("Every code should be mapped here")
 						}
 						log.Trace().Msgf("Was no success %s:%v", fieldNameCopy, responseCode)
 						addResponseCode(fieldNameCopy, responseCode)
-						requestWasOk <- true
 						return transaction.EndRequest()
 					}
 
@@ -159,8 +169,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 					embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
 					if !ok {
 						log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
-						addResponseCode(fieldNameCopy, model.PlcResponseCode_NOT_FOUND)
-						requestWasOk <- true
+						addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_NOT_FOUND)
 						return transaction.EndRequest()
 					}
 
@@ -169,7 +178,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 					switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
 					case readWriteModel.EncodedReplyCALReplyExactly:
 						calData := reply.GetCalReply().GetCalData()
-						addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+						addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
 						switch calData := calData.(type) {
 						case readWriteModel.CALDataStatusExactly:
 							application := calData.GetApplication()
@@ -179,8 +188,8 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 							// TODO: verify application... this should be the same
 							_ = blockStart
 							statusBytes := calData.GetStatusBytes()
-							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-							plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+							addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
+							plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 							for i, statusByte := range statusBytes {
 								plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
 								plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
@@ -203,8 +212,8 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 								fallthrough
 							case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
 								statusBytes := calData.GetStatusBytes()
-								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-								plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+								addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
+								plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 								for i, statusByte := range statusBytes {
 									plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
 									plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
@@ -216,8 +225,8 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 								fallthrough
 							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
 								levelInformation := calData.GetLevelInformation()
-								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-								plcListValues := make([]values.PlcValue, len(levelInformation))
+								addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
+								plcListValues := make([]apiValues.PlcValue, len(levelInformation))
 								for i, levelInformation := range levelInformation {
 									switch levelInformation := levelInformation.(type) {
 									case readWriteModel.LevelInformationAbsentExactly:
@@ -237,12 +246,12 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 							case readWriteModel.IdentifyReplyCommandCurrentSenseLevelsExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
 							case readWriteModel.IdentifyReplyCommandDelaysExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]values.PlcValue{
-									"ReStrikeDelay": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetReStrikeDelay())),
+								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+									"ReStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
 									"TerminalLevel": spiValues.NewPlcByteArray(identifyReplyCommand.GetTerminalLevels()),
 								}))
 							case readWriteModel.IdentifyReplyCommandDSIStatusExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]values.PlcValue{
+								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"ChannelStatus1":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus1().String()),
 									"ChannelStatus2":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus2().String()),
 									"ChannelStatus3":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus3().String()),
@@ -252,16 +261,16 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 									"ChannelStatus7":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus7().String()),
 									"ChannelStatus8":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus8().String()),
 									"UnitStatus":              spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitStatus().String()),
-									"DimmingUCRevisionNumber": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetDimmingUCRevisionNumber())),
+									"DimmingUCRevisionNumber": spiValues.NewPlcUSINT(identifyReplyCommand.GetDimmingUCRevisionNumber()),
 								}))
 							case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummaryExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]values.PlcValue{
+								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"LowApplication":         spiValues.NewPlcSTRING(identifyReplyCommand.GetLowApplication().String()),
 									"HighApplication":        spiValues.NewPlcSTRING(identifyReplyCommand.GetHighApplication().String()),
-									"Area":                   spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetArea())),
+									"Area":                   spiValues.NewPlcUSINT(identifyReplyCommand.GetArea()),
 									"Crc":                    spiValues.NewPlcUINT(identifyReplyCommand.GetCrc()),
 									"SerialNumber":           spiValues.NewPlcUDINT(identifyReplyCommand.GetSerialNumber()),
-									"NetworkVoltage":         spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetNetworkVoltage())),
+									"NetworkVoltage":         spiValues.NewPlcUSINT(identifyReplyCommand.GetNetworkVoltage()),
 									"UnitInLearnMode":        spiValues.NewPlcBOOL(identifyReplyCommand.GetUnitInLearnMode()),
 									"NetworkVoltageLow":      spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageLow()),
 									"NetworkVoltageMarginal": spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageMarginal()),
@@ -277,9 +286,9 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 									"MicroPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
 								}))
 							case readWriteModel.IdentifyReplyCommandSummaryExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]values.PlcValue{
+								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"PartName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
-									"UnitServiceType": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetUnitServiceType())),
+									"UnitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
 									"Version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
 								}))
 							case readWriteModel.IdentifyReplyCommandFirmwareVersionExactly:
@@ -291,9 +300,9 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 							case readWriteModel.IdentifyReplyCommandGAVValuesStoredExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetValues()))
 							case readWriteModel.IdentifyReplyCommandLogicalAssignmentExactly:
-								var plcValues []values.PlcValue
+								var plcValues []apiValues.PlcValue
 								for _, logicAssigment := range identifyReplyCommand.GetLogicAssigment() {
-									plcValues = append(plcValues, spiValues.NewPlcStruct(map[string]values.PlcValue{
+									plcValues = append(plcValues, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 										"GreaterOfOrLogic": spiValues.NewPlcBOOL(logicAssigment.GetGreaterOfOrLogic()),
 										"ReStrikeDelay":    spiValues.NewPlcBOOL(logicAssigment.GetReStrikeDelay()),
 										"AssignedToGav16":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav16()),
@@ -326,8 +335,8 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 								addPlcValue(fieldNameCopy, spiValues.NewPlcLREAL(voltsFloat))
 							case readWriteModel.IdentifyReplyCommandOutputUnitSummaryExactly:
 								unitFlags := identifyReplyCommand.GetUnitFlags()
-								structContent := map[string]values.PlcValue{
-									"UnitFlags": spiValues.NewPlcStruct(map[string]values.PlcValue{
+								structContent := map[string]apiValues.PlcValue{
+									"UnitFlags": spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 										"AssertingNetworkBurden": spiValues.NewPlcBOOL(unitFlags.GetAssertingNetworkBurden()),
 										"RestrikeTimingActive":   spiValues.NewPlcBOOL(unitFlags.GetRestrikeTimingActive()),
 										"RemoteOFFInputAsserted": spiValues.NewPlcBOOL(unitFlags.GetRemoteOFFInputAsserted()),
@@ -337,13 +346,13 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 										"ClockGenerationEnabled": spiValues.NewPlcBOOL(unitFlags.GetClockGenerationEnabled()),
 										"UnitGeneratingClock":    spiValues.NewPlcBOOL(unitFlags.GetUnitGeneratingClock()),
 									}),
-									"TimeFromLastRecoverOfMainsInSeconds": spiValues.NewPlcUINT(uint16(identifyReplyCommand.GetTimeFromLastRecoverOfMainsInSeconds())),
+									"TimeFromLastRecoverOfMainsInSeconds": spiValues.NewPlcUSINT(identifyReplyCommand.GetTimeFromLastRecoverOfMainsInSeconds()),
 								}
 								if gavStoreEnabledByte1 := identifyReplyCommand.GetGavStoreEnabledByte1(); gavStoreEnabledByte1 != nil {
-									structContent["GavStoreEnabledByte1"] = spiValues.NewPlcUINT(uint16(*gavStoreEnabledByte1))
+									structContent["GavStoreEnabledByte1"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte1)
 								}
 								if gavStoreEnabledByte2 := identifyReplyCommand.GetGavStoreEnabledByte2(); gavStoreEnabledByte2 != nil {
-									structContent["GavStoreEnabledByte2"] = spiValues.NewPlcUINT(uint16(*gavStoreEnabledByte2))
+									structContent["GavStoreEnabledByte2"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte2)
 								}
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(structContent))
 							case readWriteModel.IdentifyReplyCommandTerminalLevelsExactly:
@@ -352,7 +361,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
 							default:
 								log.Error().Msgf("Unmapped type %T", identifyReplyCommand)
-								requestWasOk <- false
+								addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INVALID_DATA)
 								return transaction.EndRequest()
 							}
 						default:
@@ -362,25 +371,18 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 					default:
 						panic(fmt.Sprintf("All types should be mapped here. Not mapped: %T", reply))
 					}
-					requestWasOk <- true
 					return transaction.EndRequest()
 				}, func(err error) error {
 					log.Debug().Msgf("Error waiting for field %s", fieldNameCopy)
-					addResponseCode(fieldNameCopy, model.PlcResponseCode_REQUEST_TIMEOUT)
+					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
 					// TODO: ok or not ok?
-					requestWasOk <- true
 					return transaction.EndRequest()
 				}, time.Second*1); err != nil {
 					log.Debug().Err(err).Msgf("Error sending message for field %s", fieldNameCopy)
-					addResponseCode(fieldNameCopy, model.PlcResponseCode_INTERNAL_ERROR)
+					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
 					_ = transaction.EndRequest()
-					requestWasOk <- false
 				}
 			})
-			if !<-requestWasOk {
-				// TODO: if we found a error we can abort
-				break
-			}
 		}
 		readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
 		result <- &spiModel.DefaultPlcReadRequestResult{
@@ -389,50 +391,4 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 		}
 	}()
 	return result
-}
-
-func (m *Reader) fieldToCBusMessage(field model.PlcField) (readWriteModel.CBusMessage, error) {
-	cbusOptions := m.messageCodec.(*MessageCodec).cbusOptions
-	requestContext := m.messageCodec.(*MessageCodec).requestContext
-	switch field := field.(type) {
-	case *statusField:
-		var statusRequest readWriteModel.StatusRequest
-		switch field.statusRequestType {
-		case StatusRequestTypeBinaryState:
-			statusRequest = readWriteModel.NewStatusRequestBinaryState(field.application, 0x7A)
-		case StatusRequestTypeLevel:
-			statusRequest = readWriteModel.NewStatusRequestLevel(field.application, *field.startingGroupAddressLabel, 0x73)
-		}
-		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(field.application), cbusOptions)
-		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
-		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
-	case *calRecallField:
-		calData := readWriteModel.NewCALDataRecall(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, requestContext)
-		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
-		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
-		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
-	case *calIdentifyField:
-		calData := readWriteModel.NewCALDataIdentify(field.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, requestContext)
-		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
-		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
-		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
-	case *calGetstatusField:
-		calData := readWriteModel.NewCALDataGetStatus(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, requestContext)
-		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
-		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
-		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
-	default:
-		return nil, errors.Errorf("Unmapped type %T", field)
-	}
 }

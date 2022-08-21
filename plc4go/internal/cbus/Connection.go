@@ -28,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"sync"
@@ -294,6 +295,8 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	}
 
 	startTime := time.Now()
+	timeout := time.NewTimer(time.Millisecond * 500)
+	defer utils.CleanupTimer(timeout)
 	select {
 	case <-receivedResetEchoChan:
 		log.Debug().Msgf("We received the echo")
@@ -304,7 +307,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 			log.Trace().Err(err).Msg("connect failed")
 		}
 		return false
-	case timeout := <-time.After(time.Millisecond * 500):
+	case timeout := <-timeout.C:
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		} else {
@@ -430,13 +433,15 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 	}
 
 	startTime := time.Now()
+	timeout := time.NewTimer(time.Second * 2)
+	defer utils.CleanupTimer(timeout)
 	select {
 	case <-directCommandAckChan:
 		log.Debug().Msgf("We received the ack")
 	case err := <-directCommandAckErrorChan:
 		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
 		return false
-	case timeout := <-time.After(time.Second * 2):
+	case timeout := <-timeout.C:
 		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		return false
 	}

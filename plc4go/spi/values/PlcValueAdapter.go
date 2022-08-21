@@ -20,7 +20,7 @@
 package values
 
 import (
-	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
 )
 
@@ -68,11 +68,11 @@ func (m PlcValueAdapter) GetBoolArray() []bool {
 }
 
 func (m PlcValueAdapter) IsByte() bool {
-	return m.IsUint8()
+	return false
 }
 
 func (m PlcValueAdapter) GetByte() byte {
-	return m.GetUint8()
+	panic("GetByte not implemented")
 }
 
 ////////
@@ -197,10 +197,10 @@ func (m PlcValueAdapter) IsList() bool {
 func (m PlcValueAdapter) GetLength() uint32 {
 	panic("GetLength not implemented")
 }
-func (m PlcValueAdapter) GetIndex(i uint32) api.PlcValue {
+func (m PlcValueAdapter) GetIndex(i uint32) apiValues.PlcValue {
 	return nil
 }
-func (m PlcValueAdapter) GetList() []api.PlcValue {
+func (m PlcValueAdapter) GetList() []apiValues.PlcValue {
 	panic("GetList not implemented")
 }
 
@@ -218,14 +218,14 @@ func (m PlcValueAdapter) GetKeys() []string {
 func (m PlcValueAdapter) HasKey(_ string) bool {
 	return false
 }
-func (m PlcValueAdapter) GetValue(_ string) api.PlcValue {
+func (m PlcValueAdapter) GetValue(_ string) apiValues.PlcValue {
 	panic("GetValue not implemented")
 }
-func (m PlcValueAdapter) GetStruct() map[string]api.PlcValue {
+func (m PlcValueAdapter) GetStruct() map[string]apiValues.PlcValue {
 	panic("GetStruct not implemented")
 }
 func (m PlcValueAdapter) IsDate() bool {
-	panic("IsDate not implemented")
+	return false
 }
 func (m PlcValueAdapter) GetDate() time.Time {
 	panic("GetDate not implemented")
@@ -235,4 +235,76 @@ func (m PlcValueAdapter) IsDateTime() bool {
 }
 func (m PlcValueAdapter) GetDateTime() time.Time {
 	panic("GetDateTime not implemented")
+}
+
+func (m PlcValueAdapter) GetPLCValueType() apiValues.PLCValueType {
+	panic("GetPLCValueType not implemented")
+}
+
+type PlcSimpleValueAdapter struct {
+	PlcValueAdapter
+}
+
+func (m PlcSimpleValueAdapter) IsSimple() bool {
+	return true
+}
+
+func (m PlcSimpleValueAdapter) GetLength() uint32 {
+	return 1
+}
+
+type PlcSimpleNumericValueAdapter struct {
+	PlcSimpleValueAdapter
+}
+
+func (m PlcSimpleNumericValueAdapter) IsBool() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsByte() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsUint8() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsUint16() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsUint32() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsUint64() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsInt8() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsInt16() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsInt32() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsInt64() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsFloat32() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsFloat64() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsString() bool {
+	return true
 }

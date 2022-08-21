@@ -20,18 +20,19 @@
 package values
 
 import (
-	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"fmt"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"strings"
 )
 
 type PlcStruct struct {
-	values map[string]api.PlcValue
+	values map[string]apiValues.PlcValue
 	PlcValueAdapter
 }
 
-func NewPlcStruct(value map[string]api.PlcValue) api.PlcValue {
+func NewPlcStruct(value map[string]apiValues.PlcValue) apiValues.PlcValue {
 	return PlcStruct{
 		values: value,
 	}
@@ -56,14 +57,14 @@ func (m PlcStruct) HasKey(key string) bool {
 	return false
 }
 
-func (m PlcStruct) GetValue(key string) api.PlcValue {
+func (m PlcStruct) GetValue(key string) apiValues.PlcValue {
 	if value, ok := m.values[key]; ok {
 		return value
 	}
 	return nil
 }
 
-func (m PlcStruct) GetStruct() map[string]api.PlcValue {
+func (m PlcStruct) GetStruct() map[string]apiValues.PlcValue {
 	return m.values
 }
 
@@ -79,6 +80,10 @@ func (m PlcStruct) GetString() string {
 	}
 	sb.WriteString("}")
 	return sb.String()
+}
+
+func (m PlcStruct) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.STRUCT
 }
 
 func (m PlcStruct) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -103,4 +108,10 @@ func (m PlcStruct) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	return writeBuffer.PopContext("PlcStruct")
+}
+
+func (m PlcStruct) String() string {
+	allBits := 0
+	// TODO: do we want to aggregate the bit length?
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), allBits, m.values)
 }

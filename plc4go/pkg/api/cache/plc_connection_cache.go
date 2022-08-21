@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/viney-shih/go-lock"
@@ -117,16 +118,20 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			txId = t.tracer.AddTransactionalStartTrace("get-connection", "lease")
 		}
 		leaseChan := connection.lease()
+		maximumWaitTimeout := time.NewTimer(t.maxWaitTime)
+		defer utils.CleanupTimer(maximumWaitTimeout)
 		select {
 		// Wait till we get a lease.
 		case connectionResponse := <-leaseChan:
 			log.Debug().Str("connectionString", connectionString).Msg("Successfully got lease to connection")
+			responseTimeout := time.NewTimer(10 * time.Millisecond)
+			defer utils.CleanupTimer(responseTimeout)
 			select {
 			case ch <- connectionResponse:
 				if t.tracer != nil {
 					t.tracer.AddTransactionalTrace(txId, "get-connection", "success")
 				}
-			case <-time.After(10 * time.Millisecond):
+			case <-responseTimeout.C:
 				// Log a message, that the client has given up
 				if t.tracer != nil {
 					t.tracer.AddTransactionalTrace(txId, "get-connection", "client given up")
@@ -140,7 +145,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			}
 
 		// Timeout after the maximum waiting time.
-		case <-time.After(t.maxWaitTime):
+		case <-maximumWaitTimeout.C:
 			if t.tracer != nil {
 				t.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 			}
@@ -161,9 +166,11 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 		defer t.cacheLock.Unlock()
 
 		if len(t.connections) == 0 {
+			responseDeliveryTimeout := time.NewTimer(10 * time.Millisecond)
+			defer utils.CleanupTimer(responseDeliveryTimeout)
 			select {
 			case ch <- newDefaultPlcConnectionCacheCloseResult(t, nil):
-			case <-time.After(time.Millisecond * 10):
+			case <-responseDeliveryTimeout.C:
 			}
 			log.Debug().Msg("Closing connection cache finished.")
 			return
@@ -176,6 +183,8 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 			// while some go func is still using it.
 			go func(container *connectionContainer) {
 				leaseResults := container.lease()
+				closeTimeout := time.NewTimer(t.maxWaitTime)
+				defer utils.CleanupTimer(closeTimeout)
 				select {
 				// We're just getting the lease as this way we can be sure nobody else is using it.
 				// We also really don't care if it worked, or not ... it's just an attempt of being
@@ -185,15 +194,17 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 					// Give back the connection.
 					container.connection.Close()
 				// If we're timing out brutally kill the connection.
-				case <-time.After(t.maxWaitTime):
+				case <-closeTimeout.C:
 					log.Debug().Str("connectionString", container.connectionString).Msg("Forcefully closing connection ...")
 					// Forcefully close this connection.
 					container.connection.Close()
 				}
 
+				responseDeliveryTimeout := time.NewTimer(10 * time.Millisecond)
+				defer utils.CleanupTimer(responseDeliveryTimeout)
 				select {
 				case ch <- newDefaultPlcConnectionCacheCloseResult(t, nil):
-				case <-time.After(time.Millisecond * 10):
+				case <-responseDeliveryTimeout.C:
 				}
 				log.Debug().Msg("Closing connection cache finished.")
 			}(cc)
@@ -485,9 +496,11 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 		err := t.connectionContainer.returnConnection(newState)
 
 		// Finish closing the connection.
+		timeout := time.NewTimer(10 * time.Millisecond)
+		defer utils.CleanupTimer(timeout)
 		select {
 		case result <- _default.NewDefaultPlcConnectionCloseResultWithTraces(t, err, traces):
-		case <-time.After(time.Millisecond * 10):
+		case <-timeout.C:
 		}
 
 		// Detach the connection from this lease, so it can no longer be used by the client.

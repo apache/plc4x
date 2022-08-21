@@ -48,11 +48,11 @@
     ['0x35' ErrorReportingCommandClearMostSevere    ['CLEAR_MOST_SEVERE', '5']]
 ]
 
-[enum uint 4 ErrorReportingCommandType
-    ['0x00' DEPRECATED          ]
-    ['0x01' ERROR_REPORT        ]
-    ['0x02' ACKNOWLEDGE         ]
-    ['0x03' CLEAR_MOST_SEVERE   ]
+[enum uint 4 ErrorReportingCommandType(uint 8 numberOfArguments)
+    ['0x00' DEPRECATED          ['8']]
+    ['0x01' ERROR_REPORT        ['8']]
+    ['0x02' ACKNOWLEDGE         ['8']]
+    ['0x03' CLEAR_MOST_SEVERE   ['8']]
 ]
 
 [enum uint 3 ErrorReportingSeverity

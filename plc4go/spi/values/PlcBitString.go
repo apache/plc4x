@@ -20,7 +20,7 @@
 package values
 
 import (
-	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -29,25 +29,25 @@ type PlcBitString struct {
 }
 
 func NewPlcBitString(value interface{}) PlcBitString {
-	var bools []api.PlcValue
+	var bools []apiValues.PlcValue
 	switch value.(type) {
 	case uint8:
-		bools = make([]api.PlcValue, 8)
+		bools = make([]apiValues.PlcValue, 8)
 		for i := 0; i < 8; i++ {
 			bools[i] = NewPlcBOOL(((value.(uint8) >> uint8((8-1)-i)) & 0x01) == 0x01)
 		}
 	case uint16:
-		bools = make([]api.PlcValue, 16)
+		bools = make([]apiValues.PlcValue, 16)
 		for i := 0; i < 16; i++ {
 			bools[i] = NewPlcBOOL(((value.(uint16) >> uint8((16-1)-i)) & 0x01) == 0x01)
 		}
 	case uint32:
-		bools = make([]api.PlcValue, 32)
+		bools = make([]apiValues.PlcValue, 32)
 		for i := 0; i < 32; i++ {
 			bools[i] = NewPlcBOOL(((value.(uint32) >> uint8((32-1)-i)) & 0x01) == 0x01)
 		}
 	case uint64:
-		bools = make([]api.PlcValue, 64)
+		bools = make([]apiValues.PlcValue, 64)
 		for i := 0; i < 64; i++ {
 			bools[i] = NewPlcBOOL(((value.(uint64) >> uint8((64-1)-i)) & 0x01) == 0x01)
 		}
@@ -72,10 +72,14 @@ func (m PlcBitString) GetLength() uint32 {
 	return uint32(len(m.Values))
 }
 
-func (m PlcBitString) GetIndex(i uint32) api.PlcValue {
+func (m PlcBitString) GetIndex(i uint32) apiValues.PlcValue {
 	return m.Values[i]
 }
 
-func (m PlcBitString) GetList() []api.PlcValue {
+func (m PlcBitString) GetList() []apiValues.PlcValue {
 	return m.Values
+}
+
+func (m PlcBitString) GetPLCValueType() apiValues.PLCValueType {
+	return apiValues.BIT_STRING
 }

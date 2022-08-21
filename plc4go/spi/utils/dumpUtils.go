@@ -85,7 +85,7 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 		hexDigits := reflect.TypeOf(anything).Bits() / 4
 		return AsciiBoxWriterDefault.BoxString(name, fmt.Sprintf("%#0*x %d", hexDigits, anything, anything), 0)
 	case []byte:
-		return AsciiBox{DumpFixedWidth(anything.([]byte), charWidth), AsciiBoxWriterDefault.(*asciiBoxWriter)}
+		return AsciiBox{DumpFixedWidth(anything.([]byte), charWidth), AsciiBoxWriterDefault.(*asciiBoxWriter), AsciiBoxWriterDefault.(*asciiBoxWriter).compressBoxSet()}
 	case string:
 		return AsciiBoxWriterDefault.BoxString(name, anything.(string), charWidth)
 	case fmt.Stringer:

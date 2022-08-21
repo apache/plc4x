@@ -65,7 +65,7 @@ func NewConfiguredXmlWriteBuffer(renderLists bool, renderAttr bool) WriteBufferX
 //
 
 type xmlWriteBuffer struct {
-	bufferCommons
+	BufferCommons
 	xmlString *strings.Builder
 	*xml.Encoder
 	doRenderLists bool
@@ -86,7 +86,7 @@ func (x *xmlWriteBuffer) PushContext(logicalName string, writerArgs ...WithWrite
 	}
 	attrs := make([]xml.Attr, 0)
 	attrs = x.markAsListIfRequired(writerArgs, attrs)
-	return x.EncodeToken(xml.StartElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}, Attr: attrs})
+	return x.EncodeToken(xml.StartElement{Name: xml.Name{Local: x.SanitizeLogicalName(logicalName)}, Attr: attrs})
 }
 
 func (x *xmlWriteBuffer) GetPos() uint16 {
@@ -210,7 +210,7 @@ func (x *xmlWriteBuffer) WriteSerializable(serializable Serializable) error {
 }
 
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
-	if err := x.Encoder.EncodeToken(xml.EndElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}}); err != nil {
+	if err := x.Encoder.EncodeToken(xml.EndElement{Name: xml.Name{Local: x.SanitizeLogicalName(logicalName)}}); err != nil {
 		return err
 	}
 	return x.Encoder.Flush()
@@ -222,7 +222,7 @@ func (x *xmlWriteBuffer) GetXmlString() string {
 
 func (x *xmlWriteBuffer) encodeElement(logicalName string, value interface{}, attr []xml.Attr, _ ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)},
+		Name: xml.Name{Local: x.SanitizeLogicalName(logicalName)},
 		Attr: attr,
 	})
 }
@@ -259,7 +259,7 @@ func (x *xmlWriteBuffer) markAsListIfRequired(writerArgs []WithWriterArgs, attrs
 	if !x.doRenderLists {
 		return attrs
 	}
-	if x.isToBeRenderedAsList(upcastWriterArgs(writerArgs...)...) {
+	if x.IsToBeRenderedAsList(UpcastWriterArgs(writerArgs...)...) {
 		attrs = append(attrs, xml.Attr{
 			Name:  xml.Name{Local: rwIsListKey},
 			Value: "true",

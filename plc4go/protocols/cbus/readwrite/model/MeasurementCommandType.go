@@ -31,6 +31,7 @@ import (
 type MeasurementCommandType uint8
 
 type IMeasurementCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,6 +48,27 @@ func init() {
 	}
 }
 
+func (e MeasurementCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 6
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func MeasurementCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MeasurementCommandType, error) {
+	for _, sizeValue := range MeasurementCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func MeasurementCommandTypeByValue(value uint8) (enum MeasurementCommandType, ok bool) {
 	switch value {
 	case 0x00:

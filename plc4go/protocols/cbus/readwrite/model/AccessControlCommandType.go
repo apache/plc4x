@@ -31,6 +31,7 @@ import (
 type AccessControlCommandType uint8
 
 type IAccessControlCommandType interface {
+	NumberOfArguments() uint8
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -61,6 +62,55 @@ func init() {
 	}
 }
 
+func (e AccessControlCommandType) NumberOfArguments() uint8 {
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 0
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 0
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return 0
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return 0
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return 0
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return 2
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return 2
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func AccessControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (AccessControlCommandType, error) {
+	for _, sizeValue := range AccessControlCommandTypeValues {
+		if sizeValue.NumberOfArguments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+}
 func AccessControlCommandTypeByValue(value uint8) (enum AccessControlCommandType, ok bool) {
 	switch value {
 	case 0x00:
