@@ -30,7 +30,7 @@ import (
 type AdsReadResponse interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetData returns Data (property field)
@@ -46,7 +46,7 @@ type AdsReadResponseExactly interface {
 
 // _AdsReadResponse is the data-structure of this message
 type _AdsReadResponse struct {
-	*_AdsData
+	*_AmsPacket
 	Result ReturnCode
 	Data   []byte
 }
@@ -69,10 +69,17 @@ func (m *_AdsReadResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsReadResponse) InitializeParent(parent AdsData) {}
+func (m *_AdsReadResponse) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsReadResponse) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsReadResponse) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,13 +101,13 @@ func (m *_AdsReadResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadResponse factory function for _AdsReadResponse
-func NewAdsReadResponse(result ReturnCode, data []byte) *_AdsReadResponse {
+func NewAdsReadResponse(result ReturnCode, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadResponse {
 	_result := &_AdsReadResponse{
-		Result:   result,
-		Data:     data,
-		_AdsData: NewAdsData(),
+		Result:     result,
+		Data:       data,
+		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -144,7 +151,7 @@ func (m *_AdsReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsReadResponse, error) {
+func AdsReadResponseParse(readBuffer utils.ReadBuffer) (AdsReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadResponse"); pullErr != nil {
@@ -185,11 +192,11 @@ func AdsReadResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 
 	// Create a partially initialized instance
 	_child := &_AdsReadResponse{
-		_AdsData: &_AdsData{},
-		Result:   result,
-		Data:     data,
+		_AmsPacket: &_AmsPacket{},
+		Result:     result,
+		Data:       data,
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 

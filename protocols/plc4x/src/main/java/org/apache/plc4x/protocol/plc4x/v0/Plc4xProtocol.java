@@ -24,10 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.Validatabl
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 public class Plc4xProtocol implements Protocol, ProtocolHelpers {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4xProtocol.class);
 
     @Override
     public String getName() {
@@ -41,7 +45,14 @@ public class Plc4xProtocol implements Protocol, ProtocolHelpers {
 
     @Override
     public TypeContext getTypeContext() throws GenerationException {
-        ValidatableTypeContext typeContext = new MessageFormatParser().parse(getMspecStream());
+        ValidatableTypeContext typeContext;
+
+        LOGGER.info("Parsing: plc4x.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream());
+
+        LOGGER.info("Parsing: plc4x-api.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("plc4x-api"), typeContext);
+
         typeContext.validate();
         return typeContext;
     }

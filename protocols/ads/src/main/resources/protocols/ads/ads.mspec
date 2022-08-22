@@ -115,86 +115,37 @@
 // AMS Common
 ////////////////////////////////////////////////////////////////
 
-[type AmsPacket
+[discriminatedType AmsPacket
     // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
-    [simple     AmsNetId        targetAmsNetId                            ]
+    [simple        AmsNetId        targetAmsNetId                            ]
     // This is the AmsPort of the station, for which the packet is intended.
-    [simple     uint        16  targetAmsPort                             ]
+    [simple        uint        16  targetAmsPort                             ]
     // This contains the AmsNetId of the station, from which the packet was sent.
-    [simple     AmsNetId        sourceAmsNetId                            ]
+    [simple        AmsNetId        sourceAmsNetId                            ]
     // This contains the AmsPort of the station, from which the packet was sent.
-    [simple     uint        16  sourceAmsPort                             ]
+    [simple        uint        16  sourceAmsPort                             ]
     // 2 bytes.
-    [simple     CommandId       commandId                                 ]
+    [discriminator CommandId       commandId                                 ]
     // 2 bytes.
-    [simple     State           state                                     ]
+    [const         bit             initCommand            false              ]
+    [const         bit             updCommand             false              ]
+    [const         bit             timestampAdded         false              ]
+    [const         bit             highPriorityCommand    false              ]
+    [const         bit             systemCommand          false              ]
+    [const         bit             adsCommand             true               ]
+    [const         bit             noReturn               false              ]
+    [discriminator bit             response                                  ]
+    [const         bit             broadcast              false              ]
+    [reserved      int 7           '0x0'                                     ]
     // 4 bytes	Size of the data range. The unit is byte.
-    [implicit   uint        32  length   'data.lengthInBytes'             ]
+    [implicit      uint        32  length   'lengthInBytes - 32'             ]
     // 4 bytes	AMS error number. See ADS Return Codes.
-    [simple     uint        32  errorCode                                 ]
+    [simple        uint        32  errorCode                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
-    [simple     uint        32  invokeId                                  ]
+    [simple        uint        32  invokeId                                  ]
     // The payload
-    [simple     AdsData('commandId', 'state.response')    data            ]
-]
-
-[enum uint 16 CommandId
-    ['0x0000' INVALID                       ]
-    ['0x0001' ADS_READ_DEVICE_INFO          ]
-    ['0x0002' ADS_READ                      ]
-    ['0x0003' ADS_WRITE                     ]
-    ['0x0004' ADS_READ_STATE                ]
-    ['0x0005' ADS_WRITE_CONTROL             ]
-    ['0x0006' ADS_ADD_DEVICE_NOTIFICATION   ]
-    ['0x0007' ADS_DELETE_DEVICE_NOTIFICATION]
-    ['0x0008' ADS_DEVICE_NOTIFICATION       ]
-    ['0x0009' ADS_READ_WRITE                ]
-]
-
-[type State
-    [simple     bit initCommand           ]
-    [simple     bit updCommand            ]
-    [simple     bit timestampAdded        ]
-    [simple     bit highPriorityCommand   ]
-    [simple     bit systemCommand         ]
-    [simple     bit adsCommand            ]
-    [simple     bit noReturn              ]
-    [simple     bit response              ]
-    [simple     bit broadcast             ]
-    [reserved   int 7 '0x0'               ]
-]
-
-// It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
-// methods between multiple TwinCAT PC's on the network.
-// <p>
-// Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
-// extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
-// routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).
-// <p>
-// The AmsNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AmsNetId would be e.g.
-// "172.16.17.10.1.1". The storage arrangement in this example is as follows:
-// <p>
-// _____0     1     2     3     4     5
-// __+-----------------------------------+
-// 0 | 127 |  16 |  17 |  10 |   1 |   1 |
-// __+-----------------------------------+
-// <p>
-// The AmsNetId is purely logical and has usually no relation to the IP address. The AmsNetId is configured at the
-// target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
-// documentation for notes about settings of the AMS NetId.
-// @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
-[type AmsNetId
-    [simple     uint        8   octet1            ]
-    [simple     uint        8   octet2            ]
-    [simple     uint        8   octet3            ]
-    [simple     uint        8   octet4            ]
-    [simple     uint        8   octet5            ]
-    [simple     uint        8   octet6            ]
-]
-
-[discriminatedType AdsData(CommandId commandId, bit response)
     [typeSwitch commandId, response
         ['INVALID', 'false' AdsInvalidRequest]
         ['INVALID', 'true' AdsInvalidResponse]
@@ -337,6 +288,47 @@
             [array byte data count 'length']
         ]
     ]
+]
+
+[enum uint 16 CommandId
+    ['0x0000' INVALID                       ]
+    ['0x0001' ADS_READ_DEVICE_INFO          ]
+    ['0x0002' ADS_READ                      ]
+    ['0x0003' ADS_WRITE                     ]
+    ['0x0004' ADS_READ_STATE                ]
+    ['0x0005' ADS_WRITE_CONTROL             ]
+    ['0x0006' ADS_ADD_DEVICE_NOTIFICATION   ]
+    ['0x0007' ADS_DELETE_DEVICE_NOTIFICATION]
+    ['0x0008' ADS_DEVICE_NOTIFICATION       ]
+    ['0x0009' ADS_READ_WRITE                ]
+]
+
+// It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
+// methods between multiple TwinCAT PC's on the network.
+// <p>
+// Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
+// extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
+// routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).
+// <p>
+// The AmsNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AmsNetId would be e.g.
+// "172.16.17.10.1.1". The storage arrangement in this example is as follows:
+// <p>
+// _____0     1     2     3     4     5
+// __+-----------------------------------+
+// 0 | 127 |  16 |  17 |  10 |   1 |   1 |
+// __+-----------------------------------+
+// <p>
+// The AmsNetId is purely logical and has usually no relation to the IP address. The AmsNetId is configured at the
+// target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
+// documentation for notes about settings of the AMS NetId.
+// @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
+[type AmsNetId
+    [simple     uint        8   octet1            ]
+    [simple     uint        8   octet2            ]
+    [simple     uint        8   octet3            ]
+    [simple     uint        8   octet4            ]
+    [simple     uint        8   octet5            ]
+    [simple     uint        8   octet6            ]
 ]
 
 [discriminatedType AdsMultiRequestItem(uint 32 indexGroup)

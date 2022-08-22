@@ -30,7 +30,7 @@ import (
 type AdsWriteRequest interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
@@ -48,7 +48,7 @@ type AdsWriteRequestExactly interface {
 
 // _AdsWriteRequest is the data-structure of this message
 type _AdsWriteRequest struct {
-	*_AdsData
+	*_AmsPacket
 	IndexGroup  uint32
 	IndexOffset uint32
 	Data        []byte
@@ -72,10 +72,17 @@ func (m *_AdsWriteRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsWriteRequest) InitializeParent(parent AdsData) {}
+func (m *_AdsWriteRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsWriteRequest) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsWriteRequest) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,14 +108,14 @@ func (m *_AdsWriteRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteRequest factory function for _AdsWriteRequest
-func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte) *_AdsWriteRequest {
+func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteRequest {
 	_result := &_AdsWriteRequest{
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Data:        data,
-		_AdsData:    NewAdsData(),
+		_AmsPacket:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -155,7 +162,7 @@ func (m *_AdsWriteRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsWriteRequest, error) {
+func AdsWriteRequestParse(readBuffer utils.ReadBuffer) (AdsWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteRequest"); pullErr != nil {
@@ -197,12 +204,12 @@ func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 
 	// Create a partially initialized instance
 	_child := &_AdsWriteRequest{
-		_AdsData:    &_AdsData{},
+		_AmsPacket:  &_AmsPacket{},
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Data:        data,
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 

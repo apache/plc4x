@@ -66,10 +66,6 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return model.AmsSerialAcknowledgeFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDataTypeArrayInfo":
 		return model.AdsDataTypeArrayInfoParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AdsData":
-		commandId, _ := model.CommandIdByName(parserArguments[0])
-		response := parserArguments[1] == "true"
-		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), commandId, response)
 	case "AdsDataTypeTableEntry":
 		return model.AdsDataTypeTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsNetId":
@@ -88,8 +84,6 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return model.AdsSymbolTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "State":
-		return model.StateParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsPacket":
 		return model.AmsPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}

@@ -56,13 +56,6 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return model.AmsSerialAcknowledgeFrameParse(io)
 	case "AdsDataTypeArrayInfo":
 		return model.AdsDataTypeArrayInfoParse(io)
-	case "AdsData":
-		commandId, _ := model.CommandIdByName(arguments[0])
-		response, err := utils.StrToBool(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.AdsDataParse(io, commandId, response)
 	case "AdsDataTypeTableEntry":
 		return model.AdsDataTypeTableEntryParse(io)
 	case "AmsNetId":
@@ -81,8 +74,6 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return model.AdsSymbolTableEntryParse(io)
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(io)
-	case "State":
-		return model.StateParse(io)
 	case "AmsPacket":
 		return model.AmsPacketParse(io)
 	}

@@ -31,7 +31,7 @@ import (
 type AdsAddDeviceNotificationRequest interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
@@ -55,7 +55,7 @@ type AdsAddDeviceNotificationRequestExactly interface {
 
 // _AdsAddDeviceNotificationRequest is the data-structure of this message
 type _AdsAddDeviceNotificationRequest struct {
-	*_AdsData
+	*_AmsPacket
 	IndexGroup       uint32
 	IndexOffset      uint32
 	Length           uint32
@@ -85,10 +85,17 @@ func (m *_AdsAddDeviceNotificationRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsAddDeviceNotificationRequest) InitializeParent(parent AdsData) {}
+func (m *_AdsAddDeviceNotificationRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsAddDeviceNotificationRequest) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsAddDeviceNotificationRequest) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -126,7 +133,7 @@ func (m *_AdsAddDeviceNotificationRequest) GetCycleTime() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsAddDeviceNotificationRequest factory function for _AdsAddDeviceNotificationRequest
-func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *_AdsAddDeviceNotificationRequest {
+func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsAddDeviceNotificationRequest {
 	_result := &_AdsAddDeviceNotificationRequest{
 		IndexGroup:       indexGroup,
 		IndexOffset:      indexOffset,
@@ -134,9 +141,9 @@ func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, l
 		TransmissionMode: transmissionMode,
 		MaxDelay:         maxDelay,
 		CycleTime:        cycleTime,
-		_AdsData:         NewAdsData(),
+		_AmsPacket:       NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -193,7 +200,7 @@ func (m *_AdsAddDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsAddDeviceNotificationRequest, error) {
+func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
@@ -284,7 +291,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 
 	// Create a partially initialized instance
 	_child := &_AdsAddDeviceNotificationRequest{
-		_AdsData:         &_AdsData{},
+		_AmsPacket:       &_AmsPacket{},
 		IndexGroup:       indexGroup,
 		IndexOffset:      indexOffset,
 		Length:           length,
@@ -294,7 +301,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 		reservedField0:   reservedField0,
 		reservedField1:   reservedField1,
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 

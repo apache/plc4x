@@ -30,7 +30,7 @@ import (
 type AdsDeleteDeviceNotificationRequest interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 }
@@ -44,7 +44,7 @@ type AdsDeleteDeviceNotificationRequestExactly interface {
 
 // _AdsDeleteDeviceNotificationRequest is the data-structure of this message
 type _AdsDeleteDeviceNotificationRequest struct {
-	*_AdsData
+	*_AmsPacket
 	NotificationHandle uint32
 }
 
@@ -66,10 +66,17 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDeleteDeviceNotificationRequest) InitializeParent(parent AdsData) {}
+func (m *_AdsDeleteDeviceNotificationRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsDeleteDeviceNotificationRequest) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsDeleteDeviceNotificationRequest) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,12 +94,12 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsDeleteDeviceNotificationRequest factory function for _AdsDeleteDeviceNotificationRequest
-func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *_AdsDeleteDeviceNotificationRequest {
+func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeleteDeviceNotificationRequest {
 	_result := &_AdsDeleteDeviceNotificationRequest{
 		NotificationHandle: notificationHandle,
-		_AdsData:           NewAdsData(),
+		_AmsPacket:         NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -128,7 +135,7 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsDeleteDeviceNotificationRequest, error) {
+func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {
@@ -150,10 +157,10 @@ func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, comman
 
 	// Create a partially initialized instance
 	_child := &_AdsDeleteDeviceNotificationRequest{
-		_AdsData:           &_AdsData{},
+		_AmsPacket:         &_AmsPacket{},
 		NotificationHandle: notificationHandle,
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 

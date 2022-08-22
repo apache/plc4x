@@ -30,7 +30,7 @@ import (
 type AdsWriteControlResponse interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 }
@@ -44,7 +44,7 @@ type AdsWriteControlResponseExactly interface {
 
 // _AdsWriteControlResponse is the data-structure of this message
 type _AdsWriteControlResponse struct {
-	*_AdsData
+	*_AmsPacket
 	Result ReturnCode
 }
 
@@ -66,10 +66,17 @@ func (m *_AdsWriteControlResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsWriteControlResponse) InitializeParent(parent AdsData) {}
+func (m *_AdsWriteControlResponse) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsWriteControlResponse) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsWriteControlResponse) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,12 +94,12 @@ func (m *_AdsWriteControlResponse) GetResult() ReturnCode {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteControlResponse factory function for _AdsWriteControlResponse
-func NewAdsWriteControlResponse(result ReturnCode) *_AdsWriteControlResponse {
+func NewAdsWriteControlResponse(result ReturnCode, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteControlResponse {
 	_result := &_AdsWriteControlResponse{
-		Result:   result,
-		_AdsData: NewAdsData(),
+		Result:     result,
+		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -128,7 +135,7 @@ func (m *_AdsWriteControlResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsWriteControlResponse, error) {
+func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlResponse"); pullErr != nil {
@@ -156,10 +163,10 @@ func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer, commandId Command
 
 	// Create a partially initialized instance
 	_child := &_AdsWriteControlResponse{
-		_AdsData: &_AdsData{},
-		Result:   result,
+		_AmsPacket: &_AmsPacket{},
+		Result:     result,
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 

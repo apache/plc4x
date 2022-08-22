@@ -206,6 +206,31 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <!--
+            The failsafe plugin would use the java jigsaw module path,
+            this would make loading the test XML files impossible.
+            So we simply disable this.
+          -->
+          <useModulePath>false</useModulePath>
+          <!--
+            We have to slightly increase the heap-size or some tests will fail.
+            Notice the @ instead of the $ as prefix? That's late evaluation.
+          -->
+          <argLine>-Xmx256m @{failsafeArgLine}</argLine>
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
+          <environmentVariables>
+            <!-- Pass in to the build, if all tests should be run -->
+            <ENABLE_ALL_TESTS>${enable-all-tests}</ENABLE_ALL_TESTS>
+          </environmentVariables>
+        </configuration>
+      </plugin>
+
       <!--
         Generate an OSGI compatible MANIFEST file.
       -->
