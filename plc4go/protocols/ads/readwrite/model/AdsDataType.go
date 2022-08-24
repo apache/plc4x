@@ -32,7 +32,7 @@ type AdsDataType int8
 
 type IAdsDataType interface {
 	NumBytes() uint16
-	DataFormatName() string
+	PlcValueType() PlcValueType
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -305,182 +305,182 @@ func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (AdsDataType, error) {
 	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
 }
 
-func (e AdsDataType) DataFormatName() string {
+func (e AdsDataType) PlcValueType() PlcValueType {
 	switch e {
 	case 0x01:
 		{ /* '0x01' */
-			return "IEC61131_BOOL"
+			return PlcValueType_BOOL
 		}
 	case 0x02:
 		{ /* '0x02' */
-			return "IEC61131_BOOL"
+			return PlcValueType_BOOL
 		}
 	case 0x03:
 		{ /* '0x03' */
-			return "IEC61131_BYTE"
+			return PlcValueType_BYTE
 		}
 	case 0x04:
 		{ /* '0x04' */
-			return "IEC61131_BYTE"
+			return PlcValueType_BYTE
 		}
 	case 0x05:
 		{ /* '0x05' */
-			return "IEC61131_BYTE"
+			return PlcValueType_BYTE
 		}
 	case 0x06:
 		{ /* '0x06' */
-			return "IEC61131_WORD"
+			return PlcValueType_WORD
 		}
 	case 0x07:
 		{ /* '0x07' */
-			return "IEC61131_WORD"
+			return PlcValueType_WORD
 		}
 	case 0x08:
 		{ /* '0x08' */
-			return "IEC61131_DWORD"
+			return PlcValueType_DWORD
 		}
 	case 0x09:
 		{ /* '0x09' */
-			return "IEC61131_DWORD"
+			return PlcValueType_DWORD
 		}
 	case 0x0A:
 		{ /* '0x0A' */
-			return "IEC61131_SINT"
+			return PlcValueType_SINT
 		}
 	case 0x0B:
 		{ /* '0x0B' */
-			return "IEC61131_SINT"
+			return PlcValueType_SINT
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return "IEC61131_USINT"
+			return PlcValueType_USINT
 		}
 	case 0x0D:
 		{ /* '0x0D' */
-			return "IEC61131_USINT"
+			return PlcValueType_USINT
 		}
 	case 0x0E:
 		{ /* '0x0E' */
-			return "IEC61131_INT"
+			return PlcValueType_INT
 		}
 	case 0x0F:
 		{ /* '0x0F' */
-			return "IEC61131_INT"
+			return PlcValueType_INT
 		}
 	case 0x10:
 		{ /* '0x10' */
-			return "IEC61131_UINT"
+			return PlcValueType_UINT
 		}
 	case 0x11:
 		{ /* '0x11' */
-			return "IEC61131_UINT"
+			return PlcValueType_UINT
 		}
 	case 0x12:
 		{ /* '0x12' */
-			return "IEC61131_DINT"
+			return PlcValueType_DINT
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return "IEC61131_DINT"
+			return PlcValueType_DINT
 		}
 	case 0x14:
 		{ /* '0x14' */
-			return "IEC61131_UDINT"
+			return PlcValueType_UDINT
 		}
 	case 0x15:
 		{ /* '0x15' */
-			return "IEC61131_UDINT"
+			return PlcValueType_UDINT
 		}
 	case 0x16:
 		{ /* '0x16' */
-			return "IEC61131_LINT"
+			return PlcValueType_LINT
 		}
 	case 0x17:
 		{ /* '0x17' */
-			return "IEC61131_LINT"
+			return PlcValueType_LINT
 		}
 	case 0x18:
 		{ /* '0x18' */
-			return "IEC61131_ULINT"
+			return PlcValueType_ULINT
 		}
 	case 0x19:
 		{ /* '0x19' */
-			return "IEC61131_ULINT"
+			return PlcValueType_ULINT
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return "IEC61131_REAL"
+			return PlcValueType_REAL
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return "IEC61131_REAL"
+			return PlcValueType_REAL
 		}
 	case 0x1C:
 		{ /* '0x1C' */
-			return "IEC61131_LREAL"
+			return PlcValueType_LREAL
 		}
 	case 0x1D:
 		{ /* '0x1D' */
-			return "IEC61131_LREAL"
+			return PlcValueType_LREAL
 		}
 	case 0x1E:
 		{ /* '0x1E' */
-			return "IEC61131_CHAR"
+			return PlcValueType_CHAR
 		}
 	case 0x1F:
 		{ /* '0x1F' */
-			return "IEC61131_WCHAR"
+			return PlcValueType_WCHAR
 		}
 	case 0x20:
 		{ /* '0x20' */
-			return "IEC61131_STRING"
+			return PlcValueType_STRING
 		}
 	case 0x21:
 		{ /* '0x21' */
-			return "IEC61131_WSTRING"
+			return PlcValueType_WSTRING
 		}
 	case 0x22:
 		{ /* '0x22' */
-			return "IEC61131_TIME"
+			return PlcValueType_TIME
 		}
 	case 0x23:
 		{ /* '0x23' */
-			return "IEC61131_LTIME"
+			return PlcValueType_LTIME
 		}
 	case 0x24:
 		{ /* '0x24' */
-			return "IEC61131_DATE"
+			return PlcValueType_DATE
 		}
 	case 0x25:
 		{ /* '0x25' */
-			return "IEC61131_TIME_OF_DAY"
+			return PlcValueType_TIME_OF_DAY
 		}
 	case 0x26:
 		{ /* '0x26' */
-			return "IEC61131_TIME_OF_DAY"
+			return PlcValueType_TIME_OF_DAY
 		}
 	case 0x27:
 		{ /* '0x27' */
-			return "IEC61131_DATE_AND_TIME"
+			return PlcValueType_DATE_AND_TIME
 		}
 	case 0x28:
 		{ /* '0x28' */
-			return "IEC61131_DATE_AND_TIME"
+			return PlcValueType_DATE_AND_TIME
 		}
 	default:
 		{
-			return ""
+			return 0
 		}
 	}
 }
 
-func AdsDataTypeFirstEnumForFieldDataFormatName(value string) (AdsDataType, error) {
+func AdsDataTypeFirstEnumForFieldPlcValueType(value PlcValueType) (AdsDataType, error) {
 	for _, sizeValue := range AdsDataTypeValues {
-		if sizeValue.DataFormatName() == value {
+		if sizeValue.PlcValueType() == value {
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing DataFormatName not found", value)
+	return 0, errors.Errorf("enum for %v describing PlcValueType not found", value)
 }
 func AdsDataTypeByValue(value int8) (enum AdsDataType, ok bool) {
 	switch value {

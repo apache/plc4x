@@ -35,38 +35,41 @@ type IReservedIndexGroups interface {
 }
 
 const (
-	ReservedIndexGroups_ADSIGRP_SYMTAB                     ReservedIndexGroups = 0x0000F000
-	ReservedIndexGroups_ADSIGRP_SYMNAME                    ReservedIndexGroups = 0x0000F001
-	ReservedIndexGroups_ADSIGRP_SYMVAL                     ReservedIndexGroups = 0x0000F002
-	ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME              ReservedIndexGroups = 0x0000F003
-	ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME              ReservedIndexGroups = 0x0000F004
-	ReservedIndexGroups_ADSIGRP_SYM_VALBYHND               ReservedIndexGroups = 0x0000F005
-	ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND             ReservedIndexGroups = 0x0000F006
-	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME             ReservedIndexGroups = 0x0000F007
-	ReservedIndexGroups_ADSIGRP_SYM_VERSION                ReservedIndexGroups = 0x0000F008
-	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX           ReservedIndexGroups = 0x0000F009
-	ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD               ReservedIndexGroups = 0x0000F00A
-	ReservedIndexGroups_ADSIGRP_SYM_UPLOAD                 ReservedIndexGroups = 0x0000F00B
-	ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO             ReservedIndexGroups = 0x0000F00C
-	ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD     ReservedIndexGroups = 0x0000F00E
-	ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES ReservedIndexGroups = 0x0000F00F
-	ReservedIndexGroups_ADSIGRP_SYMNOTE                    ReservedIndexGroups = 0x0000F010
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB               ReservedIndexGroups = 0x0000F020
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX               ReservedIndexGroups = 0x0000F021
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE             ReservedIndexGroups = 0x0000F025
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB               ReservedIndexGroups = 0x0000F030
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX               ReservedIndexGroups = 0x0000F031
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE            ReservedIndexGroups = 0x0000F035
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI             ReservedIndexGroups = 0x0000F040
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO             ReservedIndexGroups = 0x0000F050
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB              ReservedIndexGroups = 0x0000F060
-	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ              ReservedIndexGroups = 0x0000F080
-	ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE             ReservedIndexGroups = 0x0000F081
-	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE        ReservedIndexGroups = 0x0000F082
-	ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE    ReservedIndexGroups = 0x0000F083
-	ReservedIndexGroups_ADSIGRP_DEVICE_DATA                ReservedIndexGroups = 0x0000F100
-	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE          ReservedIndexGroups = 0x00000000
-	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE          ReservedIndexGroups = 0x00000002
+	ReservedIndexGroups_ADSIGRP_SYMTAB                               ReservedIndexGroups = 0x0000F000
+	ReservedIndexGroups_ADSIGRP_SYMNAME                              ReservedIndexGroups = 0x0000F001
+	ReservedIndexGroups_ADSIGRP_SYMVAL                               ReservedIndexGroups = 0x0000F002
+	ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME                        ReservedIndexGroups = 0x0000F003
+	ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME                        ReservedIndexGroups = 0x0000F004
+	ReservedIndexGroups_ADSIGRP_SYM_VALBYHND                         ReservedIndexGroups = 0x0000F005
+	ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND                       ReservedIndexGroups = 0x0000F006
+	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME                       ReservedIndexGroups = 0x0000F007
+	ReservedIndexGroups_ADSIGRP_SYM_VERSION                          ReservedIndexGroups = 0x0000F008
+	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX                     ReservedIndexGroups = 0x0000F009
+	ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD                         ReservedIndexGroups = 0x0000F00A
+	ReservedIndexGroups_ADSIGRP_SYM_UPLOAD                           ReservedIndexGroups = 0x0000F00B
+	ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO                       ReservedIndexGroups = 0x0000F00C
+	ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD               ReservedIndexGroups = 0x0000F00E
+	ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES           ReservedIndexGroups = 0x0000F00F
+	ReservedIndexGroups_ADSIGRP_SYMNOTE                              ReservedIndexGroups = 0x0000F010
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB                         ReservedIndexGroups = 0x0000F020
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX                         ReservedIndexGroups = 0x0000F021
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE                       ReservedIndexGroups = 0x0000F025
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB                         ReservedIndexGroups = 0x0000F030
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX                         ReservedIndexGroups = 0x0000F031
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE                      ReservedIndexGroups = 0x0000F035
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI                       ReservedIndexGroups = 0x0000F040
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO                       ReservedIndexGroups = 0x0000F050
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB                        ReservedIndexGroups = 0x0000F060
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ                        ReservedIndexGroups = 0x0000F080
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE                       ReservedIndexGroups = 0x0000F081
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE                  ReservedIndexGroups = 0x0000F082
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE              ReservedIndexGroups = 0x0000F083
+	ReservedIndexGroups_ADSIGRP_SUMUP_READEX2                        ReservedIndexGroups = 0x0000F084
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS    ReservedIndexGroups = 0x0000F085
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS ReservedIndexGroups = 0x0000F086
+	ReservedIndexGroups_ADSIGRP_DEVICE_DATA                          ReservedIndexGroups = 0x0000F100
+	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE                    ReservedIndexGroups = 0x00000000
+	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE                    ReservedIndexGroups = 0x00000002
 )
 
 var ReservedIndexGroupsValues []ReservedIndexGroups
@@ -103,6 +106,9 @@ func init() {
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE,
+		ReservedIndexGroups_ADSIGRP_SUMUP_READEX2,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS,
 		ReservedIndexGroups_ADSIGRP_DEVICE_DATA,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE,
@@ -173,6 +179,12 @@ func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE, true
 	case 0x0000F083:
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE, true
+	case 0x0000F084:
+		return ReservedIndexGroups_ADSIGRP_SUMUP_READEX2, true
+	case 0x0000F085:
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS, true
+	case 0x0000F086:
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
 	case 0x0000F100:
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
 	}
@@ -243,6 +255,12 @@ func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool)
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE, true
 	case "ADSIGRP_MULTIPLE_RELEASE_HANDLE":
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE, true
+	case "ADSIGRP_SUMUP_READEX2":
+		return ReservedIndexGroups_ADSIGRP_SUMUP_READEX2, true
+	case "ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS":
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS, true
+	case "ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS":
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
 	case "ADSIGRP_DEVICE_DATA":
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
 	}
@@ -358,6 +376,12 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 		return "ADSIGRP_MULTIPLE_READ_WRITE"
 	case ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE:
 		return "ADSIGRP_MULTIPLE_RELEASE_HANDLE"
+	case ReservedIndexGroups_ADSIGRP_SUMUP_READEX2:
+		return "ADSIGRP_SUMUP_READEX2"
+	case ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS:
+		return "ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS"
+	case ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS:
+		return "ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS"
 	case ReservedIndexGroups_ADSIGRP_DEVICE_DATA:
 		return "ADSIGRP_DEVICE_DATA"
 	}

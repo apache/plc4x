@@ -45,14 +45,13 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	case "AmsSerialFrame":
 		return model.AmsSerialFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataItem":
-		// TODO: find a way to parse the sub types
-		var dataFormatName string
+		plcValueType, _ := model.PlcValueTypeByName(parserArguments[0])
 		parsedInt1, err := strconv.ParseInt(parserArguments[1], 10, 32)
 		if err != nil {
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataFormatName, stringLength)
+		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength)
 	case "AdsTableSizes":
 		return model.AdsTableSizesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsMultiRequestItem":

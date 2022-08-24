@@ -35,15 +35,12 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	case "AmsSerialFrame":
 		return model.AmsSerialFrameParse(io)
 	case "DataItem":
-		dataFormatName, err := utils.StrToString(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
+		plcValueType, _ := model.PlcValueTypeByName(arguments[0])
 		stringLength, err := utils.StrToInt32(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, dataFormatName, stringLength)
+		return model.DataItemParse(io, plcValueType, stringLength)
 	case "AdsTableSizes":
 		return model.AdsTableSizesParse(io)
 	case "AdsMultiRequestItem":
