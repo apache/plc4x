@@ -383,12 +383,12 @@
     [array byte data count 'sampleSize']
 ]
 
-[dataIo DataItem(vstring dataFormatName, int 32 stringLength)
-    [typeSwitch dataFormatName
+[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength)
+    [typeSwitch plcValueType
         // -----------------------------------------
         // Bit
         // -----------------------------------------
-        ['"IEC61131_BOOL"' BOOL
+        ['BOOL' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value]
         ]
@@ -397,15 +397,15 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['"IEC61131_BYTE"' BitString
+        ['BYTE' BitString
             [simple uint 8 value]
         ]
         // 2 byte (16 bit)
-        ['"IEC61131_WORD"' BitString
+        ['WORD' BitString
             [simple uint 16 value]
         ]
         // 4 byte (32 bit)
-        ['"IEC61131_DWORD"' BitString
+        ['DWORD' BitString
             [simple uint 32 value]
         ]
 
@@ -413,58 +413,58 @@
         // Integers
         // -----------------------------------------
         // 8 bit:
-        ['"IEC61131_SINT"' SINT
+        ['SINT' SINT
             [simple int 8 value]
         ]
-        ['"IEC61131_USINT"' USINT
+        ['USINT' USINT
             [simple uint 8 value]
         ]
         // 16 bit:
-        ['"IEC61131_INT"' INT
+        ['INT' INT
             [simple int 16 value]
         ]
-        ['"IEC61131_UINT"' UINT
+        ['UINT' UINT
             [simple uint 16 value]
         ]
         // 32 bit:
-        ['"IEC61131_DINT"' DINT
+        ['DINT' DINT
             [simple int 32 value]
         ]
-        ['"IEC61131_UDINT"' UDINT
+        ['UDINT' UDINT
             [simple uint 32 value]
         ]
         // 64 bit:
-        ['"IEC61131_LINT"' LINT
+        ['LINT' LINT
             [simple int 64 value]
         ]
-        ['"IEC61131_ULINT"' ULINT
+        ['ULINT' ULINT
             [simple uint 64 value]
         ]
 
         // -----------------------------------------
         // Floating point values
         // -----------------------------------------
-        ['"IEC61131_REAL"' REAL
+        ['REAL' REAL
             [simple float 32  value]
         ]
-        ['"IEC61131_LREAL"' LREAL
+        ['LREAL' LREAL
             [simple float 64 value]
         ]
 
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['"IEC61131_CHAR"' STRING
+        ['CHAR' STRING
             [simple string 8 value]
         ]
-        ['"IEC61131_WCHAR"' STRING
+        ['WCHAR' STRING
             [simple string 16 value encoding='"UTF-16"']
         ]
-        ['"IEC61131_STRING"' STRING
+        ['STRING' STRING
             // TODO: Fix this length
             [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
         ]
-        ['"IEC61131_WSTRING"' STRING
+        ['WSTRING' STRING
             // TODO: Fix this length
             [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2' encoding='"UTF-16"']
         ]
@@ -473,92 +473,141 @@
         // Date & Times
         // -----------------------------------------
         // Interpreted as "milliseconds"
-        ['"IEC61131_TIME"' TIME
+        ['TIME' TIME
             [simple uint 32 value]
         ]
         // Interpreted as "nanoseconds"
-        ['"IEC61131_LTIME"' LTIME
+        ['LTIME' LTIME
             [simple uint 64 value]
         ]
         // Interpreted as "seconds since epoch"
-        ['"IEC61131_DATE"' DATE
+        ['DATE' DATE
             [simple uint 32 value]
         ]
         // Interpreted as "milliseconds since midnight"
-        ['"IEC61131_TIME_OF_DAY"' TIME_OF_DAY
+        ['TIME_OF_DAY' TIME_OF_DAY
             [simple uint 32 value]
         ]
         // Interpreted as "seconds since epoch"
-        ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
+        ['DATE_AND_TIME' DATE_AND_TIME
             [simple uint 32 secondsSinceEpoch]
         ]
     ]
 ]
 
-[enum int 8 AdsDataType(uint 16 numBytes, vstring dataFormatName)
-    ['0x01' BOOL       ['1', '"IEC61131_BOOL"']]
-    ['0x02' BIT        ['1', '"IEC61131_BOOL"']]
+[enum uint 8 PlcValueType
+    ['0x00' NULL          ]
+
+    // Bit Strings
+    ['0x01' BOOL          ]
+    ['0x02' BYTE          ]
+    ['0x03' WORD          ]
+    ['0x04' DWORD         ]
+    ['0x05' LWORD         ]
+
+    // Unsigned Integers
+    ['0x11' USINT         ]
+    ['0x12' UINT          ]
+    ['0x13' UDINT         ]
+    ['0x14' ULINT         ]
+
+    // Signed Integers
+    ['0x21' SINT          ]
+    ['0x22' INT           ]
+    ['0x23' DINT          ]
+    ['0x24' LINT          ]
+
+    // Floating Point Values
+    ['0x31' REAL          ]
+    ['0x32' LREAL         ]
+
+    // Chars and Strings
+    ['0x41' CHAR          ]
+    ['0x42' WCHAR         ]
+    ['0x43' STRING        ]
+    ['0x44' WSTRING       ]
+
+    // Times and Dates
+    ['0x51' TIME          ]
+    ['0x52' LTIME         ]
+    ['0x53' DATE          ]
+    ['0x54' LDATE         ]
+    ['0x55' TIME_OF_DAY   ]
+    ['0x56' LTIME_OF_DAY  ]
+    ['0x57' DATE_AND_TIME ]
+    ['0x58' LDATE_AND_TIME]
+
+    // Complex types
+    ['0x61' Struct        ]
+    ['0x62' List          ]
+
+    ['0x71' RAW_BYTE_ARRAY]
+]
+
+[enum int 8 AdsDataType(uint 16 numBytes, PlcValueType plcValueType)
+    ['0x01' BOOL           ['1',   'BOOL'         ]]
+    ['0x02' BIT            ['1',   'BOOL'         ]]
 
     // -----------------------------------------
     // Bit-strings
     // -----------------------------------------
     // 1 byte
-    ['0x03' BIT8       ['1', '"IEC61131_BYTE"']]
-    ['0x04' BYTE       ['1', '"IEC61131_BYTE"']]
-    ['0x05' BITARR8    ['1', '"IEC61131_BYTE"']]
+    ['0x03' BIT8           ['1',   'BYTE'         ]]
+    ['0x04' BYTE           ['1',   'BYTE'         ]]
+    ['0x05' BITARR8        ['1',   'BYTE'         ]]
     // 2 byte (16 bit)
-    ['0x06' WORD       ['2', '"IEC61131_WORD"']]
-    ['0x07' BITARR16   ['2', '"IEC61131_WORD"']]
+    ['0x06' WORD           ['2',   'WORD'         ]]
+    ['0x07' BITARR16       ['2',   'WORD'         ]]
     // 4 byte (32 bit)
-    ['0x08' DWORD      ['4', '"IEC61131_DWORD"']]
-    ['0x09' BITARR32   ['4', '"IEC61131_DWORD"']]
+    ['0x08' DWORD          ['4',   'DWORD'        ]]
+    ['0x09' BITARR32       ['4',   'DWORD'        ]]
     // -----------------------------------------
     // Integers
     // -----------------------------------------
     // 8 bit:
-    ['0x0A' SINT       ['1', '"IEC61131_SINT"']]
-    ['0x0B' INT8       ['1', '"IEC61131_SINT"']]
-    ['0x0C' USINT      ['1', '"IEC61131_USINT"']]
-    ['0x0D' UINT8      ['1', '"IEC61131_USINT"']]
+    ['0x0A' SINT           ['1',   'SINT'         ]]
+    ['0x0B' INT8           ['1',   'SINT'         ]]
+    ['0x0C' USINT          ['1',   'USINT'        ]]
+    ['0x0D' UINT8          ['1',   'USINT'        ]]
     // 16 bit:
-    ['0x0E' INT        ['2', '"IEC61131_INT"']]
-    ['0x0F' INT16      ['2', '"IEC61131_INT"']]
-    ['0x10' UINT       ['2', '"IEC61131_UINT"']]
-    ['0x11' UINT16     ['2', '"IEC61131_UINT"']]
+    ['0x0E' INT            ['2',   'INT'          ]]
+    ['0x0F' INT16          ['2',   'INT'          ]]
+    ['0x10' UINT           ['2',   'UINT'         ]]
+    ['0x11' UINT16         ['2',   'UINT'         ]]
     // 32 bit:
-    ['0x12' DINT       ['4', '"IEC61131_DINT"']]
-    ['0x13' INT32      ['4', '"IEC61131_DINT"']]
-    ['0x14' UDINT      ['4', '"IEC61131_UDINT"']]
-    ['0x15' UINT32     ['4', '"IEC61131_UDINT"']]
+    ['0x12' DINT           ['4',   'DINT'         ]]
+    ['0x13' INT32          ['4',   'DINT'         ]]
+    ['0x14' UDINT          ['4',   'UDINT'        ]]
+    ['0x15' UINT32         ['4',   'UDINT'        ]]
     // 64 bit:
-    ['0x16' LINT       ['8', '"IEC61131_LINT"']]
-    ['0x17' INT64      ['8', '"IEC61131_LINT"']]
-    ['0x18' ULINT      ['8', '"IEC61131_ULINT"']]
-    ['0x19' UINT64     ['8', '"IEC61131_ULINT"']]
+    ['0x16' LINT           ['8',   'LINT'         ]]
+    ['0x17' INT64          ['8',   'LINT'         ]]
+    ['0x18' ULINT          ['8',   'ULINT'        ]]
+    ['0x19' UINT64         ['8',   'ULINT'        ]]
     // -----------------------------------------
     // Floating point values
     // -----------------------------------------
-    ['0x1A' REAL       ['4', '"IEC61131_REAL"']]
-    ['0x1B' FLOAT      ['4', '"IEC61131_REAL"']]
-    ['0x1C' LREAL      ['8', '"IEC61131_LREAL"']]
-    ['0x1D' DOUBLE     ['8', '"IEC61131_LREAL"']]
+    ['0x1A' REAL           ['4',   'REAL'         ]]
+    ['0x1B' FLOAT          ['4',   'REAL'         ]]
+    ['0x1C' LREAL          ['8',   'LREAL'        ]]
+    ['0x1D' DOUBLE         ['8',   'LREAL'        ]]
     // -----------------------------------------
     // Characters & Strings
     // -----------------------------------------
-    ['0x1E' CHAR       ['1',   '"IEC61131_CHAR"']]
-    ['0x1F' WCHAR      ['2',   '"IEC61131_WCHAR"']]
-    ['0x20' STRING     ['256', '"IEC61131_STRING"']]
-    ['0x21' WSTRING    ['512', '"IEC61131_WSTRING"']]
+    ['0x1E' CHAR           ['1',   'CHAR'         ]]
+    ['0x1F' WCHAR          ['2',   'WCHAR'        ]]
+    ['0x20' STRING         ['256', 'STRING'       ]]
+    ['0x21' WSTRING        ['512', 'WSTRING'      ]]
     // -----------------------------------------
     // Dates & Times
     // -----------------------------------------
-    ['0x22' TIME           ['4', '"IEC61131_TIME"']]
-    ['0x23' LTIME          ['8', '"IEC61131_LTIME"']]
-    ['0x24' DATE           ['4', '"IEC61131_DATE"']]
-    ['0x25' TIME_OF_DAY    ['4', '"IEC61131_TIME_OF_DAY"']]
-    ['0x26' TOD            ['4', '"IEC61131_TIME_OF_DAY"']]
-    ['0x27' DATE_AND_TIME  ['4', '"IEC61131_DATE_AND_TIME"']]
-    ['0x28' DT             ['4', '"IEC61131_DATE_AND_TIME"']]
+    ['0x22' TIME           ['4',   'TIME'         ]]
+    ['0x23' LTIME          ['8',   'LTIME'        ]]
+    ['0x24' DATE           ['4',   'DATE'         ]]
+    ['0x25' TIME_OF_DAY    ['4',   'TIME_OF_DAY'  ]]
+    ['0x26' TOD            ['4',   'TIME_OF_DAY'  ]]
+    ['0x27' DATE_AND_TIME  ['4',   'DATE_AND_TIME']]
+    ['0x28' DT             ['4',   'DATE_AND_TIME']]
 ]
 
 // https://github.com/Beckhoff/ADS/blob/master/AdsLib/standalone/AdsDef.h

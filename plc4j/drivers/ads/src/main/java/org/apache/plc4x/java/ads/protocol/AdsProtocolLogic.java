@@ -467,12 +467,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             final int stringLength = strLen;
             if (field.getNumberOfElements() == 1) {
                 return new ResponseItem<>(PlcResponseCode.OK,
-                    DataItem.staticParse(readBuffer, field.getAdsDataType().getDataFormatName(), stringLength));
+                    DataItem.staticParse(readBuffer, field.getAdsDataType().getPlcValueType(), stringLength));
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, field.getNumberOfElements()).mapToObj(i -> {
                     try {
-                        return DataItem.staticParse(readBuffer, field.getAdsDataType().getDataFormatName(), stringLength);
+                        return DataItem.staticParse(readBuffer, field.getAdsDataType().getPlcValueType(), stringLength);
                     } catch (ParseException e) {
                         LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getAdsDataType(), i, e);
                     }
@@ -564,8 +564,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
         try {
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                plcField.getAdsDataType().getDataFormatName(), stringLength));
-            DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
+                plcField.getAdsDataType().getPlcValueType(), stringLength));
+            DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getPlcValueType(), stringLength, ByteOrder.LITTLE_ENDIAN);
             AmsPacket amsPacket = new AdsWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                 configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
                 0, getInvokeId(), directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getData());
@@ -621,9 +621,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             try {
                 WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength));
+                    field.getAdsDataType().getPlcValueType(), stringLength));
                 DataItem.staticSerialize(itemWriteBuffer, plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
+                    field.getAdsDataType().getPlcValueType(), stringLength, ByteOrder.LITTLE_ENDIAN);
                 int numBytes = itemWriteBuffer.getPos();
                 System.arraycopy(itemWriteBuffer.getData(), 0, writeBuffer, pos, numBytes);
                 pos += numBytes;
@@ -921,7 +921,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
         values.put(subscriptionHandle.getPlcFieldName(), new ResponseItem<>(PlcResponseCode.OK,
-            DataItem.staticParse(readBuffer, subscriptionHandle.getAdsDataType().getDataFormatName(), data.length)));
+            DataItem.staticParse(readBuffer, subscriptionHandle.getAdsDataType().getPlcValueType(), data.length)));
         return values;
     }
 
