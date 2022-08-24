@@ -50,9 +50,6 @@ public class Plc4xProtocol implements Protocol, ProtocolHelpers {
         LOGGER.info("Parsing: plc4x.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream());
 
-        LOGGER.info("Parsing: plc4x-api.mspec");
-        typeContext = new MessageFormatParser().parse(getMspecStream("plc4x-api"), typeContext);
-
         typeContext.validate();
         return typeContext;
     }

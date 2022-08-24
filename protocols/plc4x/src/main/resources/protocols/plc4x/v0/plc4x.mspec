@@ -33,7 +33,7 @@
         ]
         ['CONNECT_RESPONSE' Plc4xConnectResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   Plc4xResponseCode       responseCode                  ]
+            [simple   PlcResponseCode         responseCode                  ]
         ]
         ['READ_REQUEST' Plc4xReadRequest
             [simple   uint 16                 connectionId                  ]
@@ -42,7 +42,7 @@
         ]
         ['READ_RESPONSE' Plc4xReadResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   Plc4xResponseCode       responseCode                  ]
+            [simple   PlcResponseCode         responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array    Plc4xFieldValueResponse fields       count 'numFields']
         ]
@@ -53,7 +53,7 @@
         ]
         ['WRITE_RESPONSE' Plc4xWriteResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   Plc4xResponseCode       responseCode                  ]
+            [simple   PlcResponseCode         responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array    Plc4xFieldResponse      fields       count 'numFields']
         ]
@@ -65,7 +65,7 @@
         ]
         ['SUBSCRIPTION_RESPONSE' Plc4xSubscriptionResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   Plc4xResponseCode       responseCode                  ]
+            [simple   PlcResponseCode         responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array                            fields       count 'numFields']
         ]
@@ -76,7 +76,7 @@
         ]
         ['UNSUBSCRIPTION_RESPONSE' Plc4xUnsubscriptionResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   Plc4xResponseCode       responseCode                  ]
+            [simple   PlcResponseCode         responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array                            fields       count 'numFields']
         ]*/
@@ -95,24 +95,24 @@
 ]
 
 [type Plc4xFieldValueRequest
-    [simple   Plc4xField              field                                       ]
-    [simple   Plc4xValueType          valueType                                   ]
-    [optional Plc4xValue('valueType') value     'valueType != Plc4xValueType.NULL']
+    [simple   Plc4xField              field                                     ]
+    [simple   PlcValueType            valueType                                 ]
+    [optional Plc4xValue('valueType') value     'valueType != PlcValueType.NULL']
 ]
 
 [type Plc4xFieldResponse
     [simple Plc4xField              field       ]
-    [simple Plc4xResponseCode       responseCode]
+    [simple PlcResponseCode         responseCode]
 ]
 
 [type Plc4xFieldValueResponse
-    [simple   Plc4xField              field                                          ]
-    [simple   Plc4xResponseCode       responseCode                                   ]
-    [simple   Plc4xValueType          valueType                                      ]
-    [optional Plc4xValue('valueType') value        'valueType != Plc4xValueType.NULL']
+    [simple   Plc4xField              field                                        ]
+    [simple   PlcResponseCode         responseCode                                 ]
+    [simple   PlcValueType            valueType                                    ]
+    [optional Plc4xValue('valueType') value        'valueType != PlcValueType.NULL']
 ]
 
-[dataIo Plc4xValue(Plc4xValueType valueType)
+[dataIo Plc4xValue(PlcValueType valueType)
     [typeSwitch valueType
         // Bit Strings
         ['BOOL'          BOOL
@@ -194,4 +194,88 @@
         ['Struct'        Struct       ]
         ['List'          List         ]
     ]
+]
+
+[enum uint 8 Plc4xRequestType
+    ['0x01' CONNECT_REQUEST        ]
+    ['0x02' CONNECT_RESPONSE       ]
+    ['0x03' DISCONNECT_REQUEST     ]
+    ['0x04' DISCONNECT_RESPONSE    ]
+    ['0x05' READ_REQUEST           ]
+    ['0x06' READ_RESPONSE          ]
+    ['0x07' WRITE_REQUEST          ]
+    ['0x08' WRITE_RESPONSE         ]
+    ['0x09' SUBSCRIPTION_REQUEST   ]
+    ['0x0A' SUBSCRIPTION_RESPONSE  ]
+    ['0x0B' UNSUBSCRIPTION_REQUEST ]
+    ['0x0C' UNSUBSCRIPTION_RESPONSE]
+]
+
+[enum uint 8 PlcResponseCode
+    ['0x01' OK              ]
+    ['0x02' NOT_FOUND       ]
+    ['0x03' ACCESS_DENIED   ]
+    ['0x04' INVALID_ADDRESS ]
+    ['0x06' INVALID_DATATYPE]
+    ['0x07' INVALID_DATA    ]
+    ['0x08' INTERNAL_ERROR  ]
+    ['0x09' REMOTE_BUSY     ]
+    ['0x0A' REMOTE_ERROR    ]
+    ['0x0B' UNSUPPORTED     ]
+    ['0x0C' RESPONSE_PENDING]
+]
+
+[enum uint 8 PlcValueType
+    ['0x00' NULL          ]
+
+    // Bit Strings
+    ['0x01' BOOL          ]
+    ['0x02' BYTE          ]
+    ['0x03' WORD          ]
+    ['0x04' DWORD         ]
+    ['0x05' LWORD         ]
+
+    // Unsigned Integers
+    ['0x11' USINT         ]
+    ['0x12' UINT          ]
+    ['0x13' UDINT         ]
+    ['0x14' ULINT         ]
+
+    // Signed Integers
+    ['0x21' SINT          ]
+    ['0x22' INT           ]
+    ['0x23' DINT          ]
+    ['0x24' LINT          ]
+
+    // Floating Point Values
+    ['0x31' REAL          ]
+    ['0x32' LREAL         ]
+
+    // Chars and Strings
+    ['0x41' CHAR          ]
+    ['0x42' WCHAR         ]
+    ['0x43' STRING        ]
+    ['0x44' WSTRING       ]
+
+    // Times and Dates
+    ['0x51' TIME          ]
+    ['0x52' LTIME         ]
+    ['0x53' DATE          ]
+    ['0x54' LDATE         ]
+    ['0x55' TIME_OF_DAY   ]
+    ['0x56' LTIME_OF_DAY  ]
+    ['0x57' DATE_AND_TIME ]
+    ['0x58' LDATE_AND_TIME]
+
+    // Complex types
+    ['0x61' Struct        ]
+    ['0x62' List          ]
+
+    ['0x71' RAW_BYTE_ARRAY]
+]
+
+[enum uint 8 PlcSubscriptionType
+   ['0x01' CYCLIC         ]
+   ['0x02' CHANGE_OF_STATE]
+   ['0x03' EVENT          ]
 ]
