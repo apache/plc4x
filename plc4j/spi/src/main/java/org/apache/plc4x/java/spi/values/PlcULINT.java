@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.values;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -157,6 +158,11 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
         } catch (Exception e) {
             throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.ULINT;
     }
 
     @Override

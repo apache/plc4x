@@ -23,23 +23,29 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcByteArray extends PlcIECValue<byte[]> {
+public class PlcRawByteArray extends PlcIECValue<byte[]> {
 
-    public static PlcByteArray of(Object value) {
+    public static PlcRawByteArray of(Object value) {
         if (value instanceof byte[]) {
-            return new PlcByteArray((byte[]) value);
+            return new PlcRawByteArray((byte[]) value);
         }
         throw new IllegalArgumentException("Only byte[] supported here");
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcByteArray(@JsonProperty("value")byte[] value) {
+    public PlcRawByteArray(@JsonProperty("value")byte[] value) {
         this.value = value;
         this.isNullable = false;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.RAW_BYTE_ARRAY;
     }
 
     @Override

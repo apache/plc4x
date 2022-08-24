@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -48,6 +49,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
             throw new IllegalArgumentException(
                 String.format("String length %d exceeds allowed maximum for type String (max %d)", value.length(), maxLength));
         }
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.STRING;
     }
 
     @Override

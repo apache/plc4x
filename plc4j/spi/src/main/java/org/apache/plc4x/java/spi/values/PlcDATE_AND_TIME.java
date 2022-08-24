@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -51,6 +52,11 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     public PlcDATE_AND_TIME(@JsonProperty("value") Long value) {
         super(LocalDateTime.ofInstant(
             Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.DATE_AND_TIME;
     }
 
     @Override

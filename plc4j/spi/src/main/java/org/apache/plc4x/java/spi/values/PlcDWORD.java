@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -151,6 +152,11 @@ public class PlcDWORD extends PlcIECValue<Long> {
         }
         this.value = value;
         this.isNullable = false;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.DWORD;
     }
 
     @Override

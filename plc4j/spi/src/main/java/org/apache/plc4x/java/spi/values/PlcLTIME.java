@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -60,6 +61,11 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
 
     public PlcLTIME(@JsonProperty("value") BigInteger value) {
         super(Duration.of(value.longValue(), ChronoUnit.NANOS), true);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.LTIME;
     }
 
     @Override

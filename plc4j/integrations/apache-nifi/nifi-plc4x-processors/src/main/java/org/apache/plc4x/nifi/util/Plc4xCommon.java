@@ -28,8 +28,6 @@ import org.apache.avro.SchemaBuilder.FieldAssembler;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcBYTE;
-import org.apache.plc4x.java.spi.values.PlcBigDecimal;
-import org.apache.plc4x.java.spi.values.PlcBigInteger;
 import org.apache.plc4x.java.spi.values.PlcBitString;
 import org.apache.plc4x.java.spi.values.PlcCHAR;
 import org.apache.plc4x.java.spi.values.PlcDATE;
@@ -78,11 +76,7 @@ public class Plc4xCommon {
 		
 		for (Map.Entry<String, ? extends PlcValue> entry : responseDataStructure.entrySet()) {
 			fieldName = entry.getKey();
-			if (entry.getValue() instanceof PlcBigDecimal) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().floatType().endUnion().noDefault(); 				
-			}else if (entry.getValue() instanceof PlcBigInteger) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().longType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcBitString) {
+			if (entry.getValue() instanceof PlcBitString) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcBOOL) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().booleanType().endUnion().noDefault();
@@ -164,10 +158,6 @@ public class Plc4xCommon {
 			PlcValue value = (PlcValue) valueOriginal;
 			if (value.isBoolean() && value instanceof PlcBOOL)
 				return value.getBoolean();
-			else if (value.isBigInteger() && value instanceof PlcBigInteger)
-				return value.getBigInteger();
-			else if (value.isBigDecimal() && value instanceof PlcBigDecimal)
-				return value.getBigDecimal();
 			else if (value.isByte() && value instanceof PlcBYTE)
 				return value.getByte();
 			else if (value.isDate() && value instanceof PlcDATE)
@@ -210,10 +200,6 @@ public class Plc4xCommon {
         	PlcValue value = (PlcValue) valueOriginal;
 	        if(value.isBoolean() && value instanceof PlcBOOL)
 	        	return value.getBoolean();
-	        else if (value.isBigInteger() && value instanceof PlcBigInteger)
-	        	return value.getBigInteger();
-	        else if (value.isBigDecimal() && value instanceof PlcBigDecimal)
-	        	return value.getBigDecimal();
 	        else if (value.isByte() && value instanceof PlcBYTE)
 	        	return value.getByte();
 	        else if (value.isDate() && value instanceof PlcDATE)

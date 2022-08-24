@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -132,6 +133,10 @@ public class PlcLINT extends PlcIECValue<Long> {
         this.isNullable = false;
     }
 
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.LINT;
+    }
 
     @Override
     @JsonIgnore

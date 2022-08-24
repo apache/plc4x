@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.mock.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.values.PlcValueAdapter;
 
@@ -28,6 +29,11 @@ public class MockPlcValue extends PlcValueAdapter {
 
     public MockPlcValue(Object... values) {
         this.values = values;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return null;
     }
 
     public Object getObject(int index) {

@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -75,7 +74,7 @@ public class IEC61131ValueHandler implements PlcValueHandler {
             return PlcSINT.of(value);
         }
         if (value instanceof byte[]) {
-            return PlcByteArray.of(value);
+            return PlcRawByteArray.of(value);
         }
         if (value instanceof Short) {
             return PlcINT.of(value);
@@ -86,17 +85,11 @@ public class IEC61131ValueHandler implements PlcValueHandler {
         if (value instanceof Long) {
             return PlcLINT.of(value);
         }
-        if (value instanceof BigInteger) {
-            return new PlcBigInteger((BigInteger) value);
-        }
         if (value instanceof Float) {
             return PlcREAL.of(value);
         }
         if (value instanceof Double) {
             return PlcLREAL.of(value);
-        }
-        if (value instanceof BigDecimal) {
-            return new PlcBigDecimal((BigDecimal) value);
         }
         if (value instanceof Duration) {
             return new PlcTIME((Duration) value);
