@@ -565,6 +565,8 @@
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/ads.go#L145
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/connection.go#L109
 // https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L222
+// Especially interesting for the sum add/delete notification requests
+// https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_ads_intro/117463563.html&id=
 [enum uint 32 ReservedIndexGroups
     ['0x0000F000' ADSIGRP_SYMTAB]
     ['0x0000F001' ADSIGRP_SYMNAME]
@@ -588,19 +590,25 @@
     // Read the sizes of the symbol and data-type-tables
     ['0x0000F00F' ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES]
     ['0x0000F010' ADSIGRP_SYMNOTE]
+    // Access to the %I fields
     ['0x0000F020' ADSIGRP_IOIMAGE_RWIB]
     ['0x0000F021' ADSIGRP_IOIMAGE_RWIX]
     ['0x0000F025' ADSIGRP_IOIMAGE_RISIZE]
+    // Access to the %Q fields
     ['0x0000F030' ADSIGRP_IOIMAGE_RWOB]
     ['0x0000F031' ADSIGRP_IOIMAGE_RWOX]
     ['0x0000F035' ADSIGRP_IOIMAGE_RWOSIZE]
     ['0x0000F040' ADSIGRP_IOIMAGE_CLEARI]
     ['0x0000F050' ADSIGRP_IOIMAGE_CLEARO]
     ['0x0000F060' ADSIGRP_IOIMAGE_RWIOB]
+    // Sum Requests
     ['0x0000F080' ADSIGRP_MULTIPLE_READ]
     ['0x0000F081' ADSIGRP_MULTIPLE_WRITE]
     ['0x0000F082' ADSIGRP_MULTIPLE_READ_WRITE]
     ['0x0000F083' ADSIGRP_MULTIPLE_RELEASE_HANDLE]
+    ['0x0000F084' ADSIGRP_SUMUP_READEX2]
+    ['0x0000F085' ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS]
+    ['0x0000F086' ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS]
     ['0x0000F100' ADSIGRP_DEVICE_DATA]
     ['0x00000000' ADSIOFFS_DEVDATA_ADSSTATE]
     ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE]
