@@ -33,7 +33,7 @@
         ]
         ['CONNECT_RESPONSE' Plc4xConnectResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   PlcResponseCode         responseCode                  ]
+            [simple   Plc4xResponseCode       responseCode                  ]
         ]
         ['READ_REQUEST' Plc4xReadRequest
             [simple   uint 16                 connectionId                  ]
@@ -42,7 +42,7 @@
         ]
         ['READ_RESPONSE' Plc4xReadResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   PlcResponseCode         responseCode                  ]
+            [simple   Plc4xResponseCode       responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array    Plc4xFieldValueResponse fields       count 'numFields']
         ]
@@ -53,7 +53,7 @@
         ]
         ['WRITE_RESPONSE' Plc4xWriteResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   PlcResponseCode         responseCode                  ]
+            [simple   Plc4xResponseCode       responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array    Plc4xFieldResponse      fields       count 'numFields']
         ]
@@ -76,7 +76,7 @@
         ]
         ['UNSUBSCRIPTION_RESPONSE' Plc4xUnsubscriptionResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   PlcResponseCode         responseCode                  ]
+            [simple   Plc4xResponseCode       responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array                            fields       count 'numFields']
         ]*/
@@ -95,24 +95,24 @@
 ]
 
 [type Plc4xFieldValueRequest
-    [simple   Plc4xField              field                                     ]
-    [simple   PlcValueType            valueType                                 ]
-    [optional Plc4xValue('valueType') value     'valueType != PlcValueType.NULL']
+    [simple   Plc4xField              field                                       ]
+    [simple   Plc4xValueType          valueType                                   ]
+    [optional Plc4xValue('valueType') value     'valueType != Plc4xValueType.NULL']
 ]
 
 [type Plc4xFieldResponse
     [simple Plc4xField              field       ]
-    [simple PlcResponseCode         responseCode]
+    [simple Plc4xResponseCode       responseCode]
 ]
 
 [type Plc4xFieldValueResponse
-    [simple   Plc4xField              field                                        ]
-    [simple   PlcResponseCode         responseCode                                 ]
-    [simple   PlcValueType            valueType                                    ]
-    [optional Plc4xValue('valueType') value        'valueType != PlcValueType.NULL']
+    [simple   Plc4xField              field                                          ]
+    [simple   Plc4xResponseCode       responseCode                                   ]
+    [simple   Plc4xValueType          valueType                                      ]
+    [optional Plc4xValue('valueType') value        'valueType != Plc4xValueType.NULL']
 ]
 
-[dataIo Plc4xValue(PlcValueType valueType)
+[dataIo Plc4xValue(Plc4xValueType valueType)
     [typeSwitch valueType
         // Bit Strings
         ['BOOL'          BOOL
@@ -211,7 +211,7 @@
     ['0x0C' UNSUBSCRIPTION_RESPONSE]
 ]
 
-[enum uint 8 PlcResponseCode
+[enum uint 8 Plc4xResponseCode
     ['0x01' OK              ]
     ['0x02' NOT_FOUND       ]
     ['0x03' ACCESS_DENIED   ]
@@ -225,7 +225,7 @@
     ['0x0C' RESPONSE_PENDING]
 ]
 
-[enum uint 8 PlcValueType
+[enum uint 8 Plc4xValueType
     ['0x00' NULL          ]
 
     // Bit Strings
@@ -274,7 +274,7 @@
     ['0x71' RAW_BYTE_ARRAY]
 ]
 
-[enum uint 8 PlcSubscriptionType
+[enum uint 8 Plc4xSubscriptionType
    ['0x01' CYCLIC         ]
    ['0x02' CHANGE_OF_STATE]
    ['0x03' EVENT          ]
