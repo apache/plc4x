@@ -311,6 +311,7 @@
     <xsl:template match="knx:Manufacturer">
         <xsl:variable name="manufacturerId">
             <xsl:choose>
+                <xsl:when test="@Name = 'Phoenix Contact' and @KnxManufacturerId = '655'">PHOENIX_CONTACT_2</xsl:when>
                 <xsl:when test="@Name = '3ATEL'">THREEATEL</xsl:when>
                 <xsl:when test="@Name = '1Home'">ONEHOME</xsl:when>
                 <xsl:when test="@Name = 'Simon'">SIMON_<xsl:value-of select="@KnxManufacturerId"/></xsl:when>
