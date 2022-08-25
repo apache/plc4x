@@ -54,7 +54,7 @@ func (m PlcDATE_AND_TIME) GetString() string {
 	return fmt.Sprintf("%v", m.GetDateTime())
 }
 
-func (m PlcDATE_AND_TIME) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcDATE_AND_TIME) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.DATE_AND_TIME
 }
 
@@ -63,5 +63,5 @@ func (m PlcDATE_AND_TIME) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcDATE_AND_TIME) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

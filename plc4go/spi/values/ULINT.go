@@ -154,7 +154,7 @@ func (m PlcULINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
 }
 
-func (m PlcULINT) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcULINT) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.ULINT
 }
 
@@ -163,5 +163,5 @@ func (m PlcULINT) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcULINT) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 64, m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 64, m.value)
 }

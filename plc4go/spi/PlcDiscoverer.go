@@ -27,5 +27,5 @@ import (
 
 type PlcDiscoverer interface {
 	Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
-	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
+	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
 }

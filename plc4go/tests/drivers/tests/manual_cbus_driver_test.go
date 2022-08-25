@@ -175,7 +175,7 @@ func TestManualDiscovery(t *testing.T) {
 	driver := cbus.NewDriver()
 	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
-	err := driver.Discover(func(event model.PlcDiscoveryEvent) {
+	err := driver.Discover(func(event model.PlcDiscoveryItem) {
 		println(event.(fmt.Stringer).String())
 	})
 	require.NoError(t, err)

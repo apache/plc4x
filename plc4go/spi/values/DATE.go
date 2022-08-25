@@ -68,7 +68,7 @@ func (m PlcDATE) GetString() string {
 	return m.GetDate().Format("2006-01-02")
 }
 
-func (m PlcDATE) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcDATE) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.DATE
 }
 
@@ -77,5 +77,5 @@ func (m PlcDATE) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcDATE) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

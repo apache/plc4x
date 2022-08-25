@@ -36,10 +36,10 @@ func (m PlcNULL) GetRaw() []byte {
 	return []byte{}
 }
 
-func (m PlcNULL) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcNULL) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.NULL
 }
 
 func (m PlcNULL) String() string {
-	return fmt.Sprintf("%s", m.GetPLCValueType())
+	return fmt.Sprintf("%s", m.GetPlcValueType())
 }

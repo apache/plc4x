@@ -44,7 +44,7 @@ type PlcDriverManager interface {
 	// Discover Execute all available discovery methods on all available drivers using all transports
 	Discover(callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
 	// DiscoverWithContext Execute all available discovery methods on all available drivers using all transports
-	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryEvent), discoveryOptions ...WithDiscoveryOption) error
+	DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error
 }
 
 func NewPlcDriverManager() PlcDriverManager {
@@ -289,7 +289,7 @@ func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryItem), 
 	return m.DiscoverWithContext(context.TODO(), callback, discoveryOptions...)
 }
 
-func (m *plcDriverManger) DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryEvent), discoveryOptions ...WithDiscoveryOption) error {
+func (m *plcDriverManger) DiscoverWithContext(ctx context.Context, callback func(event model.PlcDiscoveryItem), discoveryOptions ...WithDiscoveryOption) error {
 	// Check if we've got at least one option to restrict to certain protocols only.
 	// If there is at least one, we only check that protocol, if there are none, all
 	// available protocols are checked.

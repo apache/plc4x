@@ -83,10 +83,10 @@ func (m RawPlcValue) GetString() string {
 	return hex.EncodeToString(m.GetRaw())
 }
 
-func (m RawPlcValue) GetPLCValueType() apiValues.PLCValueType {
+func (m RawPlcValue) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.RAW_PLC_VALUE
 }
 
 func (m RawPlcValue) String() string {
-	return fmt.Sprintf("%s", m.GetPLCValueType())
+	return fmt.Sprintf("%s", m.GetPlcValueType())
 }

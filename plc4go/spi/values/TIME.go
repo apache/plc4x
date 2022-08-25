@@ -59,7 +59,7 @@ func (m PlcTIME) GetString() string {
 	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
 }
 
-func (m PlcTIME) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcTIME) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.TIME
 }
 
@@ -68,5 +68,5 @@ func (m PlcTIME) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcTIME) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

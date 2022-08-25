@@ -99,7 +99,7 @@ func (m PlcDWORD) GetString() string {
 	return strVal
 }
 
-func (m PlcDWORD) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcDWORD) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.DWORD
 }
 
@@ -108,5 +108,5 @@ func (m PlcDWORD) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcDWORD) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 32, m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 32, m.value)
 }

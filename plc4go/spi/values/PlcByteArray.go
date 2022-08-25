@@ -59,7 +59,7 @@ func (m PlcByteArray) GetList() []apiValues.PlcValue {
 	return plcValues
 }
 
-func (m PlcByteArray) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcByteArray) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.BYTE_ARRAY
 }
 

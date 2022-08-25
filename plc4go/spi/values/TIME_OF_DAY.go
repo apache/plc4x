@@ -71,7 +71,7 @@ func (m PlcTIME_OF_DAY) GetString() string {
 	return m.value.Format("15:04:05.000")
 }
 
-func (m PlcTIME_OF_DAY) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcTIME_OF_DAY) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.TIME_OF_DAY
 }
 
@@ -80,5 +80,5 @@ func (m PlcTIME_OF_DAY) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcTIME_OF_DAY) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

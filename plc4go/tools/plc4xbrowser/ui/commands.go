@@ -52,7 +52,7 @@ var rootCommand = Command{
 					if !driver.SupportsDiscovery() {
 						return errors.Errorf("%s doesn't support discovery", driverId)
 					}
-					return driver.Discover(func(event model.PlcDiscoveryEvent) {
+					return driver.Discover(func(event model.PlcDiscoveryItem) {
 						_, _ = fmt.Fprintf(messageOutput, "%v\n", event)
 					})
 				} else {

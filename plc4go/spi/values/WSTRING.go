@@ -51,7 +51,7 @@ func (m PlcWSTRING) GetString() string {
 	return string(m.value)
 }
 
-func (m PlcWSTRING) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcWSTRING) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.WSTRING
 }
 
@@ -60,5 +60,5 @@ func (m PlcWSTRING) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcWSTRING) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), uint32(len(m.value)*8), m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len(m.value)*8), m.value)
 }

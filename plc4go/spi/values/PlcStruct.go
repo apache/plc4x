@@ -82,7 +82,7 @@ func (m PlcStruct) GetString() string {
 	return sb.String()
 }
 
-func (m PlcStruct) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcStruct) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.STRUCT
 }
 
@@ -113,5 +113,5 @@ func (m PlcStruct) Serialize(writeBuffer utils.WriteBuffer) error {
 func (m PlcStruct) String() string {
 	allBits := 0
 	// TODO: do we want to aggregate the bit length?
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), allBits, m.values)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), allBits, m.values)
 }

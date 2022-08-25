@@ -94,7 +94,7 @@ func (d *defaultDriver) Discover(_ func(event apiModel.PlcDiscoveryItem), _ ...o
 	panic("not available")
 }
 
-func (d *defaultDriver) DiscoverWithContext(_ context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *defaultDriver) DiscoverWithContext(_ context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	panic("not available")
 }
 

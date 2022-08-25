@@ -132,7 +132,7 @@ type PlcValue interface {
 	//
 	///
 
-	GetPLCValueType() PLCValueType
+	GetPlcValueType() PlcValueType
 }
 
 // RawPlcValue This type is used in cases where the driver doesn't have access to type information and therefore can't decode
@@ -149,10 +149,10 @@ type RawPlcValue interface {
 	RawReset()
 }
 
-type PLCValueType uint8
+type PlcValueType uint8
 
 const (
-	BINT PLCValueType = iota
+	BINT PlcValueType = iota
 	BIT_STRING
 	BOOL
 	BREAL
@@ -186,7 +186,7 @@ const (
 	WSTRING
 )
 
-func (p PLCValueType) String() string {
+func (p PlcValueType) String() string {
 	switch {
 	case p == BINT:
 		return "BINT"

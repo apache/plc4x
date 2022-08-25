@@ -161,7 +161,7 @@ func (m PlcLREAL) GetString() string {
 	return fmt.Sprintf("%g", m.GetFloat64())
 }
 
-func (m PlcLREAL) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcLREAL) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.LREAL
 }
 
@@ -170,5 +170,5 @@ func (m PlcLREAL) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcLREAL) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), 64, m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 64, m.value)
 }

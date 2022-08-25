@@ -237,8 +237,8 @@ func (m PlcValueAdapter) GetDateTime() time.Time {
 	panic("GetDateTime not implemented")
 }
 
-func (m PlcValueAdapter) GetPLCValueType() apiValues.PLCValueType {
-	panic("GetPLCValueType not implemented")
+func (m PlcValueAdapter) GetPlcValueType() apiValues.PlcValueType {
+	panic("GetPlcValueType not implemented")
 }
 
 type PlcSimpleValueAdapter struct {

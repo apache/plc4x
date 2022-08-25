@@ -80,6 +80,6 @@ func (m PlcBitString) GetList() []apiValues.PlcValue {
 	return m.Values
 }
 
-func (m PlcBitString) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcBitString) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.BIT_STRING
 }

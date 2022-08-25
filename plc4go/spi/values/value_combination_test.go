@@ -34,7 +34,7 @@ import (
 
 func TestCombinations(t *testing.T) {
 	tests := []struct {
-		name      apiValues.PLCValueType
+		name      apiValues.PlcValueType
 		arguments []apiValues.PlcValue
 	}{
 		{
@@ -307,10 +307,10 @@ func TestCombinations(t *testing.T) {
 			for _, argument := range tt.arguments {
 				argumentCopy := argument
 				t.Run(fmt.Sprintf("%s", argument), func(t *testing.T) {
-					plcValueType := reflect.TypeOf((*apiValues.PlcValue)(nil)).Elem()
+					PlcValueType := reflect.TypeOf((*apiValues.PlcValue)(nil)).Elem()
 					methods := make(map[string]reflect.Method)
-					for i := 0; i < plcValueType.NumMethod(); i++ {
-						method := plcValueType.Method(i)
+					for i := 0; i < PlcValueType.NumMethod(); i++ {
+						method := PlcValueType.Method(i)
 						methods[method.Name] = method
 					}
 

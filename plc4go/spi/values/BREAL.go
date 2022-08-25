@@ -165,7 +165,7 @@ func (m PlcBREAL) GetString() string {
 	return fmt.Sprintf("%g", m.GetFloat64())
 }
 
-func (m PlcBREAL) GetPLCValueType() apiValues.PLCValueType {
+func (m PlcBREAL) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.BREAL
 }
 
@@ -191,5 +191,5 @@ func (m PlcBREAL) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m PlcBREAL) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPLCValueType(), m.value.MinPrec(), m.value)
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), m.value.MinPrec(), m.value)
 }
