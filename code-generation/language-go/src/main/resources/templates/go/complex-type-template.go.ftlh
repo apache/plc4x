@@ -753,8 +753,11 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	<#if helper.requiresStartPosAndCurPos()>
+	<#if helper.requiresStartPos() || helper.requiresCurPos()>
 	var startPos = positionAware.GetPos()
+	_ = startPos
+	</#if>
+	<#if helper.requiresCurPos()>
 	var curPos uint16
 	</#if>
 	<#assign reservedFieldIndex=0>
@@ -996,7 +999,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	if ${constField.name} != ${type.name}_${constField.name?upper_case} {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ${type.name}_${constField.name?upper_case}) + " but got " + fmt.Sprintf("%d", ${constField.name}))<@emitImport import="github.com/pkg/errors" /><@emitImport import="fmt" />
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%<#if constField.type.isBooleanTypeReference()>t<#else>d</#if>", ${type.name}_${constField.name?upper_case}) + " but got " + fmt.Sprintf("%<#if constField.type.isBooleanTypeReference()>t<#else>d</#if>", ${constField.name}))<@emitImport import="github.com/pkg/errors" /><@emitImport import="fmt" />
 	}
 				<#break>
 			<#case "discriminator">
