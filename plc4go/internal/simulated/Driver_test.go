@@ -20,6 +20,8 @@
 package simulated
 
 import (
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"net/url"
@@ -56,7 +58,6 @@ func TestDriver_CheckQuery(t *testing.T) {
 
 func TestDriver_Discover(t *testing.T) {
 	type fields struct {
-		fieldHandler FieldHandler
 		valueHandler ValueHandler
 	}
 	type args struct {
@@ -72,7 +73,6 @@ func TestDriver_Discover(t *testing.T) {
 		{
 			name: "discovery fails",
 			fields: fields{
-				fieldHandler: NewFieldHandler(),
 				valueHandler: NewValueHandler(),
 			},
 			args: args{
@@ -86,7 +86,6 @@ func TestDriver_Discover(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 			}
 			if err := d.Discover(tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {

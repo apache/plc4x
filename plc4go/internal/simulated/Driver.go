@@ -21,8 +21,11 @@ package simulated
 
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/pkg/errors"
 	"net/url"
 )
 

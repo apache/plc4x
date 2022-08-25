@@ -327,7 +327,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_initCommandErr, "Error parsing 'initCommand' field of AmsPacket")
 	}
 	if initCommand != AmsPacket_INITCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_INITCOMMAND) + " but got " + fmt.Sprintf("%d", initCommand))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_INITCOMMAND) + " but got " + fmt.Sprintf("%t", initCommand))
 	}
 
 	// Const Field (updCommand)
@@ -336,7 +336,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_updCommandErr, "Error parsing 'updCommand' field of AmsPacket")
 	}
 	if updCommand != AmsPacket_UPDCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_UPDCOMMAND) + " but got " + fmt.Sprintf("%d", updCommand))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_UPDCOMMAND) + " but got " + fmt.Sprintf("%t", updCommand))
 	}
 
 	// Const Field (timestampAdded)
@@ -345,7 +345,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_timestampAddedErr, "Error parsing 'timestampAdded' field of AmsPacket")
 	}
 	if timestampAdded != AmsPacket_TIMESTAMPADDED {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_TIMESTAMPADDED) + " but got " + fmt.Sprintf("%d", timestampAdded))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_TIMESTAMPADDED) + " but got " + fmt.Sprintf("%t", timestampAdded))
 	}
 
 	// Const Field (highPriorityCommand)
@@ -354,7 +354,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_highPriorityCommandErr, "Error parsing 'highPriorityCommand' field of AmsPacket")
 	}
 	if highPriorityCommand != AmsPacket_HIGHPRIORITYCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_HIGHPRIORITYCOMMAND) + " but got " + fmt.Sprintf("%d", highPriorityCommand))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_HIGHPRIORITYCOMMAND) + " but got " + fmt.Sprintf("%t", highPriorityCommand))
 	}
 
 	// Const Field (systemCommand)
@@ -363,7 +363,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_systemCommandErr, "Error parsing 'systemCommand' field of AmsPacket")
 	}
 	if systemCommand != AmsPacket_SYSTEMCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_SYSTEMCOMMAND) + " but got " + fmt.Sprintf("%d", systemCommand))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_SYSTEMCOMMAND) + " but got " + fmt.Sprintf("%t", systemCommand))
 	}
 
 	// Const Field (adsCommand)
@@ -372,7 +372,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_adsCommandErr, "Error parsing 'adsCommand' field of AmsPacket")
 	}
 	if adsCommand != AmsPacket_ADSCOMMAND {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_ADSCOMMAND) + " but got " + fmt.Sprintf("%d", adsCommand))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_ADSCOMMAND) + " but got " + fmt.Sprintf("%t", adsCommand))
 	}
 
 	// Const Field (noReturn)
@@ -381,7 +381,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_noReturnErr, "Error parsing 'noReturn' field of AmsPacket")
 	}
 	if noReturn != AmsPacket_NORETURN {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_NORETURN) + " but got " + fmt.Sprintf("%d", noReturn))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_NORETURN) + " but got " + fmt.Sprintf("%t", noReturn))
 	}
 
 	// Discriminator Field (response) (Used as input to a switch field)
@@ -396,7 +396,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 		return nil, errors.Wrap(_broadcastErr, "Error parsing 'broadcast' field of AmsPacket")
 	}
 	if broadcast != AmsPacket_BROADCAST {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AmsPacket_BROADCAST) + " but got " + fmt.Sprintf("%d", broadcast))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%t", AmsPacket_BROADCAST) + " but got " + fmt.Sprintf("%t", broadcast))
 	}
 
 	var reservedField0 *int8

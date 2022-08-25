@@ -118,10 +118,10 @@ func (m *Driver) SupportsDiscovery() bool {
 	return true
 }
 
-func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	return m.DiscoverWithContext(context.TODO(), callback, discoveryOptions...)
 }
 
-func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	return NewDiscoverer().Discover(ctx, callback, discoveryOptions...)
 }

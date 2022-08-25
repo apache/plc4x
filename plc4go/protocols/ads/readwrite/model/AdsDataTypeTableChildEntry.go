@@ -259,19 +259,19 @@ func (m *_AdsDataTypeTableChildEntry) GetLengthInBitsConditional(lastItem bool) 
 	lengthInBits += 16
 
 	// Simple field (propertyName)
-	lengthInBits += uint16(int32(GetSTR_LEN()(m.GetPropertyName())) * int32(int32(8)))
+	lengthInBits += uint16(int32(uint16(len(m.GetPropertyName()))) * int32(int32(8)))
 
 	// Const Field (propertyNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (dataTypeName)
-	lengthInBits += uint16(int32(GetSTR_LEN()(m.GetDataTypeName())) * int32(int32(8)))
+	lengthInBits += uint16(int32(uint16(len(m.GetDataTypeName()))) * int32(int32(8)))
 
 	// Const Field (dataTypeNameTerminator)
 	lengthInBits += 8
 
 	// Simple field (comment)
-	lengthInBits += uint16(int32(GetSTR_LEN()(m.GetComment())) * int32(int32(8)))
+	lengthInBits += uint16(int32(uint16(len(m.GetComment()))) * int32(int32(8)))
 
 	// Const Field (commentTerminator)
 	lengthInBits += 8
@@ -313,6 +313,7 @@ func AdsDataTypeTableChildEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTa
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	var startPos = positionAware.GetPos()
+	_ = startPos
 	var curPos uint16
 
 	// Simple Field (entryLength)
@@ -595,21 +596,21 @@ func (m *_AdsDataTypeTableChildEntry) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	// Implicit Field (propertyNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	propertyNameLength := uint16(GetSTR_LEN()(m.GetPropertyName()))
+	propertyNameLength := uint16(uint16(len(m.GetPropertyName())))
 	_propertyNameLengthErr := writeBuffer.WriteUint16("propertyNameLength", 16, (propertyNameLength))
 	if _propertyNameLengthErr != nil {
 		return errors.Wrap(_propertyNameLengthErr, "Error serializing 'propertyNameLength' field")
 	}
 
 	// Implicit Field (dataTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataTypeNameLength := uint16(GetSTR_LEN()(m.GetDataTypeName()))
+	dataTypeNameLength := uint16(uint16(len(m.GetDataTypeName())))
 	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, (dataTypeNameLength))
 	if _dataTypeNameLengthErr != nil {
 		return errors.Wrap(_dataTypeNameLengthErr, "Error serializing 'dataTypeNameLength' field")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	commentLength := uint16(GetSTR_LEN()(m.GetComment()))
+	commentLength := uint16(uint16(len(m.GetComment())))
 	_commentLengthErr := writeBuffer.WriteUint16("commentLength", 16, (commentLength))
 	if _commentLengthErr != nil {
 		return errors.Wrap(_commentLengthErr, "Error serializing 'commentLength' field")
@@ -631,7 +632,7 @@ func (m *_AdsDataTypeTableChildEntry) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (propertyName)
 	propertyName := string(m.GetPropertyName())
-	_propertyNameErr := writeBuffer.WriteString("propertyName", uint32((GetSTR_LEN()(m.GetPropertyName()))*(8)), "UTF-8", (propertyName))
+	_propertyNameErr := writeBuffer.WriteString("propertyName", uint32((uint16(len(m.GetPropertyName())))*(8)), "UTF-8", (propertyName))
 	if _propertyNameErr != nil {
 		return errors.Wrap(_propertyNameErr, "Error serializing 'propertyName' field")
 	}
@@ -644,7 +645,7 @@ func (m *_AdsDataTypeTableChildEntry) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (dataTypeName)
 	dataTypeName := string(m.GetDataTypeName())
-	_dataTypeNameErr := writeBuffer.WriteString("dataTypeName", uint32((GetSTR_LEN()(m.GetDataTypeName()))*(8)), "UTF-8", (dataTypeName))
+	_dataTypeNameErr := writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), "UTF-8", (dataTypeName))
 	if _dataTypeNameErr != nil {
 		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
 	}
@@ -657,7 +658,7 @@ func (m *_AdsDataTypeTableChildEntry) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (comment)
 	comment := string(m.GetComment())
-	_commentErr := writeBuffer.WriteString("comment", uint32((GetSTR_LEN()(m.GetComment()))*(8)), "UTF-8", (comment))
+	_commentErr := writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), "UTF-8", (comment))
 	if _commentErr != nil {
 		return errors.Wrap(_commentErr, "Error serializing 'comment' field")
 	}

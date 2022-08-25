@@ -117,17 +117,6 @@ func (m *Reader) singleRead(ctx context.Context, readRequest model.PlcReadReques
 		log.Debug().Msgf("Invalid field item type %T", field)
 		return
 	}
-	userdata := readWriteModel.NewAmsPacket(
-		m.targetAmsNetId,
-		m.targetAmsPort,
-		m.sourceAmsNetId,
-		m.sourceAmsPort,
-		readWriteModel.CommandId_ADS_READ,
-		readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-		0,
-		0,
-		nil,
-	)
 
 	readLength := uint32(adsField.Datatype.NumBytes())
 	switch {
@@ -148,7 +137,16 @@ func (m *Reader) singleRead(ctx context.Context, readRequest model.PlcReadReques
 	default:
 		readLength = uint32(adsField.Datatype.NumBytes())
 	}
-	userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, readLength)
+	userdata := readWriteModel.NewAdsReadRequest(
+		adsField.IndexGroup,
+		adsField.IndexOffset,
+		readLength,
+		m.targetAmsNetId,
+		m.targetAmsPort,
+		m.sourceAmsNetId,
+		m.sourceAmsPort,
+		0,
+		m.getInvokeId())
 
 	m.sendOverTheWire(ctx, userdata, readRequest, result)
 }
@@ -190,18 +188,6 @@ func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest
 		expectedResponseDataSize += 4 + (size * field.GetNumberOfElements())
 	}
 
-	userdata := readWriteModel.NewAmsPacket(
-		m.targetAmsNetId,
-		m.targetAmsPort,
-		m.sourceAmsNetId,
-		m.sourceAmsPort,
-		readWriteModel.CommandId_ADS_READ_WRITE,
-		readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-		0,
-		0,
-		nil,
-	)
-
 	items := make([]readWriteModel.AdsMultiRequestItem, len(readRequest.GetFieldNames()))
 	for i, fieldName := range readRequest.GetFieldNames() {
 		field := readRequest.GetField(fieldName)
@@ -240,7 +226,18 @@ func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest
 		// With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
 		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements)
 	}
-	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil)
+	userdata := readWriteModel.NewAdsReadWriteRequest(
+		uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ),
+		uint32(len(readRequest.GetFieldNames())),
+		expectedResponseDataSize,
+		items,
+		nil,
+		m.targetAmsNetId,
+		m.targetAmsPort,
+		m.sourceAmsNetId,
+		m.sourceAmsPort,
+		0,
+		m.getInvokeId())
 
 	m.sendOverTheWire(ctx, userdata, readRequest, result)
 }
@@ -253,17 +250,6 @@ func (m *Reader) sendOverTheWire(ctx context.Context, userdata readWriteModel.Am
 		atomic.StoreUint32(&m.transactionIdentifier, 1)
 	}
 	log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
-	userdata = readWriteModel.NewAmsPacket(
-		userdata.GetTargetAmsNetId(),
-		userdata.GetTargetAmsPort(),
-		userdata.GetSourceAmsNetId(),
-		userdata.GetSourceAmsPort(),
-		userdata.GetCommandId(),
-		userdata.GetState(),
-		userdata.GetErrorCode(),
-		transactionIdentifier,
-		userdata.GetData(),
-	)
 
 	// Assemble the finished tcp paket
 	log.Trace().Msg("Assemble tcp paket")
@@ -320,24 +306,18 @@ func (m *Reader) resolveField(ctx context.Context, symbolicField SymbolicPlcFiel
 	if directPlcField, ok := m.fieldMapping[symbolicField]; ok {
 		return directPlcField, nil
 	}
-	userdata := readWriteModel.NewAmsPacket(
-		m.targetAmsNetId,
-		m.targetAmsPort,
-		m.sourceAmsNetId,
-		m.sourceAmsPort,
-		readWriteModel.CommandId_ADS_READ_WRITE,
-		readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-		0,
-		0,
-		nil,
-	)
-	userdata.Data = readWriteModel.NewAdsReadWriteRequest(
+	userdata := readWriteModel.NewAdsReadWriteRequest(
 		uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME),
 		0,
 		4,
 		nil,
 		[]byte(symbolicField.SymbolicAddress+"\000"),
-	)
+		m.targetAmsNetId,
+		m.targetAmsPort,
+		m.sourceAmsNetId,
+		m.sourceAmsPort,
+		0,
+		m.getInvokeId())
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 		dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
@@ -372,7 +352,7 @@ func (m *Reader) resolveField(ctx context.Context, symbolicField SymbolicPlcFiel
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
 	var rb utils.ReadBuffer
 	responseCodes := map[string]model.PlcResponseCode{}
-	switch data := amsTcpPaket.GetUserdata().GetData().(type) {
+	switch data := amsTcpPaket.GetUserdata().(type) {
 	case readWriteModel.AdsReadResponse:
 		rb = utils.NewLittleEndianReadBufferByteBased(data.GetData())
 		for _, fieldName := range readRequest.GetFieldNames() {
@@ -418,7 +398,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().DataFormatName(), field.GetStringLength())
+		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().PlcValueType(), field.GetStringLength())
 		if err != nil {
 			log.Error().Err(err).Msg("Error parsing data item")
 			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
@@ -431,4 +411,14 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	// Return the response
 	log.Trace().Msg("Returning the response")
 	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+}
+
+func (m *Reader) getInvokeId() uint32 {
+	// Calculate a new transaction identifier
+	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
+	if transactionIdentifier > math.MaxUint8 {
+		transactionIdentifier = 1
+		atomic.StoreUint32(&m.transactionIdentifier, 1)
+	}
+	return transactionIdentifier
 }

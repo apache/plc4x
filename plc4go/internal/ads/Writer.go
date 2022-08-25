@@ -30,7 +30,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"math"
 	"sync/atomic"
-	"time"
 )
 
 type Writer struct {
@@ -107,7 +106,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewLittleEndianWriteBufferByteBased()
-		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.DataFormatName(), adsField.StringLength); err != nil {
+		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.PlcValueType(), adsField.StringLength); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
@@ -115,7 +114,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 			}
 			return
 		}
-		data := io.GetBytes()
+		/*data := io.GetBytes()
 
 		userdata := readWriteModel.NewAmsPacket(
 			m.targetAmsNetId,
@@ -127,10 +126,10 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 			0,
 			0,
 			nil,
-		)
+		)*/
 		switch adsField.FieldType {
 		case DirectAdsStringField:
-			userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
+			//userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
 			panic("implement me")
 		case DirectAdsField:
 			panic("implement me")
@@ -146,13 +145,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 		}
 
 		// Calculate a new unit identifier
-		// TODO: this is not threadsafe as the whole operation is not atomic
-		transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
-		if transactionIdentifier > math.MaxUint8 {
-			transactionIdentifier = 0
-			atomic.StoreUint32(&m.transactionIdentifier, 0)
-		}
-		userdata.InvokeId = transactionIdentifier
+		/*userdata.InvokeId = m.getInvokeId()
 
 		// Assemble the finished amsTcpPaket
 		log.Trace().Msg("Assemble amsTcpPaket")
@@ -186,7 +179,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 				Err:     errors.New("got timeout while waiting for response"),
 			}
 			return nil
-		}, time.Second*1)
+		}, time.Second*1)*/
 	}()
 	return result
 }
@@ -197,15 +190,25 @@ func (m *Writer) ToPlc4xWriteResponse(requestTcpPaket readWriteModel.AmsTCPPacke
 
 	// we default to an error until its proven wrong
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-	switch responseTcpPaket.GetUserdata().GetData().(type) {
+	switch responseTcpPaket.GetUserdata().(type) {
 	case readWriteModel.AdsWriteResponse:
-		resp := readWriteModel.CastAdsWriteResponse(responseTcpPaket.GetUserdata().GetData())
+		resp := readWriteModel.CastAdsWriteResponse(responseTcpPaket.GetUserdata())
 		responseCodes[fieldName] = model.PlcResponseCode(resp.GetResult())
 	default:
-		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata().GetData())
+		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata())
 	}
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
 	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+}
+
+func (m *Writer) getInvokeId() uint32 {
+	// Calculate a new transaction identifier
+	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
+	if transactionIdentifier > math.MaxUint8 {
+		transactionIdentifier = 1
+		atomic.StoreUint32(&m.transactionIdentifier, 1)
+	}
+	return transactionIdentifier
 }

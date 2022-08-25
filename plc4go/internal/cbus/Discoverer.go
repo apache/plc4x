@@ -47,7 +47,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	tcpTransport := tcp.NewTransport()
 
 	allInterfaces, err := net.Interfaces()
