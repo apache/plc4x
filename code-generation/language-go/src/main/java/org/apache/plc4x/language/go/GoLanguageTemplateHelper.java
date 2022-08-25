@@ -782,6 +782,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return toArraySizeInBytesVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, suppressPointerAccess, tracer);
         } else if ("CEIL".equals(variableLiteralName)) {
             return toCeilVariableExpression(field, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
+        } else if ("STR_LEN".equals(variableLiteralName)) {
+            return toStrLenVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
         }
         // All uppercase names are not fields, but utility methods.
         // TODO: It seems we also run into this, in case of using enum constants in type-switches.
@@ -949,6 +951,20 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .orElseThrow(() -> new RuntimeException("Count needs a literal"))
             .asVariableLiteral()
             .orElseThrow(() -> new RuntimeException("Count needs a variable literal"));
+        return tracer + (typeReference instanceof SimpleTypeReference ? getCastExpressionForTypeReference(typeReference) : "") + "(len(" +
+            toVariableExpression(field, typeReference, countLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess) +
+            "))";
+    }
+
+    private String toStrLenVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
+        tracer = tracer.dive("str-len");
+        VariableLiteral countLiteral = variableLiteral.getArgs()
+            .orElseThrow(() -> new RuntimeException("Str-len needs at least one arg"))
+            .get(0)
+            .asLiteral()
+            .orElseThrow(() -> new RuntimeException("Str-len needs a literal"))
+            .asVariableLiteral()
+            .orElseThrow(() -> new RuntimeException("Str-len needs a variable literal"));
         return tracer + (typeReference instanceof SimpleTypeReference ? getCastExpressionForTypeReference(typeReference) : "") + "(len(" +
             toVariableExpression(field, typeReference, countLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess) +
             "))";
@@ -1377,11 +1393,23 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return result;
     }
 
-    public boolean requiresStartPosAndCurPos() {
+    public boolean requiresCurPos() {
         if (thisType instanceof ComplexTypeDefinition) {
             ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
             for (Field curField : complexTypeDefinition.getFields()) {
                 if (requiresVariable(curField, "curPos")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean requiresStartPos() {
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
+            for (Field curField : complexTypeDefinition.getFields()) {
+                if (requiresVariable(curField, "startPos")) {
                     return true;
                 }
             }
