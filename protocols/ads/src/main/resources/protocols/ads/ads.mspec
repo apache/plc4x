@@ -127,7 +127,7 @@
     [simple        uint        16  sourceAmsPort                             ]
     // 2 bytes.
     [discriminator CommandId       commandId                                 ]
-    // 2 bytes.
+    // 2 bytes. (I set these as constants in order to minimize the input needed for creating requests)
     [const         bit             initCommand            false              ]
     [const         bit             updCommand             false              ]
     [const         bit             timestampAdded         false              ]
