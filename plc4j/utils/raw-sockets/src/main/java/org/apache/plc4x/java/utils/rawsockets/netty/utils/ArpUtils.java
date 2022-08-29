@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.utils.rawsockets.netty.utils;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.ArpPacket;
@@ -28,6 +29,8 @@ import org.pcap4j.packet.namednumber.ArpOperation;
 import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.util.ByteArrays;
 import org.pcap4j.util.MacAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -38,7 +41,32 @@ import java.util.stream.Collectors;
 
 public class ArpUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(ArpUtils.class);
+
     public static Set<InetAddress> scanNetworkDevice(PcapNetworkInterface nif) {
+        // Check if libpcap is available.
+        try {
+            String libVersion = Pcaps.libVersion();
+            if(libVersion.startsWith("libpcap version ")) {
+                libVersion = libVersion.substring(16);
+                // If we're on MacOS we need to check if we're at least at version 1.10.1 as the default bundled with
+                // the os has issues.
+                if(SystemUtils.IS_OS_MAC) {
+                    if (!checkVersionAtLeast(libVersion, "1.10.1")) {
+                        logger.warn("On MacOS libpcap 1.10.1 is required, this system uses libpcap " + libVersion + ". " +
+                            "When using libpcap from homebrew, make sure to have added the library path. " +
+                            "On Intel MacOS this is usually done by setting '-Djna.library.path=/usr/local/Cellar/libpcap/1.10.1/lib' " +
+                            "on M1 this is '-Djna.library.path=/opt/homebrew/Cellar/libpcap/1.10.1/lib'");
+                        return Collections.emptySet();
+                    }
+                }
+            } else {
+                return Collections.emptySet();
+            }
+        } catch (Exception e) {
+            return Collections.emptySet();
+        }
+
         Set<InetAddress> foundAddresses = new HashSet<>();
         try{
             // Calculate all ip addresses, this device can reach.
@@ -268,6 +296,22 @@ public class ArpUtils {
             return Optional.empty();
         }
         return Optional.empty();
+    }
+
+    private static boolean checkVersionAtLeast(String current, String minimum) {
+        String[] currentSegments = current.split("\\.");
+        String[] minimumSegments = minimum.split("\\.");
+        int numSegments = Math.min(currentSegments.length, minimumSegments.length);
+        for (int i = 0; i < numSegments; ++i) {
+            int currentSegment = Integer.parseInt(currentSegments[i]);
+            int minimumSegment = Integer.parseInt(minimumSegments[i]);
+            if (currentSegment < minimumSegment) {
+                return false;
+            } else if (currentSegment > minimumSegment) {
+                return true;
+            }
+        }
+        return currentSegments.length >= minimumSegments.length;
     }
 
     public static void main(String[] args) throws Exception {
