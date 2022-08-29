@@ -255,7 +255,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
 					ProtocolCode:  "bacnet-ip",
 					TransportCode: "udp",
 					TransportUrl:  *remoteUrl,
@@ -270,7 +270,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
 					ProtocolCode:  "bacnet-ip",
 					TransportCode: "udp",
 					TransportUrl:  *remoteUrl,

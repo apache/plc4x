@@ -235,7 +235,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					}
 					// TODO: manufaturer + type would be good but this means two requests then
 					deviceName := identifyReplyCommand.GetManufacturerName()
-					discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+					discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
 						ProtocolCode:  "c-bus",
 						TransportCode: "tcp",
 						TransportUrl:  remoteUrl,

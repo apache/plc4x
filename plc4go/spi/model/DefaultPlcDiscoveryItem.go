@@ -25,7 +25,7 @@ import (
 	"net/url"
 )
 
-type DefaultPlcDiscoveryEvent struct {
+type DefaultPlcDiscoveryItem struct {
 	ProtocolCode  string
 	TransportCode string
 	TransportUrl  url.URL
@@ -34,37 +34,37 @@ type DefaultPlcDiscoveryEvent struct {
 	Attributes    map[string]values.PlcValue
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetProtocolCode() string {
+func (d *DefaultPlcDiscoveryItem) GetProtocolCode() string {
 	return d.ProtocolCode
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetTransportCode() string {
+func (d *DefaultPlcDiscoveryItem) GetTransportCode() string {
 	return d.TransportCode
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetTransportUrl() url.URL {
+func (d *DefaultPlcDiscoveryItem) GetTransportUrl() url.URL {
 	return d.TransportUrl
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetOptions() map[string][]string {
+func (d *DefaultPlcDiscoveryItem) GetOptions() map[string][]string {
 	return d.Options
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetName() string {
+func (d *DefaultPlcDiscoveryItem) GetName() string {
 	return d.Name
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetAttributes() map[string]values.PlcValue {
+func (d *DefaultPlcDiscoveryItem) GetAttributes() map[string]values.PlcValue {
 	return d.Attributes
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetConnectionUrl() string {
+func (d *DefaultPlcDiscoveryItem) GetConnectionUrl() string {
 	if d.Options != nil {
 		panic("Not implemented")
 	}
 	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host
 }
 
-func (d *DefaultPlcDiscoveryEvent) String() string {
+func (d *DefaultPlcDiscoveryItem) String() string {
 	return fmt.Sprintf("PlcDiscoveryEvent{Name:%s,%s}", d.Name, d.GetConnectionUrl())
 }

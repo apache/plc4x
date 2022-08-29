@@ -169,7 +169,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 								continue
 							}
 							deviceName := string(bytes.Trim(searchResponse.GetDibDeviceInfo().GetDeviceFriendlyName(), "\x00"))
-							discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+							discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
 								ProtocolCode:  "knxnet-ip",
 								TransportCode: "udp",
 								TransportUrl:  *remoteUrl,
