@@ -388,6 +388,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					_ = transaction.EndRequest()
 				}
 			})
+			if err := transaction.AwaitCompletion(); err != nil {
+				addResponseCode(fieldName, apiModel.PlcResponseCode_INTERNAL_ERROR)
+			}
 		}
 		readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
 		result <- &spiModel.DefaultPlcReadRequestResult{
