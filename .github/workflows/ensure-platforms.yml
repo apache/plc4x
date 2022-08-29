@@ -65,7 +65,7 @@ jobs:
 
       - name: Set Platform options
         id: platform_opts
-        uses: actions/github-script@v6.1.1
+        uses: actions/github-script@v6.2.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -83,7 +83,7 @@ jobs:
 
       - name: Calculate platform suffix
         id: platform_suffix
-        uses: actions/github-script@v6.1.1
+        uses: actions/github-script@v6.2.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -97,7 +97,7 @@ jobs:
 
       - name: Set extra options
         id: extra_options
-        uses: actions/github-script@v6.1.1
+        uses: actions/github-script@v6.2.0
         env:
           FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
         with:
