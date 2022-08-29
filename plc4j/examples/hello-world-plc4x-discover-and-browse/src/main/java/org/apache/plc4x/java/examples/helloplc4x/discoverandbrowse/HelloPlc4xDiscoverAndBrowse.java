@@ -24,16 +24,13 @@ import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
-import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CompletableFuture;
+public class HelloPlc4xDiscoverAndBrowse {
 
-public class HelloPlc4x {
-
-    private static final Logger logger = LoggerFactory.getLogger(HelloPlc4x.class);
+    private static final Logger logger = LoggerFactory.getLogger(HelloPlc4xDiscoverAndBrowse.class);
 
     public static void main(String[] args) throws Exception {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)

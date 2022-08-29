@@ -32,7 +32,7 @@
   <description>Hello world application for PLC4X using the discovery and browse-API.</description>
 
   <properties>
-    <app.main.class>org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse.HelloPlc4x</app.main.class>
+    <app.main.class>org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse.HelloPlc4xDiscoverAndBrowse</app.main.class>
   </properties>
 
   <dependencies>

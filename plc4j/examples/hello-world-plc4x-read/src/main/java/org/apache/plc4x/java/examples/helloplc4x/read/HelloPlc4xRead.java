@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
-public class HelloPlc4x {
+public class HelloPlc4xRead {
 
-    private static final Logger logger = LoggerFactory.getLogger(HelloPlc4x.class);
+    private static final Logger logger = LoggerFactory.getLogger(HelloPlc4xRead.class);
 
     /**
      * Example code do demonstrate using PLC4X.
