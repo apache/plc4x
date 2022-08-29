@@ -187,7 +187,7 @@ func (f *CompletionFuture) complete() {
 }
 
 func (f *CompletionFuture) AwaitCompletion() error {
-	for !f.completed || !f.errored {
+	for !f.completed && !f.errored {
 		time.Sleep(time.Millisecond * 10)
 	}
 	return f.err
