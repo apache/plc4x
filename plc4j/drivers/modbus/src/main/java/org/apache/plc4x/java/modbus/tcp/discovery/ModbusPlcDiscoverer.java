@@ -83,7 +83,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                 logger.debug("Found {} addresses: {}", inetAddresses.size(), inetAddresses);
                 possibleAddresses.addAll(inetAddresses);
             }
-        } catch (PcapNativeException e) {
+        } catch (Throwable e) {
             logger.error("Error collecting list of possible IP addresses", e);
             future.complete(new DefaultPlcDiscoveryResponse(
                 discoveryRequest, PlcResponseCode.INTERNAL_ERROR, Collections.emptyList()));
@@ -190,7 +190,19 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                         try {
                             ModbusTcpADU response = (ModbusTcpADU) ModbusTcpADU.staticParse(readBuffer, DriverType.MODBUS_TCP, true);
                             PlcDiscoveryItem discoveryItem;
-                            if (!response.getPdu().getErrorFlag()) {
+                            boolean found = false;
+                            // If we got a response telling us the address is unknown, we still know there's a
+                            // Modbus device at the other side. In general ... as soon as we get a valid Modbus
+                            // response, we should accept that we're talking to a Modbus device
+                            if (response.getPdu().getErrorFlag()) {
+                                ModbusPDUError errorPdu = (ModbusPDUError) response.getPdu();
+                                if (errorPdu.getExceptionCode() == ModbusErrorCode.ILLEGAL_DATA_ADDRESS) {
+                                    found = true;
+                                }
+                            } else {
+                                found = true;
+                            }
+                            if (found) {
                                 discoveryItem = new DefaultPlcDiscoveryItem(
                                     "modbus-tcp", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown", Collections.emptyMap());
                                 discoveryItems.add(discoveryItem);
@@ -201,6 +213,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                                 }
                                 break;
                             }
+
                         } catch (ParseException e) {
                             // Ignore.
                         }
