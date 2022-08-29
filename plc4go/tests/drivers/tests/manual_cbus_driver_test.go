@@ -154,9 +154,7 @@ func TestManualCBusRead(t *testing.T) {
 	readRequest, err := connection.ReadRequestBuilder().
 		AddQuery("asd", "cal/3/identify=OutputUnitSummary").
 		Build()
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
 	readRequestResult := <-readRequest.Execute()
 	fmt.Printf("%s", readRequestResult.GetResponse())
 }
@@ -179,5 +177,4 @@ func TestManualDiscovery(t *testing.T) {
 		println(event.(fmt.Stringer).String())
 	})
 	require.NoError(t, err)
-
 }

@@ -377,5 +377,18 @@ func (t *RequestTransaction) AwaitCompletion() error {
 	for t.completionFuture == nil {
 		time.Sleep(time.Millisecond * 10)
 	}
-	return t.completionFuture.AwaitCompletion()
+	if err := t.completionFuture.AwaitCompletion(); err != nil {
+		return err
+	}
+	stillActive := true
+	for stillActive {
+		stillActive = false
+		for _, runningRequest := range t.parent.runningRequests {
+			if runningRequest.transactionId == t.transactionId {
+				stillActive = true
+				break
+			}
+		}
+	}
+	return nil
 }
