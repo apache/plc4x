@@ -798,6 +798,8 @@
 
             <!-- Temporarily exclude generated code from thrift in python modules -->
             <!--exclude>generated/**</exclude-->
+            <!-- Temporary Python files -->
+            <exclude>**/plc4py.egg-info/**</exclude>
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
