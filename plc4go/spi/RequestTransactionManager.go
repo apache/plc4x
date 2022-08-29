@@ -48,7 +48,7 @@ type Worker struct {
 	executor    *Executor
 }
 
-func (w Worker) work() {
+func (w *Worker) work() {
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			log.Error().Msgf("Recovering from panic()=%v", recovered)
@@ -90,7 +90,7 @@ type WorkItem struct {
 	completionFuture *CompletionFuture
 }
 
-func (w WorkItem) String() string {
+func (w *WorkItem) String() string {
 	return fmt.Sprintf("Workitem{tid:%d}", w.transactionId)
 }
 
@@ -175,18 +175,18 @@ type CompletionFuture struct {
 	err                error
 }
 
-func (f CompletionFuture) cancel(interrupt bool, err error) {
+func (f *CompletionFuture) cancel(interrupt bool, err error) {
 	f.cancelRequested = true
 	f.interruptRequested = interrupt
 	f.errored = true
 	f.err = err
 }
 
-func (f CompletionFuture) complete() {
+func (f *CompletionFuture) complete() {
 	f.completed = true
 }
 
-func (f CompletionFuture) AwaitCompletion() error {
+func (f *CompletionFuture) AwaitCompletion() error {
 	for !f.completed || !f.errored {
 		time.Sleep(time.Millisecond * 10)
 	}
