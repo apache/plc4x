@@ -36,10 +36,6 @@ public class HelloPlc4xDiscoverAndBrowse {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)
         PlcDriverManager driverManager = new PlcDriverManager();
         for (String protocolCode : driverManager.listDrivers()) {
-            // For some reason modbus is failing on my machine ... investigate
-            if(protocolCode.startsWith("modbus")) {
-                continue;
-            }
             PlcDriver driver = driverManager.getDriver(protocolCode);
             if(driver.getMetadata().canDiscover()) {
                 logger.info("Performing discovery for {} protocol", driver.getProtocolName());
