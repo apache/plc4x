@@ -71,7 +71,7 @@ type FieldHandler struct {
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
-		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+), ?(?P<getstatusCount>\d+)|getstatus=(?P<getstatusParamNo>\w+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))`),
+		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))`),
 		salPattern:           regexp.MustCompile(`^sal/(?P<application>.*)/(?P<salCommand>.*)`),
 		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
 		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
