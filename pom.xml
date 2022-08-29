@@ -144,7 +144,7 @@
     <jserialcom.version>2.9.2</jserialcom.version>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.2.11</logback.version>
+    <logback.version>1.4.0</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
@@ -153,7 +153,7 @@
     <netty.version>4.1.79.Final</netty.version>
     <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
-    <slf4j.version>1.7.36</slf4j.version>
+    <slf4j.version>2.0.0</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
     <xmlunit.version>2.9.0</xmlunit.version>
 
