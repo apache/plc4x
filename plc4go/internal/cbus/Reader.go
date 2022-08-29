@@ -135,6 +135,10 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					}
 					return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
 				}, func(receivedMessage spi.Message) error {
+					defer func(transaction *spi.RequestTransaction) {
+						// This is just to make sure we don't forget to close the transaction here
+						_ = transaction.EndRequest()
+					}(transaction)
 					// Convert the response into an
 					log.Trace().Msg("convert response to ")
 					cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
@@ -157,7 +161,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 						case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
 							responseCode = apiModel.PlcResponseCode_INVALID_DATA
 						default:
-							panic("Every code should be mapped here")
+							return transaction.FailRequest(errors.Errorf("Every code should be mapped here: %v", replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType()))
 						}
 						log.Trace().Msgf("Was no success %s:%v", fieldNameCopy, responseCode)
 						addResponseCode(fieldNameCopy, responseCode)
@@ -236,7 +240,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 									case readWriteModel.LevelInformationNormalExactly:
 										plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
 									default:
-										panic("Impossible case")
+										return transaction.FailRequest(errors.Errorf("Impossible case %v", levelInformation))
 									}
 								}
 								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
@@ -324,12 +328,14 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								volts := identifyReplyCommand.GetVolts()
 								voltsFloat, err := strconv.ParseFloat(volts, 0)
 								if err != nil {
-									return errors.Wrap(err, "Error parsing volts")
+									addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
+									return transaction.FailRequest(errors.Wrap(err, "Error parsing volts"))
 								}
 								voltsDecimalPlace := identifyReplyCommand.GetVoltsDecimalPlace()
 								voltsDecimalPlaceFloat, err := strconv.ParseFloat(voltsDecimalPlace, 0)
 								if err != nil {
-									return errors.Wrap(err, "Error parsing volts decimal place")
+									addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
+									return transaction.FailRequest(errors.Wrap(err, "Error parsing volts decimal place"))
 								}
 								voltsFloat += voltsDecimalPlaceFloat / 10
 								addPlcValue(fieldNameCopy, spiValues.NewPlcLREAL(voltsFloat))
@@ -360,9 +366,8 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							case readWriteModel.IdentifyReplyCommandTypeExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
 							default:
-								log.Error().Msgf("Unmapped type %T", identifyReplyCommand)
 								addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INVALID_DATA)
-								return transaction.EndRequest()
+								return transaction.FailRequest(errors.Errorf("Unmapped type %T", identifyReplyCommand))
 							}
 						default:
 							wbpcb := spiValues.NewWriteBufferPlcValueBased()
@@ -374,22 +379,20 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							}
 						}
 					default:
-						panic(fmt.Sprintf("All types should be mapped here. Not mapped: %T", reply))
+						return transaction.FailRequest(errors.Errorf("All types should be mapped here. Not mapped: %T", reply))
 					}
 					return transaction.EndRequest()
 				}, func(err error) error {
-					log.Debug().Msgf("Error waiting for field %s", fieldNameCopy)
 					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
-					// TODO: ok or not ok?
-					return transaction.EndRequest()
+					return transaction.FailRequest(err)
 				}, time.Second*1); err != nil {
 					log.Debug().Err(err).Msgf("Error sending message for field %s", fieldNameCopy)
 					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
-					_ = transaction.EndRequest()
+					_ = transaction.FailRequest(errors.Errorf("timeout after %ss", time.Second*1))
 				}
 			})
 			if err := transaction.AwaitCompletion(); err != nil {
-				addResponseCode(fieldName, apiModel.PlcResponseCode_INTERNAL_ERROR)
+				log.Warn().Err(err).Msg("Error while awaiting completion")
 			}
 		}
 		readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
