@@ -45,7 +45,7 @@ if (bacnetVendorHtm.exists()) {
 // If we need to update the vendor ids
 if (update) {
     try {
-        InputStream inputStream = new URL("http://www.bacnet.org/VendorID/BACnet%20Vendor%20IDs.htm").openStream()
+        InputStream inputStream = new URL("https://bacnet.org/assigned-vendor-ids/").openStream()
         Files.copy(inputStream, bacnetVendorHtm.toPath(), StandardCopyOption.REPLACE_EXISTING)
         println "Successfully updated BACnet Vendor IDs.htm"
     } catch (Exception e) {
