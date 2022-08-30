@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi;
 
 import io.netty.channel.Channel;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 
@@ -30,6 +31,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface ConversationContext<T> {
+
+    PlcAuthentication getAuthentication();
 
     Channel getChannel();
 

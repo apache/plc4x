@@ -24,6 +24,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
@@ -99,8 +100,9 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
      * Applies the given Stack to the Pipeline
      */
     @Override
-    public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
-        Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> ignore) {
+    public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(Configuration configuration, ChannelPipeline pipeline,
+                                                                  PlcAuthentication authentication, boolean passive,
+                                                                  List<EventListener> ignore) {
         if (this.encryptionHandler != null) {
             pipeline.addLast(this.encryptionHandler);
         }
@@ -109,7 +111,8 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         if (driverContextClass != null) {
             protocol.setDriverContext(configure(configuration, createInstance(driverContextClass)));
         }
-        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, passive, protocol, basePacketClass);
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, passive, protocol,
+            authentication, basePacketClass);
         pipeline.addLast(context);
         return protocol;
     }
@@ -197,7 +200,9 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
         public SingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
-            return new SingleProtocolStackConfigurer<>(basePacketClass, byteOrder, parserArgs, protocol, driverContextClass, messageInput, messageOutput, packetSizeEstimator, corruptPacketRemover, encryptionHandler);
+            return new SingleProtocolStackConfigurer<>(basePacketClass, byteOrder, parserArgs, protocol,
+                driverContextClass, messageInput, messageOutput, packetSizeEstimator, corruptPacketRemover,
+                encryptionHandler);
         }
 
     }

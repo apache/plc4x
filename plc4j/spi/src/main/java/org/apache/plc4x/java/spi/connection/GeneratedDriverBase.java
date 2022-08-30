@@ -96,6 +96,11 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
+        return getConnection(connectionString, null);
+    }
+
+    @Override
+    public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
         // Split up the connection string into its individual segments.
         Matcher matcher = URI_PATTERN.matcher(connectionString);
         if (!matcher.matches()) {
@@ -122,7 +127,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             throw new PlcConnectionException("Unsupported configuration");
         }
 
-        // Try to find a transport in order to create a communication channel.
+        // Try to find a suitable transport-type for creating the communication channel.
         Transport transport = null;
         ServiceLoader<Transport> transportLoader = ServiceLoader.load(
             Transport.class, Thread.currentThread().getContextClassLoader());
@@ -177,12 +182,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             awaitDisconnectComplete,
             awaitDiscoverComplete,
             getStackConfigurer(transport),
-            getOptimizer());
-    }
-
-    @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("Authentication not supported.");
+            getOptimizer(),
+            authentication);
     }
 
 

@@ -84,7 +84,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * otherwise a Runtime Exception will be produced by Netty
      * <p>
      * By Default Nettys {@link NioEventLoopGroup} is used.
-     * Transports which have to use a different EventLoopGroup have to override {@link #getEventLoopGroup()}.
+     * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
         return new NioEventLoopGroup();
@@ -117,12 +117,11 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             });
 
             final Channel channel = f.channel();
-            
-            // Shutdowm the workerGroup when channel closing to avoid open too many files
-            channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
 
-            // Add to event-loop group
             if (workerGroup != null) {
+                // Shut down the workerGroup when channel closing to avoid open too many files
+                channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
+                // Add to event-loop group
                 eventLoops.put(channel, workerGroup);
             }
 

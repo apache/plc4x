@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.connection;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
@@ -50,6 +51,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private PlcValueHandler valueHandler;
     private Plc4xProtocolBase<?> protocol;
     private BaseOptimizer optimizer;
+    private PlcAuthentication authentication;
 
     /**
      * @deprecated only for compatibility reasons.
@@ -58,8 +60,9 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     protected AbstractPlcConnection() {
     }
 
-    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
-                                 BaseOptimizer optimizer) {
+    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse,
+                                    PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
+                                    BaseOptimizer optimizer, PlcAuthentication authentication) {
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
@@ -67,6 +70,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         this.fieldHandler = fieldHandler;
         this.valueHandler = valueHandler;
         this.optimizer = optimizer;
+        this.authentication = authentication;
     }
 
     public void setProtocol(Plc4xProtocolBase<?> protocol) {
@@ -111,6 +115,10 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     public PlcValueHandler getPlcValueHandler() {
         return this.valueHandler;
+    }
+
+    protected PlcAuthentication getAuthentication() {
+        return authentication;
     }
 
     @Override
