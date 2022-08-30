@@ -67,6 +67,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 
 	// Set the right request context
 	m.requestContext = CreateRequestContext(cbusMessage)
+	log.Debug().Msgf("Created request context\n%s", m.requestContext)
 
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased()
@@ -107,7 +108,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 				return true
 			}
 		}); err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error filling buffer")
 		}
 	}
 
@@ -129,6 +130,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	// Check for an isolated error
 	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
 		_, _ = ti.Read(1)
+		// Report one Error at a time
 		return readWriteModel.CBusMessageParse(utils.NewReadBufferByteBased(bytes), true, m.requestContext, m.cbusOptions)
 	}
 
@@ -257,13 +259,15 @@ lookingForTheEnd:
 			}
 		}
 	}
+	log.Debug().Msgf("Parsing %q", sanitizedInput)
 	rb := utils.NewReadBufferByteBased(sanitizedInput)
 	cBusMessage, err := readWriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
 		log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
 			rb := utils.NewReadBufferByteBased(sanitizedInput)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(rb, pciResponse, readWriteModel.NewRequestContext(false), m.cbusOptions)
+			requestContext := readWriteModel.NewRequestContext(false)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse(rb, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
 				return cBusMessage, nil
 			} else {
@@ -271,9 +275,9 @@ lookingForTheEnd:
 			}
 		}
 		{ // Try MMI
+			rb := utils.NewReadBufferByteBased(sanitizedInput)
 			requestContext := readWriteModel.NewRequestContext(false)
 			cbusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-			rb := utils.NewReadBufferByteBased(sanitizedInput)
 			cBusMessage, secondErr := readWriteModel.CBusMessageParse(rb, true, requestContext, cbusOptions)
 			if secondErr == nil {
 				return cBusMessage, nil

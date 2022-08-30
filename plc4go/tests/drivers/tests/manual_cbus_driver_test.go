@@ -118,16 +118,16 @@ func TestManualCBusBrowse(t *testing.T) {
 	connection := connectionResult.GetConnection()
 	defer connection.Close()
 	browseRequest, err := connection.BrowseRequestBuilder().
-		AddQuery("asd", "info/*/*").
+		AddQuery("infoQuery", "info/*/*").
 		Build()
 	if err != nil {
 		panic(err)
 	}
 	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
-		fmt.Printf("%s", result)
+		fmt.Printf("%s\n", result)
 		return true
 	})
-	fmt.Printf("%s", browseRequestResult.GetResponse())
+	fmt.Printf("%v\n", browseRequestResult.GetResponse())
 }
 
 func TestManualCBusRead(t *testing.T) {
