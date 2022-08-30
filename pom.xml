@@ -1587,6 +1587,23 @@
       </properties>
     </profile>
     <profile>
+      <id>os-unix-x86_64</id>
+      <activation>
+        <os>
+          <family>unix</family>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>linux</os.suffix>
+        <os.classifier>linux-x86_64</os.classifier>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-x86_64.tar.gz</cmake.url>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
+      </properties>
+    </profile>
+    <profile>
       <id>os-unix-aarch64</id>
       <activation>
         <os>
@@ -1603,7 +1620,7 @@
         <python.venv.bin>venv/bin/</python.venv.bin>
       </properties>
     </profile>
-    <!-- Profile for mac (Self-Enabling) -->
+    <!-- Profile for mac amd64 (Self-Enabling) -->
     <profile>
       <id>os-mac-amd64</id>
       <activation>
@@ -1611,6 +1628,20 @@
           <family>mac</family>
           <arch>amd64</arch>
         </os>
+      </activation>
+      <properties>
+        <os.suffix>mac</os.suffix>
+        <os.classifier>mac-x86_64</os.classifier>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-macos-universal.tar.gz</cmake.url>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
+      </properties>
+    </profile>
+    <!-- Profile for mac x86_64 (Self-Enabling) -->
+    <profile>
+      <id>os-mac-x86_64</id>
+      <activation>
         <os>
           <family>mac</family>
           <arch>x86_64</arch>
