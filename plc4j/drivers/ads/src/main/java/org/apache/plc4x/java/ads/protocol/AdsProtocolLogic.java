@@ -19,10 +19,14 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
+import org.apache.plc4x.java.ads.discovery.readwrite.*;
+import org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId;
 import org.apache.plc4x.java.ads.field.*;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
 import org.apache.plc4x.java.ads.readwrite.DataItem;
+import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -46,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.net.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -101,6 +106,76 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     public void onConnect(ConversationContext<AmsTCPPacket> context) {
         LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
         final CompletableFuture<Void> future = new CompletableFuture<>();
+
+        // If we have connection credentials available, try to set up the AMS routes.
+        if(context.getAuthentication() != null) {
+            if(!(context.getAuthentication() instanceof PlcUsernamePasswordAuthentication)) {
+                future.completeExceptionally(new PlcConnectionException(
+                    "This type of connection only supports username-password authentication"));
+                return;
+            }
+            PlcUsernamePasswordAuthentication usernamePasswordAuthentication =
+                (PlcUsernamePasswordAuthentication) context.getAuthentication();
+
+            // Prepre the request message.
+            org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId sourceAmsNetId = new AmsNetId(
+                configuration.getSourceAmsNetId().getOctet1(), configuration.getSourceAmsNetId().getOctet2(),
+                configuration.getSourceAmsNetId().getOctet3(), configuration.getSourceAmsNetId().getOctet4(),
+                configuration.getSourceAmsNetId().getOctet5(), configuration.getSourceAmsNetId().getOctet6());
+            String routeName = String.format("PLC4X-%d.%d.%d.%d.%d.%d",
+                sourceAmsNetId.getOctet1(), sourceAmsNetId.getOctet2(), sourceAmsNetId.getOctet3(),
+                sourceAmsNetId.getOctet4(), sourceAmsNetId.getOctet5(), sourceAmsNetId.getOctet6());
+            AdsDiscovery addOrUpdateRouteRequest = new AdsDiscovery(getInvokeId(), Operation.ADD_OR_UPDATE_ROUTE_REQUEST,
+                sourceAmsNetId, AdsPortNumbers.SYSTEM_SERVICE,
+                Arrays.asList(new AdsDiscoveryBlockRouteName(new AmsString(routeName)),
+                    new AdsDiscoveryBlockAmsNetId(sourceAmsNetId),
+                    new AdsDiscoveryBlockUserName(new AmsString(usernamePasswordAuthentication.getUsername())),
+                    new AdsDiscoveryBlockPassword(new AmsString(usernamePasswordAuthentication.getPassword())),
+                    new AdsDiscoveryBlockHostName(new AmsString("host-name-or-ip"))));
+
+            // Send the request to the PLC using a UDP socket.
+            try (DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT)) {
+                // Serialize the message.
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(
+                    addOrUpdateRouteRequest.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
+                addOrUpdateRouteRequest.serialize(writeBuffer);
+
+                // Get the target IP from the connection
+                SocketAddress remoteSocketAddress = context.getChannel().remoteAddress();
+                InetAddress remoteAddress = ((InetSocketAddress) remoteSocketAddress).getAddress();
+
+                // Create the UDP packet to the broadcast address.
+                DatagramPacket discoveryRequestPacket = new DatagramPacket(
+                    writeBuffer.getBytes(), writeBuffer.getBytes().length,
+                    remoteAddress, AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT);
+                adsDiscoverySocket.send(discoveryRequestPacket);
+
+                // The actual length would be 32, but better be prepared for a more verbose response
+                byte[] buf = new byte[100];
+                DatagramPacket responsePacket = new DatagramPacket(buf, buf.length);
+                adsDiscoverySocket.setSoTimeout(configuration.getTimeoutRequest());
+                adsDiscoverySocket.receive(responsePacket);
+
+                // Receive the response
+                ReadBufferByteBased readBuffer = new ReadBufferByteBased(responsePacket.getData(), ByteOrder.LITTLE_ENDIAN);
+                AdsDiscovery addOrUpdateRouteResponse = AdsDiscovery.staticParse(readBuffer);
+
+                // Check if adding the route was successful
+                if (addOrUpdateRouteResponse.getRequestId() == 1) {
+                    for (AdsDiscoveryBlock block : addOrUpdateRouteResponse.getBlocks()) {
+                        if(block.getBlockType() == AdsDiscoveryBlockType.STATUS) {
+                            AdsDiscoveryBlockStatus statusBlock = (AdsDiscoveryBlockStatus) block;
+                            if(statusBlock.getStatus() != Status.SUCCESS) {
+                                future.completeExceptionally(new PlcConnectionException("Error adding AMS route"));
+                                return;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         List<AdsDataTypeTableEntry> dataTypes = new ArrayList<>();
         List<AdsSymbolTableEntry> symbols = new ArrayList<>();
