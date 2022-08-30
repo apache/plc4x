@@ -1568,7 +1568,7 @@
       </modules>
     </profile>
 
-    <!-- Profile for linux (Self-Enabling) -->
+    <!-- Profile for linux amd64 (Self-Enabling) -->
     <profile>
       <id>os-unix-amd64</id>
       <activation>
@@ -1586,6 +1586,7 @@
         <python.venv.bin>venv/bin/</python.venv.bin>
       </properties>
     </profile>
+    <!-- Profile for linux x86_64 (Self-Enabling) -->
     <profile>
       <id>os-unix-x86_64</id>
       <activation>
@@ -1603,6 +1604,7 @@
         <python.venv.bin>venv/bin/</python.venv.bin>
       </properties>
     </profile>
+    <!-- Profile for linux aarch64 (Self-Enabling) -->
     <profile>
       <id>os-unix-aarch64</id>
       <activation>
