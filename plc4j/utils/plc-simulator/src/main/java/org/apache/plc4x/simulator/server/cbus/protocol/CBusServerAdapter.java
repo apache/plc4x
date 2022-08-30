@@ -279,13 +279,13 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         if (exstat) {
                             // TODO: map actuall values from simulator
                             byte blockStart = 0x0;
-                            List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                            List<StatusByte> statusBytes = Arrays.asList(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
                             CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryState.getApplication(), blockStart, statusBytes, null, requestContext);
                             calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
                         } else {
                             // TODO: map actuall values from simulator
                             byte blockStart = 0x0;
-                            List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                            List<StatusByte> statusBytes = Arrays.asList(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
                             CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandReply_3Bytes, null, statusRequestBinaryState.getApplication(), blockStart, statusBytes, requestContext);
                             calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
                         }
@@ -313,7 +313,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         StatusCoding coding = StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE;
                         // TODO: map actuall values from simulator
                         byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
-                        List<LevelInformation> levelInformations = List.of(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
+                        List<LevelInformation> levelInformations = Arrays.asList(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
                         CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations, requestContext);
                         CALReply calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
                         EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
@@ -451,7 +451,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 break;
             case LogicalAssignment:
                 numBytes = 0x0E;
-                identifyReplyCommand = new IdentifyReplyCommandLogicalAssignment(List.of(new LogicAssignment(false, true, true, true, true, true)), numBytes);
+                identifyReplyCommand = new IdentifyReplyCommandLogicalAssignment(Arrays.asList(new LogicAssignment(false, true, true, true, true, true)), numBytes);
                 break;
             case Delays:
                 numBytes = 0x0F;

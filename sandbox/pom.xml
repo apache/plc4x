@@ -59,7 +59,6 @@
   <modules>
     <module>code-gen</module>
     <module>discovery</module>
-    <module>plc-simulator</module>
     <module>test-java-df1-driver</module>
   </modules>
 
