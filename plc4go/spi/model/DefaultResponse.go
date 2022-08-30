@@ -19,7 +19,10 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import (
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type DefaultResponse struct {
 	responseCodes map[string]model.PlcResponseCode
@@ -35,4 +38,40 @@ func (m DefaultResponse) GetResponseCode(name string) model.PlcResponseCode {
 
 func NewDefaultResponse(responseCodes map[string]model.PlcResponseCode) DefaultResponse {
 	return DefaultResponse{responseCodes}
+}
+
+func (m DefaultResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("Response"); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PushContext("responseCodes"); err != nil {
+		return err
+	}
+	for fieldName, code := range m.responseCodes {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
+			return err
+		}
+		if err := writeBuffer.WriteUint8("code", 8, uint8(code), utils.WithAdditionalStringRepresentation(code.String())); err != nil {
+			return err
+		}
+		if err := writeBuffer.PopContext(fieldName); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("responseCodes"); err != nil {
+		return err
+	}
+	if err := writeBuffer.PopContext("Response"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m DefaultResponse) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

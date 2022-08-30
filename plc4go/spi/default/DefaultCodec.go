@@ -332,7 +332,7 @@ mainLoop:
 				}
 			case <-timeout.C:
 				timeout.Stop()
-				workerLog.Warn().Msgf("Message discarded %s", message)
+				workerLog.Warn().Msgf("Message discarded\n%s", message)
 			}
 		}
 	}

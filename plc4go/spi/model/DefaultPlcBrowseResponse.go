@@ -21,6 +21,8 @@ package model
 
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 )
 
 type DefaultPlcBrowseResponse struct {
@@ -62,4 +64,54 @@ func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
 
 func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseFoundField {
 	return d.results[queryName]
+}
+
+func (d DefaultPlcBrowseResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcBrowseResponse"); err != nil {
+		return err
+	}
+
+	if serializableRequest, ok := d.request.(utils.Serializable); ok {
+		if err := serializableRequest.Serialize(writeBuffer); err != nil {
+			return err
+		}
+	} else {
+		return errors.Errorf("Error serializing. Request %T doesn't implement Serializable", d.request)
+	}
+
+	if err := writeBuffer.PushContext("results"); err != nil {
+		return err
+	}
+	for fieldName, foundFields := range d.results {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
+			return err
+		}
+		for _, field := range foundFields {
+			if serializableField, ok := field.(utils.Serializable); ok {
+				if err := serializableField.Serialize(writeBuffer); err != nil {
+					return err
+				}
+			} else {
+				return errors.Errorf("Error serializing. Field %T doesn't implement Serializable", field)
+			}
+		}
+		if err := writeBuffer.PopContext(fieldName); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("results"); err != nil {
+		return err
+	}
+	if err := writeBuffer.PopContext("PlcBrowseResponse"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d DefaultPlcBrowseResponse) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(d); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }
