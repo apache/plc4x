@@ -1201,7 +1201,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")<@emitImport import="github.com/rs/zerolog/log" />
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
@@ -1288,7 +1288,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		if ${helper.toTypeSafeCompare(reservedField)} {
-			log.Info().Fields(map[string]interface{}{<@emitImport import="github.com/rs/zerolog/log" />
+			Plc4xModelLog.Info().Fields(map[string]interface{}{
 				"expected value": ${helper.getReservedValue(reservedField)},
 				"got value": reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -1815,7 +1815,7 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	{
 		var reserved ${helper.getLanguageTypeNameForTypeReference(simpleTypeReference)} = ${helper.getReservedValue(reservedField)}
 		if <#if type.isAbstract()>p</#if>m.reservedField${reservedFieldIndex} != nil {
-			log.Info().Fields(map[string]interface{}{<@emitImport import="github.com/rs/zerolog/log" />
+			Plc4xModelLog.Info().Fields(map[string]interface{}{
 				"expected value": ${helper.getReservedValue(reservedField)},
 				"got value": reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

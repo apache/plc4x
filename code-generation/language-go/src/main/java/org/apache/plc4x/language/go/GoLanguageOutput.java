@@ -68,6 +68,11 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
             freemarkerConfiguration.getTemplate("templates/go/data-io-template.go.ftlh"));
     }
 
+    protected List<Template> getMiscTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/go/plc4x_common.go.ftlh"));
+    }
+
     @Override
     protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
         Map<String, String> options) {
