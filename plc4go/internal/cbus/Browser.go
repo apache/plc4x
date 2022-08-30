@@ -49,7 +49,6 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 }
 
 func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool, fieldName string, field apiModel.PlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField) {
-	// TODO: handle ctx
 	var queryResults []apiModel.PlcBrowseFoundField
 	switch field := field.(type) {
 	case *unitInfoField:
@@ -79,6 +78,10 @@ func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrow
 		}
 	unitLoop:
 		for _, unit := range units {
+			if err := ctx.Err(); err != nil {
+				log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
+				return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
+			}
 			unitAddress := unit.GetAddress()
 			if !allUnits && allAttributes {
 				log.Info().Msgf("Querying all attributes of unit %d", unitAddress)
@@ -89,6 +92,10 @@ func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrow
 			}
 			event.Msgf("Query unit  %d", unitAddress)
 			for _, attribute := range attributes {
+				if err := ctx.Err(); err != nil {
+					log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
+					return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
+				}
 				if !allUnits && !allAttributes {
 					log.Info().Msgf("Querying attribute %s of unit %d", attribute, unitAddress)
 				} else {
@@ -132,7 +139,7 @@ func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrow
 			}
 		}
 	default:
-		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
 	return apiModel.PlcResponseCode_OK, queryResults
 }
