@@ -393,7 +393,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     }
 
     private void handleCalDataIdentify(ChannelHandlerContext ctx, CALDataIdentify calDataIdentify, Alpha alpha) {
-        short numBytes = 0;
+        short numBytes;
         IdentifyReplyCommand identifyReplyCommand;
         switch (calDataIdentify.getAttribute()) {
             case Manufacturer:
@@ -406,15 +406,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 break;
             case FirmwareVersion:
                 numBytes = 0x08;
-                identifyReplyCommand = new IdentifyReplyCommandFirmwareVersion("0.9", numBytes);
+                identifyReplyCommand = new IdentifyReplyCommandFirmwareVersion("  0.09  ", numBytes);
                 break;
             case Summary:
                 numBytes = 0x09;
-                identifyReplyCommand = new IdentifyReplyCommandSummary("0.9", (byte) 0xAF, "0.0", numBytes);
+                identifyReplyCommand = new IdentifyReplyCommandSummary("NOIDEA", (byte) 0xAF, "0900", numBytes);
                 break;
             case ExtendedDiagnosticSummary:
                 numBytes = 0x0C;
-                identifyReplyCommand = new IdentifyReplyCommandExtendedDiagnosticSummary(ApplicationIdContainer.FREE_USAGE_01, ApplicationIdContainer.FREE_USAGE_0F, (byte) 0x0, 0x0, 4711l, (byte) 0x13, false, false, false, true, false, false, false, false, false, false, false, false, false, numBytes);
+                identifyReplyCommand = new IdentifyReplyCommandExtendedDiagnosticSummary(ApplicationIdContainer.FREE_USAGE_01, ApplicationIdContainer.FREE_USAGE_0F, (byte) 0x0, 0x0, 4711L, (byte) 0x13, false, false, false, true, false, false, false, false, false, false, false, false, false, numBytes);
                 break;
             case NetworkTerminalLevels:
                 numBytes = 0x0C;
