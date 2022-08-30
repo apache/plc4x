@@ -312,16 +312,18 @@ private Matcher extractVersion(input) {
 /////////////////////////////////////////////////////
 // Find out which OS and arch are bring used.
 /////////////////////////////////////////////////////
-
+println "Os name:    ${System.getProperty("os.name")}"
+println "Os arch:    ${System.getProperty("os.arch")}"
+println "Os version: ${System.getProperty("os.version")}"
 def osString = project.properties['os.classifier']
 def osMatcher = osString =~ /(.*)-(.*)/
 if (osMatcher.size() == 0) {
-    throw new RuntimeException("Currently unsupported OS. Actual os string: " + osString)
+    throw new RuntimeException("Currently unsupported OS. Actual os string: $osString")
 }
 def os = osMatcher[0][1]
 def arch = osMatcher[0][2]
-println "Detected OS:   " + os
-println "Detected Arch: " + arch
+println "Detected OS:   $os"
+println "Detected Arch: $arch"
 
 /////////////////////////////////////////////////////
 // Find out which profiles are enabled.
