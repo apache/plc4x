@@ -20,9 +20,9 @@ package org.apache.plc4x.java.s7.readwrite.issues;
 
 import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 
-public class PLC4X272 extends DriverTestsuiteRunner {
+public class PLC4X272Test extends DriverTestsuiteRunner {
 
-    public PLC4X272() {
+    public PLC4X272Test() {
         super("/tests/PLC4X-272.xml");
     }
 
