@@ -39,6 +39,11 @@ public class PlcStruct extends PlcValueAdapter {
 
     private final Map<String, PlcValue> map;
 
+    @Override
+    public Object getObject() {
+        return map;
+    }
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcStruct(@JsonProperty("map") Map<String, PlcValue> map) {
         this.map = Collections.unmodifiableMap(map);
