@@ -167,6 +167,11 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 
 		// Timeout after the maximum waiting time.
 		case <-maximumWaitTimeout.C:
+			// In this case we need to drain the chan and return it immediate
+			go func() {
+				<-leaseChan
+				_ = connection.returnConnection(StateIdle)
+			}()
 			if t.tracer != nil {
 				t.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 			}
