@@ -140,7 +140,7 @@
     <jaxb.version>4.0.0</jaxb.version>
     <jetty-util.version>11.0.11</jetty-util.version>
     <jna.version>5.12.1</jna.version>
-    <joda-time.version>2.11.0</joda-time.version>
+    <joda-time.version>2.11.1</joda-time.version>
     <jserialcom.version>2.9.2</jserialcom.version>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
@@ -150,7 +150,7 @@
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.6</milo.version>
     <mockito.version>4.7.0</mockito.version>
-    <netty.version>4.1.79.Final</netty.version>
+    <netty.version>4.1.80.Final</netty.version>
     <owasp-dependency-check.version>7.1.2</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.0</slf4j.version>
@@ -1331,7 +1331,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
 
         <plugin>
