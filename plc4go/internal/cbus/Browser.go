@@ -29,6 +29,7 @@ import (
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/rs/zerolog/log"
+	"time"
 )
 
 type Browser struct {
@@ -105,7 +106,9 @@ func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrow
 				readRequest, _ := m.connection.ReadRequestBuilder().
 					AddField(readFieldName, NewCALIdentifyField(unit, attribute, 1)).
 					Build()
-				requestResult := <-readRequest.Execute()
+				timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
+				requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
+				timeoutCancel()
 				if err := requestResult.GetErr(); err != nil {
 					if !allUnits && !allAttributes {
 						event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
