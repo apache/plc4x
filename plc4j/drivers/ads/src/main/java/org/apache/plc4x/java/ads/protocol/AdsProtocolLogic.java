@@ -104,10 +104,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public void onConnect(ConversationContext<AmsTCPPacket> context) {
-        LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
         final CompletableFuture<Void> future = new CompletableFuture<>();
 
         // If we have connection credentials available, try to set up the AMS routes.
+        CompletableFuture<Void> setupAmsRouteFuture;
         if(context.getAuthentication() != null) {
             if(!(context.getAuthentication() instanceof PlcUsernamePasswordAuthentication)) {
                 future.completeExceptionally(new PlcConnectionException(
@@ -117,8 +117,40 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             PlcUsernamePasswordAuthentication usernamePasswordAuthentication =
                 (PlcUsernamePasswordAuthentication) context.getAuthentication();
 
-            // Prepre the request message.
-            org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId sourceAmsNetId = new AmsNetId(
+            setupAmsRouteFuture = setupAmsRoute(usernamePasswordAuthentication);
+        } else {
+            setupAmsRouteFuture = CompletableFuture.completedFuture(null);
+        }
+
+        // If the configuration asks us to load the symbol and data type tables, do so,
+        // otherwise just mark the connection as completed instantly.
+        setupAmsRouteFuture.whenComplete((unused, throwable) -> {
+            if(configuration.isLoadSymbolAndDataTypeTables()) {
+                LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
+                CompletableFuture<Void> readSymbolTableFuture = readSymbolTableAndDatatypeTable(context);
+                readSymbolTableFuture.whenComplete((unused2, throwable2) -> {
+                    if (throwable2 != null) {
+                        LOGGER.error("Error fetching symbol and datatype table sizes");
+                    } else {
+                        context.fireConnected();
+                    }
+                });
+            } else {
+                context.fireConnected();
+            }
+        });
+    }
+
+    protected CompletableFuture<Void> setupAmsRoute(PlcUsernamePasswordAuthentication authentication) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        new Thread(() -> {
+            LOGGER.debug("Setting up remote AMS routes.");
+            SocketAddress localSocketAddress = context.getChannel().localAddress();
+            InetAddress localAddress = ((InetSocketAddress) localSocketAddress).getAddress();
+
+            // Prepare the request message.
+            AmsNetId sourceAmsNetId = new AmsNetId(
                 configuration.getSourceAmsNetId().getOctet1(), configuration.getSourceAmsNetId().getOctet2(),
                 configuration.getSourceAmsNetId().getOctet3(), configuration.getSourceAmsNetId().getOctet4(),
                 configuration.getSourceAmsNetId().getOctet5(), configuration.getSourceAmsNetId().getOctet6());
@@ -129,9 +161,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 sourceAmsNetId, AdsPortNumbers.SYSTEM_SERVICE,
                 Arrays.asList(new AdsDiscoveryBlockRouteName(new AmsString(routeName)),
                     new AdsDiscoveryBlockAmsNetId(sourceAmsNetId),
-                    new AdsDiscoveryBlockUserName(new AmsString(usernamePasswordAuthentication.getUsername())),
-                    new AdsDiscoveryBlockPassword(new AmsString(usernamePasswordAuthentication.getPassword())),
-                    new AdsDiscoveryBlockHostName(new AmsString("host-name-or-ip"))));
+                    new AdsDiscoveryBlockUserName(new AmsString(authentication.getUsername())),
+                    new AdsDiscoveryBlockPassword(new AmsString(authentication.getPassword())),
+                    new AdsDiscoveryBlockHostName(new AmsString(localAddress.getHostAddress()))));
 
             // Send the request to the PLC using a UDP socket.
             try (DatagramSocket adsDiscoverySocket = new DatagramSocket(AdsDiscoveryConstants.ADSDISCOVERYUDPDEFAULTPORT)) {
@@ -163,22 +195,28 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 // Check if adding the route was successful
                 if (addOrUpdateRouteResponse.getRequestId() == 1) {
                     for (AdsDiscoveryBlock block : addOrUpdateRouteResponse.getBlocks()) {
-                        if(block.getBlockType() == AdsDiscoveryBlockType.STATUS) {
+                        if (block.getBlockType() == AdsDiscoveryBlockType.STATUS) {
                             AdsDiscoveryBlockStatus statusBlock = (AdsDiscoveryBlockStatus) block;
-                            if(statusBlock.getStatus() != Status.SUCCESS) {
-                                future.completeExceptionally(new PlcConnectionException("Error adding AMS route"));
+                            if (statusBlock.getStatus() != Status.SUCCESS) {
+                                future.completeExceptionally(new PlcException("Error adding AMS route"));
                                 return;
                             }
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
-        List<AdsDataTypeTableEntry> dataTypes = new ArrayList<>();
-        List<AdsSymbolTableEntry> symbols = new ArrayList<>();
+                future.complete(null);
+            } catch (Exception e) {
+                future.completeExceptionally(new PlcException("Error adding AMS route", e));
+            }
+        }).start();
+
+        return future;
+    }
+
+    protected CompletableFuture<Void> readSymbolTableAndDatatypeTable(ConversationContext<AmsTCPPacket> context) {
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+
         // Initialize the request.
         AmsPacket amsPacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
@@ -220,7 +258,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                     for (int i = 0; i < adsTableSizes.getDataTypeCount(); i++) {
                                         try {
                                             AdsDataTypeTableEntry adsDataTypeTableEntry = AdsDataTypeTableEntry.staticParse(rb);
-                                            dataTypes.add(adsDataTypeTableEntry);
+                                            dataTypeTable.put(adsDataTypeTableEntry.getDataTypeName(), adsDataTypeTableEntry);
                                         } catch (ParseException e) {
                                             throw new RuntimeException(e);
                                         }
@@ -244,7 +282,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                                 for (int i = 0; i < adsTableSizes.getSymbolCount(); i++) {
                                                     try {
                                                         AdsSymbolTableEntry adsSymbolTableEntry = AdsSymbolTableEntry.staticParse(rb2);
-                                                        symbols.add(adsSymbolTableEntry);
+                                                        symbolTable.put(adsSymbolTableEntry.getName(), adsSymbolTableEntry);
                                                     } catch (ParseException e) {
                                                         throw new RuntimeException(e);
                                                     }
@@ -262,19 +300,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     future.completeExceptionally(new PlcException("Result is " + responseAdsData.getResult()));
                 }
             }));
-        future.whenComplete((unused, throwable) -> {
-            if(throwable != null) {
-                LOGGER.error("Error fetching symbol and datatype table sizes");
-            } else {
-                for (AdsDataTypeTableEntry dataType : dataTypes) {
-                    dataTypeTable.put(dataType.getDataTypeName(), dataType);
-                }
-                for (AdsSymbolTableEntry symbol : symbols) {
-                    symbolTable.put(symbol.getName(), symbol);
-                }
-                context.fireConnected();
-            }
-        });
+        return future;
     }
 
     @Override
