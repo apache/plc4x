@@ -114,7 +114,10 @@
       <artifactId>netty-common</artifactId>
     </dependency>
 
-
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <!-- Explicitly override the scope to compile to include these -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
