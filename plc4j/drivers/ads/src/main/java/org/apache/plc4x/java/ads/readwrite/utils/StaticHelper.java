@@ -47,6 +47,8 @@ public class StaticHelper {
                         break;
                     }
                 }
+                // Read the terminating byte.
+                readBuffer.readByte();
                 final byte[] byteArray = new byte[bytes.size()];
                 for (int i = 0; i < bytes.size(); i++) {
                     byteArray[i] = bytes.get(i);
@@ -68,6 +70,8 @@ public class StaticHelper {
                         break;
                     }
                 }
+                // Read the terminating byte.
+                readBuffer.readByte();
                 final byte[] byteArray = new byte[bytes.size()];
                 for (int i = 0; i < bytes.size(); i++) {
                     byteArray[i] = bytes.get(i);
