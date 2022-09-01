@@ -22,7 +22,9 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public interface PlcSubscriptionFieldRequest extends PlcRequest {
 
@@ -36,5 +38,7 @@ public interface PlcSubscriptionFieldRequest extends PlcRequest {
     PlcSubscriptionField getField(String name);
 
     List<PlcSubscriptionField> getFields();
+
+    Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers();
 
 }

@@ -137,8 +137,8 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
             LOGGER.debug("Sending read request to MockDevice");
             Map<String, ResponseItem<PlcValue>> response = readRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
-                    Function.identity(),
-                    name -> device.read(((MockField) readRequest.getField(name)).getAddress())
+                        Function.identity(),
+                        name -> device.read(((MockField) readRequest.getField(name)).getAddress())
                     )
                 );
             return new DefaultPlcReadResponse((DefaultPlcReadRequest) readRequest, response);
@@ -152,9 +152,9 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
             LOGGER.debug("Sending write request to MockDevice");
             Map<String, PlcResponseCode> response = writeRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
-                    Function.identity(),
-                    name -> device.write(((MockField) writeRequest.getField(name)).getAddress(),
-                        ((MockField) writeRequest.getField(name)).getPlcValue())
+                        Function.identity(),
+                        name -> device.write(((MockField) writeRequest.getField(name)).getAddress(),
+                            ((MockField) writeRequest.getField(name)).getPlcValue())
                     )
                 );
             return new DefaultPlcWriteResponse((DefaultPlcWriteRequest) writeRequest, response);
@@ -168,11 +168,11 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
             LOGGER.debug("Sending subsribe request to MockDevice");
             Map<String, ResponseItem<PlcSubscriptionHandle>> response = subscriptionRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
-                    Function.identity(),
-                    name -> device.subscribe(((MockField) subscriptionRequest.getField(name)).getAddress())
+                        Function.identity(),
+                        name -> device.subscribe(((MockField) subscriptionRequest.getField(name)).getAddress())
                     )
                 );
-            return new DefaultPlcSubscriptionResponse((DefaultPlcSubscriptionRequest) subscriptionRequest, response);
+            return new DefaultPlcSubscriptionResponse(subscriptionRequest, response);
         });
     }
 
@@ -182,7 +182,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending subsribe request to MockDevice");
             device.unsubscribe();
-            return new DefaultPlcUnsubscriptionResponse((DefaultPlcUnsubscriptionRequest) unsubscriptionRequest);
+            return new DefaultPlcUnsubscriptionResponse(unsubscriptionRequest);
         });
     }
 

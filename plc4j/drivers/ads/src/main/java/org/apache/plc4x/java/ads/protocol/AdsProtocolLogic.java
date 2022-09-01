@@ -74,7 +74,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
-//    private final ConcurrentHashMap<SymbolicAdsField, DirectAdsField> symbolicFieldMapping;
+    //    private final ConcurrentHashMap<SymbolicAdsField, DirectAdsField> symbolicFieldMapping;
     private final ConcurrentHashMap<SymbolicAdsField, CompletableFuture<Void>> pendingResolutionRequests;
 
     private final Map<String, AdsSymbolTableEntry> symbolTable;
@@ -110,8 +110,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // If we have connection credentials available, try to set up the AMS routes.
         CompletableFuture<Void> setupAmsRouteFuture;
-        if(context.getAuthentication() != null) {
-            if(!(context.getAuthentication() instanceof PlcUsernamePasswordAuthentication)) {
+        if (context.getAuthentication() != null) {
+            if (!(context.getAuthentication() instanceof PlcUsernamePasswordAuthentication)) {
                 future.completeExceptionally(new PlcConnectionException(
                     "This type of connection only supports username-password authentication"));
                 return;
@@ -127,7 +127,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         // If the configuration asks us to load the symbol and data type tables, do so,
         // otherwise just mark the connection as completed instantly.
         setupAmsRouteFuture.whenComplete((unused, throwable) -> {
-            if(configuration.isLoadSymbolAndDataTypeTables()) {
+            if (configuration.isLoadSymbolAndDataTypeTables()) {
                 LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
                 CompletableFuture<Void> readSymbolTableFuture = readSymbolTableAndDatatypeTable(context);
                 readSymbolTableFuture.whenComplete((unused2, throwable2) -> {
@@ -319,7 +319,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             // Add the type itself.
             values.add(new DefaultPlcBrowseItem(symbol.getName(), symbol.getDataTypeName()));
             AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
-            if(dataType == null) {
+            if (dataType == null) {
                 System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
                 continue;
             }
@@ -332,7 +332,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     protected List<PlcBrowseItem> getBrowseItems(String basePath, long baseGroupId, long baseOffset, AdsDataTypeTableEntry dataType) {
-        if(dataType.getNumChildren() == 0) {
+        if (dataType.getNumChildren() == 0) {
             return Collections.emptyList();
         }
 
@@ -340,7 +340,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         for (AdsDataTypeTableChildEntry child : dataType.getChildren()) {
             values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), child.getDataTypeName()));
             AdsDataTypeTableEntry childDataType = dataTypeTable.get(child.getDataTypeName());
-            if(childDataType == null) {
+            if (childDataType == null) {
                 System.out.printf("couldn't find datatype: %s%n", child.getDataTypeName());
                 continue;
             }
@@ -418,7 +418,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         AmsPacket amsPacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
-            directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),size * directAdsField.getNumberOfElements());
+            directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), size * directAdsField.getNumberOfElements());
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -463,13 +463,13 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(),
             expectedResponseDataSize, directAdsFields.stream().map(directAdsField -> {
-                String dataTypeName = directAdsField.getAdsDataTypeName();
-                AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
-                long size = adsDataTypeTableEntry.getSize();
-                return new AdsMultiRequestItemRead(
-                        directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                        (size * directAdsField.getNumberOfElements()));
-            }).collect(Collectors.toList()), null);
+            String dataTypeName = directAdsField.getAdsDataTypeName();
+            AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
+            long size = adsDataTypeTableEntry.getSize();
+            return new AdsMultiRequestItemRead(
+                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                (size * directAdsField.getNumberOfElements()));
+        }).collect(Collectors.toList()), null);
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -525,7 +525,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
             for (String fieldName : readRequest.getFieldNames()) {
                 DirectAdsField field;
-                if(readRequest.getField(fieldName) instanceof DirectAdsField) {
+                if (readRequest.getField(fieldName) instanceof DirectAdsField) {
                     field = (DirectAdsField) readRequest.getField(fieldName);
                 } else {
                     SymbolicAdsField symbolicAdsField = (SymbolicAdsField) readRequest.getField(fieldName);
@@ -592,9 +592,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 int startPos = readBuffer.getPos();
                 int curPos = 0;
                 for (AdsDataTypeTableChildEntry child : adsDataTypeTableEntry.getChildren()) {
-                    if(child.getOffset() > curPos) {
+                    if (child.getOffset() > curPos) {
                         long skipBytes = child.getOffset() - curPos;
-                        for(long i = 0; i < skipBytes; i++) {
+                        for (long i = 0; i < skipBytes; i++) {
                             readBuffer.readByte();
                         }
                     }
@@ -615,13 +615,13 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     private PlcValue parseArrayLevel(AdsDataTypeTableEntry adsDataTypeTableEntry, List<AdsDataTypeArrayInfo> arrayLayers, ReadBuffer readBuffer) throws ParseException {
         // If this is the last layer of the Array, parse the values themselves.
-        if(arrayLayers.isEmpty()) {
+        if (arrayLayers.isEmpty()) {
             String dataTypeName = adsDataTypeTableEntry.getDataTypeName();
             dataTypeName = dataTypeName.substring(dataTypeName.lastIndexOf(" OF ") + 4);
             int stringLength = 0;
-            if(dataTypeName.startsWith("STRING(")) {
+            if (dataTypeName.startsWith("STRING(")) {
                 stringLength = Integer.parseInt(dataTypeName.substring(7, dataTypeName.length() - 1));
-            } else if(dataTypeName.startsWith("WSTRING(")) {
+            } else if (dataTypeName.startsWith("WSTRING(")) {
                 stringLength = Integer.parseInt(dataTypeName.substring(8, dataTypeName.length() - 1));
             }
             AdsDataTypeTableEntry elementDataTypeTableEntry = dataTypeTable.get(dataTypeName);
@@ -632,7 +632,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         List<PlcValue> elements = new ArrayList<>();
         List<AdsDataTypeArrayInfo> arrayInfo = adsDataTypeTableEntry.getArrayInfo();
         AdsDataTypeArrayInfo firstLayer = arrayInfo.get(0);
-        for(int i = 0; i < firstLayer.getNumElements(); i++) {
+        for (int i = 0; i < firstLayer.getNumElements(); i++) {
             List<AdsDataTypeArrayInfo> remainingLayers = arrayInfo.subList(1, arrayInfo.size());
             elements.add(parseArrayLevel(adsDataTypeTableEntry, remainingLayers, readBuffer));
         }
@@ -1299,7 +1299,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     protected DirectAdsField getDirectAdsFieldForSymbolicName(PlcField field) {
-        if(field instanceof DirectAdsField) {
+        if (field instanceof DirectAdsField) {
             return (DirectAdsField) field;
         }
 
@@ -1308,9 +1308,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         String[] addressParts = symbolicAddress.split("\\.");
 
         // If the number of parts are less than 2, we can find the entry in the symbol table directly.
-        if(addressParts.length < 2) {
+        if (addressParts.length < 2) {
             // We can't find it, so we need to resolve it.
-            if(!symbolTable.containsKey(symbolicAddress)) {
+            if (!symbolTable.containsKey(symbolicAddress)) {
                 return null;
             }
 
@@ -1331,14 +1331,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     protected DirectAdsField resolveDirectAdsFieldForSymbolicNameFromDataType(List<String> remainingAddressParts, long currentGroup, long currentOffset, AdsDataTypeTableEntry adsDataTypeTableEntry) {
-        if(remainingAddressParts.isEmpty()) {
+        if (remainingAddressParts.isEmpty()) {
             // TODO: Implement the Array support
             return new DirectAdsField(currentGroup, currentOffset, adsDataTypeTableEntry.getDataTypeName(), null);
         }
 
         // Go through all children looking for a matching one.
         for (AdsDataTypeTableChildEntry child : adsDataTypeTableEntry.getChildren()) {
-            if(child.getPropertyName().equals(remainingAddressParts.get(0))) {
+            if (child.getPropertyName().equals(remainingAddressParts.get(0))) {
                 AdsDataTypeTableEntry childAdsDataTypeTableEntry = dataTypeTable.get(child.getDataTypeName());
                 return resolveDirectAdsFieldForSymbolicNameFromDataType(
                     remainingAddressParts.subList(1, remainingAddressParts.size()),
@@ -1352,9 +1352,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     protected PlcValueType getPlcValueTypeForAdsDataType(AdsDataTypeTableEntry dataTypeTableEntry) {
         String dataTypeName = dataTypeTableEntry.getDataTypeName();
-        if(dataTypeName.startsWith("STRING(")) {
+        if (dataTypeName.startsWith("STRING(")) {
             dataTypeName = "STRING";
-        } else if(dataTypeName.startsWith("WSTRING(")) {
+        } else if (dataTypeName.startsWith("WSTRING(")) {
             dataTypeName = "WSTRING";
         }
         // First check, if this is a primitive type.
@@ -1362,11 +1362,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             return PlcValueType.valueOf(dataTypeName);
         } catch (IllegalArgumentException e) {
             // Then check if this is an array.
-            if(dataTypeTableEntry.getArrayDimensions() > 0) {
+            if (dataTypeTableEntry.getArrayDimensions() > 0) {
                 return PlcValueType.List;
             }
             return PlcValueType.Struct;
-       }
+        }
     }
 
     protected byte[] getNullByteTerminatedArray(String value) {

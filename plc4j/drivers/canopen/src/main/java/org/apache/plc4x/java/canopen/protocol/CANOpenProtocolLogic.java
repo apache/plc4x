@@ -246,7 +246,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         if (!(field instanceof CANOpenSDOField)) {
             response.completeExceptionally(new IllegalArgumentException("Only CANOpenSDOField instances are supported"));
             return response;
-        };
+        }
 
         readInternally(readRequest, (CANOpenSDOField) field, response);
         return response;
@@ -436,7 +436,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        final DefaultPlcConsumerRegistration consumerRegistration =new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
+        final DefaultPlcConsumerRegistration consumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
         consumers.put(consumerRegistration, consumer);
         return consumerRegistration;
     }

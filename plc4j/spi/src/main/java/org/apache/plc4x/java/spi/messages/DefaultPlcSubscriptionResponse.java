@@ -53,6 +53,13 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
                                           @JsonProperty("values") Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
+        request.getPreRegisteredConsumers().forEach((subscriptionFieldName, consumers) -> {
+            PlcSubscriptionHandle subscriptionHandle = getSubscriptionHandle(subscriptionFieldName);
+            if (subscriptionHandle == null) {
+                throw new PlcRuntimeException("PlcSubscriptionHandle for " + subscriptionFieldName + " not found");
+            }
+            consumers.forEach(subscriptionHandle::register);
+        });
     }
 
     @Override
@@ -109,7 +116,7 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcSubscriptionResponse");
 
-        if(request instanceof Serializable) {
+        if (request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
         writeBuffer.pushContext("values");
