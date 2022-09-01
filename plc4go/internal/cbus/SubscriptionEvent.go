@@ -40,10 +40,6 @@ func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]
 	}
 }
 
-func (m SubscriptionEvent) GetRequest() apiModel.PlcSubscriptionRequest {
-	panic("implement me")
-}
-
 func (m SubscriptionEvent) GetAddress(name string) string {
 	return m.address[name]
 }

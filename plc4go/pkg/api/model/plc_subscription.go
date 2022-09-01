@@ -27,7 +27,6 @@ import (
 
 type PlcSubscriptionEvent interface {
 	PlcResponse
-	GetRequest() PlcSubscriptionRequest
 	GetFieldNames() []string
 	GetResponseCode(name string) PlcResponseCode
 	GetAddress(name string) string
