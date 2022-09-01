@@ -137,10 +137,10 @@ func NewSALField(application readWriteModel.ApplicationIdContainer, salCommand s
 type SALMonitorField interface {
 	model.PlcField
 	GetUnitAddress() readWriteModel.UnitAddress
-	GetApplication() readWriteModel.ApplicationIdContainer
+	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewSALMonitorField(unitAddress readWriteModel.UnitAddress, application readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
+func NewSALMonitorField(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
 	return &salMonitorField{
 		fieldType:   SAL_MONITOR,
 		unitAddress: unitAddress,
@@ -154,10 +154,10 @@ type MMIMonitorField interface {
 	model.PlcField
 	CalField
 	GetUnitAddress() readWriteModel.UnitAddress
-	GetApplication() readWriteModel.ApplicationIdContainer
+	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewMMIMonitorField(unitAddress readWriteModel.UnitAddress, application readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
+func NewMMIMonitorField(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
 	return &mmiMonitorField{
 		fieldType:   MMI_STATUS_MONITOR,
 		unitAddress: unitAddress,
@@ -232,14 +232,14 @@ type salField struct {
 type salMonitorField struct {
 	fieldType   FieldType
 	unitAddress readWriteModel.UnitAddress
-	application readWriteModel.ApplicationIdContainer
+	application *readWriteModel.ApplicationIdContainer
 	numElements uint16
 }
 
 type mmiMonitorField struct {
 	fieldType   FieldType
 	unitAddress readWriteModel.UnitAddress
-	application readWriteModel.ApplicationIdContainer
+	application *readWriteModel.ApplicationIdContainer
 	numElements uint16
 }
 
@@ -531,7 +531,7 @@ func (s salMonitorField) GetUnitAddress() readWriteModel.UnitAddress {
 	return s.unitAddress
 }
 
-func (s salMonitorField) GetApplication() readWriteModel.ApplicationIdContainer {
+func (s salMonitorField) GetApplication() *readWriteModel.ApplicationIdContainer {
 	return s.application
 }
 
@@ -581,7 +581,7 @@ func (m mmiMonitorField) GetUnitAddress() readWriteModel.UnitAddress {
 	return m.unitAddress
 }
 
-func (m mmiMonitorField) GetApplication() readWriteModel.ApplicationIdContainer {
+func (m mmiMonitorField) GetApplication() *readWriteModel.ApplicationIdContainer {
 	return m.application
 }
 

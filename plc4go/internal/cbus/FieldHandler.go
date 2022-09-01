@@ -327,17 +327,17 @@ func (m FieldHandler) handleSALMonitorPattern(match map[string]string) (model.Pl
 		}
 	}
 
-	var application readWriteModel.ApplicationIdContainer
+	var application *readWriteModel.ApplicationIdContainer
 	{
 		applicationIdArgument := match["application"]
 		if applicationIdArgument == "*" {
-			application = readWriteModel.ApplicationIdContainer_RESERVED_FF
+			application = nil
 		} else {
-			var err error
-			application, err = applicationIdFromArgument(applicationIdArgument)
+			applicationId, err := applicationIdFromArgument(applicationIdArgument)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error getting application id from argument")
 			}
+			application = &applicationId
 		}
 	}
 
@@ -368,17 +368,17 @@ func (m FieldHandler) handleMMIMonitorPattern(match map[string]string) (model.Pl
 		}
 	}
 
-	var application readWriteModel.ApplicationIdContainer
+	var application *readWriteModel.ApplicationIdContainer
 	{
 		applicationIdArgument := match["application"]
 		if applicationIdArgument == "*" {
-			application = readWriteModel.ApplicationIdContainer_RESERVED_FF
+			application = nil
 		} else {
-			var err error
-			application, err = applicationIdFromArgument(applicationIdArgument)
+			applicationId, err := applicationIdFromArgument(applicationIdArgument)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error getting application id from argument")
 			}
+			application = &applicationId
 		}
 	}
 

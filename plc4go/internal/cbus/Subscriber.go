@@ -118,9 +118,6 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 					continue
 				}
 			}
-			application := field.GetApplication()
-			// TODO: filter in unit address
-			_ = application
 
 			subscriptionType := subscriptionRequest.GetType(fieldName)
 			// TODO: handle subscriptionType
@@ -190,6 +187,12 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 				}
 			default:
 				return false
+			}
+			if application := field.GetApplication(); application != nil {
+				if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
+					log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
+					continue
+				}
 			}
 			statusType := "binary"
 			if isLevel {
@@ -262,9 +265,9 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 				}
 			}
 
-			if application := field.GetApplication(); application != readWriteModel.ApplicationIdContainer_RESERVED_FF {
+			if application := field.GetApplication(); application != nil {
 				if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
-					log.Debug().Msgf("Current application id %s  doesn't matchactual id %s", unitAddressString, actualApplicationIdString)
+					log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
 					continue
 				}
 			}
