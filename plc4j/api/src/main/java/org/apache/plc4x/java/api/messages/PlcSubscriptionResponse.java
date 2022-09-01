@@ -27,8 +27,17 @@ public interface PlcSubscriptionResponse extends PlcSubscriptionFieldResponse {
     @Override
     PlcSubscriptionRequest getRequest();
 
+    /**
+     * Returns a {@link PlcSubscriptionHandle} associated with a {@code name} from {@link PlcSubscriptionRequest#getField(String)}
+     *
+     * @param name the field name which a {@link PlcSubscriptionHandle} is required to
+     * @return a {@link PlcSubscriptionHandle}
+     */
     PlcSubscriptionHandle getSubscriptionHandle(String name);
 
+    /**
+     * @return all {@link PlcSubscriptionHandle}s
+     */
     Collection<PlcSubscriptionHandle> getSubscriptionHandles();
 
 }
