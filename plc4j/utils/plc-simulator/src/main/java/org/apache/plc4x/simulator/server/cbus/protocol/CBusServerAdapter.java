@@ -286,6 +286,11 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 if (statusRequest instanceof StatusRequestBinaryState) {
                     StatusRequestBinaryState statusRequestBinaryState = (StatusRequestBinaryState) statusRequest;
                     LOGGER.info("Handling StatusRequestBinaryState\n{}", statusRequestBinaryState);
+                    if (statusRequestBinaryState.getApplication() == ApplicationIdContainer.NETWORK_CONTROL) {
+                        LOGGER.info("Handling installation MMI Request");
+                        sendInstallationMMIResponse(ctx, requestCommand, statusRequestBinaryState.getApplication());
+                        return;
+                    }
                     CALReply calReply;
                     if (exstat) {
                         // TODO: map actuall values from simulator
@@ -316,6 +321,11 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 if (statusRequest instanceof StatusRequestBinaryStateDeprecated) {
                     StatusRequestBinaryStateDeprecated statusRequestBinaryStateDeprecated = (StatusRequestBinaryStateDeprecated) statusRequest;
                     LOGGER.info("Handling StatusRequestBinaryStateDeprecated\n{}", statusRequestBinaryStateDeprecated);
+                    if (statusRequestBinaryStateDeprecated.getApplication() == ApplicationIdContainer.NETWORK_CONTROL) {
+                        LOGGER.info("Handling installation MMI Request");
+                        sendInstallationMMIResponse(ctx, requestCommand, statusRequestBinaryStateDeprecated.getApplication());
+                        return;
+                    }
                     CALReply calReply;
                     if (exstat) {
                         // TODO: map actuall values from simulator
@@ -393,6 +403,84 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             ReplyOrConfirmationConfirmation replyOrConfirmationConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, null, cBusOptions, requestContext);
             CBusMessage response = new CBusMessageToClient(replyOrConfirmationConfirmation, requestContext, cBusOptions);
             LOGGER.info("Send response\n{}", response);
+            ctx.writeAndFlush(response);
+        }
+    }
+
+    private static void sendInstallationMMIResponse(ChannelHandlerContext ctx, RequestCommand requestCommand, ApplicationIdContainer application) {
+        LOGGER.info("Send installation mmis");
+        {
+            byte blockStart = 0x0;
+            List<StatusByte> unitStatusBytes = new LinkedList<>();
+            for (int i = blockStart; i <= 88 - 4; i = i + 4) {
+                LOGGER.debug("Handling units 0-88 {},{},{},{}", i, (i + 1), (i + 2), (i + 3));
+                unitStatusBytes.add(
+                    new StatusByte(
+                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 2)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
+                    )
+                );
+            }
+            LOGGER.debug("Produced {}, status bytes which equates to {} status", unitStatusBytes.size(), unitStatusBytes.size() * 4);
+            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_22Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
+            CALReply calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+            EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+            ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
+            ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+            Alpha alpha = requestCommand.getAlpha();
+            if (alpha != null) {
+                Confirmation confirmation = new Confirmation(alpha, null, ConfirmationType.CONFIRMATION_SUCCESSFUL);
+                replyOrConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, replyOrConfirmation, cBusOptions, requestContext);
+            }
+            CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+            ctx.writeAndFlush(response);
+        }
+        {
+            byte blockStart = 88;
+            List<StatusByte> unitStatusBytes = new LinkedList<>();
+            for (int i = 88; i <= 88 + 88 - 4; i = i + 4) {
+                LOGGER.debug("Handling units 88-176 {},{},{},{}", i, (i + 1), (i + 2), (i + 3));
+                unitStatusBytes.add(
+                    new StatusByte(
+                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 2)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
+                    )
+                );
+            }
+            LOGGER.debug("Produced {}, status bytes which equates to {} status", unitStatusBytes.size(), unitStatusBytes.size() * 4);
+            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_22Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
+            CALReply calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+            EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+            ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
+            ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+            CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+            ctx.writeAndFlush(response);
+        }
+        {
+            byte blockStart = (byte) 176;
+            List<StatusByte> unitStatusBytes = new LinkedList<>();
+            for (int i = 176; i <= 176 + 80 - 4; i = i + 4) {
+                LOGGER.debug("Handling units 176-256 {},{},{},{}", i, (i + 1), (i + 2), (i + 3));
+                unitStatusBytes.add(
+                    new StatusByte(
+                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 2)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
+                    )
+                );
+            }
+            LOGGER.debug("Produced {}, status bytes which equates to {} status", unitStatusBytes.size(), unitStatusBytes.size() * 4);
+            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_21Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
+            CALReply calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+            EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+            ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
+            ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+            CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
             ctx.writeAndFlush(response);
         }
     }

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -401,27 +402,56 @@ public class RandomPackagesTest {
         assertMessageMatches(bytes, msg);
     }
 
-    @Test
-    void initiateMMI() throws Exception {
-        byte[] bytes = (  "\\05FF007AFF0083g\r").getBytes(StandardCharsets.UTF_8);
-        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
-        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
-        assertThat(msg).isNotNull();
-        System.out.println(msg);
+    @Nested
+    class InstallationMMI {
+        @Test
+        void initiateMMI() throws Exception {
+            byte[] bytes = ("\\05FF007AFF0083g\r").getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, false, requestContext, cBusOptions);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
 
-        assertMessageMatches(bytes, msg);
+            assertMessageMatches(bytes, msg);
+        }
+
+        @Test
+        void initiateMMIReponse1() throws Exception {
+            byte[] bytes = ("g.86020200F900FF0094120006000000000000000008000000000000000000CA\r\n").getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+
+            assertMessageMatches(bytes, msg);
+        }
+
+        @Test
+        void initiateMMIReponse2() throws Exception {
+            byte[] bytes = ("86020200F900FF580000000000000000000000000000000000000000000026\r\n").getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+
+            assertMessageMatches(bytes, msg);
+        }
+
+        @Test
+        void initiateMMIReponse3() throws Exception {
+            byte[] bytes = ("86020200F700FFB00000000000000000000000000000000000000000D0\r\n").getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+
+            assertMessageMatches(bytes, msg);
+        }
     }
 
-    @Test
-    void initiateMMIReponse() throws Exception {
-        byte[] bytes = (  "g.86020200F900FF0094120006000000000000000008000000000000000000CA\r\n").getBytes(StandardCharsets.UTF_8);
-        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
-        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
-        assertThat(msg).isNotNull();
-        System.out.println(msg);
 
-        assertMessageMatches(bytes, msg);
-    }
 }
