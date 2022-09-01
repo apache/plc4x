@@ -40,6 +40,7 @@
     <module>opm</module>
     <module>plc4x-server</module>
     <module>scraper</module>
+    <module>ui</module>
   </modules>
 
 </project>
