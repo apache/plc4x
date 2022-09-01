@@ -57,6 +57,8 @@ const (
 	ApplicationId_MEDIA_TRANSPORT_CONTROL            ApplicationId = 0x14
 	ApplicationId_ERROR_REPORTING                    ApplicationId = 0x15
 	ApplicationId_HVAC_ACTUATOR                      ApplicationId = 0x16
+	ApplicationId_INFO_MESSAGES                      ApplicationId = 0x17
+	ApplicationId_NETWORK_CONTROL                    ApplicationId = 0x18
 )
 
 var ApplicationIdValues []ApplicationId
@@ -87,6 +89,8 @@ func init() {
 		ApplicationId_MEDIA_TRANSPORT_CONTROL,
 		ApplicationId_ERROR_REPORTING,
 		ApplicationId_HVAC_ACTUATOR,
+		ApplicationId_INFO_MESSAGES,
+		ApplicationId_NETWORK_CONTROL,
 	}
 }
 
@@ -138,6 +142,10 @@ func ApplicationIdByValue(value uint8) (enum ApplicationId, ok bool) {
 		return ApplicationId_ERROR_REPORTING, true
 	case 0x16:
 		return ApplicationId_HVAC_ACTUATOR, true
+	case 0x17:
+		return ApplicationId_INFO_MESSAGES, true
+	case 0x18:
+		return ApplicationId_NETWORK_CONTROL, true
 	}
 	return 0, false
 }
@@ -190,6 +198,10 @@ func ApplicationIdByName(value string) (enum ApplicationId, ok bool) {
 		return ApplicationId_ERROR_REPORTING, true
 	case "HVAC_ACTUATOR":
 		return ApplicationId_HVAC_ACTUATOR, true
+	case "INFO_MESSAGES":
+		return ApplicationId_INFO_MESSAGES, true
+	case "NETWORK_CONTROL":
+		return ApplicationId_NETWORK_CONTROL, true
 	}
 	return 0, false
 }
@@ -287,6 +299,10 @@ func (e ApplicationId) PLC4XEnumName() string {
 		return "ERROR_REPORTING"
 	case ApplicationId_HVAC_ACTUATOR:
 		return "HVAC_ACTUATOR"
+	case ApplicationId_INFO_MESSAGES:
+		return "INFO_MESSAGES"
+	case ApplicationId_NETWORK_CONTROL:
+		return "NETWORK_CONTROL"
 	}
 	return ""
 }

@@ -209,7 +209,7 @@ const (
 	ApplicationIdContainer_RESERVED_AA                           ApplicationIdContainer = 0xAA
 	ApplicationIdContainer_RESERVED_AB                           ApplicationIdContainer = 0xAB
 	ApplicationIdContainer_AIR_CONDITIONING_AC                   ApplicationIdContainer = 0xAC
-	ApplicationIdContainer_RESERVED_AD                           ApplicationIdContainer = 0xAD
+	ApplicationIdContainer_INFO_MESSAGES                         ApplicationIdContainer = 0xAD
 	ApplicationIdContainer_RESERVED_AE                           ApplicationIdContainer = 0xAE
 	ApplicationIdContainer_RESERVED_AF                           ApplicationIdContainer = 0xAF
 	ApplicationIdContainer_RESERVED_B0                           ApplicationIdContainer = 0xB0
@@ -291,7 +291,7 @@ const (
 	ApplicationIdContainer_RESERVED_FC                           ApplicationIdContainer = 0xFC
 	ApplicationIdContainer_RESERVED_FD                           ApplicationIdContainer = 0xFD
 	ApplicationIdContainer_RESERVED_FE                           ApplicationIdContainer = 0xFE
-	ApplicationIdContainer_RESERVED_FF                           ApplicationIdContainer = 0xFF
+	ApplicationIdContainer_NETWORK_CONTROL                       ApplicationIdContainer = 0xFF
 )
 
 var ApplicationIdContainerValues []ApplicationIdContainer
@@ -472,7 +472,7 @@ func init() {
 		ApplicationIdContainer_RESERVED_AA,
 		ApplicationIdContainer_RESERVED_AB,
 		ApplicationIdContainer_AIR_CONDITIONING_AC,
-		ApplicationIdContainer_RESERVED_AD,
+		ApplicationIdContainer_INFO_MESSAGES,
 		ApplicationIdContainer_RESERVED_AE,
 		ApplicationIdContainer_RESERVED_AF,
 		ApplicationIdContainer_RESERVED_B0,
@@ -554,7 +554,7 @@ func init() {
 		ApplicationIdContainer_RESERVED_FC,
 		ApplicationIdContainer_RESERVED_FD,
 		ApplicationIdContainer_RESERVED_FE,
-		ApplicationIdContainer_RESERVED_FF,
+		ApplicationIdContainer_NETWORK_CONTROL,
 	}
 }
 
@@ -2296,7 +2296,7 @@ func (e ApplicationIdContainer) ApplicationId() ApplicationId {
 		}
 	case 0xAD:
 		{ /* '0xAD' */
-			return ApplicationId_RESERVED
+			return ApplicationId_INFO_MESSAGES
 		}
 	case 0xAE:
 		{ /* '0xAE' */
@@ -2624,7 +2624,7 @@ func (e ApplicationIdContainer) ApplicationId() ApplicationId {
 		}
 	case 0xFF:
 		{ /* '0xFF' */
-			return ApplicationId_RESERVED
+			return ApplicationId_NETWORK_CONTROL
 		}
 	default:
 		{
@@ -2990,7 +2990,7 @@ func ApplicationIdContainerByValue(value uint8) (enum ApplicationIdContainer, ok
 	case 0xAC:
 		return ApplicationIdContainer_AIR_CONDITIONING_AC, true
 	case 0xAD:
-		return ApplicationIdContainer_RESERVED_AD, true
+		return ApplicationIdContainer_INFO_MESSAGES, true
 	case 0xAE:
 		return ApplicationIdContainer_RESERVED_AE, true
 	case 0xAF:
@@ -3154,7 +3154,7 @@ func ApplicationIdContainerByValue(value uint8) (enum ApplicationIdContainer, ok
 	case 0xFE:
 		return ApplicationIdContainer_RESERVED_FE, true
 	case 0xFF:
-		return ApplicationIdContainer_RESERVED_FF, true
+		return ApplicationIdContainer_NETWORK_CONTROL, true
 	}
 	return 0, false
 }
@@ -3507,8 +3507,8 @@ func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok
 		return ApplicationIdContainer_RESERVED_AB, true
 	case "AIR_CONDITIONING_AC":
 		return ApplicationIdContainer_AIR_CONDITIONING_AC, true
-	case "RESERVED_AD":
-		return ApplicationIdContainer_RESERVED_AD, true
+	case "INFO_MESSAGES":
+		return ApplicationIdContainer_INFO_MESSAGES, true
 	case "RESERVED_AE":
 		return ApplicationIdContainer_RESERVED_AE, true
 	case "RESERVED_AF":
@@ -3671,8 +3671,8 @@ func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok
 		return ApplicationIdContainer_RESERVED_FD, true
 	case "RESERVED_FE":
 		return ApplicationIdContainer_RESERVED_FE, true
-	case "RESERVED_FF":
-		return ApplicationIdContainer_RESERVED_FF, true
+	case "NETWORK_CONTROL":
+		return ApplicationIdContainer_NETWORK_CONTROL, true
 	}
 	return 0, false
 }
@@ -4070,8 +4070,8 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 		return "RESERVED_AB"
 	case ApplicationIdContainer_AIR_CONDITIONING_AC:
 		return "AIR_CONDITIONING_AC"
-	case ApplicationIdContainer_RESERVED_AD:
-		return "RESERVED_AD"
+	case ApplicationIdContainer_INFO_MESSAGES:
+		return "INFO_MESSAGES"
 	case ApplicationIdContainer_RESERVED_AE:
 		return "RESERVED_AE"
 	case ApplicationIdContainer_RESERVED_AF:
@@ -4234,8 +4234,8 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 		return "RESERVED_FD"
 	case ApplicationIdContainer_RESERVED_FE:
 		return "RESERVED_FE"
-	case ApplicationIdContainer_RESERVED_FF:
-		return "RESERVED_FF"
+	case ApplicationIdContainer_NETWORK_CONTROL:
+		return "NETWORK_CONTROL"
 	}
 	return ""
 }

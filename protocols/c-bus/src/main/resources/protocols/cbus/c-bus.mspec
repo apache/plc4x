@@ -280,6 +280,8 @@
     ['0x14' MEDIA_TRANSPORT_CONTROL           ]
     ['0x15' ERROR_REPORTING                   ]
     ['0x16' HVAC_ACTUATOR                     ]
+    ['0x17' INFO_MESSAGES                     ]
+    ['0x18' NETWORK_CONTROL                   ]
 ]
 
 [enum uint 4 LightingCompatible
@@ -463,7 +465,7 @@
     ['0xAA' RESERVED_AA                           ['RESERVED'                          , 'NA'                  ]]
     ['0xAB' RESERVED_AB                           ['RESERVED'                          , 'NA'                  ]]
     ['0xAC' AIR_CONDITIONING_AC                   ['AIR_CONDITIONING'                  , 'NO'                  ]]
-    ['0xAD' RESERVED_AD                           ['RESERVED'                          , 'NA'                  ]] // INFO_MESSAGES
+    ['0xAD' INFO_MESSAGES                         ['INFO_MESSAGES'                     , 'NA'                  ]]
     ['0xAE' RESERVED_AE                           ['RESERVED'                          , 'NA'                  ]]
     ['0xAF' RESERVED_AF                           ['RESERVED'                          , 'NA'                  ]]
     ['0xB0' RESERVED_B0                           ['RESERVED'                          , 'NA'                  ]]
@@ -545,7 +547,7 @@
     ['0xFC' RESERVED_FC                           ['RESERVED'                          , 'NO'                  ]]
     ['0xFD' RESERVED_FD                           ['RESERVED'                          , 'NO'                  ]]
     ['0xFE' RESERVED_FE                           ['RESERVED'                          , 'NO'                  ]]
-    ['0xFF' RESERVED_FF                           ['RESERVED'                          , 'NO'                  ]] // NETWORK_CONTROL
+    ['0xFF' NETWORK_CONTROL                       ['NETWORK_CONTROL'                   , 'NO'                  ]]
 ]
 
 [type CALData(RequestContext requestContext)
