@@ -51,14 +51,15 @@ type DefaultPlcSubscriptionRequestBuilder struct {
 
 func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, subscriber spi.PlcSubscriber) *DefaultPlcSubscriptionRequestBuilder {
 	return &DefaultPlcSubscriptionRequestBuilder{
-		subscriber:   subscriber,
-		fieldHandler: fieldHandler,
-		valueHandler: valueHandler,
-		queries:      map[string]string{},
-		fields:       map[string]model.PlcField{},
-		fieldNames:   make([]string, 0),
-		types:        map[string]SubscriptionType{},
-		intervals:    map[string]time.Duration{},
+		subscriber:             subscriber,
+		fieldHandler:           fieldHandler,
+		valueHandler:           valueHandler,
+		queries:                map[string]string{},
+		fields:                 map[string]model.PlcField{},
+		fieldNames:             make([]string, 0),
+		types:                  map[string]SubscriptionType{},
+		intervals:              map[string]time.Duration{},
+		preRegisteredConsumers: make(map[string][]model.PlcSubscriptionEventConsumer),
 	}
 }
 
