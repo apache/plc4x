@@ -33,11 +33,12 @@ type SubscriptionHandle struct {
 }
 
 func NewSubscriptionHandle(subscriber *Subscriber, fieldName string, field any, fieldType spiModel.SubscriptionType, interval time.Duration) *SubscriptionHandle {
-	return &SubscriptionHandle{
-		DefaultPlcSubscriptionHandle: spiModel.NewDefaultPlcSubscriptionHandle(subscriber),
-		fieldName:                    fieldName,
-		field:                        field,
-		fieldType:                    fieldType,
-		interval:                     interval,
+	s := &SubscriptionHandle{
+		fieldName: fieldName,
+		field:     field,
+		fieldType: fieldType,
+		interval:  interval,
 	}
+	s.DefaultPlcSubscriptionHandle = spiModel.NewDefaultPlcSubscriptionHandleWithHandleToRegister(subscriber, s)
+	return s
 }

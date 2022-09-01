@@ -25,15 +25,28 @@ import (
 )
 
 type DefaultPlcSubscriptionHandle struct {
-	plcSubscriber spi.PlcSubscriber
+	handleToRegister model.PlcSubscriptionHandle
+	plcSubscriber    spi.PlcSubscriber
 }
 
+// NewDefaultPlcSubscriptionHandle can be used when the DefaultPlcSubscriptionHandle is sufficient
 func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) *DefaultPlcSubscriptionHandle {
-	return &DefaultPlcSubscriptionHandle{
+	handle := &DefaultPlcSubscriptionHandle{
 		plcSubscriber: plcSubscriber,
+	}
+	handle.handleToRegister = handle
+	return handle
+}
+
+// NewDefaultPlcSubscriptionHandleWithHandleToRegister should be used when an extension of DefaultPlcSubscriptionHandle is used
+func NewDefaultPlcSubscriptionHandleWithHandleToRegister(plcSubscriber spi.PlcSubscriber, handleToRegister model.PlcSubscriptionHandle) *DefaultPlcSubscriptionHandle {
+	return &DefaultPlcSubscriptionHandle{
+		handleToRegister: handleToRegister,
+		plcSubscriber:    plcSubscriber,
 	}
 }
 
+// Register registers at the spi.PlcSubscriber
 func (d *DefaultPlcSubscriptionHandle) Register(consumer model.PlcSubscriptionEventConsumer) model.PlcConsumerRegistration {
-	return d.plcSubscriber.Register(consumer, []model.PlcSubscriptionHandle{d})
+	return d.plcSubscriber.Register(consumer, []model.PlcSubscriptionHandle{d.handleToRegister})
 }
