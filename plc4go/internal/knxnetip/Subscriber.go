@@ -38,6 +38,7 @@ type Subscriber struct {
 func NewSubscriber(connection *Connection) *Subscriber {
 	return &Subscriber{
 		connection: connection,
+		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
 	}
 }
 
