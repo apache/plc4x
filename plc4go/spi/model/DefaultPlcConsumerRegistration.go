@@ -17,16 +17,37 @@
  * under the License.
  */
 
-package spi
+package model
 
 import (
-	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"math/rand"
 )
 
-type PlcSubscriber interface {
-	Subscribe(ctx context.Context, subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult
-	Unsubscribe(ctx context.Context, unsubscriptionRequest model.PlcUnsubscriptionRequest) <-chan model.PlcUnsubscriptionRequestResult
-	Register(consumer model.PlcSubscriptionEventConsumer, handles []model.PlcSubscriptionHandle) model.PlcConsumerRegistration
-	Unregister(registration model.PlcConsumerRegistration)
+type DefaultPlcConsumerRegistration struct {
+	consumerId    int
+	plcSubscriber spi.PlcSubscriber
+	handles       []model.PlcSubscriptionHandle
+}
+
+func NewDefaultPlcConsumerRegistration(plcSubscriber spi.PlcSubscriber, consumer model.PlcSubscriptionEventConsumer, handles ...model.PlcSubscriptionHandle) *DefaultPlcConsumerRegistration {
+	return &DefaultPlcConsumerRegistration{
+		plcSubscriber: plcSubscriber,
+		handles:       handles,
+		// TODO: we need a way to hash the consumer
+		consumerId: rand.Int(),
+	}
+}
+
+func (d *DefaultPlcConsumerRegistration) GetConsumerId() int {
+	return d.consumerId
+}
+
+func (d *DefaultPlcConsumerRegistration) GetSubscriptionHandles() []model.PlcSubscriptionHandle {
+	return d.handles
+}
+
+func (d *DefaultPlcConsumerRegistration) Unregister() {
+	d.plcSubscriber.Unregister(d)
 }

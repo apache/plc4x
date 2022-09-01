@@ -56,7 +56,7 @@ func main() {
 		// Intentionally catching all without datatype and the temperature values of the first floor with type
 		AddChangeOfStateQuery("all", "*/*/*").
 		AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
-		AddItemHandler(func(event model.PlcSubscriptionEvent) {
+		AddPreRegisteredConsumer("all", func(event model.PlcSubscriptionEvent) {
 			// Iterate over all fields that were triggered in the current event.
 			for _, fieldName := range event.GetFieldNames() {
 				if event.GetResponseCode(fieldName) == model.PlcResponseCode_OK {

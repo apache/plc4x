@@ -63,7 +63,7 @@ func TestBacnetDriverWithPcap(t *testing.T) {
 	defer connection.Close()
 	build, err := connection.SubscriptionRequestBuilder().
 		AddEventQuery("furz", "*/*/*").
-		AddItemHandler(func(event model.PlcSubscriptionEvent) {
+		AddPreRegisteredConsumer("furz", func(event model.PlcSubscriptionEvent) {
 			println(event)
 		}).
 		Build()

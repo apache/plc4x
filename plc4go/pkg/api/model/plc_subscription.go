@@ -34,7 +34,7 @@ type PlcSubscriptionEvent interface {
 	GetValue(name string) values.PlcValue
 }
 
-type PlcSubscriptionEventHandler func(event PlcSubscriptionEvent)
+type PlcSubscriptionEventConsumer func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
 	AddCyclicQuery(name string, query string, interval time.Duration) PlcSubscriptionRequestBuilder
@@ -43,7 +43,7 @@ type PlcSubscriptionRequestBuilder interface {
 	AddChangeOfStateField(name string, field PlcField) PlcSubscriptionRequestBuilder
 	AddEventQuery(name string, query string) PlcSubscriptionRequestBuilder
 	AddEventField(name string, field PlcField) PlcSubscriptionRequestBuilder
-	AddItemHandler(handler PlcSubscriptionEventHandler) PlcSubscriptionRequestBuilder
+	AddPreRegisteredConsumer(name string, consumer PlcSubscriptionEventConsumer) PlcSubscriptionRequestBuilder
 	Build() (PlcSubscriptionRequest, error)
 }
 
@@ -54,16 +54,25 @@ type PlcSubscriptionRequestResult interface {
 }
 
 type PlcSubscriptionRequest interface {
+	PlcRequest
 	Execute() <-chan PlcSubscriptionRequestResult
 	ExecuteWithContext(ctx context.Context) <-chan PlcSubscriptionRequestResult
-	GetFieldNames() []string
-	GetField(name string) PlcField
-	GetEventHandler() PlcSubscriptionEventHandler
-	PlcRequest
 }
 
 type PlcSubscriptionResponse interface {
 	GetRequest() PlcSubscriptionRequest
 	GetFieldNames() []string
 	GetResponseCode(name string) PlcResponseCode
+	GetSubscriptionHandle(name string) (PlcSubscriptionHandle, error)
+	GetSubscriptionHandles() []PlcSubscriptionHandle
+}
+
+type PlcSubscriptionHandle interface {
+	Register(consumer PlcSubscriptionEventConsumer) PlcConsumerRegistration
+}
+
+type PlcConsumerRegistration interface {
+	GetConsumerId() int
+	GetSubscriptionHandles() []PlcSubscriptionHandle
+	Unregister()
 }

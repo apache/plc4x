@@ -17,16 +17,23 @@
  * under the License.
  */
 
-package spi
+package model
 
 import (
-	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
-type PlcSubscriber interface {
-	Subscribe(ctx context.Context, subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult
-	Unsubscribe(ctx context.Context, unsubscriptionRequest model.PlcUnsubscriptionRequest) <-chan model.PlcUnsubscriptionRequestResult
-	Register(consumer model.PlcSubscriptionEventConsumer, handles []model.PlcSubscriptionHandle) model.PlcConsumerRegistration
-	Unregister(registration model.PlcConsumerRegistration)
+type DefaultPlcSubscriptionHandle struct {
+	plcSubscriber spi.PlcSubscriber
+}
+
+func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) *DefaultPlcSubscriptionHandle {
+	return &DefaultPlcSubscriptionHandle{
+		plcSubscriber: plcSubscriber,
+	}
+}
+
+func (d *DefaultPlcSubscriptionHandle) Register(consumer model.PlcSubscriptionEventConsumer) model.PlcConsumerRegistration {
+	return d.plcSubscriber.Register(consumer, []model.PlcSubscriptionHandle{d})
 }

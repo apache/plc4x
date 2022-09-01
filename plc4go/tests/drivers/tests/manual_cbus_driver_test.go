@@ -64,7 +64,7 @@ func TestManualCBusDriver(t *testing.T) {
 		gotMonitor := make(chan bool)
 		subscriptionRequest, err := plcConnection.SubscriptionRequestBuilder().
 			AddEventQuery("something", "monitor/*/*").
-			AddItemHandler(func(event model.PlcSubscriptionEvent) {
+			AddPreRegisteredConsumer("something", func(event model.PlcSubscriptionEvent) {
 				fmt.Printf("\n%s", event)
 				select {
 				case gotMonitor <- true:

@@ -37,16 +37,16 @@ const (
 )
 
 type DefaultPlcSubscriptionRequestBuilder struct {
-	subscriber   spi.PlcSubscriber
-	fieldHandler spi.PlcFieldHandler
-	valueHandler spi.PlcValueHandler
-	eventHandler model.PlcSubscriptionEventHandler
-	queries      map[string]string
-	queryNames   []string
-	fields       map[string]model.PlcField
-	fieldNames   []string
-	types        map[string]SubscriptionType
-	intervals    map[string]time.Duration
+	subscriber             spi.PlcSubscriber
+	fieldHandler           spi.PlcFieldHandler
+	valueHandler           spi.PlcValueHandler
+	queries                map[string]string
+	queryNames             []string
+	fields                 map[string]model.PlcField
+	fieldNames             []string
+	types                  map[string]SubscriptionType
+	intervals              map[string]time.Duration
+	preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer
 }
 
 func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, subscriber spi.PlcSubscriber) *DefaultPlcSubscriptionRequestBuilder {
@@ -106,8 +106,11 @@ func (m *DefaultPlcSubscriptionRequestBuilder) AddEventField(name string, field 
 	return m
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddItemHandler(eventHandler model.PlcSubscriptionEventHandler) model.PlcSubscriptionRequestBuilder {
-	m.eventHandler = eventHandler
+func (m *DefaultPlcSubscriptionRequestBuilder) AddPreRegisteredConsumer(name string, consumer model.PlcSubscriptionEventConsumer) model.PlcSubscriptionRequestBuilder {
+	if m.preRegisteredConsumers[name] == nil {
+		m.preRegisteredConsumers[name] = make([]model.PlcSubscriptionEventConsumer, 0)
+	}
+	m.preRegisteredConsumers[name] = append(m.preRegisteredConsumers[name], consumer)
 	return m
 }
 
@@ -121,19 +124,19 @@ func (m *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionReq
 		m.fieldNames = append(m.fieldNames, name)
 		m.fields[name] = field
 	}
-	return NewDefaultPlcSubscriptionRequest(m.fields, m.fieldNames, m.types, m.intervals, m.subscriber, m.eventHandler), nil
+	return NewDefaultPlcSubscriptionRequest(m.fields, m.fieldNames, m.types, m.intervals, m.subscriber, m.preRegisteredConsumers), nil
 }
 
 type DefaultPlcSubscriptionRequest struct {
 	DefaultRequest
-	types        map[string]SubscriptionType
-	intervals    map[string]time.Duration
-	subscriber   spi.PlcSubscriber
-	eventHandler model.PlcSubscriptionEventHandler
+	types                  map[string]SubscriptionType
+	intervals              map[string]time.Duration
+	subscriber             spi.PlcSubscriber
+	preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer
 }
 
-func NewDefaultPlcSubscriptionRequest(fields map[string]model.PlcField, fieldNames []string, types map[string]SubscriptionType, intervals map[string]time.Duration, subscriber spi.PlcSubscriber, eventHandler model.PlcSubscriptionEventHandler) model.PlcSubscriptionRequest {
-	return DefaultPlcSubscriptionRequest{NewDefaultRequest(fields, fieldNames), types, intervals, subscriber, eventHandler}
+func NewDefaultPlcSubscriptionRequest(fields map[string]model.PlcField, fieldNames []string, types map[string]SubscriptionType, intervals map[string]time.Duration, subscriber spi.PlcSubscriber, preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer) model.PlcSubscriptionRequest {
+	return DefaultPlcSubscriptionRequest{NewDefaultRequest(fields, fieldNames), types, intervals, subscriber, preRegisteredConsumers}
 }
 
 func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {
@@ -142,10 +145,6 @@ func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionReq
 
 func (m DefaultPlcSubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcSubscriptionRequestResult {
 	return m.subscriber.Subscribe(ctx, m)
-}
-
-func (m DefaultPlcSubscriptionRequest) GetEventHandler() model.PlcSubscriptionEventHandler {
-	return m.eventHandler
 }
 
 func (m DefaultPlcSubscriptionRequest) GetType(name string) SubscriptionType {

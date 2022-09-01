@@ -370,7 +370,7 @@ var rootCommand = Command{
 				} else {
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 						AddEventQuery("subscriptionField", split[1]).
-						AddItemHandler(func(event model.PlcSubscriptionEvent) {
+						AddPreRegisteredConsumer("subscriptionField", func(event model.PlcSubscriptionEvent) {
 							numberOfMessagesReceived++
 							messageReceived(numberOfMessagesReceived, time.Now(), event)
 						}).

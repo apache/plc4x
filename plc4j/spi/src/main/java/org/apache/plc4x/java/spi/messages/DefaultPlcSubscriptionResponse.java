@@ -105,7 +105,7 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     @Override
     @JsonIgnore
     public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
-        return values.values().stream().map(ResponseItem<PlcSubscriptionHandle>::getValue).collect(Collectors.toList());
+        return values.values().stream().map(ResponseItem::getValue).collect(Collectors.toList());
     }
 
     public Map<String, ResponseItem<PlcSubscriptionHandle>> getValues() {

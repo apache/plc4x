@@ -17,16 +17,27 @@
  * under the License.
  */
 
-package spi
+package cbus
 
 import (
-	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"time"
 )
 
-type PlcSubscriber interface {
-	Subscribe(ctx context.Context, subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult
-	Unsubscribe(ctx context.Context, unsubscriptionRequest model.PlcUnsubscriptionRequest) <-chan model.PlcUnsubscriptionRequestResult
-	Register(consumer model.PlcSubscriptionEventConsumer, handles []model.PlcSubscriptionHandle) model.PlcConsumerRegistration
-	Unregister(registration model.PlcConsumerRegistration)
+type SubscriptionHandle struct {
+	*spiModel.DefaultPlcSubscriptionHandle
+	fieldName string
+	field     any
+	fieldType spiModel.SubscriptionType
+	interval  time.Duration
+}
+
+func NewSubscriptionHandle(subscriber *Subscriber, fieldName string, field any, fieldType spiModel.SubscriptionType, interval time.Duration) *SubscriptionHandle {
+	return &SubscriptionHandle{
+		DefaultPlcSubscriptionHandle: spiModel.NewDefaultPlcSubscriptionHandle(subscriber),
+		fieldName:                    fieldName,
+		field:                        field,
+		fieldType:                    fieldType,
+		interval:                     interval,
+	}
 }

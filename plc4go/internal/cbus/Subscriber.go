@@ -33,14 +33,13 @@ import (
 )
 
 type Subscriber struct {
-	connection           *Connection
-	subscriptionRequests []spiModel.DefaultPlcSubscriptionRequest
+	connection *Connection
+	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 }
 
 func NewSubscriber(connection *Connection) *Subscriber {
 	return &Subscriber{
-		connection:           connection,
-		subscriptionRequests: []spiModel.DefaultPlcSubscriptionRequest{},
+		connection: connection,
 	}
 }
 
@@ -48,21 +47,22 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	// TODO: handle context
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
+		internalPlcSubscriptionRequest := subscriptionRequest.(spiModel.DefaultPlcSubscriptionRequest)
+
 		// Add this subscriber to the connection.
 		m.connection.addSubscriber(m)
 
-		// Save the subscription request
-		m.subscriptionRequests = append(m.subscriptionRequests, subscriptionRequest.(spiModel.DefaultPlcSubscriptionRequest))
-
 		// Just populate all requests with an OK
 		responseCodes := map[string]apiModel.PlcResponseCode{}
-		for _, fieldName := range subscriptionRequest.GetFieldNames() {
+		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
+		for _, fieldName := range internalPlcSubscriptionRequest.GetFieldNames() {
 			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+			subscriptionValues[fieldName] = NewSubscriptionHandle(m, fieldName, internalPlcSubscriptionRequest.GetField(fieldName), internalPlcSubscriptionRequest.GetType(fieldName), internalPlcSubscriptionRequest.GetInterval(fieldName))
 		}
 
 		result <- &spiModel.DefaultPlcSubscriptionRequestResult{
 			Request:  subscriptionRequest,
-			Response: spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
+			Response: spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
 			Err:      nil,
 		}
 	}()
@@ -97,20 +97,23 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 		unitAddressString = "u0" // On short form it should be always unit 0 TODO: double check that
 	}
 	calData := calReply.GetCalData()
-	for _, subscriptionRequest := range m.subscriptionRequests {
-		fields := map[string]apiModel.PlcField{}
-		types := map[string]spiModel.SubscriptionType{}
-		intervals := map[string]time.Duration{}
-		responseCodes := map[string]apiModel.PlcResponseCode{}
-		address := map[string]string{}
-		plcValues := map[string]values.PlcValue{}
-
-		for _, fieldName := range subscriptionRequest.GetFieldNames() {
-			field, ok := subscriptionRequest.GetField(fieldName).(*mmiMonitorField)
+	for registration, consumer := range m.consumers {
+		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
+			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
+			field, ok := subscriptionHandle.field.(*mmiMonitorField)
 			if !ok {
 				log.Debug().Msgf("Unusable field for mmi subscription %s", field)
 				continue
 			}
+
+			fields := map[string]apiModel.PlcField{}
+			types := map[string]spiModel.SubscriptionType{}
+			intervals := map[string]time.Duration{}
+			responseCodes := map[string]apiModel.PlcResponseCode{}
+			address := map[string]string{}
+			plcValues := map[string]values.PlcValue{}
+			fieldName := subscriptionHandle.fieldName
+
 			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
 				unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
 				if !strings.HasSuffix(unitAddressString, unitSuffix) {
@@ -119,13 +122,13 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 				}
 			}
 
-			subscriptionType := subscriptionRequest.GetType(fieldName)
+			subscriptionType := subscriptionHandle.fieldType
 			// TODO: handle subscriptionType
 			_ = subscriptionType
 
 			fields[fieldName] = field
-			types[fieldName] = subscriptionRequest.GetType(fieldName)
-			intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
+			types[fieldName] = subscriptionHandle.fieldType
+			intervals[fieldName] = subscriptionHandle.interval
 
 			var applicationString string
 
@@ -203,8 +206,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
 				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, plcValues)
-				eventHandler := subscriptionRequest.GetEventHandler()
-				eventHandler(event)
+				consumer(event)
 			}
 		}
 	}
@@ -212,29 +214,29 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 }
 
 func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
-	// TODO: filter
-	for _, subscriptionRequest := range m.subscriptionRequests {
-		fields := map[string]apiModel.PlcField{}
-		types := map[string]spiModel.SubscriptionType{}
-		intervals := map[string]time.Duration{}
-		responseCodes := map[string]apiModel.PlcResponseCode{}
-		address := map[string]string{}
-		plcValues := map[string]values.PlcValue{}
-
-		for _, fieldName := range subscriptionRequest.GetFieldNames() {
-			field, ok := subscriptionRequest.GetField(fieldName).(SALMonitorField)
+	for registration, consumer := range m.consumers {
+		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
+			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
+			field, ok := subscriptionHandle.field.(SALMonitorField)
 			if !ok {
-				log.Debug().Msgf("Unusable field for sal subscription %s", field)
+				log.Debug().Msgf("Unusable field for mmi subscription %s", field)
 				continue
 			}
+			fields := map[string]apiModel.PlcField{}
+			types := map[string]spiModel.SubscriptionType{}
+			intervals := map[string]time.Duration{}
+			responseCodes := map[string]apiModel.PlcResponseCode{}
+			address := map[string]string{}
+			plcValues := map[string]values.PlcValue{}
+			fieldName := subscriptionHandle.fieldName
 
-			subscriptionType := subscriptionRequest.GetType(fieldName)
+			subscriptionType := subscriptionHandle.fieldType
 			// TODO: handle subscriptionType
 			_ = subscriptionType
 
 			fields[fieldName] = field
-			types[fieldName] = subscriptionRequest.GetType(fieldName)
-			intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
+			types[fieldName] = subscriptionType
+			intervals[fieldName] = subscriptionHandle.interval
 
 			var salData readWriteModel.SALData
 			var unitAddressString, applicationString string
@@ -289,10 +291,19 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
 				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, plcValues)
-				eventHandler := subscriptionRequest.GetEventHandler()
-				eventHandler(event)
+				consumer(event)
 			}
 		}
 	}
 	return true
+}
+
+func (m *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {
+	consumerRegistration := spiModel.NewDefaultPlcConsumerRegistration(m, consumer, handles...)
+	m.consumers[consumerRegistration] = consumer
+	return consumerRegistration
+}
+
+func (m *Subscriber) Unregister(registration apiModel.PlcConsumerRegistration) {
+	delete(m.consumers, registration.(*spiModel.DefaultPlcConsumerRegistration))
 }

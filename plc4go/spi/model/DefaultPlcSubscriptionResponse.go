@@ -22,18 +22,31 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 )
 
 type DefaultPlcSubscriptionResponse struct {
 	DefaultResponse
 	request model.PlcSubscriptionRequest
+	values  map[string]model.PlcSubscriptionHandle
 }
 
-func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcSubscriptionResponse {
-	return DefaultPlcSubscriptionResponse{
+func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, responseCodes map[string]model.PlcResponseCode, values map[string]model.PlcSubscriptionHandle) DefaultPlcSubscriptionResponse {
+	plcSubscriptionResponse := DefaultPlcSubscriptionResponse{
 		DefaultResponse: NewDefaultResponse(responseCodes),
 		request:         request,
+		values:          values,
 	}
+	for subscriptionFieldName, consumers := range request.(DefaultPlcSubscriptionRequest).preRegisteredConsumers {
+		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionFieldName)
+		if subscriptionHandle == nil || err != nil {
+			panic("PlcSubscriptionHandle for " + subscriptionFieldName + " not found")
+		}
+		for _, consumer := range consumers {
+			subscriptionHandle.Register(consumer)
+		}
+	}
+	return plcSubscriptionResponse
 }
 
 func (m DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionRequest {
@@ -43,12 +56,28 @@ func (m DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionReques
 func (m DefaultPlcSubscriptionResponse) GetFieldNames() []string {
 	var fieldNames []string
 	// We take the field names from the request to keep order as map is not ordered
-	for _, name := range m.request.GetFieldNames() {
+	for _, name := range m.request.(DefaultPlcSubscriptionRequest).GetFieldNames() {
 		if _, ok := m.responseCodes[name]; ok {
 			fieldNames = append(fieldNames, name)
 		}
 	}
 	return fieldNames
+}
+
+func (m DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (model.PlcSubscriptionHandle, error) {
+	if m.responseCodes[name] != model.PlcResponseCode_OK {
+		return nil, errors.Errorf("%s failed to subscribe", name)
+	}
+	return m.values[name], nil
+}
+
+func (m DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []model.PlcSubscriptionHandle {
+	result := make([]model.PlcSubscriptionHandle, 0, len(m.values))
+
+	for _, value := range m.values {
+		result = append(result, value)
+	}
+	return result
 }
 
 func (m DefaultPlcSubscriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
