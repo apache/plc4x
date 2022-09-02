@@ -33,8 +33,6 @@ import java.nio.charset.StandardCharsets;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcSTRING extends PlcSimpleValue<String> {
 
-    static int maxLength = 254;
-
     public static PlcSTRING of(Object value) {
         if (value instanceof String) {
             return new PlcSTRING((String) value);
@@ -45,10 +43,6 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcSTRING(@JsonProperty("value") String value) {
         super(value, true);
-        if (value.length() > maxLength) {
-            throw new IllegalArgumentException(
-                String.format("String length %d exceeds allowed maximum for type String (max %d)", value.length(), maxLength));
-        }
     }
 
     @Override
