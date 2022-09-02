@@ -19,8 +19,10 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PlcBrowseItem {
 
@@ -58,5 +60,10 @@ public interface PlcBrowseItem {
      * @return returns any children this item might have
      */
     List<PlcBrowseItem> getChildren();
+
+    /**
+     * @return returns a map of additional options the given protocol might provide.
+     */
+    Map<String, PlcValue> getOptions();
 
 }
