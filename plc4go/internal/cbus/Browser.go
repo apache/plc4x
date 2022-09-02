@@ -226,7 +226,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 
 		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-			log.Warn().Msgf("Ignoring v should contain a values field of type list", rootStruct)
+			log.Warn().Msgf("Ignoring %v should contain a values field of type list", rootStruct)
 			return
 		} else {
 			for unitByteAddress, plcValue := range plcListValue.GetList() {
@@ -242,7 +242,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 				case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
 					log.Debug().Msgf("unit %d does not exists", unitByteAddress)
 				case readWriteModel.GAVState_ERROR.PLC4XEnumName():
-					log.Warn().Msgf("unit %d is in error state")
+					log.Warn().Msgf("unit %d is in error state", unitByteAddress)
 				}
 			}
 		}
@@ -294,7 +294,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
 				log.Debug().Msgf("unit %d does not exists", unitByteAddress)
 			case readWriteModel.GAVState_ERROR.PLC4XEnumName():
-				log.Warn().Msgf("unit %d is in error state")
+				log.Warn().Msgf("unit %d is in error state", unitByteAddress)
 			}
 		}
 	}
