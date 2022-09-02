@@ -186,7 +186,6 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	blockOffset176ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
 	result := make(map[byte]any)
 	plcConsumerRegistration := subscriptionHandle.Register(func(event apiModel.PlcSubscriptionEvent) {
-		fmt.Printf("what %v\n", event)
 		if responseCode := event.GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
 			log.Warn().Msgf("Ignoring %v", event)
 			return
@@ -208,7 +207,6 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		} else {
 			blockStart = int(blockStartValue.GetByte())
 		}
-		println(blockStart)
 		switch blockStart {
 		case 88:
 			select {
