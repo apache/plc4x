@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -48,6 +47,8 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
 
     private final List<PlcBrowseItem> children;
 
+    private final Map<String, PlcValue> options;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcBrowseItem(@JsonProperty("address") String address,
                                 @JsonProperty("name") String name,
@@ -55,7 +56,8 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                                 @JsonProperty("readable") boolean readable,
                                 @JsonProperty("writable") boolean writable,
                                 @JsonProperty("subscribable") boolean subscribable,
-                                @JsonProperty("children") List<PlcBrowseItem> children) {
+                                @JsonProperty("children") List<PlcBrowseItem> children,
+                                @JsonProperty("options") Map<String, PlcValue> options) {
         this.address = address;
         this.name = name;
         this.dataType = dataType;
@@ -63,6 +65,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         this.writable = writable;
         this.subscribable = subscribable;
         this.children = children;
+        this.options = options;
     }
 
     @Override
@@ -98,6 +101,11 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     }
 
     @Override
+    public Map<String, PlcValue> getOptions() {
+        return options;
+    }
+
+    @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
         writeBuffer.writeString("address", address.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), address);
@@ -112,6 +120,18 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                 writeBuffer.popContext("child");
             }
             writeBuffer.popContext("children");
+        }
+        if(options != null && !options.isEmpty()) {
+            writeBuffer.pushContext("options");
+            for (Map.Entry<String, PlcValue> optionEntry : options.entrySet()) {
+                writeBuffer.pushContext("option");
+                writeBuffer.writeString("name", optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getKey());
+                // TODO: Find out how to serialize a PlcValue
+                //writeBuffer.writeString("value", optionEntry.getValue().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getValue());
+                ((DefaultPlcBrowseItem) optionEntry).serialize(writeBuffer);
+                writeBuffer.popContext("option");
+            }
+            writeBuffer.popContext("options");
         }
         writeBuffer.popContext(getClass().getSimpleName());
     }
