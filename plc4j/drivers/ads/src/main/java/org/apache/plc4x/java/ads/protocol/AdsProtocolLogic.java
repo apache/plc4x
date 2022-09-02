@@ -316,36 +316,46 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
         List<PlcBrowseItem> values = new ArrayList<>(symbolTable.size());
         for (AdsSymbolTableEntry symbol : symbolTable.values()) {
-            // Add the type itself.
-            values.add(new DefaultPlcBrowseItem(symbol.getName(), symbol.getDataTypeName()));
+            // Get the datatype of this entry.
             AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
             if (dataType == null) {
                 System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
                 continue;
             }
-            // Recursively add all children of the current datatype.
-            values.addAll(getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), dataType));
+            String itemName = (symbol.getComment() == null || symbol.getComment().isEmpty()) ? symbol.getName() : symbol.getComment();
+            // Convert the plc value type from the ADS specific one to the PLC4X global one.
+            org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
+
+            // If this type has children, add entries for its children.
+            List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
+            // Add the type itself.
+            values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true, !symbol.getFlagReadOnly(), true, children));
         }
         DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
         future.complete(response);
         return future;
     }
 
-    protected List<PlcBrowseItem> getBrowseItems(String basePath, long baseGroupId, long baseOffset, AdsDataTypeTableEntry dataType) {
+    protected List<PlcBrowseItem> getBrowseItems(String basePath, long baseGroupId, long baseOffset, boolean parentWritable, AdsDataTypeTableEntry dataType) {
         if (dataType.getNumChildren() == 0) {
             return Collections.emptyList();
         }
 
         List<PlcBrowseItem> values = new ArrayList<>(dataType.getNumChildren());
         for (AdsDataTypeTableChildEntry child : dataType.getChildren()) {
-            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), child.getDataTypeName()));
             AdsDataTypeTableEntry childDataType = dataTypeTable.get(child.getDataTypeName());
             if (childDataType == null) {
                 System.out.printf("couldn't find datatype: %s%n", child.getDataTypeName());
                 continue;
             }
+            String itemAddress = basePath + "." + child.getPropertyName();
+            String itemName = (child.getComment() == null || child.getComment().isEmpty()) ? child.getPropertyName() : child.getComment();
+            // Convert the plc value type from the ADS specific one to the PLC4X global one.
+            org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(childDataType).toString());
             // Recursively add all children of the current datatype.
-            values.addAll(getBrowseItems(child.getDataTypeName(), baseGroupId, baseOffset + child.getOffset(), childDataType));
+            List<PlcBrowseItem> children = getBrowseItems(itemAddress, baseGroupId, baseOffset + child.getOffset(), parentWritable, childDataType);
+            // Add the type itself.
+            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName, plc4xPlcValueType, true, parentWritable, true, children));
         }
         return values;
     }
@@ -1364,6 +1374,23 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             // Then check if this is an array.
             if (dataTypeTableEntry.getArrayDimensions() > 0) {
                 return PlcValueType.List;
+            }
+            // There seem to be some data types, that have odd names, but no children
+            // So we'll check if their "simpleTypeName" matches instead.
+            if(dataTypeTableEntry.getChildren().isEmpty()) {
+                try {
+                    dataTypeName = dataTypeTableEntry.getSimpleTypeName();
+                    if (dataTypeName.startsWith("STRING(")) {
+                        dataTypeName = "STRING";
+                    } else if (dataTypeName.startsWith("WSTRING(")) {
+                        dataTypeName = "WSTRING";
+                    }
+
+                    return PlcValueType.valueOf(dataTypeName);
+                } catch (IllegalArgumentException e2) {
+                    // In this case it's something we can't handle.
+                    return PlcValueType.NULL;
+                }
             }
             return PlcValueType.Struct;
         }

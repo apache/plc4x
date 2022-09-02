@@ -52,7 +52,7 @@ public class HelloPlc4xDiscoverAndBrowse {
                                     throwable.printStackTrace();
                                 } else {
                                     for (PlcBrowseItem value : browseResponse.getValues()) {
-                                        System.out.println(String.format("%60s : %60s", value.getAddress(), value.getDataType()));
+                                        System.out.println(String.format("%60s : %60s", value.getAddress(), value.getPlcValueType().name()));
                                     }
                                 }
                             });
