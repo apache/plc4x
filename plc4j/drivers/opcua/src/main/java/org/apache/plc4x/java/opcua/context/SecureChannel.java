@@ -347,12 +347,11 @@ public class SecureChannel {
                                 channelId.set((int) ((ChannelSecurityToken) openSecureChannelResponse.getSecurityToken()).getChannelId());
                                 onConnectCreateSessionRequest(context);
                             } catch (PlcConnectionException e) {
-                                LOGGER.error("Error occurred while connecting to OPC UA server");
-                                e.printStackTrace();
+                                LOGGER.error("Error occurred while connecting to OPC UA server", e);
                             }
                         }
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        LOGGER.error("Error parsing", e);
                     }
                 });
             LOGGER.debug("Submitting OpenSecureChannel with id of {}", transactionId);
@@ -450,7 +449,7 @@ public class SecureChannel {
                         }
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error parsing", e);
                 }
 
             };
@@ -461,8 +460,7 @@ public class SecureChannel {
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for subscription response");
-                e.printStackTrace();
+                LOGGER.error("Error while waiting for subscription response", e);
             };
 
             submit(context, timeout, error, consumer, buffer);
@@ -561,29 +559,26 @@ public class SecureChannel {
                                 LOGGER.error("Subscription ServiceFault returned from server with error code,  '{}'", header.getServiceResult().toString());
                             }
                         } catch (ParseException e) {
-                            LOGGER.error("Unable to parse the returned Subscription response");
-                            e.printStackTrace();
+                            LOGGER.error("Unable to parse the returned Subscription response", e);
                         }
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error parsing", e);
                 }
 
             };
 
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for activate session response");
-                e.printStackTrace();
+                LOGGER.error("Timeout while waiting for activate session response", e);
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for activate session response");
-                e.printStackTrace();
+                LOGGER.error("Error while waiting for activate session response", e);
             };
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
-            LOGGER.error("Unable to to Parse Activate Session Request");
+            LOGGER.error("Unable to to Parse Activate Session Request", e);
         }
     }
 
@@ -652,24 +647,22 @@ public class SecureChannel {
                         }
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error parsing", e);
                 }
 
             };
 
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for close session response");
-                e.printStackTrace();
+                LOGGER.error("Timeout while waiting for close session response", e);
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for close session response");
-                e.printStackTrace();
+                LOGGER.error("Error while waiting for close session response", e);
             };
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
-            LOGGER.error("Unable to to Parse Close Session Request");
+            LOGGER.error("Unable to to Parse Close Session Request", e);
         }
     }
 
@@ -743,7 +736,6 @@ public class SecureChannel {
         channelTransactionManager.submit(requestConsumer, channelTransactionManager.getTransactionIdentifier());
 
     }
-
 
 
     public void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
@@ -908,7 +900,7 @@ public class SecureChannel {
                             onDiscoverCloseSecureChannel(context, response);
                         }
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        LOGGER.error("Error parsing", e);
                     }
                 });
 

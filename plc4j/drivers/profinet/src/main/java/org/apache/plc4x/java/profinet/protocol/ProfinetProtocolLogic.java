@@ -66,7 +66,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
     @Override
     public void onConnect(ConversationContext<Ethernet_Frame> context) {
         final Channel channel = context.getChannel();
-        if(!(channel instanceof RawSocketChannel)) {
+        if (!(channel instanceof RawSocketChannel)) {
             logger.warn("Expected a 'raw' transport, closing channel...");
             context.getChannel().close();
             return;
@@ -116,7 +116,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         // Generate a new session key.
         profinetDriverContext.setSessionKey(sessionKeyGenerator.getAndIncrement());
         // Reset the session key as soon as it reaches the max for a 16 bit uint
-        if(sessionKeyGenerator.get() == 0xFFFF) {
+        if (sessionKeyGenerator.get() == 0xFFFF) {
             sessionKeyGenerator.set(1);
         }
 
@@ -141,7 +141,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             udpSocket.receive(connectResponsePacket);
             ReadBufferByteBased readBuffer = new ReadBufferByteBased(resultBuffer);
             final DceRpc_Packet dceRpc_packet = DceRpc_Packet.staticParse(readBuffer);
-            if((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+            if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
                 if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
                     // Get the remote MAC address and store it in the context.
                     final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
@@ -162,14 +162,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             } else {
                 throw new PlcException("Unexpected response");
             }
-        } catch (SerializationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (PlcException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (SerializationException | IOException | PlcException | ParseException e) {
+            logger.error("Error", e);
         }
 
         //System.out.println(rawSocketChannel);
@@ -200,7 +194,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
     }
 
 
-
     private Optional<PcapNetworkInterface> getNetworkInterfaceForConnection(InetAddress address) {
         try {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
@@ -228,7 +221,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 profinetDriverContext.getDceRpcActivityUuid(),
                 0, 0, DceRpc_Operation.CONNECT,
-                new PnIoCm_Packet_Req(404, 404, 404,0, 404,
+                new PnIoCm_Packet_Req(404, 404, 404, 0, 404,
                     Arrays.asList(
                         new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                             new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")),

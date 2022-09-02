@@ -47,11 +47,11 @@ public class ArpUtils {
         // Check if libpcap is available.
         try {
             String libVersion = Pcaps.libVersion();
-            if(libVersion.startsWith("libpcap version ")) {
+            if (libVersion.startsWith("libpcap version ")) {
                 libVersion = libVersion.substring(16);
                 // If we're on MacOS we need to check if we're at least at version 1.10.1 as the default bundled with
                 // the os has issues.
-                if(SystemUtils.IS_OS_MAC) {
+                if (SystemUtils.IS_OS_MAC) {
                     if (!checkVersionAtLeast(libVersion, "1.10.1")) {
                         logger.warn("On MacOS libpcap 1.10.1 is required, this system uses libpcap " + libVersion + ". " +
                             "When using libpcap from homebrew, make sure to have added the library path. " +
@@ -68,11 +68,11 @@ public class ArpUtils {
         }
 
         Set<InetAddress> foundAddresses = new HashSet<>();
-        try{
+        try {
             // Calculate all ip addresses, this device can reach.
             Map<String, List<String>> addresses = new HashMap<>();
             for (PcapAddress address : nif.getAddresses()) {
-                if(address instanceof PcapIpV4Address) {
+                if (address instanceof PcapIpV4Address) {
                     final PcapIpV4Address ipV4Address = (PcapIpV4Address) address;
                     SubnetUtils su = new SubnetUtils(ipV4Address.getAddress().getHostAddress(), ipV4Address.getNetmask().getHostAddress());
                     final String currentAddress = ipV4Address.getAddress().getHostAddress();
@@ -83,7 +83,7 @@ public class ArpUtils {
                 }
             }
             // If this device doesn't have any addresses, abort.
-            if(addresses.isEmpty()) {
+            if (addresses.isEmpty()) {
                 return Collections.emptySet();
             }
 
@@ -92,7 +92,7 @@ public class ArpUtils {
                 .map(linkLayerAddress -> (MacAddress) linkLayerAddress).findFirst();
             // If we couldn't find a local mac address, abort.
             //noinspection SimplifyOptionalCallChains (Not compatible with Java 8)
-            if(!first.isPresent()) {
+            if (!first.isPresent()) {
                 return Collections.emptySet();
             }
             final MacAddress localMacAddress = first.get();
@@ -110,7 +110,7 @@ public class ArpUtils {
                 sb.append(" and ether dst ").append(Pcaps.toBpfString(localMacAddress)).append(" and (");
                 boolean firstAddress = true;
                 for (String localAddress : addresses.keySet()) {
-                    if(!firstAddress) {
+                    if (!firstAddress) {
                         sb.append(" or ");
                     }
                     sb.append("(dst host ").append(localAddress).append(")");
@@ -138,7 +138,7 @@ public class ArpUtils {
                     try {
                         while (receivingHandle.isOpen()) {
                             final Packet nextPacket = receivingHandle.getNextPacket();
-                            if(nextPacket != null) {
+                            if (nextPacket != null) {
                                 listener.gotPacket(nextPacket);
                             }
                         }
@@ -184,7 +184,7 @@ public class ArpUtils {
                     Thread.currentThread().interrupt();
                 }
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                logger.error("error", e);
             } finally {
                 // Gracefully shut down.
                 if (receivingHandle.isOpen()) {

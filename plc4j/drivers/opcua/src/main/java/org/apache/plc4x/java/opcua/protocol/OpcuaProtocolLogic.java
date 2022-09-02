@@ -41,6 +41,7 @@ import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.Instant;
@@ -57,7 +58,7 @@ import java.util.function.Consumer;
 public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements HasConfiguration<OpcuaConfiguration>, PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
-    protected static final PascalString NULL_STRING = new PascalString( "");
+    protected static final PascalString NULL_STRING = new PascalString("");
     private static ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),
@@ -138,7 +139,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getFieldNames().size());
         Iterator<String> iterator = request.getFieldNames().iterator();
-        for (int i = 0; i < request.getFieldNames().size(); i++ ) {
+        for (int i = 0; i < request.getFieldNames().size(); i++) {
             String fieldName = iterator.next();
             OpcuaField field = (OpcuaField) request.getField(fieldName);
 
@@ -174,7 +175,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             extObject.serialize(buffer);
 
             /* Functional Consumer example using inner class */
-            Consumer<byte []> consumer = opcuaResponse -> {
+            Consumer<byte[]> consumer = opcuaResponse -> {
                 PlcReadResponse response = null;
                 try {
                     ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
@@ -197,7 +198,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     }
                 } catch (ParseException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
-                };
+                }
+                ;
             };
 
             /* Functional Consumer example using inner class */
@@ -242,7 +244,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         PlcResponseCode responseCode = PlcResponseCode.OK;
         Map<String, ResponseItem<PlcValue>> response = new HashMap<>();
         int count = 0;
-        for ( String field : fieldNames ) {
+        for (String field : fieldNames) {
             PlcValue value = null;
             if (results.get(count).getValueSpecified()) {
                 Variant variant = results.get(count).getValue();
@@ -369,7 +371,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         tmpValue[i] = strings.get(i).toString();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
-                }else if (variant instanceof VariantStatusCode) {
+                } else if (variant instanceof VariantStatusCode) {
                     int length = ((VariantStatusCode) variant).getValue().size();
                     List<StatusCode> strings = ((VariantStatusCode) variant).getValue();
                     String[] tmpValue = new String[length];
@@ -391,7 +393,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     value = plcList;
                 } else {
                     responseCode = PlcResponseCode.UNSUPPORTED;
-                    LOGGER.error("Data type - " +  variant.getClass() + " is not supported ");
+                    LOGGER.error("Data type - " + variant.getClass() + " is not supported ");
                 }
             } else {
                 if (results.get(count).getStatusCode().getStatusCode() == OpcuaStatusCode.BadNodeIdUnknown.getValue()) {
@@ -658,7 +660,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             case "CHAR":
             case "STRING":
 
-            // UTF-16 Characters and Strings
+                // UTF-16 Characters and Strings
             case "WCHAR":
             case "WSTRING":
             case "STRING16":
@@ -755,7 +757,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 try {
                     responseMessage = (WriteResponse) ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    throw new PlcRuntimeException(e);
                 }
                 PlcWriteResponse response = writeResponse(request, responseMessage);
 
@@ -786,7 +788,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         Map<String, PlcResponseCode> responseMap = new HashMap<>();
         List<StatusCode> results = writeResponse.getResults();
         Iterator<String> responseIterator = request.getFieldNames().iterator();
-        for (int i = 0; i < request.getFieldNames().size(); i++ ) {
+        for (int i = 0; i < request.getFieldNames().size(); i++) {
             String fieldName = responseIterator.next();
             OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(results.get(i).getStatusCode());
             switch (statusCode) {
@@ -809,7 +811,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return CompletableFuture.supplyAsync(() -> {
             Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
             long subscriptionId;
-            ArrayList<String> fields = new ArrayList<>( subscriptionRequest.getFieldNames() );
+            ArrayList<String> fields = new ArrayList<>(subscriptionRequest.getFieldNames());
             long cycleTime = (subscriptionRequest.getField(fields.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
             try {
@@ -887,24 +889,21 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting on the crate subscription response");
-                e.printStackTrace();
+                LOGGER.error("Timeout while waiting on the crate subscription response", e);
                 // Pass the response back to the application.
                 future.completeExceptionally(e);
             };
 
             /* Functional Consumer example using inner class */
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while creating the subscription");
-                e.printStackTrace();
+                LOGGER.error("Error while creating the subscription", e);
                 // Pass the response back to the application.
                 future.completeExceptionally(e);
             };
 
             channel.submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
-            LOGGER.error("Error while creating the subscription");
-            e.printStackTrace();
+            LOGGER.error("Error while creating the subscription", e);
             future.completeExceptionally(e);
         }
         return future;
@@ -946,8 +945,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private GuidValue toGuidValue(String identifier) {
         LOGGER.error("Querying Guid nodes is not supported");
-        byte[] data4 = new byte[] {0,0};
-        byte[] data5 = new byte[] {0,0,0,0,0,0};
-        return new GuidValue(0L,0,0,data4, data5);
+        byte[] data4 = new byte[]{0, 0};
+        byte[] data5 = new byte[]{0, 0, 0, 0, 0, 0};
+        return new GuidValue(0L, 0, 0, data4, data5);
     }
 }
