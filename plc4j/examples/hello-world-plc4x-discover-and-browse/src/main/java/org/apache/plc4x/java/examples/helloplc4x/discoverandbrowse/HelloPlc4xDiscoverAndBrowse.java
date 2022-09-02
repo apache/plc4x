@@ -52,7 +52,7 @@ public class HelloPlc4xDiscoverAndBrowse {
                                     throwable.printStackTrace();
                                 } else {
                                     for (PlcBrowseItem value : browseResponse.getValues()) {
-                                        System.out.println(String.format("%60s : %60s", value.getAddress(), value.getPlcValueType().name()));
+                                        outputBrowseItem(value, 0);
                                     }
                                 }
                             });
@@ -63,6 +63,21 @@ public class HelloPlc4xDiscoverAndBrowse {
                         throw new RuntimeException(e);
                     }
                 });
+            }
+        }
+    }
+
+    protected static void outputBrowseItem(PlcBrowseItem browseItem, int indent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("   ".repeat(Math.max(0, indent)));
+        System.out.println(String.format(sb + "%s : %s (%s %s %s)", browseItem.getAddress(),
+            browseItem.getPlcValueType().name(),
+            browseItem.isReadable() ? "R" : " ",
+            browseItem.isReadable() ? "W" : " ",
+            browseItem.isReadable() ? "S" : " "));
+        if(!browseItem.getChildren().isEmpty()) {
+            for (PlcBrowseItem child : browseItem.getChildren()) {
+                outputBrowseItem(child, indent + 1);
             }
         }
     }
