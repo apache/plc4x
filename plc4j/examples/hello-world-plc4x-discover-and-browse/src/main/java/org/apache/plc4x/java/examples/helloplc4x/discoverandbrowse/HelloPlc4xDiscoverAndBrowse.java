@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -72,8 +71,8 @@ public class HelloPlc4xDiscoverAndBrowse {
             browseItem.getAddress(),
             browseItem.getPlcValueType().name(),
             browseItem.isReadable() ? "R" : " ",
-            browseItem.isReadable() ? "W" : " ",
-            browseItem.isReadable() ? "S" : " ");
+            browseItem.isWritable() ? "W" : " ",
+            browseItem.isSubscribable() ? "S" : " ");
         if (!browseItem.getChildren().isEmpty()) {
             for (PlcBrowseItem child : browseItem.getChildren()) {
                 outputBrowseItem(child, indent + 1);
