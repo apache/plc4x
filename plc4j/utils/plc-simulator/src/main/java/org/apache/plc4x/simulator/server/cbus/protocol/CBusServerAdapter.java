@@ -416,15 +416,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 LOGGER.debug("Handling units 0-88 {},{},{},{}", i, (i + 1), (i + 2), (i + 3));
                 unitStatusBytes.add(
                     new StatusByte(
-                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
-                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
                         AVAILABLE_UNITS.contains((byte) (i + 2)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
-                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
+                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
                     )
                 );
             }
             LOGGER.debug("Produced {}, status bytes which equates to {} status", unitStatusBytes.size(), unitStatusBytes.size() * 4);
-            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_22Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
+            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
             CALReply calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
             EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
@@ -435,6 +435,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 replyOrConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, replyOrConfirmation, cBusOptions, requestContext);
             }
             CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+            LOGGER.info("Sending first part {}", response);
             ctx.writeAndFlush(response);
         }
         {
@@ -444,20 +445,21 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 LOGGER.debug("Handling units 88-176 {},{},{},{}", i, (i + 1), (i + 2), (i + 3));
                 unitStatusBytes.add(
                     new StatusByte(
-                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
-                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
                         AVAILABLE_UNITS.contains((byte) (i + 2)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
-                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
+                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
                     )
                 );
             }
             LOGGER.debug("Produced {}, status bytes which equates to {} status", unitStatusBytes.size(), unitStatusBytes.size() * 4);
-            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_22Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
+            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
             CALReply calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
             EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
             CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+            LOGGER.info("Sending second part {}", response);
             ctx.writeAndFlush(response);
         }
         {
@@ -467,20 +469,21 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 LOGGER.debug("Handling units 176-256 {},{},{},{}", i, (i + 1), (i + 2), (i + 3));
                 unitStatusBytes.add(
                     new StatusByte(
-                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
-                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
                         AVAILABLE_UNITS.contains((byte) (i + 2)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
-                        AVAILABLE_UNITS.contains((byte) (i + 3)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
+                        AVAILABLE_UNITS.contains((byte) (i + 1)) ? GAVState.ON : GAVState.DOES_NOT_EXIST,
+                        AVAILABLE_UNITS.contains((byte) (i + 0)) ? GAVState.ON : GAVState.DOES_NOT_EXIST
                     )
                 );
             }
             LOGGER.debug("Produced {}, status bytes which equates to {} status", unitStatusBytes.size(), unitStatusBytes.size() * 4);
-            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_21Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
+            CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_23Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, application, blockStart, unitStatusBytes, null, requestContext);
             CALReply calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
             EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
             CBusMessage response = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+            LOGGER.info("Sending third part {}", response);
             ctx.writeAndFlush(response);
         }
     }
@@ -670,7 +673,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         }, 5, 5, TimeUnit.SECONDS);
     }
 
-    private void stopMMIMonitor() {
+    private void stopSALMonitor() {
         if (salMonitorFuture == null) {
             return;
         }
@@ -718,7 +721,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         }, 5, 5, TimeUnit.SECONDS);
     }
 
-    private void stopSALMonitor() {
+    private void stopMMIMonitor() {
         if (mmiMonitorFuture == null) {
             return;
         }
