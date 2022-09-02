@@ -45,9 +45,7 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcStruct;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -328,8 +326,17 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
             // If this type has children, add entries for its children.
             List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
+
+            // Populate a map of protocol-dependent options.
+            Map<String, PlcValue> options = new HashMap<>();
+            options.put("comment", new PlcSTRING(symbol.getComment()));
+            options.put("group-id", new PlcUDINT(symbol.getGroup()));
+            options.put("offset", new PlcUDINT(symbol.getOffset()));
+            options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
+
             // Add the type itself.
-            values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true, !symbol.getFlagReadOnly(), true, children));
+            values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true,
+                !symbol.getFlagReadOnly(), true, children, options));
         }
         DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
         future.complete(response);
@@ -349,13 +356,25 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 continue;
             }
             String itemAddress = basePath + "." + child.getPropertyName();
+
             String itemName = (child.getComment() == null || child.getComment().isEmpty()) ? child.getPropertyName() : child.getComment();
+
             // Convert the plc value type from the ADS specific one to the PLC4X global one.
             org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(childDataType).toString());
+
             // Recursively add all children of the current datatype.
             List<PlcBrowseItem> children = getBrowseItems(itemAddress, baseGroupId, baseOffset + child.getOffset(), parentWritable, childDataType);
+
+            // Populate a map of protocol-dependent options.
+            Map<String, PlcValue> options = new HashMap<>();
+            options.put("comment", new PlcSTRING(child.getComment()));
+            options.put("group-id", new PlcUDINT(baseGroupId));
+            options.put("offset", new PlcUDINT(baseOffset + child.getOffset()));
+            options.put("size-in-bytes", new PlcUDINT(childDataType.getSize()));
+
             // Add the type itself.
-            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName, plc4xPlcValueType, true, parentWritable, true, children));
+            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName, plc4xPlcValueType,
+                true, parentWritable, true, children, options));
         }
         return values;
     }
