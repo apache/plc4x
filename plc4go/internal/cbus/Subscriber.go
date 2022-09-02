@@ -23,7 +23,7 @@ import (
 	"context"
 	"fmt"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
@@ -112,7 +112,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			address := map[string]string{}
-			plcValues := map[string]values.PlcValue{}
+			plcValues := map[string]apiValues.PlcValue{}
 			fieldName := subscriptionHandle.fieldName
 
 			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
@@ -135,23 +135,30 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 
 			isLevel := true
 			blockStart := byte(0x0)
+			//	var application readWriteModel.ApplicationIdContainer
 			switch calData := calData.(type) {
 			case readWriteModel.CALDataStatusExactly:
-				applicationString = calData.GetApplication().ApplicationId().String()
+				application := calData.GetApplication()
+				applicationString = application.ApplicationId().String()
 				blockStart = calData.GetBlockStart()
 
 				statusBytes := calData.GetStatusBytes()
 				responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-				plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+				plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 				for i, statusByte := range statusBytes {
 					plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
 					plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
 					plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 					plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 				}
-				plcValues[fieldName] = spiValues.NewPlcList(plcListValues)
+				plcValues[fieldName] = spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+					"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
+					"blockStart":  spiValues.NewPlcBYTE(blockStart),
+					"values":      spiValues.NewPlcList(plcListValues),
+				})
 			case readWriteModel.CALDataStatusExtendedExactly:
-				applicationString = calData.GetApplication().ApplicationId().String()
+				application := calData.GetApplication()
+				applicationString = application.ApplicationId().String()
 				isLevel = calData.GetCoding() == readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE || calData.GetCoding() == readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE
 				blockStart = calData.GetBlockStart()
 				coding := calData.GetCoding()
@@ -161,20 +168,24 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 				case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
 					statusBytes := calData.GetStatusBytes()
 					responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-					plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+					plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 					for i, statusByte := range statusBytes {
 						plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
 						plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
 						plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 						plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 					}
-					plcValues[fieldName] = spiValues.NewPlcList(plcListValues)
+					plcValues[fieldName] = spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+						"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
+						"blockStart":  spiValues.NewPlcBYTE(blockStart),
+						"values":      spiValues.NewPlcList(plcListValues),
+					})
 				case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
 					fallthrough
 				case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
 					levelInformation := calData.GetLevelInformation()
 					responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-					plcListValues := make([]values.PlcValue, len(levelInformation))
+					plcListValues := make([]apiValues.PlcValue, len(levelInformation))
 					for i, levelInformation := range levelInformation {
 						switch levelInformation := levelInformation.(type) {
 						case readWriteModel.LevelInformationAbsentExactly:
@@ -228,7 +239,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			address := map[string]string{}
-			plcValues := map[string]values.PlcValue{}
+			plcValues := map[string]apiValues.PlcValue{}
 			fieldName := subscriptionHandle.fieldName
 
 			subscriptionType := subscriptionHandle.fieldType

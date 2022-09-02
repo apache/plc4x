@@ -200,7 +200,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 								plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 							}
-							addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
+							addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+								"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
+								"blockStart":  spiValues.NewPlcBYTE(blockStart),
+								"values":      spiValues.NewPlcList(plcListValues),
+							}))
 						case readWriteModel.CALDataStatusExtendedExactly:
 							coding := calData.GetCoding()
 							// TODO: verify coding... this should be the same
@@ -224,7 +228,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 									plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 									plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 								}
-								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+									"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
+									"blockStart":  spiValues.NewPlcBYTE(blockStart),
+									"values":      spiValues.NewPlcList(plcListValues),
+								}))
 							case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
 								fallthrough
 							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:

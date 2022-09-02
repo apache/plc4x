@@ -504,6 +504,10 @@ func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.App
 			return readWriteModel.ApplicationIdContainer_ERROR_REPORTING_CE, nil
 		case readWriteModel.ApplicationId_HVAC_ACTUATOR:
 			return readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_73, nil
+		case readWriteModel.ApplicationId_INFO_MESSAGES:
+			return readWriteModel.ApplicationIdContainer_INFO_MESSAGES, nil
+		case readWriteModel.ApplicationId_NETWORK_CONTROL:
+			return readWriteModel.ApplicationIdContainer_NETWORK_CONTROL, nil
 		default:
 			return 0, errors.Errorf("%s can't be used directly... select proper application id container", applicationId)
 		}
