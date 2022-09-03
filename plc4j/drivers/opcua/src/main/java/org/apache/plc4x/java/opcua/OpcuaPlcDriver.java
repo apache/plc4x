@@ -104,7 +104,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
     @Override
     protected boolean canBrowse() {
-        return false;
+        return true;
     }
 
     @Override

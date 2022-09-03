@@ -66,6 +66,10 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         null
     );
 
+    private static NodeId NULL_NODEID = new NodeId(
+        new NodeIdTwoByte((short) 0)
+    );
+
     protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
         NULL_EXPANDED_NODEID,
         new ExtensionObjectEncodingMask(false, false, false),
@@ -120,6 +124,25 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             this.channel = new SecureChannel(driverContext, this.configuration);
         }
         channel.onDiscover(context);
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
+        RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
+            SecureChannel.getCurrentDateTime(),
+            channel.getRequestHandle(),
+            0L,
+            NULL_STRING,
+            SecureChannel.REQUEST_TIMEOUT_LONG,
+            NULL_EXTENSION_OBJECT);
+
+        ViewDescription viewDescription = new ViewDescription(NULL_NODEID,SecureChannel.getCurrentDateTime(),1);
+        BrowseRequest request = new BrowseRequest(requestHeader, viewDescription,0, 0, new ArrayList<ExtensionObjectDefinition>(0));
+        List<PlcBrowseItem> values = new ArrayList<>(0);
+        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
+        future.complete(response);
+        return future;
     }
 
     @Override
