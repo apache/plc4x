@@ -145,13 +145,13 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                                 String deviceTypeName = "unknown";
                                                 if (blocks.containsKey(DEVICE_TYPE_NAME)) {
                                                     PnDcp_Block_DevicePropertiesDeviceVendor block = (PnDcp_Block_DevicePropertiesDeviceVendor) blocks.get(DEVICE_TYPE_NAME);
-                                                    deviceTypeName = new String(block.getDeviceVendorValue());
+                                                    deviceTypeName = new String(block.getDeviceVendorValue()).replace(" ", "_");
                                                 }
 
                                                 String deviceName = "unknown";
                                                 if (blocks.containsKey(DEVICE_NAME_OF_STATION)) {
                                                     PnDcp_Block_DevicePropertiesNameOfStation block = (PnDcp_Block_DevicePropertiesNameOfStation) blocks.get(DEVICE_NAME_OF_STATION);
-                                                    deviceName = new String(block.getNameOfStation());
+                                                    deviceName = new String(block.getNameOfStation()).replace(" ", "_");
                                                 }
 
                                                 String role = "unknown";
