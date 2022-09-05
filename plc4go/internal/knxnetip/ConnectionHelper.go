@@ -53,21 +53,21 @@ func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 
 func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunnelingRequest driverModel.TunnelingRequest) {
 	go func() {
-		lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
-		if lDataInd == nil {
+		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
+		if !ok {
 			return
 		}
 		var destinationAddress []byte
 		switch lDataInd.GetDataFrame().(type) {
-		case driverModel.LDataExtended:
-			dataFrame := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+		case driverModel.LDataExtendedExactly:
+			dataFrame := lDataInd.GetDataFrame().(driverModel.LDataExtended)
 			destinationAddress = dataFrame.GetDestinationAddress()
 			switch dataFrame.GetApdu().(type) {
-			case driverModel.ApduDataContainer:
-				container := driverModel.CastApduDataContainer(dataFrame.GetApdu())
+			case driverModel.ApduDataContainerExactly:
+				container := dataFrame.GetApdu().(driverModel.ApduDataContainer)
 				switch container.GetDataApdu().(type) {
-				case driverModel.ApduDataGroupValueWrite:
-					groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.GetDataApdu())
+				case driverModel.ApduDataGroupValueWriteExactly:
+					groupValueWrite := container.GetDataApdu().(driverModel.ApduDataGroupValueWrite)
 					if destinationAddress == nil {
 						return
 					}
@@ -80,18 +80,18 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					if dataFrame.GetGroupAddress() {
 						return
 					}
-					// If this is an individual address and it is targeted at us, we need to ack that.
+					// If this is an individual address, and it is targeted at us, we need to ack that.
 					targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
 					if targetAddress == m.ClientKnxAddress {
 						log.Info().Msg("Acknowleding an unhandled data message.")
 						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
 				}
-			case driverModel.ApduControlContainer:
+			case driverModel.ApduControlContainerExactly:
 				if dataFrame.GetGroupAddress() {
 					return
 				}
-				// If this is an individual address and it is targeted at us, we need to ack that.
+				// If this is an individual address, and it is targeted at us, we need to ack that.
 				targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
 				if targetAddress == m.ClientKnxAddress {
 					log.Info().Msg("Acknowleding an unhandled contol message.")

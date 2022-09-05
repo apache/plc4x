@@ -39,7 +39,7 @@ func NewPlcTIME(value uint32) PlcTIME {
 
 func (m PlcTIME) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

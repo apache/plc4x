@@ -61,7 +61,7 @@ func (t *Tracer) ResetTraces() {
 	t.traceEntries = []TraceEntry{}
 }
 
-func (t Tracer) GetTraces() []TraceEntry {
+func (t *Tracer) GetTraces() []TraceEntry {
 	return t.traceEntries
 }
 

@@ -582,7 +582,10 @@ func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectTy
 	// We need to reset our reader to the position we read before
 	// TODO: maybe we reset to much here because pos is byte based
 	// we consume the leftover bits before we reset to avoid trouble // TODO: we really need bit precision on resetting
-	readBuffer.ReadUint8("", 6)
+	_, err := readBuffer.ReadUint8("", 6)
+	if err != nil {
+		return nil, err
+	}
 	readBuffer.Reset(readBuffer.GetPos() - 2)
 	return readBuffer.ReadUint16("proprietaryObjectType", 10)
 }

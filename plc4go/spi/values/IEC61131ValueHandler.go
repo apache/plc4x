@@ -183,7 +183,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to lword")
 			}
-			return NewPlcLWORD(uint64(casted)), nil
+			return NewPlcLWORD(casted), nil
 		} else {
 			casted, ok := value.(uint64)
 			if !ok {
@@ -241,7 +241,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to ulint")
 			}
-			return NewPlcULINT(uint64(casted)), nil
+			return NewPlcULINT(casted), nil
 		} else {
 			casted, ok := value.(uint64)
 			if !ok {

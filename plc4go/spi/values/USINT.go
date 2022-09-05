@@ -40,7 +40,7 @@ func NewPlcUSINT(value uint8) PlcUSINT {
 
 func (m PlcUSINT) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

@@ -38,7 +38,7 @@ func NewPlcSTRING(value string) PlcSTRING {
 
 func (m PlcSTRING) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

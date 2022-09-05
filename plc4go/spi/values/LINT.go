@@ -40,7 +40,7 @@ func NewPlcLINT(value int64) PlcLINT {
 
 func (m PlcLINT) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

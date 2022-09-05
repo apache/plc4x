@@ -190,10 +190,9 @@ func (m *Writer) ToPlc4xWriteResponse(requestTcpPaket readWriteModel.AmsTCPPacke
 
 	// we default to an error until its proven wrong
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-	switch responseTcpPaket.GetUserdata().(type) {
-	case readWriteModel.AdsWriteResponse:
-		resp := readWriteModel.CastAdsWriteResponse(responseTcpPaket.GetUserdata())
-		responseCodes[fieldName] = model.PlcResponseCode(resp.GetResult())
+	switch writeResponse := responseTcpPaket.GetUserdata().(type) {
+	case readWriteModel.AdsWriteResponseExactly:
+		responseCodes[fieldName] = model.PlcResponseCode(writeResponse.GetResult())
 	default:
 		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata())
 	}

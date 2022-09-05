@@ -164,7 +164,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 						if searchResponse != nil {
 							addr := searchResponse.GetHpaiControlEndpoint().GetIpAddress().GetAddr()
 							remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
-								uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.GetHpaiControlEndpoint().GetIpPort()))
+								addr[0], addr[1], addr[2], addr[3], searchResponse.GetHpaiControlEndpoint().GetIpPort()))
 							if err != nil {
 								continue
 							}

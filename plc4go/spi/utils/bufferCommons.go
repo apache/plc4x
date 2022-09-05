@@ -100,6 +100,6 @@ func (s *Stack) Peek() interface{} {
 	return back.Value
 }
 
-func (s Stack) Empty() bool {
+func (s *Stack) Empty() bool {
 	return s.Len() == 0
 }

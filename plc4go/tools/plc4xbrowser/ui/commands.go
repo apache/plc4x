@@ -121,7 +121,7 @@ var rootCommand = Command{
 				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					entries = append(entries, connectionsString)
 				}
 				return
@@ -138,7 +138,7 @@ var rootCommand = Command{
 				}
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					entries = append(entries, connectionsString)
 				}
 				return
@@ -177,7 +177,7 @@ var rootCommand = Command{
 				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					if strings.HasPrefix(currentText, connectionsString+"") {
 						parse, _ := url.Parse(connectionsString)
 						switch parse.Scheme {
@@ -202,7 +202,7 @@ var rootCommand = Command{
 				}
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					entries = append(entries, connectionsString)
 				}
 				return
@@ -241,7 +241,7 @@ var rootCommand = Command{
 				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					if strings.HasPrefix(currentText, connectionsString+"") {
 						parse, _ := url.Parse(connectionsString)
 						switch parse.Scheme {
@@ -266,7 +266,7 @@ var rootCommand = Command{
 				}
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					entries = append(entries, connectionsString)
 				}
 				return
@@ -309,7 +309,7 @@ var rootCommand = Command{
 				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					if strings.HasPrefix(currentText, connectionsString+"") {
 						parse, _ := url.Parse(connectionsString)
 						switch parse.Scheme {
@@ -350,7 +350,7 @@ var rootCommand = Command{
 				}
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					entries = append(entries, connectionsString)
 				}
 				return
@@ -387,7 +387,7 @@ var rootCommand = Command{
 				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for connectionsString, _ := range connections {
+				for connectionsString := range connections {
 					entries = append(entries, connectionsString)
 					if strings.HasPrefix(currentText, connectionsString) {
 						parse, _ := url.Parse(connectionsString)

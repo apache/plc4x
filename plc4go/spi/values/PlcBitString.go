@@ -60,7 +60,7 @@ func NewPlcBitString(value interface{}) PlcBitString {
 
 func (m PlcBitString) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

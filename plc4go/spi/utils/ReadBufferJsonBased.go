@@ -381,7 +381,7 @@ func (j *jsonReadBuffer) ReadFloat64(logicalName string, bitLength uint8, reader
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
-		return float64(value.(float64)), nil
+		return value.(float64), nil
 	} else {
 		return 0, errors.Errorf("Required element %s not found in %v", logicalName, peek)
 	}

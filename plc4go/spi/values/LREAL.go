@@ -39,7 +39,7 @@ func NewPlcLREAL(value float64) PlcLREAL {
 
 func (m PlcLREAL) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 
