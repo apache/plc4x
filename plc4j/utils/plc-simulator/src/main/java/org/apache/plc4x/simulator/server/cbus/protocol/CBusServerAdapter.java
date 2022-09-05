@@ -294,15 +294,19 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     CALReply calReply;
                     if (exstat) {
                         // TODO: map actuall values from simulator
-                        byte blockStart = 0x0;
-                        List<StatusByte> statusBytes = Collections.singletonList(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                        CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryState.getApplication(), blockStart, statusBytes, null, requestContext);
-                        calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
+                        List<StatusByte> statusBytes = new LinkedList<>();
+                        for (int i = 0; i < 22; i++) {
+                            statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                        }
+                        CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, StatusCoding.BINARY_BY_ELSEWHERE, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, null, requestContext);
+                        calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
                     } else {
+                        List<StatusByte> statusBytes = new LinkedList<>();
                         // TODO: map actuall values from simulator
-                        byte blockStart = 0x0;
-                        List<StatusByte> statusBytes = Collections.singletonList(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                        CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandReply_3Bytes, null, statusRequestBinaryState.getApplication(), blockStart, statusBytes, requestContext);
+                        for (int i = 0; i < 23; i++) {
+                            statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                        }
+                        CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandStatus_25Bytes, null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, requestContext);
                         calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
                     }
                     EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
@@ -329,15 +333,19 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     CALReply calReply;
                     if (exstat) {
                         // TODO: map actuall values from simulator
-                        byte blockStart = 0x0;
-                        List<StatusByte> statusBytes = Collections.singletonList(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                        CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryStateDeprecated.getApplication(), blockStart, statusBytes, null, requestContext);
-                        calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
+                        List<StatusByte> statusBytes = new LinkedList<>();
+                        for (int i = 0; i < 22; i++) {
+                            statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                        }
+                        CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandStatusExtended_25Bytes, null, StatusCoding.BINARY_BY_ELSEWHERE, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, null, requestContext);
+                        calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
                     } else {
+                        List<StatusByte> statusBytes = new LinkedList<>();
                         // TODO: map actuall values from simulator
-                        byte blockStart = 0x0;
-                        List<StatusByte> statusBytes = Collections.singletonList(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                        CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandReply_3Bytes, null, statusRequestBinaryStateDeprecated.getApplication(), blockStart, statusBytes, requestContext);
+                        for (int i = 0; i < 23; i++) {
+                            statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                        }
+                        CALData calData = new CALDataStatus(CALCommandTypeContainer.CALCommandStatus_25Bytes, null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, statusBytes, requestContext);
                         calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
                     }
                     EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
@@ -360,7 +368,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
                     List<LevelInformation> levelInformations = Collections.singletonList(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
                     CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations, requestContext);
-                    CALReply calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x0), null, null, (byte) 0x0, null, cBusOptions, requestContext);
+                    CALReply calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
                     EncodedReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
                     ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                     ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
@@ -694,7 +702,8 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             try {
                 outputLock.lock();
                 CALReply calReply;
-                if (cBusOptions.getExstat()) {
+                if (exstat) {
+                    // TODO: map actuall values from simulator
                     List<StatusByte> statusBytes = new LinkedList<>();
                     for (int i = 0; i < 22; i++) {
                         statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
@@ -703,6 +712,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
                 } else {
                     List<StatusByte> statusBytes = new LinkedList<>();
+                    // TODO: map actuall values from simulator
                     for (int i = 0; i < 23; i++) {
                         statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
                     }
