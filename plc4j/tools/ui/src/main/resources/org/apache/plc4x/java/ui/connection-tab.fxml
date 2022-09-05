@@ -23,18 +23,11 @@
 <?import javafx.scene.layout.*?>
 
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0"
-            fx:controller="org.apache.plc4x.java.ui.FxmlController"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <left>
-       <VBox prefHeight="600.0" prefWidth="300.0" BorderPane.alignment="CENTER">
-           <TreeView fx:id="plcTreeView" prefHeight="573.0" onMouseClicked="#handleTreeSelectionChanged"/>
-           <Button fx:id="browseButton" mnemonicParsing="false" onAction="#handleBrowseButtonClicked" prefHeight="27.0"
-                   prefWidth="300.0" text="Browse..."/>
-       </VBox>
-   </left>
-   <center>
-      <TabPane fx:id="connectionTabs" BorderPane.alignment="CENTER">
-      </TabPane>
-   </center>
-</BorderPane>
+<Tab fx:id="tab" fx:controller="org.apache.plc4x.java.ui.ConnectionTabController"
+     xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox BorderPane.alignment="CENTER">
+        <TreeTableView fx:id="resourceTreeView" prefHeight="573.0" onMouseClicked="#handleTreeSelectionChanged"/>
+        <TabPane fx:id="resourceTabs" BorderPane.alignment="CENTER">
+        </TabPane>
+    </VBox>
+</Tab>
