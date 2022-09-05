@@ -536,7 +536,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 					prefix := strings.TrimSuffix(otherKey.key, "*")
 					mustBePresent := otherKey.mustBePresent
 					var found bool
-					for key, _ := range filteredOptionMap {
+					for key := range filteredOptionMap {
 						found = found || strings.HasPrefix(key, prefix)
 					}
 					if mustBePresent && !found {
@@ -575,7 +575,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 	} else if err != nil {
 		return nil, err
 	}
-	for key, _ := range filteredOptionMap {
+	for key := range filteredOptionMap {
 		if strings.HasPrefix(key, "who-has-object") {
 			collectedOptions = append(collectedOptions, whoHasOption())
 			break

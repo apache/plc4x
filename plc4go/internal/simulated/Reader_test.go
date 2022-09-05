@@ -21,7 +21,7 @@ package simulated
 
 import (
 	"context"
-	s7 "github.com/apache/plc4x/plc4go/internal/s7"
+	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	model4 "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"

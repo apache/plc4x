@@ -53,7 +53,7 @@ func NewPlcDATE(value interface{}) PlcDATE {
 
 func (m PlcDATE) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

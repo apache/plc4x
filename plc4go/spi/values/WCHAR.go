@@ -39,7 +39,7 @@ func NewPlcWCHAR(value uint16) PlcWCHAR {
 
 func (m PlcWCHAR) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

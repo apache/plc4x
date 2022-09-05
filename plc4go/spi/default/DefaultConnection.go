@@ -202,7 +202,7 @@ func (d *plcConnectionCloseResult) GetErr() error {
 	return d.err
 }
 
-func (d plcConnectionCloseResult) GetTraces() []spi.TraceEntry {
+func (d *plcConnectionCloseResult) GetTraces() []spi.TraceEntry {
 	return d.traces
 }
 

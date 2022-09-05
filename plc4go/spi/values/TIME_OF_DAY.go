@@ -55,7 +55,7 @@ func NewPlcTIME_OF_DAY(value interface{}) PlcTIME_OF_DAY {
 
 func (m PlcTIME_OF_DAY) GetRaw() []byte {
 	buf := utils.NewWriteBufferByteBased()
-	m.Serialize(buf)
+	_ = m.Serialize(buf)
 	return buf.GetBytes()
 }
 

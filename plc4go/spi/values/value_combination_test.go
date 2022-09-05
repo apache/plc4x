@@ -314,7 +314,7 @@ func TestCombinations(t *testing.T) {
 						methods[method.Name] = method
 					}
 
-					for methodName, _ := range methods {
+					for methodName := range methods {
 						if strings.HasPrefix(methodName, "Is") {
 							queryType := strings.TrimPrefix(methodName, "Is")
 							t.Run(queryType, func(t *testing.T) {

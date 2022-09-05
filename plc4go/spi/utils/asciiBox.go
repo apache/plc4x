@@ -129,7 +129,7 @@ func combineCompressedBoxSets(box1, box2 AsciiBox) string {
 		allSets[s] = true
 	}
 	var foundSets []string
-	for set, _ := range allSets {
+	for set := range allSets {
 		foundSets = append(foundSets, set)
 	}
 	return strings.Join(foundSets, ",")

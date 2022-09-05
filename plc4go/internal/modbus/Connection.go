@@ -98,25 +98,33 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	go func() {
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
-		if err := m.messageCodec.SendRequest(ctx, pingRequest, func(message spi.Message) bool {
-			responseAdu := readWriteModel.CastModbusTcpADU(message)
-			return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == m.unitIdentifier
-		}, func(message spi.Message) error {
-			log.Trace().Msgf("Received Message")
-			if message != nil {
-				// If we got a valid response (even if it will probably contain an error, we know the remote is available)
-				log.Trace().Msg("got valid response")
-				result <- _default.NewDefaultPlcConnectionPingResult(nil)
-			} else {
-				log.Trace().Msg("got no response")
-				result <- _default.NewDefaultPlcConnectionPingResult(errors.New("no response"))
-			}
-			return nil
-		}, func(err error) error {
-			log.Trace().Msgf("Received Error")
-			result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
-			return nil
-		}, time.Second*1); err != nil {
+		if err := m.messageCodec.SendRequest(ctx, pingRequest,
+			func(message spi.Message) bool {
+				responseAdu, ok := message.(readWriteModel.ModbusTcpADUExactly)
+				if !ok {
+					return false
+				}
+				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == m.unitIdentifier
+			},
+			func(message spi.Message) error {
+				log.Trace().Msgf("Received Message")
+				if message != nil {
+					// If we got a valid response (even if it will probably contain an error, we know the remote is available)
+					log.Trace().Msg("got valid response")
+					result <- _default.NewDefaultPlcConnectionPingResult(nil)
+				} else {
+					log.Trace().Msg("got no response")
+					result <- _default.NewDefaultPlcConnectionPingResult(errors.New("no response"))
+				}
+				return nil
+			},
+			func(err error) error {
+				log.Trace().Msgf("Received Error")
+				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
+				return nil
+			},
+			time.Second*1,
+		); err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(err)
 		}
 	}()

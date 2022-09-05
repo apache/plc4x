@@ -282,9 +282,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			switch connectionResponse.GetStatus() {
 			case driverModel.Status_NO_ERROR:
 				// Save the KNX Address the Gateway assigned to us for this connection.
-				tunnelConnectionDataBlock := driverModel.CastConnectionResponseDataBlockTunnelConnection(
-					connectionResponse.GetConnectionResponseDataBlock(),
-				)
+				tunnelConnectionDataBlock := connectionResponse.GetConnectionResponseDataBlock().(driverModel.ConnectionResponseDataBlockTunnelConnection)
 				m.ClientKnxAddress = tunnelConnectionDataBlock.GetKnxAddress()
 
 				// Create a go routine to handle incoming tunneling-requests which haven't been
@@ -295,10 +293,10 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
 					for m.handleTunnelingRequests {
 						incomingMessage := <-defaultIncomingMessageChannel
-						tunnelingRequest := driverModel.CastTunnelingRequest(incomingMessage)
-						if tunnelingRequest == nil {
-							tunnelingResponse := driverModel.CastTunnelingResponse(incomingMessage)
-							if tunnelingResponse != nil {
+						tunnelingRequest, ok := incomingMessage.(driverModel.TunnelingRequestExactly)
+						if !ok {
+							tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponseExactly)
+							if ok {
 								log.Warn().Msgf("Got an unhandled TunnelingResponse message %v\n", tunnelingResponse)
 							} else {
 								log.Warn().Msgf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
@@ -311,12 +309,12 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 							continue
 						}
 
-						lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
-						if lDataInd == nil {
+						lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
+						if !ok {
 							continue
 						}
 						// Get APDU, source and target address
-						lDataFrameData := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+						lDataFrameData := lDataInd.GetDataFrame().(driverModel.LDataExtended)
 						sourceAddress := lDataFrameData.GetSourceAddress()
 
 						// If this is not an APDU, there is no need to further handle it.
@@ -327,10 +325,10 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 						// If this is an incoming disconnect request, remove the device
 						// from the device connections, otherwise handle it as normal
 						// incoming message.
-						apduControlContainer := driverModel.CastApduControlContainer(lDataFrameData.GetApdu())
-						if apduControlContainer != nil {
-							disconnectApdu := driverModel.CastApduControlDisconnect(apduControlContainer.GetControlApdu())
-							if disconnectApdu != nil {
+						apduControlContainer, ok := lDataFrameData.GetApdu().(driverModel.ApduControlContainerExactly)
+						if ok {
+							_, ok := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnectExactly)
+							if ok {
 								if m.DeviceConnections[sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
 									// Remove the connection
 									delete(m.DeviceConnections, sourceAddress)
