@@ -191,7 +191,15 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     return;
                 case INTERFACE_OPTIONS_3:
                     InterfaceOptions3 interfaceOptions3Value = ((ParameterValueInterfaceOptions3) calDataWrite.getParameterValue()).getValue();
+                    boolean oldExstat = exstat;
                     exstat = interfaceOptions3Value.getExstat();
+                    if (oldExstat != exstat) {
+                        LOGGER.info("Restarting monitors");
+                        stopMMIMonitor();
+                        startMMIMonitor(ctx);
+                        stopSALMonitor();
+                        startSALMonitor(ctx);
+                    }
                     pun = interfaceOptions3Value.getPun();
                     // TODO: add support for localsal
                     // localsal = interfaceOptions3Value.getLocalSal();
@@ -703,7 +711,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 outputLock.lock();
                 CALReply calReply;
                 if (exstat) {
-                    // TODO: map actuall values from simulator
+                    // TODO: map actual values from simulator
                     List<StatusByte> statusBytes = new LinkedList<>();
                     for (int i = 0; i < 22; i++) {
                         statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
@@ -712,7 +720,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                     calReply = new CALReplyLong((byte) 0x86, calData, 0x00, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x00, null, cBusOptions, requestContext);
                 } else {
                     List<StatusByte> statusBytes = new LinkedList<>();
-                    // TODO: map actuall values from simulator
+                    // TODO: map actual values from simulator
                     for (int i = 0; i < 23; i++) {
                         statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
                     }
