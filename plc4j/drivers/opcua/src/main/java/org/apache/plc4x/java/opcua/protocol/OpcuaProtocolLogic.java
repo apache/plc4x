@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
@@ -137,13 +138,101 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             SecureChannel.REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
+        List<ExtensionObjectDefinition> requestedValues = new ArrayList<>(1);
+        requestedValues.add(new BrowseDescription(
+            new NodeId(new NodeIdTwoByte((short) 85)),
+            BrowseDirection.browseDirectionForward,
+            new NodeId(new NodeIdTwoByte((short) 33)),
+            true,
+            0L,
+            63L
+        ));
+
         ViewDescription viewDescription = new ViewDescription(NULL_NODEID,SecureChannel.getCurrentDateTime(),1);
-        BrowseRequest request = new BrowseRequest(requestHeader, viewDescription,0, 0, new ArrayList<ExtensionObjectDefinition>(0));
-        List<PlcBrowseItem> values = new ArrayList<>(0);
-        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
-        future.complete(response);
+
+        BrowseRequest request = new BrowseRequest(
+            requestHeader,
+            viewDescription,
+            0,
+            1,
+            requestedValues);
+
+
+
+        ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
+            false,            //Server Index Specified
+            new NodeIdFourByte((short) 0, Integer.parseInt(request.getIdentifier())),
+            null,
+            null);
+
+        ExtensionObject extObject = new ExtensionObject(
+            expandedNodeId,
+            null,
+            request,
+            false);
+
+        try {
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
+            extObject.serialize(buffer);
+
+            /* Functional Consumer example using inner class */
+            Consumer<byte[]> consumer = opcuaResponse -> {
+                try {
+                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    if (reply instanceof BrowseResponse) {
+                        BrowseResponse response = (BrowseResponse) reply;
+                        BrowseResult castResult = (BrowseResult) response.getResults().get(0);
+                        List<PlcBrowseItem> values = new ArrayList<>(response.getResults().size());
+
+                        for (ExtensionObjectDefinition result : castResult.getReferences()) {
+                            ReferenceDescription referenceResult = (ReferenceDescription) result;
+
+                            values.add(new DefaultPlcBrowseItem(
+                                referenceResult.getBrowseName().getName().getStringValue(),
+                                referenceResult.getDisplayName().getText().getStringValue(),
+                                PlcValueType.Struct,
+                                true,
+                                true,
+                                true, new ArrayList<PlcBrowseItem>(0), null));
+                        }
+                        future.complete(new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values));
+                    } else {
+                        List<PlcBrowseItem> values = new ArrayList<>(0);
+                        if (reply instanceof ServiceFault) {
+                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
+                            LOGGER.error("Browse request ended up with ServiceFault: {}", header);
+                        } else {
+                            LOGGER.error("Remote party returned an error '{}'", reply);
+                        }
+
+                        future.complete(new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.INTERNAL_ERROR, values));
+                        return;
+                    }
+                } catch (ParseException e) {
+                    future.completeExceptionally(new PlcRuntimeException(e));
+                }
+            };
+
+            /* Functional Consumer example using inner class */
+            // Pass the response back to the application.
+            Consumer<TimeoutException> timeout = future::completeExceptionally;
+
+            /* Functional Consumer example using inner class */
+            BiConsumer<OpcuaAPU, Throwable> error = (message, t) -> {
+
+                // Pass the response back to the application.
+                future.completeExceptionally(t);
+            };
+
+            channel.submit(context, timeout, error, consumer, buffer);
+
+        } catch (SerializationException e) {
+            LOGGER.error("Unable to serialise the BrowseRequest");
+        }
+
         return future;
     }
+
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
