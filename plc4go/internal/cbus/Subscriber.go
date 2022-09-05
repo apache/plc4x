@@ -229,7 +229,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 	for registration, consumer := range m.consumers {
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
 			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
-			field, ok := subscriptionHandle.field.(SALMonitorField)
+			field, ok := subscriptionHandle.field.(*salMonitorField)
 			if !ok {
 				log.Debug().Msgf("Unusable field for mmi subscription %s", field)
 				continue

@@ -37,11 +37,11 @@ import (
 	"time"
 )
 
-func TestManualCBusDriver(t *testing.T) {
+func TestManualCBusDriverMixed(t *testing.T) {
 	log.Logger = log.
 		With().Caller().Logger().
 		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.TraceLevel)
+		Level(zerolog.InfoLevel)
 	config.TraceTransactionManagerWorkers = true
 	config.TraceTransactionManagerTransactions = true
 	config.TraceDefaultMessageCodecWorker = true
@@ -53,21 +53,34 @@ func TestManualCBusDriver(t *testing.T) {
 	transports.RegisterTcpTransport(driverManager)
 	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
 
-	test.AddTestCase("status/binary/0x04", "DOES_NOT_EXIST, OFF, ERROR, ON")
-	test.AddTestCase("status/level=0x40/0x04", 255)
+	// TODO: fix those test cases
+	//test.AddTestCase("status/binary/0x04", "PlcStruct{\n  application: \"LIGHTING_38\"\n  blockStart: \"false, false, false, false, false, false, false, false\"\n  values: \"DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON\"\n}")
+	//test.AddTestCase("status/level=0x40/0x04", 255)
 	//test.AddTestCase("cal/0/recall=[INTERFACE_OPTIONS_1, 1]", true)
 	//test.AddTestCase("cal/0/identify=[FirmwareVersion]", true)
 	//test.AddTestCase("cal/0/gestatus=[0xFF, 1]", true)
 
 	plcConnection := test.Run()
 	t.Run("Subscription test", func(t *testing.T) {
-		gotMonitor := make(chan bool)
+		gotMMI := make(chan bool)
+		gotSAL := make(chan bool)
 		subscriptionRequest, err := plcConnection.SubscriptionRequestBuilder().
-			AddEventQuery("something", "monitor/*/*").
-			AddPreRegisteredConsumer("something", func(event model.PlcSubscriptionEvent) {
-				fmt.Printf("\n%s", event)
+			AddEventQuery("mmi", "mmimonitor/*/*").
+			AddEventQuery("sal", "salmonitor/*/*").
+			AddPreRegisteredConsumer("mmi", func(event model.PlcSubscriptionEvent) {
+				fmt.Printf("mmi:\n%s", event)
+				if _, ok := event.GetValue("mmi").GetStruct()["SALData"]; ok {
+					panic("got sal in mmi")
+				}
 				select {
-				case gotMonitor <- true:
+				case gotMMI <- true:
+				default:
+				}
+			}).
+			AddPreRegisteredConsumer("sal", func(event model.PlcSubscriptionEvent) {
+				fmt.Printf("sal:\n%s", event)
+				select {
+				case gotSAL <- true:
 				default:
 				}
 			}).
@@ -77,22 +90,32 @@ func TestManualCBusDriver(t *testing.T) {
 		timeout := time.NewTimer(30 * time.Second)
 		defer utils.CleanupTimer(timeout)
 		// We expect couple monitors
-		monitorCount := 0
+		mmiCount := 0
+		salCount := 0
+		gotEnough := func() bool {
+			return mmiCount > 3 && salCount > 3
+		}
 	waitingForMonitors:
 		for {
 			select {
 			case at := <-timeout.C:
 				t.Errorf("timeout at %s", at)
 				break waitingForMonitors
-			case <-gotMonitor:
-				monitorCount++
-				println(monitorCount)
-				if monitorCount > 3 {
+			case <-gotMMI:
+				mmiCount++
+				fmt.Printf("mmi count: %d\n", mmiCount)
+				if gotEnough() {
+					break waitingForMonitors
+				}
+			case <-gotSAL:
+				salCount++
+				fmt.Printf("sal count: %d\n", salCount)
+				if gotEnough() {
 					break waitingForMonitors
 				}
 			}
 		}
-		t.Logf("Got %d monitors", monitorCount)
+		t.Logf("Got %d mmis and %d sal monitors", mmiCount, salCount)
 	})
 }
 
