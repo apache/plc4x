@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"reflect"
 	"strings"
@@ -36,6 +37,7 @@ type ManualTestCase struct {
 	Address           string
 	ExpectedReadValue interface{}
 	WriteValue        interface{}
+	UnwrappedValue    bool
 }
 
 type ManualTestSuite struct {
@@ -53,8 +55,21 @@ func NewManualTestSuite(connectionString string, driverManager plc4go.PlcDriverM
 	}
 }
 
-func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interface{}) {
-	m.TestCases = append(m.TestCases, ManualTestCase{address, expectedReadValue, nil})
+func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interface{}, testCaseOptions ...WithTestCaseOption) {
+	testCase := ManualTestCase{Address: address, ExpectedReadValue: expectedReadValue, UnwrappedValue: true}
+	for _, testCaseOption := range testCaseOptions {
+		testCaseOption(testCase)
+	}
+	m.TestCases = append(m.TestCases, testCase)
+}
+
+type WithTestCaseOption func(testCase ManualTestCase)
+
+// WithUnwrappedValue is a WithTestCaseOption which can be used to control if plc4go.PlcValue
+func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
+	return func(testCase ManualTestCase) {
+		testCase.UnwrappedValue = unwrap
+	}
 }
 
 func (m *ManualTestSuite) Run() plc4go.PlcConnection {
@@ -100,18 +115,30 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	readResponse := readResponseResult.GetResponse()
 
 	// Check the result
-	assertEquals(t, 1, len(readResponse.GetFieldNames()), fieldName)
-	assertEquals(t, fieldName, readResponse.GetFieldNames()[0], fieldName)
-	assertEquals(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName), fieldName)
-	assertNotNil(t, readResponse.GetValue(fieldName), fieldName)
+	assert.Equalf(t, 1, len(readResponse.GetFieldNames()), "response should have a field for %s", fieldName)
+	assert.Equalf(t, fieldName, readResponse.GetFieldNames()[0], "first field should be equal to %s", fieldName)
+	assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName), "response code should be ok for %s", fieldName)
+	assert.NotNil(t, readResponse.GetValue(fieldName), fieldName)
 	expectation := reflect.ValueOf(testCase.ExpectedReadValue)
 	if readResponse.GetValue(fieldName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
 		plcList := readResponse.GetValue(fieldName).GetList()
 		for j := 0; j < expectation.Len(); j++ {
-			assertEquals(t, expectation.Index(j).Interface(), plcList[j], fmt.Sprintf("%s[%d]", fieldName, j))
+			var actual any
+			actual = plcList[j]
+			if testCase.UnwrappedValue {
+				switch actualCasted := actual.(type) {
+				case values.PlcBOOL:
+					actual = actualCasted.GetBool()
+				case values.PlcWORD:
+					actual = actualCasted.GetInt8()
+				default:
+					t.Fatalf("%T not yet mapped", actualCasted)
+				}
+			}
+			assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", fieldName, j))
 		}
 	} else {
-		assertEquals(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
+		assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
 	}
 }
 
@@ -154,40 +181,32 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		readResponse := readResponseResult.GetResponse()
 
 		// Check the result
-		assertEquals(t, len(shuffledTestcases), len(readResponse.GetFieldNames()))
+		assert.Equal(t, len(shuffledTestcases), len(readResponse.GetFieldNames()))
 		for _, testCase := range shuffledTestcases {
 			fieldName := testCase.Address
-			assertEquals(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName))
-			assertNotNil(t, readResponse.GetValue(fieldName))
+			assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName), "response code should be ok for %s", fieldName)
+			assert.NotNil(t, readResponse.GetValue(fieldName))
 			expectation := reflect.ValueOf(testCase.ExpectedReadValue)
 			if readResponse.GetValue(fieldName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
 				plcList := readResponse.GetValue(fieldName).GetList()
 				for j := 0; j < expectation.Len(); j++ {
-					assertEquals(t, expectation.Index(j).Interface(), plcList[j], fmt.Sprintf("%s[%d]", fieldName, j))
+					var actual any
+					actual = plcList[j]
+					if testCase.UnwrappedValue {
+						switch actualCasted := actual.(type) {
+						case values.PlcBOOL:
+							actual = actualCasted.GetBool()
+						case values.PlcWORD:
+							actual = actualCasted.GetInt8()
+						default:
+							t.Fatalf("%T not yet mapped", actualCasted)
+						}
+					}
+					assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", fieldName, j))
 				}
 			} else {
-				assertEquals(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
+				assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
 			}
 		}
-	}
-}
-
-func assertEquals(t *testing.T, expected interface{}, actual interface{}, message ...string) {
-	switch actual.(type) {
-	case values.PlcBOOL:
-		actual = actual.(values.PlcBOOL).GetBool()
-	case values.PlcWORD:
-		actual = actual.(values.PlcWORD).GetInt8()
-	}
-	if expected != actual {
-		t.Errorf("actual %v doesn't match expected %v\nmessage: %s", actual, expected, message)
-		t.FailNow()
-	}
-}
-
-func assertNotNil(t *testing.T, actual interface{}, message ...string) {
-	if actual == nil {
-		t.Errorf("actual %v is nil\nmessage: %v", actual, message)
-		t.FailNow()
 	}
 }
