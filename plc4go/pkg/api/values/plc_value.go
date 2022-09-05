@@ -19,9 +19,14 @@
 
 package values
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type PlcValue interface {
+	fmt.Stringer
+
 	////
 	// Simple Types
 

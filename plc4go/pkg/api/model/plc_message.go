@@ -19,6 +19,9 @@
 
 package model
 
+import "fmt"
+
 type PlcMessage interface {
+	fmt.Stringer
 	IsAPlcMessage() bool
 }

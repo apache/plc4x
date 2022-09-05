@@ -241,6 +241,10 @@ func (m PlcValueAdapter) GetPlcValueType() apiValues.PlcValueType {
 	panic("GetPlcValueType not implemented")
 }
 
+func (m PlcValueAdapter) String() string {
+	return "not implemented"
+}
+
 type PlcSimpleValueAdapter struct {
 	PlcValueAdapter
 }
@@ -251,6 +255,10 @@ func (m PlcSimpleValueAdapter) IsSimple() bool {
 
 func (m PlcSimpleValueAdapter) GetLength() uint32 {
 	return 1
+}
+
+func (m PlcSimpleValueAdapter) String() string {
+	return "not implemented"
 }
 
 type PlcSimpleNumericValueAdapter struct {
@@ -307,4 +315,8 @@ func (m PlcSimpleNumericValueAdapter) IsFloat64() bool {
 
 func (m PlcSimpleNumericValueAdapter) IsString() bool {
 	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) String() string {
+	return "not implemented"
 }
