@@ -20,25 +20,30 @@ package org.apache.plc4x.java.ui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
+import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class FxmlController {
 
-    private PlcDriverManager driverManager;
+    private final PlcDriverManager driverManager;
 
     @FXML
     public TreeView<TreeEntry> plcTreeView;
@@ -46,28 +51,26 @@ public class FxmlController {
     @FXML
     public Button browseButton;
 
+    @FXML
+    public TabPane connectionTabs;
+
     public FxmlController() {
         driverManager = new PlcDriverManager();
     }
 
     @FXML
     public void initialize() throws Exception {
-        plcTreeView.setCellFactory(new Callback<TreeView<TreeEntry>, TreeCell<TreeEntry>>() {
+        plcTreeView.setCellFactory(treeEntryTreeView -> new TextFieldTreeCell<>(new StringConverter<TreeEntry>(){
             @Override
-            public TreeCell<TreeEntry> call(TreeView<TreeEntry> treeEntryTreeView) {
-                return new TextFieldTreeCell<>(new StringConverter<TreeEntry>(){
-                    @Override
-                    public String toString(TreeEntry treeEntry) {
-                        return treeEntry.getName();
-                    }
-
-                    @Override
-                    public TreeEntry fromString(String string) {
-                        return null;
-                    }
-                });
+            public String toString(TreeEntry treeEntry) {
+                return treeEntry.getName();
             }
-        });
+
+            @Override
+            public TreeEntry fromString(String string) {
+                return null;
+            }
+        }));
         TreeItem<TreeEntry> rootItem = new TreeItem<>(new TreeEntry(
             TreeEntryType.ROOT, "", "Available Drivers"));
         rootItem.setGraphic(new FontIcon(MaterialDesign.MDI_FOLDER));
@@ -103,7 +106,34 @@ public class FxmlController {
                     try {
                         buttonEnabled = driverManager.getDriver(selectedItem.getCode()).getMetadata().canDiscover();
                     } catch (Exception e) {
-                        buttonEnabled = false;
+                        // Ignore ...
+                    }
+                    // If the item was double-clicked, start the scan right away.
+                    if(buttonEnabled && mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2) {
+                        try {
+                            handleBrowseButtonClicked(null);
+                        } catch (Exception e) {
+                            // Ignore ...
+                        }
+                    }
+                    break;
+                case PLC:
+                    if(mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2) {
+                        String connectionString = selectedItem.getCode();
+                        try {
+                            PlcConnection connection = driverManager.getConnection(connectionString);
+                            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("connection-tab.fxml")));
+
+                            Tab connectionTab = loader.load();
+                            ConnectionTabController controller = loader.getController();
+                            controller.setConnection(selectedItem.getName(), connection);
+
+                            connectionTabs.getTabs().add(connectionTab);
+                        } catch (PlcConnectionException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     break;
                 case ADDRESS:
@@ -136,12 +166,12 @@ public class FxmlController {
         }
     }
 
-    public static enum TreeEntryType {
+    public enum TreeEntryType {
         ROOT,
         DRIVER,
         PLC,
         ADDRESS
-    };
+    }
 
     public static class TreeEntry {
 
