@@ -101,7 +101,7 @@
 
     <plc4x-code-generation.version>1.6.0-SNAPSHOT</plc4x-code-generation.version>
 
-    <antlr.version>4.10.1</antlr.version>
+    <antlr.version>4.11.1</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
     <assertj.version>3.23.1</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
