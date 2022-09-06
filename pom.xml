@@ -1583,7 +1583,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <javafx.classifier>linux</javafx.classifier>
+        <javafx.platform>linux</javafx.platform>
       </properties>
     </profile>
     <!-- Profile for linux x86_64 (Self-Enabling) -->
@@ -1602,7 +1602,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <javafx.classifier>linux</javafx.classifier>
+        <javafx.platform>linux</javafx.platform>
       </properties>
     </profile>
     <!-- Profile for linux aarch64 (Self-Enabling) -->
@@ -1621,7 +1621,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <javafx.classifier>linux-aarch64</javafx.classifier>
+        <javafx.platform>linux-aarch64</javafx.platform>
       </properties>
     </profile>
     <!-- Profile for mac amd64 (Self-Enabling) -->
@@ -1640,7 +1640,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <javafx.classifier>mac</javafx.classifier>
+        <javafx.platform>mac</javafx.platform>
       </properties>
     </profile>
     <!-- Profile for mac x86_64 (Self-Enabling) -->
@@ -1659,7 +1659,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <javafx.classifier>mac</javafx.classifier>
+        <javafx.platform>mac</javafx.platform>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1678,7 +1678,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
-        <javafx.classifier>mac-aarch64</javafx.classifier>
+        <javafx.platform>mac-aarch64</javafx.platform>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1696,7 +1696,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
-        <javafx.classifier>win-x86</javafx.classifier>
+        <javafx.platform>win-x86</javafx.platform>
       </properties>
     </profile>
 
