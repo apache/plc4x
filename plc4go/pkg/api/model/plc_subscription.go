@@ -27,9 +27,18 @@ import (
 
 type PlcSubscriptionEvent interface {
 	PlcResponse
+	// GetFieldNames returns all field name which can be found in this event
 	GetFieldNames() []string
+	// GetResponseCode returns the PlcResponseCode for a field
 	GetResponseCode(name string) PlcResponseCode
+	// GetAddress returns the address for an event. This is meant to for reading or writing one item.
+	// Sometimes there are fields which can't be directly addressed (e.g. only through a broadcast).
+	// In that case (if applicable) the GetSource contains the source information about the sending device.
 	GetAddress(name string) string
+	// GetSource returns usually the same as GetAddress in case when the address contains information about the source.
+	// If we have a field which is not directly addressable (see doc for GetAddress) the source is useful to identify the device.
+	GetSource(name string) string
+	// GetValue returns the field value for a named field.
 	GetValue(name string) values.PlcValue
 }
 
