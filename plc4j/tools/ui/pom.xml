@@ -60,6 +60,20 @@
         </executions>
       </plugin>
 
+      <!-- For some reason there is a class: com/sun/javafx/runtime/VersionInfo.class in two artifacts for windows systems -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-ban-duplicate-classes</id>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
