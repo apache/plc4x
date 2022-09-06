@@ -180,6 +180,8 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		return nil, errors.Wrap(err, "Error getting the subscription handle")
 	}
 
+	blockOffset0Received := false
+	blockOffset0ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
 	blockOffset88Received := false
 	blockOffset88ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
 	blockOffset176Received := false
@@ -219,8 +221,10 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			default:
 			}
 		case 0:
-			log.Debug().Msgf("We ignore 0 as we handle it with the read request below\n%v", event)
-			return
+			select {
+			case blockOffset0ReceivedChan <- true:
+			default:
+			}
 		}
 
 		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
@@ -259,51 +263,58 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	if err := readRequestResult.GetErr(); err != nil {
 		return nil, errors.Wrap(err, "Error reading the mmi")
 	}
-	if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode != apiModel.PlcResponseCode_OK {
-		return nil, errors.Errorf("Got %s", responseCode)
-	}
-	rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
-	if !rootValue.IsStruct() {
-		return nil, errors.Errorf("%v should be a struct", rootValue)
-	}
-	rootStruct := rootValue.GetStruct()
-	if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
-		return nil, errors.Errorf("%v should contain a application field of type string with value NETWORK_CONTROL", rootStruct)
-	}
-	var blockStart int
-	if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
-		return nil, errors.Errorf("%v should contain a blockStart field of type byte with value 0", rootStruct)
-	} else {
-		blockStart = int(blockStartValue.GetByte())
-	}
+	if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
+		rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
+		if !rootValue.IsStruct() {
+			return nil, errors.Errorf("%v should be a struct", rootValue)
+		}
+		rootStruct := rootValue.GetStruct()
+		if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
+			return nil, errors.Errorf("%v should contain a application field of type string with value NETWORK_CONTROL", rootStruct)
+		}
+		var blockStart int
+		if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
+			return nil, errors.Errorf("%v should contain a blockStart field of type byte with value 0", rootStruct)
+		} else {
+			blockStart = int(blockStartValue.GetByte())
+		}
 
-	if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-		return nil, errors.Errorf("%v should contain a values field of type list", rootStruct)
-	} else {
-		for unitByteAddress, plcValue := range plcListValue.GetList() {
-			unitByteAddress = blockStart + unitByteAddress
-			if !plcValue.IsString() {
-				return nil, errors.Errorf("%v at %d should be a string", plcValue, unitByteAddress)
-			}
-			switch plcValue.GetString() {
-			case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
-				log.Debug().Msgf("unit %d does exists", unitByteAddress)
-				result[byte(unitByteAddress)] = true
-			case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
-				log.Debug().Msgf("unit %d does not exists", unitByteAddress)
-			case readWriteModel.GAVState_ERROR.PLC4XEnumName():
-				log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
+			return nil, errors.Errorf("%v should contain a values field of type list", rootStruct)
+		} else {
+			for unitByteAddress, plcValue := range plcListValue.GetList() {
+				unitByteAddress = blockStart + unitByteAddress
+				if !plcValue.IsString() {
+					return nil, errors.Errorf("%v at %d should be a string", plcValue, unitByteAddress)
+				}
+				switch plcValue.GetString() {
+				case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
+					log.Debug().Msgf("unit %d does exists", unitByteAddress)
+					result[byte(unitByteAddress)] = true
+				case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
+					log.Debug().Msgf("unit %d does not exists", unitByteAddress)
+				case readWriteModel.GAVState_ERROR.PLC4XEnumName():
+					log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+				}
 			}
 		}
+		blockOffset0Received = true
+	} else {
+		log.Warn().Msgf("We got %s as response code for installation mmi so we rely on getting it via subscription", responseCode)
 	}
 
 	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*2)
 	defer syncCtxCancel()
-	for !blockOffset88Received || !blockOffset176Received {
+	for !blockOffset0Received || !blockOffset88Received || !blockOffset176Received {
 		select {
+		case <-blockOffset0ReceivedChan:
+			log.Trace().Msg("Offset 0 received")
+			blockOffset0Received = true
 		case <-blockOffset88ReceivedChan:
+			log.Trace().Msg("Offset 88 received")
 			blockOffset88Received = true
 		case <-blockOffset176ReceivedChan:
+			log.Trace().Msg("Offset 176 received")
 			blockOffset176Received = true
 		case <-syncCtx.Done():
 			return nil, errors.Wrap(err, "error waiting for other offsets")
