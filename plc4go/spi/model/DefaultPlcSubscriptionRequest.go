@@ -36,6 +36,19 @@ const (
 	SubscriptionEvent         SubscriptionType = 0x03
 )
 
+func (s SubscriptionType) String() string {
+	switch s {
+	case SubscriptionCyclic:
+		return "SubscriptionCyclic"
+	case SubscriptionChangeOfState:
+		return "SubscriptionChangeOfState"
+	case SubscriptionEvent:
+		return "SubscriptionEvent"
+	default:
+		return "Unknown"
+	}
+}
+
 type DefaultPlcSubscriptionRequestBuilder struct {
 	subscriber             spi.PlcSubscriber
 	fieldHandler           spi.PlcFieldHandler

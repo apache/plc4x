@@ -85,11 +85,64 @@ func (m DefaultPlcSubscriptionEvent) GetValue(name string) values.PlcValue {
 }
 
 func (m DefaultPlcSubscriptionEvent) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcReadResponse"); err != nil {
+	if err := writeBuffer.PushContext("PlcSubscriptionEvent"); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteSerializable(m.DefaultResponse); err != nil {
 		return err
 	}
 
 	if err := writeBuffer.PushContext("fields"); err != nil {
+		return err
+	}
+	for _, fieldName := range m.GetFieldNames() {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
+			return err
+		}
+		valueResponse := m.GetField(fieldName)
+		if err := writeBuffer.WriteString("addressString", uint32(len(valueResponse.GetAddressString())*8), "UTF-8", valueResponse.GetAddressString()); err != nil {
+			return err
+		}
+		if err := writeBuffer.WriteString("typeName", uint32(len(valueResponse.GetTypeName())*8), "UTF-8", valueResponse.GetTypeName()); err != nil {
+			return err
+		}
+		if err := writeBuffer.WriteUint16(fieldName, 8, uint16(valueResponse.GetQuantity())); err != nil {
+			return err
+		}
+		if err := writeBuffer.PopContext(fieldName); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("fields"); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("types"); err != nil {
+		return err
+	}
+	for _, fieldName := range m.GetFieldNames() {
+		fieldType := m.GetType(fieldName)
+		if err := writeBuffer.WriteUint8(fieldName, 8, uint8(fieldType), utils.WithAdditionalStringRepresentation(fieldType.String())); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("types"); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("intervals"); err != nil {
+		return err
+	}
+	for _, fieldName := range m.GetFieldNames() {
+		interval := m.GetInterval(fieldName)
+		if err := writeBuffer.WriteInt64(fieldName, 8, int64(interval), utils.WithAdditionalStringRepresentation(interval.String())); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("intervals"); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PushContext("values"); err != nil {
 		return err
 	}
 	for _, fieldName := range m.GetFieldNames() {
@@ -104,10 +157,11 @@ func (m DefaultPlcSubscriptionEvent) Serialize(writeBuffer utils.WriteBuffer) er
 			return err
 		}
 	}
-	if err := writeBuffer.PopContext("fields"); err != nil {
+	if err := writeBuffer.PopContext("values"); err != nil {
 		return err
 	}
-	if err := writeBuffer.PopContext("PlcReadResponse"); err != nil {
+
+	if err := writeBuffer.PopContext("PlcSubscriptionEvent"); err != nil {
 		return err
 	}
 	return nil
