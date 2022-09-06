@@ -102,7 +102,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
 			field, ok := subscriptionHandle.field.(*mmiMonitorField)
 			if !ok {
-				log.Debug().Msgf("Unusable field for mmi subscription %s", field)
+				log.Debug().Msgf("Unusable field for mmi subscription %s", subscriptionHandle.field)
 				continue
 			}
 
@@ -232,7 +232,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
 			field, ok := subscriptionHandle.field.(*salMonitorField)
 			if !ok {
-				log.Debug().Msgf("Unusable field for mmi subscription %s", field)
+				log.Debug().Msgf("Unusable field for mmi subscription %s", subscriptionHandle.field)
 				continue
 			}
 			fields := map[string]apiModel.PlcField{}
