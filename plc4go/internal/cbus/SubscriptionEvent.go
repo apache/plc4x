@@ -29,16 +29,29 @@ import (
 type SubscriptionEvent struct {
 	internalMode.DefaultPlcSubscriptionEvent
 	address map[string]string
+	sources map[string]string
 }
 
-func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
-	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
-	address map[string]string, values map[string]values.PlcValue) SubscriptionEvent {
-	subscriptionEvent := SubscriptionEvent{address: address}
+func NewSubscriptionEvent(
+	fields map[string]apiModel.PlcField,
+	types map[string]internalMode.SubscriptionType,
+	intervals map[string]time.Duration,
+	responseCodes map[string]apiModel.PlcResponseCode,
+	address map[string]string,
+	sources map[string]string,
+	values map[string]values.PlcValue) SubscriptionEvent {
+	subscriptionEvent := SubscriptionEvent{
+		address: address,
+		sources: sources,
+	}
 	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(subscriptionEvent, fields, types, intervals, responseCodes, values)
 	return subscriptionEvent
 }
 
 func (m SubscriptionEvent) GetAddress(name string) string {
 	return m.address[name]
+}
+
+func (m SubscriptionEvent) GetSource(name string) string {
+	return m.sources[name]
 }

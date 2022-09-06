@@ -44,8 +44,7 @@ func NewSubscriber(connection *Connection) *Subscriber {
 	}
 }
 
-func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
-	// TODO: handle context
+func (m *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
 		internalPlcSubscriptionRequest := subscriptionRequest.(spiModel.DefaultPlcSubscriptionRequest)
@@ -112,6 +111,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			address := map[string]string{}
+			sources := map[string]string{}
 			plcValues := map[string]apiValues.PlcValue{}
 			fieldName := subscriptionHandle.fieldName
 
@@ -122,6 +122,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 					continue
 				}
 			}
+			sources[fieldName] = unitAddressString
 
 			subscriptionType := subscriptionHandle.fieldType
 			// TODO: handle subscriptionType
@@ -217,7 +218,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
-				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, plcValues)
+				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, sources, plcValues)
 				consumer(event)
 			}
 		}
@@ -239,6 +240,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			address := map[string]string{}
+			sources := map[string]string{}
 			plcValues := map[string]apiValues.PlcValue{}
 			fieldName := subscriptionHandle.fieldName
 
@@ -278,6 +280,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 					continue
 				}
 			}
+			sources[fieldName] = unitAddressString
 
 			if application := field.GetApplication(); application != nil {
 				if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
@@ -302,7 +305,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
-				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, plcValues)
+				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, sources, plcValues)
 				consumer(event)
 			}
 		}
