@@ -34,10 +34,9 @@ type SubscriptionEvent struct {
 func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
 	address map[string]string, values map[string]values.PlcValue) SubscriptionEvent {
-	return SubscriptionEvent{
-		address:                     address,
-		DefaultPlcSubscriptionEvent: internalMode.NewDefaultPlcSubscriptionEvent(fields, types, intervals, responseCodes, values),
-	}
+	subscriptionEvent := SubscriptionEvent{address: address}
+	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(subscriptionEvent, fields, types, intervals, responseCodes, values)
+	return subscriptionEvent
 }
 
 func (m SubscriptionEvent) GetAddress(name string) string {

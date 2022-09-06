@@ -36,10 +36,9 @@ type SubscriptionEvent struct {
 func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
 	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
-	return SubscriptionEvent{
-		addresses:                   addresses,
-		DefaultPlcSubscriptionEvent: internalMode.NewDefaultPlcSubscriptionEvent(fields, types, intervals, responseCodes, values),
-	}
+	subscriptionEvent := SubscriptionEvent{addresses: addresses}
+	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(subscriptionEvent, fields, types, intervals, responseCodes, values)
+	return subscriptionEvent
 }
 
 // GetAddress Decode the binary data in the address according to the field requested

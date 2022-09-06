@@ -28,21 +28,27 @@ import (
 
 type DefaultPlcSubscriptionEvent struct {
 	DefaultResponse
+	DefaultPlcSubscriptionEventRequirements
 	fields    map[string]model.PlcField
 	types     map[string]SubscriptionType
 	intervals map[string]time.Duration
 	values    map[string]values.PlcValue
 }
 
-func NewDefaultPlcSubscriptionEvent(fields map[string]model.PlcField, types map[string]SubscriptionType,
+type DefaultPlcSubscriptionEventRequirements interface {
+	GetAddress(name string) string
+}
+
+func NewDefaultPlcSubscriptionEvent(defaultPlcSubscriptionEventRequirements DefaultPlcSubscriptionEventRequirements, fields map[string]model.PlcField, types map[string]SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]model.PlcResponseCode,
 	values map[string]values.PlcValue) DefaultPlcSubscriptionEvent {
 	return DefaultPlcSubscriptionEvent{
-		DefaultResponse: NewDefaultResponse(responseCodes),
-		fields:          fields,
-		types:           types,
-		intervals:       intervals,
-		values:          values,
+		DefaultResponse:                         NewDefaultResponse(responseCodes),
+		DefaultPlcSubscriptionEventRequirements: defaultPlcSubscriptionEventRequirements,
+		fields:                                  fields,
+		types:                                   types,
+		intervals:                               intervals,
+		values:                                  values,
 	}
 }
 
@@ -67,7 +73,11 @@ func (m DefaultPlcSubscriptionEvent) GetInterval(name string) time.Duration {
 }
 
 func (m DefaultPlcSubscriptionEvent) GetAddress(name string) string {
-	panic("GetAddress not implemented")
+	return m.DefaultPlcSubscriptionEventRequirements.GetAddress(name)
+}
+
+func (m DefaultPlcSubscriptionEvent) GetSource(name string) string {
+	return m.GetAddress(name)
 }
 
 func (m DefaultPlcSubscriptionEvent) GetValue(name string) values.PlcValue {
