@@ -37,6 +37,8 @@ type LevelInformationNormal interface {
 	GetPair2() LevelInformationNibblePair
 	// GetActualLevel returns ActualLevel (virtual field)
 	GetActualLevel() uint8
+	// GetActualLevelInPercent returns ActualLevelInPercent (virtual field)
+	GetActualLevelInPercent() float32
 }
 
 // LevelInformationNormalExactly can be used when we want exactly this type and not a type which fulfills LevelInformationNormal.
@@ -97,6 +99,10 @@ func (m *_LevelInformationNormal) GetActualLevel() uint8 {
 	return uint8(m.GetPair2().NibbleValue()<<uint8(4) | m.GetPair1().NibbleValue())
 }
 
+func (m *_LevelInformationNormal) GetActualLevelInPercent() float32 {
+	return float32(float32(float32(float32(100))*float32((float32(m.GetActualLevel())+float32(float32(2))))) / float32(float32(255)))
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +146,8 @@ func (m *_LevelInformationNormal) GetLengthInBitsConditional(lastItem bool) uint
 
 	// Simple field (pair2)
 	lengthInBits += 8
+
+	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
@@ -190,6 +198,11 @@ func LevelInformationNormalParse(readBuffer utils.ReadBuffer) (LevelInformationN
 	actualLevel := uint8(_actualLevel)
 	_ = actualLevel
 
+	// Virtual field
+	_actualLevelInPercent := float32(float32(float32(100))*float32((float32(actualLevel)+float32(float32(2))))) / float32(float32(255))
+	actualLevelInPercent := float32(_actualLevelInPercent)
+	_ = actualLevelInPercent
+
 	if closeErr := readBuffer.CloseContext("LevelInformationNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LevelInformationNormal")
 	}
@@ -238,6 +251,10 @@ func (m *_LevelInformationNormal) Serialize(writeBuffer utils.WriteBuffer) error
 		// Virtual field
 		if _actualLevelErr := writeBuffer.WriteVirtual("actualLevel", m.GetActualLevel()); _actualLevelErr != nil {
 			return errors.Wrap(_actualLevelErr, "Error serializing 'actualLevel' field")
+		}
+		// Virtual field
+		if _actualLevelInPercentErr := writeBuffer.WriteVirtual("actualLevelInPercent", m.GetActualLevelInPercent()); _actualLevelInPercentErr != nil {
+			return errors.Wrap(_actualLevelInPercentErr, "Error serializing 'actualLevelInPercent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LevelInformationNormal"); popErr != nil {
