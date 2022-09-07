@@ -50,6 +50,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -127,9 +128,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         channel.onDiscover(context);
     }
 
-    @Override
-    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
-        CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
+    private CompletableFuture<List<PlcBrowseItem>> browseNode(NodeId nodeId) {
+        CompletableFuture<List<PlcBrowseItem>> future = new CompletableFuture<>();
         RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
             SecureChannel.getCurrentDateTime(),
             channel.getRequestHandle(),
@@ -140,7 +140,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         List<ExtensionObjectDefinition> requestedValues = new ArrayList<>(1);
         requestedValues.add(new BrowseDescription(
-            new NodeId(new NodeIdTwoByte((short) 85)),
+            nodeId,
             BrowseDirection.browseDirectionForward,
             new NodeId(new NodeIdTwoByte((short) 33)),
             true,
@@ -149,15 +149,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ));
 
         ViewDescription viewDescription = new ViewDescription(NULL_NODEID,SecureChannel.getCurrentDateTime(),1);
-
         BrowseRequest request = new BrowseRequest(
             requestHeader,
             viewDescription,
             0,
             1,
             requestedValues);
-
-
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
@@ -186,16 +183,39 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
                         for (ExtensionObjectDefinition result : castResult.getReferences()) {
                             ReferenceDescription referenceResult = (ReferenceDescription) result;
-
-                            values.add(new DefaultPlcBrowseItem(
-                                referenceResult.getBrowseName().getName().getStringValue(),
-                                referenceResult.getDisplayName().getText().getStringValue(),
-                                PlcValueType.Struct,
-                                true,
-                                true,
-                                true, new ArrayList<PlcBrowseItem>(0), null));
+                            String typeDefinition = referenceResult.getTypeDefinition().getIdentifier();
+                            PlcValueType plcValue = null;
+                            if (OpcuaDataType.isDefined(typeDefinition)) {
+                                OpcuaDataType plcType = OpcuaDataType.enumForValue(typeDefinition);
+                                plcValue = PlcValueType.enumForValue(plcType.getVariantType());
+                            } else {
+                                plcValue = PlcValueType.Struct;
+                            }
+                            ExpandedNodeId tempNodeId = ((ReferenceDescription) result).getNodeId();
+                            NodeId tempNode = new NodeId(
+                                new NodeIdString(tempNodeId tempNodeId.getIdentifier());
+                            )
+                            CompletableFuture<List<PlcBrowseItem>> childFuture = browseNode();
+                            List<PlcBrowseItem> list = childFuture.get(5000L, TimeUnit.SECONDS);
+                            if (list != null) {
+                                values.add(new DefaultPlcBrowseItem(
+                                    referenceResult.getBrowseName().getName().getStringValue(),
+                                    referenceResult.getDisplayName().getText().getStringValue(),
+                                    plcValue,
+                                    true,
+                                    true,
+                                    true, list, null));
+                            } else {
+                                values.add(new DefaultPlcBrowseItem(
+                                    referenceResult.getBrowseName().getName().getStringValue(),
+                                    referenceResult.getDisplayName().getText().getStringValue(),
+                                    plcValue,
+                                    true,
+                                    true,
+                                    true, new ArrayList<PlcBrowseItem>(0), null));
+                            }
                         }
-                        future.complete(new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values));
+                        future.complete(values);
                     } else {
                         List<PlcBrowseItem> values = new ArrayList<>(0);
                         if (reply instanceof ServiceFault) {
@@ -205,11 +225,17 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             LOGGER.error("Remote party returned an error '{}'", reply);
                         }
 
-                        future.complete(new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.INTERNAL_ERROR, values));
+                        future.complete(values);
                         return;
                     }
                 } catch (ParseException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (TimeoutException e) {
+                    throw new RuntimeException(e);
                 }
             };
 
@@ -230,6 +256,32 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             LOGGER.error("Unable to serialise the BrowseRequest");
         }
 
+        return future;
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
+
+        CompletableFuture<List<PlcBrowseItem>> childFuture = browseNode(new ExpandedNodeId(
+            false,
+            false,
+            new NodeIdTwoByte((short) 85),
+            null,
+            0L));
+
+        PlcBrowseResponse response = null;
+        try {
+            response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, childFuture.get(1000L, TimeUnit.SECONDS));
+            future.complete(response);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+        //new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.INTERNAL_ERROR, values)
         return future;
     }
 
