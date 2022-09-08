@@ -40,7 +40,7 @@ public class ProfinetPoc {
             new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
             new DceRpc_InterfaceUuid_DeviceInterface(), generateActivityUuid(),
             0, 0, DceRpc_Operation.CONNECT,
-            new PnIoCm_Packet_Req(404, 404, 404, 0, 404,
+            new PnIoCm_Packet_Req(404, 404, 0, 404,
                 Arrays.asList(
                     new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                         new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")), 2,
