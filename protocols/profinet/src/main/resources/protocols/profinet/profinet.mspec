@@ -651,7 +651,7 @@
     [typeSwitch packetType
         ['REQUEST' PnIoCm_Packet_Req
             [simple uint 32      argsMaximum                          ]
-            [simple uint 32      argsLength                           ]
+            [implicit uint 32    argsLength       'lengthInBytes - 20']
             [simple uint 32      arrayMaximumCount                    ]
             [simple uint 32      arrayOffset                          ]
             [simple uint 32      arrayActualCount                     ]

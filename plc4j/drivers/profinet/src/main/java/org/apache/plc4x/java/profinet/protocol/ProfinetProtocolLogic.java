@@ -40,10 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.*;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -133,6 +130,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             connectRequestPacket.setAddress(remoteAddress.getAddress());
             connectRequestPacket.setPort(remoteAddress.getPort());
             // Send it.
+
             udpSocket.send(connectRequestPacket);
 
             // Receive the response.
@@ -221,14 +219,14 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 profinetDriverContext.getDceRpcActivityUuid(),
                 0, 0, DceRpc_Operation.CONNECT,
-                new PnIoCm_Packet_Req(404, 404, 404, 0, 404,
+                new PnIoCm_Packet_Req(16696, 16696, 0, 0,
                     Arrays.asList(
                         new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                             new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")),
                             profinetDriverContext.getSessionKey(),
                             profinetDriverContext.getLocalMacAddress(),
                             new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
-                            false, false, false,
+                            false, true, false,
                             false, PnIoCm_CompanionArType.SINGLE_AR, false,
                             true, false, PnIoCm_State.ACTIVE,
                             600,
@@ -249,31 +247,23 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                                     Arrays.asList(
                                         new PnIoCm_IoDataObject(0, 0x0001, 0),
                                         new PnIoCm_IoDataObject(0, 0x8000, 1),
-                                        new PnIoCm_IoDataObject(0, 0x8001, 2),
-                                        new PnIoCm_IoDataObject(0, 0x8002, 3),
-                                        new PnIoCm_IoDataObject(1, 0x0001, 4)
+                                        new PnIoCm_IoDataObject(0, 0x8001, 2)
                                     ),
-                                    Collections.singletonList(
-                                        new PnIoCm_IoCs(0x0001, 0x0001, 0x0019)
-                                    ))
+                                    new ArrayList<PnIoCm_IoCs>(0))
                             )),
                         new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.OUTPUT_CR,
                             0x0002, 0x8892, false, false,
                             false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
-                            0x8000, 128, 8, 1, 0, 0xffffffff,
+                            0xFFFF, 128, 8, 1, 0, 0xffffffff,
                             3, 3, 0xC000,
                             new MacAddress(Hex.decodeHex("000000000000")),
                             Collections.singletonList(
                                 new PnIoCm_IoCrBlockReqApi(
-                                    Collections.singletonList(
-                                        new PnIoCm_IoDataObject(0x0001, 0x0001, 0x0005)
-                                    ),
+                                    new ArrayList<PnIoCm_IoDataObject>(0),
                                     Arrays.asList(
                                         new PnIoCm_IoCs(0, 0x0001, 0),
                                         new PnIoCm_IoCs(0, 0x8000, 1),
-                                        new PnIoCm_IoCs(0, 0x8001, 2),
-                                        new PnIoCm_IoCs(0, 0x8002, 3),
-                                        new PnIoCm_IoCs(1, 0x0001, 4)
+                                        new PnIoCm_IoCs(0, 0x8001, 2)
                                     )
                                 )
                             )
@@ -287,26 +277,12 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                                             0x00000001, false, false,
                                             false, false),
                                         new PnIoCm_Submodule_NoInputNoOutputData(0x8000,
-                                            0x00000002, false, false,
+                                            0x00008000, false, false,
                                             false, false),
                                         new PnIoCm_Submodule_NoInputNoOutputData(0x8001,
-                                            0x00000003, false, false,
-                                            false, false),
-                                        new PnIoCm_Submodule_NoInputNoOutputData(0x8002,
-                                            0x00000003, false, false,
+                                            0x00008001, false, false,
                                             false, false)
                                     )
-                                )
-                            )
-                        ),
-                        new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                            Collections.singletonList(
-                                new PnIoCm_ExpectedSubmoduleBlockReqApi(1,
-                                    0x00000022, 0x00000000, Collections.singletonList(
-                                    new PnIoCm_Submodule_InputAndOutputData(0x0001, 0x00000010,
-                                        false, false, false,
-                                        false, 20, (short) 1, (short) 1,
-                                        6, (short) 1, (short) 1))
                                 )
                             )
                         ),
