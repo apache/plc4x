@@ -28,9 +28,9 @@ import (
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/pkg/errors"
+	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/sruehl/tview"
 )
 
 func InitSubsystem() {

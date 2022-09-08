@@ -25,7 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/gdamore/tcell/v2"
 	"github.com/pkg/errors"
-	"github.com/sruehl/tview"
+	"github.com/rivo/tview"
 	"regexp"
 	"strconv"
 	"time"
@@ -187,7 +187,6 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 					enteredCommandsView.Highlight("0").ScrollToHighlight()
 				}
 				if len(currentSelection) == 1 {
-					// TODO: currently this is broken due to https://github.com/rivo/tview/issues/751 (workaround active with sruehl fix fork)
 					commandInputField.SetText(enteredCommandsView.GetRegionText(currentSelection[0]))
 					application.SetFocus(commandInputField)
 				}
@@ -219,7 +218,7 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 		var jumpToMessageItem func(messageNumber int) bool
 		{
 			outputView := tview.NewTextView().
-				SetDynamicColors(true). // TODO: currently this is broken due to https://github.com/rivo/tview/issues/751 (workaround active with sruehl fix fork)
+				SetDynamicColors(true).
 				SetRegions(true).
 				SetWordWrap(false).
 				SetWrap(false).
