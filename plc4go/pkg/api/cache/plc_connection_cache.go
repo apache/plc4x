@@ -218,12 +218,16 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				case _ = <-leaseResults:
 					log.Debug().Str("connectionString", container.connectionString).Msg("Gracefully closing connection ...")
 					// Give back the connection.
-					container.connection.Close()
+					if container.connection != nil {
+						container.connection.Close()
+					}
 				// If we're timing out brutally kill the connection.
 				case <-closeTimeout.C:
 					log.Debug().Str("connectionString", container.connectionString).Msg("Forcefully closing connection ...")
 					// Forcefully close this connection.
-					container.connection.Close()
+					if container.connection != nil {
+						container.connection.Close()
+					}
 				}
 
 				responseDeliveryTimeout := time.NewTimer(10 * time.Millisecond)
