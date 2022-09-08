@@ -681,6 +681,34 @@
     [simple        uint 8           blockVersionHigh                    ]
     [simple        uint 8           blockVersionLow                     ]
     [typeSwitch blockType
+        ['IOD_WRITE_REQUEST_HEADER' IODWriteRequestHeader
+            [simple   uint 16                         sequenceNumber                                         ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 32                         api                                                    ]
+            [simple   uint 16                         slotNumber                                             ]
+            [simple   uint 16                         subSlotNumber                                          ]
+            [const    uint 16                         padField                  0x0000                       ]
+            [simple   uint 16                         index                                                  ]
+            [simple   uint 32                         recordDataLength                                       ]
+            [padding  uint 8      pad '0x00'          '64 - 6 - 2 - 16 - 4 - 2 - 2 - 2 - 2 - 4']
+        ]
+        ['PD_INTERFACE_ADJUST' PDInterfaceAdjust
+            [const    uint 16                         padField                  0x0000                       ]
+            [const    uint 16                         multipleInterfaceModeReserved2                  0x0000 ]
+            [const    uint 15                         multipleInterfaceModeReserved1                  0x0000 ]
+            [simple   MultipleInterfaceModeNameOfDevice multipleInterfaceModeNameOfDevice                    ]
+        ]
+        ['PD_PORT_DATA_CHECK' PDPortDataCheck
+            [const    uint 16                         padField                  0x0000                       ]
+            [simple   uint 16                         slotNumber                                             ]
+            [simple   uint 16                         subSlotNumber                                          ]
+            [simple   PnIoCm_Block                    checkPeers                                             ]
+        ]
+        ['CHECK_PEERS'  CheckPeers
+            [const    uint 8                          noOfPeers                 0x01                         ]
+            [simple   PascalString                    peerPortId                                             ]
+            [simple   PascalString                    peerChassisId                                          ]
+        ]
         ['AR_BLOCK_REQ' PnIoCm_Block_ArReq
             [simple   PnIoCm_ArType                   arType                                                 ]
             [simple   Uuid                            arUuid                                                 ]
@@ -773,11 +801,16 @@
             [array    PnIoCm_ModuleDiffBlockApi apis              count         'numberOfApis'      ]
         ]
         ['AR_SERVER_BLOCK' PnIoCm_Block_ArServer
-            //[implicit uint 16                         stationNameLength      'STR_LEN(cmInitiatorStationName)']
-            //[simple   vstring 'stationNameLength * 8' cmInitiatorStationName                                  ]
-            //[padding  byte 0x00                                                                               ]
+            [simple   PascalString                    stationName                                   ]
+            [padding  uint 8      pad '0x00'          '20 - 6 - (stationName.stringLength)'              ]
         ]
     ]
+]
+
+[type PascalString
+    [implicit int 16 sLength          'stringValue.length == 0 ? -1 : stringValue.length']
+    [simple vstring 'sLength == -1 ? 0 : sLength * 8' stringValue]
+    [virtual  int 16 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
 ]
 
 [type PnIoCm_IoCrBlockReqApi
@@ -872,15 +905,21 @@
 ]
 
 [enum uint 16 PnIoCm_BlockType
+    ['0x0008' IOD_WRITE_REQUEST_HEADER    ]
     ['0x0101' AR_BLOCK_REQ                ]
-    ['0x8101' AR_BLOCK_RES                ]
     ['0x0102' IO_CR_BLOCK_REQ             ]
-    ['0x8102' IO_CR_BLOCK_RES             ]
     ['0x0103' ALARM_CR_BLOCK_REQ          ]
-    ['0x8103' ALARM_CR_BLOCK_RES          ]
     ['0x0104' EXPECTED_SUBMODULE_BLOCK_REQ]
+    ['0x0110' IOD_CONTROL_REQ             ]
+    ['0x0200' PD_PORT_DATA_CHECK          ]
+    ['0x020a' CHECK_PEERS                 ]
+    ['0x0250' PD_INTERFACE_ADJUST         ]
+    ['0x8101' AR_BLOCK_RES                ]
+    ['0x8102' IO_CR_BLOCK_RES             ]
+    ['0x8103' ALARM_CR_BLOCK_RES          ]
     ['0x8104' MODULE_DIFF_BLOCK           ]
     ['0x8106' AR_SERVER_BLOCK             ]
+    ['0x8110' IOD_CONTROL_RES             ]
 ]
 
 [enum uint 16 PnIoCm_ArType
@@ -915,6 +954,11 @@
 [enum uint 2 PnIoCm_SubmoduleType
     ['0x0' NO_INPUT_NO_OUTPUT_DATA]
     ['0x3' INPUT_AND_OUTPUT_DATA]
+]
+
+[enum bit MultipleInterfaceModeNameOfDevice
+    ['false' PORT_PROVIDED_BY_LLDP]
+    ['true'  NAME_PROVIDED_BY_LLDP]
 ]
 
 [enum uint 16 PnIoCm_DescriptionType

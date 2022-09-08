@@ -54,6 +54,16 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
 
     private ProfinetDriverContext profinetDriverContext;
 
+    private static final Uuid ARUUID;
+
+    static {
+        try {
+            ARUUID = new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51"));
+        } catch (DecoderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void setContext(ConversationContext<Ethernet_Frame> context) {
         super.setContext(context);
@@ -160,11 +170,23 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             } else {
                 throw new PlcException("Unexpected response");
             }
+
+            // Create the packet
+            final DceRpc_Packet profinetAdvancedConnectionWriteRequest = createProfinetAdvancedConnectionWriteRequest();
+            // Serialize it to a byte-payload
+            writeBuffer = new WriteBufferByteBased(profinetAdvancedConnectionWriteRequest.getLengthInBytes());
+            profinetAdvancedConnectionWriteRequest.serialize(writeBuffer);
+            // Create a udp packet.
+            connectRequestPacket = new DatagramPacket(writeBuffer.getData(), writeBuffer.getData().length);
+            connectRequestPacket.setAddress(remoteAddress.getAddress());
+            connectRequestPacket.setPort(remoteAddress.getPort());
+            // Send it.
+
+            udpSocket.send(connectRequestPacket);
+
         } catch (SerializationException | IOException | PlcException | ParseException e) {
             logger.error("Error", e);
         }
-
-        //System.out.println(rawSocketChannel);
     }
 
     @Override
@@ -233,14 +255,14 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                             // This actually needs to be set to this value and not the real port number.
                             0x8892,
                             // It seems that it must be set to this value, or it won't work.
-                            "profinetxadriver4933"),
+                            "controller"),
                         new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
                             0x0001,
                             0x8892,
                             false, false,
                             false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
                             0xBBF0, 128, 8, 1, 0, 0xffffffff,
-                            3, 3, 0xC000,
+                            50, 50, 0xC000,
                             new org.apache.plc4x.java.profinet.readwrite.MacAddress(Hex.decodeHex("000000000000")),
                             Collections.singletonList(
                                 new PnIoCm_IoCrBlockReqApi(
@@ -255,7 +277,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                             0x0002, 0x8892, false, false,
                             false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
                             0xFFFF, 128, 8, 1, 0, 0xffffffff,
-                            3, 3, 0xC000,
+                            50, 50, 0xC000,
                             new MacAddress(Hex.decodeHex("000000000000")),
                             Collections.singletonList(
                                 new PnIoCm_IoCrBlockReqApi(
@@ -301,6 +323,71 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         } catch (DecoderException e) {
             throw new PlcException("Error creating connection request", e);
         }
+    }
+
+    private DceRpc_Packet createProfinetAdvancedConnectionWriteRequest() throws PlcException {
+
+        return new DceRpc_Packet(
+            DceRpc_PacketType.REQUEST, true, false, false,
+            IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
+            new DceRpc_InterfaceUuid_DeviceInterface(),
+            profinetDriverContext.getDceRpcActivityUuid(),
+            0, 1, DceRpc_Operation.WRITE,
+            new PnIoCm_Packet_Req(16696, 16696, 0, 244,
+                Arrays.asList(
+                    new IODWriteRequestHeader(
+                        (short) 1,
+                        (short) 0,
+                        0,
+                        ARUUID,
+                        0x00000000,
+                        0x0000,
+                        0x0000,
+                        0xe040,
+                        180
+                        ),
+                    new IODWriteRequestHeader(
+                        (short) 1,
+                        (short) 0,
+                        1,
+                        ARUUID,
+                        0x00000000,
+                        0x0000,
+                        0x8000,
+                        0x8071,
+                        12
+                    ),
+                    new PDInterfaceAdjust(
+                        (short) 1,
+                        (short) 0,
+                        MultipleInterfaceModeNameOfDevice.PORT_PROVIDED_BY_LLDP
+                    ),
+                    new IODWriteRequestHeader(
+                        (short) 1,
+                        (short) 0,
+                        2,
+                        ARUUID,
+                        0x00000000,
+                        0x0000,
+                        0x8001,
+                        0x802b,
+                        40
+                    ),
+                    new PDPortDataCheck(
+                        (short) 1,
+                        (short) 0,
+                        0x0000,
+                        0x8001,
+                        new CheckPeers(
+                            (short) 1,
+                            (short) 0,
+                            new PascalString("port-001"),
+                            new PascalString("controller")
+                        )
+                    )
+                ))
+        );
     }
 
     protected static DceRpc_ActivityUuid generateActivityUuid() {
