@@ -304,7 +304,7 @@ func (m FieldHandler) handleSALPattern(match map[string]string) (model.PlcField,
 }
 
 func (m FieldHandler) handleSALMonitorPattern(match map[string]string) (model.PlcField, error) {
-	var unitAddress readWriteModel.UnitAddress
+	var unitAddress *readWriteModel.UnitAddress
 	{
 		unitAddressArgument := match["unitAddress"]
 		if unitAddressArgument == "*" {
@@ -317,13 +317,17 @@ func (m FieldHandler) handleSALMonitorPattern(match map[string]string) (model.Pl
 			if len(decodedHex) != 1 {
 				return nil, errors.Errorf("Hex must be exatly one byte")
 			}
-			unitAddress = readWriteModel.NewUnitAddress(decodedHex[0])
+			var unitAddressVar readWriteModel.UnitAddress
+			unitAddressVar = readWriteModel.NewUnitAddress(decodedHex[0])
+			unitAddress = &unitAddressVar
 		} else {
 			atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
 			if err != nil {
 				return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
 			}
-			unitAddress = readWriteModel.NewUnitAddress(byte(atoi))
+			var unitAddressVar readWriteModel.UnitAddress
+			unitAddressVar = readWriteModel.NewUnitAddress(byte(atoi))
+			unitAddress = &unitAddressVar
 		}
 	}
 
@@ -345,7 +349,7 @@ func (m FieldHandler) handleSALMonitorPattern(match map[string]string) (model.Pl
 }
 
 func (m FieldHandler) handleMMIMonitorPattern(match map[string]string) (model.PlcField, error) {
-	var unitAddress readWriteModel.UnitAddress
+	var unitAddress *readWriteModel.UnitAddress
 	{
 		unitAddressArgument := match["unitAddress"]
 		if unitAddressArgument == "*" {
@@ -358,13 +362,17 @@ func (m FieldHandler) handleMMIMonitorPattern(match map[string]string) (model.Pl
 			if len(decodedHex) != 1 {
 				return nil, errors.Errorf("Hex must be exatly one byte")
 			}
-			unitAddress = readWriteModel.NewUnitAddress(decodedHex[0])
+			var unitAddressVar readWriteModel.UnitAddress
+			unitAddressVar = readWriteModel.NewUnitAddress(decodedHex[0])
+			unitAddress = &unitAddressVar
 		} else {
 			atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
 			if err != nil {
 				return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
 			}
-			unitAddress = readWriteModel.NewUnitAddress(byte(atoi))
+			var unitAddressVar readWriteModel.UnitAddress
+			unitAddressVar = readWriteModel.NewUnitAddress(byte(atoi))
+			unitAddress = &unitAddressVar
 		}
 	}
 
