@@ -89,22 +89,64 @@
 ]
 
 [type Lldp_Pdu
-    [simple     TlvType_Pdu             tlvChassisId]
-    [simple     TlvType_Pdu             tlvPortId]
-    [simple     TlvTimeToLive           tlvTimeToLive]
+    [array      LldpUnit                lldpParameters]
 ]
 
-[type TlvType_Pdu
-    [simple     uint 7                  tlvId                               ]
-    [implicit   uint 9                  tlvIdLength       'lengthInBytes'   ]
-    [simple     typeSubType             idSubType                           ]
-    [simple     vstring '(tlvIdLength * 8) +  1' Id                         ]
+[discriminatedType LldpUnit
+    [disciminator     uint 7                  tlvId                               ]
+    [implicit   uint 9                  tlvIdLength       'lengthInBytes'         ]                      ]
+    [typeSwitch idSubType
+        ['END_OF_LLDP'  EndOfLldp
+        [
+        ['CHASSIS_ID'   TlvChassisId
+            [simple     uint 8          chassisIdSubType                           ]
+            [simple     vstring '(tlvIdLength * 8) +  1' chassisId                 ]
+        ]
+        ['PORT_ID'   TlvPortId
+            [simple     uint 8          portIdSubType                              ]
+            [simple     vstring '(tlvIdLength * 8) +  1' portId                    ]
+        ]
+        ['PORT_ID'   TlvPortId
+            [simple     uint 16         tlvTimeToLive                              ]
+        ]
+        ['MANAGEMENT_ADDRESS' TlvManagementAddress
+            [implicit   uint 8          addressStringLength                        ]
+            [simple     ManagementAddressSubType  addressSubType                   ]
+            [simple     IpAddress       ipAddress                                  ]
+            [simple     uint 8          interfaceSubType                           ]
+            [simple     uint 32         interfaceNumber                            ]
+            [simple     uint 8          oidStringLength                            ]
+        ]
+        ['ORGANIZATION_SPECIFIC' TlvOrganizationSpecific
+            [simple     TlvOrganizationSpecificUnit     organizationSpecificUnit   ]
+        ]
+    ]
+[
+
+[type TlvOrganizationSpecificUnit(uint 9 unitLength)
+    [discriminator      uint 24         uniqueCode]
+    [typeSwitch uniqueCode
+        ['0x000ECF' TlvOrgSpecificProfibus
+            [simple     TlvOrgSpecificProfibusUnit      specificUnit               ]
+        ]
+        [´0x00120F' TlvOrgSpecificIeee8023
+            [simple     uint 8                          subType                    ]
+            [simple     uint 8                          negotiationSupport         ]
+            [simple     uint 16                         negotiationCapability      ]
+            [simple     uint 16                         operationalMauType         ]
+        ]
+    ]
 ]
 
-[type TlvTimeToLive
-    [simple     uint 7                  tlvId                               ]
-    [implicit   uint 9                  tlvIdLength       'lengthInBytes'   ]
-    [simple     uint 16                 tlvTimeToLive]
+[discriminatedType TlvOrgSpecificProfibusUnit
+    [discriminator  TlvProfibusSubType  subType]
+    [typeSwitch subType
+    ]
+]
+
+[enum   TlvProfibusSubType
+    ['0x02' PORT_STATUS]
+    [´0x05' CHASSIS_MAC]
 ]
 
 // 4.10.3.2
@@ -257,6 +299,25 @@
     ['0x08' CONNECTIONLESS_CANCEL]
     ['0x09' FRAGMENT_ACKNOWLEDGE ]
     ['0x0A' CANCEL_ACKNOWLEDGE   ]
+]
+
+//LLDP Specific
+[enum uint 7 TlvType
+    ['0x00' END_OF_LLDP          ]
+    ['0x01' CHASSIS_ID           ]
+    ['0x02' PORT_ID              ]
+    ['0x03' TIME_TO_LIVE         ]
+    ['0x04' PORT_DESCRIPTION     ]
+    ['0x05' SYSTEM_NAME          ]
+    ['0x06' SYSTEM_DESCRIPTION   ]
+    ['0x07' SYSTEM_CAPABILITIES  ]
+    ['0x08' MANAGEMENT_ADDRESS    ]
+    ['0xFF' ORGANIZATION_SPECIFIC]
+]
+
+[enum uint 8 ManagementAddressSubType
+    ['0x00' UNKNOWN              ]
+    ['0x01' IPV4                 ]
 ]
 
 // 4.10.3.2.14
