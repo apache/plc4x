@@ -136,11 +136,11 @@ func NewSALField(application readWriteModel.ApplicationIdContainer, salCommand s
 // SALMonitorField can be used to monitor sal fields
 type SALMonitorField interface {
 	model.PlcField
-	GetUnitAddress() readWriteModel.UnitAddress
+	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewSALMonitorField(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
+func NewSALMonitorField(unitAddress *readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
 	return &salMonitorField{
 		fieldType:   SAL_MONITOR,
 		unitAddress: unitAddress,
@@ -152,12 +152,11 @@ func NewSALMonitorField(unitAddress readWriteModel.UnitAddress, application *rea
 // MMIMonitorField can be used to monitor mmi fields
 type MMIMonitorField interface {
 	model.PlcField
-	CalField
-	GetUnitAddress() readWriteModel.UnitAddress
+	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewMMIMonitorField(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
+func NewMMIMonitorField(unitAddress *readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
 	return &mmiMonitorField{
 		fieldType:   MMI_STATUS_MONITOR,
 		unitAddress: unitAddress,
@@ -231,14 +230,14 @@ type salField struct {
 }
 type salMonitorField struct {
 	fieldType   FieldType
-	unitAddress readWriteModel.UnitAddress
+	unitAddress *readWriteModel.UnitAddress
 	application *readWriteModel.ApplicationIdContainer
 	numElements uint16
 }
 
 type mmiMonitorField struct {
 	fieldType   FieldType
-	unitAddress readWriteModel.UnitAddress
+	unitAddress *readWriteModel.UnitAddress
 	application *readWriteModel.ApplicationIdContainer
 	numElements uint16
 }
@@ -257,8 +256,15 @@ type unitInfoField struct {
 ///////////////////////////////////////
 
 func (m statusField) GetAddressString() string {
-	// TODO: this is nonsense... fix that
-	return fmt.Sprintf("%d[%d]", m.fieldType, m.numElements)
+	statusRequestType := ""
+	switch m.statusRequestType {
+	case StatusRequestTypeBinaryState:
+		statusRequestType = "binary"
+	case StatusRequestTypeLevel:
+		statusRequestType = "level"
+		statusRequestType += fmt.Sprintf("=0x%x", *m.startingGroupAddressLabel)
+	}
+	return fmt.Sprintf("status/%s/%s", statusRequestType, m.application)
 }
 
 func (m statusField) GetStatusRequestType() StatusRequestType {
@@ -329,8 +335,7 @@ func (c calRecallField) GetCount() uint8 {
 }
 
 func (c calRecallField) GetAddressString() string {
-	// TODO: this is nonsense... fix that
-	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
+	return fmt.Sprintf("cal/%d/recall=%s", c.unitAddress.GetAddress(), c.parameter)
 }
 
 func (c calRecallField) GetTypeName() string {
@@ -424,8 +429,7 @@ func (c calGetstatusField) GetCount() uint8 {
 }
 
 func (c calGetstatusField) GetAddressString() string {
-	// TODO: this is nonsense... fix that
-	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
+	return fmt.Sprintf("cal/getstatus=%s, %d", c.parameter, c.GetCount())
 }
 
 func (c calGetstatusField) GetTypeName() string {
@@ -515,8 +519,15 @@ func (s salField) String() string {
 }
 
 func (s salMonitorField) GetAddressString() string {
-	// TODO: this is nonsense... fix that
-	return fmt.Sprintf("%d/%s%s[%d]", s.fieldType, s.unitAddress, s.application, s.numElements)
+	unitAddress := "*"
+	if s.unitAddress != nil {
+		unitAddress = fmt.Sprintf("%d", (*s.unitAddress).GetAddress())
+	}
+	application := "*"
+	if s.application != nil {
+		application = fmt.Sprintf("%d", *s.application)
+	}
+	return fmt.Sprintf("salmonitor/%s/%s", unitAddress, application)
 }
 
 func (s salMonitorField) GetTypeName() string {
@@ -527,7 +538,7 @@ func (s salMonitorField) GetQuantity() uint16 {
 	return s.numElements
 }
 
-func (s salMonitorField) GetUnitAddress() readWriteModel.UnitAddress {
+func (s salMonitorField) GetUnitAddress() *readWriteModel.UnitAddress {
 	return s.unitAddress
 }
 
@@ -541,13 +552,14 @@ func (s salMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if unitAddress := s.unitAddress; unitAddress != nil {
-		if err := unitAddress.Serialize(writeBuffer); err != nil {
+		if err := (*unitAddress).Serialize(writeBuffer); err != nil {
 			return err
 		}
 	}
-
-	if err := s.application.Serialize(writeBuffer); err != nil {
-		return err
+	if application := s.application; application != nil {
+		if err := application.Serialize(writeBuffer); err != nil {
+			return err
+		}
 	}
 
 	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
@@ -565,8 +577,15 @@ func (s salMonitorField) String() string {
 }
 
 func (m mmiMonitorField) GetAddressString() string {
-	// TODO: this is nonsense... fix that
-	return fmt.Sprintf("%d/%s%s[%d]", m.fieldType, m.unitAddress, m.application, m.numElements)
+	unitAddress := "*"
+	if m.unitAddress != nil {
+		unitAddress = fmt.Sprintf("%d", (*m.unitAddress).GetAddress())
+	}
+	application := "*"
+	if m.application != nil {
+		application = fmt.Sprintf("%d", *m.application)
+	}
+	return fmt.Sprintf("mmimonitor/%s/%s", unitAddress, application)
 }
 
 func (m mmiMonitorField) GetTypeName() string {
@@ -577,7 +596,7 @@ func (m mmiMonitorField) GetQuantity() uint16 {
 	return m.numElements
 }
 
-func (m mmiMonitorField) GetUnitAddress() readWriteModel.UnitAddress {
+func (m mmiMonitorField) GetUnitAddress() *readWriteModel.UnitAddress {
 	return m.unitAddress
 }
 
@@ -591,12 +610,14 @@ func (m mmiMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if unitAddress := m.unitAddress; unitAddress != nil {
-		if err := unitAddress.Serialize(writeBuffer); err != nil {
+		if err := (*unitAddress).Serialize(writeBuffer); err != nil {
 			return err
 		}
 	}
-	if err := m.application.Serialize(writeBuffer); err != nil {
-		return err
+	if application := m.application; application != nil {
+		if err := application.Serialize(writeBuffer); err != nil {
+			return err
+		}
 	}
 
 	if err := writeBuffer.PopContext(m.fieldType.GetName()); err != nil {
@@ -624,7 +645,7 @@ func (u unitInfoField) GetAttribute() *readWriteModel.Attribute {
 func (u unitInfoField) GetAddressString() string {
 	unitAddressString := "*"
 	if u.unitAddress != nil {
-		unitAddressString = fmt.Sprintf("%d", *u.unitAddress)
+		unitAddressString = fmt.Sprintf("%d", (*u.unitAddress).GetAddress())
 	}
 	attributeString := "*"
 	if u.attribute != nil {
