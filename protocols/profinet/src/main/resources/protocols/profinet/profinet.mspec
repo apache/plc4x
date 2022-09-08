@@ -82,7 +82,29 @@
         ['0x8892' Ethernet_FramePayload_PnDcp
             [simple PnDcp_Pdu             pdu                                                        ]
         ]
+        ['0x88cc' Ethernet_FramePayload_LLDP
+            [simple Lldp_Pdu             pdu                                                        ]
+        ]
     ]
+]
+
+[type Lldp_Pdu
+    [simple     TlvType_Pdu             tlvChassisId]
+    [simple     TlvType_Pdu             tlvPortId]
+    [simple     TlvTimeToLive           tlvTimeToLive]
+]
+
+[type TlvType_Pdu
+    [simple     uint 7                  tlvId                               ]
+    [implicit   uint 9                  tlvIdLength       'lengthInBytes'   ]
+    [simple     typeSubType             idSubType                           ]
+    [simple     vstring '(tlvIdLength * 8) +  1' Id                         ]
+]
+
+[type TlvTimeToLive
+    [simple     uint 7                  tlvId                               ]
+    [implicit   uint 9                  tlvIdLength       'lengthInBytes'   ]
+    [simple     uint 16                 tlvTimeToLive]
 ]
 
 // 4.10.3.2

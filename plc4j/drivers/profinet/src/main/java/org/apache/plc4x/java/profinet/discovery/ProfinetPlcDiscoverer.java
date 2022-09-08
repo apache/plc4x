@@ -51,6 +51,7 @@ import java.util.concurrent.Executors;
 public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
     private static final EtherType PN_EtherType = EtherType.getInstance((short) 0x8892);
+    private static final EtherType LLDP_EtherType = EtherType.getInstance((short) 0x88cc);
 
     // The constants for the different block names and their actual meaning.
     private static final String DEVICE_TYPE_NAME = "DEVICE_PROPERTIES_OPTION-1";
@@ -277,6 +278,107 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         }, 5000L);
 
         return future;
+    }
+
+    public void lldpProbe() {
+        Set<PcapHandle> openHandles = new HashSet<>();
+        try {
+            for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
+                // It turned out on some MAC network devices without any ip addresses
+                // the compiling of the filter expression was causing errors. As
+                // currently there was no other way to detect this, this check seems
+                // to be sufficient.
+                if(dev.getAddresses().size() == 0) {
+                    continue;
+                }
+                if (!dev.isLoopBack()) {
+                    for (LinkLayerAddress linkLayerAddress : dev.getLinkLayerAddresses()) {
+                        org.pcap4j.util.MacAddress macAddress = (org.pcap4j.util.MacAddress) linkLayerAddress;
+                        PcapHandle handle = dev.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
+                        openHandles.add(handle);
+
+                        ExecutorService pool = Executors.newSingleThreadExecutor();
+
+                        // Only react on PROFINET DCP packets targeted at our current MAC address.
+                        handle.setFilter(
+                            "(ether proto 0x88cc)",
+                            BpfProgram.BpfCompileMode.OPTIMIZE);
+
+                        PacketListener listener =
+                            packet -> {
+                                // EthernetPacket is the highest level of abstraction we can be expecting.
+                                // Everything inside this we will have to decode ourselves.
+                                if (packet instanceof EthernetPacket) {
+                                    EthernetPacket ethernetPacket = (EthernetPacket) packet;
+                                    boolean isLldpPacket = false;
+                                    // I have observed sometimes the ethernet packets being wrapped inside a VLAN
+                                    // Packet, in this case we simply unpack the content.
+                                    if (ethernetPacket.getPayload() instanceof Dot1qVlanTagPacket) {
+                                        Dot1qVlanTagPacket vlanPacket = (Dot1qVlanTagPacket) ethernetPacket.getPayload();
+                                        if (LLDP_EtherType.equals(vlanPacket.getHeader().getType())) {
+                                            isLldpPacket = true;
+                                        }
+                                    } else if (LLDP_EtherType.equals(ethernetPacket.getHeader().getType())) {
+                                        isLldpPacket = true;
+                                    }
+
+                                    // It's a LLDP packet.
+                                    if (isLldpPacket) {
+                                        ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
+                                        try {
+                                            Ethernet_Frame ethernetFrame = Ethernet_Frame.staticParse(reader);
+                                            PnDcp_Pdu pdu;
+                                            // Access the pdu data (either directly or by
+                                            // unpacking the content of the VLAN packet.
+                                            if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                                                Ethernet_FramePayload_VirtualLan vlefpl = (Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload();
+                                                pdu = ((Ethernet_FramePayload_PnDcp) vlefpl.getPayload()).getPdu();
+                                            } else {
+                                                pdu = ((Ethernet_FramePayload_PnDcp) ethernetFrame.getPayload()).getPdu();
+                                            }
+                                            // Inspect the PDU itself
+                                            // (in this case we only process identify response packets)
+
+
+                                            logger.debug("Found new device: '{}' using LLDP '{}'",
+                                                "Not Sure", "Not Sure");
+                                        } catch (ParseException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+                                }
+                            };
+                        Task t = new Task(handle, listener);
+                        pool.execute(t);
+
+                        // Construct and send the LLDP Probe
+
+                        Ethernet_Frame identificationRequest = new Ethernet_Frame(
+                            // Pre-Defined PROFINET discovery MAC address
+                            new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00}),
+                            toPlc4xMacAddress(macAddress),
+                            new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
+                                new Ethernet_FramePayload_PnDcp(
+                                    new PnDcp_Pdu_IdentifyReq(PnDcp_FrameId.DCP_Identify_ReqPDU.getValue(),
+                                        1,
+                                        256,
+                                        Collections.singletonList(
+                                            new PnDcp_Block_ALLSelector()
+                                        )))));
+                        WriteBufferByteBased buffer = new WriteBufferByteBased(34);
+                        identificationRequest.serialize(buffer);
+                        Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
+                        handle.sendPacket(packet);
+                    }
+                }
+            }
+        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | SerializationException e) {
+            logger.error("Got an exception while processing raw socket data", e);
+
+            for (PcapHandle openHandle : openHandles) {
+                openHandle.close();
+            }
+        }
     }
 
     private static MacAddress toPlc4xMacAddress(org.pcap4j.util.MacAddress pcap4jMacAddress) {
