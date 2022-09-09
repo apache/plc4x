@@ -817,6 +817,7 @@
 
             <!-- Exlude core dumps-->
             <exclude>**/hs_err_pid*</exclude>
+            <exclude>**/replay_pid*</exclude>
           </excludes>
         </configuration>
       </plugin>
