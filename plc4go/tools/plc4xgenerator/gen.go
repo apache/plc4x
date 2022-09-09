@@ -213,6 +213,12 @@ func (g *Generator) generate(typeName string) {
 	g.Printf("\t\treturn err\n")
 	g.Printf("\t}\n")
 	for _, field := range fields {
+		if field.isDelegate {
+			g.Printf("\t\t\tif err := d.%s.Serialize(writeBuffer); err != nil {\n", field.fieldType.(*ast.Ident).Name)
+			g.Printf("\t\t\t\treturn err\n")
+			g.Printf("\t\t\t}")
+			continue
+		}
 		fieldName := field.name
 		fieldNameUntitled := unTitle(fieldName)
 		switch fieldType := field.fieldType.(type) {
@@ -234,7 +240,7 @@ func (g *Generator) generate(typeName string) {
 			g.Printf("for _, elem := range d.%s {", field.name)
 			switch eltType := fieldType.Elt.(type) {
 			case *ast.SelectorExpr:
-				g.Printf(serializableFieldTemplate, "", "value")
+				g.Printf(serializableFieldTemplate, "elem", "value")
 			case *ast.Ident:
 				switch eltType.Name {
 				case "bool":
@@ -301,8 +307,9 @@ func (g *Generator) format() []byte {
 
 // Field represents a declared field.
 type Field struct {
-	name      string // The name with trimmed prefix.
-	fieldType ast.Expr
+	name       string
+	fieldType  ast.Expr
+	isDelegate bool
 }
 
 func (f *Field) String() string {
@@ -327,6 +334,18 @@ func (f *File) genDecl(node ast.Node) bool {
 		}
 		fmt.Printf("Handling %s\n", typeSpec.Name.Name)
 		for _, field := range structDecl.Fields.List {
+			if len(field.Names) == 0 {
+				fmt.Printf("\t adding delegate\n")
+				if _, ok := field.Type.(*ast.Ident); ok {
+					f.fields = append(f.fields, Field{
+						fieldType:  field.Type,
+						isDelegate: true,
+					})
+					continue
+				} else {
+					panic(fmt.Sprintf("Only struct delegates supported now. Type %T", field.Type))
+				}
+			}
 			fmt.Printf("\t adding field %s %v\n", field.Names[0].Name, field.Type)
 			f.fields = append(f.fields, Field{
 				name:      field.Names[0].Name,
