@@ -346,7 +346,12 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
         List<LevelInformation> levelInformations = Collections.singletonList(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
         CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations, requestContext);
-        CALReply calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
+        CALReply calReply;
+        if (exstat) {
+            calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
+        } else {
+            calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+        }
         CBusMessage response = createCBusMessageForReply(requestCommand.getAlpha(), calReply, cBusOptions);
         LOGGER.info("Send level status response\n{}", response);
         ctx.writeAndFlush(response);
