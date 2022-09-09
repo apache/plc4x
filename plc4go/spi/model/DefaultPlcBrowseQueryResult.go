@@ -20,12 +20,11 @@
 package model
 
 import (
-	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseQueryResult
 type DefaultPlcBrowseQueryResult struct {
 	Field             model.PlcField
 	Name              string
@@ -62,68 +61,4 @@ func (d *DefaultPlcBrowseQueryResult) GetPossibleDataTypes() []string {
 
 func (d *DefaultPlcBrowseQueryResult) GetAttributes() map[string]values.PlcValue {
 	return d.Attributes
-}
-
-func (d *DefaultPlcBrowseQueryResult) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcBrowseQueryResult"); err != nil {
-		return err
-	}
-
-	var fieldAsString string
-	fieldAsString = fmt.Sprintf("%s", d.Field)
-	if err := writeBuffer.WriteString("field", uint32(len(fieldAsString)*8), "UTF-8", fieldAsString); err != nil {
-		return err
-	}
-	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), "UTF-8", d.Name); err != nil {
-		return err
-	}
-	if err := writeBuffer.WriteBit("readable", d.Readable); err != nil {
-		return err
-	}
-	if err := writeBuffer.WriteBit("writable", d.Writable); err != nil {
-		return err
-	}
-	if err := writeBuffer.WriteBit("subscribable", d.Subscribable); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("possibleDataTypes", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, dataType := range d.PossibleDataTypes {
-		if err := writeBuffer.WriteString("", uint32(len(dataType)*8), "UTF-8", dataType); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("possibleDataTypes", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("attributes", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for name, plcValue := range d.Attributes {
-		if serializable, ok := plcValue.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext(name); err != nil {
-				return err
-			}
-			if err := serializable.Serialize(writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext(name); err != nil {
-				return err
-			}
-		} else {
-			plcValueAsString := fmt.Sprintf("%v", plcValue)
-			if err := writeBuffer.WriteString(name, uint32(len(plcValueAsString)*8), "UTF-8", plcValueAsString); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PopContext("attributes", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.PopContext("PlcBrowseQueryResult"); err != nil {
-		return err
-	}
-	return nil
 }
