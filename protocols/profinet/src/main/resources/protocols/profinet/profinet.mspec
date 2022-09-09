@@ -83,34 +83,34 @@
             [simple PnDcp_Pdu             pdu                                                        ]
         ]
         ['0x88cc' Ethernet_FramePayload_LLDP
-            [simple Lldp_Pdu             pdu                                                        ]
+            [simple Lldp_Pdu      pdu                                               ]
         ]
     ]
 ]
 
 [type Lldp_Pdu
-    [array      LldpUnit                lldpParameters]
+    [manualArray LldpUnit lldpParameters terminated 'STATIC_CALL("isSysexEnd", readBuffer)' 'STATIC_CALL("parseSysexString", readBuffer)' 'STATIC_CALL("serializeSysexString", writeBuffer, _value)' 'STATIC_CALL("lengthSysexString", lldpParameters)']
 ]
 
 [discriminatedType LldpUnit
-    [disciminator     uint 7                  tlvId                               ]
-    [implicit   uint 9                  tlvIdLength       'lengthInBytes'         ]                      ]
-    [typeSwitch idSubType
+    [discriminator     TlvType                  tlvId                                ]
+    [simple            uint 9                   tlvIdLength                          ]
+    [typeSwitch tlvId
         ['END_OF_LLDP'  EndOfLldp
-        [
-        ['CHASSIS_ID'   TlvChassisId
-            [simple     uint 8          chassisIdSubType                           ]
-            [simple     vstring '(tlvIdLength * 8) +  1' chassisId                 ]
         ]
-        ['PORT_ID'   TlvPortId
+        ['CHASSIS_ID'   TlvChassisId(uint 9 tlvIdLength)
+            [simple     uint 8                        chassisIdSubType               ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' chassisId                      ]
+        ]
+        ['PORT_ID'   TlvPortId(uint 9 tlvIdLength)
             [simple     uint 8          portIdSubType                              ]
-            [simple     vstring '(tlvIdLength * 8) +  1' portId                    ]
+            [simple     vstring     '(tlvIdLength - 1) * 8' portId                           ]
         ]
-        ['PORT_ID'   TlvPortId
-            [simple     uint 16         tlvTimeToLive                              ]
+        ['TIME_TO_LIVE'   TlvTimeToLive
+            [simple     uint 16         tlvTimeToLiveUnit                          ]
         ]
         ['MANAGEMENT_ADDRESS' TlvManagementAddress
-            [implicit   uint 8          addressStringLength                        ]
+            [implicit   uint 8          addressStringLength    '5' ]
             [simple     ManagementAddressSubType  addressSubType                   ]
             [simple     IpAddress       ipAddress                                  ]
             [simple     uint 8          interfaceSubType                           ]
@@ -121,15 +121,15 @@
             [simple     TlvOrganizationSpecificUnit     organizationSpecificUnit   ]
         ]
     ]
-[
+]
 
-[type TlvOrganizationSpecificUnit(uint 9 unitLength)
+[discriminatedType TlvOrganizationSpecificUnit
     [discriminator      uint 24         uniqueCode]
     [typeSwitch uniqueCode
         ['0x000ECF' TlvOrgSpecificProfibus
             [simple     TlvOrgSpecificProfibusUnit      specificUnit               ]
         ]
-        [´0x00120F' TlvOrgSpecificIeee8023
+        ['0x00120F' TlvOrgSpecificIeee8023
             [simple     uint 8                          subType                    ]
             [simple     uint 8                          negotiationSupport         ]
             [simple     uint 16                         negotiationCapability      ]
@@ -141,12 +141,18 @@
 [discriminatedType TlvOrgSpecificProfibusUnit
     [discriminator  TlvProfibusSubType  subType]
     [typeSwitch subType
+        ['PORT_STATUS'  TlvProfibusSubTypePortStatus
+            [simple     uint 16                         rtClassPortStatus]
+        ]
+        ['CHASSIS_MAC'  TlvProfibusSubTypeChassisMac
+            [simple     MacAddress                      macAddress]
+        ]
     ]
 ]
 
 [enum   TlvProfibusSubType
     ['0x02' PORT_STATUS]
-    [´0x05' CHASSIS_MAC]
+    ['0x05' CHASSIS_MAC]
 ]
 
 // 4.10.3.2
@@ -822,6 +828,22 @@
             [simple   uint 16                sessionKey                                             ]
             [simple   MacAddress             cmResponderMacAddr                                     ]
             [simple   uint 16                responderUDPRTPort                                     ]
+        ]
+        ['IOD_CONTROL_REQ' PnIoCm_Control_Request
+            [reserved uint 16                         '0x0000'                                         ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                         ]
+            [simple   uint 16                         controlCommand                                         ]
+            [reserved uint 16                         '0x0000'                                         ]
+        ]
+        ['IOD_CONTROL_RES' PnIoCm_Control_Response
+            [reserved uint 16                         '0x0000'                                         ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                         ]
+            [simple   uint 16                         controlCommand                                         ]
+            [reserved uint 16                         '0x0000'                                         ]
         ]
         ['IO_CR_BLOCK_REQ' PnIoCm_Block_IoCrReq
             [simple PnIoCm_IoCrType          ioCrType                                               ]

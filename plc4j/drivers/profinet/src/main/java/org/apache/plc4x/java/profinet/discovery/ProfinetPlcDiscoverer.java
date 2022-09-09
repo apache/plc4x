@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.profinet.discovery;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
@@ -47,6 +49,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 
 public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
@@ -56,6 +60,8 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     // The constants for the different block names and their actual meaning.
     private static final String DEVICE_TYPE_NAME = "DEVICE_PROPERTIES_OPTION-1";
     private static final String DEVICE_NAME_OF_STATION = "DEVICE_PROPERTIES_OPTION-2";
+    private static final String PLC4X_LLDP_IDENTIFIER = "PLC4X PROFINET Controller Client";
+    private static final String PLC4X_LLDP_PORT = "port001.plc4x";
     private static final String DEVICE_ID = "DEVICE_PROPERTIES_OPTION-3";
     private static final String DEVICE_ROLE = "DEVICE_PROPERTIES_OPTION-4";
     private static final String DEVICE_OPTIONS = "DEVICE_PROPERTIES_OPTION-5";
@@ -327,14 +333,14 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                         ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
                                         try {
                                             Ethernet_Frame ethernetFrame = Ethernet_Frame.staticParse(reader);
-                                            PnDcp_Pdu pdu;
+                                            Lldp_Pdu pdu;
                                             // Access the pdu data (either directly or by
                                             // unpacking the content of the VLAN packet.
                                             if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
                                                 Ethernet_FramePayload_VirtualLan vlefpl = (Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload();
-                                                pdu = ((Ethernet_FramePayload_PnDcp) vlefpl.getPayload()).getPdu();
+                                                pdu = ((Ethernet_FramePayload_LLDP) vlefpl.getPayload()).getPdu();
                                             } else {
-                                                pdu = ((Ethernet_FramePayload_PnDcp) ethernetFrame.getPayload()).getPdu();
+                                                pdu = ((Ethernet_FramePayload_LLDP) ethernetFrame.getPayload()).getPdu();
                                             }
                                             // Inspect the PDU itself
                                             // (in this case we only process identify response packets)
@@ -351,28 +357,102 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         Task t = new Task(handle, listener);
                         pool.execute(t);
 
-                        // Construct and send the LLDP Probe
+                        Function<Object, Boolean> lldpTimer =
+                            message -> {
+                                // Construct and send the LLDP Probe
+                                TlvOrgSpecificProfibus portStatus = new TlvOrgSpecificProfibus(
+                                    new TlvProfibusSubTypePortStatus(0x00)
+                                );
 
-                        Ethernet_Frame identificationRequest = new Ethernet_Frame(
-                            // Pre-Defined PROFINET discovery MAC address
-                            new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00}),
-                            toPlc4xMacAddress(macAddress),
-                            new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
-                                new Ethernet_FramePayload_PnDcp(
-                                    new PnDcp_Pdu_IdentifyReq(PnDcp_FrameId.DCP_Identify_ReqPDU.getValue(),
-                                        1,
-                                        256,
-                                        Collections.singletonList(
-                                            new PnDcp_Block_ALLSelector()
-                                        )))));
-                        WriteBufferByteBased buffer = new WriteBufferByteBased(34);
-                        identificationRequest.serialize(buffer);
-                        Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
-                        handle.sendPacket(packet);
+                                TlvOrgSpecificProfibus chassisMac = new TlvOrgSpecificProfibus(
+                                    new TlvProfibusSubTypeChassisMac(new MacAddress(linkLayerAddress.getAddress()))
+                                );
+
+                                TlvOrgSpecificIeee8023 ieee = new TlvOrgSpecificIeee8023(
+                                    (short) 0x01,
+                                    (short) 0x03,
+                                    0x0020,
+                                    0x0010
+                                );
+
+                                Ethernet_Frame identificationRequest = null;
+                                try {
+                                    identificationRequest = new Ethernet_Frame(
+                                        // Pre-Defined LLDP discovery MAC address
+                                        new MacAddress(new byte[]{0x01, (byte) 0x80, (byte) 0xc2, 0x00, 0x00, 0x0e}),
+                                        toPlc4xMacAddress(macAddress),
+                                        new Ethernet_FramePayload_LLDP(
+                                            new Lldp_Pdu(
+                                                Arrays.asList(
+                                                    new TlvChassisId(
+                                                        PLC4X_LLDP_IDENTIFIER.length() + 1,
+                                                        (short) 7,
+                                                        PLC4X_LLDP_IDENTIFIER
+                                                    ),
+                                                    new TlvPortId(
+                                                        PLC4X_LLDP_PORT.length() + 1,
+                                                        (short) 7,
+                                                        PLC4X_LLDP_PORT
+                                                    ),
+                                                    new TlvTimeToLive(2, 20),
+                                                    new TlvOrganizationSpecific(
+                                                        portStatus.getLengthInBytes(),
+                                                        portStatus
+                                                    ),
+                                                    new TlvOrganizationSpecific(
+                                                        chassisMac.getLengthInBytes(),
+                                                        chassisMac
+                                                    ),
+                                                    new TlvOrganizationSpecific(
+                                                        ieee.getLengthInBytes(),
+                                                        ieee
+                                                    ),
+                                                    new TlvManagementAddress(
+                                                        12,
+                                                        ManagementAddressSubType.IPV4,
+                                                        new IpAddress(Hex.decodeHex("c0a8006e")),
+                                                        (short) 0x03,
+                                                        0x01L,
+                                                        (short) 0x00
+                                                    ),
+                                                    new EndOfLldp(0)
+                                                )
+                                            )));
+                                } catch (DecoderException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
+                                try {
+                                    identificationRequest.serialize(buffer);
+                                } catch (SerializationException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                Packet packet = null;
+                                try {
+                                    packet = EthernetPacket.newPacket(buffer.getData(), 0, identificationRequest.getLengthInBytes());
+                                } catch (IllegalRawDataException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                try {
+                                    handle.sendPacket(packet);
+                                } catch (PcapNativeException e) {
+                                    throw new RuntimeException(e);
+                                } catch (NotOpenException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                return null;
+                            };
+                        Timer timer = new Timer();
+
+                        // Schedule to run after every 3 second(3000 millisecond)
+                        timer.scheduleAtFixedRate(
+                            new LLDPTask(handle, lldpTimer),
+                            3000,
+                            3000);
                     }
                 }
             }
-        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | SerializationException e) {
+        } catch (NotOpenException | PcapNativeException e) {
             logger.error("Got an exception while processing raw socket data", e);
 
             for (PcapHandle openHandle : openHandles) {
@@ -411,10 +491,28 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         }
     }
 
+    private static class LLDPTask extends TimerTask {
+
+        private final Logger logger = LoggerFactory.getLogger(Task.class);
+
+        private final PcapHandle handle;
+        private final Function<Object, Boolean> operator;
+
+        public LLDPTask(PcapHandle handle, Function<Object, Boolean> operator) {
+            this.handle = handle;
+            this.operator = operator;
+        }
+
+        @Override
+        public void run() {
+            operator.apply(null);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer();
-        discoverer.discover(null);
-
+        //discoverer.discover(null);
+        discoverer.lldpProbe();
         Thread.sleep(10000);
     }
 

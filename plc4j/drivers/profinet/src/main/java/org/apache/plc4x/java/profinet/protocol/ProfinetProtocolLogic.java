@@ -184,6 +184,31 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
 
             udpSocket.send(connectRequestPacket);
 
+            // Receive the response.
+            resultBuffer = new byte[profinetAdvancedConnectionWriteRequest.getLengthInBytes()];
+            connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
+            udpSocket.receive(connectResponsePacket);
+
+
+            // Create the packet
+            final DceRpc_Packet profinetAdvancedConnectionParameterEnd = createProfinetAdvancedConnectionParameterEnd();
+            // Serialize it to a byte-payload
+            writeBuffer = new WriteBufferByteBased(profinetAdvancedConnectionParameterEnd.getLengthInBytes());
+            profinetAdvancedConnectionParameterEnd.serialize(writeBuffer);
+            // Create a udp packet.
+            connectRequestPacket = new DatagramPacket(writeBuffer.getData(), writeBuffer.getData().length);
+            connectRequestPacket.setAddress(remoteAddress.getAddress());
+            connectRequestPacket.setPort(remoteAddress.getPort());
+            // Send it.
+
+            udpSocket.send(connectRequestPacket);
+
+            // Receive the response.
+            resultBuffer = new byte[profinetAdvancedConnectionParameterEnd.getLengthInBytes()];
+            connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
+            udpSocket.receive(connectResponsePacket);
+
+
         } catch (SerializationException | IOException | PlcException | ParseException e) {
             logger.error("Error", e);
         }
@@ -255,7 +280,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                             // This actually needs to be set to this value and not the real port number.
                             0x8892,
                             // It seems that it must be set to this value, or it won't work.
-                            "controller"),
+                            "plc4x"),
                         new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
                             0x0001,
                             0x8892,
@@ -383,8 +408,30 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                             (short) 1,
                             (short) 0,
                             new PascalString("port-001"),
-                            new PascalString("controller")
+                            new PascalString("plc4x")
                         )
+                    )
+                ))
+        );
+    }
+
+    private DceRpc_Packet createProfinetAdvancedConnectionParameterEnd() throws PlcException {
+
+        return new DceRpc_Packet(
+            DceRpc_PacketType.REQUEST, true, false, false,
+            IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
+            new DceRpc_InterfaceUuid_DeviceInterface(),
+            profinetDriverContext.getDceRpcActivityUuid(),
+            0, 1, DceRpc_Operation.CONTROL,
+            new PnIoCm_Packet_Req(16696, 16696, 0, 244,
+                Arrays.asList(
+                    new PnIoCm_Control_Request(
+                        (short) 1,
+                        (short) 0,
+                        ARUUID,
+                        0x0001,
+                        0x0001
                     )
                 ))
         );
