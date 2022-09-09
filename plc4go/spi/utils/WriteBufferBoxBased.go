@@ -222,7 +222,7 @@ func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 	case float32, float64:
 		asciiBox = b.asciiBoxWriterLight.BoxString(logicalName, fmt.Sprintf("%x %f%s", value, value, additionalStringRepresentation), 0)
 	case Serializable:
-		virtualBoxedWriteBuffer := NewWriteBufferBoxBased()
+		virtualBoxedWriteBuffer := NewWriteBufferBoxBasedWithOptions(b.mergeSingleBoxes, b.omitEmptyBoxes)
 		if err := value.(Serializable).Serialize(virtualBoxedWriteBuffer); err == nil {
 			asciiBox = b.asciiBoxWriterLight.BoxBox(logicalName, virtualBoxedWriteBuffer.GetBox(), 0)
 		} else {
