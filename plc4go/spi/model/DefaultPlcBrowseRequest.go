@@ -23,7 +23,6 @@ import (
 	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -69,71 +68,31 @@ func (d *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error)
 	return NewDefaultPlcBrowseRequest(d.fields, d.fieldNames, d.browser), nil
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequest
 type DefaultPlcBrowseRequest struct {
 	DefaultRequest
 	browser spi.PlcBrowser
 }
 
 func NewDefaultPlcBrowseRequest(fields map[string]model.PlcField, fieldNames []string, browser spi.PlcBrowser) model.PlcBrowseRequest {
-	return DefaultPlcBrowseRequest{
+	return &DefaultPlcBrowseRequest{
 		DefaultRequest: NewDefaultRequest(fields, fieldNames),
 		browser:        browser,
 	}
 }
 
-func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
 	return d.browser.Browse(context.TODO(), d)
 }
 
-func (d DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcBrowseRequestResult {
 	return d.browser.Browse(ctx, d)
 }
 
-func (d DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
 	return d.ExecuteWithInterceptorWithContext(context.TODO(), interceptor)
 }
 
-func (d DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
 	return d.browser.BrowseWithInterceptor(ctx, d, interceptor)
-}
-
-func (d DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcBrowseRequest"); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.PushContext("fields"); err != nil {
-		return err
-	}
-	for _, fieldName := range d.GetFieldNames() {
-		if err := writeBuffer.PushContext(fieldName); err != nil {
-			return err
-		}
-		field := d.GetField(fieldName)
-		if serializableField, ok := field.(utils.Serializable); ok {
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-		} else {
-			return errors.Errorf("Error serializing. Field %T doesn't implement Serializable", field)
-		}
-		if err := writeBuffer.PopContext(fieldName); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("fields"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcBrowseRequest"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d DefaultPlcBrowseRequest) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

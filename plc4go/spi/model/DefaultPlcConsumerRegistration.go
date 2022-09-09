@@ -27,16 +27,18 @@ import (
 
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int
+	consumer      model.PlcSubscriptionEventConsumer
 	plcSubscriber spi.PlcSubscriber
 	handles       []model.PlcSubscriptionHandle
 }
 
 func NewDefaultPlcConsumerRegistration(plcSubscriber spi.PlcSubscriber, consumer model.PlcSubscriptionEventConsumer, handles ...model.PlcSubscriptionHandle) *DefaultPlcConsumerRegistration {
 	return &DefaultPlcConsumerRegistration{
+		// TODO: we need a way to hash the consumer
+		consumerId:    rand.Int(),
+		consumer:      consumer,
 		plcSubscriber: plcSubscriber,
 		handles:       handles,
-		// TODO: we need a way to hash the consumer
-		consumerId: rand.Int(),
 	}
 }
 
