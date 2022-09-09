@@ -416,9 +416,13 @@ public class PlcEntityInterceptor {
         try (PlcConnection connection = driverManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
 
-            PlcWriteRequest request = connection.writeRequestBuilder()
-                .addItem(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), object)
-                .build();
+            PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+            if (object instanceof Collection) {
+                builder.addItem(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), ((Collection<?>) object).toArray());
+            } else {
+                builder.addItem(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), object);
+            }
+            PlcWriteRequest request = builder.build();
 
             PlcWriteResponse response = getPlcWriteResponse(request);
 
