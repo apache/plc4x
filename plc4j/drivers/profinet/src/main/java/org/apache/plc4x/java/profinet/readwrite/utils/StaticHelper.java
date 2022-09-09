@@ -19,7 +19,11 @@
 package org.apache.plc4x.java.profinet.readwrite.utils;
 
 import org.apache.plc4x.java.profinet.readwrite.IpAddress;
+import org.apache.plc4x.java.profinet.readwrite.LldpUnit;
 import org.apache.plc4x.java.profinet.readwrite.PnDcp_FrameId;
+import org.apache.plc4x.java.spi.generation.*;
+
+import java.util.List;
 
 public class StaticHelper {
 
@@ -151,6 +155,35 @@ public class StaticHelper {
         }
 
         return PnDcp_FrameId.RESERVED;
+    }
+
+    public static boolean isSysexEnd(ReadBuffer io) {
+        byte[] test = ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2);
+        return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2)[0] == (byte) 0x00;
+    }
+
+    public static LldpUnit parseSysexString(ReadBuffer io) {
+        try {
+            LldpUnit unit = LldpUnit.staticParse(io);
+            return unit;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static void serializeSysexString(WriteBuffer io, LldpUnit unit) {
+        try {
+            unit.serialize(io);
+        } catch (SerializationException e) {
+        }
+    }
+
+    public static int lengthSysexString(List<LldpUnit> data) {
+        int lengthInBytes = 0;
+        for (LldpUnit unit : data) {
+            lengthInBytes += unit.getLengthInBytes();
+        }
+        return lengthInBytes;
     }
 
 }
