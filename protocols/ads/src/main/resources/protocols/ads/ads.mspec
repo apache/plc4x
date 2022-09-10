@@ -882,6 +882,7 @@
 
 // In data-type child entries, the name seems to be used by the property name and the data-type name seems to contain
 // what in the parent case the "name" attribute seems to use.
+// TODO: In general only the propertyName, dataTypeName and offset are interesting here. The rest is mostly not fully initialized
 [discriminatedType AdsDataTypeTableChildEntry byteOrder='LITTLE_ENDIAN'
 	[simple   uint 32                          entryLength                                                            ]
 	[simple   uint 32                          version                                                                ]
