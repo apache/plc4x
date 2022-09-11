@@ -823,27 +823,43 @@
             [simple   vstring 'stationNameLength * 8' cmInitiatorStationName                                 ]
         ]
         ['AR_BLOCK_RES' PnIoCm_Block_ArRes
-            [simple   PnIoCm_ArType          arType                                                 ]
-            [simple   Uuid                   arUuid                                                 ]
-            [simple   uint 16                sessionKey                                             ]
-            [simple   MacAddress             cmResponderMacAddr                                     ]
-            [simple   uint 16                responderUDPRTPort                                     ]
+            [simple   PnIoCm_ArType          arType                                                          ]
+            [simple   Uuid                   arUuid                                                          ]
+            [simple   uint 16                sessionKey                                                      ]
+            [simple   MacAddress             cmResponderMacAddr                                              ]
+            [simple   uint 16                responderUDPRTPort                                              ]
         ]
         ['IOD_CONTROL_REQ' PnIoCm_Control_Request
-            [reserved uint 16                         '0x0000'                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
             [simple   Uuid                            arUuid                                                 ]
             [simple   uint 16                         sessionKey                                             ]
-            [reserved uint 16                         '0x0000'                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
             [simple   uint 16                         controlCommand                                         ]
-            [reserved uint 16                         '0x0000'                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
+        ]
+        ['IOX_BLOCK_REQ'    PnIoCM_Block_Request
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [simple   uint 16                         controlBlockProperties                                 ]
+        ]
+        ['IOX_BLOCK_RES'    PnIoCM_Block_Response
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [simple   uint 16                         controlBlockProperties                                 ]
         ]
         ['IOD_CONTROL_RES' PnIoCm_Control_Response
-            [reserved uint 16                         '0x0000'                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
             [simple   Uuid                            arUuid                                                 ]
             [simple   uint 16                         sessionKey                                             ]
-            [reserved uint 16                         '0x0000'                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
             [simple   uint 16                         controlCommand                                         ]
-            [reserved uint 16                         '0x0000'                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
         ]
         ['IO_CR_BLOCK_REQ' PnIoCm_Block_IoCrReq
             [simple PnIoCm_IoCrType          ioCrType                                               ]
@@ -913,9 +929,9 @@
 ]
 
 [type PascalString
-    [implicit int 16 sLength          'stringValue.length == 0 ? -1 : stringValue.length']
+    [implicit int 8 sLength          'stringValue.length == 0 ? -1 : stringValue.length']
     [simple vstring 'sLength == -1 ? 0 : sLength * 8' stringValue]
-    [virtual  int 16 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
+    [virtual  int 8 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
 ]
 
 [type PnIoCm_IoCrBlockReqApi
@@ -1016,6 +1032,7 @@
     ['0x0103' ALARM_CR_BLOCK_REQ          ]
     ['0x0104' EXPECTED_SUBMODULE_BLOCK_REQ]
     ['0x0110' IOD_CONTROL_REQ             ]
+    ['0x0112' IOX_BLOCK_REQ               ]
     ['0x0200' PD_PORT_DATA_CHECK          ]
     ['0x020a' CHECK_PEERS                 ]
     ['0x0250' PD_INTERFACE_ADJUST         ]
@@ -1025,6 +1042,7 @@
     ['0x8104' MODULE_DIFF_BLOCK           ]
     ['0x8106' AR_SERVER_BLOCK             ]
     ['0x8110' IOD_CONTROL_RES             ]
+    ['0x8112' IOX_BLOCK_RES               ]
 ]
 
 [enum uint 16 PnIoCm_ArType

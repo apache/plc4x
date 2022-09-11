@@ -208,6 +208,23 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
             udpSocket.receive(connectResponsePacket);
 
+            // Create the packet
+            final DceRpc_Packet profinetAdvancedConnectionApplicationReady = createProfinetAdvancedConnectionApplicationReady();
+            // Serialize it to a byte-payload
+            writeBuffer = new WriteBufferByteBased(profinetAdvancedConnectionApplicationReady.getLengthInBytes());
+            profinetAdvancedConnectionApplicationReady.serialize(writeBuffer);
+            // Create a udp packet.
+            connectRequestPacket = new DatagramPacket(writeBuffer.getData(), writeBuffer.getData().length);
+            connectRequestPacket.setAddress(remoteAddress.getAddress());
+            connectRequestPacket.setPort(remoteAddress.getPort());
+            // Send it.
+
+            udpSocket.send(connectRequestPacket);
+
+            // Receive the response.
+            resultBuffer = new byte[profinetAdvancedConnectionApplicationReady.getLengthInBytes()];
+            connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
+            udpSocket.receive(connectResponsePacket);
 
         } catch (SerializationException | IOException | PlcException | ParseException e) {
             logger.error("Error", e);
@@ -229,6 +246,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+        future.completeExceptionally(new NotImplementedException());
+        return future;
+    }
+
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
         future.completeExceptionally(new NotImplementedException());
         return future;
     }
@@ -386,7 +410,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                     new PDInterfaceAdjust(
                         (short) 1,
                         (short) 0,
-                        MultipleInterfaceModeNameOfDevice.PORT_PROVIDED_BY_LLDP
+                        MultipleInterfaceModeNameOfDevice.NAME_PROVIDED_BY_LLDP
                     ),
                     new IODWriteRequestHeader(
                         (short) 1,
@@ -432,6 +456,31 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                         ARUUID,
                         0x0001,
                         0x0001
+                    )
+                ))
+        );
+    }
+
+
+
+    private DceRpc_Packet createProfinetAdvancedConnectionApplicationReady() throws PlcException {
+
+        return new DceRpc_Packet(
+            DceRpc_PacketType.REQUEST, true, false, false,
+            IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
+            new DceRpc_InterfaceUuid_DeviceInterface(),
+            profinetDriverContext.getDceRpcActivityUuid(),
+            0, 1, DceRpc_Operation.CONTROL,
+            new PnIoCm_Packet_Req(16696, 16696, 0, 244,
+                Arrays.asList(
+                    new PnIoCM_Block_Request(
+                        (short) 1,
+                        (short) 0,
+                        ARUUID,
+                        0x0001,
+                        0x0002,
+                        0x0000
                     )
                 ))
         );
