@@ -42,6 +42,14 @@ public interface PlcBrowseItem {
     PlcValueType getPlcValueType();
 
     /**
+     * @return returns the array info for this element
+     * (this is usually null, but for lists, it contains the array sizes)
+     */
+    default List<PlcBrowseItemArrayInfo> getArrayInfo() {
+        return null;
+    }
+
+    /**
      * @return returns 'true' if we can read this variable.
      */
     boolean isReadable();

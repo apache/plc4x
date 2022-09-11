@@ -334,9 +334,20 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             options.put("offset", new PlcUDINT(symbol.getOffset()));
             options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
 
-            // Add the type itself.
-            values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true,
-                !symbol.getFlagReadOnly(), true, children, options));
+            if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
+                List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
+                for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
+                    arrayInfo.add(new DefaultBrowseItemArrayInfo(
+                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                }
+                // Add the type itself.
+                values.add(new DefaultListPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, arrayInfo,
+                    true, !symbol.getFlagReadOnly(), true, children, options));
+            } else {
+                // Add the type itself.
+                values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true,
+                    !symbol.getFlagReadOnly(), true, children, options));
+            }
         }
         DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
         future.complete(response);
@@ -372,9 +383,20 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             options.put("offset", new PlcUDINT(baseOffset + child.getOffset()));
             options.put("size-in-bytes", new PlcUDINT(childDataType.getSize()));
 
-            // Add the type itself.
-            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName, plc4xPlcValueType,
-                true, parentWritable, true, children, options));
+            if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
+                List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
+                for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : childDataType.getArrayInfo()) {
+                    arrayInfo.add(new DefaultBrowseItemArrayInfo(
+                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                }
+                // Add the type itself.
+                values.add(new DefaultListPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName,
+                    plc4xPlcValueType, arrayInfo,true, parentWritable, true, children, options));
+            } else {
+                // Add the type itself.
+                values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName,
+                    plc4xPlcValueType,true, parentWritable, true, children, options));
+            }
         }
         return values;
     }

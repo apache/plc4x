@@ -24,11 +24,14 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ConnectionTabController {
@@ -83,7 +86,11 @@ public class ConnectionTabController {
                 rootItem.setGraphic(new FontIcon(MaterialDesign.MDI_FOLDER));
                 rootItem.setExpanded(true);
 
-                for (PlcBrowseItem value : browseResponse.getValues()) {
+                // Sort the entries first.
+                List<PlcBrowseItem> values = browseResponse.getValues();
+                values.sort(new PlcBrowseItemComparator());
+                // Then add the elements to the tree.
+                for (PlcBrowseItem value : values) {
                     rootItem.getChildren().add(getTreeItemForBrowseItem(value));
                 }
 
@@ -95,11 +102,22 @@ public class ConnectionTabController {
     }
 
     private TreeItem<ConnectionTabController.TreeEntry> getTreeItemForBrowseItem(PlcBrowseItem browseItem) {
+        StringBuilder addressSuffix = new StringBuilder();
+        if ((browseItem.getPlcValueType() == PlcValueType.List) && (browseItem.getArrayInfo() != null)){
+            addressSuffix.append(" ");
+            for (PlcBrowseItemArrayInfo arrayInfo : browseItem.getArrayInfo()) {
+                addressSuffix.append("[").append(arrayInfo.getLowerBound()).append(" .. ").append(arrayInfo.getUpperBound()).append("]");
+            }
+        }
         TreeItem<ConnectionTabController.TreeEntry> treeItem = new TreeItem<>(new ConnectionTabController.TreeEntry(
-            browseItem.getAddress(), browseItem.getName(), browseItem.getPlcValueType(),
+            browseItem.getAddress() + addressSuffix, browseItem.getName(), browseItem.getPlcValueType(),
             browseItem.isReadable(), browseItem.isWritable(), browseItem.isSubscribable()));
         if(!browseItem.getChildren().isEmpty()) {
-            for (PlcBrowseItem child : browseItem.getChildren()) {
+            // Sort the entries first.
+            List<PlcBrowseItem> values = browseItem.getChildren();
+            // Then add the elements to the tree.
+            values.sort(new PlcBrowseItemComparator());
+            for (PlcBrowseItem child : values) {
                 treeItem.getChildren().add(getTreeItemForBrowseItem(child));
             }
         }
@@ -156,6 +174,13 @@ public class ConnectionTabController {
 
         public boolean isSubscribable() {
             return subscribable;
+        }
+    }
+
+    class PlcBrowseItemComparator implements Comparator<PlcBrowseItem> {
+        @Override
+        public int compare(PlcBrowseItem o1, PlcBrowseItem o2) {
+            return o1.getAddress().compareTo(o2.getAddress());
         }
     }
 
