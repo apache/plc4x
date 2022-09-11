@@ -99,11 +99,16 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     protected boolean canRead() {
-        return true;
+        return false;
     }
 
     @Override
     protected boolean canWrite() {
+        return false;
+    }
+
+    @Override
+    protected boolean canSubscribe() {
         return true;
     }
 
