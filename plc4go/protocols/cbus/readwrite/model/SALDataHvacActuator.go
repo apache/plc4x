@@ -31,8 +31,8 @@ type SALDataHvacActuator interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
-	// GetVentilationData returns VentilationData (property field)
-	GetVentilationData() LightingData
+	// GetHvacActuatorData returns HvacActuatorData (property field)
+	GetHvacActuatorData() LightingData
 }
 
 // SALDataHvacActuatorExactly can be used when we want exactly this type and not a type which fulfills SALDataHvacActuator.
@@ -45,7 +45,7 @@ type SALDataHvacActuatorExactly interface {
 // _SALDataHvacActuator is the data-structure of this message
 type _SALDataHvacActuator struct {
 	*_SALData
-	VentilationData LightingData
+	HvacActuatorData LightingData
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,8 +75,8 @@ func (m *_SALDataHvacActuator) GetParent() SALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SALDataHvacActuator) GetVentilationData() LightingData {
-	return m.VentilationData
+func (m *_SALDataHvacActuator) GetHvacActuatorData() LightingData {
+	return m.HvacActuatorData
 }
 
 ///////////////////////
@@ -85,10 +85,10 @@ func (m *_SALDataHvacActuator) GetVentilationData() LightingData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataHvacActuator factory function for _SALDataHvacActuator
-func NewSALDataHvacActuator(ventilationData LightingData, salData SALData) *_SALDataHvacActuator {
+func NewSALDataHvacActuator(hvacActuatorData LightingData, salData SALData) *_SALDataHvacActuator {
 	_result := &_SALDataHvacActuator{
-		VentilationData: ventilationData,
-		_SALData:        NewSALData(salData),
+		HvacActuatorData: hvacActuatorData,
+		_SALData:         NewSALData(salData),
 	}
 	_result._SALData._SALDataChildRequirements = _result
 	return _result
@@ -116,8 +116,8 @@ func (m *_SALDataHvacActuator) GetLengthInBits() uint16 {
 func (m *_SALDataHvacActuator) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (ventilationData)
-	lengthInBits += m.VentilationData.GetLengthInBits()
+	// Simple field (hvacActuatorData)
+	lengthInBits += m.HvacActuatorData.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -135,17 +135,17 @@ func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId Applica
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ventilationData)
-	if pullErr := readBuffer.PullContext("ventilationData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ventilationData")
+	// Simple Field (hvacActuatorData)
+	if pullErr := readBuffer.PullContext("hvacActuatorData"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for hvacActuatorData")
 	}
-	_ventilationData, _ventilationDataErr := LightingDataParse(readBuffer)
-	if _ventilationDataErr != nil {
-		return nil, errors.Wrap(_ventilationDataErr, "Error parsing 'ventilationData' field of SALDataHvacActuator")
+	_hvacActuatorData, _hvacActuatorDataErr := LightingDataParse(readBuffer)
+	if _hvacActuatorDataErr != nil {
+		return nil, errors.Wrap(_hvacActuatorDataErr, "Error parsing 'hvacActuatorData' field of SALDataHvacActuator")
 	}
-	ventilationData := _ventilationData.(LightingData)
-	if closeErr := readBuffer.CloseContext("ventilationData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ventilationData")
+	hvacActuatorData := _hvacActuatorData.(LightingData)
+	if closeErr := readBuffer.CloseContext("hvacActuatorData"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for hvacActuatorData")
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataHvacActuator"); closeErr != nil {
@@ -154,8 +154,8 @@ func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId Applica
 
 	// Create a partially initialized instance
 	_child := &_SALDataHvacActuator{
-		_SALData:        &_SALData{},
-		VentilationData: ventilationData,
+		_SALData:         &_SALData{},
+		HvacActuatorData: hvacActuatorData,
 	}
 	_child._SALData._SALDataChildRequirements = _child
 	return _child, nil
@@ -169,16 +169,16 @@ func (m *_SALDataHvacActuator) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for SALDataHvacActuator")
 		}
 
-		// Simple Field (ventilationData)
-		if pushErr := writeBuffer.PushContext("ventilationData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ventilationData")
+		// Simple Field (hvacActuatorData)
+		if pushErr := writeBuffer.PushContext("hvacActuatorData"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for hvacActuatorData")
 		}
-		_ventilationDataErr := writeBuffer.WriteSerializable(m.GetVentilationData())
-		if popErr := writeBuffer.PopContext("ventilationData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ventilationData")
+		_hvacActuatorDataErr := writeBuffer.WriteSerializable(m.GetHvacActuatorData())
+		if popErr := writeBuffer.PopContext("hvacActuatorData"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for hvacActuatorData")
 		}
-		if _ventilationDataErr != nil {
-			return errors.Wrap(_ventilationDataErr, "Error serializing 'ventilationData' field")
+		if _hvacActuatorDataErr != nil {
+			return errors.Wrap(_hvacActuatorDataErr, "Error serializing 'hvacActuatorData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataHvacActuator"); popErr != nil {

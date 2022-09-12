@@ -1432,7 +1432,7 @@
         ]
         ['HVAC_ACTUATOR'                        *HvacActuator
              // Note: the documentation states that the data for hvac actuator uses LightingData
-            [simple LightingData ventilationData]
+            [simple LightingData hvacActuatorData]
         ]
     ]
     [optional SALData('applicationId') salData                                  ]
