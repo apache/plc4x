@@ -289,8 +289,60 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 				}
 			}
 
+			var commandType string
+			switch salData := salData.(type) {
+			case readWriteModel.SALDataAccessControlExactly:
+				commandType = salData.GetAccessControlData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataAirConditioningExactly:
+				commandType = salData.GetAirConditioningData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataAudioAndVideoExactly:
+				commandType = salData.GetAudioVideoData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataClockAndTimekeepingExactly:
+				commandType = salData.GetClockAndTimekeepingData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataEnableControlExactly:
+				commandType = salData.GetEnableControlData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataErrorReportingExactly:
+				commandType = salData.GetErrorReportingData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataFreeUsageExactly:
+				commandType = "Unknown"
+			case readWriteModel.SALDataHeatingExactly:
+				commandType = salData.GetHeatingData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataHvacActuatorExactly:
+				commandType = salData.GetHvacActuatorData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataIrrigationControlExactly:
+				commandType = salData.GetIrrigationControlData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataLightingExactly:
+				commandType = salData.GetLightingData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataMeasurementExactly:
+				commandType = salData.GetMeasurementData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataMediaTransportExactly:
+				commandType = salData.GetMediaTransportControlData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataMeteringExactly:
+				commandType = salData.GetMeteringData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataPoolsSpasPondsFountainsControlExactly:
+				commandType = salData.GetPoolsSpaPondsFountainsData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataReservedExactly:
+				commandType = "Unknown"
+			case readWriteModel.SALDataRoomControlSystemExactly:
+				panic("Not implemented yet") // TODO: implement once there
+			case readWriteModel.SALDataSecurityExactly:
+				commandType = salData.GetSecurityData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataTelephonyStatusAndControlExactly:
+				commandType = salData.GetTelephonyData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataTemperatureBroadcastExactly:
+				commandType = salData.GetTemperatureBroadcastData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataTestingExactly:
+				panic("Not implemented yet") // TODO: implement once there
+			case readWriteModel.SALDataTriggerControlExactly:
+				commandType = salData.GetTriggerControlData().GetCommandType().PLC4XEnumName()
+			case readWriteModel.SALDataVentilationExactly:
+				commandType = salData.GetVentilationData().GetCommandType().PLC4XEnumName()
+			default:
+				log.Error().Msgf("Unmapped type %T", salData)
+			}
+
 			// TODO: we need to map commands e.g. if we get a MeteringDataElectricityConsumption we can map that to MeteringDataMeasureElectricity
-			address[fieldName] = fmt.Sprintf("sal/%s/%s", applicationString, "TODO")
+			address[fieldName] = fmt.Sprintf("sal/%s/%s", applicationString, commandType)
 
 			rbvb := spiValues.NewWriteBufferPlcValueBased()
 			err := salData.Serialize(rbvb)
