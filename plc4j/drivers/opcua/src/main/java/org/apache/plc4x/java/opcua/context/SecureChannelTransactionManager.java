@@ -37,7 +37,7 @@ public class SecureChannelTransactionManager {
     private Map<Integer, Transaction> queue = new HashMap<>();
 
     public synchronized void submit(Consumer<Integer> onSend, Integer transactionId) {
-        LOGGER.info("Active transaction Number {}", activeTransactionId.get());
+        LOGGER.trace("Active transaction Number {}", activeTransactionId.get());
         if (activeTransactionId.get() == transactionId) {
             onSend.accept(transactionId);
             int newTransactionId = getActiveTransactionIdentifier();
