@@ -97,7 +97,7 @@
     </xsl:template>
 
     <xsl:template match="opc:EnumeratedType">
-        <xsl:message>[INFO] Parsing Enumerated Datatype - <xsl:value-of select="@Name"/></xsl:message>
+        <xsl:message>[INFO] Generating type - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:choose>
             <xsl:when test="opc:EnumeratedValue"><xsl:text>
 
@@ -114,7 +114,6 @@
     <xsl:template match="opc:Documentation">// <xsl:value-of select="."/></xsl:template>
 
     <xsl:template match="opc:EnumeratedValue">
-        <xsl:message>[INFO] Parsing Enumerated Value - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-id-string">
                 <xsl:with-param name="text" select="@Name"/>
@@ -125,7 +124,7 @@
     </xsl:template>
 
     <xsl:template match="opc:OpaqueType[not(@Name = 'Duration')]">
-        <xsl:message>[INFO] Parsing Opaque Datatype - <xsl:value-of select="@Name"/></xsl:message>
+        <xsl:message>[INFO] Generating type - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-id-string">
                 <xsl:with-param name="text" select="@Name"/>
@@ -143,7 +142,7 @@
     </xsl:template>
 
     <xsl:template match="opc:StructuredType[starts-with(@BaseType, 'tns:')]">
-        <xsl:message>[INFO] Parsing Structured Datatype - <xsl:value-of select="@Name"/></xsl:message>
+        <xsl:message>[INFO] Generating type - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-datatype-string">
                 <xsl:with-param name="text" select="@Name"/>
@@ -163,7 +162,7 @@
     </xsl:template>
 
     <xsl:template match="opc:StructuredType[not (@BaseType)]">
-        <xsl:message>[INFO] Parsing Structured Datatype - <xsl:value-of select="@Name"/></xsl:message>
+        <xsl:message>[INFO] Generating type - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-datatype-string">
                 <xsl:with-param name="text" select="@Name"/>
@@ -184,7 +183,7 @@
 
     <xsl:template match="opc:Field">
         <xsl:param name="servicesRoot"/>
-        <xsl:message>[INFO] Parsing Field - <xsl:value-of select="@Name"/></xsl:message>
+        <xsl:message>[INFO] Generating - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:variable name="objectTypeId">
             <xsl:value-of select="@Name"/>
         </xsl:variable>
@@ -355,16 +354,16 @@
     <xsl:function name="plc4x:getDataTypeLength" as="xs:integer">
         <xsl:param name="lengthMap" as="map(xs:string, xs:int)"/>
         <xsl:param name="datatype"/>
-        <xsl:message>[DEBUG] Getting length of <xsl:value-of select="xs:string($datatype/[@TypeName])"/></xsl:message>
+        <xsl:message>[DEBUG] Getting length of <xsl:value-of select="xs:string($datatype[@TypeName])"/></xsl:message>
         <xsl:choose>
-            <xsl:when test="map:contains($lengthMap, xs:string($datatype/[@TypeName]))">
-                <xsl:message>[DEBUG] Bit Length <xsl:value-of select="$lengthMap(xs:string($datatype/[@TypeName]))"/></xsl:message>
-                <xsl:value-of select="map:get($lengthMap, xs:string($datatype/[@TypeName]))"/>
+            <xsl:when test="map:contains($lengthMap, xs:string($datatype[@TypeName]))">
+                <xsl:message>[DEBUG] Bit Length <xsl:value-of select="$lengthMap(xs:string($datatype[@TypeName]))"/></xsl:message>
+                <xsl:value-of select="map:get($lengthMap, xs:string($datatype[@TypeName]))"/>
             </xsl:when>
-            <xsl:when test="($datatype/[@TypeName] = 'opc:Bit') or ($datatype/[@TypeName] = 'opc:Boolean')">
+            <xsl:when test="($datatype[@TypeName] = 'opc:Bit') or ($datatype[@TypeName] = 'opc:Boolean')">
                 <xsl:choose>
-                    <xsl:when test="$datatype/[@Length] != ''">
-                        <xsl:value-of select="xs:int($datatype/[@Length])"/>
+                    <xsl:when test="$datatype[@Length] != ''">
+                        <xsl:value-of select="xs:int($datatype[@Length])"/>
                     </xsl:when>
                     <xsl:otherwise>1</xsl:otherwise>
                 </xsl:choose>
