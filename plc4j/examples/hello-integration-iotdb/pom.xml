@@ -32,7 +32,7 @@
   <description>Application using Edgent to output PLC data to the IoTDB.</description>
 
   <properties>
-    <iotdb.version>0.13.0</iotdb.version>
+    <iotdb.version>0.14.0-preview2</iotdb.version>
 
     <app.main.class>org.apache.plc4x.java.examples.integration.iotdb.PlcLogger</app.main.class>
   </properties>
