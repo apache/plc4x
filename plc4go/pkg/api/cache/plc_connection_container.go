@@ -60,39 +60,15 @@ func (t *connectionContainer) connect() {
 
 	// If the connection was successful, pass the active connection into the container.
 	// If something went wrong, we have to remove the connection from the cache and return the error.
-	if connectionResult.GetErr() == nil {
-		log.Debug().Str("connectionString", t.connectionString).Msg("Successfully connected new cached connection.")
-		// Inject the real connection into the container.
-		if _, ok := connectionResult.GetConnection().(spi.PlcConnection); !ok {
-			panic("Return connection doesn't implement the spi.PlcConnection interface")
-		}
-		t.connection = connectionResult.GetConnection().(spi.PlcConnection)
-		t.tracerEnabled = t.connection.IsTraceEnabled()
-		// Mark the connection as idle for now.
-		t.state = StateIdle
-		// If there is a request in the queue, hand out the connection to that.
-		if len(t.queue) > 0 {
-			// Get the first in the queue.
-			queueHead := t.queue[0]
-			t.queue = t.queue[1:]
-			// Mark the connection as being used.
-			t.state = StateInUse
-			// Return the lease to the caller.
-			connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
-			// In this case we don't need to check for blocks
-			// as the getConnection function of the connection cache
-			// is definitely eagerly waiting for input.
-			queueHead <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
-		}
-	} else {
+	if err := connectionResult.GetErr(); err != nil {
 		log.Debug().Str("connectionString", t.connectionString).
-			Err(connectionResult.GetErr()).
+			Err(err).
 			Msg("Error connecting new cached connection.")
 		// Tell the connection cache that the connection is no longer available.
 		if t.listeners != nil {
 			event := connectionErrorEvent{
 				conn: *t,
-				err:  connectionResult.GetErr(),
+				err:  err,
 			}
 			for _, listener := range t.listeners {
 				listener.onConnectionEvent(event)
@@ -102,10 +78,36 @@ func (t *connectionContainer) connect() {
 		// Send a failure to all waiting clients.
 		if len(t.queue) > 0 {
 			for _, waitingClient := range t.queue {
-				waitingClient <- _default.NewDefaultPlcConnectionConnectResult(nil, connectionResult.GetErr())
+				waitingClient <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
 			}
 			t.queue = nil
 		}
+		return
+	}
+
+	log.Debug().Str("connectionString", t.connectionString).Msg("Successfully connected new cached connection.")
+	// Inject the real connection into the container.
+	if connection, ok := connectionResult.GetConnection().(spi.PlcConnection); !ok {
+		panic("Return connection doesn't implement the spi.PlcConnection interface")
+	} else {
+		t.connection = connection
+	}
+	t.tracerEnabled = t.connection.IsTraceEnabled()
+	// Mark the connection as idle for now.
+	t.state = StateIdle
+	// If there is a request in the queue, hand out the connection to that.
+	if len(t.queue) > 0 {
+		// Get the first in the queue.
+		queueHead := t.queue[0]
+		t.queue = t.queue[1:]
+		// Mark the connection as being used.
+		t.state = StateInUse
+		// Return the lease to the caller.
+		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
+		// In this case we don't need to check for blocks
+		// as the getConnection function of the connection cache
+		// is definitely eagerly waiting for input.
+		queueHead <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
 	}
 }
 
@@ -123,7 +125,8 @@ func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	// Check if the connection is available.
-	if t.state == StateIdle {
+	switch t.state {
+	case StateIdle:
 		t.leaseCounter++
 		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
 		t.state = StateInUse
@@ -135,13 +138,15 @@ func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 		go func() {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
 		}()
-	} else if t.state == StateInUse || t.state == StateInitialized {
+	case StateInUse, StateInitialized:
 		// If the connection is currently busy or not finished initializing,
 		// add the new channel to the queue for this connection.
 		t.queue = append(t.queue, ch)
 		log.Debug().Str("connectionString", t.connectionString).
 			Int("waiting-queue-size", len(t.queue)).
 			Msg("Added lease-request to queue.")
+	case StateInvalid:
+		log.Debug().Str("connectionString", t.connectionString).Msg("No lease because invalid")
 	}
 	return ch
 }
