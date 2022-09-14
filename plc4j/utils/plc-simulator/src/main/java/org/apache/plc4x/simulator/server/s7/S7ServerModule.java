@@ -91,7 +91,12 @@ public class S7ServerModule implements ServerModule {
             if (config.getS7Port() != null) {
                 port = Integer.parseInt(config.getS7Port());
             }
-            bootstrap.bind(config.getHost(), port).sync();
+            String host = config.getHost();
+            if (host != null) {
+                bootstrap.bind(host, port).sync();
+            } else {
+                bootstrap.bind(port).sync();
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new SimulatorException(e);
