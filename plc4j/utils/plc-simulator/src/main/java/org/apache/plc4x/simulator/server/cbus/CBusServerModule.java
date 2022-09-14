@@ -89,7 +89,16 @@ public class CBusServerModule implements ServerModule {
                 }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            bootstrap.bind(config.getHost(), CBusConstants.CBUSTCPDEFAULTPORT).sync();
+            int port = CBusConstants.CBUSTCPDEFAULTPORT;
+            if (config.getS7Port() != null) {
+                port = Integer.parseInt(config.getS7Port());
+            }
+            String host = config.getHost();
+            if (host != null) {
+                bootstrap.bind(host, port).sync();
+            } else {
+                bootstrap.bind(port).sync();
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new SimulatorException(e);
