@@ -114,7 +114,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	go func() {
 		err := c.messageCodec.Connect()
 		if err != nil {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, err)
+			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
 		}
 
