@@ -104,6 +104,7 @@ func (t *connectionContainer) connect() {
 			for _, waitingClient := range t.queue {
 				waitingClient <- _default.NewDefaultPlcConnectionConnectResult(nil, connectionResult.GetErr())
 			}
+			t.queue = nil
 		}
 	}
 }
@@ -150,14 +151,14 @@ func (t *connectionContainer) returnConnection(state cachedPlcConnectionState) e
 	// 1) The connection failed to get established (No connection has a lock anyway)
 	// 2) The connection is returned, then the one returning it already has a lock on it.
 	// If the connection is marked as "invalid", destroy it and remove it from the cache.
-	if state == StateInvalid {
+	switch state {
+	case StateInitialized, StateInvalid:
 		// TODO: Perhaps do a maximum number of retries and then call failConnection()
 		log.Debug().Str("connectionString", t.connectionString).
-			Msg("Client returned invalid connection, reconnecting.")
+			Msgf("Client returned a %s connection, reconnecting.", state)
 		t.connect()
-	} else {
-		log.Debug().Str("connectionString", t.connectionString).
-			Msg("Client returned valid connection.")
+	default:
+		log.Debug().Str("connectionString", t.connectionString).Msg("Client returned valid connection.")
 	}
 
 	// Check how many others are waiting for this connection.
