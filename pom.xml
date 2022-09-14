@@ -150,7 +150,7 @@
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.8</milo.version>
     <mockito.version>4.8.0</mockito.version>
-    <netty.version>4.1.81.Final</netty.version>
+    <netty.version>4.1.82.Final</netty.version>
     <owasp-dependency-check.version>7.1.2</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.0</slf4j.version>
