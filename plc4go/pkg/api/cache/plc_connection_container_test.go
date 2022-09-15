@@ -24,6 +24,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/viney-shih/go-lock"
 	"testing"
@@ -31,6 +33,7 @@ import (
 
 func Test_connectionContainer_String(t1 *testing.T) {
 	type fields struct {
+		cacheLog         *zerolog.Logger
 		lock             lock.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
@@ -52,6 +55,7 @@ func Test_connectionContainer_String(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &connectionContainer{
+				cacheLog:         tt.fields.cacheLog,
 				lock:             tt.fields.lock,
 				connectionString: tt.fields.connectionString,
 				driverManager:    tt.fields.driverManager,
@@ -70,6 +74,7 @@ func Test_connectionContainer_String(t1 *testing.T) {
 
 func Test_connectionContainer_addListener(t1 *testing.T) {
 	type fields struct {
+		cacheLog         *zerolog.Logger
 		lock             lock.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
@@ -94,6 +99,7 @@ func Test_connectionContainer_addListener(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &connectionContainer{
+				cacheLog:         tt.fields.cacheLog,
 				lock:             tt.fields.lock,
 				connectionString: tt.fields.connectionString,
 				driverManager:    tt.fields.driverManager,
@@ -112,6 +118,7 @@ func Test_connectionContainer_addListener(t1 *testing.T) {
 
 func Test_connectionContainer_connect(t1 *testing.T) {
 	type fields struct {
+		cacheLog         *zerolog.Logger
 		lock             lock.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
@@ -130,6 +137,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 		{
 			name: "connect fresh",
 			fields: fields{
+				cacheLog: &log.Logger,
 				driverManager: func() plc4go.PlcDriverManager {
 					driverManager := plc4go.NewPlcDriverManager()
 					driverManager.RegisterDriver(simulated.NewDriver())
@@ -144,6 +152,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &connectionContainer{
+				cacheLog:         tt.fields.cacheLog,
 				lock:             tt.fields.lock,
 				connectionString: tt.fields.connectionString,
 				driverManager:    tt.fields.driverManager,
@@ -162,6 +171,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 
 func Test_connectionContainer_lease(t1 *testing.T) {
 	type fields struct {
+		cacheLog         *zerolog.Logger
 		lock             lock.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
@@ -181,6 +191,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 		{
 			name: "lease fresh",
 			fields: fields{
+				cacheLog: &log.Logger,
 				driverManager: func() plc4go.PlcDriverManager {
 					driverManager := plc4go.NewPlcDriverManager()
 					driverManager.RegisterDriver(simulated.NewDriver())
@@ -196,6 +207,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &connectionContainer{
+				cacheLog:         tt.fields.cacheLog,
 				lock:             tt.fields.lock,
 				connectionString: tt.fields.connectionString,
 				driverManager:    tt.fields.driverManager,
@@ -214,6 +226,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 
 func Test_connectionContainer_returnConnection(t1 *testing.T) {
 	type fields struct {
+		cacheLog         *zerolog.Logger
 		lock             lock.RWMutex
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
@@ -237,6 +250,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 		{
 			name: "return connection fresh",
 			fields: fields{
+				cacheLog: &log.Logger,
 				driverManager: func() plc4go.PlcDriverManager {
 					driverManager := plc4go.NewPlcDriverManager()
 					driverManager.RegisterDriver(simulated.NewDriver())
@@ -254,6 +268,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 		{
 			name: "return unconnected connection",
 			fields: fields{
+				cacheLog: &log.Logger,
 				driverManager: func() plc4go.PlcDriverManager {
 					driverManager := plc4go.NewPlcDriverManager()
 					driverManager.RegisterDriver(simulated.NewDriver())
@@ -272,6 +287,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
 			t := &connectionContainer{
+				cacheLog:         tt.fields.cacheLog,
 				lock:             tt.fields.lock,
 				connectionString: tt.fields.connectionString,
 				driverManager:    tt.fields.driverManager,
