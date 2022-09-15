@@ -108,15 +108,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			}
 			log.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
 			// Create a new connection container.
-			cc := &connectionContainer{
-				driverManager:    t.driverManager,
-				connectionString: connectionString,
-				lock:             lock.NewCASMutex(),
-				leaseCounter:     0,
-				closed:           false,
-				state:            StateInitialized,
-				queue:            []chan plc4go.PlcConnectionConnectResult{},
-			}
+			cc := newConnectionContainer(t.driverManager, connectionString)
 			// Register for connection events (Like connection closed or error).
 			cc.addListener(t)
 			// Store the new connection container in the cache of connections.

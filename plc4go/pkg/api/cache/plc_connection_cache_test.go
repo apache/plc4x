@@ -46,7 +46,8 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 		wantErr     bool
 		wantTimeout bool
 	}{
-		{name: "simple",
+		{
+			name: "simple",
 			fields: fields{
 				driverManager: func() plc4go.PlcDriverManager {
 					driverManager := plc4go.NewPlcDriverManager()
@@ -59,7 +60,8 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 			wantErr:     false,
 			wantTimeout: false,
 		},
-		{name: "simpleWithTimeout",
+		{
+			name: "simpleWithTimeout",
 			fields: fields{
 				driverManager: func() plc4go.PlcDriverManager {
 					driverManager := plc4go.NewPlcDriverManager()
