@@ -39,6 +39,7 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcINT;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private Map<Long, OpcuaSubscriptionHandle> subscriptions = new HashMap<>();
     private SecureChannel channel;
     private AtomicBoolean securedConnection = new AtomicBoolean(false);
+    private LinkedHashMap<String, ReferenceDescription> discoveredNodes= new LinkedHashMap<>();
+    private LinkedHashMap<String, ReferenceDescription> browsedNodes= new LinkedHashMap<>();
+    private LinkedHashMap<String, String> nodeChildren= new LinkedHashMap<>();
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
@@ -128,8 +132,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         channel.onDiscover(context);
     }
 
-    private CompletableFuture<List<PlcBrowseItem>> browseNode(NodeId nodeId) {
-        CompletableFuture<List<PlcBrowseItem>> future = new CompletableFuture<>();
+    private CompletableFuture<PlcBrowseItem> browseNode(ExpandedNodeId nodeId) {
+        CompletableFuture<PlcBrowseItem> future = new CompletableFuture<>();
         RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
             SecureChannel.getCurrentDateTime(),
             channel.getRequestHandle(),
@@ -140,7 +144,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         List<ExtensionObjectDefinition> requestedValues = new ArrayList<>(1);
         requestedValues.add(new BrowseDescription(
-            nodeId,
+            new NodeId(nodeId.getNodeId()),
             BrowseDirection.browseDirectionForward,
             new NodeId(new NodeIdTwoByte((short) 33)),
             true,
@@ -176,13 +180,15 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             Consumer<byte[]> consumer = opcuaResponse -> {
                 try {
                     ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    PlcBrowseItem value = null;
                     if (reply instanceof BrowseResponse) {
                         BrowseResponse response = (BrowseResponse) reply;
                         BrowseResult castResult = (BrowseResult) response.getResults().get(0);
-                        List<PlcBrowseItem> values = new ArrayList<>(response.getResults().size());
 
+                        ArrayList<PlcBrowseItem> children = new ArrayList<>(0);
                         for (ExtensionObjectDefinition result : castResult.getReferences()) {
                             ReferenceDescription referenceResult = (ReferenceDescription) result;
+                            referenceResult.getNodeId().getIdentifier();
                             String typeDefinition = referenceResult.getTypeDefinition().getIdentifier();
                             PlcValueType plcValue = null;
                             if (OpcuaDataType.isDefined(typeDefinition)) {
@@ -191,33 +197,36 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             } else {
                                 plcValue = PlcValueType.Struct;
                             }
-                            ExpandedNodeId tempNodeId = ((ReferenceDescription) result).getNodeId();
-                            NodeId tempNode = new NodeId(
-                                new NodeIdString(tempNodeId tempNodeId.getIdentifier());
-                            )
-                            CompletableFuture<List<PlcBrowseItem>> childFuture = browseNode();
-                            List<PlcBrowseItem> list = childFuture.get(5000L, TimeUnit.SECONDS);
-                            if (list != null) {
-                                values.add(new DefaultPlcBrowseItem(
-                                    referenceResult.getBrowseName().getName().getStringValue(),
-                                    referenceResult.getDisplayName().getText().getStringValue(),
-                                    plcValue,
-                                    true,
-                                    true,
-                                    true, list, null));
-                            } else {
-                                values.add(new DefaultPlcBrowseItem(
-                                    referenceResult.getBrowseName().getName().getStringValue(),
-                                    referenceResult.getDisplayName().getText().getStringValue(),
-                                    plcValue,
-                                    true,
-                                    true,
-                                    true, new ArrayList<PlcBrowseItem>(0), null));
+                            String test = referenceResult.getNodeId().getIdentifier();
+                            if (referenceResult.getNodeClass() == NodeClass.nodeClassObject || referenceResult.getNodeClass() == NodeClass.nodeClassVariable) {
+                                nodeChildren.put(nodeId.getIdentifier(), referenceResult.getNodeId().getIdentifier());
+                                discoveredNodes.put(referenceResult.getNodeId().getIdentifier(), referenceResult);
                             }
                         }
-                        future.complete(values);
+                        value = new DefaultPlcBrowseItem(
+                            nodeId.getIdentifier(),
+                            nodeId.getIdentifier(),
+                            PlcValueType.INT,
+                            true,
+                            true,
+                            true,
+                            new ArrayList<>(0),
+                            new HashMap<>()
+                        );
+
+                        future.complete(value);
                     } else {
-                        List<PlcBrowseItem> values = new ArrayList<>(0);
+                        value = new DefaultPlcBrowseItem(
+                            nodeId.getIdentifier(),
+                            nodeId.getNamespaceURI().getStringValue(),
+                            PlcValueType.INT,
+                            false,
+                            false,
+                            false,
+                            new ArrayList<>(0),
+                            new HashMap<>()
+                        );
+
                         if (reply instanceof ServiceFault) {
                             ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
                             LOGGER.error("Browse request ended up with ServiceFault: {}", header);
@@ -225,17 +234,10 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             LOGGER.error("Remote party returned an error '{}'", reply);
                         }
 
-                        future.complete(values);
-                        return;
+                        future.complete(value);
                     }
                 } catch (ParseException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (TimeoutException e) {
-                    throw new RuntimeException(e);
                 }
             };
 
@@ -262,25 +264,61 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
-
-        CompletableFuture<List<PlcBrowseItem>> childFuture = browseNode(new ExpandedNodeId(
-            false,
-            false,
-            new NodeIdTwoByte((short) 85),
-            null,
-            0L));
-
+        boolean browsable = true;
         PlcBrowseResponse response = null;
-        try {
-            response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, childFuture.get(1000L, TimeUnit.SECONDS));
-            future.complete(response);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
+
+        ReferenceDescription referenceDescription = new ReferenceDescription(
+            new NodeId(
+                new NodeIdTwoByte((short) 47)
+            ),
+            true,
+            new ExpandedNodeId(
+                false,
+                false,
+                new NodeIdTwoByte((short) 85),
+                null,
+                0L),
+            new QualifiedName(
+                0,
+                new PascalString("root")
+            ),
+            new LocalizedText(
+                true,
+                true,
+                new PascalString("en"),
+                new PascalString("root")),
+            NodeClass.nodeClassObject,
+            new ExpandedNodeId(
+                false,
+                false,
+                new NodeIdTwoByte((short) 2034),
+                null,
+                0L)
+        );
+
+        discoveredNodes.put(referenceDescription.getNodeId().getIdentifier(), referenceDescription);
+
+        while (browsable) {
+            CompletableFuture<PlcBrowseItem> childFuture = browseNode(referenceDescription.getNodeId());
+
+            try {
+                PlcBrowseItem responseItem = childFuture.get(10L, TimeUnit.SECONDS);
+                browsedNodes.put(referenceDescription.getNodeId().getIdentifier(), referenceDescription);
+                discoveredNodes.remove(referenceDescription.getNodeId().getIdentifier());
+                Optional<String> first = discoveredNodes.keySet().stream().findFirst();
+                if (first.isPresent()) {
+                    referenceDescription = discoveredNodes.get(first.get());
+                }
+            } catch (TimeoutException | InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+            if (discoveredNodes.isEmpty()) {
+                browsable = false;
+            }
         }
+
+        response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, new ArrayList<PlcBrowseItem>());
+        future.complete(response);
         //new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.INTERNAL_ERROR, values)
         return future;
     }

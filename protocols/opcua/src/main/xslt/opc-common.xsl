@@ -354,16 +354,15 @@
     <xsl:function name="plc4x:getDataTypeLength" as="xs:integer">
         <xsl:param name="lengthMap" as="map(xs:string, xs:int)"/>
         <xsl:param name="datatype"/>
-        <xsl:message>[DEBUG] Getting length of <xsl:value-of select="xs:string($datatype[@TypeName])"/></xsl:message>
         <xsl:choose>
-            <xsl:when test="map:contains($lengthMap, xs:string($datatype[@TypeName]))">
-                <xsl:message>[DEBUG] Bit Length <xsl:value-of select="$lengthMap(xs:string($datatype[@TypeName]))"/></xsl:message>
-                <xsl:value-of select="map:get($lengthMap, xs:string($datatype[@TypeName]))"/>
+            <xsl:when test="map:contains($lengthMap, xs:string($datatype/[@TypeName]))">
+                <xsl:message>[DEBUG] Bit Length <xsl:value-of select="$lengthMap(xs:string($datatype/[@TypeName]))"/></xsl:message>
+                <xsl:value-of select="map:get($lengthMap, xs:string($datatype/[@TypeName]))"/>
             </xsl:when>
-            <xsl:when test="($datatype[@TypeName] = 'opc:Bit') or ($datatype[@TypeName] = 'opc:Boolean')">
+            <xsl:when test="($datatype/[@TypeName] = 'opc:Bit') or ($datatype/[@TypeName] = 'opc:Boolean')">
                 <xsl:choose>
-                    <xsl:when test="$datatype[@Length] != ''">
-                        <xsl:value-of select="xs:int($datatype[@Length])"/>
+                    <xsl:when test="$datatype/[@Length] != ''">
+                        <xsl:value-of select="xs:int($datatype/[@Length])"/>
                     </xsl:when>
                     <xsl:otherwise>1</xsl:otherwise>
                 </xsl:choose>
@@ -379,7 +378,6 @@
         <xsl:param name="currentNodePosition" as="xs:int"/>
         <xsl:param name="currentBitPosition" as="xs:int"/>
         <xsl:param name="currentBytePosition" as="xs:int"/>
-        <xsl:message>[DEBUG] Recursively rearranging bit order in nodes,  Position - <xsl:value-of select="$currentNodePosition"/>, Bit Position - <xsl:value-of select="$currentBitPosition"/>, Byte Position - <xsl:value-of select="$currentBytePosition"/></xsl:message>
         <xsl:for-each select="$baseNode/opc:Field">
             <xsl:message>[DEBUG] <xsl:value-of select="position()"/> - <xsl:value-of select="@TypeName"/></xsl:message>
         </xsl:for-each>
@@ -390,7 +388,6 @@
                 <xsl:choose>
                     <xsl:when test="$currentBitPosition != 0">
                         <!-- Add a reserved field if we are halfway through a Byte.  -->
-                        <xsl:message>[DEBUG] Adding a reserved field</xsl:message>
                         <xsl:call-template name="plc4x:parseFields">
                             <xsl:with-param name="baseNode">
                                 <xsl:copy-of select="$baseNode/opc:Field[position() lt ($currentNodePosition - $currentBytePosition)]"/>
@@ -427,7 +424,6 @@
                         <xsl:choose>
                             <xsl:when test="$currentBitPosition=0">
                                 <!-- Put node into current position -->
-                                <xsl:message>[DEBUG] First Bit in Byte</xsl:message>
                                 <xsl:call-template name="plc4x:parseFields">
                                     <xsl:with-param name="baseNode">
                                         <xsl:copy-of select="$baseNode/opc:Field"/>
@@ -446,7 +442,6 @@
                             </xsl:when>
                             <xsl:otherwise>
                                 <!-- Put node into correct position based on bit and byte position -->
-                                <xsl:message>[DEBUG] Additional Bit in Byte</xsl:message>
                                 <xsl:call-template name="plc4x:parseFields">
                                     <xsl:with-param name="baseNode">
                                         <xsl:copy-of select="$baseNode/opc:Field[position() lt ($currentNodePosition - $currentBytePosition)]"/>
@@ -472,7 +467,6 @@
                         <xsl:choose>
                             <xsl:when test="$currentBitPosition != 0 and $currentBitPosition lt 8">
                                 <!-- Add a reserved field if we are halfway through a Byte.  -->
-                                <xsl:message>[DEBUG] Adding a reserved field</xsl:message>
                                 <xsl:call-template name="plc4x:parseFields">
                                     <xsl:with-param name="baseNode">
                                         <xsl:copy-of select="$baseNode/opc:Field[position() lt ($currentNodePosition - $currentBytePosition)]"/>
@@ -497,7 +491,6 @@
                             </xsl:when>
                             <xsl:otherwise>
                                 <!-- Put node into current position -->
-                                <xsl:message>[DEBUG] not a bit data type, just leave it in it's place</xsl:message>
                                 <xsl:call-template name="plc4x:parseFields">
                                     <xsl:with-param name="baseNode">
                                         <xsl:copy-of select="$baseNode/opc:Field"/>
