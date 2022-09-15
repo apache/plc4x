@@ -209,7 +209,7 @@ Get the latest PLC4X news on Twitter: [https://twitter.com/ApachePlc4x](https://
 
 ## Translation
 
-+ [Chinese](translation\README_zh_CN.md)
++ [Chinese](./translation/README_zh_CN.md)
 
 ## Contributing
 
