@@ -24,5 +24,9 @@ var (
 	TraceTransactionManagerWorkers      bool
 	TraceTransactionManagerTransactions bool
 	TraceDefaultMessageCodecWorker      bool
-	TraceConnectionCache                bool
+)
+
+// TraceConnectionCache when set to true the connection cache outputs debug logs
+var (
+	TraceConnectionCache bool
 )
