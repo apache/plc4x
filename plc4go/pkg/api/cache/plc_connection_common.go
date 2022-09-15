@@ -19,6 +19,24 @@
 
 package cache
 
+import (
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+)
+
+var cacheLog = &log.Logger
+
+// Deprecated: ugly solution for switching logs... The Trace variables should be replaced by methods and listeners.
+func setCacheLog() {
+	if config.TraceConnectionCache {
+		cacheLog = &log.Logger
+	} else {
+		nopper := zerolog.Nop()
+		cacheLog = &nopper
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // cachedPlcConnectionState
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

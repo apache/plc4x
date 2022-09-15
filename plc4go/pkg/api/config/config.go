@@ -24,10 +24,5 @@ var (
 	TraceTransactionManagerWorkers      bool
 	TraceTransactionManagerTransactions bool
 	TraceDefaultMessageCodecWorker      bool
+	TraceConnectionCache                bool
 )
-
-func init() {
-	TraceTransactionManagerWorkers = false
-	TraceTransactionManagerTransactions = false
-	TraceDefaultMessageCodecWorker = false
-}
