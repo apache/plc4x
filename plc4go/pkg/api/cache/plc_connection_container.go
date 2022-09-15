@@ -24,6 +24,7 @@ import (
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/viney-shih/go-lock"
 )
@@ -42,6 +43,18 @@ type connectionContainer struct {
 	queue []chan plc4go.PlcConnectionConnectResult
 	// Listeners for connection events.
 	listeners []connectionListener
+}
+
+func newConnectionContainer(driverManager plc4go.PlcDriverManager, connectionString string) *connectionContainer {
+	return &connectionContainer{
+		driverManager:    driverManager,
+		connectionString: connectionString,
+		lock:             lock.NewCASMutex(),
+		leaseCounter:     0,
+		closed:           false,
+		state:            StateInitialized,
+		queue:            []chan plc4go.PlcConnectionConnectResult{},
+	}
 }
 
 func (t *connectionContainer) connect() {
@@ -151,19 +164,25 @@ func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 	return ch
 }
 
-func (t *connectionContainer) returnConnection(state cachedPlcConnectionState) error {
+func (t *connectionContainer) returnConnection(newState cachedPlcConnectionState) error {
 	// Intentionally not locking anything, as there are two cases, where the connection is returned:
 	// 1) The connection failed to get established (No connection has a lock anyway)
 	// 2) The connection is returned, then the one returning it already has a lock on it.
 	// If the connection is marked as "invalid", destroy it and remove it from the cache.
-	switch state {
+	switch newState {
 	case StateInitialized, StateInvalid:
 		// TODO: Perhaps do a maximum number of retries and then call failConnection()
 		log.Debug().Str("connectionString", t.connectionString).
-			Msgf("Client returned a %s connection, reconnecting.", state)
+			Msgf("Client returned a %s connection, reconnecting.", newState)
 		t.connect()
 	default:
 		log.Debug().Str("connectionString", t.connectionString).Msg("Client returned valid connection.")
+	}
+	t.lock.Lock()
+	defer t.lock.Unlock()
+	if t.connection == nil {
+		t.state = StateInvalid
+		return errors.New("Can't return a broken connection")
 	}
 
 	// Check how many others are waiting for this connection.
