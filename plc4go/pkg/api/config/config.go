@@ -26,7 +26,7 @@ var (
 	TraceDefaultMessageCodecWorker      bool
 )
 
-// TraceConnectionCache when set to true the connection cache outputs debug logs
+// TraceConnectionCache when set to true the connection cache outputs logs by default
 var (
 	TraceConnectionCache bool
 )

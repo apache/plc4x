@@ -22,10 +22,13 @@ package cache
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/viney-shih/go-lock"
 	"time"
 )
@@ -35,18 +38,50 @@ type PlcConnectionCache interface {
 	Close() <-chan PlcConnectionCacheCloseResult
 }
 
-func NewPlcConnectionCache(driverManager plc4go.PlcDriverManager) PlcConnectionCache {
-	return NewPlcConnectionCacheWithMaxLeaseTime(driverManager, time.Second*5)
-}
-
-func NewPlcConnectionCacheWithMaxLeaseTime(driverManager plc4go.PlcDriverManager, maxLeaseTime time.Duration) PlcConnectionCache {
-	return &plcConnectionCache{
+func NewPlcConnectionCache(driverManager plc4go.PlcDriverManager, withConnectionCacheOptions ...WithConnectionCacheOption) PlcConnectionCache {
+	cacheLog := log.Logger
+	if !config.TraceConnectionCache {
+		cacheLog = zerolog.Nop()
+	}
+	maxLeaseTime := time.Second * 5
+	cc := &plcConnectionCache{
+		cacheLog:      cacheLog,
 		driverManager: driverManager,
 		maxLeaseTime:  maxLeaseTime,
 		maxWaitTime:   maxLeaseTime * 5,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
+	}
+	for _, option := range withConnectionCacheOptions {
+		option(cc)
+	}
+	return cc
+}
+
+type WithConnectionCacheOption func(plcConnectionCache *plcConnectionCache)
+
+func WithMaxLeaseTime(duration time.Duration) WithConnectionCacheOption {
+	return func(plcConnectionCache *plcConnectionCache) {
+		plcConnectionCache.maxLeaseTime = duration
+	}
+}
+
+func WithMaxWaitTime(duration time.Duration) WithConnectionCacheOption {
+	return func(plcConnectionCache *plcConnectionCache) {
+		plcConnectionCache.maxLeaseTime = duration
+	}
+}
+
+func WithTracer() WithConnectionCacheOption {
+	return func(plcConnectionCache *plcConnectionCache) {
+		plcConnectionCache.EnableTracer()
+	}
+}
+
+func WithLogger(logger zerolog.Logger) WithConnectionCacheOption {
+	return func(plcConnectionCache *plcConnectionCache) {
+		plcConnectionCache.cacheLog = logger
 	}
 }
 
@@ -57,6 +92,8 @@ func NewPlcConnectionCacheWithMaxLeaseTime(driverManager plc4go.PlcDriverManager
 //
 
 type plcConnectionCache struct {
+	cacheLog zerolog.Logger
+
 	driverManager plc4go.PlcDriverManager
 
 	// Maximum duration a connection can be used per lease.
@@ -70,13 +107,12 @@ type plcConnectionCache struct {
 }
 
 func (t *plcConnectionCache) onConnectionEvent(event connectionEvent) {
-	setCacheLog()
 	connectionContainerInstance := event.getConnectionContainer()
 	if errorEvent, ok := event.(connectionErrorEvent); ok {
 		if t.tracer != nil {
 			t.tracer.AddTrace("destroy-connection", errorEvent.getError().Error())
 		}
-		cacheLog.Debug().Str("connectionString", connectionContainerInstance.connectionString)
+		t.cacheLog.Debug().Str("connectionString", connectionContainerInstance.connectionString)
 	}
 }
 
@@ -95,7 +131,6 @@ func (t *plcConnectionCache) GetTracer() *spi.Tracer {
 }
 
 func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4go.PlcConnectionConnectResult {
-	setCacheLog()
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 
 	go func() {
@@ -107,9 +142,9 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			if t.tracer != nil {
 				t.tracer.AddTrace("get-connection", "create new cached connection")
 			}
-			cacheLog.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
+			t.cacheLog.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
 			// Create a new connection container.
-			cc := newConnectionContainer(t.driverManager, connectionString)
+			cc := newConnectionContainer(&t.cacheLog, t.driverManager, connectionString)
 			// Register for connection events (Like connection closed or error).
 			cc.addListener(t)
 			// Store the new connection container in the cache of connections.
@@ -137,7 +172,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 		select {
 		// Wait till we get a lease.
 		case connectionResponse := <-leaseChan:
-			cacheLog.Debug().Str("connectionString", connectionString).Msg("Successfully got lease to connection")
+			t.cacheLog.Debug().Str("connectionString", connectionString).Msg("Successfully got lease to connection")
 			responseTimeout := time.NewTimer(10 * time.Millisecond)
 			defer utils.CleanupTimer(responseTimeout)
 			select {
@@ -151,7 +186,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 					t.tracer.AddTransactionalTrace(txId, "get-connection", "client given up")
 				}
 				close(ch)
-				cacheLog.Debug().Str("connectionString", connectionString).Msg("Client not available returning connection to cache.")
+				t.cacheLog.Debug().Str("connectionString", connectionString).Msg("Client not available returning connection to cache.")
 				// Return the connection to give another connection the chance to use it.
 				if connectionResponse.GetConnection() != nil {
 					connectionResponse.GetConnection().Close()
@@ -168,7 +203,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			if t.tracer != nil {
 				t.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 			}
-			cacheLog.Debug().Str("connectionString", connectionString).Msg("Timeout while waiting for connection.")
+			t.cacheLog.Debug().Str("connectionString", connectionString).Msg("Timeout while waiting for connection.")
 			ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.New("timeout while waiting for connection"))
 		}
 	}()
@@ -177,8 +212,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 }
 
 func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
-	setCacheLog()
-	cacheLog.Debug().Msg("Closing connection cache started.")
+	t.cacheLog.Debug().Msg("Closing connection cache started.")
 	ch := make(chan PlcConnectionCacheCloseResult)
 
 	go func() {
@@ -192,7 +226,7 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 			case ch <- newDefaultPlcConnectionCacheCloseResult(t, nil):
 			case <-responseDeliveryTimeout.C:
 			}
-			cacheLog.Debug().Msg("Closing connection cache finished.")
+			t.cacheLog.Debug().Msg("Closing connection cache finished.")
 			return
 		}
 
@@ -210,14 +244,14 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				// We also really don't care if it worked, or not ... it's just an attempt of being
 				// nice.
 				case _ = <-leaseResults:
-					cacheLog.Debug().Str("connectionString", container.connectionString).Msg("Gracefully closing connection ...")
+					t.cacheLog.Debug().Str("connectionString", container.connectionString).Msg("Gracefully closing connection ...")
 					// Give back the connection.
 					if container.connection != nil {
 						container.connection.Close()
 					}
 				// If we're timing out brutally kill the connection.
 				case <-closeTimeout.C:
-					cacheLog.Debug().Str("connectionString", container.connectionString).Msg("Forcefully closing connection ...")
+					t.cacheLog.Debug().Str("connectionString", container.connectionString).Msg("Forcefully closing connection ...")
 					// Forcefully close this connection.
 					if container.connection != nil {
 						container.connection.Close()
@@ -230,7 +264,7 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				case ch <- newDefaultPlcConnectionCacheCloseResult(t, nil):
 				case <-responseDeliveryTimeout.C:
 				}
-				cacheLog.Debug().Msg("Closing connection cache finished.")
+				t.cacheLog.Debug().Msg("Closing connection cache finished.")
 			}(cc)
 		}
 	}()
