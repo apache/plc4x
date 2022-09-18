@@ -206,10 +206,17 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
         openDiscoverHandles();
         startListener(handler);
-        startLldpPoll();
-        startPnDcpPoll();
+        startLldpPoll(5000L);
+        startPnDcpPoll(30000L);
         CompletableFuture<PlcDiscoveryResponse> future = setDiscoveryEndTimer(discoveryRequest, 10000L);
         return future;
+    }
+
+    public void ongoingDiscoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler, long lldpPeriod, long dcpPeriod) {
+        openDiscoverHandles();
+        startListener(handler);
+        startLldpPoll(lldpPeriod);
+        startPnDcpPoll(dcpPeriod);
     }
 
     private void processPnDcp(PnDcp_Pdu pdu, EthernetPacket ethernetPacket, PlcDiscoveryItemHandler handler) {
@@ -318,7 +325,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         logger.debug("Found new lldp device: '' with connection-url ''");
     }
 
-    public void startPnDcpPoll() {
+    public void startPnDcpPoll(long period) {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
             PcapHandle handle = entry.getValue();
             MacAddress macAddress = entry.getKey();
@@ -366,8 +373,8 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
             // Schedule to run after every 3 second(3000 millisecond)
             timer.scheduleAtFixedRate(
                 new PeriodicTask(handle, pnDcpTimer),
-                5000,
-                5000);
+                0,
+                period);
         }
     }
 
@@ -404,7 +411,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
 
 
-    public void startLldpPoll() {
+    public void startLldpPoll(long period) {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
             PcapHandle handle = entry.getValue();
             MacAddress macAddress = entry.getKey();
@@ -500,8 +507,8 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
             // Schedule to run after every 3 second(3000 millisecond)
             timer.scheduleAtFixedRate(
                 new PeriodicTask(handle, lldpTimer),
-                5000,
-                5000);
+                0,
+                period);
         }
     }
 
