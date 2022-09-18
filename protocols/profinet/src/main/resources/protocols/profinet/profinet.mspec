@@ -362,8 +362,8 @@
     [virtual       PnDcp_FrameId     frameId       'STATIC_CALL("getFrameId", frameIdValue)']
     [typeSwitch frameId
         ['RT_CLASS_1' PnDcp_Pdu_RealTimeCyclic
-            // TODO: This type needs to be implemented ...
-//            [simple   PnIo_CyclicServiceDataUnit dataUnit                 ]
+            // TODO: This type needs to be implemented based of the configuration and gsd file ...
+            [simple   PnIo_CyclicServiceDataUnit dataUnit                 ]
             [simple   uint 16                    cycleCounter             ]
             // Data Status Start (4.7.2.1.3)
             [simple   bit                        ignore                   ]
@@ -488,8 +488,12 @@
     ]
 ]
 
-//[discriminatedType PnIo_CyclicServiceDataUnit
-//]
+[type PnIo_CyclicServiceDataUnit
+    [simple uint 8      dummyIOData1]
+    [simple uint 8      dummyIOData2]
+    [simple uint 8      dummyIOData3]
+    [padding  uint 8      pad '0x00'          '37']
+]
 
 [discriminatedType PnDcp_Block
     [discriminator PnDcp_BlockOptions option                   ]

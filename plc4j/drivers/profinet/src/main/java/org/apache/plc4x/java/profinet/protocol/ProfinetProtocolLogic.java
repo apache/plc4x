@@ -25,10 +25,12 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
+import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.pcap4j.core.PcapAddress;
 import org.pcap4j.core.PcapNativeException;
@@ -53,6 +55,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
     private final Logger logger = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
 
     private ProfinetDriverContext profinetDriverContext;
+    private boolean connected = false;
+
+    private DatagramSocket udpSocket;
+    private RawSocketChannel rawSocketChannel;
+    private Channel channel;
 
     private static final Uuid ARUUID;
 
@@ -72,17 +79,17 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
 
     @Override
     public void onConnect(ConversationContext<Ethernet_Frame> context) {
-        final Channel channel = context.getChannel();
+        channel = context.getChannel();
+        connected = false;
         if (!(channel instanceof RawSocketChannel)) {
             logger.warn("Expected a 'raw' transport, closing channel...");
             context.getChannel().close();
             return;
         }
 
-        RawSocketChannel rawSocketChannel = (RawSocketChannel) channel;
+        rawSocketChannel = (RawSocketChannel) channel;
 
         // Create an udp socket
-        DatagramSocket udpSocket;
         try {
             udpSocket = new DatagramSocket();
         } catch (SocketException e) {
@@ -90,6 +97,19 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             context.getChannel().close();
             return;
         }
+
+        ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer();
+        DefaultPlcDiscoveryRequest request = new DefaultPlcDiscoveryRequest(
+            discoverer,
+            new LinkedHashMap<>()
+        );
+
+        discoverer.ongoingDiscoverWithHandler(
+            request,
+            null,
+            5000L,
+            30000L
+        );
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Initialize some important datastructures, that will be used a lot.
@@ -225,6 +245,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             resultBuffer = new byte[profinetAdvancedConnectionApplicationReady.getLengthInBytes()];
             connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
             udpSocket.receive(connectResponsePacket);
+            context.fireConnected();
+            connected = true;
 
         } catch (SerializationException | IOException | PlcException | ParseException e) {
             logger.error("Error", e);
@@ -250,14 +272,85 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         return future;
     }
 
+    private Ethernet_FramePayload_PnDcp createProfinetCyclicDataRequest() {
+        return new Ethernet_FramePayload_PnDcp(
+            new PnDcp_Pdu_RealTimeCyclic(
+                0x8000,
+                new PnIo_CyclicServiceDataUnit((short) 0,(short) 0, (short) 0),
+                16696,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false));
+    }
+
+
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
-        future.completeExceptionally(new NotImplementedException());
+        if (!connected) {
+            throw new RuntimeException("Not Connected");
+        }
+
+        final InetSocketAddress remoteAddress = (InetSocketAddress) rawSocketChannel.getRemoteAddress();
+
+        try {
+            // Create the packet
+            final Ethernet_FramePayload_PnDcp profinetConnectionRequest = createProfinetCyclicDataRequest();
+            // Serialize it to a byte-payload
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(profinetConnectionRequest.getLengthInBytes());
+            profinetConnectionRequest.serialize(writeBuffer);
+            // Create a udp packet.
+            DatagramPacket connectRequestPacket = new DatagramPacket(writeBuffer.getData(), writeBuffer.getData().length);
+            connectRequestPacket.setAddress(remoteAddress.getAddress());
+            connectRequestPacket.setPort(remoteAddress.getPort());
+            // Send it.
+
+            udpSocket.send(connectRequestPacket);
+
+            // Receive the response.
+            byte[] resultBuffer = new byte[profinetConnectionRequest.getLengthInBytes()];
+            DatagramPacket connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
+            udpSocket.receive(connectResponsePacket);
+            ReadBufferByteBased readBuffer = new ReadBufferByteBased(resultBuffer);
+            final DceRpc_Packet dceRpc_packet = DceRpc_Packet.staticParse(readBuffer);
+            if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+                if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
+                    // Get the remote MAC address and store it in the context.
+                    final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
+                    if ((connectResponse.getBlocks().size() > 0) && (connectResponse.getBlocks().get(0) instanceof PnIoCm_Block_ArRes)) {
+                        final PnIoCm_Block_ArRes pnIoCm_block_arRes = (PnIoCm_Block_ArRes) connectResponse.getBlocks().get(0);
+                        profinetDriverContext.setRemoteMacAddress(pnIoCm_block_arRes.getCmResponderMacAddr());
+
+                        // Update the raw-socket transports filter expression.
+                        ((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(profinetDriverContext.getRemoteMacAddress().getAddress()));
+                    } else {
+                        throw new PlcException("Unexpected type of first block.");
+                    }
+                } else {
+                    throw new PlcException("Unexpected response");
+                }
+            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
+                throw new PlcException("Device rejected connection request");
+            } else {
+                throw new PlcException("Unexpected response");
+            }
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (PlcException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return future;
     }
 
-    @Override
+        @Override
     protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
         super.decode(context, msg);
     }
@@ -342,7 +435,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                         new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
                             Collections.singletonList(
                                 new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
-                                    0x00000010, 0x00000000,
+                                    0x00000001, 0x00000000,
                                     Arrays.asList(
                                         new PnIoCm_Submodule_NoInputNoOutputData(0x0001,
                                             0x00000001, false, false,
@@ -411,29 +504,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                         (short) 1,
                         (short) 0,
                         MultipleInterfaceModeNameOfDevice.NAME_PROVIDED_BY_LLDP
-                    ),
-                    new IODWriteRequestHeader(
-                        (short) 1,
-                        (short) 0,
-                        2,
-                        ARUUID,
-                        0x00000000,
-                        0x0000,
-                        0x8001,
-                        0x802b,
-                        40
-                    ),
-                    new PDPortDataCheck(
-                        (short) 1,
-                        (short) 0,
-                        0x0000,
-                        0x8001,
-                        new CheckPeers(
-                            (short) 1,
-                            (short) 0,
-                            new PascalString("port-001"),
-                            new PascalString("plc4x")
-                        )
                     )
                 ))
         );

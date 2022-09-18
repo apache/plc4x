@@ -85,7 +85,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
      */
     @Override
     protected boolean awaitSetupComplete() {
-        return false;
+        return true;
     }
 
     /**
