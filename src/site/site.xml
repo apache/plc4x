@@ -124,6 +124,9 @@
         <item name="Language: Apache Freemarker" href="developers/code-gen/language/freemarker.html"/>
         <item name="Example: DF1 MSpec" href="developers/code-gen/protocol/df1.html"/>
       </item>
+      <item name="Protocols" href="developers/protocols/index.html">
+        <item name="ADS/AMS" href="developers/protocols/ads/protocol.html"/>
+      </item>
       <item name="Infrastructure" href="developers/infrastructure/index.html">
         <item name="Continuous Integration" href="developers/infrastructure/ci.html"/>
         <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
