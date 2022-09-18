@@ -18,9 +18,20 @@
  */
 package org.apache.plc4x.java.profinet.config;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.profinet.device.ProfinetDevice;
+import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
 
@@ -42,6 +53,18 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     @Override
     public PacketHandler getPcapPacketHandler() {
         return null;
+    }
+
+    @ConfigurationParameter("devices")
+    @StringDefaultValue("")
+    private String devices;
+
+    public HashMap<MacAddress, ProfinetDevice> configuredDevices = new HashMap<>();
+
+    public void setDevices(String sDevices) throws DecoderException {
+        // TODO:- Add support for passing in configured devices.
+        MacAddress macAddress = new MacAddress(Hex.decodeHex("005056c00001"));
+        configuredDevices.put(macAddress, new ProfinetDevice(macAddress));
     }
 
     @Override
