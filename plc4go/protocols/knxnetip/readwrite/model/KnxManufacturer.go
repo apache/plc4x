@@ -634,8 +634,9 @@ const (
 	KnxManufacturer_M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD   KnxManufacturer = 595
 	KnxManufacturer_M_GUANGDONG_KANWAY                                   KnxManufacturer = 596
 	KnxManufacturer_M_PHOENIX_CONTACT_2                                  KnxManufacturer = 597
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 598
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 599
+	KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH                           KnxManufacturer = 598
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 599
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 600
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1241,6 +1242,7 @@ func init() {
 		KnxManufacturer_M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_GUANGDONG_KANWAY,
 		KnxManufacturer_M_PHOENIX_CONTACT_2,
+		KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3466,11 +3468,11 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 598:
 		{ /* '598' */
-			return 43954
+			return 656
 		}
 	case 599:
 		{ /* '599' */
-			return 43959
+			return 43954
 		}
 	case 6:
 		{ /* '6' */
@@ -3479,6 +3481,10 @@ func (e KnxManufacturer) Number() uint16 {
 	case 60:
 		{ /* '60' */
 			return 99
+		}
+	case 600:
+		{ /* '600' */
+			return 43959
 		}
 	case 61:
 		{ /* '61' */
@@ -5884,11 +5890,11 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 598:
 		{ /* '598' */
-			return "ABB - reserved"
+			return "RAMIREZ Engineering GmbH"
 		}
 	case 599:
 		{ /* '599' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "ABB - reserved"
 		}
 	case 6:
 		{ /* '6' */
@@ -5897,6 +5903,10 @@ func (e KnxManufacturer) Name() string {
 	case 60:
 		{ /* '60' */
 			return "Techem"
+		}
+	case 600:
+		{ /* '600' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 61:
 		{ /* '61' */
@@ -7192,13 +7202,15 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 597:
 		return KnxManufacturer_M_PHOENIX_CONTACT_2, true
 	case 598:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH, true
 	case 599:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 6:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO, true
 	case 60:
 		return KnxManufacturer_M_TECHEM, true
+	case 600:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 61:
 		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
 	case 62:
@@ -8397,14 +8409,16 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_GUANGDONG_KANWAY, true
 	case "M_PHOENIX_CONTACT_2":
 		return KnxManufacturer_M_PHOENIX_CONTACT_2, true
+	case "M_RAMIREZ_ENGINEERING_GMBH":
+		return KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO, true
 	case "M_TECHEM":
 		return KnxManufacturer_M_TECHEM, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS":
 		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
 	case "M_WHD_WILHELM_HUBER_Plus_SOEHNE":
@@ -9648,14 +9662,16 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_GUANGDONG_KANWAY"
 	case KnxManufacturer_M_PHOENIX_CONTACT_2:
 		return "M_PHOENIX_CONTACT_2"
+	case KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH:
+		return "M_RAMIREZ_ENGINEERING_GMBH"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO:
 		return "M_BUSCH_JAEGER_ELEKTRO"
 	case KnxManufacturer_M_TECHEM:
 		return "M_TECHEM"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS:
 		return "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS"
 	case KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE:
