@@ -108,7 +108,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <byte-buddy.version>1.12.16</byte-buddy.version>
+    <byte-buddy.version>1.12.17</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -137,12 +137,12 @@
     <jackson.version>2.13.4</jackson.version>
     <woodstox-core.version>6.3.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
-    <jaxb.version>4.0.0</jaxb.version>
+    <jaxb.version>4.0.1</jaxb.version>
     <jetty-util.version>11.0.12</jetty-util.version>
     <jna.version>5.12.1</jna.version>
     <joda-time.version>2.11.1</joda-time.version>
     <jserialcom.version>2.9.2</jserialcom.version>
-    <junit.jupiter.version>5.9.0</junit.jupiter.version>
+    <junit.jupiter.version>5.9.1</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.4.1</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
@@ -151,9 +151,9 @@
     <milo.version>0.6.8</milo.version>
     <mockito.version>4.8.0</mockito.version>
     <netty.version>4.1.82.Final</netty.version>
-    <owasp-dependency-check.version>7.2.0</owasp-dependency-check.version>
+    <owasp-dependency-check.version>7.2.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
-    <slf4j.version>2.0.1</slf4j.version>
+    <slf4j.version>2.0.2</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
     <xmlunit.version>2.9.0</xmlunit.version>
 
