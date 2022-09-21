@@ -142,7 +142,7 @@
     <jna.version>5.12.1</jna.version>
     <joda-time.version>2.11.1</joda-time.version>
     <jserialcom.version>2.9.2</jserialcom.version>
-    <junit.jupiter.version>5.9.0</junit.jupiter.version>
+    <junit.jupiter.version>5.9.1</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.4.1</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
