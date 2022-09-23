@@ -127,7 +127,7 @@ The PLC4X project uses the following branching model.
 
 The same model is used for a wide variety of other projects, so it should be pretty straight forward.
 
-- `release` contains the latest released state.
+- `main` contains the latest released state.
 - Development is performed on the `develop` branch.
 - Features are developed in Feature-Branches with a prefix `feature/`
 - Each minor release has a corresponding release branch `rel/{major-version}.{minor-version}`
@@ -149,8 +149,8 @@ digraph g{
         fontcolor="deepskyblue", font="Arial bold", fontsize="14pt" ];
     edge [color="#909090", penwidth=3];
 
-    node  [group="release"];
-    m1    [label="release", width=0.9];
+    node  [group="main"];
+    m1    [label="main", width=0.9];
     m2   [label="0.2.0", width=0.9];
     m3   [label="0.2.1", width=0.9];
     m4   [label="", shape=circle, color="#b0b0b0"];
