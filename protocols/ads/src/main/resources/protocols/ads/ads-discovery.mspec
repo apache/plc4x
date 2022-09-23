@@ -149,7 +149,7 @@
     [simple uint 8 octet6]
 ]
 
-// From: https://infosys.beckhoff.com/index.php?content=../content/1031/tcadscommon/html/tcadscommon_identadsdevice.htm&id=
+// From: https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/31064331.html&id=
 [enum uint 16 AdsPortNumbers
     ['100'   LOGGER              ]
     ['110'   EVENT_LOGGER        ]
