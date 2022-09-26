@@ -166,18 +166,28 @@ func DataItemParse(readBuffer utils.ReadBuffer, plcValueType PlcValueType, strin
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case plcValueType == PlcValueType_STRING: // STRING
-		// Manual Field (value)
-		value, _valueErr := ParseAmsString(readBuffer, stringLength, "UTF-8")
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32((stringLength)*(8)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case plcValueType == PlcValueType_WSTRING: // STRING
-		// Manual Field (value)
-		value, _valueErr := ParseAmsString(readBuffer, stringLength, "UTF-16")
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32(((stringLength)*(8))*(2)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint16("reserved", 16); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
@@ -320,20 +330,28 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, plcVal
 		}
 	case plcValueType == PlcValueType_WCHAR: // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16LE", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_STRING: // STRING
-		// Manual Field (value)
-		_valueErr := SerializeAmsString(writeBuffer, value, m.StringLength, "UTF-8")
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint32((stringLength)*(8)), "UTF-8", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
+
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case plcValueType == PlcValueType_WSTRING: // STRING
-		// Manual Field (value)
-		_valueErr := SerializeAmsString(writeBuffer, value, m.StringLength, "UTF-16")
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint32(((stringLength)*(8))*(2)), "UTF-16LE", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
+
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0000)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case plcValueType == PlcValueType_TIME: // TIME
 		// Simple Field (value)

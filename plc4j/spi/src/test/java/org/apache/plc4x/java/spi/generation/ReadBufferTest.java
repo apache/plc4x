@@ -30,7 +30,7 @@ class ReadBufferTest {
      * Test which makes sure that PLC4X-256 is not happening.
      */
     @Test
-    void readString() {
+    void readString() throws ParseException {
         String value = new String("abcdef");
         final ReadBuffer buffer = new ReadBufferByteBased(value.getBytes(StandardCharsets.UTF_8));
         String answer = buffer.readString("", value.length() * 8, "UTF-8");

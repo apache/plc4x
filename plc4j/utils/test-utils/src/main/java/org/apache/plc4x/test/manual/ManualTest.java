@@ -91,7 +91,7 @@ public abstract class ManualTest {
                 for (TestCase testCase : shuffledTestcases) {
                     sb.append(testCase.address).append(", ");
                 }
-                System.out.println("       using order: " + sb.toString());
+                System.out.println("       using order: " + sb);
 
                 final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                 for (TestCase testCase : shuffledTestcases) {
@@ -107,17 +107,20 @@ public abstract class ManualTest {
                 Assertions.assertEquals(shuffledTestcases.size(), readResponse.getFieldNames().size());
                 for (TestCase testCase : shuffledTestcases) {
                     String fieldName = testCase.address;
-                    Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName));
-                    Assertions.assertNotNull(readResponse.getPlcValue(fieldName));
+                    Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName),
+                        "Field: " + fieldName);
+                    Assertions.assertNotNull(readResponse.getPlcValue(fieldName), "Field: " + fieldName);
                     if (readResponse.getPlcValue(fieldName) instanceof PlcList) {
                         PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
                         List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
                         for (int j = 0; j < expectedValues.size(); j++) {
-                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject());
+                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(),
+                                "Field: " + fieldName);
                         }
                     } else {
                         Assertions.assertEquals(
-                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString());
+                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString(),
+                            "Field: " + fieldName);
                     }
                 }
             }

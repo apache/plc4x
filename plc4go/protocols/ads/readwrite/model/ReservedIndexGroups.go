@@ -50,6 +50,7 @@ const (
 	ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD               ReservedIndexGroups = 0x0000F00E
 	ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES           ReservedIndexGroups = 0x0000F00F
 	ReservedIndexGroups_ADSIGRP_SYMNOTE                              ReservedIndexGroups = 0x0000F010
+	ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX                      ReservedIndexGroups = 0x0000F011
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB                         ReservedIndexGroups = 0x0000F020
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX                         ReservedIndexGroups = 0x0000F021
 	ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE                       ReservedIndexGroups = 0x0000F025
@@ -92,6 +93,7 @@ func init() {
 		ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD,
 		ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES,
 		ReservedIndexGroups_ADSIGRP_SYMNOTE,
+		ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX,
 		ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE,
@@ -152,6 +154,8 @@ func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool
 		return ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES, true
 	case 0x0000F010:
 		return ReservedIndexGroups_ADSIGRP_SYMNOTE, true
+	case 0x0000F011:
+		return ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX, true
 	case 0x0000F020:
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB, true
 	case 0x0000F021:
@@ -228,6 +232,8 @@ func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool)
 		return ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES, true
 	case "ADSIGRP_SYMNOTE":
 		return ReservedIndexGroups_ADSIGRP_SYMNOTE, true
+	case "ADSIGRP_DT_INFOBYNAMEEX":
+		return ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX, true
 	case "ADSIGRP_IOIMAGE_RWIB":
 		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB, true
 	case "ADSIGRP_IOIMAGE_RWIX":
@@ -349,6 +355,8 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 		return "ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES"
 	case ReservedIndexGroups_ADSIGRP_SYMNOTE:
 		return "ADSIGRP_SYMNOTE"
+	case ReservedIndexGroups_ADSIGRP_DT_INFOBYNAMEEX:
+		return "ADSIGRP_DT_INFOBYNAMEEX"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB:
 		return "ADSIGRP_IOIMAGE_RWIB"
 	case ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX:

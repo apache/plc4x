@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class ReadBufferByteBased implements ReadBuffer {
@@ -321,7 +322,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         if(sign) {
             fraction = (short) (fraction | 0xF800);
         }
-        if ((exponent >= 1) && (exponent <= 15)) {
+        if ((exponent >= 1) && (exponent < 15)) {
             return (float) (0.01 * fraction * Math.pow(2, exponent));
         }
         if (exponent == 0) {
@@ -388,17 +389,65 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) {
-        byte[] strBytes = new byte[bitLength / 8];
-        for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
-            try {
-                strBytes[i] = readByte(logicalName);
-            } catch (Exception e) {
-                throw new PlcRuntimeException(e);
+    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) throws ParseException {
+        encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
+        switch (encoding.toUpperCase()) {
+            case "UTF8": {
+                byte[] strBytes = new byte[bitLength / 8];
+                int realLength = 0;
+                boolean finishedReading = false;
+                for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
+                    try {
+                        byte b = readByte(logicalName);
+                        if (b == 0x00) {
+                            finishedReading = true;
+                        } else if (!finishedReading) {
+                            strBytes[i] = b;
+                            realLength++;
+                        }
+                    } catch (Exception e) {
+                        throw new PlcRuntimeException(e);
+                    }
+                }
+                return new String(strBytes, StandardCharsets.UTF_8).substring(0, realLength);
             }
+            case "UTF16":
+            case "UTF16LE":
+            case "UTF16BE": {
+                byte[] strBytes = new byte[bitLength / 8];
+                int realLength = 0;
+                boolean finishedReading = false;
+                for (int i = 0; (i < (bitLength / 16)) && hasMore(16); i++) {
+                    try {
+                        byte b1 = readByte(logicalName);
+                        byte b2 = readByte(logicalName);
+                        if ((b1 == 0x00) && (b2 == 0x00)) {
+                            finishedReading = true;
+                        } else if (!finishedReading){
+                            strBytes[(i * 2)] = b1;
+                            strBytes[(i * 2) + 1] = b2;
+                            realLength++;
+                        }
+                    } catch (Exception e) {
+                        throw new PlcRuntimeException(e);
+                    }
+                }
+                Charset charset;
+                switch (encoding) {
+                    case "UTF16LE":
+                        charset = StandardCharsets.UTF_16LE;
+                        break;
+                    case "UTF16BE":
+                        charset = StandardCharsets.UTF_16BE;
+                        break;
+                    default:
+                        charset = StandardCharsets.UTF_16;
+                }
+                return new String(strBytes, charset).substring(0, realLength);
+            }
+            default:
+                throw new ParseException("Unsupported encoding: " + encoding);
         }
-        //replaceAll function removes and leading ' char or hypens.
-        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]", "")));
     }
 
 

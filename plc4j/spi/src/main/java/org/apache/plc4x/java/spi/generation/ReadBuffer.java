@@ -128,9 +128,9 @@ public interface ReadBuffer extends ByteOrderAware, PositionAware {
         return readBigDecimal("", bitLength);
     }
 
-    String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs);
+    String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) throws ParseException;
 
-    default String readString(int bitLength, String encoding) {
+    default String readString(int bitLength, String encoding) throws ParseException {
         return readString("", bitLength, encoding);
     }
 

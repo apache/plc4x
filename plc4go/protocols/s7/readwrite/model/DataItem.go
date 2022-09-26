@@ -410,13 +410,13 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, m.StringLength, "UTF-8")
+		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, m.StringLength, "UTF-16")
+		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

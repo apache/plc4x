@@ -623,8 +623,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_GUANGDONG_KANWAY = 596,
         M_PHOENIX_CONTACT_2 = 597,
         M_RAMIREZ_ENGINEERING_GMBH = 598,
-        M_ABB___RESERVED = 599,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 600,
+        M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD = 599,
+        M_ABB___RESERVED = 600,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 601,
     }
 
     public static class KnxManufacturerInfo
@@ -2299,8 +2300,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_RAMIREZ_ENGINEERING_GMBH: { /* '598' */
                     return 656;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '599' */
-                    return 43954;
+                case KnxManufacturer.M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD: { /* '599' */
+                    return 657;
                 }
                 case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO: { /* '6' */
                     return 7;
@@ -2308,7 +2309,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECHEM: { /* '60' */
                     return 99;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '600' */
+                case KnxManufacturer.M_ABB___RESERVED: { /* '600' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '601' */
                     return 43959;
                 }
                 case KnxManufacturer.M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS: { /* '61' */
@@ -4112,8 +4116,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_RAMIREZ_ENGINEERING_GMBH: { /* '598' */
                     return "RAMIREZ Engineering GmbH";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '599' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD: { /* '599' */
+                    return "Zhongshan Taiyang IMP&EXP. CO LTD";
                 }
                 case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO: { /* '6' */
                     return "Busch-Jaeger Elektro";
@@ -4121,7 +4125,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECHEM: { /* '60' */
                     return "Techem";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '600' */
+                case KnxManufacturer.M_ABB___RESERVED: { /* '600' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '601' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS: { /* '61' */
