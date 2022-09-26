@@ -37,6 +37,11 @@ public class DefaultArgument implements Argument {
         this.name = Objects.requireNonNull(name);
     }
 
+    public DefaultArgument(String name, TypeReference type) {
+        this.name = Objects.requireNonNull(name);
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }

@@ -69,40 +69,36 @@ public class ManualAdsDriverTest extends ManualTest {
 
     public static void main(String[] args) throws Exception {
         String spsIp = "192.168.23.20";
-        /////
-        // TODO: adjust this to your ip address
         String clientIp = "192.168.23.200";
-        //
-        ////
         String sourceAmsNetId = clientIp + ".1.1";
         int sourceAmsPort = 65534;
         String targetAmsNetId = spsIp + ".1.1";
         int targetAmsPort = 851;
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
-        test.addTestCase("main.hurz_BOOL:BOOL", true);
-        test.addTestCase("main.hurz_BYTE:BYTE", Arrays.asList(false, false, true, false, true, false, true, false));
-        test.addTestCase("main.hurz_WORD:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false));
-        test.addTestCase("main.hurz_DWORD:DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false));
-        test.addTestCase("main.hurz_SINT:SINT", -42);
-        test.addTestCase("main.hurz_USINT:USINT", 42);
-        test.addTestCase("main.hurz_INT:INT", -2424);
-        test.addTestCase("main.hurz_UINT:UINT", 42424);
-        test.addTestCase("main.hurz_DINT:DINT", -242442424);
-        test.addTestCase("main.hurz_UDINT:UDINT", 4242442424L);
-        test.addTestCase("main.hurz_LINT:LINT", -4242442424242424242L);
-        test.addTestCase("main.hurz_ULINT:ULINT", 4242442424242424242L);
-        test.addTestCase("main.hurz_REAL:REAL", 3.14159265359F);
-        test.addTestCase("main.hurz_LREAL:LREAL", 2.71828182846D);
-        test.addTestCase("main.hurz_STRING:STRING", "hurz");
-        test.addTestCase("main.hurz_WSTRING:WSTRING", "wolf");
-        test.addTestCase("main.hurz_TIME:TIME", "PT1.234S");
-        test.addTestCase("main.hurz_LTIME:LTIME", "PT24015H23M12.034002044S");
-        test.addTestCase("main.hurz_DATE:DATE", "1978-03-28");
-        test.addTestCase("main.hurz_TIME_OF_DAY:TIME_OF_DAY", "15:36:30.123");
-        test.addTestCase("main.hurz_TOD:TOD", "16:17:18.123");
-        test.addTestCase("main.hurz_DATE_AND_TIME:DATE_AND_TIME", "1996-05-06T15:36:30");
-        test.addTestCase("main.hurz_DT:DT", "1972-03-29T00:00");
+        test.addTestCase("MAIN.hurz_BOOL", true);
+        test.addTestCase("MAIN.hurz_BYTE", Arrays.asList(false, false, true, false, true, false, true, false));
+        test.addTestCase("MAIN.hurz_WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false));
+        test.addTestCase("MAIN.hurz_DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false));
+        test.addTestCase("MAIN.hurz_SINT", -42);
+        test.addTestCase("MAIN.hurz_USINT", 42);
+        test.addTestCase("MAIN.hurz_INT", -2424);
+        test.addTestCase("MAIN.hurz_UINT", 42424);
+        test.addTestCase("MAIN.hurz_DINT", -242442424);
+        test.addTestCase("MAIN.hurz_UDINT", 4242442424L);
+        test.addTestCase("MAIN.hurz_LINT", -4242442424242424242L);
+        test.addTestCase("MAIN.hurz_ULINT", 4242442424242424242L);
+        test.addTestCase("MAIN.hurz_REAL", 3.14159265359F);
+        test.addTestCase("MAIN.hurz_LREAL", 2.71828182846D);
+        test.addTestCase("MAIN.hurz_STRING", "hurz");
+        test.addTestCase("MAIN.hurz_WSTRING", "wolf");
+        test.addTestCase("MAIN.hurz_TIME", "PT1.234S");
+        test.addTestCase("MAIN.hurz_LTIME", "PT24015H23M12.034002044S");
+        test.addTestCase("MAIN.hurz_DATE", "1978-03-28");
+        test.addTestCase("MAIN.hurz_TIME_OF_DAY", "15:36:30.123");
+        test.addTestCase("MAIN.hurz_TOD", "16:17:18.123");
+        test.addTestCase("MAIN.hurz_DATE_AND_TIME", "1996-05-06T15:36:30");
+        test.addTestCase("MAIN.hurz_DT", "1972-03-29T00:00");
         test.run();
     }
 

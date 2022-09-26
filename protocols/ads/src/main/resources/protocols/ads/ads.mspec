@@ -458,15 +458,15 @@
             [simple string 8 value]
         ]
         ['WCHAR' STRING
-            [simple string 16 value encoding='"UTF-16"']
+            [simple string 16 value encoding='"UTF-16LE"']
         ]
         ['STRING' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
+            [simple   vstring 'stringLength * 8' value ]
+            [reserved uint 8                    '0x00']
         ]
         ['WSTRING' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2' encoding='"UTF-16"']
+            [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"']
+            [reserved uint 16                        '0x0000'                      ]
         ]
 
         // -----------------------------------------
