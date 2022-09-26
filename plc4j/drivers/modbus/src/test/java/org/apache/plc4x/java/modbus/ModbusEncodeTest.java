@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldHoldingRegister;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldCoil;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -137,7 +138,13 @@ public class ModbusEncodeTest {
         Float[] object = {1.1f,1000.1f,100000.1f,3.4028232E38f,-3.4028232E38f,-1f,10384759934840.0f};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:REAL");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[1.1,1000.1,100000.1,3.4028233E38,-3.4028233E38,-1.0,1.03847601E13]", list.toString());
+        //! When using Java 19 it seems the toString method uses a different precision than the previous versions,
+        //! so we need to check differently in this case.
+        for (int i = 0; i < list.getLength(); i++) {
+            PlcValue plcValue = list.getIndex(i);
+            Float referenceValue = object[i];
+            Assertions.assertEquals(referenceValue, plcValue.getFloat());
+        }
     }
 
     @Test

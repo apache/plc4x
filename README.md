@@ -85,7 +85,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 11
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 11 (Currently with Java 19 the Apache Kafka integration module is excluded from the build as the plugins it requires are incompatible with this version)
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -139,7 +139,9 @@ If you don't want to bother setting up the environment on your normal system and
 ### Getting Started
 
 You must have at least Java 11 installed on your system and connectivity to Maven Central
-(for downloading external third party dependencies). Maven 3.6 is required to build, so be sure it's installed and available on your system. 
+(for downloading external third party dependencies). Maven 3.6 is required to build, so be sure it's installed and available on your system.
+
+NOTE: When using Java 19 currently the Apache Kafka integration module is excluded from the build as one of the plugins it requires has proven to be incompatible with this version. 
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
 
