@@ -99,7 +99,7 @@
     <sonar.cfamily.threads>1</sonar.cfamily.threads>
     <sonar.cfamily.cache.enabled>false</sonar.cfamily.cache.enabled>
 
-    <plc4x-code-generation.version>1.6.0-SNAPSHOT</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.6.0</plc4x-code-generation.version>
 
     <antlr.version>4.11.1</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
@@ -1486,6 +1486,17 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <!-- When we release stuff like the site skin or the build tools, syncing to Maven Central usually takes some time -->
+    <repository>
+      <id>apache-releases</id>
+      <url>https://repository.apache.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <!-- Make Snapshots of Apache plugins available -->
@@ -1498,6 +1509,17 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <!-- When we release stuff like the site skin or the build tools, syncing to Maven Central usually takes some time -->
+    <pluginRepository>
+      <id>apache-releases</id>
+      <url>https://repository.apache.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
