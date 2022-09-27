@@ -31,23 +31,23 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcSTRING extends PlcSimpleValue<String> {
+public class PlcWSTRING extends PlcSimpleValue<String> {
 
-    public static PlcSTRING of(Object value) {
+    public static PlcWSTRING of(Object value) {
         if (value instanceof String) {
-            return new PlcSTRING((String) value);
+            return new PlcWSTRING((String) value);
         }
-        return new PlcSTRING(String.valueOf(value));
+        return new PlcWSTRING(String.valueOf(value));
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcSTRING(@JsonProperty("value") String value) {
+    public PlcWSTRING(@JsonProperty("value") String value) {
         super(value, true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
-        return PlcValueType.STRING;
+        return PlcValueType.WSTRING;
     }
 
     @Override
@@ -233,7 +233,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value;
-        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
+        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_16).length*8,StandardCharsets.UTF_16.name(),valueString);
     }
 
 }

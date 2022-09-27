@@ -616,7 +616,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected CompletableFuture<PlcReadResponse> singleRead(PlcReadRequest readRequest, DirectAdsField directAdsField) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
-        String dataTypeName = directAdsField.getAdsDataTypeName();
+        String dataTypeName = directAdsField.getPlcDataType();
         AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
         long size = adsDataTypeTableEntry.getSize();
 
@@ -655,7 +655,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         // Calculate the expected size of the response data.
         long expectedResponseDataSize = resolvedFields.values().stream().mapToLong(
             field -> {
-                String dataTypeName = field.getAdsDataTypeName();
+                String dataTypeName = field.getPlcDataType();
                 AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
                 long size = adsDataTypeTableEntry.getSize();
                 // Status code + payload size
@@ -669,7 +669,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             expectedResponseDataSize, readRequest.getFieldNames().stream().map(fieldName -> {
                 AdsField field = (AdsField) readRequest.getField(fieldName);
                 DirectAdsField directAdsField = resolvedFields.get(field);
-                String dataTypeName = directAdsField.getAdsDataTypeName();
+                String dataTypeName = directAdsField.getPlcDataType();
                 AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
                 long size = adsDataTypeTableEntry.getSize();
                 return new AdsMultiRequestItemRead(
@@ -762,7 +762,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     private ResponseItem<PlcValue> parseResponseItem(DirectAdsField field, ReadBuffer readBuffer) {
         try {
-            String dataTypeName = field.getAdsDataTypeName();
+            String dataTypeName = field.getPlcDataType();
             AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
             PlcValueType plcValueType = getPlcValueTypeForAdsDataType(adsDataTypeTableEntry);
 
@@ -780,14 +780,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     try {
                         return parsePlcValue(plcValueType, adsDataTypeTableEntry, stringLength, readBuffer);
                     } catch (ParseException e) {
-                        LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getAdsDataTypeName(), i, e);
+                        LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getPlcDataType(), i, e);
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
                 return new ResponseItem<>(PlcResponseCode.OK, IEC61131ValueHandler.of(resultItems));
             }
         } catch (Exception e) {
-            LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getAdsDataTypeName()), e);
+            LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getPlcDataType()), e);
             return new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null);
         }
     }
@@ -909,26 +909,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected CompletableFuture<PlcWriteResponse> singleWrite(PlcWriteRequest writeRequest, DirectAdsField directAdsField) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
 
-/*        final String fieldName = writeRequest.getFieldNames().iterator().next();
-        final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
+        final String fieldName = writeRequest.getFieldNames().iterator().next();
         final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-        final int stringLength;
-        if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
-            stringLength = plcValue.getString().length() + 1;
-        } else {
-            if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
-                stringLength = (plcValue.getString().length() + 1) * 2;
-            } else {
-                stringLength = 0;
-            }
-        }
+
         try {
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                plcField.getAdsDataType().getPlcValueType(), stringLength));
-            DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getPlcValueType(), stringLength, ByteOrder.LITTLE_ENDIAN);
+            byte[] serializedValue = serializePlcValue(plcValue, directAdsField.getPlcDataType());
             AmsPacket amsPacket = new AdsWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                 configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-                0, getInvokeId(), directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getData());
+                0, getInvokeId(), directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), serializedValue);
             AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
             // Start a new request-transaction (Is ended in the response-handler)
@@ -953,53 +941,56 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }));
         } catch (Exception e) {
             future.completeExceptionally(new PlcException("Error"));
-        }*/
+        }
         return future;
     }
 
     protected CompletableFuture<PlcWriteResponse> multiWrite(PlcWriteRequest writeRequest, Map<AdsField, DirectAdsField> resolvedFields) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
 
-        // Calculate the size of all fields together.
-        // Calculate the expected size of the response data.
-/*        int expectedRequestDataSize = directAdsFields.stream().mapToInt(
-            field -> field.getAdsDataType().getNumBytes() * field.getNumberOfElements()).sum();
-        byte[] writeBuffer = new byte[expectedRequestDataSize];
-        int pos = 0;
+        int numFields = writeRequest.getFields().size();
+        // Serialize all fields.
+        List<byte[]> serializedFields = new ArrayList<>(numFields);
+        Map<DirectAdsField, AdsDataTypeTableEntry> directAdsFields = new LinkedHashMap<>(numFields);
         for (String fieldName : writeRequest.getFieldNames()) {
             final AdsField field = (AdsField) writeRequest.getField(fieldName);
+            final DirectAdsField directAdsField = resolvedFields.get(field);
             final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-            final int stringLength;
-            if (field.getAdsDataType() == AdsDataType.STRING) {
-                stringLength = plcValue.getString().length() + 1;
-            } else {
-                if (field.getAdsDataType() == AdsDataType.WSTRING) {
-                    stringLength = (plcValue.getString().length() + 1) * 2;
-                } else {
-                    stringLength = 0;
-                }
-            }
+            final AdsDataTypeTableEntry dataType = dataTypeTable.get(directAdsField.getPlcDataType());
             try {
-                WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                    field.getAdsDataType().getPlcValueType(), stringLength));
-                DataItem.staticSerialize(itemWriteBuffer, plcValue,
-                    field.getAdsDataType().getPlcValueType(), stringLength, ByteOrder.LITTLE_ENDIAN);
-                int numBytes = itemWriteBuffer.getPos();
-                System.arraycopy(itemWriteBuffer.getData(), 0, writeBuffer, pos, numBytes);
-                pos += numBytes;
+                byte[] serializedValue = serializePlcValue(plcValue, directAdsField.getPlcDataType());
+                serializedFields.add(serializedValue);
+                directAdsFields.put(directAdsField, dataType);
             } catch (Exception e) {
-                throw new PlcRuntimeException("Error serializing data", e);
+                future.completeExceptionally(new PlcException("Error serializing data", e));
+                return future;
+            }
+        }
+
+        // Calculate the size of all serialized fields together.
+        int serializedSize = serializedFields.stream().mapToInt(
+            serializedField -> serializedField.length).sum();
+
+        // Copy all serialized fields into one buffer.
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(serializedSize);
+        for (byte[] serializedField : serializedFields) {
+            try {
+                writeBuffer.writeByteArray("", serializedField);
+            } catch (SerializationException e) {
+                future.completeExceptionally(new PlcException("Error serializing data", e));
+                return future;
             }
         }
 
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
         AmsPacket amsPacket = new AdsReadWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), directAdsFields.size(), (long) directAdsFields.size() * 4,
-            directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemWrite(
-                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                    ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
-                .collect(Collectors.toList()), writeBuffer);
+            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), serializedSize,
+            (long) numFields * 4,
+            directAdsFields.entrySet().stream().map(entry -> new AdsMultiRequestItemWrite(
+                    entry.getKey().getIndexGroup(), entry.getKey().getIndexOffset(),
+                    entry.getValue().getEntryLength()))
+                .collect(Collectors.toList()), writeBuffer.getBytes());
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -1021,8 +1012,76 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }
                 // Finish the request-transaction.
                 transaction.endRequest();
-            }));*/
+            }));
         return future;
+    }
+
+    protected byte[] serializePlcValue(PlcValue plcValue, String datatypeName) throws SerializationException {
+        // First check, if we have type information available.
+        if (!dataTypeTable.containsKey(datatypeName)) {
+            throw new SerializationException("Could not find data type: " + datatypeName);
+        }
+
+        // Get the data type, allocate enough memory and serialize the value based on the
+        // structure defined by the data type.
+        AdsDataTypeTableEntry dataType = dataTypeTable.get(datatypeName);
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) dataType.getSize());
+        List<AdsDataTypeArrayInfo> arrayInfo = dataType.getArrayInfo();
+        serializeInternal(plcValue, dataType, arrayInfo, writeBuffer);
+        return writeBuffer.getBytes();
+    }
+
+    protected void serializeInternal(PlcValue contextValue,
+                                     AdsDataTypeTableEntry dataType,
+                                     List<AdsDataTypeArrayInfo> arrayInfo,
+                                     WriteBufferByteBased writeBuffer) throws SerializationException {
+
+        // An array type: Recursively iterate over the elements
+        if (arrayInfo.size() > 0) {
+            if (!contextValue.isList()) {
+                throw new SerializationException("Expected a PlcList, but got a " + contextValue.getPlcValueType().name());
+            }
+            AdsDataTypeArrayInfo curArrayLevel = arrayInfo.get(0);
+            List<? extends PlcValue> list = contextValue.getList();
+            if(curArrayLevel.getNumElements() != list.size()) {
+                throw new SerializationException(String.format(
+                    "Expected a PlcList of size %d, but got one of size %d", curArrayLevel.getNumElements(), list.size()));
+            }
+            for (PlcValue plcValue : list) {
+                serializeInternal(plcValue, dataType, arrayInfo.subList(1, arrayInfo.size()), writeBuffer);
+            }
+        }
+
+        // A complex type
+        else if (dataType.getChildren().size() > 0) {
+            if (!contextValue.isStruct()) {
+                throw new SerializationException("Expected a PlcStruct, but got a " + contextValue.getPlcValueType().name());
+            }
+            PlcStruct plcStruct = (PlcStruct) contextValue;
+            for (AdsDataTypeTableChildEntry child : dataType.getChildren()) {
+                AdsDataTypeTableEntry childDataType = dataTypeTable.get(child.getDataTypeName());
+                if (!plcStruct.hasKey(child.getPropertyName())) {
+                    throw new SerializationException("PlcStruct is missing a child with the name " + child.getPropertyName());
+                }
+                PlcValue childValue = plcStruct.getValue(child.getPropertyName());
+                serializeInternal(childValue, childDataType, childDataType.getArrayInfo(), writeBuffer);
+            }
+        }
+
+        // A simple type
+        else {
+            PlcValueType plcValueType = getPlcValueTypeForAdsDataType(dataType);
+            if (plcValueType == null) {
+                throw new SerializationException("Unsupported simple type: " + dataType.getDataTypeName());
+            }
+            int stringLength = 0;
+            if ((plcValueType == PlcValueType.STRING) || (plcValueType == PlcValueType.WSTRING)) {
+                String stringTypeName = dataType.getDataTypeName();
+                stringLength = Integer.parseInt(
+                    stringTypeName.substring(stringTypeName.indexOf("(") + 1, stringTypeName.indexOf(")")));
+            }
+            DataItem.staticSerialize(writeBuffer, contextValue, plcValueType, stringLength);
+        }
     }
 
     protected PlcWriteResponse convertToPlc4xWriteResponse(PlcWriteRequest writeRequest, AmsPacket adsData) {
@@ -1105,7 +1164,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         List<AmsTCPPacket> amsTCPPackets = subscribeRequest.getFields().stream()
             .map(field -> (DefaultPlcSubscriptionField) field)
             .map(field -> {
-                AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(resolvedFields.get((AdsField) field.getPlcField()).getAdsDataTypeName());
+                AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(resolvedFields.get((AdsField) field.getPlcField()).getPlcDataType());
                 DirectAdsField directAdsField = getDirectAdsFieldForSymbolicName(field.getPlcField());
                 return new AmsTCPPacket(new AdsAddDeviceNotificationRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                     configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
@@ -1154,7 +1213,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 .handle(response -> {
                     if (response.getResult() == ReturnCode.OK) {
                         DefaultPlcSubscriptionField subscriptionField = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
-                        AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get((resolvedFields.get((AdsField) subscriptionField.getPlcField())).getAdsDataTypeName());
+                        AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get((resolvedFields.get((AdsField) subscriptionField.getPlcField())).getPlcDataType());
 
                         // Collect notification handle from individual response.
                         responses.put(fieldName, new ResponseItem<>(

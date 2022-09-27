@@ -69,6 +69,21 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
+    public boolean isInteger() {
+        return true;
+    }
+
+    @Override
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    public boolean isBigInteger() {
+        return true;
+    }
+
+    @Override
     @JsonIgnore
     public boolean isString() {
         return true;
@@ -77,6 +92,21 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     @Override
     public boolean isDuration() {
         return true;
+    }
+
+    @Override
+    public int getInteger() {
+        return (int) (value.get(ChronoUnit.NANOS) / 1000000);
+    }
+
+    @Override
+    public long getLong() {
+        return value.get(ChronoUnit.NANOS);
+    }
+
+    @Override
+    public BigInteger getBigInteger() {
+        return BigInteger.valueOf(value.get(ChronoUnit.NANOS));
     }
 
     @Override

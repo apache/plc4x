@@ -105,7 +105,7 @@ public class DirectAdsField implements AdsField {
         return indexOffset;
     }
 
-    public String getAdsDataTypeName() {
+    public String getPlcDataType() {
         return adsDataTypeName;
     }
 

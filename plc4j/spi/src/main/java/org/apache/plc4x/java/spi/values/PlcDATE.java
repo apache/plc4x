@@ -32,6 +32,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE extends PlcSimpleValue<LocalDate> {
@@ -68,6 +70,17 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.DATE;
+    }
+
+    @Override
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    public long getLong() {
+        Instant instant = value.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        return (instant.toEpochMilli() / 1000);
     }
 
     @Override

@@ -18,9 +18,13 @@
  */
 package org.apache.plc4x.protocol.ads;
 
+import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 
-import java.util.Arrays;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class ManualAdsDriverTest extends ManualTest {
 
@@ -64,7 +68,7 @@ public class ManualAdsDriverTest extends ManualTest {
      */
 
     public ManualAdsDriverTest(String connectionString) {
-        super(connectionString);
+        super(connectionString, true);
     }
 
     public static void main(String[] args) throws Exception {
@@ -76,29 +80,32 @@ public class ManualAdsDriverTest extends ManualTest {
         int targetAmsPort = 851;
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
-        test.addTestCase("MAIN.hurz_BOOL", true);
-        test.addTestCase("MAIN.hurz_BYTE", Arrays.asList(false, false, true, false, true, false, true, false));
-        test.addTestCase("MAIN.hurz_WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false));
-        test.addTestCase("MAIN.hurz_DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false));
-        test.addTestCase("MAIN.hurz_SINT", -42);
-        test.addTestCase("MAIN.hurz_USINT", 42);
-        test.addTestCase("MAIN.hurz_INT", -2424);
-        test.addTestCase("MAIN.hurz_UINT", 42424);
-        test.addTestCase("MAIN.hurz_DINT", -242442424);
-        test.addTestCase("MAIN.hurz_UDINT", 4242442424L);
-        test.addTestCase("MAIN.hurz_LINT", -4242442424242424242L);
-        test.addTestCase("MAIN.hurz_ULINT", 4242442424242424242L);
-        test.addTestCase("MAIN.hurz_REAL", 3.14159265359F);
-        test.addTestCase("MAIN.hurz_LREAL", 2.71828182846D);
-        test.addTestCase("MAIN.hurz_STRING", "hurz");
-        test.addTestCase("MAIN.hurz_WSTRING", "wolf");
-        test.addTestCase("MAIN.hurz_TIME", "PT1.234S");
-        test.addTestCase("MAIN.hurz_LTIME", "PT24015H23M12.034002044S");
-        test.addTestCase("MAIN.hurz_DATE", "1978-03-28");
-        test.addTestCase("MAIN.hurz_TIME_OF_DAY", "15:36:30.123");
-        test.addTestCase("MAIN.hurz_TOD", "16:17:18.123");
-        test.addTestCase("MAIN.hurz_DATE_AND_TIME", "1996-05-06T15:36:30");
-        test.addTestCase("MAIN.hurz_DT", "1972-03-29T00:00");
+        test.addTestCase("MAIN.hurz_BOOL", new PlcBOOL(true));
+        test.addTestCase("MAIN.hurz_BYTE", new PlcBitString(new boolean[]{false, false, true, false, true, false, true, false}));
+        test.addTestCase("MAIN.hurz_WORD", new PlcBitString(new boolean[]{true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false}));
+        test.addTestCase("MAIN.hurz_DWORD", new PlcBitString(new boolean[]{true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false}));
+        // These are the values, if we decide to go with numeric values instead of bit-strings.
+        //test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));
+        //test.addTestCase("MAIN.hurz_WORD", new PlcWORD(42424));
+        //test.addTestCase("MAIN.hurz_DWORD", new PlcDWORD(4242442424L));
+        test.addTestCase("MAIN.hurz_SINT", new PlcSINT(-42));
+        test.addTestCase("MAIN.hurz_USINT", new PlcUSINT(42));
+        test.addTestCase("MAIN.hurz_INT", new PlcINT(-2424));
+        test.addTestCase("MAIN.hurz_UINT", new PlcUINT(42424));
+        test.addTestCase("MAIN.hurz_DINT", new PlcDINT(-242442424));
+        test.addTestCase("MAIN.hurz_UDINT", new PlcUDINT(4242442424L));
+        test.addTestCase("MAIN.hurz_LINT", new PlcLINT(-4242442424242424242L));
+        test.addTestCase("MAIN.hurz_ULINT", new PlcULINT(4242442424242424242L));
+        test.addTestCase("MAIN.hurz_REAL", new PlcREAL(3.14159265359F));
+        test.addTestCase("MAIN.hurz_LREAL", new PlcLREAL(2.71828182846D));
+        test.addTestCase("MAIN.hurz_STRING", new PlcSTRING("hurz"));
+        test.addTestCase("MAIN.hurz_WSTRING", new PlcWSTRING("wolf"));
+        test.addTestCase("MAIN.hurz_TIME", new PlcTIME(Duration.parse("PT1.234S")));
+        test.addTestCase("MAIN.hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
+        test.addTestCase("MAIN.hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
+        test.addTestCase("MAIN.hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        test.addTestCase("MAIN.hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        //test.addTestCase("MAIN.hurz_DT", new PlcDT("1972-03-29T00:00"));
         test.run();
     }
 
