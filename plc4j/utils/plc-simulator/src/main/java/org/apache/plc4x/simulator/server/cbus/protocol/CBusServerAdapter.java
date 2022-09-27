@@ -133,7 +133,8 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 LOGGER.info("Sending echo");
                 ctx.write(msg);
             }
-            handleReset((RequestReset) request);
+            LOGGER.info("Handling RequestReset\n{}", request);
+            handleReset();
         } else if (request instanceof RequestSmartConnectShortcut) {
             handleSmartConnect((RequestSmartConnectShortcut) request);
         }
@@ -142,9 +143,145 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     private void handleDirectCommandAccess(ChannelHandlerContext ctx, RequestDirectCommandAccess requestDirectCommandAccess) {
         CALData calData = requestDirectCommandAccess.getCalData();
         LOGGER.info("Handling RequestDirectCommandAccess\n{}", requestDirectCommandAccess);
+        handleCalData(ctx, calData, requestDirectCommandAccess.getAlpha());
+    }
 
-        // TODO: handle other cal data type
-        if (calData instanceof CALDataWrite) {
+    private void handleRequestCommand(ChannelHandlerContext ctx, RequestCommand requestCommand) {
+        LOGGER.info("Handling RequestCommand\n{}", requestCommand);
+        CBusCommand cbusCommand = requestCommand.getCbusCommand();
+        LOGGER.info("Handling CBusCommand\n{}", cbusCommand);
+        if (cbusCommand instanceof CBusCommandPointToPoint) {
+            CBusCommandPointToPoint cBusCommandPointToPoint = (CBusCommandPointToPoint) cbusCommand;
+            CBusPointToPointCommand command = cBusCommandPointToPoint.getCommand();
+            UnitAddress unitAddress = null;
+            if (command instanceof CBusPointToPointCommandIndirect) {
+                CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect = (CBusPointToPointCommandIndirect) command;
+                // TODO: handle bridgeAddress
+                // TODO: handle networkRoute
+                unitAddress = cBusPointToPointCommandIndirect.getUnitAddress();
+            }
+            if (command instanceof CBusPointToPointCommandDirect) {
+                CBusPointToPointCommandDirect cBusPointToPointCommandDirect = (CBusPointToPointCommandDirect) command;
+                unitAddress = cBusPointToPointCommandDirect.getUnitAddress();
+            }
+            if (unitAddress == null) {
+                throw new IllegalStateException("Unit address should be set at this point");
+            }
+            boolean knownUnit = AVAILABLE_UNITS.contains(unitAddress.getAddress());
+            if (!knownUnit) {
+                LOGGER.warn("{} not a known unit", unitAddress);
+                ReplyOrConfirmation replyOrConfirmation = new ServerErrorReply((byte) 0x0, cBusOptions, requestContext);
+                CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+                ctx.writeAndFlush(cBusMessageToClient);
+                return;
+            }
+            CALData calData = command.getCalData();
+            handleCalData(ctx, calData, requestCommand.getAlpha());
+            return;
+        } else if (cbusCommand instanceof CBusCommandPointToMultiPoint) {
+            CBusCommandPointToMultiPoint cBusCommandPointToMultiPoint = (CBusCommandPointToMultiPoint) cbusCommand;
+            CBusPointToMultiPointCommand command = cBusCommandPointToMultiPoint.getCommand();
+            if (command instanceof CBusPointToMultiPointCommandStatus) {
+                CBusPointToMultiPointCommandStatus cBusPointToMultiPointCommandStatus = (CBusPointToMultiPointCommandStatus) command;
+                StatusRequest statusRequest = cBusPointToMultiPointCommandStatus.getStatusRequest();
+                if (statusRequest instanceof StatusRequestBinaryState) {
+                    StatusRequestBinaryState statusRequestBinaryState = (StatusRequestBinaryState) statusRequest;
+                    LOGGER.info("Handling StatusRequestBinaryState\n{}", statusRequestBinaryState);
+                    handleStatusRequestBinary(ctx, requestCommand, statusRequestBinaryState.getApplication());
+                }
+                if (statusRequest instanceof StatusRequestBinaryStateDeprecated) {
+                    StatusRequestBinaryStateDeprecated statusRequestBinaryStateDeprecated = (StatusRequestBinaryStateDeprecated) statusRequest;
+                    LOGGER.info("Handling StatusRequestBinaryStateDeprecated\n{}", statusRequestBinaryStateDeprecated);
+                    handleStatusRequestBinary(ctx, requestCommand, statusRequestBinaryStateDeprecated.getApplication());
+                    return;
+                }
+                if (statusRequest instanceof StatusRequestLevel) {
+                    StatusRequestLevel statusRequestLevel = (StatusRequestLevel) statusRequest;
+                    handleStatusRequestLevel(ctx, requestCommand, statusRequestLevel);
+                    return;
+                }
+                throw new IllegalStateException();
+            }
+            if (command instanceof CBusPointToMultiPointCommandNormal) {
+                CBusPointToMultiPointCommandNormal cBusPointToMultiPointCommandNormal = (CBusPointToMultiPointCommandNormal) command;
+                LOGGER.info("Handling CBusPointToMultiPointCommandNormal\n{}", cBusPointToMultiPointCommandNormal);
+                // TODO: handle this
+                return;
+            }
+            // TODO: handle this
+            return;
+        } else if (cbusCommand instanceof CBusCommandPointToPointToMultiPoint) {
+            CBusCommandPointToPointToMultiPoint cBusCommandPointToPointToMultiPoint = (CBusCommandPointToPointToMultiPoint) cbusCommand;
+            LOGGER.info("Handling CBusCommandPointToPointToMultiPoint\n{}", cBusCommandPointToPointToMultiPoint);
+            // TODO: handle this
+            return;
+        } else if (cbusCommand instanceof CBusCommandDeviceManagement) {
+            CBusCommandDeviceManagement cBusCommandDeviceManagement = (CBusCommandDeviceManagement) cbusCommand;
+            LOGGER.info("Handling CBusCommandDeviceManagement\n{}", cBusCommandDeviceManagement);
+            // TODO: handle this
+            return;
+        }
+
+        Alpha alpha = requestCommand.getAlpha();
+        if (alpha != null) {
+            Confirmation confirmation = new Confirmation(alpha, null, ConfirmationType.NOT_TRANSMITTED_CORRUPTION);
+            ReplyOrConfirmationConfirmation replyOrConfirmationConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, null, cBusOptions, requestContext);
+            CBusMessage response = new CBusMessageToClient(replyOrConfirmationConfirmation, requestContext, cBusOptions);
+            LOGGER.info("Send response\n{}", response);
+            ctx.writeAndFlush(response);
+        }
+    }
+
+    private static void handleStatusRequestLevel(ChannelHandlerContext ctx, RequestCommand requestCommand, StatusRequestLevel statusRequestLevel) {
+        StatusCoding coding = StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE;
+        // TODO: map actual values from simulator
+        byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
+        List<LevelInformation> levelInformations = Collections.singletonList(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
+        CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations, requestContext);
+        CALReply calReply;
+        if (exstat) {
+            calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
+        } else {
+            calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+        }
+        CBusMessage response = createCBusMessageForReply(requestCommand.getAlpha(), calReply, cBusOptions);
+        LOGGER.info("Send level status response\n{}", response);
+        ctx.writeAndFlush(response);
+    }
+
+    private void handleStatusRequestBinary(ChannelHandlerContext ctx, RequestCommand requestCommand, ApplicationIdContainer application) {
+        if (application == ApplicationIdContainer.NETWORK_CONTROL) {
+            LOGGER.info("Handling installation MMI Request");
+            sendInstallationMMIResponse(ctx, requestCommand.getAlpha());
+            return;
+        }
+        List<StatusByte> statusBytes = new LinkedList<>();
+        // TODO: map actual values from simulator
+        for (int i = 0; i < 22; i++) {
+            statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+        }
+
+        LOGGER.info("Send binary status response");
+        sendStatusBytes(ctx, "First parts {}", application, (byte) 0x0, statusBytes, requestCommand.getAlpha(), cBusOptions);
+    }
+
+    private void handleCalData(ChannelHandlerContext ctx, CALData calData, Alpha alpha) {
+        if (calData instanceof CALDataGetStatus) {
+            // TODO: implement me
+        } else if (calData instanceof CALDataIdentify) {
+            handleCalDataIdentify(ctx, (CALDataIdentify) calData, alpha);
+        } else if (calData instanceof CALDataRecall) {
+            // TODO: implement me
+        } else if (calData instanceof CALDataReset) {
+            CALDataReset calDataReset = (CALDataReset) calData;
+            if (smart || connect) {
+                // On reset, we need to send the echo if we had not sent it above
+                LOGGER.info("Sending echo");
+                ctx.write(calDataReset);
+            }
+            LOGGER.info("Handling CALDataReset\n{}", calDataReset);
+            handleReset();
+        } else if (calData instanceof CALDataWrite) {
             CALDataWrite calDataWrite = (CALDataWrite) calData;
             Runnable acknowledger = () -> {
                 CALDataAcknowledge calDataAcknowledge = new CALDataAcknowledge(CALCommandTypeContainer.CALCommandAcknowledge, null, calDataWrite.getParamNo(), (short) 0x0, requestContext);
@@ -152,8 +289,8 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 EncodedReplyCALReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
                 ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
                 ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x0, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
-                if (requestDirectCommandAccess.getAlpha() != null) {
-                    replyOrConfirmation = new ReplyOrConfirmationConfirmation((byte) 0x0, new Confirmation(requestDirectCommandAccess.getAlpha(), null, ConfirmationType.CONFIRMATION_SUCCESSFUL), replyOrConfirmation, cBusOptions, requestContext);
+                if (alpha != null) {
+                    replyOrConfirmation = new ReplyOrConfirmationConfirmation((byte) 0x0, new Confirmation(alpha, null, ConfirmationType.CONFIRMATION_SUCCESSFUL), replyOrConfirmation, cBusOptions, requestContext);
                 }
                 CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
                 LOGGER.info("Sending ack\n{}", cBusMessageToClient);
@@ -251,131 +388,9 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                 default:
                     throw new IllegalStateException("Unmapped type");
             }
-        } else if (calData instanceof CALDataIdentify) {
-            handleCalDataIdentify(ctx, (CALDataIdentify) calData, requestDirectCommandAccess.getAlpha());
-        }
-    }
-
-    private void handleRequestCommand(ChannelHandlerContext ctx, RequestCommand requestCommand) {
-        LOGGER.info("Handling RequestCommand\n{}", requestCommand);
-        CBusCommand cbusCommand = requestCommand.getCbusCommand();
-        LOGGER.info("Handling CBusCommand\n{}", cbusCommand);
-        if (cbusCommand instanceof CBusCommandPointToPoint) {
-            CBusCommandPointToPoint cBusCommandPointToPoint = (CBusCommandPointToPoint) cbusCommand;
-            CBusPointToPointCommand command = cBusCommandPointToPoint.getCommand();
-            UnitAddress unitAddress = null;
-            if (command instanceof CBusPointToPointCommandIndirect) {
-                CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect = (CBusPointToPointCommandIndirect) command;
-                // TODO: handle bridgeAddress
-                // TODO: handle networkRoute
-                unitAddress = cBusPointToPointCommandIndirect.getUnitAddress();
-            }
-            if (command instanceof CBusPointToPointCommandDirect) {
-                CBusPointToPointCommandDirect cBusPointToPointCommandDirect = (CBusPointToPointCommandDirect) command;
-                unitAddress = cBusPointToPointCommandDirect.getUnitAddress();
-            }
-            if (unitAddress == null) {
-                throw new IllegalStateException("Unit address should be set at this point");
-            }
-            boolean knownUnit = AVAILABLE_UNITS.contains(unitAddress.getAddress());
-            if (!knownUnit) {
-                LOGGER.warn("{} not a known unit", unitAddress);
-                ReplyOrConfirmation replyOrConfirmation = new ServerErrorReply((byte) 0x0, cBusOptions, requestContext);
-                CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
-                ctx.writeAndFlush(cBusMessageToClient);
-                return;
-            }
-            CALData calData = command.getCalData();
-            // TODO: handle other Datatypes
-            if (calData instanceof CALDataIdentify) {
-                handleCalDataIdentify(ctx, (CALDataIdentify) calData, requestCommand.getAlpha());
-            }
-            return;
-        } else if (cbusCommand instanceof CBusCommandPointToMultiPoint) {
-            CBusCommandPointToMultiPoint cBusCommandPointToMultiPoint = (CBusCommandPointToMultiPoint) cbusCommand;
-            CBusPointToMultiPointCommand command = cBusCommandPointToMultiPoint.getCommand();
-            if (command instanceof CBusPointToMultiPointCommandStatus) {
-                CBusPointToMultiPointCommandStatus cBusPointToMultiPointCommandStatus = (CBusPointToMultiPointCommandStatus) command;
-                StatusRequest statusRequest = cBusPointToMultiPointCommandStatus.getStatusRequest();
-                if (statusRequest instanceof StatusRequestBinaryState) {
-                    StatusRequestBinaryState statusRequestBinaryState = (StatusRequestBinaryState) statusRequest;
-                    LOGGER.info("Handling StatusRequestBinaryState\n{}", statusRequestBinaryState);
-                    handleStatusRequestBinary(ctx, requestCommand, statusRequestBinaryState.getApplication());
-                }
-                if (statusRequest instanceof StatusRequestBinaryStateDeprecated) {
-                    StatusRequestBinaryStateDeprecated statusRequestBinaryStateDeprecated = (StatusRequestBinaryStateDeprecated) statusRequest;
-                    LOGGER.info("Handling StatusRequestBinaryStateDeprecated\n{}", statusRequestBinaryStateDeprecated);
-                    handleStatusRequestBinary(ctx, requestCommand, statusRequestBinaryStateDeprecated.getApplication());
-                    return;
-                }
-                if (statusRequest instanceof StatusRequestLevel) {
-                    StatusRequestLevel statusRequestLevel = (StatusRequestLevel) statusRequest;
-                    handleStatusRequestLevel(ctx, requestCommand, statusRequestLevel);
-                    return;
-                }
-                throw new IllegalStateException();
-            }
-            if (command instanceof CBusPointToMultiPointCommandNormal) {
-                CBusPointToMultiPointCommandNormal cBusPointToMultiPointCommandNormal = (CBusPointToMultiPointCommandNormal) command;
-                LOGGER.info("Handling CBusPointToMultiPointCommandNormal\n{}", cBusPointToMultiPointCommandNormal);
-                // TODO: handle this
-                return;
-            }
-            // TODO: handle this
-            return;
-        } else if (cbusCommand instanceof CBusCommandPointToPointToMultiPoint) {
-            CBusCommandPointToPointToMultiPoint cBusCommandPointToPointToMultiPoint = (CBusCommandPointToPointToMultiPoint) cbusCommand;
-            LOGGER.info("Handling CBusCommandPointToPointToMultiPoint\n{}", cBusCommandPointToPointToMultiPoint);
-            // TODO: handle this
-            return;
-        } else if (cbusCommand instanceof CBusCommandDeviceManagement) {
-            CBusCommandDeviceManagement cBusCommandDeviceManagement = (CBusCommandDeviceManagement) cbusCommand;
-            LOGGER.info("Handling CBusCommandDeviceManagement\n{}", cBusCommandDeviceManagement);
-            // TODO: handle this
-            return;
-        }
-
-        Alpha alpha = requestCommand.getAlpha();
-        if (alpha != null) {
-            Confirmation confirmation = new Confirmation(alpha, null, ConfirmationType.NOT_TRANSMITTED_CORRUPTION);
-            ReplyOrConfirmationConfirmation replyOrConfirmationConfirmation = new ReplyOrConfirmationConfirmation(alpha.getCharacter(), confirmation, null, cBusOptions, requestContext);
-            CBusMessage response = new CBusMessageToClient(replyOrConfirmationConfirmation, requestContext, cBusOptions);
-            LOGGER.info("Send response\n{}", response);
-            ctx.writeAndFlush(response);
-        }
-    }
-
-    private static void handleStatusRequestLevel(ChannelHandlerContext ctx, RequestCommand requestCommand, StatusRequestLevel statusRequestLevel) {
-        StatusCoding coding = StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE;
-        // TODO: map actual values from simulator
-        byte blockStart = statusRequestLevel.getStartingGroupAddressLabel();
-        List<LevelInformation> levelInformations = Collections.singletonList(new LevelInformationNormal(0x5555, LevelInformationNibblePair.Value_F, LevelInformationNibblePair.Value_F));
-        CALData calData = new CALDataStatusExtended(CALCommandTypeContainer.CALCommandReply_4Bytes, null, coding, statusRequestLevel.getApplication(), blockStart, null, levelInformations, requestContext);
-        CALReply calReply;
-        if (exstat) {
-            calReply = new CALReplyLong((byte) 0x0, calData, (byte) 0x0, new UnitAddress((byte) 0x04), null, new SerialInterfaceAddress((byte) 0x02), (byte) 0x0, null, cBusOptions, requestContext);
         } else {
-            calReply = new CALReplyShort((byte) 0x0, calData, cBusOptions, requestContext);
+            throw new IllegalStateException("Unmapped type: " + calData.getClass());
         }
-        CBusMessage response = createCBusMessageForReply(requestCommand.getAlpha(), calReply, cBusOptions);
-        LOGGER.info("Send level status response\n{}", response);
-        ctx.writeAndFlush(response);
-    }
-
-    private void handleStatusRequestBinary(ChannelHandlerContext ctx, RequestCommand requestCommand, ApplicationIdContainer application) {
-        if (application == ApplicationIdContainer.NETWORK_CONTROL) {
-            LOGGER.info("Handling installation MMI Request");
-            sendInstallationMMIResponse(ctx, requestCommand.getAlpha());
-            return;
-        }
-        List<StatusByte> statusBytes = new LinkedList<>();
-        // TODO: map actual values from simulator
-        for (int i = 0; i < 22; i++) {
-            statusBytes.add(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-        }
-
-        LOGGER.info("Send binary status response");
-        sendStatusBytes(ctx, "First parts {}", application, (byte) 0x0, statusBytes, requestCommand.getAlpha(), cBusOptions);
     }
 
     private static CBusMessage createCBusMessageForReply(Alpha alpha, CALReply calReply, CBusOptions cBusOptions) {
@@ -590,8 +605,7 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         buildCBusOptions();
     }
 
-    private void handleReset(RequestReset requestReset) {
-        LOGGER.info("Handling RequestReset\n{}", requestReset);
+    private void handleReset() {
         connect = false;
         smart = false;
         idmon = false;
