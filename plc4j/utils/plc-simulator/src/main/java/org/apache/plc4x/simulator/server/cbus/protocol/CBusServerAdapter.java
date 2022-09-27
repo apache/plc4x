@@ -128,6 +128,11 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             LOGGER.info("Handling RequestObsolete\n{}", requestObsolete);
             // TODO: handle this
         } else if (request instanceof RequestReset) {
+            if (smart || connect) {
+                // On reset, we need to send the echo if we had not sent it above
+                LOGGER.info("Sending echo");
+                ctx.write(msg);
+            }
             handleReset((RequestReset) request);
         } else if (request instanceof RequestSmartConnectShortcut) {
             handleSmartConnect((RequestSmartConnectShortcut) request);
