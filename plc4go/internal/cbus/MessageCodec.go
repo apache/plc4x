@@ -85,11 +85,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 }
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
+	log.Trace().Msg("Receive")
 	ti := m.GetTransportInstance()
 	confirmation := false
 	// Fill the buffer
 	{
 		if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
+			log.Trace().Uint8("byte", currentByte).Msg("current byte")
 			switch currentByte {
 			case
 				readWriteModel.ResponseTermination_CR,
@@ -111,6 +113,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, errors.Wrap(err, "error filling buffer")
 		}
 	}
+	log.Trace().Msg("Buffer filled")
 
 	// Check how many readable bytes we have
 	var readableBytes uint32
@@ -165,11 +168,13 @@ lookingForTheEnd:
 			break lookingForTheEnd
 		}
 	}
+	log.Trace().Msgf("indexOfCR %d,indexOfLF %d,indexOfConfirmation %d", indexOfCR, indexOfLF, indexOfConfirmation)
 	if indexOfCR < 0 && indexOfLF >= 0 {
 		// This means that the package is garbage as a lf is always prefixed with a cr
 		log.Debug().Err(err).Msg("Error reading")
-		// TODO: Possibly clean up ...
-		return nil, nil
+		garbage, err := ti.Read(readableBytes)
+		log.Warn().Bytes("garbage", garbage).Msg("Garbage bytes")
+		return nil, err
 	}
 	if indexOfCR+1 == indexOfLF {
 		// This means a <cr> is directly followed by a <lf> which means that we know for sure this is a response
@@ -287,7 +292,6 @@ lookingForTheEnd:
 		}
 
 		log.Warn().Err(err).Msg("error parsing")
-		// TODO: Possibly clean up ...
 		return nil, nil
 	}
 	return cBusMessage, nil
