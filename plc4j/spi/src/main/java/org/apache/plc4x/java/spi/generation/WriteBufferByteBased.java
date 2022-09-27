@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.generation;
 
 import com.github.jinahya.bit.io.BufferByteOutput;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitOutput;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static org.apache.commons.lang3.ArrayUtils.subarray;
 
@@ -303,9 +305,24 @@ public class WriteBufferByteBased implements WriteBuffer {
 
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
-        final byte[] bytes = value.getBytes(Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]", "")));
-        int fixedByteLength = (int) Math.ceil((float) bitLength / 8.0);
+        byte[] bytes;
+        encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
+        switch (encoding.toUpperCase()) {
+            case "UTF8": {
+                bytes = value.getBytes(StandardCharsets.UTF_8);
+                break;
+            }
+            case "UTF16":
+            case "UTF16LE":
+            case "UTF16BE": {
+                bytes = value.getBytes(StandardCharsets.UTF_16);
+                break;
+            }
+            default:
+                throw new SerializationException("Unsupported encoding: " + encoding);
+        }
 
+        int fixedByteLength = (int) Math.ceil((float) bitLength / 8.0);
         if (bitLength == 0) {
             fixedByteLength = bytes.length;
         }

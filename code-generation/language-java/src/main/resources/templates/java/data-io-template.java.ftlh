@@ -423,6 +423,8 @@ public class ${type.name} {
                         <#else>
                             <#if simpleField.name == "value">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                            <#elseif simpleField.name == "secondsSinceEpoch">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
                             <#else>
                                 <#-- Just for now -->
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};

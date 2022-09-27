@@ -38,7 +38,7 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
             return new PlcDATE_AND_TIME((LocalDateTime) value);
         } else if (value instanceof Long) {
             return new PlcDATE_AND_TIME(LocalDateTime.ofInstant(
-                Instant.ofEpochSecond((long) value), ZoneId.of("UTC")));
+                Instant.ofEpochSecond((long) value), ZoneId.systemDefault()));
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -57,6 +57,17 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.DATE_AND_TIME;
+    }
+
+    @Override
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    public long getLong() {
+        Instant instant = value.atZone(ZoneId.systemDefault()).toInstant();
+        return instant.getEpochSecond();
     }
 
     @Override

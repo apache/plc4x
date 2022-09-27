@@ -69,11 +69,14 @@ public class PlcValues {
                 Object[] objectArray = (Object[]) o;
                 o = Arrays.asList(objectArray);
             }
+            if (simpleName.equals("Boolean")) {
+                simpleName = "Bool";
+            }
             // If it's one of the LocalDate, LocalTime or LocalDateTime, cut off the "Local".
             if (simpleName.startsWith("Local")) {
                 simpleName = simpleName.substring(5);
             }
-            Constructor<?> constructor = Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + simpleName).getDeclaredConstructor(clazz);
+            Constructor<?> constructor = Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + simpleName.toUpperCase()).getDeclaredConstructor(clazz);
             return ((PlcValue) constructor.newInstance(o));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             LOGGER.warn("Cannot wrap", e);
