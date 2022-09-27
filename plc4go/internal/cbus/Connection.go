@@ -112,8 +112,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
-		err := c.messageCodec.Connect()
-		if err != nil {
+		if err := c.messageCodec.Connect(); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
 		}
@@ -312,7 +311,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		} else {
-			log.Trace().Msg("timeout")
+			log.Trace().Msgf("Timeout after %v", timeout.Sub(startTime))
 		}
 		return false
 	}
