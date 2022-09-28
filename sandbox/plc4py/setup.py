@@ -43,7 +43,7 @@ setup(
         "dev": [
             "requires",
             "pre-commit>=2.6.0",
-            "pytest-mock>=3.3.1",
+            "pytest-mock>=3.8.1",
             "mock>=4.0.2",
             "mypy>=0.942",
             "flake8>=4.0.1",

@@ -17,14 +17,32 @@
 # under the License.
 #
 import asyncio
+import logging
 import threading
-from asyncio import Protocol
+import asyncio
 import time
 import socket
-from unittest.mock import MagicMock
+from concurrent.futures import thread
+from unittest.mock import MagicMock, DEFAULT
+
+import pytest
 
 from plc4py.spi.transport.PLC4XBaseTransport import PLC4XBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
+from tests.unit.plc4py.spi.tcp.server import Server
+
+HOST = "localhost"
+PORT = 9991
+
+
+@pytest.fixture(scope='session')
+def tcp_server():
+    tcp_server = Server(HOST, PORT)
+    with tcp_server:
+        tcp_server = threading.Thread(target=tcp_server.listen_for_traffic)
+        tcp_server.daemon = True
+        tcp_server.start()
+        yield tcp_server
 
 
 async def test_base_transport_is_reading(mocker) -> None:
@@ -60,45 +78,24 @@ async def test_base_transport_write(mocker) -> None:
 
     assert transport.write(b'This is a test') is None
 
-
-async def create_socket_server(host, port, future):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((host, port))
-        s.listen()
-        conn, addr = s.accept()
-        future.set_result()
-        with conn:
-            print(f"Connected by {addr}")
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    break
-                conn.sendall(data)
-
-
-async def test_tcp_transport(mocker) -> None:
+async def test_tcp_transport(mocker, tcp_server) -> None:
     """
     Unit test for the TCP Transport, write
     :param mocker:
     :return:
     """
-    HOST = "localhost"
-    PORT = 8081
-
     loop = asyncio.get_running_loop()
-    # Create a new Future object.
     future = loop.create_future()
 
-    threading.Thread(target=create_socket_server(HOST, PORT, future)).start()
-    await future
-
-    def get_protocol() -> Protocol:
-        protocol = MagicMock()
-        protocol: MagicMock = mocker.patch.object(protocol, "data_received()")
+    def get_protocol(future) -> asyncio.Protocol:
+        protocol: MagicMock = mocker.patch.object(asyncio.Protocol, attribute="data_received")
+        protocol.attach_mock(protocol, attribute="data_received")
+        protocol.data_received.side_effect = future.set_result
         return protocol
 
-    transport = TCPTransport(host=HOST, port=PORT, protocol_factory=get_protocol)
+    transport = TCPTransport(host=HOST, port=PORT, protocol_factory=lambda: get_protocol(future))
     await transport.connect()
     transport.write(b'PLC4X Test Packet')
+    await future
 
-    assert transport._protocol.call_args
+    transport._protocol.assert_called_with(b'PLC4X Test Packet')

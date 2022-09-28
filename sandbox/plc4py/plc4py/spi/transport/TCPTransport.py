@@ -17,6 +17,7 @@
 # under the License.
 #
 import asyncio
+from asyncio import Transport, BaseTransport, WriteTransport, ReadTransport, Protocol
 from dataclasses import dataclass, InitVar
 
 from plc4py.spi.transport.PLC4XBaseTransport import PLC4XBaseTransport
@@ -30,16 +31,15 @@ class TCPTransport:
 
     host: str
     port: int
-    protocol_factory: InitVar[()]
-    _protocol = None
-    _transport = None
-
-    def __post_init__(self, protocol_factory: ()):
-        loop = asyncio.get_running_loop()
-        self._coro = loop.create_connection(protocol_factory, self.host, self.port)
+    protocol_factory: ()
+    _protocol: Protocol = None
+    _transport: Transport = None
 
     async def connect(self):
-        self._transport, self._protocol = await self._coro
+        loop = asyncio.get_running_loop()
+        coro = loop.create_connection(self.protocol_factory, self.host, self.port)
+        self._transport, self._protocol = await coro
 
     def write(self, data):
         self._transport.write(data)
+
