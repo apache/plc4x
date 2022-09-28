@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.protocol.ads;
 
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 
@@ -25,6 +26,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ManualAdsDriverTest extends ManualTest {
 
@@ -106,6 +109,30 @@ public class ManualAdsDriverTest extends ManualTest {
         test.addTestCase("MAIN.hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         test.addTestCase("MAIN.hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
         //test.addTestCase("MAIN.hurz_DT", new PlcDT("1972-03-29T00:00"));
+        Map<String, PlcValue> children = new HashMap<>();
+        children.put("hurz_BOOL", new PlcBOOL(true));
+        children.put("hurz_BYTE", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, true}));
+        children.put("hurz_WORD", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false}));
+        children.put("hurz_DWORD", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true}));
+        children.put("hurz_LDWORD", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false}));
+        children.put("hurz_SINT", new PlcSINT(5));
+        children.put("hurz_USINT", new PlcUSINT(6));
+        children.put("hurz_INT", new PlcINT(7));
+        children.put("hurz_UINT", new PlcUINT(8));
+        children.put("hurz_DINT", new PlcDINT(9));
+        children.put("hurz_UDINT", new PlcUDINT(10));
+        children.put("hurz_LINT", new PlcLINT(11));
+        children.put("hurz_ULINT", new PlcULINT(12));
+        children.put("hurz_REAL", new PlcREAL(13.0));
+        children.put("hurz_LREAL", new PlcLREAL(14.0));
+        children.put("hurz_STRING", new PlcSTRING("hurz"));
+        children.put("hurz_WSTRING", new PlcWSTRING("wolf"));
+        children.put("hurz_TIME", new PlcTIME(Duration.parse("PT1.234S")));
+        children.put("hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
+        children.put("hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
+        children.put("hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
         test.run();
     }
 
