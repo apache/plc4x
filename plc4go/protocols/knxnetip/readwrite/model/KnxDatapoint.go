@@ -234,7 +234,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -247,7 +247,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		value, _valueErr := readBuffer.ReadString("value", uint32(16), "UTF-16")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1085,7 +1085,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(8))
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), "ASCII")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1098,7 +1098,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(8))
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), "ISO-8859-1")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -3333,7 +3333,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(112))
+		value, _valueErr := readBuffer.ReadString("value", uint32(112), "ASCII")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -3346,7 +3346,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(112))
+		value, _valueErr := readBuffer.ReadString("value", uint32(112), "ISO-8859-1")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -6505,7 +6505,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(16))
+		value, _valueErr := readBuffer.ReadString("value", uint32(16), "ASCII")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -7726,7 +7726,7 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(8), "UTF-8", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_WCHAR: // WCHAR
@@ -7736,7 +7736,7 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TIME: // TIME

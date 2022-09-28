@@ -808,7 +808,13 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     String propertyName = child.getPropertyName();
                     AdsDataTypeTableEntry propertyDataTypeTableEntry = dataTypeTable.get(child.getDataTypeName());
                     PlcValueType propertyPlcValueType = getPlcValueTypeForAdsDataType(propertyDataTypeTableEntry);
-                    PlcValue propertyValue = parsePlcValue(propertyPlcValueType, propertyDataTypeTableEntry, stringLength, readBuffer);
+                    int strLen = 0;
+                    if ((propertyPlcValueType == PlcValueType.STRING) || (propertyPlcValueType == PlcValueType.WSTRING)) {
+                        String dataTypeName = propertyDataTypeTableEntry.getDataTypeName();
+                        // Extract the string length from the data type name.
+                        strLen = Integer.parseInt(dataTypeName.substring(dataTypeName.indexOf("(") + 1, dataTypeName.indexOf(")")));
+                    }
+                    PlcValue propertyValue = parsePlcValue(propertyPlcValueType, propertyDataTypeTableEntry, strLen, readBuffer);
                     properties.put(propertyName, propertyValue);
                     curPos = readBuffer.getPos() - startPos;
                 }

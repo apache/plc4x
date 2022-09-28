@@ -174,16 +174,16 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
-		// Manual Field (value)
-		value, _valueErr := ParseS7Char(readBuffer, "UTF-8")
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
-		// Manual Field (value)
-		value, _valueErr := ParseS7Char(readBuffer, "UTF-16")
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32(16), "UTF-16")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -397,16 +397,14 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
-		// Manual Field (value)
-		_valueErr := SerializeS7Char(writeBuffer, value, "UTF-8")
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint32(8), "UTF-8", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
-		// Manual Field (value)
-		_valueErr := SerializeS7Char(writeBuffer, value, "UTF-16")
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)

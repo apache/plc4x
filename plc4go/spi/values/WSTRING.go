@@ -23,17 +23,16 @@ import (
 	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"unicode/utf16"
 )
 
 type PlcWSTRING struct {
 	PlcSimpleValueAdapter
-	value []rune
+	value string
 }
 
-func NewPlcWSTRING(value []uint16) PlcWSTRING {
+func NewPlcWSTRING(value string) PlcWSTRING {
 	return PlcWSTRING{
-		value: utf16.Decode(value),
+		value: value,
 	}
 }
 

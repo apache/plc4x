@@ -597,14 +597,14 @@
         // Characters & Strings
         // -----------------------------------------
         ['"IEC61131_CHAR"' CHAR
-            [manual string 8 value  'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '8']
+            [simple string 8 value encoding='"UTF-8"']
         ]
         ['"IEC61131_WCHAR"' CHAR
-            [manual string 16 value 'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '16' encoding='"UTF-16"']
+            [simple string 16 value encoding='"UTF-16"']
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
-            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2']
+            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2' encoding='"UTF-8"']
         ]
         ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length

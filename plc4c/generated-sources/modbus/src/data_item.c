@@ -496,8 +496,8 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) && (numberOfValues == 1)) { /* CHAR */
 
                 // Simple Field (value)
-                uint8_t value = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &value);
+                char* value = "";
+                _res = plc4c_spi_read_string(readBuffer, 8, "UTF-8", (char**) &value);
                 if(_res != OK) {
                     return _res;
                 }
@@ -512,12 +512,12 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         plc4c_utils_list_create(&value);
         int itemCount = (int) numberOfValues;
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint8_t* _val = malloc(sizeof(uint8_t) * 1);
-            _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _val);
+            char** _val = malloc(sizeof(char*) * 1);
+            _res = plc4c_spi_read_string(readBuffer, 8, "UTF-8", (char**) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_usint_data(*_val);
+            plc4c_data* _item = plc4c_data_create_char_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(value);
@@ -525,8 +525,8 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) && (numberOfValues == 1)) { /* WCHAR */
 
                 // Simple Field (value)
-                uint16_t value = 0;
-                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &value);
+                char* value = "";
+                _res = plc4c_spi_read_string(readBuffer, 16, "UTF-16", (char**) &value);
                 if(_res != OK) {
                     return _res;
                 }
@@ -541,12 +541,12 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         plc4c_utils_list_create(&value);
         int itemCount = (int) numberOfValues;
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint16_t* _val = malloc(sizeof(uint16_t) * 1);
-            _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) _val);
+            char** _val = malloc(sizeof(char*) * 1);
+            _res = plc4c_spi_read_string(readBuffer, 16, "UTF-16", (char**) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint_data(*_val);
+            plc4c_data* _item = plc4c_data_create_char_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(value);
@@ -694,7 +694,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4c_spi_write_bu
         } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) && (numberOfValues == 1)) { /* CHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.char_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (*data_item)->data.char_value);
                     if(_res != OK) {
                         return _res;
                     }
@@ -704,7 +704,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4c_spi_write_bu
         } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) && (numberOfValues == 1)) { /* WCHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.wchar_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (*data_item)->data.wchar_value);
                     if(_res != OK) {
                         return _res;
                     }

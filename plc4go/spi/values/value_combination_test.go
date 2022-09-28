@@ -75,9 +75,7 @@ func TestCombinations(t *testing.T) {
 		{
 			name: apiValues.CHAR,
 			arguments: []apiValues.PlcValue{
-				NewPlcCHAR(0),
-				NewPlcCHAR(64),
-				NewPlcCHAR(255),
+				NewPlcCHAR(""),
 			},
 		},
 		{
@@ -280,10 +278,7 @@ func TestCombinations(t *testing.T) {
 		{
 			name: apiValues.WCHAR,
 			arguments: []apiValues.PlcValue{
-				NewPlcWCHAR(0),
-				NewPlcWCHAR(64),
-				NewPlcWCHAR(255),
-				NewPlcWCHAR(math.MaxUint16),
+				NewPlcWCHAR("a"),
 			},
 		},
 		{
@@ -298,7 +293,7 @@ func TestCombinations(t *testing.T) {
 		{
 			name: apiValues.WSTRING,
 			arguments: []apiValues.PlcValue{
-				NewPlcWSTRING([]uint16{0, 64, 255}),
+				NewPlcWSTRING("hurz"),
 			},
 		},
 	}

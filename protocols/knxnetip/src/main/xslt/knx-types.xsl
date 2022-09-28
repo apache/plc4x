@@ -177,11 +177,11 @@
         ]
         ['CHAR' CHAR
             [reserved uint 8    '0x00']
-            [simple   uint 8    value ]
+            [simple   string 8  value  encoding='"UTF-8"']
         ]
         ['WCHAR' WCHAR
             [reserved uint 8    '0x00']
-            [simple   uint 16   value ]
+            [simple   string 16 value  encoding='"UTF-16"']
         ]
         //['STRING' STRING
         //]

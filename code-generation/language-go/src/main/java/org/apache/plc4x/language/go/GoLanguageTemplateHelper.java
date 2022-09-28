@@ -83,7 +83,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
         TypedField typedField = field.asTypedField().orElseThrow();
-        return getLanguageTypeNameForTypeReference(typedField.getType());
+        String encoding = null;
+        Optional<Term> encodingAttribute = field.getAttribute("encoding");
+        if(encodingAttribute.isPresent()) {
+            encoding = encodingAttribute.get().toString();
+        }
+        return getLanguageTypeNameForTypeReference(typedField.getType(), encoding);
     }
 
     public boolean isComplex(Field field) {
@@ -92,6 +97,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
+        return getLanguageTypeNameForTypeReference(typeReference, null);
+    }
+
+    public String getLanguageTypeNameForTypeReference(TypeReference typeReference, String encoding) {
         if (typeReference == null) {
             // TODO: shouldn't this be an error case
             return "";
@@ -357,7 +366,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "))";
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), \"" + encoding + "\")";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
@@ -365,8 +374,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "))";
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" + encoding + "\")";
             }
             case TIME:
             case DATE:
