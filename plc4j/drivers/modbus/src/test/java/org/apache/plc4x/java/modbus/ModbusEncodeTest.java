@@ -58,7 +58,7 @@ public class ModbusEncodeTest {
         Integer[] object = {1,255,0,4,5,6,7,8};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:BYTE");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,true],[true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false],[false,false,false,false,false,true,false,false],[false,false,false,false,false,true,false,true],[false,false,false,false,false,true,true,false],[false,false,false,false,false,true,true,true],[false,false,false,false,true,false,false,false]]", list.toString());
+        Assertions.assertEquals("[1,255,0,4,5,6,7,8]", list.toString());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ModbusEncodeTest {
         Integer[] object = {1,65535,10,55000,5,6,7};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:WORD");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,true,false,true,false],[true,true,false,true,false,true,true,false,true,true,false,true,true,false,false,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true]]", list.toString());
+        Assertions.assertEquals("[1,65535,10,55000,5,6,7]", list.toString());
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ModbusEncodeTest {
         Long[] object = {1L,655354775L,0L,4294967295L,5L,6L,7L};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:DWORD");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true],[false,false,true,false,false,true,true,true,false,false,false,false,true,true,true,true,true,true,true,false,true,false,true,true,true,false,false,true,false,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true]]", list.toString());
+        Assertions.assertEquals("[1,655354775,0,4294967295,5,6,7]", list.toString());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ModbusEncodeTest {
         BigInteger[] object = {BigInteger.valueOf(1L),BigInteger.valueOf(655354775L),BigInteger.valueOf(0),new BigInteger("18446744073709551615"),BigInteger.valueOf(5L),BigInteger.valueOf(6L),BigInteger.valueOf(7L)};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:LWORD");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,true,true,true,false,false,false,false,true,true,true,true,true,true,true,false,true,false,true,true,true,false,false,true,false,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true]]", list.toString());
+        Assertions.assertEquals("[1,655354775,0,18446744073709551615,5,6,7]", list.toString());
     }
 
     @Test

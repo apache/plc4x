@@ -84,13 +84,10 @@ public class ManualAdsDriverTest extends ManualTest {
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
         test.addTestCase("MAIN.hurz_BOOL", new PlcBOOL(true));
-        test.addTestCase("MAIN.hurz_BYTE", new PlcBitString(new boolean[]{false, false, true, false, true, false, true, false}));
-        test.addTestCase("MAIN.hurz_WORD", new PlcBitString(new boolean[]{true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false}));
-        test.addTestCase("MAIN.hurz_DWORD", new PlcBitString(new boolean[]{true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false}));
-        // These are the values, if we decide to go with numeric values instead of bit-strings.
-        //test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));
-        //test.addTestCase("MAIN.hurz_WORD", new PlcWORD(42424));
-        //test.addTestCase("MAIN.hurz_DWORD", new PlcDWORD(4242442424L));
+        test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));
+        test.addTestCase("MAIN.hurz_WORD", new PlcWORD(42424));
+        test.addTestCase("MAIN.hurz_DWORD", new PlcDWORD(4242442424L));
+        test.addTestCase("MAIN.hurz_LWORD", new PlcLWORD(4242442424242424242L));
         test.addTestCase("MAIN.hurz_SINT", new PlcSINT(-42));
         test.addTestCase("MAIN.hurz_USINT", new PlcUSINT(42));
         test.addTestCase("MAIN.hurz_INT", new PlcINT(-2424));
@@ -111,10 +108,10 @@ public class ManualAdsDriverTest extends ManualTest {
         //test.addTestCase("MAIN.hurz_DT", new PlcDT("1972-03-29T00:00"));
         Map<String, PlcValue> children = new HashMap<>();
         children.put("hurz_BOOL", new PlcBOOL(true));
-        children.put("hurz_BYTE", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, true}));
-        children.put("hurz_WORD", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false}));
-        children.put("hurz_DWORD", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true}));
-        children.put("hurz_LDWORD", new PlcBitString(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false}));
+        children.put("hurz_BYTE", new PlcBYTE(42));
+        children.put("hurz_WORD", new PlcWORD(42424));
+        children.put("hurz_DWORD", new PlcDWORD(4242442424L));
+        children.put("hurz_LDWORD", new PlcLWORD(4242442424242424242L));
         children.put("hurz_SINT", new PlcSINT(5));
         children.put("hurz_USINT", new PlcUSINT(6));
         children.put("hurz_INT", new PlcINT(7));

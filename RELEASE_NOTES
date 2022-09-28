@@ -33,6 +33,11 @@ Incompatible changes
   examples related, as Edgent is abandoned and there were
   CVEs reported, which will not be fixed.
 
+- We have replaced the BitString types with BYTE, WORD, DWORD,
+  and LWORD which generally match their unsigned integer
+  counterparts. So we are no longer returning lists of boolean
+  values for any of these types.
+
 Bug Fixes
 ---------
 
