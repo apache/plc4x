@@ -408,7 +408,7 @@ func AdsDataTypeTableChildEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTa
 	numChildren := _numChildren
 
 	// Simple Field (propertyName)
-	_propertyName, _propertyNameErr := readBuffer.ReadString("propertyName", uint32((propertyNameLength)*(8)))
+	_propertyName, _propertyNameErr := readBuffer.ReadString("propertyName", uint32((propertyNameLength)*(8)), "UTF-8")
 	if _propertyNameErr != nil {
 		return nil, errors.Wrap(_propertyNameErr, "Error parsing 'propertyName' field of AdsDataTypeTableChildEntry")
 	}
@@ -424,7 +424,7 @@ func AdsDataTypeTableChildEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTa
 	}
 
 	// Simple Field (dataTypeName)
-	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)))
+	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), "UTF-8")
 	if _dataTypeNameErr != nil {
 		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsDataTypeTableChildEntry")
 	}
@@ -440,7 +440,7 @@ func AdsDataTypeTableChildEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTa
 	}
 
 	// Simple Field (comment)
-	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)))
+	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)), "UTF-8")
 	if _commentErr != nil {
 		return nil, errors.Wrap(_commentErr, "Error parsing 'comment' field of AdsDataTypeTableChildEntry")
 	}

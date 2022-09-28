@@ -151,7 +151,7 @@ func SecurityDataZoneNameParse(readBuffer utils.ReadBuffer) (SecurityDataZoneNam
 	zoneNumber := _zoneNumber
 
 	// Simple Field (zoneName)
-	_zoneName, _zoneNameErr := readBuffer.ReadString("zoneName", uint32(88))
+	_zoneName, _zoneNameErr := readBuffer.ReadString("zoneName", uint32(88), "UTF-8")
 	if _zoneNameErr != nil {
 		return nil, errors.Wrap(_zoneNameErr, "Error parsing 'zoneName' field of SecurityDataZoneName")
 	}

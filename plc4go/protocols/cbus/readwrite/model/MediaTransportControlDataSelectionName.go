@@ -133,7 +133,7 @@ func MediaTransportControlDataSelectionNameParse(readBuffer utils.ReadBuffer, co
 	_ = currentPos
 
 	// Simple Field (selectionName)
-	_selectionName, _selectionNameErr := readBuffer.ReadString("selectionName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)))
+	_selectionName, _selectionNameErr := readBuffer.ReadString("selectionName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
 	if _selectionNameErr != nil {
 		return nil, errors.Wrap(_selectionNameErr, "Error parsing 'selectionName' field of MediaTransportControlDataSelectionName")
 	}

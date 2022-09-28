@@ -211,7 +211,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	}
 
 	// Simple Field (magicKey)
-	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64))
+	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64), "UTF-8")
 	if _magicKeyErr != nil {
 		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 	}

@@ -557,7 +557,7 @@ func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry,
 	}
 
 	// Simple Field (name)
-	_name, _nameErr := readBuffer.ReadString("name", uint32((nameLength)*(8)))
+	_name, _nameErr := readBuffer.ReadString("name", uint32((nameLength)*(8)), "UTF-8")
 	if _nameErr != nil {
 		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of AdsSymbolTableEntry")
 	}
@@ -573,7 +573,7 @@ func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry,
 	}
 
 	// Simple Field (dataTypeName)
-	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)))
+	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), "UTF-8")
 	if _dataTypeNameErr != nil {
 		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsSymbolTableEntry")
 	}
@@ -589,7 +589,7 @@ func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry,
 	}
 
 	// Simple Field (comment)
-	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)))
+	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)), "UTF-8")
 	if _commentErr != nil {
 		return nil, errors.Wrap(_commentErr, "Error parsing 'comment' field of AdsSymbolTableEntry")
 	}

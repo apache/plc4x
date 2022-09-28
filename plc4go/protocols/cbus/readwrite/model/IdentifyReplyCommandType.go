@@ -134,7 +134,7 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 	_ = currentPos
 
 	// Simple Field (unitType)
-	_unitType, _unitTypeErr := readBuffer.ReadString("unitType", uint32(64))
+	_unitType, _unitTypeErr := readBuffer.ReadString("unitType", uint32(64), "UTF-8")
 	if _unitTypeErr != nil {
 		return nil, errors.Wrap(_unitTypeErr, "Error parsing 'unitType' field of IdentifyReplyCommandType")
 	}

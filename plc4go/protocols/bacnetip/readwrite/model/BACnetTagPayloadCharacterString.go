@@ -155,7 +155,7 @@ func BACnetTagPayloadCharacterStringParse(readBuffer utils.ReadBuffer, actualLen
 	_ = actualLengthInBit
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
+	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit), "UTF-8")
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadCharacterString")
 	}
