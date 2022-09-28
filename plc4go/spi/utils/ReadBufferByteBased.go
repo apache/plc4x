@@ -377,7 +377,7 @@ func (rb *byteReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, _ ..
 	return big.NewFloat(readFloat64), nil
 }
 
-func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, _ ...WithReaderArgs) (string, error) {
+func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, encoding string, _ ...WithReaderArgs) (string, error) {
 	stringBytes, err := rb.ReadByteArray(logicalName, int(bitLength/8))
 	if err != nil {
 		return "", errors.Wrap(err, "Error reading big int")

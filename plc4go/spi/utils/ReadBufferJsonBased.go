@@ -406,7 +406,7 @@ func (j *jsonReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, reade
 	}
 }
 
-func (j *jsonReadBuffer) ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error) {
+func (j *jsonReadBuffer) ReadString(logicalName string, bitLength uint32, encoding string, readerArgs ...WithReaderArgs) (string, error) {
 	if j.err != nil {
 		return "", j.err
 	}

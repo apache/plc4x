@@ -257,7 +257,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 }
 
                 // Simple Field (value)
-                var value = readBuffer.ReadByte("", 8);
+                var value = readBuffer.ReadString("", 8, System.Text.Encoding.GetEncoding("UTF-8"));
 
                 return new PlcCHAR(Convert.ToChar(value));
             } else if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
@@ -271,7 +271,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 }
 
                 // Simple Field (value)
-                var value = readBuffer.ReadUshort("", 16);
+                var value = readBuffer.ReadString("", 16, System.Text.Encoding.GetEncoding("UTF-16"));
 
                 return new PlcWCHAR(Convert.ToChar(value));
             } else if( datapointType == KnxDatapointType.TIME ) { // TIME
@@ -6673,8 +6673,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
                 // Simple Field (value)
-                var value = (byte) _value.GetByte();
-                writeBuffer.WriteByte("", 8, (byte) (value));
+                var value = (string) _value.GetString();
+                writeBuffer.WriteString("", 8, "UTF-8", (string) (value));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
                 var writeBuffer = new WriteBuffer();
@@ -6682,8 +6682,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
                 // Simple Field (value)
-                var value = (ushort) _value.GetUshort();
-                writeBuffer.WriteUshort("", 16, (ushort) (value));
+                var value = (string) _value.GetString();
+                writeBuffer.WriteString("", 16, "UTF-16", (string) (value));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.TIME ) { // TIME
                 var writeBuffer = new WriteBuffer();

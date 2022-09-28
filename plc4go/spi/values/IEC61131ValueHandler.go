@@ -380,44 +380,32 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 
 	// Chars and Strings
 	case IEC61131_CHAR:
-		if isString {
-			return nil, errors.New("string to IEC61131_CHAR conversion not implemented")
+		if !isString {
+			return nil, errors.New("non-string to IEC61131_CHAR conversion not implemented")
+		} else if len(stringValue) > 1 {
+			return nil, errors.New("IEC61131_CHAR can only contain one character")
 		} else {
-			casted, ok := value.(uint8)
-			if !ok {
-				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to uint8")
-			}
-			return NewPlcCHAR(casted), nil
+			return NewPlcCHAR(stringValue), nil
 		}
 	case IEC61131_WCHAR:
-		if isString {
-			return nil, errors.New("string to IEC61131_WCHAR conversion not implemented")
+		if !isString {
+			return nil, errors.New("non-string to IEC61131_WCHAR conversion not implemented")
+		} else if len(stringValue) > 1 {
+			return nil, errors.New("IEC61131_WCHAR can only contain one character")
 		} else {
-			casted, ok := value.(uint16)
-			if !ok {
-				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to uint16")
-			}
-			return NewPlcWCHAR(casted), nil
+			return NewPlcWCHAR(stringValue), nil
 		}
 	case IEC61131_STRING:
-		if isString {
-			return NewPlcSTRING(stringValue), nil
+		if !isString {
+			return nil, errors.New("non-string to IEC61131_STRING conversion not implemented")
 		} else {
-			/*casted, ok := value.([]uint8)
-			  if !ok {
-			  	return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to []uint8")
-			  }
-			  return NewPlcSTRING(casted), nil*/
+			return NewPlcSTRING(stringValue), nil
 		}
 	case IEC61131_WSTRING:
-		if isString {
-			return NewPlcSTRING(stringValue), nil
+		if !isString {
+			return nil, errors.New("non-string to IEC61131_WSTRING conversion not implemented")
 		} else {
-			casted, ok := value.([]uint16)
-			if !ok {
-				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to []uint16")
-			}
-			return NewPlcWSTRING(casted), nil
+			return NewPlcSTRING(stringValue), nil
 		}
 	}
 

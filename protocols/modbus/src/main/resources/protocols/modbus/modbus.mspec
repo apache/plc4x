@@ -399,16 +399,16 @@
             [array float 64 value count 'numberOfValues']
         ]
         ['CHAR','1' CHAR
-            [simple uint 8 value]
+            [simple string 8 value encoding='"UTF-8"']
         ]
         ['CHAR' List
-            [array uint 8 value count 'numberOfValues']
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
         ]
         ['WCHAR','1' WCHAR
-            [simple uint 16 value]
+            [simple string 16 value encoding='"UTF-16"']
         ]
         ['WCHAR' List
-            [array uint 16 value count 'numberOfValues']
+            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
         ]
     ]
 ]

@@ -264,7 +264,7 @@ func (x *xmlReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, reader
 	return &value, nil
 }
 
-func (x *xmlReadBuffer) ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error) {
+func (x *xmlReadBuffer) ReadString(logicalName string, bitLength uint32, encoding string, readerArgs ...WithReaderArgs) (string, error) {
 	var value string
 	// TODO: bitlength too short
 	err := x.decode(logicalName, rwStringKey, uint(bitLength), readerArgs, &value)

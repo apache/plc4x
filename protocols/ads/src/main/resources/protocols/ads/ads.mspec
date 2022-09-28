@@ -408,6 +408,10 @@
         ['DWORD' BitString
             [simple uint 32 value]
         ]
+        // 8 byte (64 bit)
+        ['LWORD' BitString
+            [simple uint 64 value]
+        ]
 
         // -----------------------------------------
         // Integers
@@ -454,17 +458,17 @@
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['CHAR' STRING
-            [simple string 8 value]
+        ['CHAR' CHAR
+            [simple   string 8                       value    encoding='"UTF-8"'   ]
         ]
-        ['WCHAR' STRING
-            [simple string 16 value encoding='"UTF-16LE"']
+        ['WCHAR' WCHAR
+            [simple   string 16                      value    encoding='"UTF-16LE"']
         ]
         ['STRING' STRING
-            [simple   vstring 'stringLength * 8' value ]
-            [reserved uint 8                    '0x00']
+            [simple   vstring 'stringLength * 8'     value    encoding='"UTF-8"'   ]
+            [reserved uint 8                         '0x00'                        ]
         ]
-        ['WSTRING' STRING
+        ['WSTRING' WSTRING
             [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"']
             [reserved uint 16                        '0x0000'                      ]
         ]
