@@ -28,7 +28,6 @@ import org.apache.avro.SchemaBuilder.FieldAssembler;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcBYTE;
-import org.apache.plc4x.java.spi.values.PlcBitString;
 import org.apache.plc4x.java.spi.values.PlcCHAR;
 import org.apache.plc4x.java.spi.values.PlcDATE;
 import org.apache.plc4x.java.spi.values.PlcDATE_AND_TIME;
@@ -76,9 +75,7 @@ public class Plc4xCommon {
 		
 		for (Map.Entry<String, ? extends PlcValue> entry : responseDataStructure.entrySet()) {
 			fieldName = entry.getKey();
-			if (entry.getValue() instanceof PlcBitString) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcBOOL) {
+			if (entry.getValue() instanceof PlcBOOL) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().booleanType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcBYTE) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().bytesType().endUnion().noDefault();

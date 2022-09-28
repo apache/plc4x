@@ -73,9 +73,9 @@ public class ManualS7DriverTest extends ManualTest {
     public static void main(String[] args) throws Exception {
         ManualS7DriverTest test = new ManualS7DriverTest("s7://192.168.23.30");
         test.addTestCase("%DB4:0.0:BOOL", new PlcBOOL(true));
-        test.addTestCase("%DB4:1:BYTE", new PlcBitString(new boolean[]{false, false, true, false, true, false, true, false}));
-        test.addTestCase("%DB4:2:WORD", new PlcBitString(new boolean[]{true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false}));
-        test.addTestCase("%DB4:4:DWORD", new PlcBitString(new boolean[]{true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false}));
+        test.addTestCase("%DB4:1:BYTE", new PlcBYTE(42));
+        test.addTestCase("%DB4:2:WORD", new PlcWORD(42424));
+        test.addTestCase("%DB4:4:DWORD", new PlcDWORD(4242442424L));
         test.addTestCase("%DB4:16:SINT", new PlcSINT(-42));
         test.addTestCase("%DB4:17:USINT", new PlcUSINT(42));
         test.addTestCase("%DB4:18:INT", new PlcINT(-2424));

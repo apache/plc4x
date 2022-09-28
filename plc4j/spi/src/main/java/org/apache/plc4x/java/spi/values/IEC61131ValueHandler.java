@@ -129,17 +129,15 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 case "BYTE":
                 case "BITARR8":
                     if(value instanceof Short) {
-                        return new PlcBitString((short) value);
+                        return new PlcBYTE((short) value);
                     } else if(value instanceof Integer) {
-                        return new PlcBitString(((Integer) value).shortValue());
+                        return new PlcBYTE(((Integer) value).shortValue());
                     } else if(value instanceof Long) {
-                        return new PlcBitString(((Long) value).shortValue());
+                        return new PlcBYTE(((Long) value).shortValue());
                     } else if(value instanceof BigInteger) {
-                        return new PlcBitString(((BigInteger) value).shortValue());
-                    } else if(value instanceof boolean[]) {
-                        return new PlcBitString((boolean[]) value);
+                        return new PlcBYTE(((BigInteger) value).shortValue());
                     }
-                    throw new PlcRuntimeException("BYTE requires short or boolean[8]");
+                    throw new PlcRuntimeException("BYTE requires short");
                 case "SINT":
                 case "INT8":
                     return PlcSINT.of(value);
@@ -156,17 +154,15 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 case "WORD":
                 case "BITARR16":
                     if(value instanceof Short) {
-                        return new PlcBitString((int) value);
+                        return new PlcWORD((int) value);
                     } else if(value instanceof Integer) {
-                        return new PlcBitString((int) value);
+                        return new PlcWORD((int) value);
                     } else if(value instanceof Long) {
-                        return new PlcBitString(((Long) value).intValue());
+                        return new PlcWORD(((Long) value).intValue());
                     } else if(value instanceof BigInteger) {
-                        return new PlcBitString(((BigInteger) value).intValue());
-                    } else if(value instanceof boolean[]) {
-                        return new PlcBitString((boolean[]) value);
+                        return new PlcWORD(((BigInteger) value).intValue());
                     }
-                    throw new PlcRuntimeException("WORD requires int or boolean[16]");
+                    throw new PlcRuntimeException("WORD requires int");
                 case "DINT":
                 case "INT32":
                     return PlcDINT.of(value);
@@ -176,17 +172,15 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 case "DWORD":
                 case "BITARR32":
                     if(value instanceof Short) {
-                        return new PlcBitString((long) value);
+                        return new PlcDWORD((long) value);
                     } else if(value instanceof Integer) {
-                        return new PlcBitString((long) value);
+                        return new PlcDWORD((long) value);
                     } else if(value instanceof Long) {
-                        return new PlcBitString((long) value);
+                        return new PlcDWORD((long) value);
                     } else if(value instanceof BigInteger) {
-                        return new PlcBitString(((BigInteger) value).longValue());
-                    } else if(value instanceof boolean[]) {
-                        return new PlcBitString((boolean[]) value);
+                        return new PlcDWORD(((BigInteger) value).longValue());
                     }
-                    throw new PlcRuntimeException("DWORD requires long or boolean[32]");
+                    throw new PlcRuntimeException("DWORD requires long");
                 case "LINT":
                 case "INT64":
                     return PlcLINT.of(value);
@@ -196,17 +190,15 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 case "LWORD":
                 case "BITARR64":
                     if(value instanceof Short) {
-                        return new PlcBitString(BigInteger.valueOf((long) value));
+                        return new PlcLWORD(BigInteger.valueOf((long) value));
                     } else if(value instanceof Integer) {
-                        return new PlcBitString(BigInteger.valueOf((long) value));
+                        return new PlcLWORD(BigInteger.valueOf((long) value));
                     } else if(value instanceof Long) {
-                        return new PlcBitString(BigInteger.valueOf((long) value));
+                        return new PlcLWORD(BigInteger.valueOf((long) value));
                     } else if(value instanceof BigInteger) {
-                        return new PlcBitString((BigInteger) value);
-                    } else if(value instanceof boolean[]) {
-                        return new PlcBitString((boolean[]) value);
+                        return new PlcLWORD((BigInteger) value);
                     }
-                    throw new PlcRuntimeException("LWORD requires BigInteger or boolean[64]");
+                    throw new PlcRuntimeException("LWORD requires BigInteger");
                 case "REAL":
                 case "FLOAT":
                     return PlcREAL.of(value);
@@ -221,7 +213,7 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcSTRING.of(value);
                 case "WSTRING":
                 case "STRING16":
-                    return PlcSTRING.of(value);
+                    return PlcWSTRING.of(value);
                 case "TIME":
                     return PlcTIME.of(value);
                 case "DATE":

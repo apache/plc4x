@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.values.PlcBitString;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.spi.values.PlcValues;
 import org.junit.jupiter.api.Assertions;
@@ -154,14 +153,7 @@ public abstract class ManualTest {
                     Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName),
                         "Field: " + fieldName);
                     Assertions.assertNotNull(readResponse.getPlcValue(fieldName), "Field: " + fieldName);
-                    if (readResponse.getPlcValue(fieldName) instanceof PlcBitString) {
-                        PlcBitString plcBitString = (PlcBitString) readResponse.getPlcValue(fieldName);
-                        List<PlcValue> expectedValues = ((PlcBitString) testCase.expectedReadValue).getList();
-                        for (int j = 0; j < expectedValues.size(); j++) {
-                            Assertions.assertEquals(expectedValues.get(j).toString(), plcBitString.getIndex(j).toString(),
-                                "Field: " + fieldName);
-                        }
-                    } else if (readResponse.getPlcValue(fieldName) instanceof PlcList) {
+                    if (readResponse.getPlcValue(fieldName) instanceof PlcList) {
                         PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
                         List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
                         for (int j = 0; j < expectedValues.size(); j++) {
