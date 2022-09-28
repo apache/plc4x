@@ -110,7 +110,7 @@ func CustomTypesParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes,
 	_ = currentPos
 
 	// Simple Field (customString)
-	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)*(numBytes)))
+	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)*(numBytes)), "UTF-8")
 	if _customStringErr != nil {
 		return nil, errors.Wrap(_customStringErr, "Error parsing 'customString' field of CustomTypes")
 	}

@@ -155,7 +155,7 @@ func TelephonyDataRingingParse(readBuffer utils.ReadBuffer, commandTypeContainer
 	}
 
 	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)))
+	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), "UTF-8")
 	if _numberErr != nil {
 		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataRinging")
 	}

@@ -156,7 +156,7 @@ func IdentifyReplyCommandSummaryParse(readBuffer utils.ReadBuffer, attribute Att
 	_ = currentPos
 
 	// Simple Field (partName)
-	_partName, _partNameErr := readBuffer.ReadString("partName", uint32(48))
+	_partName, _partNameErr := readBuffer.ReadString("partName", uint32(48), "UTF-8")
 	if _partNameErr != nil {
 		return nil, errors.Wrap(_partNameErr, "Error parsing 'partName' field of IdentifyReplyCommandSummary")
 	}
@@ -170,7 +170,7 @@ func IdentifyReplyCommandSummaryParse(readBuffer utils.ReadBuffer, attribute Att
 	unitServiceType := _unitServiceType
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadString("version", uint32(32))
+	_version, _versionErr := readBuffer.ReadString("version", uint32(32), "UTF-8")
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of IdentifyReplyCommandSummary")
 	}

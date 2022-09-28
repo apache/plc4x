@@ -133,7 +133,7 @@ func MediaTransportControlDataCategoryNameParse(readBuffer utils.ReadBuffer, com
 	_ = currentPos
 
 	// Simple Field (categoryName)
-	_categoryName, _categoryNameErr := readBuffer.ReadString("categoryName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)))
+	_categoryName, _categoryNameErr := readBuffer.ReadString("categoryName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
 	if _categoryNameErr != nil {
 		return nil, errors.Wrap(_categoryNameErr, "Error parsing 'categoryName' field of MediaTransportControlDataCategoryName")
 	}
