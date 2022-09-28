@@ -26,14 +26,14 @@ from typing import Any, Optional
 
 
 @dataclass
-class PLC4XBaseTransport(Transport):
+class Plc4xBaseTransport(Transport):
     """
     Wrapper for the Python Transport. Instead of using the generic asyncio.create_connection.
     Using a custom transport allows for it to be modified if required.
     """
-
-    _protocol: Protocol
-    _transport: Transport
+    protocol_factory: ()
+    _protocol: Protocol = None
+    _transport: Transport = None
 
     @property
     def protocol(self) -> Protocol:

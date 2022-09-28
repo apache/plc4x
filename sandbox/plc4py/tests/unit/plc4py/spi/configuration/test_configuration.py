@@ -16,28 +16,9 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import asyncio
-from asyncio import Transport, BaseTransport, WriteTransport, ReadTransport, Protocol
-from dataclasses import dataclass, InitVar
-
-from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
+from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 
 
-@dataclass
-class TCPTransport(Plc4xBaseTransport):
-    """
-    Wrapper for the TCP Transport
-    """
-
-    host: str = "127.0.0.1"
-    port: int = -1
-    protocol_factory: () = None
-
-    async def connect(self):
-        loop = asyncio.get_running_loop()
-        coro = loop.create_connection(self.protocol_factory, self.host, self.port)
-        self._transport, self._protocol = await coro
-
-    def write(self, data):
-        self._transport.write(data)
-
+def test_configuration_standard():
+    config = PlcConfiguration("profibus:raw://127.0.0.1:4664&host=localhost")
+    assert config

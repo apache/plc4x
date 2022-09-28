@@ -28,8 +28,10 @@ from plc4py.utils.GenericTypes import GenericGenerator
 
 
 class PlcConnection(GenericGenerator):
+
     def __init__(self, url: str):
         self.url = url
+        self._configuration = PlcConfiguration(url)
 
     @abstractmethod
     def connect(self) -> None:

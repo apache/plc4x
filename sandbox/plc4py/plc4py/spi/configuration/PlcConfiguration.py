@@ -16,13 +16,31 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import ABC
-from typing import TypeVar, Generic
-
-from plc4py.spi.messages.ChannelMessage import ChannelMessage
-
-T = TypeVar("T", bound=ChannelMessage)
+import re
+from dataclasses import InitVar, dataclass, field
 
 
-class Plc4xProtocolBase(Generic[T], ABC):
-    pass
+@dataclass
+class PlcConfiguration:
+    url: InitVar[str]
+    protocol: str = None
+    transport: str = None
+    host: str = None
+    port: int = None
+    params: dict[str, str] = field(default_factory=lambda: {})
+
+    def __post_init__(self, url):
+        self._parse_configuration(url)
+
+    def _parse_configuration(self, url):
+        regex = r"^(?P<protocol>[\w]*)(:(?P<transport>[\w]*))?:\/\/(?P<host>[\d+.]*):(?P<port>\d+)(\&([\w]*=[\w]*))+"
+
+        matches = re.search(regex, url)
+        protocol = matches.group('protocol')
+        transport = matches.group('transport')
+        host = matches.group('host')
+        port = matches.group('port')
+        print("Protocol: ", matches.group('protocol'))
+
+
+

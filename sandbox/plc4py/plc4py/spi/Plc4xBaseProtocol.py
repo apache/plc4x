@@ -16,28 +16,26 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import asyncio
-from asyncio import Transport, BaseTransport, WriteTransport, ReadTransport, Protocol
-from dataclasses import dataclass, InitVar
+from abc import ABC
+from asyncio import Protocol, Future
+from dataclasses import dataclass
+from typing import TypeVar, Generic
 
-from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
+from plc4py.spi.messages.ChannelMessage import ChannelMessage
 
+T = TypeVar("T", bound=ChannelMessage)
 
 @dataclass
-class TCPTransport(Plc4xBaseTransport):
-    """
-    Wrapper for the TCP Transport
-    """
+class Plc4xBaseProtocol(Protocol, Generic[T], ABC):
+    handler: Future
+    connected: bool = False
 
-    host: str = "127.0.0.1"
-    port: int = -1
-    protocol_factory: () = None
+    def data_received(self, data) -> None:
+        self.handler.set_result(data)
 
-    async def connect(self):
-        loop = asyncio.get_running_loop()
-        coro = loop.create_connection(self.protocol_factory, self.host, self.port)
-        self._transport, self._protocol = await coro
+    def connection_made(self):
+        self.connected = True
 
-    def write(self, data):
-        self._transport.write(data)
-
+    def connection_lost(self, exc: Exception | None) -> None:
+        self.connected = False
+        raise exc

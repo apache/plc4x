@@ -26,19 +26,23 @@ from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.messages.PlcResponse import PlcResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
+from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
+from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
 class ModbusConnection(PlcConnection):
     """A hook implementation namespace."""
+    _transport: TCPTransport = None
 
     def __init__(self, url: str):
         super().__init__(url)
+
 
     def connect(self):
         """
         Establishes the connection to the remote PLC.
         """
-        pass
+        self._transport = TCPTransport(protocol_factory=lambda: ModbusProtocol(), host=HOST, port=PORT)
 
     def is_connected(self) -> bool:
         """
