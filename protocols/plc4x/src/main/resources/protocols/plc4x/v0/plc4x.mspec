@@ -119,17 +119,17 @@
             [reserved uint 7                     '0x00'                          ]
             [simple   bit                        value                           ]
         ]
-        ['BYTE'          List
-            [array    bit                        value     count '8'             ]
+        ['BYTE'          BYTE
+            [simple   uint 8                     value                           ]
         ]
-        ['WORD'          List
-            [array    bit                        value     count '16'            ]
+        ['WORD'          WORD
+            [simple   uint 16                    value                           ]
         ]
-        ['DWORD'         List
-            [array    bit                        value     count '32'            ]
+        ['DWORD'         DWORD
+            [simple   uint 32                    value                           ]
         ]
-        ['LWORD'         List
-            [array    bit                        value     count '64'            ]
+        ['LWORD'         LWORD
+            [simple   uint 64                    value                           ]
         ]
 
         // Unsigned Integers

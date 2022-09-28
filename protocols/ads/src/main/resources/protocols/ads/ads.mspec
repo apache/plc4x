@@ -397,19 +397,19 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['BYTE' BitString
+        ['BYTE' BYTE
             [simple uint 8 value]
         ]
         // 2 byte (16 bit)
-        ['WORD' BitString
+        ['WORD' WORD
             [simple uint 16 value]
         ]
         // 4 byte (32 bit)
-        ['DWORD' BitString
+        ['DWORD' DWORD
             [simple uint 32 value]
         ]
         // 8 byte (64 bit)
-        ['LWORD' BitString
+        ['LWORD' LWORD
             [simple uint 64 value]
         ]
 

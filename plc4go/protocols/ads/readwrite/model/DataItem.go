@@ -45,38 +45,38 @@ func DataItemParse(readBuffer utils.ReadBuffer, plcValueType PlcValueType, strin
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
-	case plcValueType == PlcValueType_BYTE: // BitString
+	case plcValueType == PlcValueType_BYTE: // BYTE
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcBitString(value), nil
-	case plcValueType == PlcValueType_WORD: // BitString
+		return values.NewPlcBYTE(value), nil
+	case plcValueType == PlcValueType_WORD: // WORD
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcBitString(value), nil
-	case plcValueType == PlcValueType_DWORD: // BitString
+		return values.NewPlcWORD(value), nil
+	case plcValueType == PlcValueType_DWORD: // DWORD
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcBitString(value), nil
-	case plcValueType == PlcValueType_LWORD: // BitString
+		return values.NewPlcDWORD(value), nil
+	case plcValueType == PlcValueType_LWORD: // LWORD
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcBitString(value), nil
+		return values.NewPlcLWORD(value), nil
 	case plcValueType == PlcValueType_SINT: // SINT
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
@@ -266,22 +266,22 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, plcVal
 		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case plcValueType == PlcValueType_BYTE: // BitString
+	case plcValueType == PlcValueType_BYTE: // BYTE
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case plcValueType == PlcValueType_WORD: // BitString
+	case plcValueType == PlcValueType_WORD: // WORD
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case plcValueType == PlcValueType_DWORD: // BitString
+	case plcValueType == PlcValueType_DWORD: // DWORD
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case plcValueType == PlcValueType_LWORD: // BitString
+	case plcValueType == PlcValueType_LWORD: // LWORD
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")

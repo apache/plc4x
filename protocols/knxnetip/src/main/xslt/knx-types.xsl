@@ -119,19 +119,19 @@
             [reserved uint 7 '0x00']
             [simple   bit    value]
         ]
-        ['BYTE' BitString
+        ['BYTE' BYTE
             [reserved uint 8    '0x00']
             [simple   uint 8    value ]
         ]
-        ['WORD' BitString
+        ['WORD' WORD
             [reserved uint 8    '0x00']
             [simple   uint 16    value]
         ]
-        ['DWORD' BitString
+        ['DWORD' DWORD
             [reserved uint 8    '0x00']
             [simple   uint 32    value]
         ]
-        ['LWORD' BitString
+        ['LWORD' LWORD
             [reserved uint 8    '0x00']
             [simple   uint 64    value]
         ]

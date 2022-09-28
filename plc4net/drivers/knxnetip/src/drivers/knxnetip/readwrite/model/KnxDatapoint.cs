@@ -50,7 +50,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.BYTE ) { // BitString
+            } else if( datapointType == KnxDatapointType.BYTE ) { // BYTE
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -63,8 +63,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadByte("", 8);
 
-                return new PlcBitString(value);
-            } else if( datapointType == KnxDatapointType.WORD ) { // BitString
+                return new PlcBYTE(value);
+            } else if( datapointType == KnxDatapointType.WORD ) { // WORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -77,8 +77,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadUshort("", 16);
 
-                return new PlcBitString(value);
-            } else if( datapointType == KnxDatapointType.DWORD ) { // BitString
+                return new PlcWORD(value);
+            } else if( datapointType == KnxDatapointType.DWORD ) { // DWORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -91,8 +91,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadUint("", 32);
 
-                return new PlcBitString(value);
-            } else if( datapointType == KnxDatapointType.LWORD ) { // BitString
+                return new PlcDWORD(value);
+            } else if( datapointType == KnxDatapointType.LWORD ) { // LWORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -105,7 +105,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadUlong("", 64);
 
-                return new PlcBitString(value);
+                return new PlcLWORD(value);
             } else if( datapointType == KnxDatapointType.USINT ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -6541,7 +6541,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.BYTE ) { // BitString
+        } else if( datapointType == KnxDatapointType.BYTE ) { // BYTE
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6550,7 +6550,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.WORD ) { // BitString
+        } else if( datapointType == KnxDatapointType.WORD ) { // WORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6559,7 +6559,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DWORD ) { // BitString
+        } else if( datapointType == KnxDatapointType.DWORD ) { // DWORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6568,7 +6568,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.LWORD ) { // BitString
+        } else if( datapointType == KnxDatapointType.LWORD ) { // LWORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
