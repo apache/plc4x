@@ -25,9 +25,10 @@ import (
 	"math/rand"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcConsumerRegistration
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int
-	consumer      model.PlcSubscriptionEventConsumer
+	consumer      model.PlcSubscriptionEventConsumer `ignore:"true"` // Function not renderable
 	plcSubscriber spi.PlcSubscriber
 	handles       []model.PlcSubscriptionHandle
 }

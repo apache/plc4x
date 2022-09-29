@@ -22,10 +22,9 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadResponse
 type DefaultPlcReadResponse struct {
 	DefaultResponse
 	request model.PlcReadRequest
@@ -33,91 +32,28 @@ type DefaultPlcReadResponse struct {
 }
 
 func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse {
-	return DefaultPlcReadResponse{
+	return &DefaultPlcReadResponse{
 		DefaultResponse: NewDefaultResponse(responseCodes),
 		request:         request,
 		values:          values,
 	}
 }
 
-func (m DefaultPlcReadResponse) GetFieldNames() []string {
+func (d *DefaultPlcReadResponse) GetFieldNames() []string {
 	var fieldNames []string
 	// We take the field names from the request to keep order as map is not ordered
-	for _, name := range m.request.GetFieldNames() {
-		if _, ok := m.values[name]; ok {
+	for _, name := range d.request.GetFieldNames() {
+		if _, ok := d.values[name]; ok {
 			fieldNames = append(fieldNames, name)
 		}
 	}
 	return fieldNames
 }
 
-func (m DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {
-	return m.request
+func (d *DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {
+	return d.request
 }
 
-func (m DefaultPlcReadResponse) GetValue(name string) values.PlcValue {
-	return m.values[name]
-}
-
-func (m DefaultPlcReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcReadResponse"); err != nil {
-		return err
-	}
-
-	if request, ok := m.request.(utils.Serializable); ok {
-		if err := request.Serialize(writeBuffer); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PushContext("values"); err != nil {
-		return err
-	}
-	for _, fieldName := range m.GetFieldNames() {
-		if err := writeBuffer.PushContext(fieldName); err != nil {
-			return err
-		}
-		if err := writeBuffer.PushContext("ResponseItem"); err != nil {
-			return err
-		}
-		codeName := m.GetResponseCode(fieldName).GetName()
-		if err := writeBuffer.WriteString("result", uint32(len([]rune(codeName))*8), "UTF-8", codeName); err != nil {
-			return err
-		}
-
-		valueResponse := m.GetValue(fieldName)
-		if _, ok := valueResponse.(values2.PlcNULL); ok {
-			// We ignore nulls
-			if err := writeBuffer.PopContext("ResponseItem"); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext(fieldName); err != nil {
-				return err
-			}
-			continue
-		}
-		if err := valueResponse.(utils.Serializable).Serialize(writeBuffer); err != nil {
-			return err
-		}
-		if err := writeBuffer.PopContext("ResponseItem"); err != nil {
-			return err
-		}
-		if err := writeBuffer.PopContext(fieldName); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("values"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcReadResponse"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m DefaultPlcReadResponse) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
+func (d *DefaultPlcReadResponse) GetValue(name string) values.PlcValue {
+	return d.values[name]
 }

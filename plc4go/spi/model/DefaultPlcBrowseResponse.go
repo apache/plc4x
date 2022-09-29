@@ -25,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// TODO: use generator once we figured out how to render results with ast
 type DefaultPlcBrowseResponse struct {
 	DefaultResponse
 	request model.PlcBrowseRequest

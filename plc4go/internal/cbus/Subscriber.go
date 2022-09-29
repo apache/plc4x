@@ -47,7 +47,7 @@ func NewSubscriber(connection *Connection) *Subscriber {
 func (m *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
-		internalPlcSubscriptionRequest := subscriptionRequest.(spiModel.DefaultPlcSubscriptionRequest)
+		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.
 		m.connection.addSubscriber(m)
@@ -219,7 +219,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
 				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, sources, plcValues)
-				consumer(event)
+				consumer(&event)
 			}
 		}
 	}
@@ -358,7 +358,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
 				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, sources, plcValues)
-				consumer(event)
+				consumer(&event)
 			}
 		}
 	}

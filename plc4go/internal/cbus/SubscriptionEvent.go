@@ -44,7 +44,7 @@ func NewSubscriptionEvent(
 		address: address,
 		sources: sources,
 	}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(subscriptionEvent, fields, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, fields, types, intervals, responseCodes, values)
 	return subscriptionEvent
 }
 
