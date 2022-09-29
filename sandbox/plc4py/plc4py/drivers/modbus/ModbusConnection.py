@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
+import asyncio
 from typing import Type, Awaitable
 
 import plc4py
@@ -42,7 +42,10 @@ class ModbusConnection(PlcConnection[ModbusConfiguration]):
         """
         Establishes the connection to the remote PLC.
         """
-        self._transport = TCPTransport(protocol_factory=lambda: ModbusProtocol(),
+        loop = asyncio.get_running_loop()
+        connection_future = loop.create_future()
+        # TODO:- Look at removing this future.
+        self._transport = TCPTransport(protocol_factory=lambda: ModbusProtocol(connection_future),
                                        host=self._configuration.host,
                                        port=self._configuration.port)
         await self._transport.connect()
