@@ -37,6 +37,7 @@ from plc4py.api.messages.PlcRequest import (
 from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcResponse
 from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
+from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcBOOL import PlcBOOL
@@ -92,7 +93,7 @@ class MockDevice:
 
 
 @dataclass
-class MockConnection(PlcConnection, PlcReader):
+class MockConnection(PlcConnection[PlcConfiguration], PlcReader):
     _is_connected: bool = False
     device: MockDevice = field(default_factory=lambda: MockDevice())
 

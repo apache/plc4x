@@ -26,16 +26,17 @@ from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.messages.PlcResponse import PlcResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
+from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class ModbusConnection(PlcConnection):
+class ModbusConnection(PlcConnection[ModbusConfiguration]):
     """A hook implementation namespace."""
     _transport: TCPTransport = None
 
     def __init__(self, url: str):
-        super().__init__(url)
+        super().__init__(url, ModbusConfiguration)
 
     async def connect(self):
         """

@@ -17,8 +17,8 @@
 # under the License.
 #
 import asyncio
-from abc import abstractmethod
-from typing import Awaitable
+from abc import abstractmethod, ABC
+from typing import Awaitable, Generic, TypeVar, Type
 
 from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
@@ -27,12 +27,14 @@ from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 from plc4py.utils.GenericTypes import GenericGenerator
 
+T = TypeVar("T", bound=PlcConfiguration)
 
-class PlcConnection(GenericGenerator):
 
-    def __init__(self, url: str):
+class PlcConnection(GenericGenerator, Generic[T], ABC):
+
+    def __init__(self, url: str, config_class: Type[T]):
         self.url = url
-        self._configuration = PlcConfiguration(url)
+        self._configuration = config_class(url)
 
     @abstractmethod
     def connect(self) -> None:
