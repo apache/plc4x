@@ -42,7 +42,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	// TODO: handle ctx
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
-		internalPlcSubscriptionRequest := subscriptionRequest.(spiModel.DefaultPlcSubscriptionRequest)
+		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.
 		m.connection.addSubscriber(m)

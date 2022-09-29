@@ -37,7 +37,7 @@ func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
 	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{addresses: addresses}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(subscriptionEvent, fields, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, fields, types, intervals, responseCodes, values)
 	return subscriptionEvent
 }
 

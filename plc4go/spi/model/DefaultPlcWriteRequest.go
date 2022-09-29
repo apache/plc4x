@@ -25,12 +25,11 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"time"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestBuilder
 type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter
 	fieldHandler            spi.PlcFieldHandler
@@ -115,6 +114,7 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 	return NewDefaultPlcWriteRequest(m.fields, m.fieldNames, plcValues, m.writer, m.writeRequestInterceptor), nil
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {
 	DefaultRequest
 	values                  map[string]values.PlcValue
@@ -123,31 +123,31 @@ type DefaultPlcWriteRequest struct {
 }
 
 func NewDefaultPlcWriteRequest(fields map[string]model.PlcField, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) model.PlcWriteRequest {
-	return DefaultPlcWriteRequest{NewDefaultRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
+	return &DefaultPlcWriteRequest{NewDefaultRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
 }
 
-func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
-	return m.ExecuteWithContext(context.TODO())
+func (d *DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
+	return d.ExecuteWithContext(context.TODO())
 }
 
-func (m DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcWriteRequestResult {
+func (d *DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcWriteRequestResult {
 	// Shortcut, if no interceptor is defined
-	if m.writeRequestInterceptor == nil {
-		return m.writer.Write(ctx, m)
+	if d.writeRequestInterceptor == nil {
+		return d.writer.Write(ctx, d)
 	}
 
 	// Split the requests up into multiple ones.
-	writeRequests := m.writeRequestInterceptor.InterceptWriteRequest(ctx, m)
+	writeRequests := d.writeRequestInterceptor.InterceptWriteRequest(ctx, d)
 	// Shortcut for single-request-requests
 	if len(writeRequests) == 1 {
-		return m.writer.Write(ctx, writeRequests[0])
+		return d.writer.Write(ctx, writeRequests[0])
 	}
 	// Create a sub-result-channel slice
 	var subResultChannels []<-chan model.PlcWriteRequestResult
 
 	// Iterate over all requests and add the result-channels to the list
 	for _, subRequest := range writeRequests {
-		subResultChannels = append(subResultChannels, m.writer.Write(ctx, subRequest))
+		subResultChannels = append(subResultChannels, d.writer.Write(ctx, subRequest))
 		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
 		time.Sleep(time.Millisecond * 4)
 	}
@@ -160,14 +160,14 @@ func (m DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan m
 		for _, subResultChannel := range subResultChannels {
 			select {
 			case <-ctx.Done():
-				resultChannel <- &DefaultPlcWriteRequestResult{Request: m, Err: ctx.Err()}
+				resultChannel <- &DefaultPlcWriteRequestResult{Request: d, Err: ctx.Err()}
 				return
 			case subResult := <-subResultChannel:
 				subResults = append(subResults, subResult)
 			}
 		}
 		// As soon as all are done, process the results
-		result := m.writeRequestInterceptor.ProcessWriteResponses(ctx, m, subResults)
+		result := d.writeRequestInterceptor.ProcessWriteResponses(ctx, d, subResults)
 		// Return the final result
 		resultChannel <- result
 	}()
@@ -175,76 +175,14 @@ func (m DefaultPlcWriteRequest) ExecuteWithContext(ctx context.Context) <-chan m
 	return resultChannel
 }
 
-func (m DefaultPlcWriteRequest) GetWriter() spi.PlcWriter {
-	return m.writer
+func (d *DefaultPlcWriteRequest) GetWriter() spi.PlcWriter {
+	return d.writer
 }
 
-func (m DefaultPlcWriteRequest) GetWriteRequestInterceptor() interceptors.WriteRequestInterceptor {
-	return m.writeRequestInterceptor
+func (d *DefaultPlcWriteRequest) GetWriteRequestInterceptor() interceptors.WriteRequestInterceptor {
+	return d.writeRequestInterceptor
 }
 
-func (m DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {
-	return m.values[name]
-}
-
-func (m DefaultPlcWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcWriteRequest"); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.PushContext("fields"); err != nil {
-		return err
-	}
-	for _, fieldName := range m.GetFieldNames() {
-		if err := writeBuffer.PushContext(fieldName); err != nil {
-			return err
-		}
-		field := m.GetField(fieldName)
-		if serializableField, ok := field.(utils.Serializable); ok {
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-		} else {
-			return errors.New("Error serializing. Field doesn't implement Serializable")
-		}
-		value := m.GetValue(fieldName)
-		switch value.(type) {
-		case spiValues.PlcList:
-			listValue, ok := value.(spiValues.PlcList)
-			if !ok {
-				return errors.New("couldn't cast PlcValue to PlcList")
-			}
-			for _, subValue := range listValue.Values {
-				if !subValue.IsString() {
-					return errors.New("value not serializable to string")
-				}
-				subValue.GetString()
-				if err := writeBuffer.WriteString("value", uint32(len([]rune(subValue.GetString()))*8), "UTF-8", subValue.GetString()); err != nil {
-					return err
-				}
-			}
-		default:
-			if err := writeBuffer.WriteString("value", uint32(len([]rune(value.GetString()))*8), "UTF-8", value.GetString()); err != nil {
-				return err
-			}
-		}
-		if err := writeBuffer.PopContext(fieldName); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("fields"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcWriteRequest"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m DefaultPlcWriteRequest) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
+func (d *DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {
+	return d.values[name]
 }

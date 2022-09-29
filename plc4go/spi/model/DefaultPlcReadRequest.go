@@ -24,11 +24,11 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"time"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader
 	fieldHandler           spi.PlcFieldHandler
@@ -79,6 +79,7 @@ func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
 	return NewDefaultPlcReadRequest(m.fields, m.fieldNames, m.reader, m.readRequestInterceptor), nil
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {
 	DefaultRequest
 	reader                 spi.PlcReader
@@ -86,42 +87,42 @@ type DefaultPlcReadRequest struct {
 }
 
 func NewDefaultPlcReadRequest(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) model.PlcReadRequest {
-	return DefaultPlcReadRequest{
+	return &DefaultPlcReadRequest{
 		DefaultRequest:         NewDefaultRequest(fields, fieldNames),
 		reader:                 reader,
 		readRequestInterceptor: readRequestInterceptor,
 	}
 }
 
-func (m DefaultPlcReadRequest) GetReader() spi.PlcReader {
-	return m.reader
+func (d *DefaultPlcReadRequest) GetReader() spi.PlcReader {
+	return d.reader
 }
 
-func (m DefaultPlcReadRequest) GetReadRequestInterceptor() interceptors.ReadRequestInterceptor {
-	return m.readRequestInterceptor
+func (d *DefaultPlcReadRequest) GetReadRequestInterceptor() interceptors.ReadRequestInterceptor {
+	return d.readRequestInterceptor
 }
-func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
-	return m.ExecuteWithContext(context.TODO())
+func (d *DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
+	return d.ExecuteWithContext(context.TODO())
 }
 
-func (m DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcReadRequestResult {
+func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcReadRequestResult {
 	// Shortcut, if no interceptor is defined
-	if m.readRequestInterceptor == nil {
-		return m.reader.Read(ctx, m)
+	if d.readRequestInterceptor == nil {
+		return d.reader.Read(ctx, d)
 	}
 
 	// Split the requests up into multiple ones.
-	readRequests := m.readRequestInterceptor.InterceptReadRequest(ctx, m)
+	readRequests := d.readRequestInterceptor.InterceptReadRequest(ctx, d)
 	// Shortcut for single-request-requests
 	if len(readRequests) == 1 {
-		return m.reader.Read(nil, readRequests[0])
+		return d.reader.Read(nil, readRequests[0])
 	}
 	// Create a sub-result-channel slice
 	var subResultChannels []<-chan model.PlcReadRequestResult
 
 	// Iterate over all requests and add the result-channels to the list
 	for _, subRequest := range readRequests {
-		subResultChannels = append(subResultChannels, m.reader.Read(ctx, subRequest))
+		subResultChannels = append(subResultChannels, d.reader.Read(ctx, subRequest))
 		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
 		time.Sleep(time.Millisecond * 4)
 	}
@@ -134,58 +135,17 @@ func (m DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan mo
 		for _, subResultChannel := range subResultChannels {
 			select {
 			case <-ctx.Done():
-				resultChannel <- &DefaultPlcReadRequestResult{Request: m, Err: ctx.Err()}
+				resultChannel <- &DefaultPlcReadRequestResult{Request: d, Err: ctx.Err()}
 				return
 			case subResult := <-subResultChannel:
 				subResults = append(subResults, subResult)
 			}
 		}
 		// As soon as all are done, process the results
-		result := m.readRequestInterceptor.ProcessReadResponses(ctx, m, subResults)
+		result := d.readRequestInterceptor.ProcessReadResponses(ctx, d, subResults)
 		// Return the final result
 		resultChannel <- result
 	}()
 
 	return resultChannel
-}
-
-func (m DefaultPlcReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcReadRequest"); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.PushContext("fields"); err != nil {
-		return err
-	}
-	for _, fieldName := range m.GetFieldNames() {
-		if err := writeBuffer.PushContext(fieldName); err != nil {
-			return err
-		}
-		field := m.GetField(fieldName)
-		if serializableField, ok := field.(utils.Serializable); ok {
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-		} else {
-			return errors.Errorf("Error serializing. Field %T doesn't implement Serializable", field)
-		}
-		if err := writeBuffer.PopContext(fieldName); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("fields"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcReadRequest"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m DefaultPlcReadRequest) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

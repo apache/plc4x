@@ -20,17 +20,16 @@
 package model
 
 import (
-	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultRequest
 type DefaultRequest struct {
 	fields     map[string]model.PlcField
 	fieldNames []string
 }
 
-func (m DefaultRequest) IsAPlcMessage() bool {
+func (d *DefaultRequest) IsAPlcMessage() bool {
 	return true
 }
 
@@ -38,67 +37,13 @@ func NewDefaultRequest(Fields map[string]model.PlcField, FieldNames []string) De
 	return DefaultRequest{Fields, FieldNames}
 }
 
-func (m DefaultRequest) GetFieldNames() []string {
-	return m.fieldNames
+func (d *DefaultRequest) GetFieldNames() []string {
+	return d.fieldNames
 }
 
-func (m DefaultRequest) GetField(name string) model.PlcField {
-	if field, ok := m.fields[name]; ok {
+func (d *DefaultRequest) GetField(name string) model.PlcField {
+	if field, ok := d.fields[name]; ok {
 		return field
 	}
 	return nil
-}
-
-func (m DefaultRequest) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("Request"); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.PushContext("fields"); err != nil {
-		return err
-	}
-	for fieldName, field := range m.fields {
-		if serializableField, ok := field.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext(fieldName); err != nil {
-				return err
-			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext(fieldName); err != nil {
-				return err
-			}
-		} else {
-			fieldString := fmt.Sprintf("%v", field)
-			if err := writeBuffer.WriteString(fieldName, uint32(len(fieldString)*8), "UTF-8", fieldString); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PopContext("fields"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("fieldNames"); err != nil {
-		return err
-	}
-	for _, name := range m.fieldNames {
-		if err := writeBuffer.WriteString("value", uint32(len(name)*8), "UTF-8", name); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("fieldNames"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("Request"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m DefaultRequest) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

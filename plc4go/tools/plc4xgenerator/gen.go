@@ -205,22 +205,22 @@ func (g *Generator) generate(typeName string) {
 		log.Fatalf("no fields defined for type %s", typeName)
 	}
 	// TODO: for now we remove Default from the start (maybe move that to an option)
-	logicalTypeName := strings.TrimPrefix(typeName, "Default")
+	logicalTypeName := "\"" + strings.TrimPrefix(typeName, "Default") + "\""
 
 	// Generate code that will fail if the constants change value.
 	g.Printf("func (d *%s) Serialize(writeBuffer utils.WriteBuffer) error {\n", typeName)
-	g.Printf("\tif err := writeBuffer.PushContext(\"%s\"); err != nil {\n", logicalTypeName)
+	g.Printf("\tif err := writeBuffer.PushContext(%s); err != nil {\n", logicalTypeName)
 	g.Printf("\t\treturn err\n")
 	g.Printf("\t}\n")
 	for _, field := range fields {
 		if field.isDelegate {
 			g.Printf("\t\t\tif err := d.%s.Serialize(writeBuffer); err != nil {\n", field.fieldType.(*ast.Ident).Name)
 			g.Printf("\t\t\t\treturn err\n")
-			g.Printf("\t\t\t}")
+			g.Printf("\t\t\t}\n")
 			continue
 		}
 		fieldName := field.name
-		fieldNameUntitled := unTitle(fieldName)
+		fieldNameUntitled := "\"" + unTitle(fieldName) + "\""
 		switch fieldType := field.fieldType.(type) {
 		case *ast.SelectorExpr:
 			g.Printf(serializableFieldTemplate, "d."+field.name, fieldNameUntitled)
@@ -233,57 +233,84 @@ func (g *Generator) generate(typeName string) {
 			case "error":
 				g.Printf(errorFieldSerialize, "d."+field.name, fieldNameUntitled)
 			default:
-				fmt.Printf("no support implemented %v\n", fieldType)
+				fmt.Printf("\t no support implemented %v\n", fieldType)
+				g.Printf("_value := fmt.Sprintf(\"%%v\", d.%s)\n", fieldName)
+				g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 			}
 		case *ast.ArrayType:
-			g.Printf("if err := writeBuffer.PushContext(\"%s\", utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
+			g.Printf("if err := writeBuffer.PushContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 			g.Printf("for _, elem := range d.%s {", field.name)
 			switch eltType := fieldType.Elt.(type) {
 			case *ast.SelectorExpr:
-				g.Printf(serializableFieldTemplate, "elem", "value")
+				g.Printf("\n\t\tvar elem interface{} = elem\n")
+				g.Printf(serializableFieldTemplate, "elem", "\"value\"")
 			case *ast.Ident:
 				switch eltType.Name {
 				case "bool":
-					g.Printf(boolFieldSerialize, "elem", "")
+					g.Printf(boolFieldSerialize, "elem", "\"\"")
 				case "string":
-					g.Printf(stringFieldSerialize, "elem", "")
+					g.Printf(stringFieldSerialize, "elem", "\"\"")
 				case "error":
-					g.Printf(errorFieldSerialize, "elem", "")
+					g.Printf(errorFieldSerialize, "elem", "\"\"")
 				default:
-					fmt.Printf("no support implemented %v\n", fieldType)
+					fmt.Printf("\t no support implemented %v\n", fieldType)
+					g.Printf("_value := fmt.Sprintf(\"%%v\", elem)\n")
+					g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 				}
 			}
 			g.Printf("}\n")
-			g.Printf("if err := writeBuffer.PopContext(\"%s\", utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
+			g.Printf("if err := writeBuffer.PopContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 		case *ast.MapType:
 			if ident, ok := fieldType.Key.(*ast.Ident); !ok || ident.Name != "string" {
 				fmt.Printf("Only string types are supported for maps right now")
 			}
-			g.Printf("if err := writeBuffer.PushContext(\"%s\", utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
+			g.Printf("if err := writeBuffer.PushContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 			// TODO: we use serializable or strings as we don't want to over-complex this
-			g.Printf("for name, elemValue := range d.%s {\n", fieldName)
-			g.Printf("\t\tif serializable, ok := elemValue.(utils.Serializable); ok {\n")
-			g.Printf("\t\t\tif err := writeBuffer.PushContext(name); err != nil {\n")
-			g.Printf("\t\t\t\treturn err\n")
-			g.Printf("\t\t\t}\n")
-			g.Printf("\t\t\tif err := serializable.Serialize(writeBuffer); err != nil {\n")
-			g.Printf("\t\t\t\treturn err\n")
-			g.Printf("\t\t\t}\n")
-			g.Printf("\t\t\tif err := writeBuffer.PopContext(name); err != nil {\n")
-			g.Printf("\t\t\t\treturn err\n")
-			g.Printf("\t\t\t}\n")
-			g.Printf("\t\t} else {\n")
-			g.Printf("\t\t\telemValueAsString := fmt.Sprintf(\"%%v\", elemValue)\n")
-			g.Printf("\t\t\tif err := writeBuffer.WriteString(name, uint32(len(elemValueAsString)*8), \"UTF-8\", elemValueAsString); err != nil {\n")
-			g.Printf("\t\t\t\treturn err\n")
-			g.Printf("\t\t\t}\n")
-			g.Printf("\t\t}\n\t}\n")
-			g.Printf("if err := writeBuffer.PopContext(\"%s\", utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
+			g.Printf("for name, elem := range d.%s {\n", fieldName)
+			switch eltType := fieldType.Value.(type) {
+			case *ast.SelectorExpr:
+				g.Printf("\n\t\tvar elem interface{} = elem\n")
+				g.Printf("\t\tif serializable, ok := elem.(utils.Serializable); ok {\n")
+				g.Printf("\t\t\tif err := writeBuffer.PushContext(name); err != nil {\n")
+				g.Printf("\t\t\t\treturn err\n")
+				g.Printf("\t\t\t}\n")
+				g.Printf("\t\t\tif err := serializable.Serialize(writeBuffer); err != nil {\n")
+				g.Printf("\t\t\t\treturn err\n")
+				g.Printf("\t\t\t}\n")
+				g.Printf("\t\t\tif err := writeBuffer.PopContext(name); err != nil {\n")
+				g.Printf("\t\t\t\treturn err\n")
+				g.Printf("\t\t\t}\n")
+				g.Printf("\t\t} else {\n")
+				g.Printf("\t\t\telemAsString := fmt.Sprintf(\"%%v\", elem)\n")
+				g.Printf("\t\t\tif err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), \"UTF-8\", elemAsString); err != nil {\n")
+				g.Printf("\t\t\t\treturn err\n")
+				g.Printf("\t\t\t}\n")
+				g.Printf("\t\t}\n")
+			case *ast.Ident:
+				switch eltType.Name {
+				case "bool":
+					g.Printf(boolFieldSerialize, "elem", "name")
+				case "string":
+					g.Printf(stringFieldSerialize, "elem", "name")
+				case "error":
+					g.Printf(errorFieldSerialize, "elem", "name")
+				default:
+					fmt.Printf("\t no support implemented %v\n", fieldType)
+					g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
+					g.Printf(stringFieldSerialize, "_value", "name")
+				}
+			default:
+				fmt.Printf("\t no support implemented %v\n", fieldType)
+				g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
+				g.Printf(stringFieldSerialize, "_value", "name")
+			}
+			g.Printf("\t}\n")
+			g.Printf("if err := writeBuffer.PopContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 		default:
 			fmt.Printf("no support implemented %#v\n", fieldType)
 		}
 	}
-	g.Printf("\tif err := writeBuffer.PopContext(\"%s\"); err != nil {\n", logicalTypeName)
+	g.Printf("\tif err := writeBuffer.PopContext(%s); err != nil {\n", logicalTypeName)
 	g.Printf("\t\treturn err\n")
 	g.Printf("\t}\n")
 	g.Printf("\treturn nil\n")
@@ -334,6 +361,16 @@ func (f *File) genDecl(node ast.Node) bool {
 		}
 		fmt.Printf("Handling %s\n", typeSpec.Name.Name)
 		for _, field := range structDecl.Fields.List {
+			if field.Tag != nil && field.Tag.Value == "`ignore:\"true\"`" {
+				var name string
+				if len(field.Names) != 0 {
+					name = field.Names[0].Name
+				} else {
+					name = "<delegate>"
+				}
+				fmt.Printf("\t ignoring field %s %v\n", name, field.Type)
+				continue
+			}
 			if len(field.Names) == 0 {
 				fmt.Printf("\t adding delegate\n")
 				if _, ok := field.Type.(*ast.Ident); ok {
@@ -390,18 +427,18 @@ func (d *%s) String() string {
 var serializableFieldTemplate = `
 	if %[1]s != nil {
 		if serializableField, ok := %[1]s.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("%[2]s"); err != nil {
+			if err := writeBuffer.PushContext(%[2]s); err != nil {
 				return err
 			}
 			if err := serializableField.Serialize(writeBuffer); err != nil {
 				return err
 			}
-			if err := writeBuffer.PopContext("%[2]s"); err != nil {
+			if err := writeBuffer.PopContext(%[2]s); err != nil {
 				return err
 			}
 		} else {
 			stringValue := fmt.Sprintf("%%v", %[1]s)
-			if err := writeBuffer.WriteString("%[2]s", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString(%[2]s, uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
 				return err
 			}
 		}
@@ -409,20 +446,20 @@ var serializableFieldTemplate = `
 `
 
 var boolFieldSerialize = `
-	if err := writeBuffer.WriteBit("%[2]s", %[1]s); err != nil {
+	if err := writeBuffer.WriteBit(%[2]s, %[1]s); err != nil {
 		return err
 	}
 `
 
 var stringFieldSerialize = `
-	if err := writeBuffer.WriteString("%[2]s", uint32(len(%[1]s)*8), "UTF-8", %[1]s); err != nil {
+	if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s)*8), "UTF-8", %[1]s); err != nil {
 		return err
 	}
 `
 
 var errorFieldSerialize = `
 	if %[1]s != nil {
-		if err := writeBuffer.WriteString("%[2]s", uint32(len(%[1]s.Error())*8), "UTF-8", %[1]s.Error()); err != nil {
+		if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s.Error())*8), "UTF-8", %[1]s.Error()); err != nil {
 			return err
 		}
 	}

@@ -46,7 +46,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	// TODO: handle context
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
-		internalPlcSubscriptionRequest := subscriptionRequest.(spiModel.DefaultPlcSubscriptionRequest)
+		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
 		// Add this subscriber to the connection.
 		m.connection.addSubscriber(m)
@@ -159,7 +159,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 				}
 			}
 			event := NewSubscriptionEvent(fields, types, intervals, responseCodes, addresses, plcValues)
-			consumer(event)
+			consumer(&event)
 		}
 	}
 }

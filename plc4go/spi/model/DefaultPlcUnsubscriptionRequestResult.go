@@ -21,6 +21,7 @@ package model
 
 import "github.com/apache/plc4x/plc4go/pkg/api/model"
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequestResult
 type DefaultPlcUnsubscriptionRequestResult struct {
 	Request  model.PlcUnsubscriptionRequest
 	Response model.PlcUnsubscriptionResponse

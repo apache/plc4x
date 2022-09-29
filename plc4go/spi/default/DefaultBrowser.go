@@ -74,9 +74,10 @@ func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseReques
 			field := browseRequest.GetField(fieldName)
 			responseCodes[fieldName], results[fieldName] = m.BrowseField(ctx, browseRequest, interceptor, fieldName, field)
 		}
+		browseResponse := model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &model.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
-			Response: model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes),
+			Response: &browseResponse,
 			Err:      nil,
 		}
 	}()

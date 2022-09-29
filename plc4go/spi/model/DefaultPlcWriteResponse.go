@@ -21,22 +21,22 @@ package model
 
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteResponse
 type DefaultPlcWriteResponse struct {
 	DefaultResponse
 	request model.PlcWriteRequest
 }
 
 func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse {
-	return DefaultPlcWriteResponse{
+	return &DefaultPlcWriteResponse{
 		DefaultResponse: NewDefaultResponse(responseCodes),
 		request:         request,
 	}
 }
 
-func (m DefaultPlcWriteResponse) GetFieldNames() []string {
+func (m *DefaultPlcWriteResponse) GetFieldNames() []string {
 	var fieldNames []string
 	// We take the field names from the request to keep order as map is not ordered
 	for _, name := range m.request.GetFieldNames() {
@@ -47,44 +47,6 @@ func (m DefaultPlcWriteResponse) GetFieldNames() []string {
 	return fieldNames
 }
 
-func (m DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
+func (m *DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
 	return m.request
-}
-
-func (m DefaultPlcWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcWriteResponse"); err != nil {
-		return err
-	}
-
-	if serializableRequest, ok := m.request.(utils.Serializable); ok {
-		if err := serializableRequest.Serialize(writeBuffer); err != nil {
-			return err
-		}
-	}
-
-	if err := writeBuffer.PushContext("fields"); err != nil {
-		return err
-	}
-	for _, fieldName := range m.GetFieldNames() {
-		responseCodeName := m.GetResponseCode(fieldName).GetName()
-		if err := writeBuffer.WriteString(fieldName, uint32(len([]rune(responseCodeName))*8), "UTF-8", responseCodeName); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("fields"); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.PopContext("PlcWriteResponse"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m DefaultPlcWriteResponse) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }
