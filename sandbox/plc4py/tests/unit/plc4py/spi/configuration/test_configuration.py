@@ -19,6 +19,66 @@
 from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 
 
-def test_configuration_standard():
-    config = PlcConfiguration("profibus:raw://127.0.0.1:4664&host=localhost")
-    assert config
+def test_configuration_standard_raw_ip():
+    config = PlcConfiguration("profibus:raw://127.0.0.1:4664&host=localhost&mac=01:02:03:04:05:06")
+    assert config.protocol == "profibus"
+    assert config.transport == "raw"
+    assert config.host == "127.0.0.1"
+    assert config.port == 4664
+    assert config.parameters["host"] == "localhost"
+
+
+def test_configuration_standard_tcp_localhost():
+    config = PlcConfiguration("profibus:tcp://localhost:4664&host=localhost&mac=01:02:03:04:05:06")
+    assert config.protocol == "profibus"
+    assert config.transport == "tcp"
+    assert config.host == "localhost"
+    assert config.port == 4664
+    assert config.parameters["host"] == "localhost"
+
+
+def test_configuration_standard_no_transport():
+    config = PlcConfiguration("profibus://localhost:4664&host=localhost&mac=01:02:03:04:05:06")
+    assert config.protocol == "profibus"
+    assert config.transport == None
+    assert config.host == "localhost"
+    assert config.port == 4664
+    assert config.parameters["host"] == "localhost"
+
+
+def test_configuration_standard_second_parameter():
+    config = PlcConfiguration("profibus://localhost:4664&host=localhost&mac=01:02:03:04:05:06")
+    assert config.protocol == "profibus"
+    assert config.transport == None
+    assert config.host == "localhost"
+    assert config.port == 4664
+    assert config.parameters["host"] == "localhost"
+    assert config.parameters["mac"] == "01:02:03:04:05:06"
+
+
+def test_configuration_standard_no_port():
+    config = PlcConfiguration("profibus://localhost&host=localhost&mac=01:02:03:04:05:06")
+    assert config.protocol == "profibus"
+    assert config.transport == None
+    assert config.host == "localhost"
+    assert config.port == None
+    assert config.parameters["host"] == "localhost"
+    assert config.parameters["mac"] == "01:02:03:04:05:06"
+
+
+def test_configuration_standard_no_parameters():
+    config = PlcConfiguration("profibus://localhost")
+    assert config.protocol == "profibus"
+    assert config.transport == None
+    assert config.host == "localhost"
+    assert config.port == None
+    assert config.parameters == {}
+
+
+def test_configuration_standard_no_parameters():
+    config = PlcConfiguration("eip://127.0.0.1&test=plc4x")
+    assert config.protocol == "eip"
+    assert config.transport == None
+    assert config.host == "127.0.0.1"
+    assert config.port == None
+    assert config.parameters["test"] == "plc4x"

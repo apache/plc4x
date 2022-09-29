@@ -27,20 +27,30 @@ class PlcConfiguration:
     transport: str = None
     host: str = None
     port: int = None
-    params: dict[str, str] = field(default_factory=lambda: {})
+    parameters: dict[str, str] = field(default_factory=lambda: {})
 
     def __post_init__(self, url):
         self._parse_configuration(url)
 
     def _parse_configuration(self, url):
-        regex = r"^(?P<protocol>[\w]*)(:(?P<transport>[\w]*))?:\/\/(?P<host>[\d+.]*):(?P<port>\d+)(\&([\w]*=[\w]*))+"
-
+        regex = r"^(?P<protocol>[\w]*)(:(?P<transport>[\w]*))?:\/\/(?P<host>[\w+.]*)(:(?P<port>\d+))?(?P<parameters>(&{1}([^&=]*={1}[^&=]*))*)"
         matches = re.search(regex, url)
-        protocol = matches.group('protocol')
-        transport = matches.group('transport')
-        host = matches.group('host')
-        port = matches.group('port')
-        print("Protocol: ", matches.group('protocol'))
+
+        self.protocol = matches.group('protocol')
+
+        if matches.group('transport') is not None:
+            self.transport = matches.group('transport')
+
+        self.host = matches.group('host')
+
+        if matches.group('port') is not None:
+            self.port = int(matches.group('port'))
+
+        parameters = matches.group('parameters')
+        if parameters is not None and parameters != "":
+            self.parameters = {item.split("=")[0]: item.split("=")[1] for item in parameters[1:].split("&")}
+
+
 
 
 
