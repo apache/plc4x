@@ -82,7 +82,7 @@ class PlcDriverManager:
 
     def list_drivers(self) -> list[str]:
         """
-        Returns the codes of all of the drivers which are currently registered at the PlcDriverManager
+        Returns the codes of the drivers which are currently registered at the PlcDriverManager
         :return: Set of driver codes for all drivers registered
         """
         return list(self._driverMap.keys())

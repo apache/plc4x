@@ -46,6 +46,10 @@ class Plc4xBaseTransport(Transport):
     def is_reading(self):
         return self._transport.is_reading()
 
+    def is_closing(self):
+        if self._transport is not None:
+            return self._transport.is_closing()
+
     def pause_reading(self):
         self._transport.pause_reading()
 
@@ -77,3 +81,7 @@ class Plc4xBaseTransport(Transport):
 
     def write_eof(self):
         self._transport.write_eof()
+
+    def close(self):
+        if self._transport is not None:
+            self._transport.close()

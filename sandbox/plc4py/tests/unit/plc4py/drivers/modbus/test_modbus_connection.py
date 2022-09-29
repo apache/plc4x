@@ -16,3 +16,12 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from plc4py.PlcDriverManager import PlcDriverManager
+from plc4py.drivers.modbus.ModbusConnection import ModbusConnection
+
+
+async def test_plc_driver_modbus_connect():
+    driver_manager = PlcDriverManager()
+    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
+        await connection.connect()
+        assert connection.is_connected()

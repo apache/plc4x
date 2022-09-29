@@ -37,26 +37,32 @@ class ModbusConnection(PlcConnection):
     def __init__(self, url: str):
         super().__init__(url)
 
-
-    def connect(self):
+    async def connect(self):
         """
         Establishes the connection to the remote PLC.
         """
-        self._transport = TCPTransport(protocol_factory=lambda: ModbusProtocol(), host=HOST, port=PORT)
+        self._transport = TCPTransport(protocol_factory=lambda: ModbusProtocol(),
+                                       host=self._configuration.host,
+                                       port=self._configuration.port)
+        await self._transport.connect()
 
     def is_connected(self) -> bool:
         """
         Indicates if the connection is established to a remote PLC.
         :return: True if connection, False otherwise
         """
-        pass
+        if self._transport is not None:
+            return not self._transport.is_closing()
+        else:
+            return False
 
     def close(self) -> None:
         """
         Closes the connection to the remote PLC.
         :return:
         """
-        pass
+        if self._transport is not None:
+            self._transport.close()
 
     def read_request_builder(self) -> ReadRequestBuilder:
         """

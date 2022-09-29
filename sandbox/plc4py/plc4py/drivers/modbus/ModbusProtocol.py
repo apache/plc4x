@@ -24,5 +24,10 @@ from plc4py.spi.messages.ChannelMessage import ChannelMessage
 
 @dataclass
 class ModbusProtocol(Plc4xBaseProtocol[ChannelMessage]):
-    pass
 
+    def data_received(self, data):
+        # TODO:- Implement Protocol specific stuff
+        pass
+
+    def close(self):
+        pass
