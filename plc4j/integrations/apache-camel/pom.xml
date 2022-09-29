@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.10.1-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-apache-camel</artifactId>
@@ -138,18 +138,18 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -187,61 +187,61 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-canopen</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -257,7 +257,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
