@@ -946,7 +946,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     transaction.endRequest();
                 }));
         } catch (Exception e) {
-            future.completeExceptionally(new PlcException("Error"));
+            future.completeExceptionally(new PlcException("Error", e));
         }
         return future;
     }
