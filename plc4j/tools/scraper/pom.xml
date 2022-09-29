@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-tools</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.10.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-scraper</artifactId>
@@ -73,18 +73,18 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.10.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.10.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.10.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -97,13 +97,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-mock</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.10.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-cache</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.10.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
