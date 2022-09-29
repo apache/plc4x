@@ -22,18 +22,18 @@ import threading
 import asyncio
 import time
 import socket
+from asyncio import Transport
 from concurrent.futures import thread
 from unittest.mock import MagicMock, DEFAULT
 
 import pytest
 
-from plc4py.spi.transport.PLC4XBaseTransport import PLC4XBaseTransport
+from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 from tests.unit.plc4py.spi.tcp.server import Server
 
 HOST = "localhost"
 PORT = 9999
-
 
 @pytest.fixture(scope='session')
 def tcp_server():
@@ -53,11 +53,11 @@ async def test_base_transport_is_reading(mocker) -> None:
     """
 
     _transport = MagicMock()
-    _protocol = MagicMock()
-    transport = PLC4XBaseTransport(_protocol, _transport)
+    _transport: MagicMock = mocker.patch.object(Transport, "is_reading")
+    _transport.is_reading.return_value = True
 
-    connection_mock: MagicMock = mocker.patch.object(_transport, "is_reading()")
-    connection_mock.return_value = True
+    _protocol = MagicMock()
+    transport = Plc4xBaseTransport(None, _protocol, _transport)
 
     assert transport.is_reading()
 
@@ -71,7 +71,7 @@ async def test_base_transport_write(mocker) -> None:
 
     _transport = MagicMock()
     _protocol = MagicMock()
-    transport = PLC4XBaseTransport(_protocol, _transport)
+    transport = Plc4xBaseTransport(None, _protocol, _transport)
 
     connection_mock: MagicMock = mocker.patch.object(_transport, "write()")
     connection_mock.return_value = None

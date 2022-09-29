@@ -24,6 +24,7 @@ from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
 from plc4py.api.exceptions.exceptions import PlcConnectionException
 from plc4py.api.value.PlcValue import PlcResponseCode
+from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 from plc4py.utils.GenericTypes import GenericGenerator
 
 

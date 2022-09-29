@@ -33,7 +33,7 @@ from plc4py.spi.transport.TCPTransport import TCPTransport
 from tests.unit.plc4py.spi.tcp.server import Server
 
 HOST = "localhost"
-PORT = 9999
+PORT = 9998
 
 
 @pytest.fixture(scope='session')
