@@ -255,59 +255,67 @@ type unitInfoField struct {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (m statusField) GetAddressString() string {
+func (s statusField) GetAddressString() string {
 	statusRequestType := ""
-	switch m.statusRequestType {
+	switch s.statusRequestType {
 	case StatusRequestTypeBinaryState:
 		statusRequestType = "binary"
 	case StatusRequestTypeLevel:
 		statusRequestType = "level"
-		statusRequestType += fmt.Sprintf("=0x%x", *m.startingGroupAddressLabel)
+		statusRequestType += fmt.Sprintf("=0x%x", *s.startingGroupAddressLabel)
 	}
-	return fmt.Sprintf("status/%s/%s", statusRequestType, m.application)
+	return fmt.Sprintf("status/%s/%s", statusRequestType, s.application)
 }
 
-func (m statusField) GetStatusRequestType() StatusRequestType {
-	return m.statusRequestType
+func (s statusField) GetStatusRequestType() StatusRequestType {
+	return s.statusRequestType
 }
 
-func (m statusField) GetStartingGroupAddressLabel() *byte {
-	return m.startingGroupAddressLabel
+func (s statusField) GetStartingGroupAddressLabel() *byte {
+	return s.startingGroupAddressLabel
 }
 
-func (m statusField) GetApplication() readWriteModel.ApplicationIdContainer {
-	return m.application
+func (s statusField) GetApplication() readWriteModel.ApplicationIdContainer {
+	return s.application
 }
 
-func (m statusField) GetTypeName() string {
+func (s statusField) GetTypeName() string {
 	return STATUS.GetName()
 }
 
-func (m statusField) GetQuantity() uint16 {
-	return m.numElements
+func (s statusField) GetQuantity() uint16 {
+	return s.numElements
 }
 
-func (m statusField) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.fieldType.GetName()); err != nil {
+func (s statusField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint8("statusRequestType", 8, uint8(m.statusRequestType), utils.WithAdditionalStringRepresentation(m.statusRequestType.String())); err != nil {
+	if err := writeBuffer.WriteUint8("statusRequestType", 8, uint8(s.statusRequestType), utils.WithAdditionalStringRepresentation(s.statusRequestType.String())); err != nil {
 		return err
 	}
-	if m.startingGroupAddressLabel != nil {
-		if err := writeBuffer.WriteUint8("startingGroupAddressLabel", 8, *m.startingGroupAddressLabel); err != nil {
+	if s.startingGroupAddressLabel != nil {
+		if err := writeBuffer.WriteUint8("startingGroupAddressLabel", 8, *s.startingGroupAddressLabel); err != nil {
 			return err
 		}
 	}
-	if err := writeBuffer.WriteUint8("application", 8, uint8(m.application), utils.WithAdditionalStringRepresentation(m.application.String())); err != nil {
+	if err := writeBuffer.WriteUint8("application", 8, uint8(s.application), utils.WithAdditionalStringRepresentation(s.application.String())); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(m.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (s statusField) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(s); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }
 
 func (c calField) GetUnitAddress() readWriteModel.UnitAddress {
@@ -315,7 +323,10 @@ func (c calField) GetUnitAddress() readWriteModel.UnitAddress {
 }
 
 func (c calField) Serialize(writeBuffer utils.WriteBuffer) error {
-	return c.unitAddress.Serialize(writeBuffer)
+	if unitAddress := c.unitAddress; unitAddress != nil {
+		return c.unitAddress.Serialize(writeBuffer)
+	}
+	return nil
 }
 
 func (c calField) String() string {
