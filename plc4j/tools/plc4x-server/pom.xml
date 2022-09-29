@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-tools</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-plc4x-server</artifactId>
@@ -72,24 +72,24 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-cache</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -123,7 +123,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -131,7 +131,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-plc4x</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
