@@ -32,18 +32,6 @@
   <name>PLC4J: Utils: Test Utils</name>
   <description>A set of test utils. Especially defining the test-categories used to categorize tests.</description>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <configuration>
-          <suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

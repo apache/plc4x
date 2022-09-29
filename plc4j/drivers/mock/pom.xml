@@ -31,18 +31,6 @@
   <name>PLC4J: Driver: Mock</name>
   <description>Implementation of a PLC4X driver Mock usable in Unit-Tests.</description>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <configuration>
-          <suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
