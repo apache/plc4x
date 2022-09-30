@@ -96,7 +96,7 @@ class MockConnection(PlcConnection, PlcReader):
     _is_connected: bool = False
     device: MockDevice = field(default_factory=lambda: MockDevice())
 
-    def connect(self):
+    def _connect(self):
         """
         Connect the Mock PLC connection
         :return:
@@ -107,7 +107,7 @@ class MockConnection(PlcConnection, PlcReader):
     async def create(url):
         # config = PlcConfiguration(url)
         connection = MockConnection()
-        connection.connect()
+        connection._connect()
         return connection
 
     def is_connected(self) -> bool:
@@ -183,7 +183,7 @@ class MockDriver(PlcDriver):
         :param authentication: authentication credentials.
         :return PlcConnection: PLC Connection object
         """
-        return MockConnection()
+        return await MockConnection.create(url)
 
 
 class MockDriverLoader(PlcDriverLoader):

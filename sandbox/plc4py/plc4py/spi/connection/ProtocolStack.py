@@ -21,7 +21,7 @@ from dataclasses import dataclass
 from typing import TypeVar, Generic, Callable, Any
 
 from plc4py.api.listener import EventListener
-from plc4py.spi.Plc4xProtocolBase import Plc4xProtocolBase
+from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
 from plc4py.spi.context.DriverContext import DriverContext
 from plc4py.spi.messages.ChannelMessage import ChannelMessage
 from plc4py.utils.GenericTypes import ByteOrder
@@ -50,7 +50,7 @@ class ProtocolStackConfigurator(Generic[T], ABC):
         pipeline: ChannelPipeline,
         passive: bool = False,
         listeners: list[EventListener] = [],
-    ) -> Plc4xProtocolBase:
+    ) -> Plc4xBaseProtocol:
         pass
 
 
@@ -61,7 +61,7 @@ U = TypeVar("U", bound=ChannelMessage)
 class SingleProtocolStackConfigurator(ProtocolStackConfigurator[U], ABC):
     base_message_class: U
     byte_order: ByteOrder
-    protocol_class: Plc4xProtocolBase[U]
+    protocol_class: Plc4xBaseProtocol
     driver_context_class: DriverContext
     packet_size_estimate: Callable[..., int]
     corrupt_packet_remover: Callable[..., Any]
@@ -72,5 +72,5 @@ class SingleProtocolStackConfigurator(ProtocolStackConfigurator[U], ABC):
         pipeline: ChannelPipeline,
         passive: bool = False,
         listeners: list[EventListener] = [],
-    ) -> Plc4xProtocolBase:
+    ) -> Plc4xBaseProtocol:
         pass
