@@ -16,17 +16,13 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import ABC
+
 from asyncio import Protocol, Future
 from dataclasses import dataclass
-from typing import TypeVar, Generic
 
-from plc4py.spi.messages.ChannelMessage import ChannelMessage
-
-T = TypeVar("T", bound=ChannelMessage)
 
 @dataclass
-class Plc4xBaseProtocol(Protocol, Generic[T], ABC):
+class Plc4xBaseProtocol(Protocol):
     handler: Future
     connected: bool = False
 
@@ -38,4 +34,4 @@ class Plc4xBaseProtocol(Protocol, Generic[T], ABC):
 
     def connection_lost(self, exc: Exception | None) -> None:
         self.connected = False
-        raise exc
+        raise ConnectionError

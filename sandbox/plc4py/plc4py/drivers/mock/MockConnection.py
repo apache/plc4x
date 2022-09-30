@@ -37,7 +37,6 @@ from plc4py.api.messages.PlcRequest import (
 from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcResponse
 from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
-from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcBOOL import PlcBOOL
@@ -93,7 +92,7 @@ class MockDevice:
 
 
 @dataclass
-class MockConnection(PlcConnection[PlcConfiguration], PlcReader):
+class MockConnection(PlcConnection, PlcReader):
     _is_connected: bool = False
     device: MockDevice = field(default_factory=lambda: MockDevice())
 
@@ -103,7 +102,13 @@ class MockConnection(PlcConnection[PlcConfiguration], PlcReader):
         :return:
         """
         self._is_connected = True
-        self.device = MockDevice()
+
+    @staticmethod
+    async def create(url):
+        # config = PlcConfiguration(url)
+        connection = MockConnection()
+        connection.connect()
+        return connection
 
     def is_connected(self) -> bool:
         """
@@ -169,7 +174,7 @@ class MockDriver(PlcDriver):
         self.protocol_code = "mock"
         self.protocol_name = "Mock"
 
-    def get_connection(
+    async def get_connection(
         self, url: str, authentication: PlcAuthentication = PlcAuthentication()
     ) -> PlcConnection:
         """

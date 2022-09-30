@@ -18,9 +18,9 @@
 #
 
 import logging
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Generator, Type
+from typing import Type, AsyncIterator
 from pluggy import PluginManager  # type: ignore
 
 from plc4py.api.PlcConnection import PlcConnection
@@ -55,30 +55,28 @@ class PlcDriverManager:
             logging.info(f"... {driver} .. OK")
         self.class_loader.check_pending()
 
-    @contextmanager
-    def connection(self, url: str) -> Generator[PlcConnection, None, None]:
+    @asynccontextmanager
+    async def connection(self, url: str) -> AsyncIterator[PlcConnection]:
         """
         Context manager to handle connection.
 
         :param url: plc connection string
         :return: plc connection generator
         """
-        conn = None
+        conn: PlcConnection = await self.get_connection(url)
         try:
-            conn = self.get_connection(url)
             yield conn
         finally:
-            if conn is not None:
-                conn.close()
+            conn.close()
 
-    def get_connection(self, url: str) -> PlcConnection:
+    async def get_connection(self, url: str) -> PlcConnection:
         """
         Connects to a PLC using the given plc connection string using given authentication credentials.
         :param url: plc connection string.
         :return: plc connection
         """
         protocol_code = get_protocol_code(url)
-        return self._driverMap[protocol_code]().get_connection(url)
+        return await self._driverMap[protocol_code]().get_connection(url)
 
     def list_drivers(self) -> list[str]:
         """

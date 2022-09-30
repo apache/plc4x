@@ -28,27 +28,29 @@ from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
+from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class ModbusConnection(PlcConnection[ModbusConfiguration]):
+class ModbusConnection(PlcConnection):
     """A hook implementation namespace."""
-    _transport: TCPTransport = None
 
-    def __init__(self, url: str):
-        super().__init__(url, ModbusConfiguration)
+    def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
+        super().__init__(config)
+        self._transport: Plc4xBaseTransport = transport
 
-    async def connect(self):
-        """
-        Establishes the connection to the remote PLC.
-        """
+    @staticmethod
+    async def create(url):
+        config = ModbusConfiguration(url)
         loop = asyncio.get_running_loop()
         connection_future = loop.create_future()
         # TODO:- Look at removing this future.
-        self._transport = TCPTransport(protocol_factory=lambda: ModbusProtocol(connection_future),
-                                       host=self._configuration.host,
-                                       port=self._configuration.port)
-        await self._transport.connect()
+        transport = await TCPTransport.create(
+            protocol_factory=lambda: ModbusProtocol(connection_future),
+            host=config.host,
+            port=config.port,
+        )
+        return ModbusConnection(config, transport)
 
     def is_connected(self) -> bool:
         """
@@ -88,7 +90,7 @@ class ModbusDriver(PlcDriver):
         self.protocol_code = "modbus-tcp"
         self.protocol_name = "Modbus TCP"
 
-    def get_connection(
+    async def get_connection(
         self, url: str, authentication: PlcAuthentication = PlcAuthentication()
     ) -> PlcConnection:
         """
@@ -97,7 +99,7 @@ class ModbusDriver(PlcDriver):
         :param authentication: authentication credentials.
         :return PlcConnection: PLC Connection object
         """
-        return ModbusConnection(url)
+        return await ModbusConnection.create(url)
 
 
 class ModbusDriverLoader(PlcDriverLoader):

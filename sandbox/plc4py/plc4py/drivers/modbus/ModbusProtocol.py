@@ -19,12 +19,10 @@
 from dataclasses import dataclass
 
 from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
-from plc4py.spi.messages.ChannelMessage import ChannelMessage
 
 
 @dataclass
-class ModbusProtocol(Plc4xBaseProtocol[ChannelMessage]):
-
+class ModbusProtocol(Plc4xBaseProtocol):
     def data_received(self, data):
         # TODO:- Implement Protocol specific stuff
         pass

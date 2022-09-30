@@ -16,15 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import asyncio
-import logging
+
 import threading
 import asyncio
-import time
-import socket
+
 from asyncio import Transport
-from concurrent.futures import thread
-from unittest.mock import MagicMock, DEFAULT
+
+from typing import cast
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -35,7 +34,8 @@ from tests.unit.plc4py.spi.tcp.server import Server
 HOST = "localhost"
 PORT = 9999
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def tcp_server():
     tcp_server = Server(HOST, PORT)
     with tcp_server:
@@ -52,31 +52,14 @@ async def test_base_transport_is_reading(mocker) -> None:
     :return:
     """
 
-    _transport = MagicMock()
     _transport: MagicMock = mocker.patch.object(Transport, "is_reading")
     _transport.is_reading.return_value = True
 
     _protocol = MagicMock()
-    transport = Plc4xBaseTransport(None, _protocol, _transport)
+    transport = Plc4xBaseTransport(_transport, _protocol)
 
     assert transport.is_reading()
 
-
-async def test_base_transport_write(mocker) -> None:
-    """
-    Unit test for the Base PLC4X Transport, write
-    :param mocker:
-    :return:
-    """
-
-    _transport = MagicMock()
-    _protocol = MagicMock()
-    transport = Plc4xBaseTransport(None, _protocol, _transport)
-
-    connection_mock: MagicMock = mocker.patch.object(_transport, "write()")
-    connection_mock.return_value = None
-
-    assert transport.write(b'This is a test') is None
 
 async def test_tcp_transport(mocker, tcp_server) -> None:
     """
@@ -84,19 +67,24 @@ async def test_tcp_transport(mocker, tcp_server) -> None:
     :param mocker:
     :return:
     """
-    message = b'PLC4X Test Packet'
+    message = b"PLC4X Test Packet"
     loop = asyncio.get_running_loop()
     future = loop.create_future()
 
     def get_protocol(future) -> asyncio.Protocol:
-        protocol: MagicMock = mocker.patch.object(asyncio.Protocol, attribute="data_received")
+        protocol: MagicMock = mocker.patch.object(
+            asyncio.Protocol, attribute="data_received"
+        )
         protocol.attach_mock(protocol, attribute="data_received")
         protocol.data_received.side_effect = future.set_result
         return protocol
 
-    transport = TCPTransport(protocol_factory=lambda: get_protocol(future), host=HOST, port=PORT, )
-    await transport.connect()
+    transport = await TCPTransport.create(
+        protocol_factory=lambda: get_protocol(future),
+        host=HOST,
+        port=PORT,
+    )
     transport.write(message)
     await future
 
-    transport._protocol.assert_called_with(message)
+    cast(MagicMock, transport._protocol).assert_called_with(message)

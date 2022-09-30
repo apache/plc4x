@@ -16,14 +16,9 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import asyncio
-import logging
+
 import threading
 import asyncio
-import time
-import socket
-from concurrent.futures import thread
-from unittest.mock import MagicMock, DEFAULT
 
 import pytest
 
@@ -36,7 +31,7 @@ HOST = "localhost"
 PORT = 9998
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def tcp_server():
     tcp_server = Server(HOST, PORT)
     with tcp_server:
@@ -52,7 +47,7 @@ async def test_tcp_protocol(mocker, tcp_server) -> None:
     :param mocker:
     :return:
     """
-    message = b'PLC4X Test Packet'
+    message = b"PLC4X Test Packet"
     loop = asyncio.get_running_loop()
     future = loop.create_future()
 
@@ -60,8 +55,9 @@ async def test_tcp_protocol(mocker, tcp_server) -> None:
         protocol = Plc4xBaseProtocol(future)
         return protocol
 
-    transport = TCPTransport(protocol_factory=lambda: get_protocol(future), host=HOST, port=PORT)
-    await transport.connect()
+    transport = await TCPTransport.create(
+        protocol_factory=lambda: get_protocol(future), host=HOST, port=PORT
+    )
     transport.write(message)
     result = await future
 

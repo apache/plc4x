@@ -18,39 +18,44 @@
 #
 import re
 from dataclasses import InitVar, dataclass, field
+from typing import Optional
 
 
 @dataclass
 class PlcConfiguration:
     url: InitVar[str]
-    protocol: str = None
-    transport: str = None
-    host: str = None
-    port: int = None
+    protocol: Optional[str] = None
+    transport: Optional[str] = None
+    host: Optional[str] = None
+    port: Optional[int] = None
     parameters: dict[str, str] = field(default_factory=lambda: {})
 
     def __post_init__(self, url):
         self._parse_configuration(url)
 
     def _parse_configuration(self, url):
-        regex = r"^(?P<protocol>[\w]*)(:(?P<transport>[\w]*))?:\/\/(?P<host>[\w+.]*)(:(?P<port>\d+))?(?P<parameters>(&{1}([^&=]*={1}[^&=]*))*)"
+        regex = (
+            r"^(?P<protocol>[\w]*)"
+            + r"(:(?P<transport>[\w]*))?"
+            + r":\/\/(?P<host>[\w+.]*)"
+            + r"(:(?P<port>\d+))?"
+            + r"(?P<parameters>(&{1}([^&=]*={1}[^&=]*))*)"
+        )
         matches = re.search(regex, url)
 
-        self.protocol = matches.group('protocol')
+        self.protocol = matches.group("protocol")
 
-        if matches.group('transport') is not None:
-            self.transport = matches.group('transport')
+        if matches.group("transport") is not None:
+            self.transport = matches.group("transport")
 
-        self.host = matches.group('host')
+        self.host = matches.group("host")
 
-        if matches.group('port') is not None:
-            self.port = int(matches.group('port'))
+        if matches.group("port") is not None:
+            self.port = int(matches.group("port"))
 
-        parameters = matches.group('parameters')
+        parameters = matches.group("parameters")
         if parameters is not None and parameters != "":
-            self.parameters = {item.split("=")[0]: item.split("=")[1] for item in parameters[1:].split("&")}
-
-
-
-
-
+            self.parameters = {
+                item.split("=")[0]: item.split("=")[1]
+                for item in parameters[1:].split("&")
+            }
