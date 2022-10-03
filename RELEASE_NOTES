@@ -23,6 +23,9 @@ New Features
 - The KNX driver in Java now supports reading "knxproj" files
   exported from the new ETS version 6.
 
+- The NiFi integration module was updated and now is a
+  Records-based NiFi Processor
+
 Incompatible changes
 --------------------
 
