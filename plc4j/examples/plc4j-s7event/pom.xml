@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.10.1-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-s7event</artifactId>
@@ -62,14 +62,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <!-- TODO: Only needed because we directly rely on types of the driver -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
