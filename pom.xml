@@ -724,6 +724,7 @@
 
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
+            <exclude>**/CHANGELOG.md</exclude>
             <exclude>**/EPL-2.0</exclude>
 
             <!--
