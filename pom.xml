@@ -29,7 +29,7 @@
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.10.1-SNAPSHOT</version>
+  <version>0.10.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>
@@ -91,7 +91,7 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
     <!-- Timestamp for the reproducible builds -->
-    <project.build.outputTimestamp>1664471102</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1664715061</project.build.outputTimestamp>
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>

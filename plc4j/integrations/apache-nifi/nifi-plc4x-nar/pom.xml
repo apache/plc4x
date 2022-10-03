@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>org.apache.plc4x</groupId>
 		<artifactId>plc4j-apache-nifi</artifactId>
-		<version>0.10.1-SNAPSHOT</version>
+		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>plc4j-nifi-plc4x-nar</artifactId>
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-nifi-plc4x-processors</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -86,79 +86,79 @@
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-api</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<!-- Bundle Drivers -->
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-ab-eth</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-ads</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-canopen</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-eip</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-knxnetip</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-modbus</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-opcua</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-s7</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-simulated</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-pcap-replay</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-raw-socket</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-serial</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-tcp</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-udp</artifactId>
-			<version>0.10.1-SNAPSHOT</version>
+			<version>0.10.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
