@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.10.0</version>
+    <version>0.10.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-osgi</artifactId>
@@ -39,12 +39,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.10.0</version>
+      <version>0.10.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.10.0</version>
+      <version>0.10.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
