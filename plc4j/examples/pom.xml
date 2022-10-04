@@ -44,7 +44,8 @@
     <module>hello-discovery</module>
     <module>hello-connectivity-mqtt</module>
     <module>hello-influx-data-collection</module>
-    <module>hello-integration-iotdb</module>
+    <!-- Disabled due to edgent not existing anymore-->
+    <!--module>hello-integration-iotdb</module-->
     <!--module>hello-nats</module-->
     <module>hello-opm</module>
     <module>hello-webservice</module>
