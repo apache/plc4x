@@ -1374,7 +1374,7 @@
           [INFO] - maven-dependency-plugin:3.2.0:analyze-only (check-dependencies) @ plc4j-connection-pool -
           [WARNING] Non-test scoped test only dependencies found:
           [WARNING]    org.apache.commons:commons-pool2:jar:2.11.1:compile
-          [WARNING]    org.apache.plc4x:plc4j-api:jar:0.10.0-SNAPSHOT:compile
+          [WARNING]    org.apache.plc4x:plc4j-api:jar:0.11.0-SNAPSHOT:compile
           -->
           <version>3.1.2</version>
         </plugin>
