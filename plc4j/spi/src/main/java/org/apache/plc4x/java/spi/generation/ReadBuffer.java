@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,11 +18,15 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.plc4x.java.spi.codegen.io.ByteOrderAware;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public interface ReadBuffer {
+public interface ReadBuffer extends ByteOrderAware, PositionAware {
     int getPos();
+
+    void reset(int pos);
 
     boolean hasMore(int numBits);
 
@@ -124,9 +128,9 @@ public interface ReadBuffer {
         return readBigDecimal("", bitLength);
     }
 
-    String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs);
+    String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) throws ParseException;
 
-    default String readString(int bitLength, String encoding) {
+    default String readString(int bitLength, String encoding) throws ParseException {
         return readString("", bitLength, encoding);
     }
 

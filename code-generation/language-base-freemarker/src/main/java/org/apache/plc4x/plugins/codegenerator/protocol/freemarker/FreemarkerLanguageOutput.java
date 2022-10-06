@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
-        Map<String, String> options)
+    public void generate(File outputDir, String version, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
+                         Map<String, String> options)
         throws GenerationException {
 
         // Configure the Freemarker template engine
@@ -55,11 +56,13 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         List<Template> complexTypesTemplateList;
         List<Template> enumTypesTemplateList;
         List<Template> dataIoTemplateList;
+        List<Template> miscTemplateList;
         try {
             specTemplates = getSpecTemplates(freemarkerConfiguration);
             complexTypesTemplateList = getComplexTypeTemplates(freemarkerConfiguration);
             enumTypesTemplateList = getEnumTypeTemplates(freemarkerConfiguration);
             dataIoTemplateList = getDataIoTemplates(freemarkerConfiguration);
+            miscTemplateList = getMiscTemplates(freemarkerConfiguration);
         } catch (IOException e) {
             throw new GenerationException("Error getting template", e);
         }
@@ -71,6 +74,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("protocolName", protocolName);
             typeContext.put("outputFlavor", outputFlavor);
             typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
+            typeContext.put("tracer", Tracer.start("global"));
             typeContext.putAll(options);
 
             for (Template template : specTemplates) {
@@ -92,6 +96,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("typeName", typeEntry.getKey());
             typeContext.put("type", typeEntry.getValue());
             typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types, options));
+            typeContext.put("tracer", Tracer.start("types"));
 
             // Depending on the type, get the corresponding list of templates.
             List<Template> templateList;
@@ -100,21 +105,36 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             } else if (typeEntry.getValue() instanceof DataIoTypeDefinition) {
                 templateList = dataIoTemplateList;
             } else {
-                // Skip outputting the sub-types of io-types.
-                if (typeEntry.getValue().getParentType() instanceof DataIoTypeDefinition) {
-                    continue;
-                }
                 templateList = complexTypesTemplateList;
             }
 
             // Generate the output for the given type.
             LOGGER.info("Generating type {}", typeEntry.getKey());
             for (Template template : templateList) {
+                LOGGER.debug("Applying template {}", template.getName());
                 try {
                     renderTemplate(outputDir, template, typeContext);
                 } catch (IOException | TemplateException e) {
                     throw new GenerationException(
                         "Error generating output for type '" + typeEntry.getKey() + "'", e);
+                }
+            }
+        }
+
+        // Generate misc outputs
+        if (!miscTemplateList.isEmpty()) {
+            Map<String, Object> typeContext = new HashMap<>();
+            typeContext.put("languageName", languageName);
+            typeContext.put("protocolName", protocolName);
+            typeContext.put("outputFlavor", outputFlavor);
+            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
+            typeContext.putAll(options);
+
+            for (Template template : miscTemplateList) {
+                try {
+                    renderTemplate(outputDir, template, typeContext);
+                } catch (IOException | TemplateException e) {
+                    throw new GenerationException("Error generating misc protocol output.", e);
                 }
             }
         }
@@ -155,7 +175,14 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 }
                 outputFileWriter.flush();
             }
+
+            // Apply post-processing to the template
+            postProcessTemplateOutput(outputFile);
         }
+    }
+
+    protected void postProcessTemplateOutput(File outputFile) {
+        // NOOP
     }
 
     private Configuration getFreemarkerConfiguration() throws GenerationException {
@@ -180,7 +207,11 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
     protected abstract List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException;
 
+    protected List<Template> getMiscTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Collections.emptyList();
+    }
+
     protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-        Map<String, String> options);
+                                                                  Map<String, String> options);
 
 }

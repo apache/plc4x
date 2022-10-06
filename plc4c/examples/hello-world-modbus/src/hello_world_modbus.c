@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -109,8 +109,8 @@ int main() {
 
   // Establish connections to remote devices
   // you may or may not care about the connection handle
-  printf("Connecting to 'modbus:tcp://192.168.23.30' ... ");
-  result = plc4c_system_connect(system, "modbus:tcp://192.168.23.30:502", &connection);
+  printf("Connecting to 'modbus-tcp://192.168.23.30' ... ");
+  result = plc4c_system_connect(system, "modbus-tcp://192.168.23.30:502", &connection);
   if (result != OK) {
     printf("FAILED\n");
     return -1;

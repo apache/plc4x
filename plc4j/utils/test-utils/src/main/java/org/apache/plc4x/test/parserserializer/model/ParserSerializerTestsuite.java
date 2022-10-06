@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.test.parserserializer.model;
 
+import org.apache.plc4x.java.spi.generation.ByteOrder;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,13 +27,13 @@ public class ParserSerializerTestsuite {
 
     private final String name;
     private final List<Testcase> testcases;
-    private final boolean littleEndian;
+    private final ByteOrder byteOrder;
     private final Map<String, String> options;
 
-    public ParserSerializerTestsuite(String name, List<Testcase> testcases, boolean littleEndian, Map<String, String> options) {
+    public ParserSerializerTestsuite(String name, List<Testcase> testcases, ByteOrder byteOrder, Map<String, String> options) {
         this.name = name;
         this.testcases = testcases;
-        this.littleEndian = littleEndian;
+        this.byteOrder = byteOrder;
         this.options = options;
     }
 
@@ -43,8 +45,8 @@ public class ParserSerializerTestsuite {
         return testcases;
     }
 
-    public boolean isLittleEndian() {
-        return littleEndian;
+    public ByteOrder getByteOrder() {
+        return byteOrder;
     }
 
     public Map<String, String> getOptions() {

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,7 +24,6 @@ import org.apache.plc4x.java.firmata.readwrite.configuration.FirmataConfiguratio
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataField;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldHandler;
-import org.apache.plc4x.java.firmata.readwrite.io.FirmataMessageIO;
 import org.apache.plc4x.java.firmata.readwrite.protocol.FirmataProtocolLogic;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -90,7 +89,7 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
 
     @Override
     protected ProtocolStackConfigurer<FirmataMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(FirmataMessage.class, FirmataMessageIO.class)
+        return SingleProtocolStackConfigurer.builder(FirmataMessage.class, FirmataMessage::staticParse)
             .withProtocol(FirmataProtocolLogic.class)
             .withDriverContext(FirmataDriverContext.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)

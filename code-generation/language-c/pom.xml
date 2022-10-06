@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation-language-c</artifactId>
 
-  <name>PLC4X: Build Utils: Language: C</name>
+  <name>Code-Generation: Language: C</name>
   <description>Code generation template for generating C code</description>
 
   <build>
@@ -37,7 +37,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>integration-test</id>
@@ -50,11 +50,20 @@
               <goal>verify</goal>
             </goals>
             <configuration>
+              <skipInvocation>${skip-code-generation-tests}</skipInvocation>
               <debug>true</debug>
+              <streamLogsOnFailures>true</streamLogsOnFailures>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
               <settingsFile>src/test/resources/settings.xml</settingsFile>
+              <extraArtifacts>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-language-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-maven-plugin:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-protocol-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
+              </extraArtifacts>
               <pomIncludes>
                 <pomInclude>*/pom.xml</pomInclude>
               </pomIncludes>
@@ -74,7 +83,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
 
     <dependency>
@@ -89,6 +98,28 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.10.0</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Make sure the dependencies of the module are built first -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-test</artifactId>
+      <version>0.10.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-test</artifactId>
+      <version>0.10.0</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

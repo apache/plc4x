@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,13 +25,9 @@ import java.util.function.ToIntFunction;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.socketcan.readwrite.SocketCANFrame;
-import org.apache.plc4x.java.socketcan.readwrite.io.SocketCANFrameIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport;
 import org.apache.plc4x.java.transport.can.FrameData;
@@ -64,8 +60,8 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
     }
 
     @Override
-    public MessageIO<SocketCANFrame, SocketCANFrame> getMessageIO(Configuration cfg) {
-        return new SocketCANFrameIO();
+    public MessageInput<SocketCANFrame> getMessageInput(Configuration cfg) {
+        return SocketCANFrame::staticParse;
     }
 
     @Override
@@ -100,9 +96,9 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
                     }
 
                     @Override
-                    public <T extends Message> T read(MessageIO<T, T> serializer, Object... args) {
+                    public <T extends Message> T read(MessageInput<T> input, Object... args) {
                         try {
-                            return serializer.parse(new ReadBufferByteBased(frame.getData(), true), args);
+                            return input.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
                         } catch (ParseException e) {
                             throw new PlcRuntimeException(e);
                         }
@@ -111,4 +107,5 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
             }
         };
     }
+
 }

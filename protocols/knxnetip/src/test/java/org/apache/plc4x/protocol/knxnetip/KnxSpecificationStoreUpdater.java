@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -53,7 +53,7 @@ public class KnxSpecificationStoreUpdater {
         List<Integer> manufacturerIds;
         Map<String, Integer> comObjectTableStartAddresses = new TreeMap<>();
 
-        File contentDir = new File("content");
+        File contentDir = new File("../knx-webservice-content");
         if (!contentDir.exists()) {
             contentDir.mkdirs();
         }
@@ -136,12 +136,20 @@ public class KnxSpecificationStoreUpdater {
                     int applicationId = applicationIdentifier.getInt(2) << 8 | applicationIdentifier.getInt(3);
                     int applicationVersion = applicationIdentifier.getInt(4) & 0xFF;
 
+                    if(applicationId == 0 && applicationVersion == 0) {
+                        System.out.println("SKIPPED");
+                        continue;
+                    }
+
                     String productCode = String.format("M-%04X_A-%04X-%02X", manufacturerId, applicationId, applicationVersion);
+
+                    System.out.print("Fetching product: " + productCode + ": ");
 
                     // Check If we've already got that file (There are no updates, just new versions)
                     File[] files = manufacturerDirectory.listFiles((dir, name) -> name.startsWith(productCode));
                     // If we've already got the file, skip loading it
                     if(files.length > 0) {
+                        System.out.println("SKIPPED");
                         continue;
                     }
 
@@ -155,6 +163,7 @@ public class KnxSpecificationStoreUpdater {
                                 // Create an empty file indicating it's not in the catalog so we won't try to fetch it again.
                                 File dummy = new File(manufacturerDirectory, productCode + ".failed");
                                 dummy.createNewFile();
+                                System.out.println("FAILED");
                             } else {
                                 System.out.println("Got an unexpected status code " + downloadProductResponse.getStatusLine().getStatusCode());
                             }
@@ -167,6 +176,7 @@ public class KnxSpecificationStoreUpdater {
                                     if (fileName.startsWith(expectedPrefix)) {
                                         File productFile = new File(manufacturerDirectory, fileName.substring(fileName.indexOf('/') + 1));
                                         FileUtils.copyInputStreamToFile(zis, productFile);
+                                        System.out.println("SUCCESS");
                                         break;
                                     }
                                 }

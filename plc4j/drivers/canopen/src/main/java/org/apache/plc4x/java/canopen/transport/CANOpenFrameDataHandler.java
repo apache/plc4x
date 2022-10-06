@@ -7,7 +7,7 @@ to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
 with the License.  You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+  https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on an
@@ -20,13 +20,13 @@ package org.apache.plc4x.java.canopen.transport;
 
 import java.util.function.Supplier;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.canopen.helper.CANOpenHelper;
+import org.apache.plc4x.java.canopen.readwrite.utils.StaticHelper;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
-import org.apache.plc4x.java.canopen.readwrite.io.CANOpenPayloadIO;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport.FrameHandler;
@@ -46,21 +46,21 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
 
     @Override
     public CANOpenFrame fromCAN(FrameData frame) {
-        CANOpenService service = CANOpenHelper.serviceId((short) frame.getNodeId());
+        CANOpenService service = StaticHelper.serviceId((short) frame.getNodeId());
         int nodeId = Math.abs(service.getMin() - frame.getNodeId());
-        return new CANOpenFrame((short) nodeId, service, frame.read(new CANOpenPayloadIO(), service));
+        return new CANOpenFrame((short) nodeId, service, frame.read(CANOpenPayload::staticParse, service));
     }
 
     @Override
     public Message toCAN(CANOpenFrame frame) {
         try {
             CANOpenPayload payload = frame.getPayload();
-            WriteBufferByteBased buffer = new WriteBufferByteBased(payload.getLengthInBytes(), true);
-            CANOpenPayloadIO.staticSerialize(buffer, payload);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(payload.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
+            payload.serialize(buffer);
             return builder.get().withId(frame.getService().getMin() + frame.getNodeId())
                 .withData(buffer.getData())
                 .create();
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             throw new PlcRuntimeException(e);
         }
     }

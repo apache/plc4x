@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,12 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.readwrite.io.Ethernet_FrameIO;
-import org.apache.plc4x.java.profinet.readwrite.types.VirtualLanPriority;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
@@ -46,6 +41,8 @@ import org.pcap4j.util.LinkLayerAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -77,7 +74,14 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         List<PlcDiscoveryItem> values = new ArrayList<>();
         try {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
-                if (!dev.isLoopBack() && dev.isRunning()) {
+                // It turned out on some MAC network devices without any ip addresses
+                // the compiling of the filter expression was causing errors. As
+                // currently there was no other way to detect this, this check seems
+                // to be sufficient.
+                if(dev.getAddresses().size() == 0) {
+                    continue;
+                }
+                if (!dev.isLoopBack()) {
                     for (LinkLayerAddress linkLayerAddress : dev.getLinkLayerAddresses()) {
                         org.pcap4j.util.MacAddress macAddress = (org.pcap4j.util.MacAddress) linkLayerAddress;
                         PcapHandle handle = dev.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
@@ -112,7 +116,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                     if (isPnPacket) {
                                         ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
                                         try {
-                                            Ethernet_Frame ethernetFrame = Ethernet_FrameIO.staticParse(reader);
+                                            Ethernet_Frame ethernetFrame = Ethernet_Frame.staticParse(reader);
                                             PnDcp_Pdu pdu;
                                             // Access the pdu data (either directly or by
                                             // unpacking the content of the VLAN packet.
@@ -141,21 +145,76 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                                 String deviceTypeName = "unknown";
                                                 if (blocks.containsKey(DEVICE_TYPE_NAME)) {
                                                     PnDcp_Block_DevicePropertiesDeviceVendor block = (PnDcp_Block_DevicePropertiesDeviceVendor) blocks.get(DEVICE_TYPE_NAME);
-                                                    deviceTypeName = new String(block.getDeviceVendorValue());
+                                                    deviceTypeName = new String(block.getDeviceVendorValue()).replace(" ", "%20");
                                                 }
+
                                                 String deviceName = "unknown";
                                                 if (blocks.containsKey(DEVICE_NAME_OF_STATION)) {
                                                     PnDcp_Block_DevicePropertiesNameOfStation block = (PnDcp_Block_DevicePropertiesNameOfStation) blocks.get(DEVICE_NAME_OF_STATION);
-                                                    deviceName = new String(block.getNameOfStation());
+                                                    deviceName = new String(block.getNameOfStation()).replace(" ", "%20");
                                                 }
 
-                                                String transportUrl = srcAddr.toString();
-                                                Map<String, String> options =
-                                                    Collections.singletonMap("localMacAddress", dstAddr.toString());
+                                                String role = "unknown";
+                                                if (blocks.containsKey(DEVICE_ROLE)) {
+                                                    role = "";
+                                                    PnDcp_Block_DevicePropertiesDeviceRole block = (PnDcp_Block_DevicePropertiesDeviceRole) blocks.get(DEVICE_ROLE);
+                                                    if (block.getPnioSupervisor()) {
+                                                        role += ",SUPERVISOR";
+                                                    }
+                                                    if (block.getPnioMultidevive()) {
+                                                        role += ",MULTIDEVICE";
+                                                    }
+                                                    if (block.getPnioController()) {
+                                                        role += ",CONTROLLER";
+                                                    }
+                                                    if (block.getPnioDevice()) {
+                                                        role += ",DEVICE";
+                                                    }
+                                                    // Cut off the first comma
+                                                    if (role.length() > 0) {
+                                                        role = role.substring(1);
+                                                    } else {
+                                                        role = "unknown";
+                                                    }
+                                                }
+
+                                                String remoteIpAddress = "unknown";
+                                                String remoteSubnetMask = "unknown";
+                                                if (blocks.containsKey(IP_OPTION_IP)) {
+                                                    PnDcp_Block_IpParameter block = (PnDcp_Block_IpParameter) blocks.get(IP_OPTION_IP);
+                                                    try {
+                                                        InetAddress addr = InetAddress.getByAddress(block.getIpAddress());
+                                                        remoteIpAddress = addr.getHostAddress();
+                                                        InetAddress netMask = InetAddress.getByAddress(block.getSubnetMask());
+                                                        remoteSubnetMask = netMask.getHostAddress();
+                                                    } catch (UnknownHostException e) {
+                                                        remoteIpAddress = "invalid";
+                                                    }
+                                                }
+
+                                                // Get the Vendor Id and the Device Id
+                                                String vendorId = "unknown";
+                                                String deviceId = "unknown";
+                                                if (blocks.containsKey(DEVICE_ID)) {
+                                                    PnDcp_Block_DevicePropertiesDeviceId block = (PnDcp_Block_DevicePropertiesDeviceId) blocks.get(DEVICE_ID);
+                                                    vendorId = String.format("%04X", block.getVendorId());
+                                                    deviceId = String.format("%04X", block.getDeviceId());
+                                                }
+
+                                                Map<String, String> options = new HashMap<>();
+                                                options.put("remoteIpAddress", remoteIpAddress);
+                                                options.put("remoteSubnetMask", remoteSubnetMask);
+                                                options.put("remoteMacAddress", srcAddr.toString());
+                                                options.put("localMacAddress", dstAddr.toString());
+                                                options.put("deviceTypeName", deviceTypeName);
+                                                options.put("deviceName", deviceName);
+                                                options.put("vendorId", vendorId);
+                                                options.put("deviceId", deviceId);
+                                                options.put("role", role);
                                                 String name = deviceTypeName + " - " + deviceName;
                                                 PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
                                                     ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
-                                                    transportUrl, options, name);
+                                                    remoteIpAddress, options, name, Collections.emptyMap());
                                                 values.add(value);
 
                                                 // If we have a discovery handler, pass it to the handler callback
@@ -182,21 +241,20 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                             toPlc4xMacAddress(macAddress),
                             new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
                                 new Ethernet_FramePayload_PnDcp(
-                                    new PnDcp_Pdu_IdentifyReq(
-                                        new PnDcp_ServiceType(false, false),
+                                    new PnDcp_Pdu_IdentifyReq(PnDcp_FrameId.DCP_Identify_ReqPDU.getValue(),
                                         1,
                                         256,
-                                        new PnDcp_Block[]{
+                                        Collections.singletonList(
                                             new PnDcp_Block_ALLSelector()
-                                        }))));
+                                        )))));
                         WriteBufferByteBased buffer = new WriteBufferByteBased(34);
-                        Ethernet_FrameIO.staticSerialize(buffer, identificationRequest);
+                        identificationRequest.serialize(buffer);
                         Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
                         handle.sendPacket(packet);
                     }
                 }
             }
-        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | ParseException e) {
+        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | SerializationException e) {
             logger.error("Got an exception while processing raw socket data", e);
             future.completeExceptionally(new PlcException("Got an internal error while performing discovery"));
             for (PcapHandle openHandle : openHandles) {

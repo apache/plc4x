@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,17 +54,17 @@ DLE + ETX mark the end of the message, the last two bytes are the CRC that is ca
 Here is the MSpec to model the behaviour:
 
 ....
-[discriminatedType 'DF1Symbol'
-    [const            uint 8       'messageStart' '0x10']
-    [discriminator    uint 8       'symbolType']
+[discriminatedType DF1Symbol
+    [const            uint 8       messageStart 0x10]
+    [discriminator    uint 8       symbolType]
     [typeSwitch 'symbolType'
         ['0x02' DF1SymbolMessageFrame
-            [simple   uint 8       'destinationAddress']
-            [simple   uint 8       'sourceAddress']
-            [simple   DF1Command   'command']
-            [const    uint 8       'messageEnd' '0x10']
-            [const    uint 8       'endTransaction' '0x03']
-            [checksum uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.crcCheck", destinationAddress, sourceAddress, command)']
+            [simple   uint 8       destinationAddress]
+            [simple   uint 8       sourceAddress]
+            [simple   DF1Command   command]
+            [const    uint 8       messageEnd 0x10]
+            [const    uint 8       endTransaction 0x03]
+            [checksum uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.crcCheck", destinationAddress, sourceAddress, command)']
         ]
         ['0x06' DF1SymbolMessageFrameACK
         ]
@@ -73,17 +73,17 @@ Here is the MSpec to model the behaviour:
     ]
 ]
 
-[discriminatedType 'DF1Command'
-    [discriminator uint 8  'commandCode']
-    [simple    uint 8       'status']
-    [simple    uint 16      'transactionCounter']
+[discriminatedType DF1Command
+    [discriminator uint 8  commandCode]
+    [simple    uint 8       status]
+    [simple    uint 16      transactionCounter]
     [typeSwitch 'commandCode'
         ['0x01' DF1UnprotectedReadRequest
-            [simple uint 16    'address']
-            [simple uint 8     'size']
+            [simple uint 16    address]
+            [simple uint 8     size]
         ]
         ['0x41' DF1UnprotectedReadResponse
-            [manualArray  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.readData", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.writeData", io, element)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataLength", data)']
+            [manualArray  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.dataTerminate", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.readData", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.writeData", io, element)' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.dataLength", data)']
         ]
     ]
 ]

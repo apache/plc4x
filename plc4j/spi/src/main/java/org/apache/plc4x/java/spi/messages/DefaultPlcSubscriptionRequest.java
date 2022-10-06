@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,21 +24,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.w3c.dom.Element;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -48,11 +49,15 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
     private final LinkedHashMap<String, PlcSubscriptionField> fields;
 
+    private final LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcSubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
-                                         @JsonProperty("fields") LinkedHashMap<String, PlcSubscriptionField> fields) {
+                                         @JsonProperty("fields") LinkedHashMap<String, PlcSubscriptionField> fields,
+                                         @JsonProperty("preRegisteredConsumers") LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers) {
         this.subscriber = subscriber;
         this.fields = fields;
+        this.preRegisteredConsumers = preRegisteredConsumers;
     }
 
     @Override
@@ -85,6 +90,12 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         return new ArrayList<>(fields.values());
     }
 
+    @Override
+    @JsonIgnore
+    public Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers() {
+        return new LinkedHashMap<>(preRegisteredConsumers);
+    }
+
     @JsonIgnore
     public List<Pair<String, PlcSubscriptionField>> getNamedFields() {
         return fields.entrySet()
@@ -98,7 +109,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcSubscriptionRequest");
 
         writeBuffer.pushContext("fields");
@@ -106,7 +117,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
             String fieldName = fieldEntry.getKey();
             writeBuffer.pushContext(fieldName);
             PlcField field = fieldEntry.getValue();
-            if(!(field instanceof Serializable)) {
+            if (!(field instanceof Serializable)) {
                 throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
             }
             ((Serializable) field).serialize(writeBuffer);
@@ -122,11 +133,13 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         private final PlcSubscriber subscriber;
         private final PlcFieldHandler fieldHandler;
         private final Map<String, BuilderItem> fields;
+        private final LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers;
 
         public Builder(PlcSubscriber subscriber, PlcFieldHandler fieldHandler) {
             this.subscriber = subscriber;
             this.fieldHandler = fieldHandler;
-            fields = new TreeMap<>();
+            this.fields = new TreeMap<>();
+            this.preRegisteredConsumers = new LinkedHashMap<>();
         }
 
         @Override
@@ -151,6 +164,13 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         }
 
         @Override
+        public PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> consumer) {
+            preRegisteredConsumers.putIfAbsent(name, new LinkedList<>());
+            preRegisteredConsumers.get(name).add(consumer);
+            return this;
+        }
+
+        @Override
         public PlcSubscriptionRequest build() {
             LinkedHashMap<String, PlcSubscriptionField> parsedFields = new LinkedHashMap<>();
 
@@ -158,7 +178,12 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
                 PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
                 parsedFields.put(name, new DefaultPlcSubscriptionField(builderItem.plcSubscriptionType, parsedField, builderItem.duration));
             });
-            return new DefaultPlcSubscriptionRequest(subscriber, parsedFields);
+            preRegisteredConsumers.forEach((fieldName, ignored) -> {
+                if (!fields.containsKey(fieldName)) {
+                    throw new RuntimeException("fieldName " + fieldName + "for preRegisteredConsumer not found");
+                }
+            });
+            return new DefaultPlcSubscriptionRequest(subscriber, parsedFields, preRegisteredConsumers);
         }
 
         private static class BuilderItem {

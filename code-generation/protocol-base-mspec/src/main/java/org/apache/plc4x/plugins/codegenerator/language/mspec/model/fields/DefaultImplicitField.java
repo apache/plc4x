@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,37 +18,45 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultImplicitField extends DefaultTaggedField implements ImplicitField {
+import java.util.*;
 
-    private final TypeReference type;
-    private final String name;
+public class DefaultImplicitField extends DefaultTypedNamedField implements ImplicitField {
+
     private final Term serializeExpression;
 
-    public DefaultImplicitField(String[] tags, TypeReference type, String name, Term serializeExpression) {
-        super(tags);
+    public DefaultImplicitField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term serializeExpression) {
+        super(attributes, name);
+        this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.type = type;
-        this.name = name;
-        this.serializeExpression = serializeExpression;
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getSerializeExpression() {
         return serializeExpression;
     }
 
-    public Term[] getParams() {
-        return new Term[0];
+    @Override
+    public String toString() {
+        return "DefaultImplicitField{" +
+            "serializeExpression=" + serializeExpression +
+            "} " + super.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultImplicitField that = (DefaultImplicitField) o;
+        return Objects.equals(serializeExpression, that.serializeExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), serializeExpression);
+    }
 }

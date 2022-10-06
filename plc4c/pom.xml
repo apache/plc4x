@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4c</artifactId>
@@ -89,13 +89,14 @@
     </profile>
     <!-- Profile for mac -->
     <profile>
-      <id>os-mac</id>
+      <id>os-mac-amd64</id>
       <activation>
         <os>
           <family>mac</family>
+          <arch>amd64</arch>
         </os>
       </activation>
-      <!-- Make the cmake executable executable -->
+      <!-- Make the cmake executable, executable -->
       <build>
         <plugins>
           <plugin>
@@ -122,7 +123,43 @@
         </plugins>
       </build>
     </profile>
-    <!-- When running on jenkins, download the sonar build-wrapper so we can do a code analysis -->
+    <!-- Profile for mac -->
+    <profile>
+      <id>os-mac-aarch64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <!-- Make the cmake executable, executable -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-cmake-executable</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <basedir>${cmake.root}</basedir>
+                  <executable>chmod</executable>
+                  <arguments>
+                    <argument>+x</argument>
+                    <argument>cmake</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
     <profile>
       <id>jenkins-build</id>
       <build>
@@ -166,7 +203,7 @@
             </executions>
             <dependencies>
               <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
                 <version>${groovy.version}</version>
               </dependency>
@@ -211,6 +248,21 @@
               <outputDirectory>${project.build.directory}/dependency</outputDirectory>
             </configuration>
           </execution>
+          <!--
+            Get ClangFormat.cmake
+          -->
+          <!--execution>
+            <id>get-clang-format</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://raw.githubusercontent.com/zemasoft/clangformat-cmake/master/cmake/ClangFormat.cmake</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/clang-format</outputDirectory>
+            </configuration>
+          </execution-->
         </executions>
       </plugin>
       <!--
@@ -234,6 +286,20 @@
             </configuration>
           </execution>
           <execution>
+            <id>generate-driver-plc4x</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>plc4x</protocolName>
+              <protocolVersion>0</protocolVersion>
+              <languageName>c</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/generated-sources</outputDir>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-driver-s7</id>
             <phase>generate-sources</phase>
             <goals>
@@ -248,6 +314,89 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- Transform the ParserSerializer tests into c code -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <version>1.0.2</version>
+        <executions>
+          <!--execution>
+            <id>generate-modbus-tests</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>../protocols/modbus/src/test/resources/protocols/modbus</dir>
+                  <includes>ParserSerializerTestsuite.xml</includes>
+                  <stylesheet>build-utils/parser-serializer-testcase-generator.xsl</stylesheet>
+                  <outputDir>generated-sources/modbus/test</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                      <targetExtension>.c</targetExtension>
+                    </fileMapper>
+                  </fileMappers>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </execution-->
+          <execution>
+            <id>generate-plc4x-tests</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>../protocols/plc4x/src/test/resources/protocols/plc4x</dir>
+                  <includes>ParserSerializerTestsuite.xml</includes>
+                  <stylesheet>build-utils/parser-serializer-testcase-generator.xsl</stylesheet>
+                  <outputDir>generated-sources/plc4x/test</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                      <targetExtension>.c</targetExtension>
+                    </fileMapper>
+                  </fileMappers>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-s7-tests</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>../protocols/s7/src/test/resources/protocols/s7</dir>
+                  <includes>ParserSerializerTestsuite.xml</includes>
+                  <stylesheet>build-utils/parser-serializer-testcase-generator.xsl</stylesheet>
+                  <outputDir>generated-sources/s7/test</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                      <targetExtension>.c</targetExtension>
+                    </fileMapper>
+                  </fileMappers>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>11.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
       <!--
         Do the actual build.
       -->
@@ -362,6 +511,7 @@
           <configuration>
             <excludes combine.children="append">
               <exclude>cmake-*/**</exclude>
+              <exclude>.cmake/**</exclude>
             </excludes>
           </configuration>
         </plugin>
@@ -374,7 +524,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-c</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -382,14 +532,21 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-plc4x</artifactId>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>

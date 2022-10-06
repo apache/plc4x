@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -59,8 +59,6 @@ plc4c_return_code plc4c_transport_tcp_configure_function(
 }
 
 plc4c_return_code plc4c_transport_tcp_open_function(void* config) {
-  int sockfd;
-  int connfd;
   struct sockaddr_in servaddr;
 
   plc4c_transport_tcp_config* tcp_config = config;
@@ -131,7 +129,7 @@ plc4c_return_code plc4c_transport_tcp_select_message_function(
   if(size_buffer == NULL) {
     return NO_MEMORY;
   }
-  int received_bytes = recv(tcp_config->sockfd, size_buffer, min_size, 0);
+  int received_bytes = recv(tcp_config->sockfd, (char*) size_buffer, min_size, 0);
   // TODO: if the value is negative, it's more a "please remove this much of corrupt data" ...
   if(received_bytes < 0) {
     return CONNECTION_ERROR;
@@ -144,8 +142,12 @@ plc4c_return_code plc4c_transport_tcp_select_message_function(
     return INTERNAL_ERROR;
   }
   uint8_t* message_buffer = malloc(sizeof(uint8_t) * message_size);
-  if(message_size < 0) {
+  if(message_buffer == NULL) {
     return NO_MEMORY;
+  }
+  // Sanity check
+  if(min_size > message_size) {
+    return INTERNAL_ERROR;
   }
 
   // Copy the size_buffer to the start of the new buffer.
@@ -153,7 +155,7 @@ plc4c_return_code plc4c_transport_tcp_select_message_function(
   free(size_buffer);
 
   // Read the rest of the packet.
-  received_bytes = recv(tcp_config->sockfd, message_buffer + min_size, message_size - min_size, 0);
+  received_bytes = recv(tcp_config->sockfd, (char*) message_buffer + min_size, message_size - min_size, 0);
   if(received_bytes != message_size - min_size) {
     return CONNECTION_ERROR;
   }

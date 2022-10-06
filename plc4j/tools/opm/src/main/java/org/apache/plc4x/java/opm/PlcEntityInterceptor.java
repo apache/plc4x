@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -56,8 +56,6 @@ import java.util.concurrent.TimeoutException;
  * <p>
  * For those not too familiar with the JVM's dispatch on can roughly imagine the intercept method being a "regular"
  * method on the "proxied" entity and all parameters of the intercept method could then be access to local fields.
- *
- * @author julian
  */
 @SuppressWarnings({"common-java:DuplicatedBlocks", "Duplicates"})
 public class PlcEntityInterceptor {

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,9 +22,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,8 +32,6 @@ import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcSTRING extends PlcSimpleValue<String> {
-
-    static int maxLength = 254;
 
     public static PlcSTRING of(Object value) {
         if (value instanceof String) {
@@ -45,10 +43,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcSTRING(@JsonProperty("value") String value) {
         super(value, true);
-        if (value.length() > maxLength) {
-            throw new IllegalArgumentException(
-                String.format("String length %d exceeds allowed maximum for type String (max %d)", value.length(), maxLength));
-        }
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.STRING;
     }
 
     @Override
@@ -232,8 +231,8 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        String valueString = value.toString();
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        String valueString = value;
         writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 

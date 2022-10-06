@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,33 +18,24 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultPaddingField extends DefaultTaggedField implements PaddingField {
+import java.util.Map;
+import java.util.Objects;
 
-    private final TypeReference type;
-    private final String name;
+public class DefaultPaddingField extends DefaultTypedNamedField implements PaddingField {
+
     private final Term paddingValue;
     private final Term paddingCondition;
-    private final Term[] params;
 
-    public DefaultPaddingField(String[] tags, TypeReference type, String name, Term paddingValue, Term paddingCondition, Term[] params) {
-        super(tags);
+    public DefaultPaddingField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term paddingValue, Term paddingCondition) {
+        super(attributes, name);
+        this.paddingValue = Objects.requireNonNull(paddingValue);
+        this.paddingCondition = Objects.requireNonNull(paddingCondition);
         this.type = type;
-        this.name = name;
-        this.paddingValue = paddingValue;
-        this.paddingCondition = paddingCondition;
-        this.params = params;
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getPaddingValue() {
@@ -55,8 +46,25 @@ public class DefaultPaddingField extends DefaultTaggedField implements PaddingFi
         return paddingCondition;
     }
 
-    public Term[] getParams() {
-        return params;
+    @Override
+    public String toString() {
+        return "DefaultPaddingField{" +
+            "paddingValue=" + paddingValue +
+            ", paddingCondition=" + paddingCondition +
+            "} " + super.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultPaddingField that = (DefaultPaddingField) o;
+        return Objects.equals(paddingValue, that.paddingValue) && Objects.equals(paddingCondition, that.paddingCondition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), paddingValue, paddingCondition);
+    }
 }

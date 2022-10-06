@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -27,17 +27,15 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
-import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
-import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
+import org.apache.plc4x.java.knxnetip.ets.model.EtsModel;
+import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KnxGroupAddressIO;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
-import org.apache.plc4x.java.knxnetip.readwrite.types.*;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxDatapoint;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
@@ -72,7 +70,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
     private static final AtomicInteger sequenceCounter = new AtomicInteger(0);
     private RequestTransactionManager tm;
 
-    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     @Override
     public void setDriverContext(DriverContext driverContext) {
@@ -114,7 +112,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 .handle(searchResponse -> {
                     LOGGER.info("Got KNXnet/IP Search Response.");
                     // Check if this device supports tunneling services.
-                    final ServiceId tunnelingService = Arrays.stream(searchResponse.getDibSuppSvcFamilies().getServiceIds()).filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
+                    final ServiceId tunnelingService = searchResponse.getDibSuppSvcFamilies().getServiceIds().stream().filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
 
                     // If this device supports this type of service, tell the driver, we found a suitable device.
                     if (tunnelingService != null) {
@@ -273,10 +271,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             final PlcValue value = request.getPlcValue(fieldName);
             byte dataFirstByte = 0;
             byte[] data = null;
-            final Ets5Model ets5Model = knxNetIpDriverContext.getEts5Model();
-            if (ets5Model != null) {
-                final String destinationAddressString = ets5Model.parseGroupAddress(destinationAddress);
-                final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddressString);
+            final EtsModel etsModel = knxNetIpDriverContext.getEtsModel();
+            if (etsModel != null) {
+                final String destinationAddressString = etsModel.parseGroupAddress(destinationAddress);
+                final GroupAddress groupAddress = etsModel.getGroupAddresses().get(destinationAddressString);
                 if ((groupAddress == null) || (groupAddress.getType() == null)) {
                     future.completeExceptionally(new PlcRuntimeException(
                         "ETS5 model didn't specify group address '" + destinationAddressString +
@@ -284,15 +282,15 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     return future;
                 }
 
-                // Use the data in the ets5 model to correctly check and serialize the PlcValue
+                // Use the data in the ets model to correctly check and serialize the PlcValue
                 try {
-                    final WriteBufferByteBased writeBuffer = KnxDatapointIO.staticSerialize(value,
-                        groupAddress.getType());
+                    final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(KnxDatapoint.getLengthInBytes(value, groupAddress.getType()));
+                    KnxDatapoint.staticSerialize(writeBuffer, value, groupAddress.getType());
                     final byte[] serialized = writeBuffer.getData();
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);
-                } catch (ParseException e) {
+                } catch (SerializationException e) {
                     future.completeExceptionally(new PlcRuntimeException("Error serializing PlcValue.", e));
                     return future;
                 }
@@ -307,6 +305,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 } else if (value.isList()) {
                     // Check each item of the list, if it's also a byte.
                     List<? extends PlcValue> list = value.getList();
+                    // TODO: This could cause an exception.
                     data = new byte[list.size() - 1];
                     boolean allValuesAreBytes = !list.isEmpty();
                     int numByte = 0;
@@ -341,11 +340,17 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             TunnelingRequest knxRequest = new TunnelingRequest(
                 new TunnelingRequestDataBlock(communicationChannelId,
                     (short) sequenceCounter.getAndIncrement()),
-                new LDataReq((short) 0, new CEMIAdditionalInformation[0],
+                new LDataReq(
+                    (short) 0,
+                    new ArrayList<>(0),
                     new LDataExtended(false, false, CEMIPriority.LOW, false, false,
                         true, (byte) 6, (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
-                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data)))
-                ));
+                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data, (short) -1), (short) -1)
+                    ),
+                    -1
+                ),
+                -1
+            );
 
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -400,13 +405,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     if (lDataFrame instanceof LDataExtended) {
                         LDataExtended lDataFrameDataExt = (LDataExtended) lDataFrame;
                         Apdu apdu = lDataFrameDataExt.getApdu();
-                        if(apdu instanceof ApduDataContainer) {
+                        if (apdu instanceof ApduDataContainer) {
                             ApduDataContainer apduDataContainer = (ApduDataContainer) apdu;
                             ApduData dataApdu = apduDataContainer.getDataApdu();
-                            if(dataApdu instanceof ApduDataGroupValueWrite) {
+                            if (dataApdu instanceof ApduDataGroupValueWrite) {
                                 ApduDataGroupValueWrite groupWrite = (ApduDataGroupValueWrite) dataApdu;
                                 processCemiData(lDataFrameDataExt.getSourceAddress(), lDataFrameDataExt.getDestinationAddress(),
-                                    groupWrite.getDataFirstByte(),groupWrite.getData());
+                                    groupWrite.getDataFirstByte(), groupWrite.getData());
                             }
                         }
                     }
@@ -453,16 +458,16 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         // Decode the group address depending on the project settings.
         ReadBuffer addressBuffer = new ReadBufferByteBased(destinationGroupAddress);
         final KnxGroupAddress knxGroupAddress =
-            KnxGroupAddressIO.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
+            KnxGroupAddress.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
         final String destinationAddress = toString(knxGroupAddress);
 
-        // If there is an ETS5 model provided, continue decoding the payload.
-        if (knxNetIpDriverContext.getEts5Model() != null) {
-            final Ets5Model ets5Model = knxNetIpDriverContext.getEts5Model();
-            final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
-            final String areaName = ets5Model.getTopologyName(destinationAddress.substring(
+        // If there is an ETS model provided, continue decoding the payload.
+        if (knxNetIpDriverContext.getEtsModel() != null) {
+            final EtsModel etsModel = knxNetIpDriverContext.getEtsModel();
+            final GroupAddress groupAddress = etsModel.getGroupAddresses().get(destinationAddress);
+            final String areaName = etsModel.getTopologyName(destinationAddress.substring(
                 0, destinationAddress.indexOf('/')));
-            final String lineName = ets5Model.getTopologyName(destinationAddress.substring(
+            final String lineName = etsModel.getTopologyName(destinationAddress.substring(
                 0, destinationAddress.indexOf('/', destinationAddress.indexOf('/') + 1)));
 
             if ((groupAddress != null) && (groupAddress.getType() != null)) {
@@ -471,7 +476,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Parse the payload depending on the type of the group-address.
                 ReadBuffer rawDataReader = new ReadBufferByteBased(payload);
-                final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
+                final PlcValue value = KnxDatapoint.staticParse(rawDataReader,
                     groupAddress.getType());
 
                 // Assemble the plc4x return data-structure.
@@ -576,16 +581,16 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         try {
             switch (knxNetIpDriverContext.getGroupAddressType()) {
                 case 3:
-                    address.writeUnsignedShort(5, Short.valueOf(field.getMainGroup()));
-                    address.writeUnsignedByte(3, Byte.valueOf(field.getMiddleGroup()));
-                    address.writeUnsignedShort(8, Short.valueOf(field.getSubGroup()));
+                    address.writeUnsignedShort(5, Short.parseShort(field.getMainGroup()));
+                    address.writeUnsignedByte(3, Byte.parseByte(field.getMiddleGroup()));
+                    address.writeUnsignedShort(8, Short.parseShort(field.getSubGroup()));
                     break;
                 case 2:
-                    address.writeUnsignedShort(5, Short.valueOf(field.getMainGroup()));
-                    address.writeUnsignedShort(11, Short.valueOf(field.getSubGroup()));
+                    address.writeUnsignedShort(5, Short.parseShort(field.getMainGroup()));
+                    address.writeUnsignedShort(11, Short.parseShort(field.getSubGroup()));
                     break;
                 case 1:
-                    address.writeUnsignedShort(16, Short.valueOf(field.getSubGroup()));
+                    address.writeUnsignedShort(16, Short.parseShort(field.getSubGroup()));
                     break;
             }
         } catch (Exception e) {

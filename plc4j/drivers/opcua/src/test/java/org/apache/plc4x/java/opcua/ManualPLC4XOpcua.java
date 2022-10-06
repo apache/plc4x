@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,25 +23,16 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.types.PlcSubscriptionType;
-import org.apache.plc4x.java.opcua.field.OpcuaField;
 import org.apache.plc4x.java.opcua.field.OpcuaPlcFieldHandler;
-import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubscriptionHandle;
-import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.eclipse.milo.examples.server.ExampleServer;
 
 import java.math.BigInteger;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.function.Consumer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This class serves only as a manual entry point for ad-hoc tests of the OPC UA PLC4J driver.
@@ -91,9 +82,18 @@ public class ManualPLC4XOpcua {
 
     public static void main(String args[]) {
         try {
+            // When switching JDK versions from a newer to an older version,
+            // this can cause the server to not start correctly.
+            // Deleting the directory makes sure the key-store is initialized correctly.
+            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+            try {
+                Files.delete(securityBaseDir);
+            } catch (Exception e) {
+                // Ignore this ...
+            }
+
             ExampleServer testServer = new ExampleServer();
             testServer.startup().get();
-
         } catch (Exception e) {
             throw new PlcRuntimeException(e);
         }

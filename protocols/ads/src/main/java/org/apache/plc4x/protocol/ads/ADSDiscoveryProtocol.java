@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,17 +19,16 @@
 package org.apache.plc4x.protocol.ads;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
-
-import java.io.InputStream;
-import java.util.Map;
 
 /**
  * Little helper protocol used to communicate over UDP with Beckhoff hardware.
  */
-public class ADSDiscoveryProtocol implements Protocol {
+public class ADSDiscoveryProtocol implements Protocol, ProtocolHelpers {
 
     @Override
     public String getName() {
@@ -37,12 +36,14 @@ public class ADSDiscoveryProtocol implements Protocol {
     }
 
     @Override
-    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = ADSDiscoveryProtocol.class.getResourceAsStream("/protocols/ads/ads-discovery.mspec");
-        if(schemaInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
-        }
-        return new MessageFormatParser().parse(schemaInputStream);
+    public TypeContext getTypeContext() throws GenerationException {
+        ValidatableTypeContext typeContext = new MessageFormatParser().parse(getMspecStream("ads-discovery"));
+        typeContext.validate();
+        return typeContext;
     }
 
+    @Override
+    public String getPackageName() {
+        return "ads";
+    }
 }

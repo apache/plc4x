@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -36,12 +36,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 class SerialPollingSelector extends AbstractSelector {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialPollingSelector.class);
@@ -106,23 +100,32 @@ class SerialPollingSelector extends AbstractSelector {
         }
         this.selectPromise = new DefaultPromise<>(executor);
         try {
-            selectPromise.await(timeout);
+            if(timeout == 0) {
+                selectPromise.await();
+            } else {
+                selectPromise.await(timeout);
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Was interrupted", e);
         }
-        return events.size();
+        final int eventCount = events.size();
+        logger.debug("returning from select with {} events", eventCount);
+        return eventCount;
     }
 
     @Override
     public int select() {
-        return select(10);
+        return select(0);
     }
 
     @Override
     public Selector wakeup() {
+        logger.debug("being asked to wake up from select");
         // throw new NotImplementedException("Not implemented for this selector, should not be needed.");
-        // NOOP
+        if (!selectPromise.isDone()) {
+            selectPromise.setSuccess(null);
+        }
         return this;
     }
 

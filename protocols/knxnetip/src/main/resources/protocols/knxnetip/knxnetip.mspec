@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,221 +17,221 @@
  * under the License.
  */
 
-[discriminatedType 'KnxNetIpMessage'
-    [implicit      uint 8  'headerLength'    '6']
-    [const         uint 8  'protocolVersion' '0x10']
-    [discriminator uint 16 'msgType']
-    [implicit      uint 16 'totalLength'     'lengthInBytes']
-    [typeSwitch 'msgType'
+[discriminatedType KnxNetIpMessage byteOrder='BIG_ENDIAN'
+    [implicit      uint 8  headerLength    '6']
+    [const         uint 8  protocolVersion 0x10]
+    [discriminator uint 16 msgType]
+    [implicit      uint 16 totalLength     'lengthInBytes']
+    [typeSwitch msgType
         ['0x0201' SearchRequest
-            [simple HPAIDiscoveryEndpoint 'hpaiIDiscoveryEndpoint']
+            [simple HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint]
         ]
         ['0x0202' SearchResponse
-            [simple HPAIControlEndpoint 'hpaiControlEndpoint']
-            [simple DIBDeviceInfo       'dibDeviceInfo']
-            [simple DIBSuppSvcFamilies  'dibSuppSvcFamilies']
+            [simple HPAIControlEndpoint hpaiControlEndpoint]
+            [simple DIBDeviceInfo       dibDeviceInfo]
+            [simple DIBSuppSvcFamilies  dibSuppSvcFamilies]
         ]
         ['0x0203' DescriptionRequest
-            [simple HPAIControlEndpoint 'hpaiControlEndpoint']
+            [simple HPAIControlEndpoint hpaiControlEndpoint]
         ]
         ['0x0204' DescriptionResponse
-            [simple DIBDeviceInfo       'dibDeviceInfo']
-            [simple DIBSuppSvcFamilies  'dibSuppSvcFamilies']
+            [simple DIBDeviceInfo       dibDeviceInfo]
+            [simple DIBSuppSvcFamilies  dibSuppSvcFamilies]
         ]
         ['0x0205' ConnectionRequest
-            [simple HPAIDiscoveryEndpoint        'hpaiDiscoveryEndpoint']
-            [simple HPAIDataEndpoint             'hpaiDataEndpoint']
-            [simple ConnectionRequestInformation 'connectionRequestInformation']
+            [simple HPAIDiscoveryEndpoint        hpaiDiscoveryEndpoint]
+            [simple HPAIDataEndpoint             hpaiDataEndpoint]
+            [simple ConnectionRequestInformation connectionRequestInformation]
         ]
         ['0x0206' ConnectionResponse
-            [simple   uint 8 'communicationChannelId']
-            [simple   Status 'status']
-            [optional HPAIDataEndpoint            'hpaiDataEndpoint'            'status == Status.NO_ERROR']
-            [optional ConnectionResponseDataBlock 'connectionResponseDataBlock' 'status == Status.NO_ERROR']
+            [simple   uint 8 communicationChannelId]
+            [simple   Status status]
+            [optional HPAIDataEndpoint            hpaiDataEndpoint            'status == Status.NO_ERROR']
+            [optional ConnectionResponseDataBlock connectionResponseDataBlock 'status == Status.NO_ERROR']
         ]
         ['0x0207' ConnectionStateRequest
-            [simple   uint 8 'communicationChannelId']
+            [simple   uint 8 communicationChannelId]
             [reserved uint 8 '0x00']
-            [simple   HPAIControlEndpoint 'hpaiControlEndpoint']
+            [simple   HPAIControlEndpoint hpaiControlEndpoint]
         ]
         ['0x0208' ConnectionStateResponse
-            [simple uint 8 'communicationChannelId']
-            [simple Status 'status']
+            [simple uint 8 communicationChannelId]
+            [simple Status status]
         ]
         ['0x0209' DisconnectRequest
-            [simple   uint 8 'communicationChannelId']
+            [simple   uint 8 communicationChannelId]
             [reserved uint 8 '0x00']
-            [simple   HPAIControlEndpoint 'hpaiControlEndpoint']
+            [simple   HPAIControlEndpoint hpaiControlEndpoint]
         ]
         ['0x020A' DisconnectResponse
-            [simple uint 8 'communicationChannelId']
-            [simple Status 'status']
+            [simple uint 8 communicationChannelId]
+            [simple Status status]
         ]
-        ['0x020B' UnknownMessage [uint 16 'totalLength']
-            [array int 8 'unknownData' count 'totalLength - 6']
+        ['0x020B' UnknownMessage (uint 16 totalLength)
+            [array byte unknownData count 'totalLength - 6']
         ]
-        ['0x0310' DeviceConfigurationRequest [uint 16 'totalLength']
-            [simple DeviceConfigurationRequestDataBlock 'deviceConfigurationRequestDataBlock']
-            [simple CEMI                                'cemi' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
+        ['0x0310' DeviceConfigurationRequest (uint 16 totalLength)
+            [simple DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock]
+            [simple CEMI('totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)') cemi]
         ]
         ['0x0311' DeviceConfigurationAck
-            [simple DeviceConfigurationAckDataBlock 'deviceConfigurationAckDataBlock']
+            [simple DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock]
         ]
-        ['0x0420' TunnelingRequest [uint 16 'totalLength']
-            [simple TunnelingRequestDataBlock 'tunnelingRequestDataBlock']
-            [simple CEMI                      'cemi' ['totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)']]
+        ['0x0420' TunnelingRequest (uint 16 totalLength)
+            [simple TunnelingRequestDataBlock tunnelingRequestDataBlock]
+            [simple CEMI('totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)') cemi]
         ]
         ['0x0421' TunnelingResponse
-            [simple TunnelingResponseDataBlock 'tunnelingResponseDataBlock']
+            [simple TunnelingResponseDataBlock tunnelingResponseDataBlock]
         ]
         ['0x0530' RoutingIndication
         ]
     ]
 ]
 
-[type 'HPAIDiscoveryEndpoint'
-    [implicit uint 8           'structureLength' 'lengthInBytes']
-    [simple   HostProtocolCode 'hostProtocolCode']
-    [simple   IPAddress        'ipAddress']
-    [simple   uint 16          'ipPort']
+[type HPAIDiscoveryEndpoint
+    [implicit uint 8           structureLength 'lengthInBytes']
+    [simple   HostProtocolCode hostProtocolCode]
+    [simple   IPAddress        ipAddress]
+    [simple   uint 16          ipPort]
 ]
 
-[type 'HPAIControlEndpoint'
-    [implicit uint 8           'structureLength' 'lengthInBytes']
-    [simple   HostProtocolCode 'hostProtocolCode']
-    [simple   IPAddress        'ipAddress']
-    [simple   uint 16          'ipPort']
+[type HPAIControlEndpoint
+    [implicit uint 8           structureLength 'lengthInBytes']
+    [simple   HostProtocolCode hostProtocolCode]
+    [simple   IPAddress        ipAddress]
+    [simple   uint 16          ipPort]
 ]
 
-[type 'DIBDeviceInfo'
-    [implicit uint 8       'structureLength' 'lengthInBytes']
-    [simple   uint 8       'descriptionType']
-    [simple   KnxMedium    'knxMedium']
-    [simple   DeviceStatus 'deviceStatus']
-    [simple   KnxAddress   'knxAddress']
-    [simple   ProjectInstallationIdentifier 'projectInstallationIdentifier']
-    [array    int 8        'knxNetIpDeviceSerialNumber' count '6']
-    [simple   IPAddress    'knxNetIpDeviceMulticastAddress']
-    [simple   MACAddress   'knxNetIpDeviceMacAddress']
-    [array    int 8        'deviceFriendlyName'         count '30']
+[type DIBDeviceInfo
+    [implicit uint 8       structureLength 'lengthInBytes']
+    [simple   uint 8       descriptionType]
+    [simple   KnxMedium    knxMedium]
+    [simple   DeviceStatus deviceStatus]
+    [simple   KnxAddress   knxAddress]
+    [simple   ProjectInstallationIdentifier projectInstallationIdentifier]
+    [array    byte         knxNetIpDeviceSerialNumber count '6']
+    [simple   IPAddress    knxNetIpDeviceMulticastAddress]
+    [simple   MACAddress   knxNetIpDeviceMacAddress]
+    [array    byte         deviceFriendlyName         count '30']
 ]
 
-[type 'DIBSuppSvcFamilies'
-    [implicit uint 8       'structureLength' 'lengthInBytes']
-    [simple   uint 8       'descriptionType']
-    [array    ServiceId    'serviceIds' length 'structureLength - 2']
+[type DIBSuppSvcFamilies
+    [implicit uint 8       structureLength 'lengthInBytes']
+    [simple   uint 8       descriptionType]
+    [array    ServiceId    serviceIds length 'structureLength - 2']
 ]
 
-[type 'HPAIDataEndpoint'
-    [implicit uint 8           'structureLength' 'lengthInBytes']
-    [simple   HostProtocolCode 'hostProtocolCode']
-    [simple   IPAddress        'ipAddress']
-    [simple   uint 16          'ipPort']
+[type HPAIDataEndpoint
+    [implicit uint 8           structureLength 'lengthInBytes']
+    [simple   HostProtocolCode hostProtocolCode]
+    [simple   IPAddress        ipAddress]
+    [simple   uint 16          ipPort]
 ]
 
-[discriminatedType 'ConnectionRequestInformation'
-    [implicit      uint 8    'structureLength' 'lengthInBytes']
-    [discriminator uint 8    'connectionType']
-    [typeSwitch 'connectionType'
+[discriminatedType ConnectionRequestInformation
+    [implicit      uint 8    structureLength 'lengthInBytes']
+    [discriminator uint 8    connectionType]
+    [typeSwitch connectionType
         ['0x03' ConnectionRequestInformationDeviceManagement
         ]
         ['0x04' ConnectionRequestInformationTunnelConnection
-            [simple   KnxLayer  'knxLayer']
+            [simple   KnxLayer  knxLayer]
             [reserved uint 8    '0x00']
         ]
     ]
 ]
 
-[discriminatedType 'ConnectionResponseDataBlock'
-    [implicit      uint 8     'structureLength' 'lengthInBytes']
-    [discriminator uint 8     'connectionType']
-    [typeSwitch 'connectionType'
+[discriminatedType ConnectionResponseDataBlock
+    [implicit      uint 8     structureLength 'lengthInBytes']
+    [discriminator uint 8     connectionType]
+    [typeSwitch connectionType
         ['0x03' ConnectionResponseDataBlockDeviceManagement
         ]
         ['0x04' ConnectionResponseDataBlockTunnelConnection
-            [simple KnxAddress 'knxAddress']
+            [simple KnxAddress knxAddress]
         ]
     ]
 ]
 
-[type 'DeviceConfigurationRequestDataBlock'
-    [implicit uint 8 'structureLength' 'lengthInBytes']
-    [simple   uint 8 'communicationChannelId']
-    [simple   uint 8 'sequenceCounter']
+[type DeviceConfigurationRequestDataBlock
+    [implicit uint 8 structureLength 'lengthInBytes']
+    [simple   uint 8 communicationChannelId]
+    [simple   uint 8 sequenceCounter]
     [reserved uint 8 '0x00']
 ]
 
-[type 'DeviceConfigurationAckDataBlock'
-    [implicit uint 8 'structureLength' 'lengthInBytes']
-    [simple   uint 8 'communicationChannelId']
-    [simple   uint 8 'sequenceCounter']
-    [simple   Status 'status']
+[type DeviceConfigurationAckDataBlock
+    [implicit uint 8 structureLength 'lengthInBytes']
+    [simple   uint 8 communicationChannelId]
+    [simple   uint 8 sequenceCounter]
+    [simple   Status status]
 ]
 
-[type 'TunnelingRequestDataBlock'
-    [implicit uint 8 'structureLength' 'lengthInBytes']
-    [simple   uint 8 'communicationChannelId']
-    [simple   uint 8 'sequenceCounter']
+[type TunnelingRequestDataBlock
+    [implicit uint 8 structureLength 'lengthInBytes']
+    [simple   uint 8 communicationChannelId]
+    [simple   uint 8 sequenceCounter]
     [reserved uint 8 '0x00']
 ]
 
-[type 'TunnelingResponseDataBlock'
-    [implicit uint 8 'structureLength' 'lengthInBytes']
-    [simple   uint 8 'communicationChannelId']
-    [simple   uint 8 'sequenceCounter']
-    [simple   Status 'status']
+[type TunnelingResponseDataBlock
+    [implicit uint 8 structureLength 'lengthInBytes']
+    [simple   uint 8 communicationChannelId]
+    [simple   uint 8 sequenceCounter]
+    [simple   Status status]
 ]
 
-[type 'IPAddress'
-    [array int 8 'addr' count '4']
+[type IPAddress
+    [array byte addr count '4']
 ]
 
-[type 'MACAddress'
-    [array int 8 'addr' count '6']
+[type MACAddress
+    [array byte addr count '6']
 ]
 
-[type 'KnxAddress'
-    [simple uint 4 'mainGroup']
-    [simple uint 4 'middleGroup']
-    [simple uint 8 'subGroup']
+[type KnxAddress
+    [simple uint 4 mainGroup]
+    [simple uint 4 middleGroup]
+    [simple uint 8 subGroup]
 ]
 
-[type 'DeviceStatus'
+[type DeviceStatus
     [reserved uint 7 '0x00']
-    [simple   bit    'programMode']
+    [simple   bit    programMode]
 ]
 
-[type 'ProjectInstallationIdentifier'
-    [simple uint 8 'projectNumber']
-    [simple uint 8 'installationNumber']
+[type ProjectInstallationIdentifier
+    [simple uint 8 projectNumber]
+    [simple uint 8 installationNumber]
 ]
 
-[discriminatedType 'ServiceId'
-    [discriminator uint 8 'serviceType']
-    [typeSwitch 'serviceType'
+[discriminatedType ServiceId
+    [discriminator uint 8 serviceType]
+    [typeSwitch serviceType
         ['0x02' KnxNetIpCore
-            [simple uint 8 'version']
+            [simple uint 8 version]
         ]
         ['0x03' KnxNetIpDeviceManagement
-            [simple uint 8 'version']
+            [simple uint 8 version]
         ]
         ['0x04' KnxNetIpTunneling
-            [simple uint 8 'version']
+            [simple uint 8 version]
         ]
         ['0x05' KnxNetIpRouting
-            [simple uint 8 'version']
+            [simple uint 8 version]
         ]
         // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x06' KnxNetRemoteLogging
-            [simple uint 8 'version']
+            [simple uint 8 version]
         ]
         // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x07' KnxNetRemoteConfigurationAndDiagnosis
-            [simple uint 8 'version']
+            [simple uint 8 version]
         ]
         // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x08' KnxNetObjectServer
-            [simple uint 8 'version']
+            [simple uint 8 version]
         ]
     ]
 ]
@@ -241,31 +241,31 @@
 // NOTE: When inspecting traffic in WireShark it seems they got the
 // standard/extended frame thing wrong. When comparing to the spec most
 // normal traffic is actually extended frames.
-[discriminatedType 'CEMI' [uint 8 'size']
-    [discriminator uint 8 'messageCode']
-    [typeSwitch 'messageCode'
+[discriminatedType CEMI(uint 16 size)
+    [discriminator uint 8 messageCode]
+    [typeSwitch messageCode
         ['0x2B' LBusmonInd
-            [simple   uint 8                    'additionalInformationLength']
-            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple   LDataFrame                'dataFrame']
-            [optional uint 8                    'crc'                   'dataFrame.notAckFrame']
+            [simple   uint 8                    additionalInformationLength]
+            [array    CEMIAdditionalInformation additionalInformation length 'additionalInformationLength']
+            [simple   LDataFrame                dataFrame]
+            [optional uint 8                    crc                   'dataFrame.notAckFrame']
         ]
 
         // Page 72ff
         ['0x11' LDataReq
-            [simple   uint 8                    'additionalInformationLength']
-            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple   LDataFrame                'dataFrame']
+            [simple   uint 8                    additionalInformationLength]
+            [array    CEMIAdditionalInformation additionalInformation length 'additionalInformationLength']
+            [simple   LDataFrame                dataFrame]
         ]
         ['0x29' LDataInd
-            [simple   uint 8                    'additionalInformationLength']
-            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple   LDataFrame                'dataFrame']
+            [simple   uint 8                    additionalInformationLength]
+            [array    CEMIAdditionalInformation additionalInformation length 'additionalInformationLength']
+            [simple   LDataFrame                dataFrame]
         ]
         ['0x2E' LDataCon
-            [simple   uint 8                    'additionalInformationLength']
-            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple   LDataFrame                'dataFrame']
+            [simple   uint 8                    additionalInformationLength]
+            [array    CEMIAdditionalInformation additionalInformation length 'additionalInformationLength']
+            [simple   LDataFrame                dataFrame]
         ]
 
         ['0x10' LRawReq
@@ -291,20 +291,20 @@
         ]
 
         ['0xFC' MPropReadReq
-            [simple uint 16 'interfaceObjectType']
-            [simple uint  8 'objectInstance']
-            [simple uint  8 'propertyId']
-            [simple uint  4 'numberOfElements']
-            [simple uint 12 'startIndex']
+            [simple uint 16 interfaceObjectType]
+            [simple uint  8 objectInstance]
+            [simple uint  8 propertyId]
+            [simple uint  4 numberOfElements]
+            [simple uint 12 startIndex]
         ]
         ['0xFB' MPropReadCon
-            [simple uint 16 'interfaceObjectType']
-            [simple uint  8 'objectInstance']
-            [simple uint  8 'propertyId']
-            [simple uint  4 'numberOfElements']
-            [simple uint 12 'startIndex']
+            [simple uint 16 interfaceObjectType]
+            [simple uint  8 objectInstance]
+            [simple uint  8 propertyId]
+            [simple uint  4 numberOfElements]
+            [simple uint 12 startIndex]
             // TODO: See chapter 4.1.7.3.1 ... this is actually a var length array of elements ('numberOfElements') with the type specified by 'interfaceObjectType'.
-            [simple uint 16 'data']
+            [simple uint 16 data]
         ]
 
         ['0xF6' MPropWriteReq
@@ -329,65 +329,65 @@
     ]
 ]
 
-[discriminatedType 'CEMIAdditionalInformation'
-    [discriminator uint 8 'additionalInformationType']
-    [typeSwitch 'additionalInformationType'
+[discriminatedType CEMIAdditionalInformation
+    [discriminator uint 8 additionalInformationType]
+    [typeSwitch additionalInformationType
         ['0x03' CEMIAdditionalInformationBusmonitorInfo
-            [const     uint 8 'len' '1']
-            [simple    bit    'frameErrorFlag']
-            [simple    bit    'bitErrorFlag']
-            [simple    bit    'parityErrorFlag']
-            [simple    bit    'unknownFlag']
-            [simple    bit    'lostFlag']
-            [simple    uint 3 'sequenceNumber']
+            [const     uint 8 len 1]
+            [simple    bit    frameErrorFlag]
+            [simple    bit    bitErrorFlag]
+            [simple    bit    parityErrorFlag]
+            [simple    bit    unknownFlag]
+            [simple    bit    lostFlag]
+            [simple    uint 3 sequenceNumber]
         ]
         ['0x04' CEMIAdditionalInformationRelativeTimestamp
-            [const    uint 8            'len' '2']
-            [simple   RelativeTimestamp 'relativeTimestamp']
+            [const    uint 8            len 2]
+            [simple   RelativeTimestamp relativeTimestamp]
         ]
     ]
 ]
 
 // The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
 // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
-[discriminatedType 'LDataFrame'
-    [simple        bit          'frameType']
-    [discriminator bit          'polling']
-    [simple        bit          'notRepeated']
-    [discriminator bit          'notAckFrame']
-    [enum          CEMIPriority 'priority']
-    [simple        bit          'acknowledgeRequested']
-    [simple        bit          'errorFlag']
+[discriminatedType LDataFrame
+    [simple        bit          frameType]
+    [discriminator bit          polling]
+    [simple        bit          notRepeated]
+    [discriminator bit          notAckFrame]
+    [simple        CEMIPriority priority]
+    [simple        bit          acknowledgeRequested]
+    [simple        bit          errorFlag]
     // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
-    [typeSwitch 'notAckFrame','polling'
+    [typeSwitch notAckFrame,polling
         // Page 29ff
         // TODO: For some reason it doesn't seem to matter what the frame format is set to, it always seems to be an extended frame
         // ['true','false','false' LDataExtended
         ['true','false' LDataExtended
-            [simple   bit          'groupAddress']
-            [simple   uint 3       'hopCount']
-            [simple   uint 4       'extendedFrameFormat']
-            [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'destinationAddress' count '2']
-            [implicit uint 8       'dataLength' 'apdu.lengthInBytes - 1']
-            [simple   Apdu         'apdu' ['dataLength']]
+            [simple   bit          groupAddress]
+            [simple   uint 3       hopCount]
+            [simple   uint 4       extendedFrameFormat]
+            [simple   KnxAddress   sourceAddress]
+            [array    byte         destinationAddress count '2']
+            [implicit uint 8       dataLength 'apdu.lengthInBytes - 1']
+            [simple   Apdu('dataLength') apdu]
         ]
         // Page 28ff
         //['true','false','true' LDataStandard
-        //    [simple   KnxAddress   'sourceAddress']
-        //    [array    int 8        'destinationAddress' count '2']
-        //    [simple   bit          'groupAddress']
-        //    [simple   uint 3       'hopCount']
-        //    [simple   uint 4       'dataLength']
-        //    [simple   Apdu         'apdu' ['dataLength']]
+        //    [simple   KnxAddress   sourceAddress]
+        //    [array    byte         destinationAddress count '2']
+        //    [simple   bit          groupAddress]
+        //    [simple   uint 3       hopCount]
+        //    [simple   uint 4       dataLength]
+        //    [simple   Apdu         apdu ['dataLength']]
         //]
         // Page 31ff
         //['true','true','true' LPollData
         ['true','true' LPollData
-            [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'targetAddress' count '2']
+            [simple   KnxAddress   sourceAddress]
+            [array    byte         targetAddress count '2']
             [reserved uint 4       '0x00']
-            [simple   uint 6       'numberExpectedPollData']
+            [simple   uint 6       numberExpectedPollData]
         ]
         ['false' LDataFrameACK
             // TODO: Implement this
@@ -395,24 +395,24 @@
     ]
 ]
 
-[discriminatedType 'Apdu' [uint 8 'dataLength']
+[discriminatedType Apdu(uint 8 dataLength)
     // 10_01 Logical Tag Extended v01.02.01 AS.pdf Page 74ff
-    [discriminator uint 1 'control']
-    [simple        bit    'numbered']
-    [simple        uint 4 'counter']
-    [typeSwitch 'control'
+    [discriminator uint 1 control]
+    [simple        bit    numbered]
+    [simple        uint 4 counter]
+    [typeSwitch control
         ['1' ApduControlContainer
-            [simple ApduControl 'controlApdu']
+            [simple ApduControl controlApdu]
         ]
-        ['0' ApduDataContainer [uint 8 'dataLength']
-            [simple ApduData 'dataApdu' ['dataLength']]
+        ['0' ApduDataContainer
+            [simple ApduData('dataLength') dataApdu]
         ]
     ]
 ]
 
-[discriminatedType 'ApduControl'
-    [discriminator uint 2 'controlType']
-    [typeSwitch 'controlType'
+[discriminatedType ApduControl
+    [discriminator uint 2 controlType]
+    [typeSwitch controlType
         ['0x0' ApduControlConnect
         ]
         ['0x1' ApduControlDisconnect
@@ -424,20 +424,20 @@
     ]
 ]
 
-[discriminatedType 'ApduData' [uint 8 'dataLength']
-    [discriminator uint 4 'apciType']
+[discriminatedType ApduData(uint 8 dataLength)
+    [discriminator uint 4 apciType]
     // 03_03_07 Application Layer v01.06.02 AS Page 9ff
-    [typeSwitch 'apciType'
+    [typeSwitch apciType
         ['0x0' ApduDataGroupValueRead
             [reserved uint 6 '0x00']
         ]
-        ['0x1' ApduDataGroupValueResponse [uint 8 'dataLength']
-            [simple int 6 'dataFirstByte']
-            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
+        ['0x1' ApduDataGroupValueResponse
+            [simple int 6 dataFirstByte]
+            [array  byte  data count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
-        ['0x2' ApduDataGroupValueWrite [uint 8 'dataLength']
-            [simple int 6 'dataFirstByte']
-            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
+        ['0x2' ApduDataGroupValueWrite
+            [simple int 6 dataFirstByte]
+            [array  byte  data count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0x3' ApduDataIndividualAddressWrite
         ]
@@ -451,13 +451,13 @@
         ['0x7' ApduDataAdcResponse
         ]
         ['0x8' ApduDataMemoryRead
-            [simple uint 6  'numBytes']
-            [simple uint 16 'address']
+            [simple uint 6  numBytes]
+            [simple uint 16 address]
         ]
         ['0x9' ApduDataMemoryResponse
-            [implicit uint 6  'numBytes' 'COUNT(data)']
-            [simple   uint 16 'address']
-            [array    uint 8  'data'     count 'numBytes']
+            [implicit uint 6  numBytes 'COUNT(data)']
+            [simple   uint 16 address]
+            [array    byte    data     count 'numBytes']
         ]
         ['0xA' ApduDataMemoryWrite
         ]
@@ -465,24 +465,24 @@
         ['0xB' ApduDataUserMessage
         ]
         ['0xC' ApduDataDeviceDescriptorRead
-            [simple uint 6 'descriptorType']
+            [simple uint 6 descriptorType]
         ]
-        ['0xD' ApduDataDeviceDescriptorResponse [uint 8 'dataLength']
-            [simple uint 6 'descriptorType']
-            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
+        ['0xD' ApduDataDeviceDescriptorResponse
+            [simple uint 6 descriptorType]
+            [array  byte   data count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0xE' ApduDataRestart
         ]
-        ['0xF' ApduDataOther [uint 8 'dataLength']
-            [simple ApduDataExt 'extendedApdu' ['dataLength']]
+        ['0xF' ApduDataOther
+            [simple ApduDataExt('dataLength') extendedApdu]
         ]
     ]
 ]
 
 // 03_03_07 Application Layer v01.06.02 AS Page 9ff
-[discriminatedType 'ApduDataExt' [uint 8 'length']
-    [discriminator uint 6 'extApciType']
-    [typeSwitch 'extApciType'
+[discriminatedType ApduDataExt(uint 8 length)
+    [discriminator uint 6 extApciType]
+    [typeSwitch extApciType
         ['0x00' ApduDataExtOpenRoutingTableRequest
         ]
         ['0x01' ApduDataExtReadRoutingTableRequest
@@ -508,11 +508,11 @@
         ]
 
         ['0x11' ApduDataExtAuthorizeRequest
-            [simple uint 8 'level']
-            [array  uint 8 'data' count '4']
+            [simple uint 8 level]
+            [array  byte   data count '4']
         ]
         ['0x12' ApduDataExtAuthorizeResponse
-            [simple uint 8 'level']
+            [simple uint 8 level]
         ]
         ['0x13' ApduDataExtKeyWrite
         ]
@@ -520,41 +520,41 @@
         ]
 
         ['0x15' ApduDataExtPropertyValueRead
-            [simple uint 8  'objectIndex']
-            [simple uint 8  'propertyId']
-            [simple uint 4  'count']
-            [simple uint 12 'index']
+            [simple uint 8  objectIndex]
+            [simple uint 8  propertyId]
+            [simple uint 4  count]
+            [simple uint 12 index]
         ]
-        ['0x16' ApduDataExtPropertyValueResponse [uint 8 'length']
-            [simple uint 8  'objectIndex']
-            [simple uint 8  'propertyId']
-            [simple uint 4  'count']
-            [simple uint 12 'index']
-            [array  uint 8  'data' count 'length - 5']
+        ['0x16' ApduDataExtPropertyValueResponse
+            [simple uint 8  objectIndex]
+            [simple uint 8  propertyId]
+            [simple uint 4  count]
+            [simple uint 12 index]
+            [array  byte    data count 'length - 5']
         ]
-        ['0x17' ApduDataExtPropertyValueWrite [uint 8 'length']
-            [simple uint 8  'objectIndex']
-            [simple uint 8  'propertyId']
-            [simple uint 4  'count']
-            [simple uint 12 'index']
-            [array  uint 8  'data' count 'length - 5']
+        ['0x17' ApduDataExtPropertyValueWrite
+            [simple uint 8  objectIndex]
+            [simple uint 8  propertyId]
+            [simple uint 4  count]
+            [simple uint 12 index]
+            [array  byte    data count 'length - 5']
         ]
         ['0x18' ApduDataExtPropertyDescriptionRead
-            [simple uint 8 'objectIndex']
-            [simple uint 8 'propertyId']
-            [simple uint 8 'index']
+            [simple uint 8 objectIndex]
+            [simple uint 8 propertyId]
+            [simple uint 8 index]
         ]
         ['0x19' ApduDataExtPropertyDescriptionResponse
-            [simple   uint 8              'objectIndex']
-            [simple   uint 8              'propertyId']
-            [simple   uint 8              'index']
-            [simple   bit                 'writeEnabled']
+            [simple   uint 8              objectIndex]
+            [simple   uint 8              propertyId]
+            [simple   uint 8              index]
+            [simple   bit                 writeEnabled]
             [reserved uint 1              '0x0']
-            [simple   KnxPropertyDataType 'propertyDataType']
+            [simple   KnxPropertyDataType propertyDataType]
             [reserved uint 4              '0x0']
-            [simple   uint 12             'maxNrOfElements']
-            [simple   AccessLevel         'readLevel']
-            [simple   AccessLevel         'writeLevel']
+            [simple   uint 12             maxNrOfElements]
+            [simple   AccessLevel         readLevel]
+            [simple   AccessLevel         writeLevel]
         ]
 
         ['0x1A' ApduDataExtNetworkParameterRead
@@ -610,35 +610,35 @@
     ]
 ]
 
-[type 'RelativeTimestamp'
-    [simple   uint 16 'timestamp']
+[type RelativeTimestamp
+    [simple   uint 16 timestamp]
 ]
 
-[discriminatedType 'KnxGroupAddress' [uint 2 'numLevels']
-    [typeSwitch 'numLevels'
+[discriminatedType KnxGroupAddress(uint 2 numLevels)
+    [typeSwitch numLevels
         ['1' KnxGroupAddressFreeLevel
-            [simple uint 16 'subGroup']
+            [simple uint 16 subGroup]
         ]
         ['2' KnxGroupAddress2Level
-            [simple uint 5  'mainGroup']
-            [simple uint 11 'subGroup']
+            [simple uint 5  mainGroup]
+            [simple uint 11 subGroup]
         ]
         ['3' KnxGroupAddress3Level
-            [simple uint 5 'mainGroup']
-            [simple uint 3 'middleGroup']
-            [simple uint 8 'subGroup']
+            [simple uint 5 mainGroup]
+            [simple uint 3 middleGroup]
+            [simple uint 8 subGroup]
         ]
     ]
 ]
 
-[enum uint 2 'CEMIPriority'
+[enum uint 2 CEMIPriority
     ['0x0' SYSTEM]
     ['0x1' NORMAL]
     ['0x2' URGENT]
     ['0x3' LOW]
 ]
 
-[enum uint 8 'Status'
+[enum uint 8 Status
     ['0x00' NO_ERROR]
     ['0x01' PROTOCOL_TYPE_NOT_SUPPORTED]
     ['0x02' UNSUPPORTED_PROTOCOL_VERSION]
@@ -653,7 +653,7 @@
     ['0x29' TUNNELLING_LAYER_NOT_SUPPORTED]
 ]
 
-[enum uint 8 'HostProtocolCode'
+[enum uint 8 HostProtocolCode
     ['0x01' IPV4_UDP]
     ['0x02' IPV4_TCP]
 ]
@@ -668,13 +668,13 @@
 // TUNNEL_BUSMONITOR The client becomes a passive participant and all frames
 //                   on the KNX bus get forwarded to the client. Only one
 //                   Busmonitor connection is allowed at any given time.
-[enum uint 8 'KnxLayer'
+[enum uint 8 KnxLayer
     ['0x02' TUNNEL_LINK_LAYER]
     ['0x04' TUNNEL_RAW]
     ['0x80' TUNNEL_BUSMONITOR]
 ]
 
-[enum uint 8 'KnxMedium'
+[enum uint 8 KnxMedium
     ['0x01' MEDIUM_RESERVED_1]
     ['0x02' MEDIUM_TP1]
     ['0x04' MEDIUM_PL110]
@@ -683,7 +683,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' [string '-1' 'description',                                           bit 'knxSupport']
+[enum uint 8 SupportedPhysicalMedia(vstring description, bit knxSupport)
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
@@ -709,7 +709,7 @@
 
 // The definition of the constants for medium type in the device descriptor differs from that of the other parts
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 4 'DeviceDescriptorMediumType'
+[enum uint 4 DeviceDescriptorMediumType
     ['0x0' TP1      ]
     ['0x1' PL110    ]
     ['0x2' RF       ]
@@ -720,7 +720,7 @@
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
 // REMARK: The last digit is intentionally set to 0 so this enum code can only be used as a mask.
-[enum uint 16 'FirmwareType'
+[enum uint 16 FirmwareType
     ['0x0010' SYSTEM_1                  ]
     ['0x0020' SYSTEM_2                  ]
     ['0x0300' SYSTEM_300                ]
@@ -743,7 +743,7 @@
 // Helper enum that binds the combinations of medium type and firmware
 // type to the pre-defined constants the spec defines
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 16 'DeviceDescriptor'        [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
+[enum uint 16 DeviceDescriptor(DeviceDescriptorMediumType mediumType, FirmwareType firmwareType)
     ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['TP1',          'SYSTEM_1'                  ]]
     ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['TP1',          'SYSTEM_1'                  ]]
     ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['TP1',          'SYSTEM_1'                  ]]
@@ -775,7 +775,7 @@
     ['0x5705' KNX_IP_SYSTEM7            ['KNX_IP',       'SYSTEM_7'                  ]]
 ]
 
-[enum uint 4 'AccessLevel' [string '-1' 'purpose',         bit 'needsAuthentication']
+[enum uint 4 AccessLevel(vstring purpose, bit needsAuthentication)
     ['0x0' Level0          ['"system manufacturer"',  'true'                   ]]
     ['0x1' Level1          ['"product manufacturer"', 'true'                   ]]
     ['0x2' Level2          ['"configuration"',        'true'                   ]]
@@ -784,28 +784,28 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 23ff
-[type 'DeviceDescriptorType2'
+[type DeviceDescriptorType2
     // Same manufacturer id as used elsewhere (Assigned by KNX Association)
-    [simple uint 16            'manufacturerId' ]
+    [simple uint 16            manufacturerId ]
     // Manufacturer specific device type id
-    [simple uint 16            'deviceType'     ]
+    [simple uint 16            deviceType     ]
     // Manufacturer specific device type version
-    [simple uint 8             'version'        ]
+    [simple uint 8             version        ]
     // Indicates the Network Management procedures based on A_Link_Read-service are supported
-    [simple bit                'readSupported'  ]
+    [simple bit                readSupported  ]
     // Indicates the Network Management procedures based on A_Link_Write-service are supported
-    [simple bit                'writeSupported' ]
-    [simple uint 6             'logicalTagBase' ]
-    [simple ChannelInformation 'channelInfo1'   ]
-    [simple ChannelInformation 'channelInfo2'   ]
-    [simple ChannelInformation 'channelInfo3'   ]
-    [simple ChannelInformation 'channelInfo4'   ]
+    [simple bit                writeSupported ]
+    [simple uint 6             logicalTagBase ]
+    [simple ChannelInformation channelInfo1   ]
+    [simple ChannelInformation channelInfo2   ]
+    [simple ChannelInformation channelInfo3   ]
+    [simple ChannelInformation channelInfo4   ]
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 24
-[type 'ChannelInformation'
-    [simple uint 3  'numChannels']
-    [simple uint 13 'channelCode']
+[type ChannelInformation
+    [simple uint 3  numChannels]
+    [simple uint 13 channelCode]
 ]
 
 // Switch constants taken from the generated KnxPropertyDataType type
@@ -813,191 +813,191 @@
 // - 03_05_01 Resources v01.09.03 AS.pdf
 // - 03_07_03 Standardized Identifier Tables v01.03.01 AS.pdf
 // - 03_07_02 Datapoint Types v01.08.02 AS.pdf
-[dataIo 'KnxProperty' [KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes']
-    [typeSwitch 'propertyType','dataLengthInBytes'
+[dataIo KnxProperty(KnxPropertyDataType propertyType, uint 8 dataLengthInBytes)
+    [typeSwitch propertyType,dataLengthInBytes
         ['PDT_CONTROL' BOOL
             [reserved uint 7        '0x00']
-            [simple   bit           'value']
+            [simple   bit           value]
         ]
         ['PDT_CHAR' SINT
-            [simple   int 8         'value']
+            [simple   int 8         value]
         ]
         ['PDT_UNSIGNED_CHAR' USINT
-            [simple   uint 8        'value']
+            [simple   uint 8        value]
         ]
         ['PDT_INT' INT
-            [simple   int 16        'value']
+            [simple   int 16        value]
         ]
         // On some systems this property is bigger
         ['PDT_UNSIGNED_INT','4' UDINT
-            [simple   uint 32       'value']
+            [simple   uint 32       value]
         ]
         ['PDT_UNSIGNED_INT' UINT
-            [simple   uint 16       'value']
+            [simple   uint 16       value]
         ]
         ['PDT_KNX_FLOAT' REAL
-            [simple   float 4.11    'value']
+            [simple   float 16      value encoding='"KNXFloat"']
         ]
         ['PDT_DATE' Struct
             [reserved uint 3 '0x00']
-            [simple uint 5 'dayOfMonth']
+            [simple uint 5 dayOfMonth]
             [reserved uint 4 '0x00']
-            [simple uint 4 'month']
+            [simple uint 4 month]
             [reserved uint 1 '0x00']
-            [simple uint 7 'year']        ]
+            [simple uint 7 year]        ]
         ['PDT_TIME' Struct
-            [simple uint 3 'day']
-            [simple uint 5 'hour']
+            [simple uint 3 day]
+            [simple uint 5 hour]
             [reserved uint 2 '0x00']
-            [simple uint 6 'minutes']
+            [simple uint 6 minutes]
             [reserved uint 2 '0x00']
-            [simple uint 6 'seconds']
+            [simple uint 6 seconds]
         ]
         ['PDT_LONG' DINT
-            [simple   int 32        'value']
+            [simple   int 32        value]
         ]
         ['PDT_UNSIGNED_LONG' UDINT
-            [simple   uint 32       'value']
+            [simple   uint 32       value]
         ]
         ['PDT_FLOAT' REAL
-            [simple   float 8.23    'value']
+            [simple   float 32    value]
         ]
         ['PDT_DOUBLE' LREAL
-            [simple   float 11.52   'value']
+            [simple   float 64   value]
         ]
         ['PDT_CHAR_BLOCK' List
-            [array uint 8           'value' count '10']
+            [array byte             value count '10']
         ]
         ['PDT_POLL_GROUP_SETTINGS' Struct
-            [array    uint 8        'groupAddress' count '2']
-            [simple   bit           'disable']
+            [array    byte          groupAddress count '2']
+            [simple   bit           disable]
             [reserved uint 3        '0x0']
-            [simple   uint 4        'pollingSoftNr']
+            [simple   uint 4        pollingSoftNr]
         ]
         ['PDT_SHORT_CHAR_BLOCK' List
-            [array uint 8           'value' count '5']
+            [array byte             value count '5']
         ]
         ['PDT_DATE_TIME' Struct
-            [simple uint 8 'year']
+            [simple uint 8 year]
             [reserved uint 4 '0x00']
-            [simple uint 4 'month']
+            [simple uint 4 month]
             [reserved uint 3 '0x00']
-            [simple uint 5 'dayofmonth']
-            [simple uint 3 'dayofweek']
-            [simple uint 5 'hourofday']
+            [simple uint 5 dayofmonth]
+            [simple uint 3 dayofweek]
+            [simple uint 5 hourofday]
             [reserved uint 2 '0x00']
-            [simple uint 6 'minutes']
+            [simple uint 6 minutes]
             [reserved uint 2 '0x00']
-            [simple uint 6 'seconds']
-            [simple bit 'fault']
-            [simple bit 'workingDay']
-            [simple bit 'noWd']
-            [simple bit 'noYear']
-            [simple bit 'noDate']
-            [simple bit 'noDayOfWeek']
-            [simple bit 'noTime']
-            [simple bit 'standardSummerTime']
-            [simple bit 'qualityOfClock']
+            [simple uint 6 seconds]
+            [simple bit fault]
+            [simple bit workingDay]
+            [simple bit noWd]
+            [simple bit noYear]
+            [simple bit noDate]
+            [simple bit noDayOfWeek]
+            [simple bit noTime]
+            [simple bit standardSummerTime]
+            [simple bit qualityOfClock]
             [reserved uint 7 '0x00']
         ]
         ['PDT_GENERIC_01' List
-            [array uint 8           'value' count '1']
+            [array byte             value count '1']
         ]
         ['PDT_GENERIC_02' List
-            [array uint 8           'value' count '2']
+            [array byte             value count '2']
         ]
         ['PDT_GENERIC_03' List
-            [array uint 8           'value' count '3']
+            [array byte             value count '3']
         ]
         ['PDT_GENERIC_04' List
-            [array uint 8           'value' count '4']
+            [array byte             value count '4']
         ]
         ['PDT_GENERIC_05' List
-            [array uint 8           'value' count '5']
+            [array byte             value count '5']
         ]
         ['PDT_GENERIC_06' List
-            [array uint 8           'value' count '6']
+            [array byte             value count '6']
         ]
         ['PDT_GENERIC_07' List
-            [array uint 8           'value' count '7']
+            [array byte             value count '7']
         ]
         ['PDT_GENERIC_08' List
-            [array uint 8           'value' count '8']
+            [array byte             value count '8']
         ]
         ['PDT_GENERIC_09' List
-            [array uint 8           'value' count '9']
+            [array byte             value count '9']
         ]
         ['PDT_GENERIC_10' List
-            [array uint 8           'value' count '10']
+            [array byte             value count '10']
         ]
         ['PDT_GENERIC_11' List
-            [array uint 8           'value' count '11']
+            [array byte             value count '11']
         ]
         ['PDT_GENERIC_12' List
-            [array uint 8           'value' count '12']
+            [array byte             value count '12']
         ]
         ['PDT_GENERIC_13' List
-            [array uint 8           'value' count '13']
+            [array byte             value count '13']
         ]
         ['PDT_GENERIC_14' List
-            [array uint 8           'value' count '14']
+            [array byte             value count '14']
         ]
         ['PDT_GENERIC_15' List
-            [array uint 8           'value' count '15']
+            [array byte             value count '15']
         ]
         ['PDT_GENERIC_16' List
-            [array uint 8           'value' count '16']
+            [array byte             value count '16']
         ]
         ['PDT_GENERIC_17' List
-            [array uint 8           'value' count '17']
+            [array byte             value count '17']
         ]
         ['PDT_GENERIC_18' List
-            [array uint 8           'value' count '18']
+            [array byte             value count '18']
         ]
         ['PDT_GENERIC_19' List
-            [array uint 8           'value' count '19']
+            [array byte             value count '19']
         ]
         ['PDT_GENERIC_20' List
-            [array uint 8           'value' count '20']
+            [array byte             value count '20']
         ]
         // Defaults to PDT_VARIABLE_LENGTH
         //['PDT_UTF_8'
         //]
         ['PDT_VERSION' Struct
-            [simple uint 5 'magicNumber']
-            [simple uint 5 'versionNumber']
-            [simple uint 6 'revisionNumber']
+            [simple uint 5 magicNumber]
+            [simple uint 5 versionNumber]
+            [simple uint 6 revisionNumber]
         ]
         ['PDT_ALARM_INFO' Struct
-            [simple uint 8 'logNumber']
-            [simple uint 8 'alarmPriority']
-            [simple uint 8 'applicationArea']
-            [simple uint 8 'errorClass']
+            [simple uint 8 logNumber]
+            [simple uint 8 alarmPriority]
+            [simple uint 8 applicationArea]
+            [simple uint 8 errorClass]
             [reserved uint 4 '0x00']
-            [simple bit 'errorcodeSup']
-            [simple bit 'alarmtextSup']
-            [simple bit 'timestampSup']
-            [simple bit 'ackSup']
+            [simple bit errorcodeSup]
+            [simple bit alarmtextSup]
+            [simple bit timestampSup]
+            [simple bit ackSup]
             [reserved uint 5 '0x00']
-            [simple bit 'locked']
-            [simple bit 'alarmunack']
-            [simple bit 'inalarm']
+            [simple bit locked]
+            [simple bit alarmunack]
+            [simple bit inalarm]
         ]
         ['PDT_BINARY_INFORMATION' BOOL
             [reserved uint 7        '0x00']
-            [simple   bit           'value']
+            [simple   bit           value]
         ]
         ['PDT_BITSET8' List
-            [array    bit           'value' count '8']
+            [array    bit           value count '8']
         ]
         ['PDT_BITSET16' List
-            [array    bit           'value' count '16']
+            [array    bit           value count '16']
         ]
         ['PDT_ENUM8' USINT
-            [simple uint 8 'value']
+            [simple uint 8 value]
         ]
         ['PDT_SCALING' USINT
-            [simple uint 8 'value']
+            [simple uint 8 value]
         ]
         // Defaults to PDT_VARIABLE_LENGTH
         //['PDT_NE_VL'
@@ -1012,14 +1012,14 @@
         //['PDT_ESCAPE'
         //]
         // 'KnxPropertyDataType.PDT_VARIABLE_LENGTH' == Catch all
-        [ List [uint 8 'dataLengthInBytes']
-            [array uint 8 'value' count 'dataLengthInBytes']
+        [ List (uint 8 dataLengthInBytes)
+            [array byte   value count 'dataLengthInBytes']
         ]
     ]
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 171
-[enum uint 8 'ComObjectValueType' [uint 8 'sizeInBytes']
+[enum uint 8 ComObjectValueType(uint 8 sizeInBytes)
     ['0x00' BIT1                  ['1']]
     ['0x01' BIT2                  ['1']]
     ['0x02' BIT3                  ['1']]
@@ -1037,29 +1037,29 @@
     ['0x0E' BYTE14                ['14']]
 ]
 
-[discriminatedType 'ComObjectTable' [FirmwareType 'firmwareType']
-    [typeSwitch 'firmwareType'
+[discriminatedType ComObjectTable(FirmwareType firmwareType)
+    [typeSwitch firmwareType
         // The location of the Group Object Table - Realization Type 1 is calculated by
         // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
         // is a single byte located at memory address 0x112
         ['SYSTEM_1' ComObjectTableRealisationType1
-            [simple uint 8 'numEntries']
-            [simple uint 8 'ramFlagsTablePointer']
-            [array GroupObjectDescriptorRealisationType1 'comObjectDescriptors' count 'numEntries']
+            [simple uint 8 numEntries]
+            [simple uint 8 ramFlagsTablePointer]
+            [array GroupObjectDescriptorRealisationType1 comObjectDescriptors count 'numEntries']
         ]
         // The location of the Group Object Table - Realization Type 2 is calculated by
         // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
         // is a single byte located at memory address 0x112
         ['SYSTEM_2' ComObjectTableRealisationType2
-            [simple uint 8 'numEntries']
-            [simple uint 8 'ramFlagsTablePointer']
-            [array GroupObjectDescriptorRealisationType2 'comObjectDescriptors' count 'numEntries']
+            [simple uint 8 numEntries]
+            [simple uint 8 ramFlagsTablePointer]
+            [array GroupObjectDescriptorRealisationType2 comObjectDescriptors count 'numEntries']
         ]
         // The Group Object Table in Realization Type 6 is accessed via Properties instead of
         // reading memory.
         ['SYSTEM_300' ComObjectTableRealisationType6
             // TODO: This probably needs to be changed to an array as soon as I know how to actually work with these types
-            [simple GroupObjectDescriptorRealisationType6 'comObjectDescriptors']
+            [simple GroupObjectDescriptorRealisationType6 comObjectDescriptors]
         ]
         //['SYSTEM_7' ComObjectTableRealisationType7
 
@@ -1068,52 +1068,52 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 168ff
-[type 'GroupObjectDescriptorRealisationType1'
+[type GroupObjectDescriptorRealisationType1
     // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
     // if set to 'true' 0x100 has to be added to this value
-    [simple uint 8              'dataPointer']
+    [simple uint 8              dataPointer]
     [reserved uint 1            '0x1']
     // The com object emits GroupValueWrites if the internal value changes
-    [simple bit                 'transmitEnable']
+    [simple bit                 transmitEnable]
     // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
-    [simple bit                 'segmentSelectorEnable']
+    [simple bit                 segmentSelectorEnable]
     // The Com Object reacts to GroupValueWrite requests
-    [simple bit                 'writeEnable']
+    [simple bit                 writeEnable]
     // The Com Object reacts to GroupValueRead requests
-    [simple bit                 'readEnable']
+    [simple bit                 readEnable]
     // Communication is generally enabled (If this is set to false, 'transmitEnable',
     // 'writeEnable' and 'readEnable' are generally considered 'false'
-    [simple bit                 'communicationEnable']
+    [simple bit                 communicationEnable]
     // Transmission priority
-    [simple CEMIPriority        'priority']
-    [simple ComObjectValueType  'valueType']
+    [simple CEMIPriority        priority]
+    [simple ComObjectValueType  valueType]
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 172ff
 // It's generally identical to the type 1, but uses the reserved bit from type 1 as "updateEnable"
-[type 'GroupObjectDescriptorRealisationType2'
+[type GroupObjectDescriptorRealisationType2
     // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
     // if set to 'true' 0x100 has to be added to this value
-    [simple uint 8              'dataPointer']
-    [simple bit                 'updateEnable']
+    [simple uint 8              dataPointer]
+    [simple bit                 updateEnable]
     // The com object emits GroupValueWrites if the internal value changes
-    [simple bit                 'transmitEnable']
+    [simple bit                 transmitEnable]
     // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
-    [simple bit                 'segmentSelectorEnable']
+    [simple bit                 segmentSelectorEnable]
     // The Com Object reacts to GroupValueWrite requests
-    [simple bit                 'writeEnable']
+    [simple bit                 writeEnable]
     // The Com Object reacts to GroupValueRead requests
-    [simple bit                 'readEnable']
+    [simple bit                 readEnable]
     // Communication is generally enabled (If this is set to false, 'transmitEnable',
     // 'writeEnable' and 'readEnable' are generally considered 'false'
-    [simple bit                 'communicationEnable']
+    [simple bit                 communicationEnable]
     // Transmission priority
-    [simple CEMIPriority        'priority']
-    [simple ComObjectValueType  'valueType']
+    [simple CEMIPriority        priority]
+    [simple ComObjectValueType  valueType]
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 173ff
-[type 'GroupObjectDescriptorRealisationType6'
+[type GroupObjectDescriptorRealisationType6
     // TODO: Implement
 ]
 
@@ -1124,24 +1124,24 @@
 // the total number of entries. This seems to be followed by a 2-byte
 // Address and then by the entries themselves. Each entry seems to
 // be 4 bytes long.
-[type 'GroupObjectDescriptorRealisationType7'
+[type GroupObjectDescriptorRealisationType7
     // Offset of the value memory start address
-    [simple   uint 16             'dataAddress']
-    [simple   bit                 'updateEnable']
+    [simple   uint 16             dataAddress]
+    [simple   bit                 updateEnable]
     // The com object emits GroupValueWrites if the internal value changes
-    [simple   bit                 'transmitEnable']
+    [simple   bit                 transmitEnable]
     // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
-    [simple   bit                 'segmentSelectorEnable']
+    [simple   bit                 segmentSelectorEnable]
     // The Com Object reacts to GroupValueWrite requests
-    [simple   bit                 'writeEnable']
+    [simple   bit                 writeEnable]
     // The Com Object reacts to GroupValueRead requests
-    [simple   bit                 'readEnable']
+    [simple   bit                 readEnable]
     // Communication is generally enabled (If this is set to false, 'transmitEnable',
     // 'writeEnable' and 'readEnable' are generally considered 'false'
-    [simple   bit                 'communicationEnable']
+    [simple   bit                 communicationEnable]
     // Transmission priority
-    [simple   CEMIPriority        'priority']
-    [simple   ComObjectValueType  'valueType']
+    [simple   CEMIPriority        priority]
+    [simple   ComObjectValueType  valueType]
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 194ff
@@ -1150,21 +1150,21 @@
 // however when having a look at the payload in WireShark
 // if looks as if it's simply the realization type 1 or 2
 // without the leading 'dataPointer' field.
-[type 'GroupObjectDescriptorRealisationTypeB'
-    [simple bit                 'updateEnable']
+[type GroupObjectDescriptorRealisationTypeB
+    [simple bit                 updateEnable]
     // The com object emits GroupValueWrites if the internal value changes
-    [simple bit                 'transmitEnable']
+    [simple bit                 transmitEnable]
     // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
-    [simple bit                 'segmentSelectorEnable']
+    [simple bit                 segmentSelectorEnable]
     // The Com Object reacts to GroupValueWrite requests
-    [simple bit                 'writeEnable']
+    [simple bit                 writeEnable]
     // The Com Object reacts to GroupValueRead requests
-    [simple bit                 'readEnable']
+    [simple bit                 readEnable]
     // Communication is generally enabled (If this is set to false, 'transmitEnable',
     // 'writeEnable' and 'readEnable' are generally considered 'false'
-    [simple bit                 'communicationEnable']
+    [simple bit                 communicationEnable]
     // Transmission priority
-    [simple CEMIPriority        'priority']
-    [simple ComObjectValueType  'valueType']
+    [simple CEMIPriority        priority]
+    [simple ComObjectValueType  valueType]
 ]
 

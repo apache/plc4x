@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,10 +20,6 @@ package org.apache.plc4x.java.transport.socketcan;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.socketcan.readwrite.SocketCANFrame;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 
 public class SocketCANFrameBuilder implements CANFrameBuilder<SocketCANFrame> {
@@ -47,4 +43,5 @@ public class SocketCANFrameBuilder implements CANFrameBuilder<SocketCANFrame> {
     public SocketCANFrame create() throws PlcRuntimeException {
         return new SocketCANFrame(nodeId, data);
     }
+
 }

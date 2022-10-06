@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="BIG_ENDIAN">
+
+  <name>Modbus-ASCII</name>
+
+  <protocolName>modbus</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <testcase>
+    <name>Read Holding Registers Request</name>
+    <raw>01030000000AF2</raw>
+    <root-type>ModbusADU</root-type>
+    <parser-arguments>
+      <driverType>MODBUS_ASCII</driverType>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <ModbusADU>
+        <ModbusAsciiADU>
+          <address dataType="uint" bitLength="8">1</address>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">10</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+          <crc dataType="uint" bitLength="8">242</crc>
+        </ModbusAsciiADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Read Holding Registers Response</name>
+    <raw>0103140000000000000000000000000000000000000000E8</raw>
+    <root-type>ModbusADU</root-type>
+    <parser-arguments>
+      <driverType>MODBUS_ASCII</driverType>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <ModbusADU>
+        <ModbusAsciiADU>
+          <address dataType="uint" bitLength="8">1</address>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">20</byteCount>
+                <value dataType="byte" bitLength="160">0x0000000000000000000000000000000000000000</value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+          <crc dataType="uint" bitLength="8">232</crc>
+        </ModbusAsciiADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+</test:testsuite>

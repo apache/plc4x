@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,37 +29,26 @@ In order to install it, please download end execute the installer from https://g
 
 === LibPCAP
 
-A special version of LibPCAP is available for Windows, which is called WinPCAP.
-It is available from https://www.winpcap.org/[here].
-
-However this is a based on a very old version (1.0) of LibPCAP and in order to read PCAPNG files we require a libpcap version 1.1.0 or greater.
-A patched windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
-(At this location is a patched version based on libpcap 1.7.4)
+A special version of LibPCAP is available for Windows, which is called Npcap.
+It is available from https://npcap.com/[here].
 
 So in order to install things correctly:
 
-1. install the version WinPCP from above location.
-2. Then download the patched version from the sourceforge link and unpack it somewhere.
-3. After that copy bin\x64\wpcap.dll from archive to \Windows\System32
-4. Copy bin\wpcap.dll from archive to \Windows\SysWOW64
+1. install the version Npcap from above location.
+2. Add `%SystemRoot%\System32\Npcap\` to your System's `PATH`
+3. Possibly reboot
 
 After this all should be working.
+
+If not, have a look here for possible help: https://github.com/kaitoy/pcap4j#about-native-library-loading[here]
+
+NOTE: If you had WinPcap installed, you need to uninstall this and make sure the files `Packet.dll` and `wpcap.dll` are deleted in the `%SystemRoot%\System32\` directory. Otherwise `pcap4j` will incorrectly detect a wrong version.
 
 === gcc
 
 Checking:
 
  gcc --version
-
-If you get any successful output, you probably don't need to do anything.
-
-On windows we will be using something called WinBuilds, which is sort of a package consisting of a typical build environment consisting of multiple build tools. So please look at the WinBuilds chapter at the end of the Windows section.
-
-=== g++
-
-Checking:
-
- g++ --version
 
 If you get any successful output, you probably don't need to do anything.
 
@@ -91,41 +80,9 @@ You can get Python from https://www.python.org/downloads/release/python-2716/[he
 Make sure directory containing `python.exe` is added to your systems `PATH`.
 Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
 
-=== bison
-
-Checking:
-
- bison --version
-
-If you get any successful output, you probably don't need to do anything.
-
-For Bison, please download the Setup installer version from http://gnuwin32.sourceforge.net/packages/bison.htm[here] (When using the zip version the bison.exe couldn't find some DLL files)
-It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip[here]
-(More infos on this issue https://sourceforge.net/p/gnuwin32/bugs/473/[here])
-
-It seems there are issues if these tools are installed in paths with spaces.
-So if it is for example installed in the 32 bit `Programs (x86)` directory, the build will probably fail.
-
-Make sure all tools `bin` directories are added to your systems `PATH`.
-For tools like OpenSSL be sure to add the directory containing the `openssl.exe` (Usually the root directory).
-Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
-
-=== flex
-
-Checking:
-
- flex --version
-
-If you get any successful output, you probably don't need to do anything.
-
-Please download the Flex compiler from http://gnuwin32.sourceforge.net/packages/flex.htm[here] (Ideally download the binary zip distribution)
-
-Make sure it's `bin` directory is added to your systems `PATH`.
-Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
-
 === WinBuilds
 
-He have tested WinBuilds with the bundle found http://win-builds.org/doku.php/download_and_installation_from_windows[here].
+We have tested WinBuilds with the bundle found http://win-builds.org/doku.php/download_and_installation_from_windows[here].
 
 WARNING: Please use the installer. When using the zip distribution and manually adding that to the `PATH` the build will fail without a log output as some binaries can't find some of the DLL files.
 
@@ -137,6 +94,8 @@ When running the installer, make sure to select the options:
 - Native Windows
 - x86_64
 Not quite sure which elements are really needed, better just install all of them.
+
+When running the setup, be sure to leave the setting on the `line ending conversions` on `Checkout Windows-style, commit Unix-style line endings`, this will cause specially in the generated code, a lot of false-dirty files, however when selecting other options that check out the code with Unix line endings (the repo is in this state) the build will fail.
 
 Make sure it's `bin` directory is added to your systems `PATH`, however the installer should have taken care of this.
 Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.

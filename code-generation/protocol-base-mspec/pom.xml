@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
 
-  <name>PLC4X: Build Utils: Protocol Base: MSpec</name>
+  <name>Code-Generation: Protocol Base: MSpec</name>
   <description>Base stuff for building protocols using our custom MSpec format.</description>
 
   <build>
@@ -64,6 +64,10 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
     <!-- Testing -->
     <dependency>
@@ -81,6 +85,12 @@
       <artifactId>hamcrest-library</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,8 +19,6 @@
 package org.apache.plc4x.java.transport.socketcan.netty;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelConfig;
 import io.netty.channel.ChannelFuture;
@@ -31,10 +29,9 @@ import org.apache.plc4x.java.transport.socketcan.netty.address.SocketCANAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tel.schich.javacan.CanChannels;
-import tel.schich.javacan.CanFrame;
 import tel.schich.javacan.NetworkDevice;
 import tel.schich.javacan.RawCanChannel;
-import tel.schich.javacan.linux.LinuxNetworkDevice;
+import tel.schich.javacan.platform.linux.LinuxNetworkDevice;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +46,7 @@ import java.nio.ByteBuffer;
  */
 public class SocketCANChannel extends OioByteStreamChannel {
 
-    private static final Logger logger = LoggerFactory.getLogger(SocketCANChannel.class);
+    private final Logger logger = LoggerFactory.getLogger(SocketCANChannel.class);
 
     private final SocketCANChannelConfig config;
 
@@ -112,19 +109,17 @@ public class SocketCANChannel extends OioByteStreamChannel {
         // forwards the bytes read to the buffer.
         loopThread = new Thread(() -> {
             try {
+                ByteBuffer byteBuffer = ByteBuffer.allocateDirect(16);
                 while (!isInputShutdown()) {
-                    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(16);
                     handle.readUnsafe(byteBuffer);
                     buffer.writeBytes(byteBuffer);
-//                    CanFrame frame = handle.read();
-//                    System.out.println("Read frame " + frame);
-//                    frameBytes.writeBytes(frame.getBuffer());
-//                    String dump = ByteBufUtil.prettyHexDump(frameBytes);
-//                    System.out.println(frame + "\n" + dump);
-//                    buffer.writeBytes(frame.getBuffer());
+                    byteBuffer.rewind();
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.warn("Could not read data", e);
+                pipeline().fireExceptionCaught(e);
+            } catch (Throwable e) {
+                logger.warn("Fatal error while handling CAN communication", e);
                 pipeline().fireExceptionCaught(e);
             }
         }, "javacan-reader");
@@ -245,6 +240,7 @@ public class SocketCANChannel extends OioByteStreamChannel {
     private static class CANOutputStream extends OutputStream {
 
         private final RawCanChannel rawCanChannel;
+        private final ByteBuffer buffer = ByteBuffer.allocateDirect(16);
 
         public CANOutputStream(RawCanChannel rawCanChannel) {
             this.rawCanChannel = rawCanChannel;
@@ -257,10 +253,14 @@ public class SocketCANChannel extends OioByteStreamChannel {
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            ByteBuffer buffer = ByteBuffer.allocateDirect(len - off);
             buffer.put(b, off, len);
             buffer.flip();
             rawCanChannel.writeUnsafe(buffer);
+            // the NIO clear call does clear positions and limits, but does not erase contents of buffer.
+            // since we write a complete frame with length any remaining data at the end of memory block
+            // should be ignored. When we get payload of full length it will eventually override earlier data
+            // which was not used
+            buffer.clear();
         }
     }
 
@@ -279,4 +279,5 @@ public class SocketCANChannel extends OioByteStreamChannel {
             }
         }
     }
+
 }

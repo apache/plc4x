@@ -1,0 +1,59 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plc4net-api", "api\plc4net-api.csproj", "{7906988A-C7CA-4886-A343-EBC17C0BAB59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plc4net-spi", "spi\plc4net-spi.csproj", "{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{35D8C56A-A721-46B3-A32C-71FCF212E85D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plc4net-driver-knxproj", "drivers\knxnetip\plc4net-driver-knxproj.csproj", "{640E582A-68DF-4E51-B019-AE5774F31B54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plc4net-driver-knxproj-test", "drivers\knxnetip-test\plc4net-driver-knxproj-test.csproj", "{E9497B75-55B6-4C14-AAFB-DB93D0C88166}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{640E582A-68DF-4E51-B019-AE5774F31B54} = {35D8C56A-A721-46B3-A32C-71FCF212E85D}
+		{E9497B75-55B6-4C14-AAFB-DB93D0C88166} = {35D8C56A-A721-46B3-A32C-71FCF212E85D}
+	EndGlobalSection
+EndGlobal

@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,7 +41,7 @@ able to be run in two modes:-
 Standalone allows you to run the connector locally from the command line without having to install the jar file on your
 Kafka brokers.
 In distributed mode the connector runs on the Kafka brokers, which requires you to install the jar file on all of your
-brokers. It allows the worker to be distrubuted across the Kafka brokers to provide redundancy and load balancing.
+brokers. It allows the worker to be distributed across the Kafka brokers to provide redundancy and load balancing.
 
 ## Quickstart
 
@@ -163,7 +163,7 @@ being sent to the PLC using the mapping defined in the sink properties.
         {"type":"int64","optional":false,"field":"timestamp"},
         {"type":"int64","optional":true,"field":"expires"}],
          "optional":false,"name":"org.apache.plc4x.kafka.schema.JobResult",
-         "doc":"PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp"},
+         "doc":"PLC Job result. This contains all of the received PLCValues as well as a received timestamp"},
     "payload":
         {"fields":
             {"running":false,"conveyorLeft":true,
@@ -216,20 +216,20 @@ connector, the poll rate of the connector has no affect on the PLC poll rate.
 For the sink connector, if a write fails it is retried a configurable number of times with a timeout between each time.
 A Retriable Exception is raised which provides jitter for the timing of the retries.
 
-## Schema Compatability
+## Schema Compatibility
 
 PLC4X specifies a very basic schema and leaves the majority of the implementation to the user. It contains the
 following fields:-
 
 -   "fields": - This is a customized structure that is formed by the fields defined in the connector configuration.
-This allows the user to defined arbitary fields within here all based on the PLC4X data types.
+This allows the user to defined arbitrary fields within here all based on the PLC4X data types.
 
 - "timestamp": - This is the timestamp at which the PLC4X connector processed the PLC request.
 
 - "expires": - This field is used by the sink connector. It allows it to discard the record if it is too old. A value
 of 0 or null indicates that the record some never be discarded no matter how old it is.
 
-As the majority of the schema is left to the user to define we expect to be able to provide backward compatiblity
+As the majority of the schema is left to the user to define we expect to be able to provide backward compatibility
 between the base schemas.
 
 The schemas for the sink and source connectors are the same. This allows us to producer from one PLC and send the

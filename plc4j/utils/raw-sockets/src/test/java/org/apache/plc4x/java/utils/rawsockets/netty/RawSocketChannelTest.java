@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,7 +24,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
-import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketPassiveAddress;
 import org.apache.plc4x.test.RequirePcap;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -35,12 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-16
- */
 public class RawSocketChannelTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RawSocketChannelTest.class);
@@ -79,7 +73,7 @@ public class RawSocketChannelTest {
             PcapNetworkInterface loopbackDevice = Pcaps.findAllDevs().stream().filter(
                 PcapNetworkInterface::isLoopBack).findFirst().orElse(null);
             assertNotNull(loopbackDevice);
-            final ChannelFuture f = bootstrap.connect(new RawSocketAddress(loopbackDevice.getName()));
+            final ChannelFuture f = bootstrap.connect(new RawSocketPassiveAddress(loopbackDevice.getName()));
             // Wait for sync
             f.sync();
             // Wait till the session is finished initializing.

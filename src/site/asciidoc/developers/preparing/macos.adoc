@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,6 +37,12 @@ In order to install it, please execute the following command:
 
 === LibPCAP
 
+The libpcap version bundled with Mac OS is currently 1.9.1.
+This version causes exceptions.
+So it's best to update to a newer version using brew:
+
+   brew install libpcap
+
 === gcc
 
 Checking:
@@ -46,16 +52,6 @@ Checking:
 If you get any successful output, you probably don't need to do anything.
 
 It seems macOS comes with a version of gcc which is good enough for our usecases.
-
-=== g++
-
-Checking:
-
- g++ --version
-
-If you get any successful output, you probably don't need to do anything.
-
-It seems macOS comes with a version of g++ which is good enough for our usecases.
 
 === dotnet
 
@@ -67,41 +63,35 @@ If you get any successful output, you probably don't need to do anything.
 
 Microsoft is offering an installer for MacOS which is available from https://dotnet.microsoft.com/download/dotnet-core/2.2[here].
 
+Alternatively you can also install it via homebrew:
+
+ brew install --cask dotnet-sdk
+
 === python
 
 Checking:
 
  python --version
 
-If you get a version of 2.7 or higher reported, you probably don't need to do anything.
+If you get a version of 3.0.0 or higher reported, you probably don't need to do anything.
 
 In order to install it, please execute the following command:
 
- brew install python@2
+ brew install pyenv
 
-=== bison
+Then use pyenv to install python:
 
-Checking:
+ pyenv install 3.9.13
+
+Then set this as the global python version:
+
+ pyenv global 3.9.13
+
+And add pyenv to the PATH:
+
+ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
+ $ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bash_profile
+
+After opening a new terminal, `python` should be configured
 
  python --version
-
-If you get a version above 2.3 output, you don't need to do anything.
-
-macOS comes with a pre-installed version of bison, however this version is 2.3 and hereby too old.
-So you need to update to a more recent version:
-
- brew install bison
- brew link bison --force
- echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
-
-Be sure to reboot or at least restart your IDE or commandline in order for the changes to become effective.
-
-=== flex
-
-Checking:
-
- flex --version
-
-If you get any successful output, you probably don't need to do anything.
-
-It seems macOS comes with a version of flex which is good enough for our usecases.

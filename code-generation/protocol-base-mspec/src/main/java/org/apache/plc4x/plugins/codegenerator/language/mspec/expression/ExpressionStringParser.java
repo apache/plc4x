@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,12 +21,22 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class ExpressionStringParser {
+
+    private final LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer;
+
+    private final String rootTypeName;
+
+    public ExpressionStringParser(LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer, String rootTypeName) {
+        this.lazyTypeDefinitionConsumer = lazyTypeDefinitionConsumer;
+        this.rootTypeName = rootTypeName;
+    }
 
     public Term parse(InputStream source) {
         ExpressionLexer lexer;
@@ -35,7 +45,7 @@ public class ExpressionStringParser {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ExpressionStringListener listener = new ExpressionStringListener();
+        ExpressionStringListener listener = new ExpressionStringListener(lazyTypeDefinitionConsumer, rootTypeName);
         new ParseTreeWalker().walk(listener, new ExpressionParser(new CommonTokenStream(lexer)).expressionString());
         return listener.getRoot();
     }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -56,8 +56,8 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/c/pojo-template.h.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/c/pojo-template.c.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/c/complex-type-template.h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/complex-type-template.c.ftlh"));
     }
 
     @Override

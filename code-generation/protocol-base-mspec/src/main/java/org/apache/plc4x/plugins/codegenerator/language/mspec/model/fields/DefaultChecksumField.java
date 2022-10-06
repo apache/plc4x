@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,37 +18,50 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultChecksumField extends DefaultTaggedField implements ChecksumField {
+import java.util.*;
 
-    private final TypeReference type;
-    private final String name;
+public class DefaultChecksumField extends DefaultTypedNamedField implements ChecksumField {
+
     private final Term checksumExpression;
 
-    public DefaultChecksumField(String[] tags, TypeReference type, String name, Term checksumExpression) {
-        super(tags);
+    public DefaultChecksumField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term checksumExpression) {
+        super(attributes, name);
+        this.checksumExpression = Objects.requireNonNull(checksumExpression);
         this.type = type;
-        this.name = name;
-        this.checksumExpression = checksumExpression;
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getChecksumExpression() {
         return checksumExpression;
     }
 
-    public Term[] getParams() {
-        return new Term[0];
+    @Override
+    public SimpleTypeReference getType() {
+        return (SimpleTypeReference) super.getType();
     }
 
+    @Override
+    public String toString() {
+        return "DefaultChecksumField{" +
+            "checksumExpression=" + checksumExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultChecksumField that = (DefaultChecksumField) o;
+        return Objects.equals(checksumExpression, that.checksumExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), checksumExpression);
+    }
 }

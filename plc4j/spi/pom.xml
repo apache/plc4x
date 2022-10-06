@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4j-spi</artifactId>
@@ -49,8 +49,9 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -73,7 +74,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -89,7 +90,6 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -102,7 +102,7 @@
           <instructions>
             <Import-Package>
                 com.fasterxml.jackson.annotation;resolution:=optional,   
-                com.github.jinahya.bit.io;resolution:=optional,   
+                com.github.jinahya.bit.io;resolution:=optional,
                 *
             </Import-Package>
             <Private-Package>com.github.jinahya.bit.io</Private-Package>

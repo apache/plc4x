@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -96,8 +96,6 @@ import java.util.List;
  * {@link org.apache.plc4x.codegen.util.PojoFactory} or in the {@link org.apache.plc4x.codegen.util.EnumFactory}
  * which are "layers" on top of this AST whcih make it easier to create POJOs or ENUM-like constructs.
  * They define the class and all fields / methods / getters / setters and constructor and such stuff.
- *
- * @author julian
  */
 public class Expressions {
 

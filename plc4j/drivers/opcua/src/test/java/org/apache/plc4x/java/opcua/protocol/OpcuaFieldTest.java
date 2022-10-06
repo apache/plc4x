@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,43 +18,29 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
-import static org.apache.plc4x.java.opcua.UtilsTest.assertNoMatching;
 import static org.apache.plc4x.java.opcua.field.OpcuaField.ADDRESS_PATTERN;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- */
 public class OpcuaFieldTest {
-
-    @BeforeEach
-    public void before() {
-    }
-
-    @AfterEach
-    public void after() {
-
-    }
 
     @Test
     public void testOpcuaAddressPattern() {
 
         //standard integer based param
-        assertMatching(ADDRESS_PATTERN, "ns=2;i=10846");
+        assertThat("ns=2;i=10846").matches(ADDRESS_PATTERN);
         //string based address values
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=test.variable.name.inspect");
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=::AsGlobalPV:ProductionOrder");
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=::AsGlobalPV:ProductionOrder;BOOL");
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=key param with some spaces");
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=\"aweired\".\"siemens\".\"param\".\"submodule\".\"param");
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=Weee314Waannaaa\\somenice=ext=a234a*#+1455!§$%&/()tttraaaaSymbols-:.,,");
+        assertThat("ns=2;s=test.variable.name.inspect").matches(ADDRESS_PATTERN);
+        assertThat("ns=2;s=::AsGlobalPV:ProductionOrder").matches(ADDRESS_PATTERN);
+        assertThat("ns=2;s=::AsGlobalPV:ProductionOrder;BOOL").matches(ADDRESS_PATTERN);
+        assertThat("ns=2;s=key param with some spaces").matches(ADDRESS_PATTERN);
+        assertThat("ns=2;s=\"aweired\".\"siemens\".\"param\".\"submodule\".\"param").matches(ADDRESS_PATTERN);
+        assertThat("ns=2;s=Weee314Waannaaa\\somenice=ext=a234a*#+1455!§$%&/()tttraaaaSymbols-:.,,").matches(ADDRESS_PATTERN);
         // GUID address tests
-        assertMatching(ADDRESS_PATTERN, "ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a");
+        assertThat("ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a").matches(ADDRESS_PATTERN);
         // binary encoded addresses
-        assertMatching(ADDRESS_PATTERN, "ns=2;b=asvaewavarahreb==");
+        assertThat("ns=2;b=asvaewavarahreb==").matches(ADDRESS_PATTERN);
 
     }
 
@@ -62,17 +48,17 @@ public class OpcuaFieldTest {
     public void testOpcuaAddressDataTypePattern() {
 
         //standard integer based param
-        assertMatching(ADDRESS_PATTERN, "ns=2;i=10846;BOOL");
+        assertThat("ns=2;i=10846;BOOL").matches(ADDRESS_PATTERN);
         //string based address values
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=test.variable.name.inspect;DINT");
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=key param with some spaces;ULINT");
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=\"aweired\".\"siemens\".\"param\".\"submodule\".\"param;LREAL");
+        assertThat("ns=2;s=test.variable.name.inspect;DINT").matches(ADDRESS_PATTERN);
+        assertThat("ns=2;s=key param with some spaces;ULINT").matches(ADDRESS_PATTERN);
+        assertThat("ns=2;s=\"aweired\".\"siemens\".\"param\".\"submodule\".\"param;LREAL").matches(ADDRESS_PATTERN);
         //REGEX Valid, additional checks need to be done later
-        assertMatching(ADDRESS_PATTERN, "ns=2;s=Weee314Waannaaa\\somenice=ext=a234a*#+1455!§$%&/()tttraaaaSymbols-.,,;JIBBERISH");
+        assertThat("ns=2;s=Weee314Waannaaa\\somenice=ext=a234a*#+1455!§$%&/()tttraaaaSymbols-.,,;JIBBERISH").matches(ADDRESS_PATTERN);
         // GUID address tests
-        assertNoMatching(ADDRESS_PATTERN, "ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;*&#%^*$(*)");
+        assertThat("ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;*&#%^*$(*)").doesNotMatch(ADDRESS_PATTERN);
         // binary encoded addresses
-        assertNoMatching(ADDRESS_PATTERN, "ns=2;b=asvae;wavarahreb==");
+        assertThat("ns=2;b=asvae;wavarahreb==").doesNotMatch(ADDRESS_PATTERN);
 
     }
 }

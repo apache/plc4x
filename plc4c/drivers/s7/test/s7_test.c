@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,10 +20,15 @@
 
 #include "plc4c/spi/read_buffer.h"
 #include "tpkt_packet.h"
+#include "stdio.h"
+
+void parser_serializer_test_s7_read_write();
 
 void s7_address_parser_test();
 
-void internal_assert_arrays_equal(uint8_t* expected_array,
+void internal_assert_arrays_equal(uint8_t* expected_array, uint8_t* actual_array, uint8_t num_bytes);
+
+/*void internal_assert_arrays_equal(uint8_t* expected_array,
                                   plc4c_spi_write_buffer* write_buffer,
                                   uint8_t num_bytes) {
   for (int i = 0; i < num_bytes; i++) {
@@ -31,13 +36,22 @@ void internal_assert_arrays_equal(uint8_t* expected_array,
     uint8_t actual_value = *(write_buffer->data + i);
     // Needed for debugging on remote machines: Output the entire arrays content.
     if(expected_value != actual_value) {
+      printf("\n");
       for(int j = 0; j < num_bytes; j++) {
-        printf("E=%02X %s A=%02X | ", *(expected_array + j), (*(expected_array + j) !=  *(write_buffer->data + j) ? "!=" : "=="), *(write_buffer->data + j));
+        bool different = *(expected_array + j) !=  *(write_buffer->data + j);
+        if(different) {
+            printf("\033[0;31m");
+        }
+        printf("E=%02X %s A=%02X | ", *(expected_array + j), ( different ? "!=" : "=="), *(write_buffer->data + j));
+        if(different) {
+            printf("\033[0m");
+        }
       }
+      printf("\n");
     }
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(expected_value, actual_value, "Byte arrays differ");
   }
-}
+}*/
 
 void internal_parse_serialize_test(uint8_t* payload,
                                    uint8_t payload_size) {
@@ -46,29 +60,29 @@ void internal_parse_serialize_test(uint8_t* payload,
   plc4c_return_code return_code =
       plc4c_spi_read_buffer_create(payload, payload_size, &read_buffer);
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error creating read buffer");
   }
 
   plc4c_s7_read_write_tpkt_packet* message = NULL;
   return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error parsing packet");
   }
 
   plc4c_spi_write_buffer* write_buffer;
   return_code = plc4c_spi_write_buffer_create(payload_size, &write_buffer);
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error writing to buffer");
   }
 
   return_code =
       plc4c_s7_read_write_tpkt_packet_serialize(write_buffer, message);
 
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error serializing");
   }
 
-  internal_assert_arrays_equal(payload, write_buffer, payload_size);
+  internal_assert_arrays_equal(payload, write_buffer->data, payload_size);
 
   printf("Success");
 }
@@ -235,6 +249,8 @@ int main(void) {
   // Run the address parser tests ...
   // TODO: Commented out as it seems to only fail while doing releases :-/
   //RUN_TEST(s7_address_parser_test);
+
+  parser_serializer_test_s7_read_write();
 
   return UNITY_END();
 }

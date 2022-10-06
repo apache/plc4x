@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,7 +21,7 @@
 #include <plc4c/driver_modbus.h>
 #include <string.h>
 
-#include "plc4c/driver_s7_encode_decode.h"
+#include "plc4c/driver_modbus_encode_decode.h"
 
 plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
                                                      void** item) {

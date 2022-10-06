@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -136,7 +136,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
             final Df1Field field = (Df1Field) ((PlcReadRequest) request).getField(fieldName);
             // Cast byte and create response item
             PlcValue responseItem = null;
-            short[] data = ((DF1UnprotectedReadResponse)command).getData();
+            byte[] data = ((DF1UnprotectedReadResponse)command).getData();
             switch (field.getDataType()) {
                 case BIT:
                     break;

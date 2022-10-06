@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,18 +18,41 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
+import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultTypedField;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.*;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.BuiltIns;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.fields.NamedField;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class ExpressionStringListener extends ExpressionBaseListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionStringListener.class);
+
+    private final LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer;
+
+    private final String rootTypeName;
+
     private Stack<List<Term>> parserContexts;
 
+    private Stack<CompletableFuture<TypeReference>> futureStack;
+
     private Term root;
+
+    public ExpressionStringListener(LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer, String rootTypeName) {
+        this.lazyTypeDefinitionConsumer = lazyTypeDefinitionConsumer;
+        this.rootTypeName = rootTypeName;
+    }
 
     public Term getRoot() {
         return root;
@@ -59,32 +82,123 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
     @Override
     public void exitNullExpression(ExpressionParser.NullExpressionContext ctx) {
-        parserContexts.peek().add(new NullLiteral());
+        parserContexts.peek().add(new DefaultNullLiteral());
     }
 
     @Override
     public void exitBoolExpression(ExpressionParser.BoolExpressionContext ctx) {
-        parserContexts.peek().add(new BooleanLiteral(Boolean.parseBoolean(ctx.getText())));
+        parserContexts.peek().add(new DefaultBooleanLiteral(Boolean.parseBoolean(ctx.getText())));
     }
 
     @Override
     public void exitNumberExpression(ExpressionParser.NumberExpressionContext ctx) {
         String strValue = ctx.Number().getText();
         if (strValue.contains(".")) {
-            parserContexts.peek().add(new NumericLiteral(Double.valueOf(strValue)));
+            parserContexts.peek().add(new DefaultNumericLiteral(Double.valueOf(strValue)));
         } else {
-            parserContexts.peek().add(new NumericLiteral(Long.valueOf(strValue)));
+            parserContexts.peek().add(new DefaultNumericLiteral(Long.valueOf(strValue)));
         }
     }
 
     @Override
+    public void exitHexExpression(ExpressionParser.HexExpressionContext ctx) {
+        String hexValue = ctx.HexExpression().getText();
+        parserContexts.peek().add(new DefaultHexadecimalLiteral(hexValue));
+    }
+
+    @Override
     public void exitStringExpression(ExpressionParser.StringExpressionContext ctx) {
-        parserContexts.peek().add(new StringLiteral(ctx.getText()));
+        parserContexts.peek().add(new DefaultStringLiteral(ctx.getText().substring(1, ctx.getText().length() - 1)));
     }
 
     @Override
     public void enterIdentifierSegment(ExpressionParser.IdentifierSegmentContext ctx) {
+        String propertyName = ctx.name.getText();
+
+        CompletableFuture<TypeReference> typeReferenceFuture = new CompletableFuture<>();
+        // If this is the root of a variable expression, the stack is "null".
+        if (futureStack == null) {
+            schedulePropertyResolution(propertyName, typeReferenceFuture, rootTypeName);
+            futureStack = new Stack<>();
+        }
+        // If the stack is not null, we're in one of the children levels. We need to wait
+        // till the parent is resolved first. So we delay the resolution till that's done.
+        else {
+            futureStack.peek().whenComplete((typeReference, throwable) -> {
+                if (throwable != null) {
+                    LOGGER.debug("Error processing variables", throwable);
+                    return;
+                }
+                String typeName = typeReference.asNonSimpleTypeReference().orElseThrow().getName();
+                schedulePropertyResolution(propertyName, typeReferenceFuture, typeName);
+            });
+        }
+        futureStack.push(typeReferenceFuture);
         parserContexts.push(new LinkedList<>());
+    }
+
+    private void schedulePropertyResolution(String propertyName, CompletableFuture<TypeReference> typeReferenceFuture, String typeName) {
+        // As soon as the type with the given name is resolved ...
+        lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, (TypeDefinition typeDefinition) -> {
+            if (!typeDefinition.isComplexTypeDefinition()) {
+                typeReferenceFuture.completeExceptionally(new RuntimeException("is not a complex type"));
+                return;
+            }
+            // Get the definition of the field with the given property name.
+            final ComplexTypeDefinition complexTypeDefinition = typeDefinition
+                .asComplexTypeDefinition()
+                .orElseThrow();
+            // Check for property fields context
+            Optional<DefaultTypedField> propertyFieldByName = complexTypeDefinition
+                .getPropertyFieldByName(propertyName)
+                .map(DefaultTypedField.class::cast);
+            // Check for other fields
+            if (propertyFieldByName.isEmpty()) {
+                propertyFieldByName = complexTypeDefinition.getAllFields().stream()
+                    .filter(NamedField.class::isInstance)
+                    .map(NamedField.class::cast)
+                    .filter(namedField -> propertyName.equals(namedField.getName()))
+                    .map(DefaultTypedField.class::cast)
+                    .findAny();
+            }
+            // Check for arguments context
+            if (propertyFieldByName.isEmpty() && complexTypeDefinition.getAllParserArguments().isPresent()) {
+                Optional<DefaultArgument> defaultArgument = complexTypeDefinition.getAllParserArguments().orElseThrow().stream()
+                    .filter(argument -> propertyName.equals(argument.getName()))
+                    .map(DefaultArgument.class::cast)
+                    .findAny();
+                if (defaultArgument.isPresent()) {
+                    defaultArgument.get().getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
+                        if (throwable != null) {
+                            typeReferenceFuture.completeExceptionally(throwable);
+                        } else {
+                            typeReferenceFuture.complete(typeReference);
+                        }
+                    });
+                    return;
+                }
+            }
+            // Handle Builtins
+            if (propertyFieldByName.isEmpty()) {
+                TypeReference typeReference = BuiltIns.builtInFields.get(propertyName);
+                if (typeReference != null) {
+                    typeReferenceFuture.complete(typeReference);
+                    return;
+                }
+            }
+            if (propertyFieldByName.isEmpty()) {
+                typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on " + typeName));
+                return;
+            }
+            DefaultTypedField propertyField = propertyFieldByName.orElseThrow();
+            propertyField.getTypeReferenceCompletionStage().whenComplete((propertyTypeReference, throwable) -> {
+                if (throwable != null) {
+                    typeReferenceFuture.completeExceptionally(throwable);
+                    return;
+                }
+                typeReferenceFuture.complete(propertyTypeReference);
+            });
+        });
     }
 
     @Override
@@ -104,16 +218,33 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         }
 
         String name = ctx.name.getText();
+        // TODO: Based on the current context type-definition, get the type of the property with name ctx.name.getText()
 
-        int index = VariableLiteral.NO_INDEX;
+        Integer index = null;
         if (indexContext != null) {
+            // TODO: Add a check, that the field providing the property is an "array" or "manualArray" field.
             index = indexContext.getFirst().getNumber().intValue();
         }
         VariableLiteral rest = null;
         if (restContext != null) {
+            // TODO: Add a check, that the field providing the property references a complex type (or uses one of the built-ins)
             rest = restContext.getFirst();
         }
-        parserContexts.peek().add(new VariableLiteral(name, argsContext, index, rest));
+
+        final DefaultVariableLiteral variableLiteral = new DefaultVariableLiteral(name, argsContext, index, rest);
+        futureStack.pop().whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type", throwable);
+                return;
+            }
+            variableLiteral.setTypeReference(typeReference);
+        });
+        if (futureStack.empty()) {
+            futureStack = null;
+        }
+
+        parserContexts.peek().add(variableLiteral);
     }
 
     @Override
@@ -135,7 +266,8 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     @Override
     public void exitIdentifierSegmentIndexes(ExpressionParser.IdentifierSegmentIndexesContext ctx) {
         List<Term> args = parserContexts.pop();
-        parserContexts.peek().add(new IndexContext(args));
+        List<NumericLiteral> numericLiterals = args.stream().map(NumericLiteral.class::cast).collect(Collectors.toList());
+        parserContexts.peek().add(new IndexContext(numericLiterals));
     }
 
     @Override
@@ -146,7 +278,8 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     @Override
     public void exitIdentifierSegmentRest(ExpressionParser.IdentifierSegmentRestContext ctx) {
         List<Term> args = parserContexts.pop();
-        parserContexts.peek().add(new RestContext(args));
+        List<VariableLiteral> variableLiterals = args.stream().map(VariableLiteral.class::cast).collect(Collectors.toList());
+        parserContexts.peek().add(new RestContext(variableLiterals));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +457,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             throw new RuntimeException(op + " should be a unary operation");
         }
         Term a = terms.get(0);
-        return new UnaryTerm(a, op);
+        return new DefaultUnaryTerm(a, op);
     }
 
     private BinaryTerm getBinaryTerm(String op, List<Term> terms) {
@@ -333,7 +466,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         }
         Term a = terms.get(0);
         Term b = terms.get(1);
-        return new BinaryTerm(a, b, op);
+        return new DefaultBinaryTerm(a, b, op);
     }
 
     private TernaryTerm getTernaryTerm(String op, List<Term> terms) {
@@ -343,39 +476,54 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         Term a = terms.get(0);
         Term b = terms.get(1);
         Term c = terms.get(2);
-        return new TernaryTerm(a, b, c, op);
+        return new DefaultTernaryTerm(a, b, c, op);
     }
 
     static class ArgsContext extends LinkedList<Term> implements Term {
-        ArgsContext(Collection c) {
+        ArgsContext(Collection<Term> c) {
             super(c);
         }
 
         @Override
         public boolean contains(String str) {
             return false;
+        }
+
+        @Override
+        public String stringRepresentation() {
+            return "";
         }
     }
 
     static class IndexContext extends LinkedList<NumericLiteral> implements Term {
-        IndexContext(Collection c) {
+        IndexContext(Collection<NumericLiteral> c) {
             super(c);
         }
 
         @Override
         public boolean contains(String str) {
             return false;
+        }
+
+        @Override
+        public String stringRepresentation() {
+            return "";
         }
     }
 
     static class RestContext extends LinkedList<VariableLiteral> implements Term {
-        RestContext(Collection c) {
+        RestContext(Collection<VariableLiteral> c) {
             super(c);
         }
 
         @Override
         public boolean contains(String str) {
             return false;
+        }
+
+        @Override
+        public String stringRepresentation() {
+            return "";
         }
     }
 

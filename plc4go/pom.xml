@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4go</artifactId>
@@ -35,11 +35,14 @@
 
   <properties>
     <!-- Tell Sonar where to find the sources -->
-    <sonar.sources>cmd,examples,internal,pkg</sonar.sources>
+    <sonar.sources>examples,internal,pkg,tools</sonar.sources>
+    <maven.install.skip>true</maven.install.skip>
+    <!-- The deploy-goal of the go plugin uses go install to install the result, unfortunately disabling the deploy, disables the go install. -->
+    <!--maven.deploy.skip>true</maven.deploy.skip-->
   </properties>
 
   <build>
-    <sourceDirectory>cmd</sourceDirectory>
+    <sourceDirectory>pkg</sourceDirectory>
     <plugins>
       <!--
         Copy the test-resources in here
@@ -77,6 +80,15 @@
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-bacnetip</artifactId>
+                  <classifier>tests</classifier>
+                  <type>test-jar</type>
+                  <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
+                  <excludes>META-INF/**</excludes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-c-bus</artifactId>
                   <classifier>tests</classifier>
                   <type>test-jar</type>
                   <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
@@ -169,7 +181,7 @@
               <protocolName>ab-eth</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
            <execution>
@@ -182,7 +194,7 @@
               <protocolName>ads</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -195,7 +207,20 @@
               <protocolName>bacnetip</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-driver-c-bus</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>c-bus</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -208,7 +233,7 @@
               <protocolName>df1</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -221,7 +246,7 @@
               <protocolName>eip</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -234,7 +259,7 @@
               <protocolName>firmata</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -247,7 +272,7 @@
               <protocolName>knxnetip</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -260,7 +285,7 @@
               <protocolName>modbus</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -273,7 +298,7 @@
               <protocolName>s7</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -286,7 +311,7 @@
               <protocolName>simulated</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
         </executions>
@@ -295,9 +320,167 @@
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>mvn-golang-wrapper</artifactId>
-        <version>2.3.9</version>
+        <version>2.3.10</version>
         <extensions>true</extensions>
         <executions>
+          <!-- add tools required for generating code, test, etc-->
+          <execution>
+            <id>get-stringer</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>golang.org/x/tools/cmd/stringer@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-licenser</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>github.com/elastic/go-licenser@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-goxunit</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>github.com/tebeka/go2xunit@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-gotestsum</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>gotest.tools/gotestsum@latest</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <!-- Run the go code-generation -->
+          <execution>
+            <id>default-generate</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <!-- We want to format every package here, so we don't get dirty commits -->
+                <package>./...</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <!-- Add the apache license header to stuff generated by the stringer -->
+          <!--
+            NOTE: Don't try merging the following 4 executions ...
+                  It doesn't work by merging the "packages" sections
+            TODO: The licenser adds a version of the Apache Header with http url
+          -->
+          <execution>
+            <id>add-license</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
+                <package>internal/modbus/fieldtype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-license2</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
+                <package>internal/ads/fieldtype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-license3</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
+                <package>internal/cbus/fieldtype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-license4</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
+                <package>internal/s7/fieldtype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-license5</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
+                <package>spi/testutils/steptype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <!-- Processes code that uses old APIs and rewrites them use newer ones -->
           <execution>
             <id>default-fix</id>
             <phase>process-sources</phase>
@@ -305,37 +488,8 @@
               <goal>fix</goal>
             </goals>
           </execution>
-          <execution>
-            <id>default-get</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>get</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>get-stringer</id>
-            <goals>
-              <goal>get</goal>
-            </goals>
-            <configuration>
-              <packages>
-                <package>golang.org/x/tools/cmd/stringer</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>default-generate</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <packages>
-                <!-- We want to format every package here so we don't get dirty commits -->
-                <package>./...</package>
-              </packages>
-            </configuration>
-          </execution>
+
+          <!-- Format the codebase correctly (this mainly has an effect on generated code) -->
           <execution>
             <id>default-fmt</id>
             <phase>process-sources</phase>
@@ -352,8 +506,8 @@
 
           <!-- Get all dependencies for test cases -->
           <execution>
-            <id>getTestDependencies</id>
-            <phase>process-test-sources</phase>
+            <id>get-test-dependencies</id>
+            <phase>generate-test-sources</phase>
             <goals>
               <goal>get</goal>
             </goals>
@@ -367,25 +521,11 @@
             </configuration>
           </execution>
 
-          <!-- Get xunit generator -->
-          <execution>
-            <id>test-get</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>get</goal>
-            </goals>
-            <configuration>
-              <packages>
-                <package>github.com/tebeka/go2xunit</package>
-                <package>gotest.tools/gotestsum</package>
-              </packages>
-            </configuration>
-          </execution>
-
           <!-- Check all tests with producing report file in Golang format -->
           <execution>
             <id>default-test</id>
             <phase>test</phase>
+            <!-- TODO: Which goal?!? -->
             <configuration>
               <buildFlags>
                 <flag>-v</flag>
@@ -400,6 +540,8 @@
 
           <execution>
             <id>readable-test</id>
+            <!-- TODO: Possibly move to test or prepare-package -->
+            <phase>test</phase>
             <goals>
               <goal>custom</goal>
             </goals>
@@ -447,89 +589,10 @@
               <goal>vet</goal>
             </goals>
           </execution>
-
-          <!-- Get licenser generator -->
-          <execution>
-            <id>get-licenser</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>get</goal>
-            </goals>
-            <configuration>
-              <packages>
-                <package>github.com/elastic/go-licenser</package>
-              </packages>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>add-license</id>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>go-licenser</exec>
-              <customCommand>-licensor</customCommand>
-              <buildFlags>
-                <flag>Apache Software Foundation (ASF)</flag>
-              </buildFlags>
-              <packages>
-                <package>internal/plc4go/modbus/fieldtype_string.go</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-license2</id>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>go-licenser</exec>
-              <customCommand>-licensor</customCommand>
-              <buildFlags>
-                <flag>Apache Software Foundation (ASF)</flag>
-              </buildFlags>
-              <packages>
-                <package>internal/plc4go/ads/fieldtype_string.go</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-license3</id>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>go-licenser</exec>
-              <customCommand>-licensor</customCommand>
-              <buildFlags>
-                <flag>Apache Software Foundation (ASF)</flag>
-              </buildFlags>
-              <packages>
-                <package>internal/plc4go/s7/fieldtype_string.go</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-license4</id>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>go-licenser</exec>
-              <customCommand>-licensor</customCommand>
-              <buildFlags>
-                <flag>Apache Software Foundation (ASF)</flag>
-              </buildFlags>
-              <packages>
-                <package>internal/plc4go/spi/testutils/steptype_string.go</package>
-              </packages>
-            </configuration>
-          </execution>
         </executions>
         <configuration>
           <packages>
-            <package>github.com/apache/plc4x/plc4go/cmd/main</package>
+            <package>github.com/apache/plc4x/plc4go/pkg/api</package>
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
@@ -540,7 +603,9 @@
         Create surefire folder for report
       -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>generate-sources</id>
@@ -557,7 +622,7 @@
         </executions>
       </plugin>
 
-      <!-- For this module deploying maven artifacts doesn't make any sense -->
+      <!-- Ensure we don't deploy anything -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
@@ -573,7 +638,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-go</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -581,70 +646,77 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ads</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-c-bus</artifactId>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-eip</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-firmata</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-simulated</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>

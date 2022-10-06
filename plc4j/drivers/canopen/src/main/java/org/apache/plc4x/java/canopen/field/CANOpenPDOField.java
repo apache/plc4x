@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,12 +19,11 @@
 package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenDataType;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -65,9 +64,6 @@ public class CANOpenPDOField extends CANOpenField implements CANOpenSubscription
 
         String pdo = matcher.group("pdo");
         CANOpenService service = CANOpenService.valueOf(pdo);
-        if (service == null) {
-            throw new IllegalArgumentException("Invalid PDO detected " + pdo);
-        }
 
         String canDataTypeString = matcher.group("canDataType");
         CANOpenDataType canOpenDataType = CANOpenDataType.valueOf(canDataTypeString);
@@ -85,7 +81,7 @@ public class CANOpenPDOField extends CANOpenField implements CANOpenSubscription
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         String serviceName = getService().name();

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,6 +21,7 @@ package org.apache.plc4x.test.driver.internal;
 import static org.apache.plc4x.test.xml.XmlHelper.*;
 
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
 import org.apache.plc4x.test.dom4j.LocationAwareElement;
 import org.apache.plc4x.test.dom4j.LocationAwareSAXReader;
@@ -132,7 +133,7 @@ public class DriverTestsuite {
 
         private final Element driverParametersElement;
 
-        private final boolean bigEndian;
+        private final ByteOrder byteOrder;
 
         private final boolean autoMigrate;
 
@@ -146,7 +147,7 @@ public class DriverTestsuite {
             this.driverName = extractText(testsuiteXml, "driver-name");
             this.optionsElement = testsuiteXml.element("options");
             this.driverParametersElement = testsuiteXml.element(new QName("driver-parameters"));
-            this.bigEndian = !"false".equals(testsuiteXml.attributeValue("bigEndian"));
+            this.byteOrder = ByteOrder.valueOf(testsuiteXml.attributeValue("byteOrder"));
             this.autoMigrate = autoMigrate;
         }
 
@@ -160,7 +161,7 @@ public class DriverTestsuite {
                 parseParameters(optionsElement),
                 parseParameters(driverParametersElement),
                 autoMigrate,
-                bigEndian
+                byteOrder
             );
             DriverTestsuite driverTestsuite = new DriverTestsuite(driverTestsuiteConfiguration);
             driverTestsuite.setTestcases(parseTestCases(driverTestsuite));

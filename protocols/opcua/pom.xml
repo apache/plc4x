@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4x-protocols-opcua</artifactId>
@@ -34,11 +34,11 @@
 
   <build>
     <plugins>
-      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <executions>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
           <execution>
             <id>fetch-opc-datatypes</id>
             <phase>generate-resources</phase>
@@ -46,7 +46,8 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.Types.bsd</url>
+              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
+              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.Types.bsd</url>
               <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
               <outputFileName>Opc.Ua.Types.bsd</outputFileName>
@@ -54,13 +55,7 @@
               <overwrite>true</overwrite>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
           <execution>
             <id>fetch-opc-statuscodes</id>
             <phase>generate-resources</phase>
@@ -74,12 +69,6 @@
               <outputFileName>StatusCode.csv</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-discriminators</id>
             <phase>generate-resources</phase>
@@ -93,12 +82,6 @@
               <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-services-enum</id>
             <phase>generate-resources</phase>
@@ -106,7 +89,8 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.NodeIds.Services.csv</url>
+              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
+              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.NodeIds.csv</url>
               <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
               <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
@@ -235,7 +219,8 @@
           <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>10.5</version>
+            <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
+            <version>11.4</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -246,7 +231,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
   </dependencies>
 

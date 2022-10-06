@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,46 +20,64 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
+
+import java.util.*;
 
 public abstract class DefaultTypeDefinition {
 
-    private final String name;
-    private final Argument[] parserArguments;
-    private final String[] tags;
-    private TypeDefinition parentType;
+    protected final String name;
+    private final Map<String, Term> attributes;
+    protected final List<Argument> parserArguments;
 
-    public DefaultTypeDefinition(String name, Argument[] parserArguments, String[] tags) {
-        this.name = name;
+    public DefaultTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments) {
+        this.name = Objects.requireNonNull(name);
+        this.attributes = attributes;
         this.parserArguments = parserArguments;
-        this.tags = tags;
-        this.parentType = null;
     }
 
     public String getName() {
         return name;
     }
 
-    public Argument[] getParserArguments() {
-        return parserArguments;
+    public Optional<Term> getAttribute(String attributeName) {
+        if (attributes.containsKey(attributeName)) {
+            return Optional.of(attributes.get(attributeName));
+        }
+        return Optional.empty();
     }
 
-    public String[] getTags() {
-        return tags;
+    public Optional<List<Argument>> getParserArguments() {
+        return Optional.ofNullable(parserArguments);
     }
 
-    public TypeDefinition getParentType() {
-        return parentType;
+    public Optional<List<Argument>> getAllParserArguments() {
+        List<Argument> allArguments = new ArrayList<>();
+        if (parserArguments != null) {
+            allArguments.addAll(parserArguments);
+        }
+        return Optional.of(allArguments);
     }
 
-    public void setParentType(TypeDefinition parentType) {
-        this.parentType = parentType;
+    @Override
+    public String toString() {
+        return "DefaultTypeDefinition{" +
+            "name='" + name + '\'' +
+            ", attributes=" + attributes +
+            ", parserArguments=" + parserArguments +
+            '}';
     }
 
-    public TypeReference getTypeReference() {
-        return new DefaultComplexTypeReference(getName());
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultTypeDefinition that = (DefaultTypeDefinition) o;
+        return name.equals(that.name) && Objects.equals(attributes, that.attributes) && Objects.equals(parserArguments, that.parserArguments);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, attributes, parserArguments);
+    }
 }

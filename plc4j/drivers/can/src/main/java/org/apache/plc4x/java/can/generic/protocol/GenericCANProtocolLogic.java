@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.can.generic.protocol;
 
 import java.util.Map.Entry;
+
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -29,14 +30,10 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.can.adapter.Plc4xCANProtocolBase;
 import org.apache.plc4x.java.can.generic.field.GenericCANField;
 import org.apache.plc4x.java.can.generic.transport.GenericFrame;
-import org.apache.plc4x.java.genericcan.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.genericcan.readwrite.DataItem;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
@@ -57,7 +54,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     private final Logger logger = LoggerFactory.getLogger(GenericCANProtocolLogic.class);
 
     private RequestTransactionManager tm;
-    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     @Override
     public void setDriverContext(DriverContext driverContext) {
@@ -93,7 +90,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
             for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
                 GenericCANSubscriptionHandle subscription = (GenericCANSubscriptionHandle) handle;
                 Map<String, ResponseItem<PlcValue>> fields = new LinkedHashMap<>();
-                ReadBuffer buffer = new ReadBufferByteBased(msg.getData(), true);
+                ReadBuffer buffer = new ReadBufferByteBased(msg.getData(), ByteOrder.LITTLE_ENDIAN);
                 buffer.pullContext("readFields");
                 if (subscription.matches(msg.getNodeId())) {
                     for (Entry<String, GenericCANField> field : subscription.getFields().entrySet()) {
@@ -118,17 +115,18 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     private PlcValue read(ReadBuffer buffer, GenericCANField field) throws ParseException {
         try {
             buffer.pullContext("read-" + field);
-            return DataItemIO.staticParse(buffer, field.getDataType());
+            return DataItem.staticParse(buffer, field.getDataType());
         } finally {
             buffer.closeContext("read-" + field);
         }
     }
 
-    private void write(WriteBuffer buffer, GenericCANField field, PlcValue value) throws ParseException {
-        WriteBufferByteBased data = DataItemIO.staticSerialize(value, field.getDataType());
+    private void write(WriteBuffer buffer, GenericCANField field, PlcValue value) throws SerializationException {
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, field.getDataType()));
+        DataItem.staticSerialize(writeBuffer, value, field.getDataType());
         try {
             buffer.pushContext("write-" + field);
-            buffer.writeByteArray(data.getData());
+            buffer.writeByteArray(writeBuffer.getData());
         } finally {
             buffer.popContext("write-" + field);
         }
@@ -151,7 +149,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                     continue;
                 }
                 GenericCANField canField = (GenericCANField) plcField;
-                WriteBuffer buffer = messages.computeIfAbsent(canField.getNodeId(), (node) -> new WriteBufferByteBased(8, true));
+                WriteBuffer buffer = messages.computeIfAbsent(canField.getNodeId(), (node) -> new WriteBufferByteBased(8, ByteOrder.LITTLE_ENDIAN));
 
                 Map<String, PlcResponseCode> statusMap = responses.computeIfAbsent(canField.getNodeId(), (node) -> new HashMap<>());
 
@@ -159,7 +157,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                 try {
                     write(buffer, canField, value);
                     statusMap.put(field, PlcResponseCode.OK);
-                } catch (ParseException e) {
+                } catch (SerializationException e) {
                     statusMap.put(field, PlcResponseCode.INVALID_DATA);
                 }
             }

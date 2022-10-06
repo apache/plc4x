@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,11 +24,9 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
-import org.apache.plc4x.java.simulated.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.simulated.readwrite.DataItem;
+import org.apache.plc4x.java.spi.generation.*;
 
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 
 import org.slf4j.Logger;
@@ -90,14 +88,12 @@ public class SimulatedDevice {
                 changeOfStateSubscriptions.values().stream()
                     .filter(pair -> pair.getKey().equals(field))
                     .map(Pair::getValue)
-                    .peek(plcValueConsumer -> {
-                        LOGGER.debug("{} is getting notified with {}", plcValueConsumer, value);
-                    })
+                    .peek(plcValueConsumer -> LOGGER.debug("{} is getting notified with {}", plcValueConsumer, value))
                     .forEach(baseDefaultPlcValueConsumer -> baseDefaultPlcValueConsumer.accept(value));
                 state.put(field, value);
                 return;
             case STDOUT:
-                LOGGER.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.getString());
+                LOGGER.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.toString());
                 return;
             case RANDOM:
                 switch (field.getPlcDataType()) {
@@ -106,8 +102,10 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            DataItemIO.staticSerialize(value, field.getPlcDataType(), field.getNumberOfElements(), false);
-                        } catch (ParseException e) {
+                            final int lengthInBits = DataItem.getLengthInBits(value, field.getPlcDataType(), field.getNumberOfElements());
+                            final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
+                            DataItem.staticSerialize(writeBuffer, value, field.getPlcDataType(), field.getNumberOfElements(), ByteOrder.BIG_ENDIAN);
+                        } catch (SerializationException e) {
                             LOGGER.info("Write failed");
                         }
                 }
@@ -125,7 +123,7 @@ public class SimulatedDevice {
 
         ReadBuffer io = new ReadBufferByteBased(b);
         try {
-            return DataItemIO.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
+            return DataItem.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
         } catch (ParseException e) {
             return null;
         }

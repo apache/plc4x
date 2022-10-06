@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -23,29 +23,29 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>test-java-df1-driver</artifactId>
 
-  <name>Sandbox: Test Generated Df1 Driver</name>
+  <name>Sandbox: Test Df1 Driver</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-serial</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <optional>true</optional>
     </dependency>
 
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>com.github.snksoft</groupId>
       <artifactId>crc</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
 
 
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -121,7 +121,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-test-junit5</artifactId>
       <scope>test</scope>
     </dependency>
@@ -129,7 +129,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -137,7 +137,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -145,7 +145,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -159,7 +159,7 @@
         <artifactId>plc4x-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>test</id>
+            <id>generate-driver</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>generate-driver</goal>

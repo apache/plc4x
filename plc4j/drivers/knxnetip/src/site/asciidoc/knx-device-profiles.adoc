@@ -1,0 +1,133 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== General
+
+In the device profiles, data is arranged a bit similar to relational databases. We have element/entities with a unique id, and they reference each other by these ids.
+
+Now with Parameters and ComObjects there are multiple layers of indirection. In order to know which values are valid, you need to start at the `RefRef` element (`ComObjectRefRef` or `ParameterRefRef`). If an attribute is defined here, this overwrites the same attribute of upstream elements. Same applies for the `Ref` elements (`ComObjectRef` and `ParameterRef`). In general this rule seems to apply to all elements in the device profiles.
+
+=== ParameterTypes
+
+These generally define the types a parameter can have.
+
+Here the value types and ranges can be specified.
+
+Also, if a ParameterType is an enumeration of well known values, these values are defined here.
+
+=== Parameters
+
+There seem to be `Parameters` which represent the parameters themselves, they reference `ParameterTypes`.
+
+A parameter can be backed by a memory location. In this case it is persistently configurable via `ETS`
+
+Parameters which are not backed by memory, I would assume are `runtime parameters`.
+
+=== ParameterRefs
+
+Then there seem to be `ParameterRefs` which represent the usages of parameters.
+
+So whenever a `Parameter` is used, a `ParameterRef` is created. I am not quite sure, if these can also be used to customize the data types of the parameters, similar to the `ComObjects`.
+
+=== ComObjectTable
+
+Here we are listing the `ComObjects` these are the actual input/output objects of our KNX devices.
+
+If a ComObject is bound to a GroupAddress, we can access it from other devices.
+
+This binding of the GroupAddresses happens in the `AddressTable` (Which GroupAddresses do we know) and the `AssociationTable` (Which GroupAddress is bound to which ComObject) ... however it does not contain to which ComObjectRef it's bound, which would have made things a lot easier.
+
+Each ComObject has a base type, however this only seems to control the maximum size of the ComObject data. The actual datatype is defined by the `ComObjectRef` that points to it.
+
+=== ComObjectRefs
+
+As mentioned in the `ComObjectTable` section, here usages of `ComObjects` are defined.
+
+Here also the names and types of the `ComObject` can be altered.
+
+== Processing `Dynamic` blocks in device profiles
+
+The `Dynamic` blocks are where the configuration "logic" is defined.
+
+It defines which `Parameters` are active in which mode, which `ComObjects` are enabled and which data types they have.
+
+=== Channel / IndependentChannel
+
+Channels are generally only visual ordering components in ETS. The only difference between them are that normal `Channels` are displayed as expandable block and `IndependentChannels` are always expanded.
+
+On an evaluation of the devices dynamic state perspective these elements have no influence at all and can be skipped.
+
+=== ParameterBlock
+
+Just like `Channel` and `IndependentChannel` element are `ParameterBlock` elements used for visually grouping parameters together.
+
+The `Id` or `ParamRefId` seem to both only be used for providing the information on which label ETS should output. However, I have no idea on how the priorities are handled.
+
+=== ParameterRefRef
+
+A `ParameterRefRef` enables the corresponding `ParameterRef` and hereby the `Parameter` that links to. In ETS the Parameter is then visible in the UI, and in case of the device, the Parameter has an effect on the Devices operation.
+
+NOTE: It is possible that multiple `ParmeterRefRef` point to the same `ParameterRef` element and hereby enable that point. However, never should more than one of these be enabled at the same time.
+
+=== ComObjectRefRef
+
+Same as the `ParameterRefRef`, this enables a `ComObjectRef` which enables the `ComObject` that links to.
+
+NOTE: It is possible that multiple `ComObjectRefRef` point to the same `ComObjectRef` element and hereby enable that com object. However, never should more than one of these be enabled at the same time.
+
+=== choose
+
+These are conditional blocks, where multiple `when` blocks are conditionally evaluated.
+
+In general does a `choose` block always reference a `ParameterRef`. This can be considered the input all `when` blocks are checked again.
+
+However, the `ParameterRef` is required to be "enabled", so in the XML document before the `choose` block there needs to be a `ParameterRefRef` element that enables the given Property. If it's not enabled, the `choose` block is not evaluated at all.
+
+=== when
+
+These blocks represent a condition inside a `choose` block.
+
+Usually they have a `test` attribute, which usually contains a reference value.
+
+So if for example the `test` attribute is: 3, then the Parameter referenced by the `choose` element is compared with this value and if the Parameter is equal to 3, then the body of the `when` is evaluated.
+
+However, there are more complex values the `test` attribute can have:
+
+- `3`: The value is exactly 3
+- `!=4`: The value is NOT 4
+- `1 3 5`: The value is 1, 3 or 5
+- `<5`: The value is less than 5
+- `<=5`: The value is less or equal 5
+- `>5`: The value is greater as 5
+- `>=5`: The value is greater or equal 5
+
+One important thing to keep in mind, is that in contrast to most programming languages, more than one `when` can be active at the same time.
+
+So if there's one `when test="3"` and another `then test=">2"` and the value is `3`, then both `when` blocks will be enabled.
+
+One special case seem to be constructs like this:
+
+    <ParameterRefRef RefId="M-000B_A-0A7A-10-D768-O0085_P-3_R-3" />
+    <choose ParamRefId="M-000B_A-0A7A-10-D768-O0085_P-3_R-3">
+        <when default="true">
+            <ComObjectRefRef RefId="M-000B_A-0A7A-10-D768-O0085_O-0_R-5" />
+        </when>
+    </choose>
+
+These seem to be left-overs from an automatic conversion from older ETS versions. As far as I understand them, as soon as the `Parameter` in the `choose` element is enabled the body of the `when` is evaluated, no matter what value the parameter has.
+
+If a `when default="true"` is located alongside other `when` blocks. These are only evaluated if no other block is evaluated (Sort of like a `default` case in a normal switch command of most programming languages).

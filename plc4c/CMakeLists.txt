@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,7 +17,7 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
 # Set the name of this project
 project(PLC4C)
@@ -32,7 +32,7 @@ set(PLC4C_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(BUILD_PHASE test-compile CACHE STRING "Phase of the Maven build we are executing cmake")
 
 # Access the Unity version the maven build is providing us with.
-set(UNITY_VERSION 2.5.0 CACHE STRING "Version of the used Unity test framework")
+set(UNITY_VERSION 2.5.2 CACHE STRING "Version of the used Unity test framework")
 
 # MinGW GCC versions above 4.7 on Windows include inline definitions of these functions
 # If you run into problems, please read this article: https://stackoverflow.com/questions/27853225/is-there-a-way-to-include-stdio-h-but-ignore-some-of-the-functions-therein
@@ -91,5 +91,6 @@ add_subdirectory(api)
 add_subdirectory(spi)
 add_subdirectory(transports)
 add_subdirectory(drivers)
+add_subdirectory(tools)
 #add_subdirectory(integrations)
 add_subdirectory(examples)

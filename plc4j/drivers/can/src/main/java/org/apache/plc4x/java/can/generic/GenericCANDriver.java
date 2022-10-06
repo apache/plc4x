@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -115,13 +115,13 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
         }
 
         CANTransport<Message> canTransport = (CANTransport<Message>) transport;
-        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), canTransport::getMessageIO)
+        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), canTransport::getMessageInput)
             .withProtocol(cfg -> {
                 GenericCANProtocolLogic protocolLogic = new GenericCANProtocolLogic();
                 ConfigurationFactory.configure(cfg, protocolLogic);
                 return new CANDriverAdapter<>(protocolLogic,
                     canTransport.getMessageType(), canTransport.adapter(),
-                    new GenericCANFrameDataHandler(() -> canTransport.getTransportFrameBuilder())
+                    new GenericCANFrameDataHandler(canTransport::getTransportFrameBuilder)
                 );
             })
             .withDriverContext(cfg -> new GenericCANDriverContext())

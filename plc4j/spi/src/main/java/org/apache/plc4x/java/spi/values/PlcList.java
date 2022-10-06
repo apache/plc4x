@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,14 +20,15 @@ package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -47,6 +48,11 @@ public class PlcList extends PlcValueAdapter {
             plcValue
         ).collect(Collectors.toList());
         this.listItems = Collections.unmodifiableList(safelist);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.List;
     }
 
     public void add(PlcValue value) {
@@ -89,7 +95,7 @@ public class PlcList extends PlcValueAdapter {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcList");
         for (PlcValue listItem : listItems) {
             if (!(listItem instanceof Serializable)) {

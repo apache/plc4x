@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,19 +24,20 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4py</artifactId>
   <packaging>pom</packaging>
 
-  <name>Sandbox: PLC4PY</name>
-  <description>Implementation of the protocol adapters for usage as Python module.</description>
+  <name>Sandbox: PLC4Py</name>
+  <description>Implementation of the protocol adapters for usage as Python library.</description>
 
-  <!-- Disabled for now as Python support is currently not installed in Apache SonarQube -->
-  <!--properties>
-    <sonar.language>py</sonar.language>
-  </properties-->
+  <properties>
+    <!-- Tell Sonar where to find the python sources -->
+    <sonar.sources>plc4py</sonar.sources>
+    <option.with-proxies>OFF</option.with-proxies>
+  </properties>
 
   <build>
     <sourceDirectory>src/main/python</sourceDirectory>
@@ -76,21 +77,68 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>python-build</id>
+            <id>python-venv</id>
             <phase>compile</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>python</executable>
-              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <executable>python3</executable>
               <arguments>
-                <argument>${project.basedir}/setup.py</argument>
-                <argument>build</argument>
-                <argument>--build-base=${project.build.directory}/python</argument>
+                <argument>-m</argument>
+                <argument>venv</argument>
+                <argument> ./venv</argument>
               </arguments>
             </configuration>
           </execution>
+
+          <execution>
+            <id>python-install</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}pip3</executable>
+              <arguments>
+                <argument>install</argument>
+                <argument>.</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>python-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}pip3</executable>
+              <arguments>
+                <argument>install</argument>
+                <argument>.[dev]</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>python-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}python3</executable>
+              <arguments>
+                <argument>-m</argument>
+                <argument>pytest</argument>
+                <argument>-v</argument>
+                <argument>tests</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
           <execution>
             <id>python-package</id>
             <phase>package</phase>
@@ -98,16 +146,46 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>python</executable>
-              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <executable>${python.venv.bin}pip3</executable>
               <arguments>
-                <argument>${project.basedir}/setup.py</argument>
-                <argument>sdist</argument>
-                <argument>--dist-dir=${project.build.directory}/python</argument>
+                <argument>wheel</argument>
+                <argument>.</argument>
+                <argument>-w</argument>
+                <argument>dist</argument>
+                <argument>--no-deps</argument>
               </arguments>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>.pytest_cache</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>build</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>dist</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>venv</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>plc4py.egg-info</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
       </plugin>
     </plugins>
   </build>

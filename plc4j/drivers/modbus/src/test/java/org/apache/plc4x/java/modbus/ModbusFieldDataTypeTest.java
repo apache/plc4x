@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,11 +18,11 @@
  */
 package org.apache.plc4x.java.modbus;
 
-import org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister;
-import org.apache.plc4x.java.modbus.field.ModbusFieldInputRegister;
-import org.apache.plc4x.java.modbus.field.ModbusExtendedRegister;
-import org.apache.plc4x.java.modbus.field.ModbusFieldDiscreteInput;
-import org.apache.plc4x.java.modbus.field.ModbusFieldCoil;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldHoldingRegister;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldInputRegister;
+import org.apache.plc4x.java.modbus.base.field.ModbusExtendedRegister;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldDiscreteInput;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldCoil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

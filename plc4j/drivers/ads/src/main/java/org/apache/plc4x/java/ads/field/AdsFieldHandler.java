@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -30,8 +30,6 @@ public class AdsFieldHandler implements PlcFieldHandler {
             return DirectAdsStringField.of(fieldQuery);
         } else if (DirectAdsField.matches(fieldQuery)) {
             return DirectAdsField.of(fieldQuery);
-        } else if (SymbolicAdsStringField.matches(fieldQuery)) {
-            return SymbolicAdsStringField.of(fieldQuery);
         } else if (SymbolicAdsField.matches(fieldQuery)) {
             return SymbolicAdsField.of(fieldQuery);
         }

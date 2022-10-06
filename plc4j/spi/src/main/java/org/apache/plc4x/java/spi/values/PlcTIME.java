@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,13 +23,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME extends PlcSimpleValue<Duration> {
@@ -59,6 +60,21 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.TIME;
+    }
+
+    @Override
+    public boolean isInteger() {
+        return true;
+    }
+
+    @Override
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
     @JsonIgnore
     public boolean isString() {
         return true;
@@ -67,6 +83,16 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     @Override
     public boolean isDuration() {
         return true;
+    }
+
+    @Override
+    public int getInteger() {
+        return (int) (value.get(ChronoUnit.NANOS) / 1000000);
+    }
+
+    @Override
+    public long getLong() {
+        return value.get(ChronoUnit.NANOS) / 1000000;
     }
 
     @Override
@@ -87,7 +113,7 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value.toString();
         writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }

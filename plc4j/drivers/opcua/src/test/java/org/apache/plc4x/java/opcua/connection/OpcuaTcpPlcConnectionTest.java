@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,21 +19,10 @@
 package org.apache.plc4x.java.opcua.connection;
 
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
-import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
-import static org.apache.plc4x.java.opcua.UtilsTest.assertNoMatching;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-/**
- */
 public class OpcuaTcpPlcConnectionTest {
 
     private final String[] validTCPOPC = {
@@ -51,31 +40,22 @@ public class OpcuaTcpPlcConnectionTest {
         "discovery=false"
     };
 
-    @BeforeEach
-    public void before() {
-    }
-
-    @AfterEach
-    public void after() {
-
-    }
-
     @Test
     public void testConectionStringPattern() {
 
         for (String address : validTCPOPC) {
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=true");
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=True");
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=TRUE");
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?Discovery=True");
+            assertThat("opcua:tcp://127.0.0.1:555?discovery=true").matches(URI_PATTERN);
+            assertThat("opcua:tcp://127.0.0.1:555?discovery=True").matches(URI_PATTERN);
+            assertThat("opcua:tcp://127.0.0.1:555?discovery=TRUE").matches(URI_PATTERN);
+            assertThat("opcua:tcp://127.0.0.1:555?Discovery=True").matches(URI_PATTERN);
             //No Port Specified
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1?discovery=True");
+            assertThat("opcua:tcp://127.0.0.1?discovery=True").matches(URI_PATTERN);
             //No Transport Specified
-            assertMatching(URI_PATTERN, "opcua://127.0.0.1:647?discovery=True");
+            assertThat("opcua://127.0.0.1:647?discovery=True").matches(URI_PATTERN);
             //No Params Specified
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:111");
+            assertThat("opcua:tcp://127.0.0.1:111").matches(URI_PATTERN);
             //No Transport and Params Specified
-            assertMatching(URI_PATTERN, "opcua://127.0.0.1:754");
+            assertThat("opcua://127.0.0.1:754").matches(URI_PATTERN);
         }
     }
 }

@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <groupId>org.apache.plc4x.sandbox</groupId>
@@ -34,71 +34,35 @@
   <name>Sandbox</name>
   <description>Place where new stuff is located before it is regarded production-quality.</description>
 
-  <modules>
-    <module>code-gen</module>
-    <module>discovery</module>
-    <module>plc-simulator</module>
-
-    <module>test-java-bacnetip-driver</module>
-    <module>test-java-df1-driver</module>
-  </modules>
-
   <build>
     <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <configuration>
-            <usedDependencies combine.children="append">
-                <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
-            </usedDependencies>
-          </configuration>
-        </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
 
-        <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <configuration>
           <skip>true</skip>
         </configuration>
-        </plugin>
+      </plugin>
     </plugins>
   </build>
 
-  <dependencies>
-    <!-- JUnit 5 Support -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-test-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>code-gen</module>
+    <module>discovery</module>
+    <module>test-java-df1-driver</module>
+  </modules>
 
   <profiles>
-    <!-- Build PLC4X including the C++ modules -->
-    <profile>
-      <id>with-cpp</id>
-      <modules>
-        <module>plc4cpp</module>
-      </modules>
-    </profile>
-
-    <!-- Build PLC4X including the .Net modules -->
-    <profile>
-      <id>with-dotnet</id>
-      <modules>
-        <module>plc4net</module>
-      </modules>
-    </profile>
-
     <!-- Build PLC4X including the Python modules -->
     <profile>
       <id>with-python</id>
@@ -106,7 +70,6 @@
         <module>plc4py</module>
       </modules>
     </profile>
-
   </profiles>
 
 </project>

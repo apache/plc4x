@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,10 +24,10 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
-  <artifactId>plc4j-webservice</artifactId>
+  <artifactId>plc4j-examples-webservice</artifactId>
   <name>PLC4J: Examples: Hello-Webservice</name>
   <description>Hello world application sending PLC4X data to a remote Webservice.</description>
 
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
 
     <dependency>
@@ -66,7 +66,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
-      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>

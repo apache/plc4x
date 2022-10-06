@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,14 +19,13 @@
 package org.apache.plc4x.protocol.eip;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
-import java.io.InputStream;
-import java.util.Map;
-
-public class EipProtocol implements Protocol {
+public class EipProtocol implements Protocol, ProtocolHelpers {
 
     @Override
     public String getName() {
@@ -34,12 +33,10 @@ public class EipProtocol implements Protocol {
     }
 
     @Override
-    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = EipProtocol.class.getResourceAsStream("/protocols/eip/eip.mspec");
-        if(schemaInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
-        }
-        return new MessageFormatParser().parse(schemaInputStream);
+    public TypeContext getTypeContext() throws GenerationException {
+        ValidatableTypeContext typeContext = new MessageFormatParser().parse(getMspecStream());
+        typeContext.validate();
+        return typeContext;
     }
 
 }

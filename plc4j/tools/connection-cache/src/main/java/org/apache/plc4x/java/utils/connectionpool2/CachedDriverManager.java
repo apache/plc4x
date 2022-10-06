@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -43,9 +43,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * PlcDriverManager cached = new CachedDriverManager(url, () -&gt; manager.getConnection(url));
  * </code>
  * Now you can use "cached" everywhere you need the corresponding connection.
- *
- * @author julian
- * Created by julian on 24.02.20
  */
 public class CachedDriverManager extends PlcDriverManager implements CachedDriverManagerMBean {
 
@@ -84,7 +81,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     /**
      * @param url               Url that this connection is for
      * @param connectionFactory Factory to create a suitable connection.
-     * @param timeoutMillis     Time out in milliseonds
+     * @param timeoutMillis     Time out in milliseconds
      */
     public CachedDriverManager(String url, PlcConnectionFactory connectionFactory, int timeoutMillis) {
         logger.info("Creating new cached Connection for url {} with timeout {} ms", url, timeoutMillis);
@@ -94,7 +91,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
 
         // MBean
         try {
-            ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("org.pragmaticindustries.cockpit.plc:name=cached-driver-manager,url=\"" + url + "\""));
+            ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("org.apache.plc4x.plc:name=cached-driver-manager,url=\"" + url + "\""));
         } catch (Exception ignore) {
         }
     }
@@ -105,7 +102,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         cancelWatchdog();
         if (state.get() == ConnectionState.DISCONNECTED) {
             // Getting Disconnected Connection, nothing to do.
-            logger.trace("Connection allready disconnected");
+            logger.trace("Connection already disconnected");
             return;
         }
         if (state.get() != ConnectionState.BORROWED) {
@@ -159,6 +156,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         if (!this.url.equals(url)) {
             throw new IllegalArgumentException("This Cached Driver Manager only supports the Connection " + url);
         }
+        CompletableFuture<PlcConnection> future;
         synchronized (this) {
             logger.trace("current queue size before check {}", queue.size());
             if (queue.isEmpty() && isConnectionAvailable()) {
@@ -172,17 +170,18 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
                 } catch (Exception ignore) {
                 }
             }
-        }
-        CompletableFuture<PlcConnection> future = new CompletableFuture<>();
-        synchronized (this) {
+
+            future = new CompletableFuture<>();
             logger.trace("current queue size before add {}", queue.size());
             queue.add(future);
         }
         try {
             return future.get(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (ExecutionException | TimeoutException e) {
+            handleBrokenConnection();
             throw new PlcConnectionException("No Connection Available, timed out while waiting in queue.", e);
         } catch (InterruptedException e) {
+            handleBrokenConnection();
             Thread.currentThread().interrupt();
             throw new PlcConnectionException("No Connection Available, interrupted while waiting in queue.", e);
         } finally {
@@ -286,7 +285,9 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     }
 
     private void cancelWatchdog() {
-        borrowWatchdog.cancel(false);
+        if (borrowWatchdog != null ) {
+            borrowWatchdog.cancel(false);
+        }
     }
 
     @Override

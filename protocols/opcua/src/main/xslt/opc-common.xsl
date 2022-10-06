@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -23,7 +23,6 @@
                 xmlns:opc="http://opcfoundation.org/BinarySchema/"
                 xmlns:plc4x="https://plc4x.apache.org/"
                 xmlns:map="http://www.w3.org/2005/xpath-functions/map"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:ua="http://opcfoundation.org/UA/"
                 xmlns:tns="http://opcfoundation.org/UA/"
                 xmlns:node="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
@@ -34,7 +33,7 @@
         encoding="utf-8"
     />
 
-    <xsl:param name="services"></xsl:param>
+    <xsl:param name="services"/>
     <xsl:param name="file" select="document($services)"/>
 
     <xsl:variable name="originaldoc" select="/"/>
@@ -55,6 +54,7 @@
     </xsl:variable>
 
     <xsl:template match="node:UADataType">
+        <xsl:variable name="servicesRoot" select=".."/>
         <xsl:variable name="browseName">
             <xsl:value-of select='@BrowseName'/>
         </xsl:variable>
@@ -65,11 +65,12 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName] != ''"><xsl:text>
-        </xsl:text>['<xsl:value-of select="number(substring(@NodeId,3)) + 2"/><xsl:text>' </xsl:text><xsl:value-of select='$objectTypeId'/><xsl:text>
+        </xsl:text>['"<xsl:value-of select="number(substring(@NodeId,3)) + 2"/><xsl:text>"' </xsl:text><xsl:value-of select='$objectTypeId'/><xsl:text>
             </xsl:text>
                 <xsl:message><xsl:value-of select="serialize($originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName])"/></xsl:message>
                 <xsl:call-template name="plc4x:parseFields">
                     <xsl:with-param name="baseNode" select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>
+                    <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
                     <xsl:with-param name="currentNodePosition">1</xsl:with-param>
                     <xsl:with-param name="currentBytePosition">0</xsl:with-param>
                     <xsl:with-param name="currentBitPosition">0</xsl:with-param>
@@ -87,7 +88,7 @@
             <xsl:when test="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]">
                 <xsl:choose>
                     <xsl:when test="not(@BrowseName='Vector') and not(substring(@BrowseName,1,1) = '&lt;') and not(number(substring(@BrowseName,1,1)))">
-                        [type '<xsl:value-of select='@BrowseName'/>'
+                        [type <xsl:value-of select='@BrowseName'/>
                         <xsl:apply-templates select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>]
                     </xsl:when>
                 </xsl:choose>
@@ -96,13 +97,18 @@
     </xsl:template>
 
     <xsl:template match="opc:EnumeratedType">
-        <xsl:message>[INFO] Parsing Enumerated Datatype - <xsl:value-of select="@Name"/></xsl:message><xsl:text>
-</xsl:text>[enum uint <xsl:value-of select="@LengthInBits"/> '<xsl:value-of select="@Name"/>'<xsl:text>
+        <xsl:message>[INFO] Parsing Enumerated Datatype - <xsl:value-of select="@Name"/></xsl:message>
+        <xsl:choose>
+            <xsl:when test="opc:EnumeratedValue"><xsl:text>
+
+</xsl:text>[enum uint <xsl:value-of select="@LengthInBits"/><xsl:text> </xsl:text><xsl:value-of select="@Name"/><xsl:text>
 </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:EnumeratedValue"/>
 ]
+            </xsl:when>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="opc:Documentation">// <xsl:value-of select="."/></xsl:template>
@@ -126,12 +132,12 @@
                 <xsl:with-param name="switchField" select="@SwitchField"/>
                 <xsl:with-param name="switchValue" select="@SwitchValue"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="@Name"/>'<xsl:text>
+        </xsl:variable>[type <xsl:value-of select="@Name"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/>
         <xsl:choose>
             <xsl:when test="@LengthInBits != ''">
-                [simple uint <xsl:value-of select="@LengthInBits"/> '<xsl:value-of select="$objectTypeId"/>']</xsl:when>
+                [simple uint <xsl:value-of select="@LengthInBits"/><xsl:text> </xsl:text><xsl:value-of select="$objectTypeId"/>]</xsl:when>
         </xsl:choose>
 ]
     </xsl:template>
@@ -142,12 +148,13 @@
             <xsl:call-template name="clean-datatype-string">
                 <xsl:with-param name="text" select="@Name"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="$objectTypeId"/>'<xsl:text>
+        </xsl:variable>[type <xsl:value-of select="$objectTypeId"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/><xsl:text>
     </xsl:text>
         <xsl:call-template name="plc4x:parseFields">
             <xsl:with-param name="baseNode" select="."/>
+            <xsl:with-param name="servicesRoot"/>
             <xsl:with-param name="currentNodePosition">1</xsl:with-param>
             <xsl:with-param name="currentBytePosition">0</xsl:with-param>
             <xsl:with-param name="currentBitPosition">0</xsl:with-param>
@@ -161,12 +168,13 @@
             <xsl:call-template name="clean-datatype-string">
                 <xsl:with-param name="text" select="@Name"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="$objectTypeId"/>'<xsl:text>
+        </xsl:variable>[type <xsl:value-of select="$objectTypeId"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/><xsl:text>
     </xsl:text>
         <xsl:call-template name="plc4x:parseFields">
             <xsl:with-param name="baseNode" select="."/>
+            <xsl:with-param name="servicesRoot"/>
             <xsl:with-param name="currentNodePosition">1</xsl:with-param>
             <xsl:with-param name="currentBytePosition">0</xsl:with-param>
             <xsl:with-param name="currentBitPosition">0</xsl:with-param>
@@ -175,6 +183,7 @@
     </xsl:template>
 
     <xsl:template match="opc:Field">
+        <xsl:param name="servicesRoot"/>
         <xsl:message>[INFO] Parsing Field - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:variable name="objectTypeId">
             <xsl:value-of select="@Name"/>
@@ -219,12 +228,15 @@
                     <xsl:when test="$dataType = 'ExtensionObjectDefinition'">
                         <xsl:variable name="browseName" select="substring-after(@TypeName,':')"/>
                         <xsl:variable name="id" select="number(substring-after($file/node:UANodeSet/node:UADataType[@BrowseName=$browseName]/@NodeId, '=')) + 2"/><xsl:text>
-            </xsl:text>[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>' ['<xsl:value-of select='$id'/>']]
-            </xsl:when>
-                    <xsl:when test="$dataType = 'ExtensionObject'">[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>' ['true']]
+            </xsl:text>[array <xsl:value-of select="$dataType"/>('"<xsl:value-of select='$id'/>"')<xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/><xsl:text> </xsl:text>count '<xsl:value-of select="$lowerCaseLengthField"/>']
                     </xsl:when>
-                    <xsl:otherwise>[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
-            </xsl:otherwise>
+                    <xsl:when test="$dataType = 'ExtensionObject'">[array <xsl:value-of select="$dataType"/>('true')<xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/><xsl:text> </xsl:text>count '<xsl:value-of select="$lowerCaseLengthField"/>']
+                    </xsl:when>
+                    <xsl:otherwise>[array <xsl:value-of select="$dataType"/><xsl:call-template name="plc4x:getParserArguments">
+                        <xsl:with-param name="dataTypeName" select="$dataType"/>
+                        <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
+                    </xsl:call-template><xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/><xsl:text> </xsl:text>count '<xsl:value-of select="$lowerCaseLengthField"/>']
+                    </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
             <xsl:when test="$mspecType = 'reserved'">
@@ -237,16 +249,16 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
-            <xsl:when test="$mspecType = 'optional'">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>' '<xsl:value-of select="$lowerCaseSwitchField"/>']
+            <xsl:when test="$mspecType = 'optional'">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/><xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/><xsl:text> </xsl:text>'<xsl:value-of select="$lowerCaseSwitchField"/>']
             </xsl:when>
             <xsl:when test="$dataType = 'ExtensionObjectDefinition'">
                 <xsl:variable name="browseName" select="substring-after(@TypeName,':')"/>
                 <xsl:variable name="id" select="number(substring-after($file/node:UANodeSet/node:UADataType[@BrowseName=$browseName]/@NodeId, '=')) + 2"/><xsl:text>
-            </xsl:text>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>' ['<xsl:value-of select='$id'/>']]
+            </xsl:text>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/>('"<xsl:value-of select='$id'/>"')<xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/>]
             </xsl:when>
-            <xsl:when test="$dataType = 'ExtensionObject'">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>' ['true']]
+            <xsl:when test="$dataType = 'ExtensionObject'">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/>('true')<xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/>]
             </xsl:when>
-            <xsl:otherwise>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>']
+            <xsl:otherwise>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/><xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/>]
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -314,9 +326,9 @@
             <xsl:when test="$datatype = 'opc:UInt32'">uint 32</xsl:when>
             <xsl:when test="$datatype = 'opc:Int64'">int 64</xsl:when>
             <xsl:when test="$datatype = 'opc:UInt64'">uint 64</xsl:when>
-            <xsl:when test="$datatype = 'opc:Float'">float 8.23</xsl:when>
-            <xsl:when test="$datatype = 'opc:Double'">float 11.52</xsl:when>
-            <xsl:when test="$datatype = 'opc:Char'">string '1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:Float'">float 32</xsl:when>
+            <xsl:when test="$datatype = 'opc:Double'">float 64</xsl:when>
+            <xsl:when test="$datatype = 'opc:Char'">string 8</xsl:when>
             <xsl:when test="$datatype = 'opc:CharArray'">PascalString</xsl:when>
             <xsl:when test="$datatype = 'opc:Guid'">GuidValue</xsl:when>
             <xsl:when test="$datatype = 'opc:ByteString'">PascalByteString</xsl:when>
@@ -364,6 +376,7 @@
     <!-- Parse the fields for each type, rearranging all of the bit based fields so their order matches that of the PLC4X mspec -->
     <xsl:template name="plc4x:parseFields">
         <xsl:param name="baseNode"/>
+        <xsl:param name="servicesRoot"/>
         <xsl:param name="currentNodePosition" as="xs:int"/>
         <xsl:param name="currentBitPosition" as="xs:int"/>
         <xsl:param name="currentBytePosition" as="xs:int"/>
@@ -389,6 +402,7 @@
                                 </xsl:element>
                                 <xsl:copy-of select="$baseNode/opc:Field[(position() gt ($currentNodePosition - $currentBytePosition - 1))]"/>
                             </xsl:with-param>
+                            <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
                             <xsl:with-param name="currentNodePosition">
                                 <xsl:value-of select="$currentNodePosition + 2"/>
                             </xsl:with-param>
@@ -402,7 +416,9 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <!-- Return the rearranged nodes -->
-                        <xsl:apply-templates select="$baseNode/opc:Field"/>
+                        <xsl:apply-templates select="$baseNode/opc:Field">
+                            <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
+                        </xsl:apply-templates>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
@@ -417,6 +433,7 @@
                                     <xsl:with-param name="baseNode">
                                         <xsl:copy-of select="$baseNode/opc:Field"/>
                                     </xsl:with-param>
+                                    <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
                                     <xsl:with-param name="currentNodePosition">
                                         <xsl:value-of select="$currentNodePosition + 1"/>
                                     </xsl:with-param>
@@ -438,6 +455,7 @@
                                         <xsl:copy-of select="$baseNode/opc:Field[(position() gt ($currentNodePosition - $currentBytePosition - 1)) and (position() lt ($currentNodePosition))]"/>
                                         <xsl:copy-of select="$baseNode/opc:Field[position() gt $currentNodePosition]"/>
                                     </xsl:with-param>
+                                    <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
                                     <xsl:with-param name="currentNodePosition">
                                         <xsl:value-of select="$currentNodePosition + 1"/>
                                     </xsl:with-param>
@@ -466,6 +484,7 @@
                                         </xsl:element>
                                         <xsl:copy-of select="$baseNode/opc:Field[(position() gt ($currentNodePosition - $currentBytePosition - 1))]"/>
                                     </xsl:with-param>
+                                    <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
                                     <xsl:with-param name="currentNodePosition">
                                         <xsl:value-of select="$currentNodePosition + 2"/>
                                     </xsl:with-param>
@@ -484,6 +503,7 @@
                                     <xsl:with-param name="baseNode">
                                         <xsl:copy-of select="$baseNode/opc:Field"/>
                                     </xsl:with-param>
+                                    <xsl:with-param name="servicesRoot" select="$servicesRoot"/>
                                     <xsl:with-param name="currentNodePosition">
                                         <xsl:value-of select="$currentNodePosition + 1"/>
                                     </xsl:with-param>
@@ -496,5 +516,11 @@
                 </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+
+    <xsl:template name="plc4x:getParserArguments">
+        <xsl:param name="dataTypeName"/>
+        <xsl:param name="servicesRoot"/>
+        <xsl:if test="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$dataTypeName]/@BaseType"><xsl:variable name="datatypeDefinition" select="$servicesRoot/node:UADataType[@BrowseName=$dataTypeName]"/>('"<xsl:value-of select="substring($datatypeDefinition/@NodeId, 3)"/>"')</xsl:if>
     </xsl:template>
 </xsl:stylesheet>

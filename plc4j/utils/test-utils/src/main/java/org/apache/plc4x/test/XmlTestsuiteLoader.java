@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,15 +20,17 @@ package org.apache.plc4x.test;
 
 import org.apache.plc4x.test.model.LocationAware;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * Parent class for test suites utilizing XML as representation mechanism.
- *
+ * <p>
  * It adds handling of resource loading and helps in navigating test framework to suite source files.
  */
 public abstract class XmlTestsuiteLoader {
@@ -47,6 +49,7 @@ public abstract class XmlTestsuiteLoader {
 
         try {
             URL resource = getClass().getResource(testsuiteDocument);
+            Objects.requireNonNull(resource, testsuiteDocument + " not found in classpath");
             if ("file".equals(resource.getProtocol())) { // we run in IDE so lets swap "target" directory to source!
                 String sourceLocation = resource.toString()
                     .replace("/target/classes/", "/src/main/resources/")

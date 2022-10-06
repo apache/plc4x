@@ -9,7 +9,7 @@ import java.util.regex.Matcher
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -75,29 +75,6 @@ def checkVersionAtMost(String current, String maximum) {
     curNotShorter
 }
 
-def checkBison() {
-    print "Detecting Bison version:   "
-    def output
-    try {
-        output = "bison --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.4.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-
-        // TODO: Ensure the path of the `bison` binary doesn't contain any spaces.
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
 def checkDotnet() {
     print "Detecting Dotnet version:  "
     def output
@@ -109,7 +86,7 @@ def checkDotnet() {
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.0.0")
+        def result = checkVersionAtLeast(curVersion, "4.5.2")
         if (!result) {
             allConditionsMet = false
         }
@@ -118,7 +95,6 @@ def checkDotnet() {
         allConditionsMet = false
     }
 }
-
 
 def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
@@ -157,27 +133,6 @@ def checkMavenVersion(String minVersion, String maxVersion) {
             allConditionsMet = false
             return
         }
-    }
-}
-
-def checkFlex() {
-    print "Detecting Flex version:    "
-    def output
-    try {
-        output = "flex --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
     }
 }
 
@@ -224,73 +179,12 @@ def checkGit() {
     }
 }
 
-def checkGpp() {
-    print "Detecting G++ version:     "
-    def output
-    try {
-        output = "g++ --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkClang() {
-    print "Detecting clang version:   "
-    def output
-    try {
-        output = "clang --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkCmake() {
-    print "Detecting cmake version:   "
-    def output
-    try {
-        output = "cmake --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "3.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
+// Remark: We're using venv, which was introduced with python 3.3,
+// that's why this is the baseline for python.
 def checkPython() {
     print "Detecting Python version:  "
     try {
-        def process = ("python --version").execute()
+        def process = ("python3 --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
@@ -298,12 +192,12 @@ def checkPython() {
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "2.7.0")
+            def result = checkVersionAtLeast(curVersion, "3.7.0")
             if (!result) {
                 allConditionsMet = false
             }
         } else {
-            println "missing (Please install at least version 3.6.0)"
+            println "missing (Please install at least version 3.7.0)"
             allConditionsMet = false
         }
     } catch (Exception e) {
@@ -312,68 +206,25 @@ def checkPython() {
     }
 }
 
-def checkSetupTools() {
-    print "Detecting setuptools:      "
+// On Ubuntu it seems that venv is generally available, but the 'ensurepip' command fails.
+// In this case we need to install the python3-venv package. Unfortunately checking the
+// venv is successful in this case, so we need this slightly odd test.
+def checkPythonVenv() {
+    print "Detecting venv:            "
     try {
-        def cmdArray = ["python", "-c", "import setuptools"]
+        def cmdArray = ["python3", "-Im", "ensurepip"]
         def process = cmdArray.execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
         process.waitForOrKill(500)
-        if(stdErr.contains("No module named setuptools")) {
+        if (stdErr.contains("No module named")) {
             println "missing"
             allConditionsMet = false
         } else {
             println "               OK"
         }
     } catch (Exception e) {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkGo() {
-    //TODO: (On windows) ensure the "go" executable is in the path, or there are failures when running the tests.
-}
-
-/*
- * This check does an extremely simple check, if the boost library exists in the maven local repo.
- * We're not checking if it could be resolved.
- */
-
-def checkBoost() {
-    print "Detecting Boost library:   "
-    def localRepoBaseDir = session.getLocalRepository().getBasedir()
-    def expectedFile = new File(localRepoBaseDir, "org/apache/plc4x/plc4x-tools-boost/" + project.version +
-        "/plc4x-tools-boost-" + project.version + "-lib-" + project.properties["os.classifier"] + ".zip")
-    if (!expectedFile.exists()) {
-        println "              missing"
-        println ""
-        println "Missing the Boost library. This has to be built by activating the Maven profile 'with-boost'. This only has to be built once."
-        println ""
-        allConditionsMet = false
-    } else {
-        println "              OK"
-    }
-}
-
-def checkOpenSSL() {
-    print "Detecting OpenSSL version: "
-    def output
-    try {
-        output = "openssl version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
         println "missing"
         allConditionsMet = false
     }
@@ -411,6 +262,41 @@ def checkDocker() {
     // TODO: Implement the actual check ...
 }
 
+def checkLibPcap(String minVersion, String os, String arch) {
+    print "Detecting LibPcap version: "
+    try {
+        // For some reason it doesn't work, if we pass this in from the outside.
+        if (os == "mac") {
+            // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
+            // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
+            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
+                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
+            } else if (new File("/opt/homebrew/Cellar/libpcap/1.10.1/lib").exists()) {
+                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/Cellar/libpcap/1.10.1/lib");
+            }
+            // java.lang.UnsatisfiedLinkError: Can't load library: /Users/christoferdutz/Library/Caches/JNA/temp/jna877652535357666533.tmp
+        }
+        // TODO: For some reason this check doesn't work on my M1 mac ... I get unsattisfiedlinkerror from the JNA library.
+        if (arch != "aarch64") {
+            output = org.pcap4j.core.Pcaps.libVersion()
+            String version = output - ~/^libpcap version /
+            def result = checkVersionAtLeast(version, minVersion)
+            if (!result) {
+                //allConditionsMet = false
+            }
+        }
+    } catch (Error e) {
+        e.printStackTrace()
+        output = ""
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+def checkLibPcapHeaders() {
+
+}
+
 /**
  * Version extraction function/macro. It looks for occurrence of x.y or x.y.z
  * in passed input text (likely output from `program --version` command if found).
@@ -426,25 +312,24 @@ private Matcher extractVersion(input) {
 /////////////////////////////////////////////////////
 // Find out which OS and arch are bring used.
 /////////////////////////////////////////////////////
-
+println "Os name:    ${System.getProperty("os.name")}"
+println "Os arch:    ${System.getProperty("os.arch")}"
+println "Os version: ${System.getProperty("os.version")}"
 def osString = project.properties['os.classifier']
 def osMatcher = osString =~ /(.*)-(.*)/
 if (osMatcher.size() == 0) {
-    throw new RuntimeException("Currently unsupported OS")
+    throw new RuntimeException("Currently unsupported OS. Actual os string: $osString")
 }
 def os = osMatcher[0][1]
 def arch = osMatcher[0][2]
-println "Detected OS:   " + os
-println "Detected Arch: " + arch
+println "Detected OS:   $os"
+println "Detected Arch: $arch"
 
 /////////////////////////////////////////////////////
 // Find out which profiles are enabled.
 /////////////////////////////////////////////////////
 
-def boostEnabled = false
 def cEnabled = false
-def cppEnabled = false
-def dockerEnabled = false
 def dotnetEnabled = false
 def goEnabled = false
 // Java is always enabled ...
@@ -454,14 +339,8 @@ def sandboxEnabled = false
 def apacheReleaseEnabled = false
 def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
-    if (activeProfile == "with-boost") {
-        boostEnabled = true
-    } else if (activeProfile == "with-c") {
+    if (activeProfile == "with-c") {
         cEnabled = true
-    } else if (activeProfile == "with-cpp") {
-        cppEnabled = true
-    } else if (activeProfile == "with-docker") {
-        dockerEnabled = true
     } else if (activeProfile == "with-dotnet") {
         dotnetEnabled = true
     } else if (activeProfile == "with-go") {
@@ -478,7 +357,7 @@ println ""
 
 // - Windows:
 //     - Check the length of the path of the base dir as we're having issues with the length of paths being too long.
-if (os == "win") {
+if (os == "windows") {
     File pomFile = project.model.pomFile
     if (pomFile.absolutePath.length() > 100) {
         println "On Windows we encounter problems with maximum path lengths. " +
@@ -493,15 +372,10 @@ if (os == "win") {
 // profiles.
 /////////////////////////////////////////////////////
 
+checkJavaVersion("11", null)
+
 if (dotnetEnabled) {
     checkDotnet()
-}
-
-if (cppEnabled) {
-    checkClang()
-    // The cmake-maven-plugin requires at least java 11
-    checkJavaVersion("11", null)
-    checkGcc()
 }
 
 if (javaEnabled) {
@@ -509,50 +383,30 @@ if (javaEnabled) {
 }
 
 if (cEnabled) {
-    // The cmake-maven-plugin requires at least java 11
-    checkJavaVersion("11", null)
     checkGcc()
 }
 
-if (cppEnabled) {
-    checkGpp()
+if (goEnabled) {
+    checkLibPcapHeaders()
 }
 
 if (pythonEnabled) {
     checkPython()
-    checkSetupTools()
+    checkPythonVenv()
 }
 
-// Boost needs the visual-studio `cl` compiler to compile the boostrap.
-if (boostEnabled && (os == "win")) {
-    // TODO: checkVisualStudio()
-}
-
-// We only need this check, if boost is not enabled but we're enabling cpp.
-if (!boostEnabled && cppEnabled) {
-    checkBoost()
-}
-
-if (sandboxEnabled && dockerEnabled) {
-    checkDocker()
-}
-
-if (cppEnabled || cEnabled) {
+if (cEnabled) {
     // CMake requires at least maven 3.6.0
     checkMavenVersion("3.6.0", null)
-}
-
-if (goEnabled) {
-    checkGo()
 }
 
 if (apacheReleaseEnabled) {
     // TODO: Check libpcap is installed
 }
 
-if (cppEnabled && (os == "win")) {
-    print "Unfortunately currently we don't support building the 'with-cpp' profile on windows. This will definitely change in the future."
-    allConditionsMet = false
+if (os == "mac") {
+    // The current system version from mac crashes so we assert for a version coming with brew
+    checkLibPcap("1.10.1", os, arch)
 }
 
 if (!allConditionsMet) {
@@ -564,5 +418,5 @@ println ""
 
 // Things we could possibly check:
 // - DNS Providers that return a default ip on unknown host-names
-// - Availability and version of LibPCAP/WinPCAP
+// - Availability and version of LibPCAP/NPCAP
 

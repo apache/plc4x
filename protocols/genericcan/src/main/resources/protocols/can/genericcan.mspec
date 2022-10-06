@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[enum 'GenericCANDataType' [uint 8 'numBits']
+[enum GenericCANDataType(uint 8 numBits)
     [BYTE        [ '8'] ]
     [BOOLEAN     [ '1'] ]
     [UNSIGNED8   [ '8'] ]
@@ -40,67 +40,67 @@
     [REAL64      ['64'] ]
 ]
 
-[dataIo 'DataItem' [GenericCANDataType 'dataType']
-    [typeSwitch 'dataType'
+[dataIo DataItem(GenericCANDataType dataType) byteOrder='LITTLE_ENDIAN'
+    [typeSwitch dataType
         ['BYTE' BYTE
-            [simple byte 'value']
+            [simple byte value]
         ]
         ['BOOLEAN' BOOL
-            [simple bit 'value']
+            [simple bit value]
         ]
         ['UNSIGNED8' USINT
-            [simple uint 8 'value']
+            [simple uint 8 value]
         ]
         ['UNSIGNED16' UINT
-            [simple uint 16 'value']
+            [simple uint 16 value]
         ]
         ['UNSIGNED24' UDINT
-            [simple uint 24 'value']
+            [simple uint 24 value]
         ]
         ['UNSIGNED32' UDINT
-            [simple uint 32 'value']
+            [simple uint 32 value]
         ]
         ['UNSIGNED40' ULINT
-            [simple uint 40 'value']
+            [simple uint 40 value]
         ]
         ['UNSIGNED48' ULINT
-            [simple uint 48 'value']
+            [simple uint 48 value]
         ]
         ['UNSIGNED56' ULINT
-            [simple uint 56 'value']
+            [simple uint 56 value]
         ]
         ['UNSIGNED64' ULINT
-            [simple uint 64 'value']
+            [simple uint 64 value]
         ]
         ['INTEGER8' SINT
-            [simple int 8 'value']
+            [simple int 8 value]
         ]
         ['INTEGER16' INT
-            [simple int 16 'value']
+            [simple int 16 value]
         ]
         ['INTEGER24' DINT
-            [simple int 24 'value']
+            [simple int 24 value]
         ]
         ['INTEGER32' DINT
-            [simple int 32 'value']
+            [simple int 32 value]
         ]
         ['INTEGER40' LINT
-            [simple int 40 'value']
+            [simple int 40 value]
         ]
         ['INTEGER48' LINT
-            [simple int 48 'value']
+            [simple int 48 value]
         ]
         ['INTEGER56' LINT
-            [simple int 56 'value']
+            [simple int 56 value]
         ]
         ['INTEGER64' LINT
-            [simple int 64 'value']
+            [simple int 64 value]
         ]
         ['REAL32' REAL
-            [simple float 8.23 'value']
+            [simple float 32 value]
         ]
         ['REAL64' LREAL
-            [simple float 11.52 'value']
+            [simple float 64 value]
         ]
     ]
 ]

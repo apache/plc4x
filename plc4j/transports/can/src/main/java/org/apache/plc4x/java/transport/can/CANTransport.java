@@ -7,7 +7,7 @@ to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
 with the License.  You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+  https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on an
@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 public interface CANTransport<F extends Message> extends Transport {
@@ -33,7 +33,7 @@ public interface CANTransport<F extends Message> extends Transport {
 
     Class<F> getMessageType();
 
-    <X extends MessageIO<F, F>> X getMessageIO(Configuration configuration);
+    MessageInput<F> getMessageInput(Configuration configuration);
 
     CANFrameBuilder<F> getTransportFrameBuilder();
 

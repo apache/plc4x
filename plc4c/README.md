@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -33,7 +33,7 @@ In the `Profiles` list, click on the `+` button to add a new profile.
 I gave this profile the name `Test`.
 
 In the settings select the `Build type` = `Debug`, `Toolchain` = `Use Default`.
-`CMake options` = `-DUNITY_VERSION:STRING=2.5.0 -DBUILD_PHASE=test-compile`.
+`CMake options` = `-DUNITY_VERSION:STRING=2.5.2 -DBUILD_PHASE=test-compile`.
 
 Leave the rest unchanged (which is actually empty).
 

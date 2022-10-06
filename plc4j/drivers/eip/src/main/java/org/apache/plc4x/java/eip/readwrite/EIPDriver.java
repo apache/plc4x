@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
 import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
-import org.apache.plc4x.java.eip.readwrite.io.EipPacketIO;
 import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -88,7 +87,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
     @Override
     protected ProtocolStackConfigurer<EipPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacketIO.class)
+        return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .littleEndian()

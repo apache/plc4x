@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,35 +18,24 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultManualField extends DefaultTaggedField implements ManualField {
+import java.util.Map;
+import java.util.Objects;
 
-    private final TypeReference type;
-    private final String name;
+public class DefaultManualField extends DefaultTypedNamedField implements ManualField {
+
     private final Term parseExpression;
     private final Term serializeExpression;
     private final Term lengthExpression;
-    private final Term[] params;
 
-    public DefaultManualField(String[] tags, TypeReference type, String name, Term parseExpression, Term serializeExpression, Term lengthExpression, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.parseExpression = parseExpression;
-        this.serializeExpression = serializeExpression;
-        this.lengthExpression = lengthExpression;
-        this.params = params;
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
+    public DefaultManualField(Map<String, Term> attributes, String name, Term parseExpression, Term serializeExpression, Term lengthExpression) {
+        super(attributes, name);
+        this.parseExpression = Objects.requireNonNull(parseExpression);
+        this.serializeExpression = Objects.requireNonNull(serializeExpression);
+        this.lengthExpression = Objects.requireNonNull(lengthExpression);
     }
 
     public Term getParseExpression() {
@@ -61,8 +50,26 @@ public class DefaultManualField extends DefaultTaggedField implements ManualFiel
         return lengthExpression;
     }
 
-    public Term[] getParams() {
-        return params;
+    @Override
+    public String toString() {
+        return "DefaultManualField{" +
+            "parseExpression=" + parseExpression +
+            ", serializeExpression=" + serializeExpression +
+            ", lengthExpression=" + lengthExpression +
+            "} " + super.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultManualField that = (DefaultManualField) o;
+        return Objects.equals(parseExpression, that.parseExpression) && Objects.equals(serializeExpression, that.serializeExpression) && Objects.equals(lengthExpression, that.lengthExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), parseExpression, serializeExpression, lengthExpression);
+    }
 }

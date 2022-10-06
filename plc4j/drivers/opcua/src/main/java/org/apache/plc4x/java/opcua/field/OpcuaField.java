@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,11 +21,10 @@ package org.apache.plc4x.java.opcua.field;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
-import org.apache.plc4x.java.opcua.readwrite.types.OpcuaIdentifierType;
-import org.apache.plc4x.java.opcua.readwrite.types.OpcuaDataType;
+import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
+import org.apache.plc4x.java.opcua.readwrite.OpcuaDataType;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -33,11 +32,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- */
 public class OpcuaField implements PlcSubscriptionField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>[^;]+))?(;(?<datatype>[a-zA-Z_]+))?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>[^;]+)?(;(?<datatype>[a-zA-Z_]+))?");
 
     private final OpcuaIdentifierType identifierType;
 
@@ -68,7 +65,7 @@ public class OpcuaField implements PlcSubscriptionField {
         OpcuaIdentifierType identifierType = OpcuaIdentifierType.enumForValue(identifierTypeString);
 
         String namespaceString = matcher.group("namespace");
-        Integer namespace = namespaceString != null ? Integer.valueOf(namespaceString) : 0;
+        Integer namespace = namespaceString != null ? Integer.parseInt(namespaceString) : 0;
 
         String dataTypeString = matcher.group("datatype") != null ? matcher.group("datatype").toUpperCase() : "NULL";
         if (!EnumUtils.isValidEnum(OpcuaDataType.class, dataTypeString)) {

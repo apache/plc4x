@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,39 +18,30 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
+import org.apache.plc4x.plugins.codegenerator.types.references.ArrayTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultManualArrayField extends DefaultTaggedField implements ManualArrayField {
+import java.util.Map;
+import java.util.Objects;
 
-    private final TypeReference type;
-    private final String name;
+public class DefaultManualArrayField extends DefaultTypedNamedField implements ManualArrayField {
+
     private final LoopType loopType;
     private final Term loopExpression;
     private final Term parseExpression;
     private final Term serializeExpression;
     private final Term lengthExpression;
-    private final Term[] params;
 
-    public DefaultManualArrayField(String[] tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.loopType = loopType;
-        this.loopExpression = loopExpression;
-        this.parseExpression = parseExpression;
-        this.serializeExpression = serializeExpression;
-        this.lengthExpression = lengthExpression;
-        this.params = params;
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
+    public DefaultManualArrayField(Map<String, Term> attributes, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression) {
+        super(attributes, name);
+        this.loopType = Objects.requireNonNull(loopType);
+        this.loopExpression = Objects.requireNonNull(loopExpression);
+        this.parseExpression = Objects.requireNonNull(parseExpression);
+        this.serializeExpression = Objects.requireNonNull(serializeExpression);
+        this.lengthExpression = Objects.requireNonNull(lengthExpression);
     }
 
     public LoopType getLoopType() {
@@ -74,8 +65,40 @@ public class DefaultManualArrayField extends DefaultTaggedField implements Manua
     }
 
     @Override
-    public Term[] getParams() {
-        return params;
+    public void setType(TypeReference typeReference) {
+        if(!(typeReference instanceof ArrayTypeReference)) {
+            throw new IllegalArgumentException("Manual array fields can only have ArrayTypeReferences");
+        }
+        super.setType(typeReference);
     }
 
+    @Override
+    public ArrayTypeReference getType() {
+        return (ArrayTypeReference) super.getType();
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultManualArrayField{" +
+            "loopType=" + loopType +
+            ", loopExpression=" + loopExpression +
+            ", parseExpression=" + parseExpression +
+            ", serializeExpression=" + serializeExpression +
+            ", lengthExpression=" + lengthExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultManualArrayField that = (DefaultManualArrayField) o;
+        return loopType == that.loopType && Objects.equals(loopExpression, that.loopExpression) && Objects.equals(parseExpression, that.parseExpression) && Objects.equals(serializeExpression, that.serializeExpression) && Objects.equals(lengthExpression, that.lengthExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), loopType, loopExpression, parseExpression, serializeExpression, lengthExpression);
+    }
 }

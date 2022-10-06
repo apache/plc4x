@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       byteOrder="LITTLE_ENDIAN">
+
+  <!-- https://base64.guru/converter/encode/hex -->
+
+  <name>Opcua</name>
+
+  <protocolName>opcua</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+  <driver-name>opcua</driver-name>
+
+  <testcase>
+    <name>Hello Request Response</name>
+    <steps>
+      <outgoing-plc-message name="Send Opcua Hello Packet">
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <MessagePDU>
+          <messageType dataType="string" bitLength="24" encoding="UTF-8">HEL</messageType>
+          <OpcuaHelloRequest>
+            <chunk dataType="string" bitLength="8" encoding="UTF-8">F</chunk>
+            <messageSize dataType="int" bitLength="32">52</messageSize>
+            <version dataType="int" bitLength="32">0</version>
+            <receiveBufferSize dataType="int" bitLength="32">65535</receiveBufferSize>
+            <sendBufferSize dataType="int" bitLength="32">65535</sendBufferSize>
+            <maxMessageSize dataType="int" bitLength="32">2097152</maxMessageSize>
+            <maxChunkCount dataType="int" bitLength="32">64</maxChunkCount>
+            <endpoint>
+              <PascalString>
+                <sLength dataType="int" bitLength="32">20</sLength>
+                <stringValue dataType="string" bitLength="160" encoding="UTF-8">opc.test://hurz:null</stringValue>
+              </PascalString>
+            </endpoint>
+          </OpcuaHelloRequest>
+        </MessagePDU>
+      </outgoing-plc-message>
+
+      <incoming-plc-message name="Receive Acknowledgement Response">
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
+        <MessagePDU>
+          <messageType dataType="string" bitLength="24">ACK</messageType>
+          <OpcuaAcknowledgeResponse>
+            <chunk dataType="string" bitLength="8">F</chunk>
+            <messageSize dataType="int" bitLength="32">24</messageSize>
+            <version dataType="int" bitLength="32">0</version>
+            <receiveBufferSize dataType="int" bitLength="32">65535</receiveBufferSize>
+            <sendBufferSize dataType="int" bitLength="32">65535</sendBufferSize>
+            <maxMessageSize dataType="int" bitLength="32">2097152</maxMessageSize>
+            <maxChunkCount dataType="int" bitLength="32">64</maxChunkCount>
+          </OpcuaAcknowledgeResponse>
+        </MessagePDU>
+      </incoming-plc-message>
+<!--
+      <outgoing-plc-message name="Send Opcua Open Request">
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <MessagePDU>
+          <messageType dataType="string" bitLength="24" encoding="UTF-8">OPN</messageType>
+          <OpcuaOpenRequest>
+            <chunk dataType="string" bitLength="8" encoding="UTF-8">F</chunk>
+            <messageSize dataType="int" bitLength="32">132</messageSize>
+            <secureChannelId dataType="int" bitLength="32">0</secureChannelId>
+            <endpoint>
+              <PascalString>
+                <sLength dataType="int" bitLength="32">47</sLength>
+                <stringValue dataType="string" bitLength="376" encoding="'UTF-8'">http://opcfoundation.org/UA/SecurityPolicy#None</stringValue>
+              </PascalString>
+            </endpoint>
+            <senderCertificate>
+              <PascalByteString>
+                <stringLength dataType="int" bitLength="32">-1</stringLength>
+                <stringValue isList="true">
+                </stringValue>
+              </PascalByteString>
+            </senderCertificate>
+            <receiverCertificateThumbprint>
+              <PascalByteString>
+                <stringLength dataType="int" bitLength="32">-1</stringLength>
+                <stringValue isList="true">
+                </stringValue>
+              </PascalByteString>
+            </receiverCertificateThumbprint>
+            <sequenceNumber dataType="int" bitLength="32">1</sequenceNumber>
+            <requestId dataType="int" bitLength="32">1</requestId>
+            <message dataType="byte" bitLength="424">0x0100be010000f068ddb096d5d7010000000000000000ffffffff10270000000000000000000000000001000000ffffffff00512502</message>
+          </OpcuaOpenRequest>
+        </MessagePDU>
+      </outgoing-plc-message>
+-->
+    </steps>
+  </testcase>
+
+</test:driver-testsuite>

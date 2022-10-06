@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,35 +18,53 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
+import org.antlr.v4.runtime.RuleContext;
 import org.apache.commons.io.IOUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecBaseListener;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
+import org.apache.plc4x.plugins.codegenerator.types.terms.NumericLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
+import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-public class MessageFormatListener extends MSpecBaseListener {
+public class MessageFormatListener extends MSpecBaseListener implements LazyTypeDefinitionConsumer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageFormatListener.class);
 
     private Deque<List<Field>> parserContexts;
 
     private Deque<List<EnumValue>> enumContexts;
 
-    private Map<String, TypeDefinition> types;
+    protected Map<String, TypeDefinition> types;
+
+    protected Map<String, List<Consumer<TypeDefinition>>> typeDefinitionConsumers;
+
+    private final Stack<Map<String, Term>> batchSetAttributes = new Stack<>();
 
     public Deque<List<Field>> getParserContexts() {
         return parserContexts;
@@ -56,19 +74,37 @@ public class MessageFormatListener extends MSpecBaseListener {
         return enumContexts;
     }
 
-    public Map<String, TypeDefinition> getTypes() {
-        return types;
+    private String currentTypeName;
+
+    public MessageFormatListener() {
+        types = new HashMap<>();
+        typeDefinitionConsumers = new HashMap<>();
+    }
+
+    public MessageFormatListener(TypeContext exitingTypeContext) {
+        types = new HashMap<>(exitingTypeContext.getTypeDefinitions());
+        typeDefinitionConsumers = new HashMap<>(exitingTypeContext.getUnresolvedTypeReferences());
     }
 
     @Override
     public void enterFile(MSpecParser.FileContext ctx) {
         parserContexts = new LinkedList<>();
         enumContexts = new LinkedList<>();
-        types = new HashMap<>();
     }
 
     @Override
     public void enterComplexType(MSpecParser.ComplexTypeContext ctx) {
+        currentTypeName = getIdString(ctx.name);
+        // Set a map of attributes that should be set for all fields.
+        Map<String, Term> curBatchSetAttributes = new HashMap<>();
+        // Add all attributes defined in the current batchSet field.
+        for (MSpecParser.AttributeContext attributeContext : ctx.attributes.attribute()) {
+            Term attributeExpression = getExpressionTerm(attributeContext.value);
+            curBatchSetAttributes.put(attributeContext.name.getText(), attributeExpression);
+        }
+        // Make the new Map the top of the stack.
+        batchSetAttributes.push(curBatchSetAttributes);
+
         if (ctx.enumValues != null) {
             List<EnumValue> enumContext = new LinkedList<>();
             enumContexts.push(enumContext);
@@ -81,29 +117,34 @@ public class MessageFormatListener extends MSpecBaseListener {
     @Override
     public void exitComplexType(MSpecParser.ComplexTypeContext ctx) {
         String typeName = getIdString(ctx.name);
-        Argument[] parserArguments = null;
+        List<Argument> parserArguments = null;
         if (ctx.params != null) {
             parserArguments = getParserArguments(ctx.params.argument());
         }
 
+        final Map<String, Term> attributes = batchSetAttributes.peek();
         // Handle enum types.
         if (ctx.enumValues != null) {
-            TypeReference type = (ctx.type != null) ? getTypeReference(ctx.type) : null;
-            EnumValue[] enumValues = getEnumValues();
-            DefaultEnumTypeDefinition enumType = new DefaultEnumTypeDefinition(typeName, type, enumValues,
-                parserArguments, null);
-            types.put(typeName, enumType);
+            SimpleTypeReference type = (ctx.type != null) ? getSimpleTypeReference(ctx.type) : null;
+            List<EnumValue> enumValues = getEnumValues();
+            if (type == null) {
+                // in case there is no type we default to uint32
+                type = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, 32);
+            }
+            DefaultEnumTypeDefinition enumType = new DefaultEnumTypeDefinition(typeName, type, attributes, enumValues,
+                parserArguments);
+            dispatchType(typeName, enumType);
             enumContexts.pop();
         } else if (ctx.dataIoTypeSwitch != null) {  // Handle data-io types.
             SwitchField switchField = getSwitchField();
-            DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(
-                typeName, parserArguments, null, switchField);
-            types.put(typeName, type);
+            DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(typeName, attributes, parserArguments, switchField);
+            dispatchType(typeName, type);
 
             // Set the parent type for all sub-types.
             if (switchField != null) {
                 for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
                     if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                        LOGGER.debug("Setting parent {} for {}", type, subtype);
                         ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
                     }
                 }
@@ -113,28 +154,62 @@ public class MessageFormatListener extends MSpecBaseListener {
             // If the type has sub-types it's an abstract type.
             SwitchField switchField = getSwitchField();
             boolean abstractType = switchField != null;
-            DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(typeName, parserArguments, null,
-                abstractType, parserContexts.peek());
-            types.put(typeName, type);
+            final List<Field> fields = parserContexts.pop();
+            DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(
+                typeName, attributes, parserArguments, abstractType, fields);
+            // Link the fields and the complex types.
+            if (fields != null) {
+                fields.forEach(field -> ((DefaultField) field).setOwner(type));
+            }
+            dispatchType(typeName, type);
 
             // Set the parent type for all sub-types.
             if (switchField != null) {
                 for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
                     if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                        LOGGER.debug("Setting parent {} for {}", type, subtype);
                         ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
                     }
                 }
             }
-            parserContexts.pop();
         }
     }
 
     @Override
+    public void enterBatchSetDefinition(MSpecParser.BatchSetDefinitionContext ctx) {
+        // Set a map of attributes that should be set for all fields.
+        Map<String, Term> curBatchSetAttributes = new HashMap<>();
+        // Add all attributes of the lower layers and initialize the new map with it.
+        if (!batchSetAttributes.empty()) {
+            curBatchSetAttributes.putAll(batchSetAttributes.peek());
+        }
+        // Add all attributes defined in the current batchSet field.
+        for (MSpecParser.AttributeContext attributeContext : ctx.attributes.attribute()) {
+            Term attributeExpression = getExpressionTerm(attributeContext.value);
+            curBatchSetAttributes.put(attributeContext.name.getText(), attributeExpression);
+        }
+        // Make the new Map the top of the stack.
+        batchSetAttributes.push(curBatchSetAttributes);
+    }
+
+    @Override
+    public void exitBatchSetDefinition(MSpecParser.BatchSetDefinitionContext ctx) {
+        // Clear the map of attributes.
+        batchSetAttributes.pop();
+    }
+
+    @Override
     public void enterAbstractField(MSpecParser.AbstractFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultAbstractField(null, type, name, params);
+        DefaultAbstractField field = new DefaultAbstractField(getAttributes(ctx), name);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -142,13 +217,18 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterArrayField(MSpecParser.ArrayFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         ArrayField.LoopType loopType = ArrayField.LoopType.valueOf(ctx.loopType.getText().toUpperCase());
-        String loopExpressionString = getExprString(ctx.loopExpression);
-        Term loopExpression = getExpressionTerm(loopExpressionString);
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultArrayField(null, type, name, loopType, loopExpression, params);
+        Term loopExpression = getExpressionTerm(ctx.loopExpression);
+        DefaultArrayField field = new DefaultArrayField(getAttributes(ctx), name, loopType, loopExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(new DefaultArrayTypeReference(typeReference));
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -158,9 +238,8 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterChecksumField(MSpecParser.ChecksumFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String checksumExpressionString = getExprString(ctx.checksumExpression);
-        Term checksumExpression = getExpressionTerm(checksumExpressionString);
-        Field field = new DefaultChecksumField(null, type, name, checksumExpression);
+        Term checksumExpression = getExpressionTerm(ctx.checksumExpression);
+        Field field = new DefaultChecksumField(getAttributes(ctx), type, name, checksumExpression);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -168,10 +247,20 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterConstField(MSpecParser.ConstFieldContext ctx) {
-        SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String expected = getExprString(ctx.expected);
-        Field field = new DefaultConstField(null, type, name, expected);
+        DefaultConstField field = new DefaultConstField(getAttributes(ctx), name, getValueLiteral(ctx.expected));
+        if (ctx.type.dataType() != null) {
+            field.setType(getSimpleTypeReference(ctx.type.dataType()));
+        } else {
+            getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+                if (throwable != null) {
+                    // TODO: proper error collection in type context error bucket
+                    LOGGER.debug("Error setting type for {}", field, throwable);
+                    return;
+                }
+                field.setType(typeReference);
+            });
+        }
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -179,9 +268,16 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterDiscriminatorField(MSpecParser.DiscriminatorFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Field field = new DefaultDiscriminatorField(null, type, name);
+        DefaultDiscriminatorField field = new DefaultDiscriminatorField(getAttributes(ctx), name);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -189,14 +285,15 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterEnumField(MSpecParser.EnumFieldContext ctx) {
-        ComplexTypeReference type = new DefaultComplexTypeReference(ctx.type.complexTypeReference.getText());
+        String typeRefName = ctx.type.complexTypeReference.getText();
+        DefaultEnumTypeReference type = new DefaultEnumTypeReference(typeRefName, null);
+        setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
         String name = getIdString(ctx.name);
         String fieldName = null;
         if (ctx.fieldName != null) {
             fieldName = getIdString(ctx.fieldName);
         }
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultEnumField(null, type, name, fieldName, params);
+        Field field = new DefaultEnumField(getAttributes(ctx), type, name, fieldName);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -206,9 +303,26 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterImplicitField(MSpecParser.ImplicitFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String serializeExpressionString = getExprString(ctx.serializeExpression);
-        Term serializeExpression = getExpressionTerm(serializeExpressionString);
-        Field field = new DefaultImplicitField(null, type, name, serializeExpression);
+        Term serializeExpression = getExpressionTerm(ctx.serializeExpression);
+        Field field = new DefaultImplicitField(getAttributes(ctx), type, name, serializeExpression);
+        if (parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
+    public void enterAssertField(MSpecParser.AssertFieldContext ctx) {
+        String name = getIdString(ctx.name);
+        Term conditionExpression = getExpressionTerm(ctx.condition);
+        DefaultAssertField field = new DefaultAssertField(getAttributes(ctx), name, conditionExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -216,21 +330,23 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterManualArrayField(MSpecParser.ManualArrayFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         ManualArrayField.LoopType loopType = ManualArrayField.LoopType.valueOf(
             ctx.loopType.getText().toUpperCase());
-        String loopExpressionString = getExprString(ctx.loopExpression);
-        Term loopExpression = getExpressionTerm(loopExpressionString);
-        String parseExpressionString = getExprString(ctx.parseExpression);
-        Term parseExpression = getExpressionTerm(parseExpressionString);
-        String serializeExpressionString = getExprString(ctx.serializeExpression);
-        Term serializeExpression = getExpressionTerm(serializeExpressionString);
-        String lengthExpressionString = getExprString(ctx.lengthExpression);
-        Term lengthExpression = getExpressionTerm(lengthExpressionString);
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultManualArrayField(null, type, name, loopType, loopExpression,
-            parseExpression, serializeExpression, lengthExpression, params);
+        Term loopExpression = getExpressionTerm(ctx.loopExpression);
+        Term parseExpression = getExpressionTerm(ctx.parseExpression);
+        Term serializeExpression = getExpressionTerm(ctx.serializeExpression);
+        Term lengthExpression = getExpressionTerm(ctx.lengthExpression);
+        DefaultManualArrayField field = new DefaultManualArrayField(getAttributes(ctx), name, loopType, loopExpression,
+            parseExpression, serializeExpression, lengthExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(new DefaultArrayTypeReference(typeReference));
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -238,17 +354,20 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterManualField(MSpecParser.ManualFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String parseExpressionString = getExprString(ctx.parseExpression);
-        Term parseExpression = getExpressionTerm(parseExpressionString);
-        String serializeExpressionString = getExprString(ctx.serializeExpression);
-        Term serializeExpression = getExpressionTerm(serializeExpressionString);
-        String lengthExpressionString = getExprString(ctx.lengthExpression);
-        Term lengthExpression = getExpressionTerm(lengthExpressionString);
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultManualField(null, type, name, parseExpression, serializeExpression,
-            lengthExpression, params);
+        Term parseExpression = getExpressionTerm(ctx.parseExpression);
+        Term serializeExpression = getExpressionTerm(ctx.serializeExpression);
+        Term lengthExpression = getExpressionTerm(ctx.lengthExpression);
+        DefaultManualField field = new DefaultManualField(getAttributes(ctx), name, parseExpression, serializeExpression,
+            lengthExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -256,12 +375,41 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterOptionalField(MSpecParser.OptionalFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String conditionExpressionString = getExprString(ctx.condition);
-        Term conditionExpression = getExpressionTerm(conditionExpressionString);
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultOptionalField(null, type, name, conditionExpression, params);
+        Term conditionExpression = null;
+        if (ctx.condition != null) {
+            conditionExpression = getExpressionTerm(ctx.condition);
+        }
+        DefaultOptionalField field = new DefaultOptionalField(getAttributes(ctx), name, conditionExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
+        if (parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
+    public void enterPeekField(MSpecParser.PeekFieldContext ctx) {
+        String name = getIdString(ctx.name);
+        Term offsetExpression = null;
+        if (ctx.offset != null) {
+            offsetExpression = getExpressionTerm(ctx.offset);
+        }
+        DefaultPeekField field = new DefaultPeekField(getAttributes(ctx), name, offsetExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -271,12 +419,9 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterPaddingField(MSpecParser.PaddingFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String paddingValueString = getExprString(ctx.paddingValue);
-        Term paddingValue = getExpressionTerm(paddingValueString);
-        String paddingConditionString = getExprString(ctx.paddingCondition);
-        Term paddingCondition = getExpressionTerm(paddingConditionString);
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultPaddingField(null, type, name, paddingValue, paddingCondition, params);
+        Term paddingValue = getExpressionTerm(ctx.paddingValue);
+        Term paddingCondition = getExpressionTerm(ctx.paddingCondition);
+        Field field = new DefaultPaddingField(getAttributes(ctx), type, name, paddingValue, paddingCondition);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -286,7 +431,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterReservedField(MSpecParser.ReservedFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String expected = getExprString(ctx.expected);
-        Field field = new DefaultReservedField(null, type, expected);
+        Field field = new DefaultReservedField(getAttributes(ctx), type, expected);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -294,10 +439,16 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterSimpleField(MSpecParser.SimpleFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultSimpleField(null, type, name, params);
+        DefaultSimpleField field = new DefaultSimpleField(getAttributes(ctx), name);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -305,12 +456,10 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterTypeSwitchField(MSpecParser.TypeSwitchFieldContext ctx) {
-        int numDiscriminators = ctx.discriminators.expression().size();
-        Term[] discriminatorExpressions = new Term[numDiscriminators];
-        for (int i = 0; i < numDiscriminators; i++) {
-            discriminatorExpressions[i] = getExpressionTerm(getExprString(ctx.discriminators.expression().get(i)));
-        }
-        DefaultSwitchField field = new DefaultSwitchField(discriminatorExpressions);
+        List<VariableLiteral> variableLiterals = ctx.discriminators.variableLiteral().stream()
+            .map(this::getVariableLiteral)
+            .collect(Collectors.toList());
+        DefaultSwitchField field = new DefaultSwitchField(getAttributes(ctx), variableLiterals);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -319,7 +468,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     @Override
     public void enterUnknownField(MSpecParser.UnknownFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
-        Field field = new DefaultUnknownField(null, type);
+        Field field = new DefaultUnknownField(getAttributes(ctx), type);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -327,11 +476,34 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterVirtualField(MSpecParser.VirtualFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String valueExpressionString = getExprString(ctx.valueExpression);
-        Term valueExpression = getExpressionTerm(valueExpressionString);
-        Field field = new DefaultVirtualField(null, type, name, valueExpression);
+        Term valueExpression = getExpressionTerm(ctx.valueExpression);
+        DefaultVirtualField field = new DefaultVirtualField(getAttributes(ctx), name, valueExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
+        if (parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
+    public void enterValidationField(MSpecParser.ValidationFieldContext ctx) {
+        Term validationExpression = getExpressionTerm(ctx.validationExpression);
+        boolean shouldFail = true;
+        if (ctx.shouldFail != null) {
+            shouldFail = "true".equalsIgnoreCase(ctx.shouldFail.getText());
+        }
+        String description = null;
+        if (ctx.description != null) {
+            description = ctx.description.getText();
+        }
+        Field field = new DefaultValidationField(getAttributes(ctx), validationExpression, description, shouldFail);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -345,32 +517,48 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
-        String typeName = ctx.name.getText();
+        String namePrefix = "";
+        // TODO: maybe name this prefix and suffix wildcard
+        if (ctx.nameWildcard != null) {
+            namePrefix = currentTypeName;
+        }
+        String typeName = namePrefix + ctx.name.getText();
+
+        final Map<String, Term> attributes = batchSetAttributes.peek();
+
         List<Argument> parserArguments = new LinkedList<>();
         // For DataIO types, add all the arguments from the parent type.
-        if (!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)
+/*        if (!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)
             && ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
-            parserArguments.addAll(Arrays.asList(getParserArguments(
-                ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));
-        }
+            parserArguments.addAll(getParserArguments(
+                ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument()));
+        }*/
         // Add all eventually existing local arguments.
         if (ctx.argumentList() != null) {
-            parserArguments.addAll(Arrays.asList(getParserArguments(ctx.argumentList().argument())));
+            parserArguments.addAll(getParserArguments(ctx.argumentList().argument()));
         }
 
-        String[] discriminatorValues;
+        List<Term> discriminatorValues;
         if (ctx.discriminatorValues != null) {
-            List<MSpecParser.ExpressionContext> expressions = ctx.discriminatorValues.expression();
-            discriminatorValues = new String[expressions.size()];
-            for (int i = 0; i < expressions.size(); i++) {
-                discriminatorValues[i] = getExprString(expressions.get(i));
-            }
+            discriminatorValues = ctx.discriminatorValues.expression().stream()
+                .map(this::getExpressionTerm)
+                .collect(Collectors.toList());
         } else {
-            discriminatorValues = new String[0];
+            discriminatorValues = Collections.emptyList();
         }
+        final List<Field> fields = parserContexts.pop();
         DefaultDiscriminatedComplexTypeDefinition type =
-            new DefaultDiscriminatedComplexTypeDefinition(typeName, parserArguments.toArray(new Argument[0]), null,
-                discriminatorValues, parserContexts.pop());
+            new DefaultDiscriminatedComplexTypeDefinition(typeName, attributes, parserArguments,
+                discriminatorValues, fields);
+        // Link the fields and the complex types.
+        if (fields != null) {
+            fields.forEach(field -> ((DefaultField) field).setOwner(type));
+        }
+
+        // For DataIO we don't need to generate the sub-types as these will be PlcValues.
+        if (!(ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext)) {
+            dispatchType(typeName, type);
+        }
 
         // Add the type to the switch field definition.
         DefaultSwitchField switchField = getSwitchField();
@@ -378,9 +566,6 @@ public class MessageFormatListener extends MSpecBaseListener {
             throw new RuntimeException("This shouldn't have happened");
         }
         switchField.addCase(type);
-
-        // Add the type to the type list.
-        types.put(typeName, type);
     }
 
     @Override
@@ -403,7 +588,6 @@ public class MessageFormatListener extends MSpecBaseListener {
             for (int i = 0; i < numConstantValues; i++) {
                 MSpecParser.ArgumentContext argumentContext = parentCtx.params.argument(i);
                 String constantName = argumentContext.name.getText();
-                constantName = constantName.substring(1, constantName.length() - 1);
                 MSpecParser.ExpressionContext expression = ctx.constantValueExpressions.expression(i);
                 String constant = unquoteString(expression.getText());
                 // String expressions are double escaped
@@ -413,59 +597,158 @@ public class MessageFormatListener extends MSpecBaseListener {
                 constants.put(constantName, constant);
             }
         }
+        List<EnumValue> enumValues = Objects.requireNonNull(this.enumContexts.peek());
+        if (value == null) {
+            // If no values are specified we count
+            String counted = "0";
+            if (enumValues.size() > 0) {
+                String previousValue = enumValues.get(enumValues.size() - 1).getValue();
+                int parsedPreviousValue = Integer.parseInt(previousValue);
+                counted = "" + (parsedPreviousValue + 1);
+            }
+            value = counted;
+        }
         final DefaultEnumValue enumValue = new DefaultEnumValue(value, name, constants);
-        this.enumContexts.peek().add(enumValue);
+        enumValues.add(enumValue);
     }
 
-    private Term getExpressionTerm(String expressionString) {
+    private Term getExpressionTerm(MSpecParser.ExpressionContext expressionContext) {
+        if (expressionContext.ASTERISK() != null) {
+            return WildcardTerm.INSTANCE;
+        }
+        String expressionString = getExprString(expressionContext);
+        Objects.requireNonNull(expressionString, "Expression string should not be null");
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+
+        Objects.requireNonNull(currentTypeName, "expression term can only occur within a type");
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
         try {
             return parser.parse(inputStream);
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing expression: '" + expressionString + "'", e);
+            throw new RuntimeException(String.format("Error parsing expression: '%s' at line %d column %d",
+                expressionString, expressionContext.start.getLine(), expressionContext.start.getStartIndex()), e);
         }
     }
 
-    private TypeReference getTypeReference(MSpecParser.TypeReferenceContext ctx) {
+    private VariableLiteral getVariableLiteral(MSpecParser.VariableLiteralContext variableLiteralContext) {
+        // TODO: make nullsafe
+        final String variableLiteral = variableLiteralContext.getText();
+        InputStream inputStream = IOUtils.toInputStream(variableLiteral, Charset.defaultCharset());
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
+        try {
+            // As this come from a VariableLiteralContext we know that it is a VariableLiteral
+            return (VariableLiteral) parser.parse(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Error parsing variable literal: '%s' at line %d column %d",
+                variableLiteral, variableLiteralContext.start.getLine(), variableLiteralContext.start.getStartIndex()), e);
+        }
+    }
+
+    private Literal getValueLiteral(MSpecParser.ValueLiteralContext valueLiteralContext) {
+        // TODO: make nullsafe
+        final String valueLiteralContextText = valueLiteralContext.getText();
+        InputStream inputStream = IOUtils.toInputStream(valueLiteralContextText, Charset.defaultCharset());
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
+        try {
+            // As this come from a ValueLiteralContext we know that it is a Literal
+            return (Literal) parser.parse(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Error parsing variable literal: '%s' at line %d column %d",
+                valueLiteralContextText, valueLiteralContext.start.getLine(), valueLiteralContext.start.getStartIndex()), e);
+        }
+    }
+
+    private CompletionStage<TypeReference> getTypeReference(MSpecParser.TypeReferenceContext ctx) {
         if (ctx.simpleTypeReference != null) {
-            return getSimpleTypeReference(ctx.simpleTypeReference);
+            return CompletableFuture.completedFuture(getSimpleTypeReference(ctx.simpleTypeReference));
         } else {
-            return new DefaultComplexTypeReference(ctx.complexTypeReference.getText());
+            CompletableFuture<TypeReference> typeReferenceCompletableFuture = new CompletableFuture<>();
+            String typeRefName = ctx.complexTypeReference.getText();
+            setOrScheduleTypeDefinitionConsumer(typeRefName, typeDefinition -> {
+                if (typeDefinition.isDataIoTypeDefinition()) {
+                    DefaultDataIoTypeReference value = new DefaultDataIoTypeReference(typeRefName, getParams(ctx.params));
+                    value.setTypeDefinition(typeDefinition);
+                    typeReferenceCompletableFuture.complete(value);
+                } else if (typeDefinition.isComplexTypeDefinition()) {
+                    DefaultComplexTypeReference value = new DefaultComplexTypeReference(typeRefName, getParams(ctx.params));
+                    value.setTypeDefinition(typeDefinition);
+                    typeReferenceCompletableFuture.complete(value);
+                } else if (typeDefinition.isEnumTypeDefinition()) {
+                    DefaultEnumTypeReference value = new DefaultEnumTypeReference(typeRefName, getParams(ctx.params));
+                    value.setTypeDefinition(typeDefinition);
+                    typeReferenceCompletableFuture.complete(value);
+                } else {
+                    throw new RuntimeException("Support for " + typeDefinition.getClass() + " not implemented yet");
+                }
+            });
+            return typeReferenceCompletableFuture;
         }
     }
 
     private SimpleTypeReference getSimpleTypeReference(MSpecParser.DataTypeContext ctx) {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
-        // String types need an additional "encoding" field and length expression.
-        if (simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
-            String encoding = (ctx.encoding != null) ? ctx.encoding.getText() : "UTF-8";
-            Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
-            return new DefaultStringTypeReference(simpleBaseType, lengthExpression, encoding);
+        // String types need an additional length expression.
+        if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
+            if (ctx.length != null) {
+                Term lengthExpression = getExpressionTerm(ctx.length);
+                return new DefaultVstringTypeReference(simpleBaseType, lengthExpression);
+            } else {
+                return new DefaultVstringTypeReference(simpleBaseType, null);
+            }
         }
-        // If a size it specified its a simple integer length based type.
-        if (ctx.size != null) {
-            int size = Integer.parseInt(ctx.size.getText());
-            return new DefaultIntegerTypeReference(simpleBaseType, size);
-        }
-        // If exponent and mantissa are present, it's a floating point representation.
-        else if ((ctx.exponent != null) && (ctx.mantissa != null)) {
-            int exponent = Integer.parseInt(ctx.exponent.getText());
-            int mantissa = Integer.parseInt(ctx.mantissa.getText());
-            return new DefaultFloatTypeReference(simpleBaseType, exponent, mantissa);
-        } else if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.TIME) ||
-            (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATE) ||
-            (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATETIME)) {
-            return new DefaultTemporalTypeReference(simpleBaseType);
-        } else if (simpleBaseType == SimpleTypeReference.SimpleBaseType.BIT) {
-            return new DefaultBooleanTypeReference();
-        } else if (simpleBaseType == SimpleTypeReference.SimpleBaseType.BYTE) {
-            return new DefaultByteTypeReference();
-        }
-        // In all other cases (bit) it's just assume it's length it 1.
-        else {
-            return new DefaultIntegerTypeReference(simpleBaseType, 1);
+        switch (simpleBaseType) {
+            case INT:
+            case UINT:
+                int integerSize = Integer.parseInt(ctx.size.getText());
+                return new DefaultIntegerTypeReference(simpleBaseType, integerSize);
+            case VINT: {
+                final Map<String, Term> attributes = getAttributes(ctx.parent.parent);
+                SimpleTypeReference propertyType;
+                int propertySizeInBits = 32;
+                if (attributes.containsKey("propertySizeInBits")) {
+                    final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                        throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
+                    }
+                    NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
+                    propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
+                }
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, propertySizeInBits);
+                return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
+            }
+            case VUINT: {
+                final Map<String, Term> attributes = getAttributes(ctx.parent.parent);
+                SimpleTypeReference propertyType;
+                int propertySizeInBits = 32;
+                if (attributes.containsKey("propertySizeInBits")) {
+                    final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                        throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
+                    }
+                    NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
+                    propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
+                }
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, propertySizeInBits);
+                return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
+            }
+            case FLOAT:
+            case UFLOAT:
+                int floatSize = Integer.parseInt(ctx.size.getText());
+                return new DefaultFloatTypeReference(simpleBaseType, floatSize);
+            case TIME:
+            case DATE:
+            case DATETIME:
+                return new DefaultTemporalTypeReference(simpleBaseType);
+            case BIT:
+                return new DefaultBooleanTypeReference();
+            case BYTE:
+                return new DefaultByteTypeReference();
+            case STRING:
+                int stringSize = Integer.parseInt(ctx.size.getText());
+                return new DefaultStringTypeReference(simpleBaseType, stringSize);
+            default:
+                return new DefaultIntegerTypeReference(simpleBaseType, 1);
         }
     }
 
@@ -478,34 +761,40 @@ public class MessageFormatListener extends MSpecBaseListener {
         return null;
     }
 
-    private EnumValue[] getEnumValues() {
-        return Objects.requireNonNull(enumContexts.peek()).toArray(new EnumValue[0]);
+    private List<EnumValue> getEnumValues() {
+        return Objects.requireNonNull(enumContexts.peek());
     }
 
-    private Argument[] getParserArguments(List<MSpecParser.ArgumentContext> params) {
-        Argument[] parserArguments = new Argument[params.size()];
-        for (int i = 0; i < params.size(); i++) {
-            TypeReference type = getTypeReference(params.get(i).type);
-            String name = getIdString(params.get(i).name);
-            parserArguments[i] = new Argument(type, name);
-        }
-        return parserArguments;
+    private List<Argument> getParserArguments(List<MSpecParser.ArgumentContext> params) {
+        return params.stream()
+            .map(argumentContext -> {
+                DefaultArgument argument = new DefaultArgument(getIdString(argumentContext.name));
+                getTypeReference(argumentContext.type).whenComplete((typeReference, throwable) -> {
+                    if (throwable != null) {
+                        // TODO: proper error collection in type context error bucket
+                        LOGGER.debug("Error setting type for {}", argument, throwable);
+                        return;
+                    }
+                    argument.setType(typeReference);
+                });
+                return argument;
+            })
+            .collect(Collectors.toList());
     }
 
-    private Term[] getFieldParams(MSpecParser.FieldDefinitionContext parentCtx) {
-        Term[] params = null;
-        if (parentCtx.params != null) {
-            params = new Term[parentCtx.params.expression().size()];
-            for (int i = 0; i < parentCtx.params.expression().size(); i++) {
-                params[i] = parseExpression(getExprString(parentCtx.params.expression().get(i)));
-            }
+    private List<Term> getParams(MSpecParser.MultipleExpressionsContext params) {
+        if (params == null) {
+            return null;
         }
-        return params;
+        return params.expression().stream()
+            .map(this::getExprString)
+            .map(this::parseExpression)
+            .collect(Collectors.toList());
     }
 
     private Term parseExpression(String expressionString) {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
         try {
             return parser.parse(inputStream);
         } catch (Exception e) {
@@ -513,25 +802,83 @@ public class MessageFormatListener extends MSpecBaseListener {
         }
     }
 
-    private String unquoteString(String quotedString) {
-        if (quotedString != null && quotedString.length() >= 2) {
-            return quotedString.substring(1, quotedString.length() - 1);
+    private Map<String, Term> getAttributes(RuleContext ctx) {
+        Map<String, Term> attributes = new HashMap<>();
+        // Add any attributes from the current batchSet context.
+        if (!batchSetAttributes.empty()) {
+            attributes.putAll(batchSetAttributes.peek());
         }
-        return quotedString;
+        // Add any attributes set on the current field itself.
+        if (ctx.parent.parent instanceof MSpecParser.FieldDefinitionContext) {
+            MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
+            for (MSpecParser.AttributeContext attributeContext : fieldDefinitionContext.attributes.attribute()) {
+                Term attributeExpression = getExpressionTerm(attributeContext.value);
+                attributes.put(attributeContext.name.getText(), attributeExpression);
+            }
+        }
+        return attributes;
+    }
+
+    private String unquoteString(String quotedString) {
+        if (quotedString == null || quotedString.length() < 2) {
+            return quotedString;
+        }
+        return quotedString.substring(1, quotedString.length() - 1);
     }
 
     private String getIdString(MSpecParser.IdExpressionContext ctx) {
-        if (ctx.id != null) {
-            return ctx.id.getText();
+        if (ctx.id == null) {
+            return null;
         }
-        return null;
+        return ctx.id.getText();
     }
 
     private String getExprString(MSpecParser.ExpressionContext ctx) {
-        if (ctx.expr != null) {
-            return ctx.expr.getText();
+        if (ctx.expr == null) {
+            return null;
         }
-        return null;
+        return ctx.expr.getText();
+    }
+
+    public void dispatchType(String typeName, TypeDefinition type) {
+        LOGGER.debug("dispatching {}:{}", typeName, type);
+
+        if (types.containsKey(typeName)) {
+            LOGGER.warn("{} being overridden", typeName);
+            // TODO: we need to implement replace logic... means we need to replace all old references with the new one in that case otherwise we just get an exception
+        }
+
+        types.put(typeName, type);
+
+        List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
+        LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
+
+        Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
+        while (consumerIterator.hasNext()) {
+            Consumer<TypeDefinition> setter = consumerIterator.next();
+            LOGGER.debug("setting {} for {}", typeName, setter);
+            setter.accept(type);
+            consumerIterator.remove();
+        }
+        typeDefinitionConsumers.remove(typeName);
+    }
+
+    @Override
+    public void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<TypeDefinition> setTypeDefinition) {
+        LOGGER.debug("set or schedule {}", typeRefName);
+
+        TypeDefinition typeDefinition = types.get(typeRefName);
+        if (typeDefinition != null) {
+            LOGGER.debug("{} present so setting for {}", typeRefName, setTypeDefinition);
+            setTypeDefinition.accept(typeDefinition);
+        } else {
+            // put up order
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("{} already waiting for {}", typeDefinitionConsumers.getOrDefault(typeRefName, new LinkedList<>()).size(), typeRefName);
+            }
+            typeDefinitionConsumers.putIfAbsent(typeRefName, new LinkedList<>());
+            typeDefinitionConsumers.get(typeRefName).add(setTypeDefinition);
+        }
     }
 
 }

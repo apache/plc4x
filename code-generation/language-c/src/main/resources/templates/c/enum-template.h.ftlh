@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,6 +17,9 @@
   under the License.
 -->
 ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.c.CLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,7 +29,7 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -41,7 +44,6 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <plc4c/driver_${protocolName}_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -50,22 +52,22 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
-<#if helper.getComplexTypeReferences()?has_content>
-    <#list helper.getComplexTypeReferences() as typeReference>
+<#if helper.getTypeNamesForImportStatements()?has_content>
+    <#list helper.getTypeNamesForImportStatements() as typeReference>
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
 
-#ifdef __cplusplus
+<#--#ifdef __cplusplus
 extern "C" {
-#endif
+#endif-->
 
 <#--
     First output the enum itself together with it's constants
 -->
 enum ${helper.getCTypeName(type.name)} {
 <#list type.enumValues as enumValue>
-  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if helper.isStringTypeReference(type.type)>${enumValue?index}<#elseif helper.isComplexTypeReference(type.type)><#if helper.isEnumTypeReference(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type)}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
+  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if type.type.orElseThrow().isStringTypeReference()>${enumValue?index}<#elseif type.type.orElseThrow().isNonSimpleTypeReference()><#if type.type.orElseThrow().isEnumTypeReference()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
 </#sep></#list>
 
 };
@@ -77,12 +79,14 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null();
 <#--
     Define the parse-method for elements of this tpye
 -->
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}** message);
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}* message);
 
 <#--
     Define the serialize-method for elements of this tpye
 -->
 plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* message);
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_for_value(${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())} value);
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string);
 
@@ -106,8 +110,8 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName
 
 uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* message);
 
-#ifdef __cplusplus
+<#--#ifdef __cplusplus
 }
-#endif
+#endif-->
 
 #endif  // ${helper.getCTypeName(type.name)?upper_case}_H_

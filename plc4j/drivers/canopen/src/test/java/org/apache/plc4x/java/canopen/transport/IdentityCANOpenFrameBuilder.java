@@ -7,7 +7,7 @@ to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
 with the License.  You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+  https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on an
@@ -19,11 +19,11 @@ under the License.
 package org.apache.plc4x.java.canopen.transport;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.canopen.helper.CANOpenHelper;
-import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
-import org.apache.plc4x.java.canopen.readwrite.io.CANOpenPayloadIO;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.canopen.readwrite.utils.StaticHelper;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
@@ -41,7 +41,7 @@ public class IdentityCANOpenFrameBuilder implements CANFrameBuilder<CANOpenFrame
 
     @Override
     public CANFrameBuilder<CANOpenFrame> withId(int nodeId) {
-        this.service = CANOpenHelper.serviceId((short) nodeId);
+        this.service = StaticHelper.serviceId((short) nodeId);
         this.nodeId = (short) Math.abs(service.getMin() - nodeId);
         return this;
     }
@@ -56,7 +56,7 @@ public class IdentityCANOpenFrameBuilder implements CANFrameBuilder<CANOpenFrame
     public CANOpenFrame create() {
         try {
             return new CANOpenFrame(
-                nodeId, service, CANOpenPayloadIO.staticParse(new ReadBufferByteBased(data, true), service)
+                nodeId, service, CANOpenPayload.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), service)
             );
         } catch (ParseException e) {
             throw new PlcRuntimeException(e);

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,13 +19,13 @@
 package org.apache.plc4x.java.transport.can;
 
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 
 public interface FrameData {
 
     int getNodeId();
 
-    <T extends Message> T read(MessageIO<T, T> serializer, Object ... args);
+    <T extends Message> T read(MessageInput<T> input, Object ... args);
 
     int getDataLength();
     byte[] getData();

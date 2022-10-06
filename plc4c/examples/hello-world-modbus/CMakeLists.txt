@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,14 +17,16 @@
   under the License.
 ]]
 
-include_directories("../../api/include"
-        "../../spi/include"
-        "../../drivers/modbus/include"
-        "../../transports/tcp/include" )
-
 add_executable(plc4c-examples-hello-world-modbus
         src/hello_world_modbus.c
         )
+
+target_include_directories(plc4c-examples-hello-world-modbus
+        PUBLIC
+        "../../api/include"
+        "../../spi/include"
+        "../../drivers/modbus/include"
+        "../../transports/tcp/include")
 
 IF (NOT WIN32)
     target_link_libraries(plc4c-examples-hello-world-modbus
@@ -38,6 +40,5 @@ ELSE()
             plc4c-spi
             plc4c-driver-modbus
             plc4c-transport-tcp
-            unity
     )
 ENDIF()

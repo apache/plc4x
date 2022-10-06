@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,13 +24,13 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4X: Code-Generation</name>
+  <name>Code-Generation</name>
   <description>Home of the PLC4X code-generation framework.</description>
 
   <modules>
@@ -42,22 +42,27 @@
   </modules>
 
   <profiles>
-  <!-- Build PLC4X including the C modules -->
-  <profile>
-    <id>with-c</id>
-    <modules>
-      <module>language-c</module>
-    </modules>
-  </profile>
+    <profile>
+      <id>with-c</id>
+      <modules>
+        <module>language-c</module>
+      </modules>
+    </profile>
 
-  <profile>
-    <id>with-go</id>
-    <modules>
-      <module>language-go</module>
-    </modules>
-  </profile>
+    <profile>
+      <id>with-dotnet</id>
+      <modules>
+        <module>language-cs</module>
+      </modules>
+    </profile>
 
-</profiles>
+    <profile>
+      <id>with-go</id>
+      <modules>
+        <module>language-go</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <dependencies>
     <!-- JUnit 5 Support -->
@@ -69,6 +74,11 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

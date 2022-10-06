@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -31,28 +31,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * Multi Threading Test
- *
- * @author julian
- * Created by julian on 06.04.20
  */
 class CachedDriverManagerIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CachedDriverManagerIT.class);
 
     @Test
-    void connectWithMultpleThreads() throws InterruptedException, PlcException {
+    void connectWithMultipleThreads() throws InterruptedException, PlcException {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
 
         PlcConnectionFactory mock = Mockito.mock(PlcConnectionFactory.class);
         MockConnection plcMockConnection = mock(MockConnection.class);
         when(mock.create()).thenReturn(plcMockConnection);
 
-        CachedDriverManager driverManager = new CachedDriverManager("", mock, 100_000);
+        CachedDriverManager driverManager = new CachedDriverManager("", mock, 10_000);
 
         AtomicInteger errorCounter = new AtomicInteger(0);
         AtomicInteger successCounter = new AtomicInteger(0);
@@ -71,7 +69,10 @@ class CachedDriverManagerIT {
 
         executorService.shutdown();
 
-        executorService.awaitTermination(50, TimeUnit.SECONDS);
+        boolean forced = executorService.awaitTermination(50, TimeUnit.SECONDS);
+
+        // If this is false, a thread was still hanging => something failed
+        assertTrue(forced);
 
         assertEquals(100, successCounter.get());
         assertEquals(0, errorCounter.get());

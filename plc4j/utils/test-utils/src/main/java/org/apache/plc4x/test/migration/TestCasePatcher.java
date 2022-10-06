@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,12 +25,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Small util to help with patching of testcases
+ */
 public class TestCasePatcher {
 
+    /**
+     * Indents a xml fragment with the supplied indent (every line gets ident prefixed).
+     *
+     * @param xmlDocument the document to be patched.
+     * @param indent      the indent to be applied
+     * @return the indented document
+     */
     public static String indent(String xmlDocument, String indent) {
         return Arrays.stream(xmlDocument.split("\n")).map(s -> indent + s).collect(Collectors.joining("\n"));
     }
 
+    /**
+     * Tries to find the base indent for supplied fragment
+     *
+     * @param xmlDocument where to look for the fragment
+     * @param xmlFragment the fragment to look up
+     * @return the found indent
+     */
     public static String determineIndent(String xmlDocument, String xmlFragment) {
         assert xmlDocument != null;
         assert xmlFragment != null;
@@ -43,7 +60,16 @@ public class TestCasePatcher {
         return matcher.group(1);
     }
 
-    private static Pattern getPatternForFragment(String xmlFragment) {
+    /**
+     * Returns a pattern for a xmlFragment which ignores leading indents.
+     * The first group can be used to determine ident.
+     *
+     * @param xmlFragment the fragment where the pattern should be build for
+     * @return the created pattern
+     */
+    public static Pattern getPatternForFragment(String xmlFragment) {
+        assert xmlFragment != null;
+
         StringBuilder patternString = new StringBuilder();
         String[] lines = xmlFragment.split("\n");
         for (int i = 0; i < lines.length; i++) {

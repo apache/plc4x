@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include "plc4c/driver_modbus_packets.h"
-#include "modbus_tcp_adu.h"
+#include "modbus_adu.h"
 #include "data_item.h"
 
 enum plc4c_driver_modbus_read_states {
@@ -66,7 +66,7 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
     }
 
     case PLC4C_DRIVER_MODBUS_READ_SEND_ITEM_REQUEST: {
-      plc4c_modbus_read_write_modbus_tcp_adu* modbus_read_request_packet;
+      plc4c_modbus_read_write_modbus_adu* modbus_read_request_packet;
       plc4c_return_code return_code =
           plc4c_driver_modbus_create_modbus_read_request(
               modbus_config,
@@ -88,7 +88,7 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
     }
     case PLC4C_DRIVER_MODBUS_READ_HANDLE_ITEM_RESPONSE: {
       // Read a response packet.
-      plc4c_modbus_read_write_modbus_tcp_adu* modbus_read_response_packet;
+      plc4c_modbus_read_write_modbus_adu* modbus_read_response_packet;
       plc4c_return_code return_code = plc4c_driver_modbus_receive_packet(
           connection, &modbus_read_response_packet);
       // If we haven't read enough to process a full message, just try again
@@ -105,35 +105,35 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
       plc4c_list* response_value;
       switch (modbus_item->type) {
         case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_COIL: {
-          if(modbus_read_response_packet->pdu->_type !=
+          if(modbus_read_response_packet->modbus_tcp_adu_pdu->_type !=
               plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_coils_response) {
             return INTERNAL_ERROR;
           }
-          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_coils_response_value;
+          response_value = modbus_read_response_packet->modbus_tcp_adu_pdu->modbus_pdu_read_coils_response_value;
           break;
         }
         case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_DISCRETE_INPUT: {
-          if(modbus_read_response_packet->pdu->_type !=
+          if(modbus_read_response_packet->modbus_tcp_adu_pdu->_type !=
               plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_response) {
             return INTERNAL_ERROR;
           }
-          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_discrete_inputs_response_value;
+          response_value = modbus_read_response_packet->modbus_tcp_adu_pdu->modbus_pdu_read_discrete_inputs_response_value;
           break;
         }
         case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_INPUT_REGISTER: {
-          if(modbus_read_response_packet->pdu->_type !=
+          if(modbus_read_response_packet->modbus_tcp_adu_pdu->_type !=
               plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_input_registers_response) {
             return INTERNAL_ERROR;
           }
-          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_input_registers_response_value;
+          response_value = modbus_read_response_packet->modbus_tcp_adu_pdu->modbus_pdu_read_input_registers_response_value;
           break;
         }
         case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_HOLDING_REGISTER: {
-          if(modbus_read_response_packet->pdu->_type !=
+          if(modbus_read_response_packet->modbus_tcp_adu_pdu->_type !=
               plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response) {
             return INTERNAL_ERROR;
           }
-          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_holding_registers_response_value;
+          response_value = modbus_read_response_packet->modbus_tcp_adu_pdu->modbus_pdu_read_holding_registers_response_value;
           break;
         }
         case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_EXTENDED_REGISTER: {
@@ -222,6 +222,21 @@ plc4c_return_code plc4c_driver_modbus_read_function(
   return OK;
 }
 
+void plc4c_driver_modbus_free_read_request_item(
+    plc4c_list_element* read_item_element) {
+  plc4c_item* value_item =
+      (plc4c_item*)read_item_element->value;
+  plc4c_driver_modbus_item* modbus_item = (plc4c_driver_modbus_item*) value_item->address;
+  free(modbus_item);
+  value_item->address = NULL;
+}
+
+void plc4c_driver_modbus_free_read_request(plc4c_read_request* request) {
+  // the request will be cleaned up elsewhere
+  plc4c_utils_list_delete_elements(request->items,
+                                   plc4c_driver_modbus_free_read_request_item);
+}
+
 void plc4c_driver_modbus_free_read_response_item(
     plc4c_list_element* read_item_element) {
   plc4c_response_value_item* value_item =
@@ -233,5 +248,5 @@ void plc4c_driver_modbus_free_read_response_item(
 void plc4c_driver_modbus_free_read_response(plc4c_read_response* response) {
   // the request will be cleaned up elsewhere
   plc4c_utils_list_delete_elements(response->items,
-                                   &plc4c_driver_modbus_free_read_response_item);
+                                   plc4c_driver_modbus_free_read_response_item);
 }

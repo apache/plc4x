@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.ads.field;
 
-import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -35,22 +32,12 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsField implements AdsField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
 
     private final String symbolicAddress;
 
-    private final AdsDataType adsDataType;
-
-    private final int numberOfElements;
-
-    public SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
+    public SymbolicAdsField(String symbolicAddress) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
-        this.adsDataType = Objects.requireNonNull(adsDataType);
-        this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
-        if (this.numberOfElements <= 0) {
-            throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
-        }
-
     }
 
     public static SymbolicAdsField of(String address) {
@@ -60,13 +47,7 @@ public class SymbolicAdsField implements AdsField {
         }
         String symbolicAddress = matcher.group("symbolicAddress");
 
-        String adsDataTypeString = matcher.group("adsDataType");
-        AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
-
-        String numberOfElementsString = matcher.group("numberOfElements");
-        Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
-
-        return new SymbolicAdsField(symbolicAddress, adsDataType, numberOfElements);
+        return new SymbolicAdsField(symbolicAddress);
     }
 
     public static boolean matches(String address) {
@@ -75,21 +56,6 @@ public class SymbolicAdsField implements AdsField {
 
     public String getSymbolicAddress() {
         return symbolicAddress;
-    }
-
-    @Override
-    public AdsDataType getAdsDataType() {
-        return adsDataType;
-    }
-
-    @Override
-    public String getPlcDataType() {
-        return adsDataType.toString();
-    }
-
-    @Override
-    public int getNumberOfElements() {
-        return numberOfElements;
     }
 
     @Override
@@ -117,7 +83,7 @@ public class SymbolicAdsField implements AdsField {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         String symbolicAddress = getSymbolicAddress();

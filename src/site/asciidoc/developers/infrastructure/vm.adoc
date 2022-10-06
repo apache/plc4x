@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,9 +20,9 @@
 As, especially for the raw socket functionality of PLC4X, our project had higher demands on the infrastructure as other projects.
 Apache Infra kindly provided us with a dedicated VM.
 
-This is included as build agent into Apache's Jenkins with the label `plc4x1` and is marked for exclusive usage by our project.
+This is included as build agent into Apache's Jenkins with the label `plc4x2` and is marked for exclusive usage by our project.
 
-The host name of this machine is: `plc4x-vm.apache.org`
+The host name of this machine is: `plc4x-vm2.apache.org`
 
 On this machine we can even `sudo` to perform operations only available to `root`.
 
@@ -30,11 +30,11 @@ Project members can request access to the machine.
 
 === Requesting access
 
-In order to be able to login, users need to add their SSH public key to their Apache ID first.
+In order to be able to log in, users need to add their SSH public key to their Apache ID first.
 
 This is done under the following url: https://id.apache.org/
 
-Here just add the content in the follwoing format to one of the `SSH Key (authorized_keys line)` fields:
+Here just add the content in the following format to one of the `SSH Key (authorized_keys line)` fields:
 
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDd10ykYAZLxHJVTER71IrrVVpyR8OBdlJd1aVwb67Ts+ueJjzo8ofQKLASaQw9EQOSfprGZW0sfzhepeJvbX0n1IfsRexoyIGlD8WzyX/UoLiRLPHFv+eSGJVlN90x/l+zps+yo3lq6qfuIqkXQQvB4aJBYsYC/jifpMLvx06zaUBPfdWIaGiBgaWbX/59Q0QsSpX5r8tgdA+XLw/8Zg5AbKazuS2Cm/soJCfQQ7km4bd/WtF5R5xvakVbyILMT8Dk9Hs9OfVL/RFGLYqX4bjy5uCTwPBrwlWqFyq1u7JR39i870XNgn+bIeChaZU098BGyBH/cWMGt7bTJQSKxksF2SZAHjt8Ga2Pl+J6MTW6/EPzIYENgvfOBVSlVaz9SlM26nel1+SHDND9dK/4gRNbujbmzHZLfTjMk7oc4R+WPCBIw99CFeShTKHSxhJKz/3KmcmuEHhNRBdMy+xHecr/r/Pax58a9VHXQqHbwES6tvC1gvM2uFSMKoaKtNkME4V7bPLbQcEF8tKz7/gKp6vp1IL0BdDMwZPodFPmbiJzqjvC38A++B5k0GAgWKYPVsenamZviFhRNGjjum/qxBnAF1FjpIocsEA0zQBYvvOPDpKl9KPRZ32ALHztnRfCEwltgnM1Sjinn4zQjxQs5mJBz2rjMGlkSzVjLoSo7khiBQ== my@email-address.com
 
@@ -52,13 +52,13 @@ As soon as that's handled by the Infra team, you should be ready to log-in on th
 
 === Login to the machine
 
-Using SSH we should now be able to login to the VM.
+Using SSH we should now be able to log in to the VM.
 
    ssh apacheId@plc4x-vm2.apache.org
 
 Be sure to use the username matching your Apache ID or the login will fail.
 
-If all went well you should now be able to login to the machine using your apache user.
+If all went well you should now be able to log in to the machine using your apache user.
 
 === Doing things as `root`
 
@@ -85,7 +85,7 @@ When hitting enter or clicking on `Compute` the tool should automatically genera
 
 Now all you need to do is copy & paste that as password into your SSH client session.
 
-TIP: As with the latest version of Mac Catalina the existing clients no longer work and using a public web service is a really bad idea, Apache has a service to calculate:
+TIP: As with the latest version of Mac Catalina the existing clients no longer work and using a public web service is a bad idea, Apache has its own service to calculate it:
 https://selfserve.apache.org/otp-md5.html
 
 === Required software

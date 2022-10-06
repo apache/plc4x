@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,11 +24,10 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
-import org.apache.plc4x.java.canopen.readwrite.io.CANOpenFrameIO;
 import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataAdapter;
 import org.apache.plc4x.java.canopen.transport.IdentityCANOpenFrameBuilder;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport;
 import org.apache.plc4x.java.transport.can.FrameData;
@@ -47,8 +46,8 @@ public class CANTestTransport extends TestTransport implements CANTransport<CANO
     }
 
     @Override
-    public <X extends MessageIO<CANOpenFrame, CANOpenFrame>> X getMessageIO(Configuration configuration) {
-        return (X) new CANOpenFrameIO();
+    public MessageInput<CANOpenFrame> getMessageInput(Configuration configuration) {
+        return CANOpenFrame::staticParse;
     }
 
     @Override

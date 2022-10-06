@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,8 +17,9 @@
   under the License.
   -->
 [![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
-[![License](https://img.shields.io/github/license/apache/plc4x.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![License](https://img.shields.io/github/license/apache/plc4x.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
+[![Platform compatibility](https://img.shields.io/github/workflow/status/apache/plc4x/Platform%20compatibility?label=Platform%20compatibility)](https://github.com/apache/plc4x/actions/workflows/ensure-platforms.yml)
 [![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
 
 
@@ -52,7 +53,7 @@ We are planning on shipping libraries for usage in:
 
 1. Java
 2. Go
-3. C/C++ (not ready for usage)
+3. C (not ready for usage)
 4. Python (not ready for usage)
 5. C# (.Net) (not ready for usage)
 
@@ -60,10 +61,21 @@ PLC4X also integrates with other Apache projects, such as:
 
 * [Apache Calcite](https://calcite.apache.org/)
 * [Apache Camel](https://camel.apache.org/)
-* [Apache Edgent](https://edgent.apache.org/)
 * [Apache Kafka-Connect](https://kafka.apache.org)
 * [Apache Karaf](https://karaf.apache.org/)
 * [Apache NiFi](https://nifi.apache.org/)
+
+And brings stand-alone (Java) utils like:
+
+* OPC-UA Server: Enables you to communicate with legacy devices using PLC4X with OPC-UA.
+* PLC4X Server: Enables you to communicate with a central PLC4X Server which then communicates with devices via PLC4X.
+
+It also provides (Java) tools for usage inside an application:
+
+* Connection Cache: New implementation of our framework for re-using and sharing PLC-connections 
+* Connection Pool: Old implementation of our framework for re-using and sharing PLC-connections
+* OPM: Object-Plc-Mapping: Allows binding PLC fields to properties in java POJOs similar to JPA
+* Scraper: Utility to do scheduled and repeated data collection.
 
 ## Getting started
 
@@ -73,8 +85,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is exactly Java 11
-(Higher versions can't build the Logstash integration and lower versions can't build the CMake dependent parts).
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 11 (Currently with Java 19 the Apache Kafka integration module is excluded from the build as the plugins it requires are incompatible with this version)
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -85,118 +96,44 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 Currently, the project is configured to require the following software:
 
-1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
- point to that.
-2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
-3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
-4. Git (even when working on the source distribution)
+1. Java 11 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to point to that.
+2. Git (even when working on the source distribution)
+3. (Optional, for running all tests) libpcap/Npcap for raw socket tests in Java or use of `passive-mode` drivers
+4. (Optional, for building the website) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 
-With this setup you will be able to build the Java part of PLC4X excluding the "proxy" drivers and servers.
-For a full build of PLC4X with all options the following has to be provided:
+WARNING: The code generation uses a utility which requires some additional VM settings. When running a build from the root, the settings in the `.mvn/jvm.config` are automatically applied. When building only a sub-module, it is important to set the vm args: `--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED`. In Intellij for example set these in the IDE settings under: Preferences | Build, Execution, Deployment | Build Tools | Maven | Runner: JVM Options.
 
-#### Linux
+A more detailed description is available on our website:
 
-On a clean Ubuntu 18.04 the following software needs to be installed:
+https://plc4x.apache.org/developers/preparing/index.html
 
-```
-    sudo apt install python-setuptools gcc g++ make libpcap-dev
-```
+#### For building `PLC4C` we also need:
 
-If you're building a source-distribution and haven't installed git yet, be sure to do so:
+All requirements are retrieved by the build itself
 
-```
-    sudo apt install git
-```
+#### For building `PLC4Go` we also need:
 
-In order to build the .Net version, please install the .Net package according to this guide:
+All requirements are retrieved by the build itself
 
-https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
+#### For building `PLC4Py` we also need:
 
-#### Mac
+1. Python 3.7 or higher
+2. Python pyenv
 
-Make sure `Homebrew` ist installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
+#### For building `PLC4Net` we also need:
 
-```
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
+1. DotNet SDK 6.0
 
-Then update `Bison`:
+With this setup you will be able to build the Java part of PLC4X.
 
-```
-    brew install bison
-    brew link bison --force
-    echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
-```
-
-Install `Python 2.7`:
-
-```
-    brew install python@2
-```
-
-Be sure to re-open the command window or the changes will not apply.
-
-If you're going to build the `with-dotnet` profile you also need to install DotNet.
-Please download it from: https://dotnet.microsoft.com/download and run the installer.
-
-LibPCAP is also installed via Homebrew:
-
-```
-    brew install libpcap
-```
-
-#### Windows
-
-Some tools need to be installed before being able to build on Windows:
-
-* WinBuilds (for `with-cpp`, `with-proxies` profiles)
-* Bison (for `with-cpp` profiles)
-* Flex (for `with-cpp` profiles)
-* Python 2.7 (for `with-python`, `with-proxies` profiles)
-* Dotnet (for `with-dotnet` profiles)
-* WinPCAP
-* OpenSSL
-
-We have tested `WinBuilds` with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
-Run the installer as "Administrator" or you won't be able to install it to every location.
-Please install it to a location, for which the path doesn't contain any whitespaces.
-When running the installer, make sure to select the options:
-* Native Windows
-* x86_64
-Not quite sure which elements are really needed, better just install all of them.
-If the installer fails to do something complaining about having to use a different mirror, enter "http://win-builds.org/1.5.0" as mirror address.
-
-WARNING: If you don't use the installer version of the distribution. The build will probably fail and it will be pretty
-impossible to see the problem. When manually executing the command, a popup will appear complaining about not being able
-to find some DLL. So if you are having these problems, please try using the installer instead of manually unpacking
-the archive.
-
-For `Bison`, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
-It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
-(More infos on this issue here: https://sourceforge.net/p/gnuwin32/bugs/473/)
-
-Please download the `Flex` compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)
-
-You can get `Python` from here: https://www.python.org/downloads/release/python-2716/
-
-For `.Net`, you need the `Developer Pack` in order to build .Net applications. So be sure to get a reasonably fresh installation from https://dotnet.microsoft.com
-
-If you're building a source-distribution and haven't installed git yet, be sure to do so.
-
-The Windows version of the PCAP library can be found here: https://sourceforge.net/projects/winpcap413-176/
-(In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
-Windows version is 1.0. At this location there is a patched version based on libpcap 1.7.4)
-
-Last not least we need to install OpenSSL, which is available from here: https://indy.fulgan.com/SSL/
-The letter at the end of the version is sort of a "sub-minor" version, so I usually just take the version with the highest letter.
-
-Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH` as well as the directory containing the `openssl.exe`.
+The when doing a full build, we automatically run a prerequisite check and fail the build with an explanation, if not all requirements are meet.
 
 ### Getting Started
 
-You must have at least Java 8 installed on your system and connectivity to Maven Central
-(for downloading external third party dependencies). However in order to build all parts
-of PLC4X exactly Java 11 is required. Maven 3.6 is required to build, so be sure it's installed and available on your system. 
+You must have at least Java 11 installed on your system and connectivity to Maven Central
+(for downloading external third party dependencies). Maven 3.6 is required to build, so be sure it's installed and available on your system.
+
+NOTE: When using Java 19 currently the Apache Kafka integration module is excluded from the build as one of the plugins it requires has proven to be incompatible with this version. 
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
 
@@ -211,7 +148,7 @@ NOTE: If you are working on a `Windows` system, please use `mvnw.cmd` instead of
 Build PLC4X Java jars and install them in your local maven repository
 
 ```
-mvn install # add -DskipTests to omit running the tests
+./mvnw install
 ```
 
 You can now construct Java applications that use PLC4X. The PLC4X examples
@@ -221,27 +158,15 @@ directory.
 The `Go` drivers can be built by enabling the `with-go` profile:
 
 ```
-mvn -P with-go install  # add -DskipTests to omit running the tests
-```
-
-NOTE: The C++ build is considered experimental and currently not working properly.
-
-The `C++` drivers are still under development and still not really usable. 
-Therefore, they are located in the so-called `sandbox`. Also does it rely on a 
-library called, `boost`, which needs to also be built.
-
-If you want to build them, this has to be enabled by activating the `with-boost`, `with-sandbox` and `with-cpp` maven profiles:
-
-```
-./mvnw -P with-boost,with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
+./mvnw -P with-go install 
 ```
 
 The `C# / .Net` implementation is currently in a `work in progress` state.
 In order to be able to build the `C# / .Net` module, you currently need to activate the:
-`with-sandbox` and `with-dotnet` profiles.
+`with-dotnet` profiles.
 
 ```
-mvn -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
+./mvnw -P with-dotnet install
 ```
 
 The Python implementation is currently in a somewhat unclean state and still needs refactoring.
@@ -249,7 +174,7 @@ In order to be able to build the Python module, you currently need to activate t
 `with-sandbox` and `with-python` profiles.
 
 ```
-./mvnw -P with-sandbox,with-python install  # add -DskipTests to omit running the tests
+./mvnw -P with-sandbox,with-python install
 ```
 
 In order to build everything the following command should work:
@@ -279,18 +204,19 @@ Get the latest PLC4X news on Twitter: [https://twitter.com/ApachePlc4x](https://
 
 There are multiple forms in which you can become involved with the PLC4X project.
 
-These usually are, but are not limited to:
+These are, but are not limited to:
 
+* Providing information and insights
+* Testing PLC4X and providing feedback
 * Submitting Pull Requests
 * Filing Bug-Reports
 * Active communication on our mailing lists
 * Promoting the project (articles, blog posts, talks at conferences)
 * Documentation
 
-We are a very friendly bunch and don’t be afraid to step forward.
+We are a very friendly bunch so don’t be afraid to step forward.
 If you'd like to contribute to PLC4X, have a look at our 
 [contribution guide](https://plc4x.apache.org/developers/contributing.html)!
-
 
 ## Licensing
 

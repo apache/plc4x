@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,6 +19,8 @@
 package org.apache.plc4x.test.migration;
 
 import java.util.Map;
+
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
@@ -37,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MessageValidatorAndMigrator {
 
@@ -44,7 +47,7 @@ public class MessageValidatorAndMigrator {
 
     /**
      * Validates a outbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true.
-     *
+     * <p>
      * Passed options should contain a single 'package' option or 'protocolName' and 'outputFlavor'.
      * In case if package is not specified then protocol name and output flavor (e.g read-write) are
      * used to construct lookup package.
@@ -54,41 +57,42 @@ public class MessageValidatorAndMigrator {
      * @param referenceXml    the xml we expect the outbound message to be
      * @param parserArguments the parser arguments to create an instance of the message
      * @param data            the bytes of the message
-     * @param bigEndian       if BOM is big endian
+     * @param byteOrder       the byte-oder being used
      * @param autoMigrate     indicates if we want to migrate to a new version
      * @param siteURI         the file which we want to auto migrate
      * @throws DriverTestsuiteException if something goes wrong
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
-        MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
-        validateOutboundMessageAndMigrate(testCaseName, messageIO, referenceXml, parserArguments, data, bigEndian, autoMigrate, siteURI);
+    @SuppressWarnings({"rawtypes"})
+    public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+        MessageInput<?> messageInput = MessageResolver.getMessageInput(options, referenceXml.getName());
+        validateOutboundMessageAndMigrate(testCaseName, messageInput, referenceXml, parserArguments, data, byteOrder, autoMigrate, siteURI);
     }
 
     /**
      * Validates a outbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true
      *
      * @param testCaseName    name of the testcase
-     * @param messageIO       the pre-constructed MessageIO
+     * @param messageInput    the pre-constructed MessageInput
      * @param referenceXml    the xml we expect the outbound message to be
      * @param parserArguments the parser arguments to create an instance of the message
      * @param data            the bytes of the message
-     * @param bigEndian       if BOM is big endian
+     * @param byteOrder       the byte-order being used
      * @param autoMigrate     indicates if we want to migrate to a new version
      * @param siteURI         the file which we want to auto migrate
+     * @return true if migration happened
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void validateOutboundMessageAndMigrate(String testCaseName, MessageIO messageIO, Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
-        final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, !bigEndian);
+    public static boolean validateOutboundMessageAndMigrate(String testCaseName, MessageInput<?> messageInput, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+        final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, byteOrder);
 
         try {
-            final Object parsedOutput = messageIO.parse(readBuffer, parserArguments.toArray());
+            final Message parsedOutput = (Message) messageInput.parse(readBuffer, parserArguments.toArray());
             final String referenceXmlString = referenceXml.asXML();
             try {
                 // First try to use the native xml writer
                 WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
-                messageIO.serialize(writeBufferXmlBased, parsedOutput);
+                parsedOutput.serialize(writeBufferXmlBased);
                 String xmlString = writeBufferXmlBased.getXmlString();
                 final Diff diff = DiffBuilder.compare(referenceXmlString)
                     .withTest(xmlString).checkForSimilar().ignoreComments().ignoreWhitespace()
@@ -124,7 +128,8 @@ public class MessageValidatorAndMigrator {
                         centeredTestCaseName));
                     throw new MigrationException(xmlString);
                 }
-            } catch (RuntimeException | ParseException e) {
+                return false;
+            } catch (RuntimeException | SerializationException e) {
                 if (!(e instanceof MigrationException)) {
                     LOGGER.error("Error in serializer", e);
                 }
@@ -135,25 +140,38 @@ public class MessageValidatorAndMigrator {
 
                     String content;
                     try {
+                        // REMARK: In know IntelliJ tells us this is "optimizable", don't do it as it will break the build.
                         content = new String(Files.readAllBytes(path), charset);
+                        // Make sure this also works on Windows
+                        // (Mainly when using git to check out Windows style and commit in Unix style)
+                        content = content.replaceAll("\r\n", "\n");
                     } catch (IOException ioException) {
                         throw new RuntimeException(ioException);
                     }
                     String indent = TestCasePatcher.determineIndent(content, referenceXmlString);
-                    String searchString = TestCasePatcher.indent(referenceXmlString, indent);
                     String newXml = ((MigrationException) e).newXml;
                     newXml = TestCasePatcher.indent(newXml, indent);
-                    content = StringUtils.replaceOnce(content, searchString, newXml);
+                    Pattern patternForReferenceXmlString = TestCasePatcher.getPatternForFragment(referenceXmlString);
+                    if (!patternForReferenceXmlString.matcher(content).find()) {
+                        throw new RuntimeException("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nAutomigration failed: Can't match content. Patching won't work..\nTry to copy the above xml manually. \n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                    content = RegExUtils.replaceFirst(content, patternForReferenceXmlString, newXml + "\n");
                     try {
                         Files.write(path, content.getBytes(charset));
                     } catch (IOException ioException) {
                         throw new RuntimeException(ioException);
                     }
                     LOGGER.info("Done migrating {}", path);
+                    return true;
+                } else {
+                    throw new RuntimeException("Output doesn't match. Set to auto migrate to fix", e);
                 }
             }
         } catch (ParseException e) {
             throw new DriverTestsuiteException("Error parsing message", e);
+        } catch (RuntimeException e) {
+            LOGGER.error("Something went wrong: siteURI='{}'", siteURI, e);
+            throw e;
         }
     }
 
@@ -169,23 +187,23 @@ public class MessageValidatorAndMigrator {
      */
     @SuppressWarnings("rawtypes")
     public static Message validateInboundMessageAndGet(Map<String, String> options, Element referenceXml, List<String> parserArguments) {
-        MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
+        MessageInput<?> messageIO = MessageResolver.getMessageInput(options, referenceXml.getName());
         return validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
     }
 
     /**
      * Validates a inbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true
      *
-     * @param messageIO       the pre-constructed MessageIO
+     * @param messageInput    the pre-constructed MessageInput
      * @param referenceXml    the xml we expect the outbound messag
      * @param parserArguments the parser arguments to create an instance of the message
      * @return the message if all went well
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Message validateInboundMessageAndGet(MessageIO messageIO, Element referenceXml, List<String> parserArguments) {
+    public static Message validateInboundMessageAndGet(MessageInput messageInput, Element referenceXml, List<String> parserArguments) {
         final String referenceXmlString = referenceXml.asXML();
         try {
-            return (Message) messageIO.parse(new ReadBufferXmlBased(new ByteArrayInputStream(referenceXmlString.getBytes(StandardCharsets.UTF_8))), parserArguments.toArray(new String[0]));
+            return (Message) messageInput.parse(new ReadBufferXmlBased(new ByteArrayInputStream(referenceXmlString.getBytes(StandardCharsets.UTF_8))), parserArguments.toArray(new String[0]));
         } catch (RuntimeException | ParseException e) {
             throw new DriverTestsuiteException(String.format("Error parsing message from:\n%s", referenceXmlString), e);
         }

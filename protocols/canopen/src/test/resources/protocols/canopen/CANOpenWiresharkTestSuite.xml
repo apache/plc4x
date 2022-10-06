@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd">
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="LITTLE_ENDIAN">
 
   <name>Tests of CANopen frames from Wireshark sample PCAP files.</name>
 
@@ -179,15 +180,7 @@
                 <toggle dataType="bit" bitLength="1">false</toggle>
                 <size dataType="uint" bitLength="3">0</size>
                 <last dataType="bit" bitLength="1">false</last>
-                <data isList="true">
-                  <value dataType="int" bitLength="8">85</value>
-                  <value dataType="int" bitLength="8">108</value>
-                  <value dataType="int" bitLength="8">116</value>
-                  <value dataType="int" bitLength="8">114</value>
-                  <value dataType="int" bitLength="8">97</value>
-                  <value dataType="int" bitLength="8">72</value>
-                  <value dataType="int" bitLength="8">105</value>
-                </data>
+                <data dataType="byte" bitLength="56">0x556c7472614869</data>
                 <padding isList="true">
                 </padding>
               </SDOSegmentUploadResponse>
@@ -346,12 +339,7 @@
                 <payload>
                   <SDOInitiateUploadResponsePayload>
                     <SDOInitiateExpeditedUploadResponse>
-                      <data isList="true">
-                        <value dataType="int" bitLength="8">97</value>
-                        <value dataType="int" bitLength="8">115</value>
-                        <value dataType="int" bitLength="8">100</value>
-                        <value dataType="int" bitLength="8">102</value>
-                      </data>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
                       <padding isList="true">
                       </padding>
                     </SDOInitiateExpeditedUploadResponse>
@@ -420,15 +408,7 @@
                 <block>
                   <SDOBlockData>
                     <flags dataType="uint" bitLength="5">2</flags>
-                    <data isList="true">
-                      <value dataType="int" bitLength="8">8</value>
-                      <value dataType="int" bitLength="8">16</value>
-                      <value dataType="int" bitLength="8">0</value>
-                      <value dataType="int" bitLength="8">21</value>
-                      <value dataType="int" bitLength="8">0</value>
-                      <value dataType="int" bitLength="8">0</value>
-                      <value dataType="int" bitLength="8">0</value>
-                    </data>
+                    <data dataType="byte" bitLength="56">0x08100015000000</data>
                   </SDOBlockData>
                 </block>
               </SDOBlockResponse>

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,7 +26,7 @@
 #include "plc4c/spi/types_private.h"
 
 // Uncomment to add printf spam at end of plc4c_system_create_connection()
-#define DEBUG_PLC4C_SYSTEM
+//#define DEBUG_PLC4C_SYSTEM
 
 #ifdef _WIN32
 #define strtok_r strtok_s
@@ -267,11 +267,11 @@ plc4c_return_code plc4c_system_create_connection(
   plc4c_connection_set_protocol_code(new_connection, connection_token);
 
   // TRANSPORT CODE (2nd item, ':' delimited, optional)
-  if (strncmp(connection_string_pos, "//", 2) == 0) {
+  if (connection_string_pos != NULL && strncmp(connection_string_pos, "//", 2) == 0) {
     plc4c_connection_set_transport_code(new_connection, NULL);
   } else {
     connection_token = strtok_r(connection_string_pos, ":", &connection_string_pos);
-    if (strncmp(connection_string_pos, "//", 2) != 0)
+    if (connection_string_pos == NULL || strncmp(connection_string_pos, "//", 2) != 0)
       return INVALID_CONNECTION_STRING;
     plc4c_connection_set_transport_code(new_connection, connection_token);
   }
@@ -286,7 +286,7 @@ plc4c_return_code plc4c_system_create_connection(
   plc4c_connection_set_transport_connect_information(new_connection, connection_token);
 
   // PARAMETERS (last item, '?' delimited, optional)
-  if (strlen(parameters_token) > 0)  {
+  if (parameters_token != NULL && strlen(parameters_token) > 0)  {
     plc4c_connection_set_parameters(new_connection, parameters_token);
     if (strchr(parameters_token,'?'))
       return INVALID_CONNECTION_STRING;

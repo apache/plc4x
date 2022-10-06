@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,5 +18,26 @@
  */
 package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
+import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
+import org.apache.plc4x.plugins.codegenerator.types.fields.TypedField;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+
 public interface FreemarkerLanguageTemplateHelper {
+    String getLanguageTypeNameForField(Field field);
+
+    String getLanguageTypeNameForTypeReference(TypeReference typeReference);
+
+    @Deprecated
+    default String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
+        return getReadBufferReadMethodCall(simpleTypeReference, null, null);
+    }
+
+    @Deprecated
+    String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field);
+
+    @Deprecated
+    String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field);
+
+    String getNullValueForTypeReference(TypeReference typeReference);
 }

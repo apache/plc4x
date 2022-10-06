@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,9 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
-import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 
@@ -45,7 +43,7 @@ public abstract class CANOpenConversationBase {
     }
 
     protected PlcValue decodeFrom(byte[] data, CANOpenDataType type, int length) throws ParseException {
-        return DataItemIO.staticParse(new ReadBufferByteBased(data, true), type, length);
+        return DataItem.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), type, length);
     }
 
     protected <T> void onError(CompletableFuture<T> receiver, CANOpenSDOResponse response, Throwable error) {

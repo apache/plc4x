@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,6 +17,8 @@
  * under the License.
  */
 package org.apache.plc4x.test.driver.internal;
+
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -32,10 +34,10 @@ public class DriverTestsuiteConfiguration {
     private final Map<String, String> options;
     private final Map<String, String> driverParameters;
     private final boolean autoMigrate;
-    private final boolean bigEndian;
+    private final ByteOrder byteOrder;
 
     public DriverTestsuiteConfiguration(URI suiteUri, String testSuiteName, String protocolName, String outputFlavor,
-        String driverName, Map<String, String> options, Map<String, String> driverParameters, boolean autoMigrate, boolean bigEndian) {
+        String driverName, Map<String, String> options, Map<String, String> driverParameters, boolean autoMigrate, ByteOrder byteOrder) {
         this.suiteUri = suiteUri;
         this.testSuiteName = testSuiteName;
         this.protocolName = protocolName;
@@ -48,7 +50,7 @@ public class DriverTestsuiteConfiguration {
         // TODO: convert to immutable map
         this.driverParameters = driverParameters;
         this.autoMigrate = autoMigrate;
-        this.bigEndian = bigEndian;
+        this.byteOrder = byteOrder;
     }
 
     public URI getSuiteUri() {
@@ -83,7 +85,7 @@ public class DriverTestsuiteConfiguration {
         return autoMigrate;
     }
 
-    public boolean isBigEndian() {
-        return bigEndian;
+    public ByteOrder getByteOrder() {
+        return byteOrder;
     }
 }

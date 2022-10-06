@@ -4,6 +4,7 @@
 *.iml
 .vscode/**
 .java-version
+.attach_pid*
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
@@ -99,6 +100,8 @@ plc4py/venv/
 **/__pycache__/**/*
 /plc4cpp/.vscode/ipch
 *.egg-info
+**/Pipfile.lock
+**/Pipfile
 
 # Exclude gradle stuff
 .gradle

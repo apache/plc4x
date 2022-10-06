@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,10 +21,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {
@@ -39,11 +39,11 @@ func main() {
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
-	if connectionResult.Err != nil {
-		fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
+	if connectionResult.GetErr() != nil {
+		fmt.Printf("error connecting to PLC: %s", connectionResult.GetErr().Error())
 		return
 	}
-	connection := connectionResult.Connection
+	connection := connectionResult.GetConnection()
 
 	// Make sure the connection is closed at the end
 	defer connection.BlockingClose()
@@ -54,7 +54,7 @@ func main() {
 		AddQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp").
 		Build()
 	if err != nil {
-		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
+		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
 		return
 	}
 
@@ -63,19 +63,19 @@ func main() {
 
 	// Wait for the response to finish
 	rrr := <-rrc
-	if rrr.Err != nil {
-		fmt.Printf("error executing read-request: %s", rrr.Err.Error())
+	if rrr.GetErr() != nil {
+		fmt.Printf("error executing read-request: %s", rrr.GetErr().Error())
 		return
 	}
 
 	// Do something with the response
-	for _, fieldName := range rrr.Response.GetFieldNames() {
-		if rrr.Response.GetResponseCode(fieldName) != model.PlcResponseCode_OK {
-			fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.Response.GetResponseCode(fieldName).GetName())
+	for _, fieldName := range rrr.GetResponse().GetFieldNames() {
+		if rrr.GetResponse().GetResponseCode(fieldName) != model.PlcResponseCode_OK {
+			fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.GetResponse().GetResponseCode(fieldName).GetName())
 			continue
 		}
 
-		value := rrr.Response.GetValue(fieldName)
+		value := rrr.GetResponse().GetValue(fieldName)
 		if value == nil {
 			fmt.Printf("Got nil for field %s\n", fieldName)
 		} else if value.GetStruct() != nil {

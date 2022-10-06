@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,25 +18,37 @@
  */
 package org.apache.plc4x.java.api.types;
 
-/**
- * {@link PlcSubscriptionType} specifies the nature of the subscription.
- * In general PLC4X supports exactly 3 types of subscriptions.
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public enum PlcSubscriptionType {
+  CYCLIC((short) 0x01),
+  CHANGE_OF_STATE((short) 0x02),
+  EVENT((short) 0x03);
+  private static final Map<Short, PlcSubscriptionType> map;
 
-    /**
-     * A cyclic subscription where a value is sent no matter if it's value changed in a given interval.
-     */
-    CYCLIC,
+  static {
+    map = new HashMap<>();
+    for (PlcSubscriptionType value : PlcSubscriptionType.values()) {
+      map.put((short) value.getValue(), value);
+    }
+  }
 
-    /**
-     * Only send data, if a value in the PLC changed.
-     */
-    CHANGE_OF_STATE,
+  private final short value;
 
-    /**
-     * Subscribe to events created by the PLC which usually are defined in the PLCs application (Alarms).
-     */
-    EVENT
+  PlcSubscriptionType(short value) {
+    this.value = value;
+  }
 
+  public short getValue() {
+    return value;
+  }
+
+  public static PlcSubscriptionType enumForValue(short value) {
+    return map.get(value);
+  }
+
+  public static Boolean isDefined(short value) {
+    return map.containsKey(value);
+  }
 }

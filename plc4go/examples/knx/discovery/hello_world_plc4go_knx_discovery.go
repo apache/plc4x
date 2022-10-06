@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,11 +20,11 @@
 package main
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
 	"os"
 	"time"
@@ -40,8 +40,8 @@ func main() {
 	var connectionStrings []string
 	if len(os.Args) < 2 {
 		// Try to auto-find KNX gateways via broadcast-message discovery
-		_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
-			connStr := event.ProtocolCode + "://" + event.TransportUrl.Host
+		_ = driverManager.Discover(func(event model.PlcDiscoveryItem) {
+			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
 			log.Info().Str("connection string", connStr).Msg("Found KNX Gateway")
 
 			connectionStrings = append(connectionStrings, connStr)
@@ -60,32 +60,32 @@ func main() {
 
 		// Wait for the driver to connect (or not)
 		connectionResult := <-crc
-		if connectionResult.Err != nil {
-			log.Error().Msgf("error connecting to PLC: %s", connectionResult.Err.Error())
+		if connectionResult.GetErr() != nil {
+			log.Error().Msgf("error connecting to PLC: %s", connectionResult.GetErr().Error())
 			return
 		}
 		log.Info().Str("connection string", connStr).Msg("Connected")
-		connection := connectionResult.Connection
+		connection := connectionResult.GetConnection()
 		defer connection.BlockingClose()
 
 		// Try to find all KNX devices on the current network
 		browseRequest, err := connection.BrowseRequestBuilder().
-			AddItem("allDevices", "[1-15].[1-15].[0-255]").
-			//AddItem("allMyDevices", "[1-3].[1-6].[0-60]").
-			//AddItem("onlyOneDevice", "1.1.20")
+			AddQuery("allDevices", "[1-15].[1-15].[0-255]").
+			//AddQuery("allMyDevices", "[1-3].[1-6].[0-60]").
+			//AddQuery("onlyOneDevice", "1.1.20")
 			Build()
 		if err != nil {
 			log.Error().Err(err).Msg("error creating browse request")
 			return
 		}
 		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
-			knxField := result.Result.Field
+			knxField := result.GetResult().GetField()
 			knxAddress := knxField.GetAddressString()
 			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
 
 			// Try to get all the com-objects and the group addresses they are attached to.
 			browseRequest, err := connection.BrowseRequestBuilder().
-				AddItem("comObjects", knxAddress+"#com-obj").
+				AddQuery("comObjects", knxAddress+"#com-obj").
 				Build()
 			if err != nil {
 				log.Error().Err(err).Msg("error creating read request")
@@ -93,28 +93,28 @@ func main() {
 			}
 			brr := browseRequest.Execute()
 			browseResult := <-brr
-			if browseResult.Err != nil {
-				log.Error().Err(err).Msg("error executing the browse request for com-objects")
+			if browseResult.GetErr() != nil {
+				log.Error().Err(browseResult.GetErr()).Msg("error executing the browse request for com-objects")
 				return false
 			}
-			for _, result := range browseResult.Response.GetQueryResults("comObjects") {
+			for _, result := range browseResult.GetResponse().GetQueryResults("comObjects") {
 				permissions := ""
-				if result.Readable {
+				if result.IsReadable() {
 					permissions += "R"
 				} else {
 					permissions += " "
 				}
-				if result.Writable {
+				if result.IsWritable() {
 					permissions += "W"
 				} else {
 					permissions += " "
 				}
-				if result.Subscribable {
+				if result.IsSubscribable() {
 					permissions += "S"
 				} else {
 					permissions += " "
 				}
-				log.Info().Msgf(" - %15s (%s) %s", result.Field.GetAddressString(), permissions, result.Name)
+				log.Info().Msgf(" - %15s (%s) %s", result.GetField().GetAddressString(), permissions, result.GetName())
 			}
 
 			readRequest, err := connection.ReadRequestBuilder().
@@ -129,11 +129,11 @@ func main() {
 			rrr := readRequest.Execute()
 			readRequestResult := <-rrr
 
-			if readRequestResult.Err != nil {
+			if readRequestResult.GetErr() != nil {
 				log.Error().Msgf("Error executing read request for reading device identification information %s", knxAddress)
 				return false
 			}
-			readResponse := readRequestResult.Response
+			readResponse := readRequestResult.GetResponse()
 			var programVersion []byte
 			if readResponse.GetResponseCode("applicationProgramVersion") == model.PlcResponseCode_OK {
 				programVersion = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("applicationProgramVersion"))

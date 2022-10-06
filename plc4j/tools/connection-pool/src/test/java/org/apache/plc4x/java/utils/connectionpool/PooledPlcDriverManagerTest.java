@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,10 +26,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.assertj.core.api.WithAssertions;
@@ -332,6 +329,11 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
 
         @Override
+        public boolean canBrowse() {
+            return false;
+        }
+
+        @Override
         public void close() {
             connected = false;
         }
@@ -354,6 +356,11 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         @Override
         public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
+        }
+
+        @Override
+        public PlcBrowseRequest.Builder browseRequestBuilder() {
+            throw new PlcUnsupportedOperationException("The connection does not support browsing");
         }
 
         @Override

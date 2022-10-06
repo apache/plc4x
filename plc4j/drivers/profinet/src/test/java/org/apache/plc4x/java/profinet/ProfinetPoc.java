@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,109 +20,119 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.readwrite.types.*;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.UUID;
 
 public class ProfinetPoc {
 
     public static void main(String[] args) throws Exception {
 
         // Send Profinet IO Context Manager (PNIO-CM) Connection Request (UDP)
-        DceRpc_Packet connectionRequest = new DceRpc_Packet_Req(
-            1, 0x0904, 0x002A, 1, 0, 0, DceRpc_Operation.CONNECT,
-            new PnIoCm_Packet_Req(404, 404, 0, 404,
-                new PnIoCm_Block[]{
+        DceRpc_Packet connectionRequest = new DceRpc_Packet(
+            DceRpc_PacketType.REQUEST, true, false, false,
+            IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+            new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
+            new DceRpc_InterfaceUuid_DeviceInterface(), generateActivityUuid(),
+            0, 0, DceRpc_Operation.CONNECT,
+            new PnIoCm_Packet_Req(404, 404, 404, 0, 404,
+                Arrays.asList(
                     new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                         new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")), 2,
-                        new MacAddress(Hex.decodeHex("606D3C3DA9A3")),
+                        // Local MAC Address
+                        new MacAddress(Hex.decodeHex("806d970ff777")),
                         new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
                         false, false, false,
                         false, PnIoCm_CompanionArType.SINGLE_AR, false,
                         true, false, PnIoCm_State.ACTIVE,
                         600, 0x8892,
-                        /*"plc4x-pn-master"*/"profinetxadriver4933"),
+                        "plc4x-pn-master"),
                     new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
                         0x0001, 0x8892, false, false,
                         false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
                         0xBBF0, 128, 8, 1, 0, 0xffffffff,
                         3, 3, 0xC000,
                         new MacAddress(Hex.decodeHex("000000000000")),
-                        new PnIoCm_IoCrBlockReqApi[] {
+                        Collections.singletonList(
                             new PnIoCm_IoCrBlockReqApi(
-                                new PnIoCm_IoDataObject[] {
+                                Arrays.asList(
                                     new PnIoCm_IoDataObject(0, 0x0001, 0),
                                     new PnIoCm_IoDataObject(0, 0x8000, 1),
                                     new PnIoCm_IoDataObject(0, 0x8001, 2),
                                     new PnIoCm_IoDataObject(0, 0x8002, 3),
                                     new PnIoCm_IoDataObject(1, 0x0001, 4)
-                                },
-                                    new PnIoCm_IoCs[] {
+                                ),
+                                Collections.singletonList(
                                     new PnIoCm_IoCs(0x0001, 0x0001, 0x0019)
-                                })
-                        }),
+                                ))
+                        )),
                     new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.OUTPUT_CR,
-                        0x0002, 0x8892,  false, false,
+                        0x0002, 0x8892, false, false,
                         false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
                         0x8000, 128, 8, 1, 0, 0xffffffff,
                         3, 3, 0xC000,
                         new MacAddress(Hex.decodeHex("000000000000")),
-                        new PnIoCm_IoCrBlockReqApi[]{
+                        Collections.singletonList(
                             new PnIoCm_IoCrBlockReqApi(
-                                new PnIoCm_IoDataObject[] {
+                                Collections.singletonList(
                                     new PnIoCm_IoDataObject(0x0001, 0x0001, 0x0005)
-                                },
-                                new PnIoCm_IoCs[] {
+                                ),
+                                Arrays.asList(
                                     new PnIoCm_IoCs(0, 0x0001, 0),
                                     new PnIoCm_IoCs(0, 0x8000, 1),
                                     new PnIoCm_IoCs(0, 0x8001, 2),
                                     new PnIoCm_IoCs(0, 0x8002, 3),
                                     new PnIoCm_IoCs(1, 0x0001, 4)
-                                })
-                        }
+                                )
+                            )
+                        )
                     ),
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                        new PnIoCm_ExpectedSubmoduleBlockReqApi[] {
+                        Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
-                                0x00000010, 0x00000000, new PnIoCm_Submodule[] {
-                                    new PnIoCm_Submodule_NoInputNoOutputData(0x0001,
-                                        0x00000001, false, false,
-                                        false, false),
-                                    new PnIoCm_Submodule_NoInputNoOutputData(0x8000,
-                                        0x00000002, false, false,
-                                        false, false),
-                                    new PnIoCm_Submodule_NoInputNoOutputData(0x8001,
-                                        0x00000003, false, false,
-                                        false, false),
-                                    new PnIoCm_Submodule_NoInputNoOutputData(0x8002,
-                                        0x00000003, false, false,
-                                        false, false)
-                            })
-                        }
+                                0x00000010, 0x00000000,
+                                Arrays.asList(
+                                new PnIoCm_Submodule_NoInputNoOutputData(0x0001,
+                                    0x00000001, false, false,
+                                    false, false),
+                                new PnIoCm_Submodule_NoInputNoOutputData(0x8000,
+                                    0x00000002, false, false,
+                                    false, false),
+                                new PnIoCm_Submodule_NoInputNoOutputData(0x8001,
+                                    0x00000003, false, false,
+                                    false, false),
+                                new PnIoCm_Submodule_NoInputNoOutputData(0x8002,
+                                    0x00000003, false, false,
+                                    false, false)
+                                )
+                            )
+                        )
                     ),
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                        new PnIoCm_ExpectedSubmoduleBlockReqApi[] {
+                        Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(1,
-                                0x00000022, 0x00000000, new PnIoCm_Submodule[] {
+                                0x00000022, 0x00000000, Collections.singletonList(
                                 new PnIoCm_Submodule_InputAndOutputData(0x0001, 0x00000010,
                                     false, false, false,
                                     false, 20, (short) 1, (short) 1,
-                                    6, (short) 1, (short) 1)
-                            })
-                        }
+                                    6, (short) 1, (short) 1))
+                            )
+                        )
                     ),
                     new PnIoCm_Block_AlarmCrReq((short) 1, (short) 0,
                         PnIoCm_AlarmCrType.ALARM_CR, 0x8892, false, false, 1, 3,
                         0x0000, 200, 0xC000, 0xA000)
-                },404)
-            );
+                ))
+        );
 
         // Serialize the message
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(connectionRequest.getLengthInBytes());
-        connectionRequest.getMessageIO().serialize(writeBuffer, connectionRequest);
+        connectionRequest.serialize(writeBuffer);
 
         // Send the message as UDP telegram.
         InetAddress[] deviceAddress = InetAddress.getAllByName("192.168.24.31");
@@ -136,6 +146,21 @@ public class ProfinetPoc {
         // Receive PNIO-CM Connection Response (UDP)
 
 
+    }
+
+    protected static DceRpc_ActivityUuid generateActivityUuid() {
+        UUID number = UUID.randomUUID();
+        try {
+            WriteBufferByteBased wb = new WriteBufferByteBased(128);
+            wb.writeLong(64, number.getMostSignificantBits());
+            wb.writeLong(64, number.getLeastSignificantBits());
+
+            ReadBuffer rb = new ReadBufferByteBased(wb.getData());
+            return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readByteArray(8));
+        } catch (SerializationException | ParseException e) {
+            // Ignore ... this should actually never happen.
+        }
+        return null;
     }
 
 }

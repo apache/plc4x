@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,12 +18,14 @@
  */
 package org.apache.plc4x.java.spi.configuration;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -46,6 +48,8 @@ import static java.util.stream.Collectors.toList;
  * - (optional) path parameters
  */
 public class ConfigurationFactory {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
     // TODO Respect Path Params
     public <T extends Configuration> T createConfiguration(Class<T> pClazz, String configurationString) {
@@ -87,24 +91,16 @@ public class ConfigurationFactory {
                 final Field field = fields.get(configName);
                 if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
-                    try {
-                        // As the arguments might be URL encoded, be sure it's decoded.
-                        stringValue = URLDecoder.decode(stringValue, "utf-8");
-                        BeanUtils.setProperty(instance, field.getName(), toFieldValue(field, stringValue));
-                        missingFieldNames.remove(configName);
-                    } catch (InvocationTargetException | UnsupportedEncodingException e) {
-                        throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
-                    }
+                    // As the arguments might be URL encoded, be sure it's decoded.
+                    stringValue = URLDecoder.decode(stringValue, "UTF-8");
+                    FieldUtils.writeField(instance, field.getName(), toFieldValue(field, stringValue), true);
+                    missingFieldNames.remove(configName);
                 } else {
                     Object defaultValue = getDefaultValueFromAnnotation(field);
                     // TODO: Check if the default values type matches.
                     if (defaultValue != null) {
-                        try {
-                            BeanUtils.setProperty(instance, field.getName(), defaultValue);
-                            missingFieldNames.remove(configName);
-                        } catch (InvocationTargetException e) {
-                            throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
-                        }
+                        FieldUtils.writeField(instance, field.getName(), defaultValue, true);
+                        missingFieldNames.remove(configName);
                     }
                 }
             }
@@ -115,6 +111,8 @@ public class ConfigurationFactory {
             }
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Unable to access all fields from Configuration Class '" + pClazz.getSimpleName() + "'", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("Unsupported encoding");
         }
         return instance;
     }
@@ -136,7 +134,12 @@ public class ConfigurationFactory {
                 if (configType instanceof Class) {
                     Class<?> configClass = (Class<?>) configType;
                     if (configClass.isAssignableFrom(configuration.getClass())) {
-                        ((HasConfiguration) obj).setConfiguration(configuration);
+                        try {
+                            ((HasConfiguration) obj).setConfiguration(configuration);
+                        } catch(Throwable t) {
+                            LOGGER.error("Error setting the configuration", t);
+                            throw new PlcRuntimeException("Error setting the configuration", t);
+                        }
                     }
                 }
             }

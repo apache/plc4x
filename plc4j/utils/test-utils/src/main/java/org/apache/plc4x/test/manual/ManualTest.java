@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,8 +22,12 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcValues;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
@@ -33,10 +37,16 @@ import java.util.List;
 public abstract class ManualTest {
 
     private final String connectionString;
+    private final boolean testWrite;
     private final List<TestCase> testCases;
 
     public ManualTest(String connectionString) {
+        this(connectionString, false);
+    }
+
+    public ManualTest(String connectionString, boolean testWrite) {
         this.connectionString = connectionString;
+        this.testWrite = testWrite;
         testCases = new ArrayList<>();
     }
 
@@ -63,13 +73,50 @@ public abstract class ManualTest {
                 Assertions.assertNotNull(readResponse.getPlcValue(fieldName), fieldName);
                 if(readResponse.getPlcValue(fieldName) instanceof PlcList) {
                     PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
-                    List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
+                    List expectedValues;
+                    if (testCase.expectedReadValue instanceof PlcList) {
+                        PlcList expectedPlcList = (PlcList) testCase.expectedReadValue;
+                        expectedValues = expectedPlcList.getList();
+                    } else if(testCase.expectedReadValue instanceof List) {
+                        expectedValues = (List) testCase.expectedReadValue;
+                    } else {
+                        Assertions.fail("Got a list of values, but only expected one.");
+                        return;
+                    }
                     for (int j = 0; j < expectedValues.size(); j++) {
-                        Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), fieldName + "[" + j + "]");
+                        if (expectedValues.get(j) instanceof PlcValue) {
+                            Assertions.assertEquals(((PlcValue) expectedValues.get(j)).getObject(), plcList.getIndex(j).getObject(), fieldName + "[" + j + "]");
+                        } else {
+                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), fieldName + "[" + j + "]");
+                        }
                     }
                 } else {
-                    Assertions.assertEquals(
-                        testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString(), fieldName);
+                    if (testCase.expectedReadValue instanceof PlcValue) {
+                        Assertions.assertEquals(
+                            ((PlcValue) testCase.expectedReadValue).getObject(), readResponse.getPlcValue(fieldName).getObject(), fieldName);
+                    } else {
+                        Assertions.assertEquals(
+                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString(), fieldName);
+                    }
+                }
+
+                // Try writing the same value back to the PLC.
+                if(testWrite) {
+                    PlcValue plcValue;
+                    if(testCase.expectedReadValue instanceof PlcValue) {
+                        plcValue = ((PlcValue) testCase.expectedReadValue);
+                    } else {
+                        plcValue = PlcValues.of(testCase.expectedReadValue);
+                    }
+
+                    // Prepare the write request
+                    PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addItem(fieldName, testCase.address, plcValue).build();
+
+                    // Execute the write request
+                    PlcWriteResponse writeResponse = writeRequest.execute().get();
+
+                    // Check the result
+                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(fieldName));
                 }
             }
             System.out.println("Success");
@@ -87,7 +134,7 @@ public abstract class ManualTest {
                 for (TestCase testCase : shuffledTestcases) {
                     sb.append(testCase.address).append(", ");
                 }
-                System.out.println("       using order: " + sb.toString());
+                System.out.println("       using order: " + sb);
 
                 final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                 for (TestCase testCase : shuffledTestcases) {
@@ -103,17 +150,20 @@ public abstract class ManualTest {
                 Assertions.assertEquals(shuffledTestcases.size(), readResponse.getFieldNames().size());
                 for (TestCase testCase : shuffledTestcases) {
                     String fieldName = testCase.address;
-                    Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName));
-                    Assertions.assertNotNull(readResponse.getPlcValue(fieldName));
+                    Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName),
+                        "Field: " + fieldName);
+                    Assertions.assertNotNull(readResponse.getPlcValue(fieldName), "Field: " + fieldName);
                     if (readResponse.getPlcValue(fieldName) instanceof PlcList) {
                         PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
                         List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
                         for (int j = 0; j < expectedValues.size(); j++) {
-                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject());
+                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j),
+                                "Field: " + fieldName);
                         }
                     } else {
                         Assertions.assertEquals(
-                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString());
+                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).toString(),
+                            "Field: " + fieldName);
                     }
                 }
             }

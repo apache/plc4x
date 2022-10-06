@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -46,13 +46,13 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     private AtomicInteger tpduRefGen;
 
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
-        new S7VarRequestParameterItem[0]), null).getLengthInBytes();
+        Collections.emptyList()), null).getLengthInBytes();
     public static final int EMPTY_READ_RESPONSE_SIZE = new S7MessageResponseData(0, new S7ParameterReadVarResponse(
-        (short) 0), new S7PayloadReadVarResponse(new S7VarPayloadDataItem[0]), (short) 0, (short) 0).getLengthInBytes();
+        (short) 0), new S7PayloadReadVarResponse(Collections.emptyList(),null), (short) 0, (short) 0).getLengthInBytes();
     public static final int EMPTY_WRITE_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterWriteVarRequest(
-        new S7VarRequestParameterItem[0]), new S7PayloadWriteVarRequest(new S7VarPayloadDataItem[0])).getLengthInBytes();
+        Collections.emptyList()), new S7PayloadWriteVarRequest(Collections.emptyList(),null)).getLengthInBytes();
     public static final int EMPTY_WRITE_RESPONSE_SIZE = new S7MessageResponseData(0, new S7ParameterWriteVarResponse(
-        (short) 0), new S7PayloadWriteVarResponse(new S7VarPayloadStatusItem[0]), (short) 0, (short) 0).getLengthInBytes();
+        (short) 0), new S7PayloadWriteVarResponse(Collections.emptyList(),null), (short) 0, (short) 0).getLengthInBytes();
 
     public DefaultS7MessageProcessor(AtomicInteger tpduGenerator) {
         this.tpduRefGen = tpduGenerator;
@@ -122,7 +122,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 // Create a new sub message.
                 S7MessageRequest subMessage = new S7MessageRequest((short) tpduRefGen.getAndIncrement(),
                     new S7ParameterReadVarRequest(
-                        curRequestItems.toArray(new S7VarRequestParameterItem[0])),
+                        curRequestItems),
                     null);
                 result.add(subMessage);
 
@@ -153,7 +153,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
                         // Create a new sub message.
                         subMessage = new S7MessageRequest((short) tpduRefGen.getAndIncrement(),
-                            new S7ParameterReadVarRequest(new S7VarRequestParameterItem[] {subVarParameterItem}),
+                            new S7ParameterReadVarRequest(Collections.singletonList(subVarParameterItem)),
                             null);
                         result.add(subMessage);
 
@@ -178,7 +178,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             // Create a new sub message.
             S7MessageRequest subMessage = new S7MessageRequest((short) tpduRefGen.getAndIncrement(),
                 new S7ParameterReadVarRequest(
-                    curRequestItems.toArray(new S7VarRequestParameterItem[0])),
+                    curRequestItems),
                 null);
             result.add(subMessage);
         }

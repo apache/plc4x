@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,25 +18,22 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultUnknownField extends DefaultTaggedField implements UnknownField {
+import java.util.*;
 
-    private final TypeReference type;
+public class DefaultUnknownField extends DefaultTypedField implements UnknownField {
 
-    public DefaultUnknownField(String[] tags, TypeReference type) {
-        super(tags);
+    public DefaultUnknownField(Map<String, Term> attributes, SimpleTypeReference type) {
+        super(attributes);
         this.type = type;
     }
 
-    public TypeReference getType() {
-        return type;
+    @Override
+    public String toString() {
+        return "DefaultUnknownField{} " + super.toString();
     }
-
-    public Term[] getParams() {
-        return new Term[0];
-    }
-
 }

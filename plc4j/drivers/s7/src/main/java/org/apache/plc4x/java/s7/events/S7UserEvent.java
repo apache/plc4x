@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,10 +20,6 @@ package org.apache.plc4x.java.s7.events;
 
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
 
-/**
- *
- * @author cgarcia
- */
 public class S7UserEvent extends S7SysEvent {
   
     public S7UserEvent(S7PayloadDiagnosticMessage payload) {

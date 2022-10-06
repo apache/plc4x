@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,22 +19,12 @@
 package org.apache.plc4x.java.opcua.context;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageRequest;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageResponse;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class SecureChannelTransactionManager {
@@ -46,8 +36,8 @@ public class SecureChannelTransactionManager {
     private AtomicInteger activeTransactionId = new AtomicInteger(0);
     private Map<Integer, Transaction> queue = new HashMap<>();
 
-    public void submit(Consumer<Integer> onSend, Integer transactionId) {
-        LOGGER.info("New Transaction Submitted {}", activeTransactionId.get());
+    public synchronized void submit(Consumer<Integer> onSend, Integer transactionId) {
+        LOGGER.info("Active transaction Number {}", activeTransactionId.get());
         if (activeTransactionId.get() == transactionId) {
             onSend.accept(transactionId);
             int newTransactionId = getActiveTransactionIdentifier();
@@ -93,10 +83,10 @@ public class SecureChannelTransactionManager {
         return transactionId;
     }
 
-    public class Transaction {
+    public static class Transaction {
 
-        private Integer transactionId;
-        private Consumer<Integer> consumer;
+        private final Integer transactionId;
+        private final Consumer<Integer> consumer;
 
         public Transaction(Consumer<Integer> consumer, Integer transactionId) {
             this.consumer = consumer;

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,6 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Adapter with sensible defaults for a Netty Based Channel Factory.
@@ -39,6 +41,8 @@ import java.net.SocketAddress;
 public abstract class NettyChannelFactory implements ChannelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyChannelFactory.class);
+
+    private final Map<Channel, EventLoopGroup> eventLoops = new ConcurrentHashMap<>();
 
     /**
      * TODO should be removed together with the Constructor.
@@ -80,7 +84,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * otherwise a Runtime Exception will be produced by Netty
      * <p>
      * By Default Nettys {@link NioEventLoopGroup} is used.
-     * Transports which have to use a different EventLoopGroup have to override {@link #getEventLoopGroup()}.
+     * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
         return new NioEventLoopGroup();
@@ -91,7 +95,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         try {
             Bootstrap bootstrap = createBootstrap();
 
-            final EventLoopGroup workerGroup = getEventLoopGroup();
+            EventLoopGroup workerGroup = getEventLoopGroup();
             if (workerGroup != null) {
                 bootstrap.group(workerGroup);
             }
@@ -106,11 +110,20 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             f.addListener(future -> {
                 if (!future.isSuccess()) {
                     logger.info("Unable to connect, shutting down worker thread.");
-                    workerGroup.shutdownGracefully();
+                    if (workerGroup != null) {
+                        workerGroup.shutdownGracefully();
+                    }
                 }
             });
 
             final Channel channel = f.channel();
+
+            if (workerGroup != null) {
+                // Shut down the workerGroup when channel closing to avoid open too many files
+                channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
+                // Add to event-loop group
+                eventLoops.put(channel, workerGroup);
+            }
 
             // It seems the embedded channel operates differently.
             // Intentionally using the class name as we don't want to require a
@@ -126,8 +139,21 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException("Error creating channel.", e);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error creating channel.", e);
+        } catch (Throwable t) {
+            throw new PlcConnectionException("Error creating channel.", t);
+        }
+    }
+
+    @Override
+    public void closeEventLoopForChannel(Channel channel) {
+        if (eventLoops.containsKey(channel)) {
+            logger.info("Channel is closed, closing worker Group also");
+            EventLoopGroup eventExecutors = eventLoops.get(channel);
+            eventLoops.remove(channel);
+            eventExecutors.shutdownGracefully().awaitUninterruptibly();
+            logger.info("Worker Group was closed successfully!");
+        } else {
+            logger.warn("Trying to remove EventLoop for Channel {} but have none stored", channel);
         }
     }
 

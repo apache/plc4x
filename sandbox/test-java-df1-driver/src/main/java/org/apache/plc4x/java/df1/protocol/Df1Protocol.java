@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1Symbol;
 import org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame;
-import org.apache.plc4x.java.df1.readwrite.io.DF1SymbolIO;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
@@ -43,12 +42,10 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
     private final short localAddr;
     private final short remoteAddr;
-    private final DF1SymbolIO df1SymbolIO;
 
     public Df1Protocol(short localAddr, short remoteAddr) {
         this.localAddr = localAddr;
         this.remoteAddr = remoteAddr;
-        df1SymbolIO = new DF1SymbolIO();
     }
 
     @Override
@@ -61,8 +58,8 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
         DF1SymbolMessageFrame frame = new DF1SymbolMessageFrame(remoteAddr, localAddr, msg);
 
         // Serialize the message
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(frame.getLengthInBytes(), false);
-        DF1SymbolIO.staticSerialize(writeBuffer, frame);
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(frame.getLengthInBytes());
+        frame.serialize(writeBuffer);
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data
@@ -139,9 +136,9 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
         // Parse the message received from the DF1 device
         byte[] data = new byte[in.readableBytes()];
         in.readBytes(data);
-        ReadBuffer readBuffer = new ReadBufferByteBased(data, false);
+        ReadBuffer readBuffer = new ReadBufferByteBased(data);
 
-        resp = DF1SymbolIO.staticParse(readBuffer);
+        resp = DF1Symbol.staticParse(readBuffer);
 
 //        } while (readWasSucessfull);
 //        // TODO if unableto read

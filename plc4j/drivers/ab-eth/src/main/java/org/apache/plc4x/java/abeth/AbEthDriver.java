@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,7 +24,6 @@ import org.apache.plc4x.java.abeth.field.AbEthField;
 import org.apache.plc4x.java.abeth.field.AbEthFieldHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
-import org.apache.plc4x.java.abeth.readwrite.io.CIPEncapsulationPacketIO;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -81,7 +80,7 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
     @Override
     protected ProtocolStackConfigurer<CIPEncapsulationPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(CIPEncapsulationPacket.class, CIPEncapsulationPacketIO.class)
+        return SingleProtocolStackConfigurer.builder(CIPEncapsulationPacket.class, CIPEncapsulationPacket::staticParse)
             .withProtocol(AbEthProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .build();

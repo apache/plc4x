@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +27,7 @@ If you get any successful output, you probably don't need to do anything.
 
 Apt-based systems:
 
- sudo apt install git
+ sudo apt-get install git
 
 Yum based systems:
 
@@ -47,7 +47,7 @@ Using libpcap usually requires root privileges, however the java process can be 
 
  setcap cap_net_raw,cap_net_admin=eip /path/to/java
 
-Some times I had to set the uid to execute the java executable with the permissions of the owner (root) ... however this is quite sub-optimal solution.
+Sometimes I had to set the uid to execute the java executable with the permissions of the owner (root) ... however this is quite sub-optimal solution.
 
  chmod 4755 /path/to/java
 
@@ -67,22 +67,6 @@ Yum based systems:
 
  sudo yum install gcc
 
-=== g++
-
-Checking:
-
- g++ --version
-
-If you get any successful output, you probably don't need to do anything.
-
-Apt-based systems:
-
- sudo apt-get install g++
-
-Yum based systems:
-
- sudo yum install g++
-
 === dotnet
 
 Checking:
@@ -91,16 +75,15 @@ Checking:
 
 If you get any successful output, you probably don't need to do anything.
 
-Microsoft has documented what is needed to install `.Net SDK` https://dotnet.microsoft.com/download/linux-package-manager/rhel/sdk-2.2.203[here]
+Microsoft has documented what is needed to install `.Net SDK` https://dotnet.microsoft.com/en-us/download[here]
 
 For Ubuntu this would be:
 
- wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+ wget -q https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
  sudo dpkg -i packages-microsoft-prod.deb
-
  sudo apt-get install apt-transport-https
  sudo apt-get update
- sudo apt-get install dotnet-sdk-2.2
+ sudo apt-get install dotnet-sdk-6.0
 
 For other distributions, please select the distribution in the drop-down menu and follow the instructions there.
 
@@ -108,52 +91,27 @@ For other distributions, please select the distribution in the drop-down menu an
 
 Checking:
 
- python --version
+ python3 --version
 
-If you get a version of 2.7 or higher reported, you probably don't need to do anything.
+If you get a version of 3.7 or higher reported, you probably don't need to do anything.
 
 Apt-based systems:
 
- sudo apt-get install python-dev
+ sudo apt-get install python3
 
 Yum based systems:
 
- yum install gcc
- cd /usr/src
- wget https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz
- tar xzf Python-2.7.10.tgz
- cd Python-2.7.10
- ./configure
- make altinstall
+ yum intall python3
 
-=== bison
+=== Python venv
 
 Checking:
 
- bison --version
+ python3 -Im ensurepip
 
-If you get a version above 2.3 output, you don't need to do anything.
-
-Apt-based systems:
-
- sudo apt-get install bison
-
-Yum based systems:
-
- sudo yum install bison-devel
-
-=== flex
-
-Checking:
-
- flex --version
-
-If you get any successful output, you probably don't need to do anything.
+If you are getting anything else than a: `No module named ensurepip`, you're ok.
+It seems that this manually needs to be installed on some systems.
 
 Apt-based systems:
 
- sudo apt-get install flex
-
-Yum based systems:
-
- sudo yum install flex
+ sudo apt-get install python3-venv

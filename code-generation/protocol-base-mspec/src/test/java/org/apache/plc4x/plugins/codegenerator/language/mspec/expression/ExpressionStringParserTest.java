@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,7 +32,7 @@ import static org.hamcrest.Matchers.*;
 
 class ExpressionStringParserTest {
 
-    ExpressionStringParser SUT = new ExpressionStringParser();
+    ExpressionStringParser SUT = new ExpressionStringParser((typeRefName, setTypeDefinition) -> {}, "hurz");
 
     @Test
     void parseSimple() {
@@ -147,28 +148,28 @@ class ExpressionStringParserTest {
     }
 
     void assertVariableLiteral(Term term, String name) {
-        assertVariableLiteral(term, name, null, null, -1);
+        assertVariableLiteral(term, name, null, null, null);
     }
 
     void assertVariableLiteral(Term term, String name, Consumer<List<Term>> argsAsserter, Consumer<VariableLiteral> childAsserter) {
-        assertVariableLiteral(term, name, argsAsserter, childAsserter, -1);
+        assertVariableLiteral(term, name, argsAsserter, childAsserter, null);
     }
 
-    void assertVariableLiteral(Term term, String name, Consumer<List<Term>> argsAsserter, Consumer<VariableLiteral> childAsserter, int index) {
+    void assertVariableLiteral(Term term, String name, Consumer<List<Term>> argsAsserter, Consumer<VariableLiteral> childAsserter, Integer index) {
         assertThat(term, not(nullValue()));
         assertThat(term, instanceOf(VariableLiteral.class));
         VariableLiteral variableLiteral = (VariableLiteral) term;
         assertThat(variableLiteral.getName(), is(name));
-        assertThat(variableLiteral.getIndex(), is(index));
+        assertThat(variableLiteral.getIndex().orElse(null), is(index));
         if (argsAsserter != null) {
-            argsAsserter.accept(variableLiteral.getArgs());
+            argsAsserter.accept(variableLiteral.getArgs().orElseThrow(RuntimeException::new));
         } else {
-            assertThat(variableLiteral.getArgs(), nullValue());
+            assertThat(variableLiteral.getArgs().orElse(null), nullValue());
         }
         if (childAsserter != null) {
-            childAsserter.accept(variableLiteral.getChild());
+            childAsserter.accept(variableLiteral.getChild().orElseThrow(RuntimeException::new));
         } else {
-            assertThat(variableLiteral.getChild(), nullValue());
+            assertThat(variableLiteral.getChild().orElse(null), nullValue());
         }
     }
 

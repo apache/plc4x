@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,11 +19,9 @@
 package org.apache.plc4x.test.migration;
 
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
 import org.slf4j.Logger;
@@ -37,8 +35,6 @@ import java.util.List;
 
 public class MessageResolver {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MessageResolver.class);
-
     /**
      * Returns the messageIO class based on a configured package. convention out of {@code protocolName} {@code outputFlavor} and {@code name}.
      * If this fails its tries a fallback using the deprecated attribute {@code className}
@@ -49,103 +45,71 @@ public class MessageResolver {
      * @throws DriverTestsuiteException if a MessageIO couldn't be found.
      */
     @SuppressWarnings("rawtypes")
-    public static MessageIO getMessageIO(Map<String, String> options, String name) throws DriverTestsuiteException {
+    public static MessageInput<?> getMessageInput(Map<String, String> options, String name) throws DriverTestsuiteException {
         try {
-            return MessageResolver.getMessageIOType(options, name).getMessageIo().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return MessageResolver.getMessageIOType(options, name).getMessageInput();
+        } catch (ClassNotFoundException e) {
             throw new DriverTestsuiteException(e);
         }
     }
 
-    public static MessageIO getMessageIOStaticLinked(Map<String, String> options, String typeName) throws ParserSerializerTestsuiteException {
+    public static MessageInput<?> getMessageIOStaticLinked(Map<String, String> options, String typeName) throws ParserSerializerTestsuiteException {
         try {
-            TypePair typePair = getMessageIOType(options, typeName);
-            Class<?> ioRootClass = typePair.getType();
-            Class<?> ioClass = typePair.getMessageIo();
-            Method staticParseMethod = null;
-            Method staticSerializeMethod = null;
+            TypeMessageInput typeMessageInput = getMessageIOType(options, typeName);
             final List<Class<?>> parameterTypes = new LinkedList<>();
-            for (Method method : ioClass.getMethods()) {
-                if (method.getName().equals("staticParse") && Modifier.isStatic(method.getModifiers()) &&
-                    (method.getReturnType() == ioRootClass)) {
-                    staticParseMethod = method;
-
+            for (Method method : typeMessageInput.type.getMethods()) {
+                int parameterCount = method.getParameterCount();
+                boolean isNonGenericParse = parameterCount > 1 && method.getParameterTypes()[parameterCount - 1] != Object[].class;
+                if (method.getName().equals("staticParse") && Modifier.isStatic(method.getModifiers()) && isNonGenericParse) {
                     // Get a list of additional parameter types for the parser.
-                    for (int i = 1; i < method.getParameterCount(); i++) {
-                        Class<?> parameterType = staticParseMethod.getParameterTypes()[i];
+                    for (int i = 1; i < parameterCount; i++) {
+                        Class<?> parameterType = method.getParameterTypes()[i];
                         parameterTypes.add(parameterType);
                     }
-                }
-                if (method.getName().equals("staticSerialize") && Modifier.isStatic(method.getModifiers()) &&
-                    (method.getParameterTypes()[1] == ioRootClass)) {
-                    staticSerializeMethod = method;
+                    break;
                 }
             }
-            if ((staticParseMethod == null) || (staticSerializeMethod == null)) {
-                throw new ParserSerializerTestsuiteException(
-                    "Unable to instantiate IO component. Missing static parse or serialize methods.");
-            }
-            final Method parseMethod = staticParseMethod;
-            final Method serializeMethod = staticSerializeMethod;
-            return new MessageIO() {
-                @Override
-                public Object parse(ReadBuffer io, Object... args) throws ParseException {
-                    try {
-                        Object[] argValues = new Object[args.length + 1];
-                        argValues[0] = io;
-                        for (int i = 1; i <= args.length; i++) {
-                            String parameterValue = (String) args[i - 1];
-                            Class<?> parameterType = parameterTypes.get(i - 1);
-                            if (parameterType == Boolean.class) {
-                                argValues[i] = Boolean.parseBoolean(parameterValue);
-                            } else if (parameterType == Byte.class) {
-                                argValues[i] = Byte.parseByte(parameterValue);
-                            } else if (parameterType == Short.class) {
-                                argValues[i] = Short.parseShort(parameterValue);
-                            } else if (parameterType == Integer.class) {
-                                argValues[i] = Integer.parseInt(parameterValue);
-                            } else if (parameterType == Long.class) {
-                                argValues[i] = Long.parseLong(parameterValue);
-                            } else if (parameterType == Float.class) {
-                                argValues[i] = Float.parseFloat(parameterValue);
-                            } else if (parameterType == Double.class) {
-                                argValues[i] = Double.parseDouble(parameterValue);
-                            } else if (parameterType == String.class) {
-                                argValues[i] = parameterValue;
-                            } else if (Enum.class.isAssignableFrom(parameterType)) {
-                                argValues[i] = Enum.valueOf((Class<? extends Enum>) parameterType, parameterValue);
-                            } else {
-                                throw new ParseException("Currently unsupported parameter type");
-                            }
-                        }
-
-                        return parseMethod.invoke(null, argValues);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new ParseException("error parsing", e);
+            return (io, args) -> {
+                Object[] argValues = new Object[args.length];
+                for (int i = 0; i < args.length; i++) {
+                    String parameterValue = (String) args[i];
+                    Class<?> parameterType = parameterTypes.get(i);
+                    if (parameterType == Boolean.class) {
+                        argValues[i] = Boolean.parseBoolean(parameterValue);
+                    } else if (parameterType == Byte.class) {
+                        argValues[i] = Byte.parseByte(parameterValue);
+                    } else if (parameterType == Short.class) {
+                        argValues[i] = Short.parseShort(parameterValue);
+                    } else if (parameterType == Integer.class) {
+                        argValues[i] = Integer.parseInt(parameterValue);
+                    } else if (parameterType == Long.class) {
+                        argValues[i] = Long.parseLong(parameterValue);
+                    } else if (parameterType == Float.class) {
+                        argValues[i] = Float.parseFloat(parameterValue);
+                    } else if (parameterType == Double.class) {
+                        argValues[i] = Double.parseDouble(parameterValue);
+                    } else if (parameterType == String.class) {
+                        argValues[i] = parameterValue;
+                    } else if (Enum.class.isAssignableFrom(parameterType)) {
+                        argValues[i] = Enum.valueOf((Class<? extends Enum>) parameterType, parameterValue);
+                    } else {
+                        throw new ParseException("Currently unsupported parameter type");
                     }
                 }
-
-                @Override
-                public void serialize(WriteBuffer io, Object value, Object... args) throws ParseException {
-                    try {
-                        serializeMethod.invoke(null, io, value);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new ParseException("error serializing", e);
-                    }
-                }
+                return typeMessageInput.getMessageInput().parse(io, argValues);
             };
-        } catch (DriverTestsuiteException e) {
-            throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e.getCause());
+        } catch (DriverTestsuiteException | ClassNotFoundException e) {
+            throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private static TypePair getMessageIOType(Map<String, String> options, String typeName) throws DriverTestsuiteException {
+    private static TypeMessageInput getMessageIOType(Map<String, String> options, String typeName) throws DriverTestsuiteException, ClassNotFoundException {
         String extraMessage = "";
         if (options.containsKey("package")) {
             try {
                 return lookup(options.get("package"), typeName);
-            } catch (ClassNotFoundException e) {
+            } catch (NoSuchMethodException e) {
                 extraMessage = "custom package '" + options.get("package") + "' and ";
             }
         }
@@ -155,39 +119,48 @@ public class MessageResolver {
         String classPackage = String.format("org.apache.plc4x.java.%s.%s", protocolName, StringUtils.replace(outputFlavor, "-", ""));
         try {
             return lookup(classPackage, typeName);
-        } catch (ClassNotFoundException e) {
+        } catch (NoSuchMethodException e) {
             throw new DriverTestsuiteException("Could not find " + typeName + " in " + extraMessage + "standard package '" + classPackage + "'");
         }
     }
 
-    private static TypePair lookup(String driverPackage, String typeName) throws ClassNotFoundException {
+    private static TypeMessageInput lookup(String driverPackage, String typeName) throws ClassNotFoundException, NoSuchMethodException {
         try {
             Package.getPackage(driverPackage);
         } catch (RuntimeException e) {
             throw new DriverTestsuiteException("Invalid or non existent package detected: " + driverPackage, e);
         }
         String ioRootClassName = driverPackage + "." + typeName;
-        String ioClassName = driverPackage + ".io." + typeName + "IO";
         // make sure both type and it's IO are present
-        return new TypePair(
-            Class.forName(ioRootClassName),
-            (Class<? extends MessageIO<?, ?>>) Class.forName(ioClassName)
+        Class<? extends Message> messageType = (Class<? extends Message>) Class.forName(ioRootClassName);
+        Method staticParse = messageType.getMethod("staticParse", ReadBuffer.class, Object[].class);
+        return new TypeMessageInput(
+            messageType,
+            (io, args) -> {
+                try {
+                    return staticParse.invoke(null, io, args);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         );
     }
 
-    static class TypePair {
-        private final Class<?> type;
-        private final Class<? extends MessageIO<?, ?>> messageIo;
+    static class TypeMessageInput {
+        private final Class<? extends Message> type;
+        private final MessageInput<?> messageInput;
 
-        TypePair(Class<?> type, Class<? extends MessageIO<?, ?>> messageIo) {
+        TypeMessageInput(Class<? extends Message> type, MessageInput<?> messageInput) {
             this.type = type;
-            this.messageIo = messageIo;
+            this.messageInput = messageInput;
         }
+
         Class<?> getType() {
             return type;
         }
-        Class<? extends MessageIO<?, ?>> getMessageIo() {
-            return messageIo;
+
+        MessageInput<?> getMessageInput() {
+            return messageInput;
         }
     }
 

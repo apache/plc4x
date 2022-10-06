@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -169,7 +169,7 @@ int main(int argc, char** argv) {
         if (loopCount == 1 || rtMalloc) {
           result = plc4c_connection_create_write_request(connection, &write_request);
           CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
-          loopback_data = plc4c_data_create_float_array(valuetowrite,NREAD);
+          loopback_data = plc4c_data_create_real_array(valuetowrite,NREAD);
           valuetowrite[(loopCount-1)%NREAD]++;
           result = plc4c_write_request_add_item(write_request, ITEM_STR, loopback_data);
         } else {
@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
 
       { // WRITE_RESPONSE_RECEIVED scope
         write_response = plc4c_write_request_execution_get_response(write_request_execution);
-        CHECK_RESULT(write_response == NULL, -1,"plc4c_write_request_execution_get_response failed (no responce)\n");
+        CHECK_RESULT(write_response == NULL, -1,"plc4c_write_request_execution_get_response failed (no response)\n");
         cur_element = plc4c_utils_list_tail(write_response->response_items);
         idx = 0;
         while (cur_element != NULL) {

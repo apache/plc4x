@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,37 +18,44 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultConstField extends DefaultTaggedField implements ConstField {
+import java.util.*;
 
-    private final TypeReference type;
-    private final String name;
-    private final Object referenceValue;
+public class DefaultConstField extends DefaultTypedNamedField implements ConstField {
 
-    public DefaultConstField(String[] tags, TypeReference type, String name, Object referenceValue) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.referenceValue = referenceValue;
+    private final Literal referenceValue;
+
+    public DefaultConstField(Map<String, Term> attributes, String name, Literal referenceValue) {
+        super(attributes, name);
+        this.referenceValue = Objects.requireNonNull(referenceValue);
     }
 
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Object getReferenceValue() {
+    public Literal getReferenceValue() {
         return referenceValue;
     }
 
-    public Term[] getParams() {
-        return new Term[0];
+    @Override
+    public String toString() {
+        return "DefaultConstField{" +
+            "referenceValue=" + referenceValue +
+            "} " + super.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultConstField that = (DefaultConstField) o;
+        return Objects.equals(referenceValue, that.referenceValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), referenceValue);
+    }
 }

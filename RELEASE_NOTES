@@ -1,4 +1,54 @@
 ==============================================================
+Apache PLC4X 0.10.0
+==============================================================
+
+A lot of the work in this version went into refactoring and
+cleaning up our code generation. The code generation itself is
+now a lot cleaner and simpler as well as the code generated
+for Java. We also added a number of new field-types to allow
+implementing more sophisticated protocols. PLC4C now should
+also support all of the constructs mspec has to offer.
+
+New Features
+------------
+
+- Implemented a `PLC4X-Server` and `PLC4X-Driver` that allows
+  using the server as a proxy for communicating with PLCs.
+
+- The Modbus driver is now also available in the variants:
+  "modbus-rtu" and "modbus-ascii" (Both using Serial
+  communication, which however can be tunneled through a
+  "tcp" and "udp" transport)
+
+- The KNX driver in Java now supports reading "knxproj" files
+  exported from the new ETS version 6.
+
+- The NiFi integration module was updated and now is a
+  Records-based NiFi Processor
+
+Incompatible changes
+--------------------
+
+- The name of the Modbus TCP driver was changed from "modbus"
+  to "modbus-tcp".
+
+- Removed the Apache Edgent (incubating) integration and
+  examples related, as Edgent is abandoned and there were
+  CVEs reported, which will not be fixed.
+
+- We have replaced the BitString types with BYTE, WORD, DWORD,
+  and LWORD which generally match their unsigned integer
+  counterparts. So we are no longer returning lists of boolean
+  values for any of these types.
+
+Bug Fixes
+---------
+
+- Fixed a big bug in the KNX Datapoint decoding, which caused
+  byte-aligned data types to parse with an offset of 8 bit.
+  (This bug affected both the Java and the Go driver)
+
+==============================================================
 Apache PLC4X 0.9.0
 ==============================================================
 
@@ -11,9 +61,6 @@ New Features
 - Permit customized package names for code generation
 
 - Added an initial draft of a Discover and Browse API to PLC4J
-
-- Replaced the OPC-UA driver using Eclipse Milo with a our own, fully
-  generated, version
 
 - PLC4Go now supports many more drivers
 
@@ -157,7 +204,7 @@ New Features
 - The new S7 Driver supports writing multiple entries in one
   request (The API allowed this from the beginning now not
   every item is wrapped in a single request. It should bring
-  significant performance gains when writing multiple vlaues)
+  significant performance gains when writing multiple values)
 - S7 Driver now supports String datatypes.
 - OSGi : Implementation of Drivers/Transports as OSGi services
   to be able to use them in an OSGi container.
@@ -430,4 +477,4 @@ Bug Fixes
 PLC4X-20	Jacoco doesn't seem to be working at all
 PLC4X-21	Code coverage doesn't seem to work
 PLC4X-47	S7 driver silently ignores surplus ReadRequestItems
-PLC4X-48	S7 driver failes to parse response with multiple items
+PLC4X-48	S7 driver fails to parse response with multiple items

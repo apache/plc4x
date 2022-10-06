@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,15 +19,20 @@
 
 #ifndef PLC4C_DRIVER_S7_STATIC_H
 #define PLC4C_DRIVER_S7_STATIC_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <time.h>
 
 /*
  *
  *   Static functions
  *
  */
+uint8_t plc4c_spi_evaluation_helper_str_len(char* str);
 
 uint16_t plc4c_s7_read_write_event_item_length(plc4c_spi_read_buffer* io, uint16_t valueLength);
 
@@ -59,4 +64,7 @@ time_t plc4c_s7_read_write_parse_tia_time_of_day(plc4c_spi_read_buffer* io);
 
 time_t plc4c_s7_read_write_parse_tia_date_time(plc4c_spi_read_buffer* io);
 
+#ifdef __cplusplus
+}
+#endif
 #endif  // PLC4C_DRIVER_S7_STATIC_H

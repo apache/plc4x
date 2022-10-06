@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,33 +18,20 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultSimpleField extends DefaultTaggedField implements SimpleField {
+import java.util.Map;
 
-    private final TypeReference type;
-    private final String name;
-    private final Term[] params;
+public class DefaultSimpleField extends DefaultTypedNamedField implements SimpleField {
 
-    public DefaultSimpleField(String[] tags, TypeReference type, String name, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.params = params;
+    public DefaultSimpleField(Map<String, Term> attributes, String name) {
+        super(attributes, name);
     }
 
-    public TypeReference getType() {
-        return type;
+    @Override
+    public String toString() {
+        return "DefaultSimpleField{} " + super.toString();
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public Term[] getParams() {
-        return params;
-    }
-
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,39 +18,46 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.EnumField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.EnumTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultEnumField extends DefaultTaggedField implements EnumField {
+import java.util.Map;
+import java.util.Objects;
 
-    private final TypeReference type;
-    private final String name;
+public class DefaultEnumField extends DefaultTypedNamedField implements EnumField {
+
     private final String fieldName;
-    private final Term[] params;
 
-    public DefaultEnumField(String[] tags, TypeReference type, String name, String fieldName, Term[] params) {
-        super(tags);
+    public DefaultEnumField(Map<String, Term> attributes, EnumTypeReference type, String name, String fieldName) {
+        super(attributes, name);
+        this.fieldName = Objects.requireNonNull(fieldName);
         this.type = type;
-        this.name = name;
-        this.fieldName = fieldName;
-        this.params = params;
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getFieldName() {
         return fieldName;
     }
 
-    public Term[] getParams() {
-        return params;
+    @Override
+    public String toString() {
+        return "DefaultEnumField{" +
+            "fieldName='" + fieldName + '\'' +
+            "} " + super.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultEnumField that = (DefaultEnumField) o;
+        return Objects.equals(fieldName, that.fieldName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), fieldName);
+    }
 }

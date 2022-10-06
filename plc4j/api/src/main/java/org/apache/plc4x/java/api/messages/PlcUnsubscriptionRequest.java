@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -37,15 +37,25 @@ public interface PlcUnsubscriptionRequest extends PlcRequest {
         PlcUnsubscriptionRequest build();
 
         /**
-         * TODO document me:
+         * {@link PlcSubscriptionHandle} that should be removed from the subscription
          *
-         * @param plcSubscriptionHandle
-         * @return
+         * @param plcSubscriptionHandle {@link PlcSubscriptionHandle} to be removed
          */
         PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle);
 
+        /**
+         * {@link PlcSubscriptionHandle}s that should be removed from the subscription
+         *
+         * @param plcSubscriptionHandle1 {@link PlcSubscriptionHandle} to be removed
+         * @param plcSubscriptionHandles {@link PlcSubscriptionHandle} to be removed
+         */
         PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles);
 
+        /**
+         * {@link PlcSubscriptionHandle}s that should be removed from the subscription
+         *
+         * @param plcSubscriptionHandle {@link PlcSubscriptionHandle} to be removed
+         */
         PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle);
     }
 

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.ads.field;
 
-import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -42,24 +39,24 @@ public class DirectAdsField implements AdsField {
 
     private final long indexOffset;
 
-    private final AdsDataType adsDataType;
+    private final String adsDataTypeName;
 
     private final int numberOfElements;
 
-    public DirectAdsField(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements) {
+    public DirectAdsField(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
         //ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
         //ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
-        this.adsDataType = Objects.requireNonNull(adsDataType);
+        this.adsDataTypeName = Objects.requireNonNull(adsDataTypeName);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
         }
     }
 
-    public static DirectAdsField of(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements) {
-        return new DirectAdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
+    public static DirectAdsField of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
+        return new DirectAdsField(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
     }
 
     public static DirectAdsField of(String address) {
@@ -89,12 +86,11 @@ public class DirectAdsField implements AdsField {
         }
 
         String adsDataTypeString = matcher.group("adsDataType");
-        AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
 
-        return new DirectAdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
+        return new DirectAdsField(indexGroup, indexOffset, adsDataTypeString, numberOfElements);
     }
 
     public static boolean matches(String address) {
@@ -109,14 +105,8 @@ public class DirectAdsField implements AdsField {
         return indexOffset;
     }
 
-    @Override
-    public AdsDataType getAdsDataType() {
-        return adsDataType;
-    }
-
-    @Override
     public String getPlcDataType() {
-        return adsDataType.toString();
+        return adsDataTypeName;
     }
 
     @Override
@@ -151,7 +141,7 @@ public class DirectAdsField implements AdsField {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());

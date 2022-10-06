@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -32,22 +32,30 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
 
-    private final boolean bigEndian;
+    private final ByteOrder byteOrder;
     private final Object[] parserArgs;
-    private final MessageIO<T, T> io;
+    private final MessageInput<T> messageInput;
+    private final MessageOutput<T> messageOutput;
 
-    protected GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz, boolean bigEndian, Object[] parserArgs) {
-        super(clazz);
-        this.io = io;
-        this.bigEndian = bigEndian;
+    protected GeneratedDriverByteToMessageCodec(MessageInput<T> messageInput, MessageOutput<T> messageOutput,
+                                                Class<T> outboundMessageType, ByteOrder byteOrder, Object[] parserArgs) {
+        super(outboundMessageType);
+        this.messageInput = messageInput;
+        this.messageOutput = messageOutput;
+        this.byteOrder = byteOrder;
         this.parserArgs = parserArgs;
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) {
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(packet.getLengthInBytes(), !bigEndian);
-            io.serialize(buffer, packet);
+            WriteBufferByteBased buffer;
+            if(messageOutput != null) {
+                buffer = messageOutput.serialize(packet);
+            } else {
+                buffer = new WriteBufferByteBased(packet.getLengthInBytes(), byteOrder);
+                packet.serialize(buffer);
+            }
             byteBuf.writeBytes(buffer.getData());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
@@ -73,10 +81,10 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                 // Read the packet data into a new ReadBuffer
                 bytes = new byte[packetSize];
                 byteBuf.readBytes(bytes);
-                ReadBuffer readBuffer = new ReadBufferByteBased(bytes, !bigEndian);
+                ReadBuffer readBuffer = new ReadBufferByteBased(bytes, byteOrder);
 
                 // Parse the packet.
-                T packet = io.parse(readBuffer, parserArgs);
+                T packet = messageInput.parse(readBuffer, parserArgs);
 
                 // Pass the packet to the pipeline.
                 out.add(packet);

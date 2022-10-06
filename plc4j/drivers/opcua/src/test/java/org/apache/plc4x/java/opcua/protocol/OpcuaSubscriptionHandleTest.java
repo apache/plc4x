@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,17 +22,21 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
-import org.assertj.core.api.Assertions;
+import org.apache.plc4x.test.DisableOnParallelsVmFlag;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- */
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+@DisableOnParallelsVmFlag
 public class OpcuaSubscriptionHandleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
@@ -80,13 +84,28 @@ public class OpcuaSubscriptionHandleTest {
     @BeforeAll
     public static void setup() {
         try {
+            // When switching JDK versions from a newer to an older version,
+            // this can cause the server to not start correctly.
+            // Deleting the directory makes sure the key-store is initialized correctly.
+            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+            try {
+                Files.delete(securityBaseDir);
+            } catch (Exception e) {
+                // Ignore this ...
+            }
+
             exampleServer = new ExampleServer();
             exampleServer.startup().get();
             //Connect
             opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
         } catch (Exception e) {
-
+            e.printStackTrace();
+            try {
+                exampleServer.shutdown().get();
+            } catch (Exception j) {
+                j.printStackTrace();
+            }
         }
     }
 
@@ -99,7 +118,7 @@ public class OpcuaSubscriptionHandleTest {
 
             exampleServer.shutdown().get();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
