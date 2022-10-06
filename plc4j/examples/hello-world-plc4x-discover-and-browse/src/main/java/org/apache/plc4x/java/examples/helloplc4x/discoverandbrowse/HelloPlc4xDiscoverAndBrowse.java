@@ -35,33 +35,22 @@ public class HelloPlc4xDiscoverAndBrowse {
     public static void main(String[] args) throws Exception {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)
         PlcDriverManager driverManager = new PlcDriverManager();
-        for (String protocolCode : driverManager.listDrivers()) {
-            PlcDriver driver = driverManager.getDriver(protocolCode);
-            if (driver.getMetadata().canDiscover()) {
-                logger.info("Performing discovery for {} protocol", driver.getProtocolName());
-
-                PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
-
-                discoveryRequest.executeWithHandler(discoveryItem -> {
-                    logger.info(" - Found device with connection-url {}", discoveryItem.getConnectionUrl());
-                    try (PlcConnection connection = driverManager.getConnection(discoveryItem.getConnectionUrl())) {
-                        if (connection.getMetadata().canBrowse()) {
-                            PlcBrowseRequest browseRequest = connection.browseRequestBuilder().build();
-                            browseRequest.execute().whenComplete((browseResponse, throwable) -> {
-                                if (throwable != null) {
-                                    throwable.printStackTrace();
-                                } else {
-                                    for (PlcBrowseItem value : browseResponse.getValues()) {
-                                        outputBrowseItem(value, 0);
-                                    }
-                                }
-                            });
+        //try (PlcConnection connection = driverManager.getConnection("opcua:tcp://missy-nuc:53530/plc4x")) {
+        try (PlcConnection connection = driverManager.getConnection("profinet:raw://192.168.90.128")) {
+            if (connection.getMetadata().canBrowse()) {
+                PlcBrowseRequest browseRequest = connection.browseRequestBuilder().build();
+                browseRequest.execute().whenComplete((browseResponse, throwable) -> {
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                    } else {
+                        for (PlcBrowseItem value : browseResponse.getValues()) {
+                            outputBrowseItem(value, 0);
                         }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                 });
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

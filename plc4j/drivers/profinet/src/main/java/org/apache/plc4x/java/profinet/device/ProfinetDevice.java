@@ -61,6 +61,15 @@ public class ProfinetDevice {
 
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
 
+    private static final Uuid ARUUID;
+    static {
+        try {
+            ARUUID = new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51"));
+        } catch (DecoderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private void closeUDPSocket() {
         // Handle the closing of the connection, might need to send some messages beforehand.
@@ -70,7 +79,7 @@ public class ProfinetDevice {
         }
     }
 
-    private boolean createUDPSocket() {
+    private boolean createUdpSocket() {
         if (state != ProfinetDeviceState.IDLE) {
             closeUDPSocket();
         }
@@ -81,6 +90,7 @@ public class ProfinetDevice {
         }
 
         rawSocketChannel = (RawSocketChannel) channel;
+
 
         // Create an udp socket
         try {
@@ -94,15 +104,27 @@ public class ProfinetDevice {
     }
 
     public boolean onConnect() {
-        if (!createUDPSocket()) {
+        if (!createUdpSocket()) {
             // Unable to create UDP connection
             return false;
         }
 
-        ProfinetMessageWrapper.sendMessage(
+        ProfinetMessageWrapper.sendUdpMessage(
             new CreateConnection(),
             this
         );
+
+        ProfinetMessageWrapper.sendUdpMessage(
+            new WriteParameters(),
+            this
+        );
+
+        ProfinetMessageWrapper.sendUdpMessage(
+            new WriteParametersEnd(),
+            this
+        );
+
+
 
         return false;
     }
@@ -171,6 +193,10 @@ public class ProfinetDevice {
         return this.udpSocket;
     }
 
+    public RawSocketChannel getRawSocket() {
+        return this.rawSocketChannel;
+    }
+
     public InetAddress getIpAddress() throws UnknownHostException {
         return InetAddress.getByName(this.ipAddress);
     }
@@ -179,7 +205,7 @@ public class ProfinetDevice {
         return DEFAULT_UDP_PORT;
     }
 
-    public class CreateConnection implements ProfinetCallable {
+    public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
 
         public DceRpc_Packet create() throws PlcException {
             try {
@@ -298,4 +324,106 @@ public class ProfinetDevice {
             }
         }
     }
+
+    public class WriteParameters implements ProfinetCallable<DceRpc_Packet> {
+        public DceRpc_Packet create() {
+            return new DceRpc_Packet(
+                DceRpc_PacketType.REQUEST, true, false, false,
+                IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
+                new DceRpc_InterfaceUuid_DeviceInterface(),
+                uuid,
+                0, 1, DceRpc_Operation.WRITE,
+                new PnIoCm_Packet_Req(16696, 16696, 0, 244,
+                    Arrays.asList(
+                        new IODWriteRequestHeader(
+                            (short) 1,
+                            (short) 0,
+                            0,
+                            ARUUID,
+                            0x00000000,
+                            0x0000,
+                            0x0000,
+                            0xe040,
+                            180
+                        ),
+                        new IODWriteRequestHeader(
+                            (short) 1,
+                            (short) 0,
+                            1,
+                            ARUUID,
+                            0x00000000,
+                            0x0000,
+                            0x8000,
+                            0x8071,
+                            12
+                        ),
+                        new PDInterfaceAdjust(
+                            (short) 1,
+                            (short) 0,
+                            MultipleInterfaceModeNameOfDevice.NAME_PROVIDED_BY_LLDP
+                        )
+                    ))
+            );
+        }
+
+        @Override
+        public void handle(DceRpc_Packet packet) throws PlcException {
+            logger.debug("Received a Write Parameter Response");
+        }
+    }
+
+    public class WriteParametersEnd implements ProfinetCallable<DceRpc_Packet> {
+        public DceRpc_Packet create() {
+            return new DceRpc_Packet(
+                DceRpc_PacketType.REQUEST, true, false, false,
+                IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
+                new DceRpc_InterfaceUuid_DeviceInterface(),
+                uuid,
+                0, 1, DceRpc_Operation.CONTROL,
+                new PnIoCm_Packet_Req(16696, 16696, 0, 244,
+                    Arrays.asList(
+                        new PnIoCm_Control_Request(
+                            (short) 1,
+                            (short) 0,
+                            ARUUID,
+                            0x0001,
+                            0x0001
+                        )
+                    ))
+            );
+        }
+
+        @Override
+        public void handle(DceRpc_Packet packet) throws PlcException {
+            logger.debug("Received a Write Parameter End Response");
+        }
+    }
+
+    public class CyclicData implements ProfinetCallable<Ethernet_Frame> {
+        public Ethernet_Frame create() {
+            return new Ethernet_Frame(
+                macAddress,
+                macAddress,
+                new Ethernet_FramePayload_PnDcp(
+                new PnDcp_Pdu_RealTimeCyclic(
+                    0x8000,
+                    new PnIo_CyclicServiceDataUnit((short) 0,(short) 0, (short) 0),
+                    16696,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false)));
+        }
+
+        @Override
+        public void handle(Ethernet_Frame packet) throws PlcException {
+            logger.debug("Received a Write Parameter End Response");
+        }
+    }
+
+
 }
