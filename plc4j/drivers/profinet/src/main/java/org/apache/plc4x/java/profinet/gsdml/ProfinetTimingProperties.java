@@ -14,4 +14,11 @@ public class ProfinetTimingProperties {
     @JacksonXmlProperty(isAttribute=true, localName="ReductionRatio")
     private String reductionRatio;
 
+    public String getSendClock() {
+        return sendClock;
+    }
+
+    public String getReductionRatio() {
+        return reductionRatio;
+    }
 }

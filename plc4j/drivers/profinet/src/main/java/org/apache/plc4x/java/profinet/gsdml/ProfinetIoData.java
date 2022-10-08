@@ -20,4 +20,11 @@ public class ProfinetIoData {
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetIoDataOutput> output;
 
+    public List<ProfinetIoDataInput> getInput() {
+        return input;
+    }
+
+    public List<ProfinetIoDataOutput> getOutput() {
+        return output;
+    }
 }

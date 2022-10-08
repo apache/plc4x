@@ -11,4 +11,7 @@ public class ProfinetGraphics {
     @JacksonXmlProperty(localName="GraphicItemRef")
     private ProfinetGraphicsItemRef GraphicItemRef;
 
+    public ProfinetGraphicsItemRef getGraphicItemRef() {
+        return GraphicItemRef;
+    }
 }

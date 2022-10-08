@@ -22,4 +22,19 @@ public class ProfinetParameterRecordDataItem {
     @JacksonXmlProperty(localName="Ref")
     private ProfinetRef ref;
 
+    public int getIndex() {
+        return index;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public ProfinetTextId getName() {
+        return name;
+    }
+
+    public ProfinetRef getRef() {
+        return ref;
+    }
 }

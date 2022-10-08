@@ -29,5 +29,31 @@ public class ProfinetRef {
     @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
+    public String getDataType() {
+        return dataType;
+    }
 
+    public int getByteOffset() {
+        return byteOffset;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public String getAllowedValues() {
+        return allowedValues;
+    }
+
+    public boolean isChangeable() {
+        return changeable;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public String getTextId() {
+        return textId;
+    }
 }

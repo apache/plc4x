@@ -22,6 +22,21 @@ public class ProfinetDataItem {
     @JacksonXmlProperty(isAttribute=true, localName="BitDataItem")
     private List<ProfinetBitDataItem> bitDataItem;
 
+    public String getDataType() {
+        return dataType;
+    }
+
+    public String getTextId() {
+        return textId;
+    }
+
+    public boolean isUseAsBits() {
+        return UseAsBits;
+    }
+
+    public List<ProfinetBitDataItem> getBitDataItem() {
+        return bitDataItem;
+    }
 }
 
 

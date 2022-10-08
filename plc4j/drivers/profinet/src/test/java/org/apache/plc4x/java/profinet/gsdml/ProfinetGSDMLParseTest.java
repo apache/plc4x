@@ -8,14 +8,16 @@ import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ProfinetGSDMLParseTest {
 
     @Test
     public void readGsdmlFile() throws IOException {
         XmlMapper xmlMapper = new XmlMapper();
-
         ProfinetISO15745Profile value = xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class);
-        System.out.println(8);
+
+        assertEquals(value.getProfileBody().getDeviceIdentity().getVendorName().getValue(), "PLC4X-Dummy");
     }
 
 }

@@ -16,7 +16,13 @@ public class ProfinetLogBookEntryItem {
     @JacksonXmlProperty(localName="ErrorCode2Value")
     private ProfinetErrorCode2Value errorCode2Value;
 
+    public String getStatus() {
+        return status;
+    }
 
+    public ProfinetErrorCode2Value getErrorCode2Value() {
+        return errorCode2Value;
+    }
 }
 
 

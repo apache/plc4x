@@ -18,4 +18,11 @@ public class ProfinetIoDataInput  {
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetDataItem> dataItemList;
 
+    public String getConsistency() {
+        return consistency;
+    }
+
+    public List<ProfinetDataItem> getDataItemList() {
+        return dataItemList;
+    }
 }

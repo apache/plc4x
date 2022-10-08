@@ -14,4 +14,11 @@ public class ProfinetGraphicItem {
     @JacksonXmlProperty(isAttribute=true, localName="GraphicFile")
     private String graphicFile;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getGraphicFile() {
+        return graphicFile;
+    }
 }

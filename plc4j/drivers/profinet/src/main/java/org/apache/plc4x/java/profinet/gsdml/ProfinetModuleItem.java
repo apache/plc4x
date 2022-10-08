@@ -22,4 +22,19 @@ public class ProfinetModuleItem {
     @JacksonXmlProperty(localName="VirtualSubmoduleList")
     private List<ProfinetVirtualSubmoduleItem> virtualSubmoduleList;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getModuleIdentNumber() {
+        return moduleIdentNumber;
+    }
+
+    public ProfinetModuleInfo getModuleInfo() {
+        return moduleInfo;
+    }
+
+    public List<ProfinetVirtualSubmoduleItem> getVirtualSubmoduleList() {
+        return virtualSubmoduleList;
+    }
 }

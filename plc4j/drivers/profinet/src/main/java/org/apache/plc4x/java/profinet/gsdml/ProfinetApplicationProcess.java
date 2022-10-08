@@ -26,4 +26,23 @@ public class ProfinetApplicationProcess {
     @JacksonXmlProperty(localName="ExternalTextList")
     private ProfinetExternalTextList externalTextList;
 
+    public List<ProfinetDeviceAccessPointItem> getDeviceAccessPointList() {
+        return deviceAccessPointList;
+    }
+
+    public List<ProfinetModuleItem> getModuleList() {
+        return moduleList;
+    }
+
+    public List<ProfinetLogBookEntryItem> getLogBookEntryList() {
+        return logBookEntryList;
+    }
+
+    public List<ProfinetGraphicItem> getGraphicsList() {
+        return graphicsList;
+    }
+
+    public ProfinetExternalTextList getExternalTextList() {
+        return externalTextList;
+    }
 }

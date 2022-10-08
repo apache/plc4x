@@ -14,5 +14,12 @@ public class ProfinetBitDataItem {
     @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
+    public int getBitOffset() {
+        return bitOffset;
+    }
+
+    public String getTextId() {
+        return textId;
+    }
 }
 

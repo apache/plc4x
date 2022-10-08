@@ -13,6 +13,9 @@ public class ProfinetErrorCode2Value {
     @JacksonXmlProperty(isAttribute=true, localName="Name")
     private ProfinetTextId name;
 
+    public ProfinetTextId getName() {
+        return name;
+    }
 }
 
 

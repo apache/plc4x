@@ -14,4 +14,11 @@ public class ProfinetApplicationRelations {
     @JacksonXmlProperty(localName="TimingProperties")
     private ProfinetTimingProperties TimingProperties;
 
+    public String getStartupMode() {
+        return startupMode;
+    }
+
+    public ProfinetTimingProperties getTimingProperties() {
+        return TimingProperties;
+    }
 }

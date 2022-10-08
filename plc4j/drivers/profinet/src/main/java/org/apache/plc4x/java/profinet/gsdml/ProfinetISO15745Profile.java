@@ -13,4 +13,12 @@ public class ProfinetISO15745Profile {
 
     @JsonProperty("ProfileBody")
     private ProfinetProfileBody profileBody;
+
+    public ProfinetProfileHeader getProfileHeader() {
+        return profileHeader;
+    }
+
+    public ProfinetProfileBody getProfileBody() {
+        return profileBody;
+    }
 }

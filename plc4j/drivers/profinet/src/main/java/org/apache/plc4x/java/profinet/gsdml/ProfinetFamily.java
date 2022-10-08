@@ -13,4 +13,12 @@ public class ProfinetFamily {
 
     @JacksonXmlProperty(isAttribute=true, localName="ProductFamily")
     private String productFamily;
+
+    public String getMainFamily() {
+        return mainFamily;
+    }
+
+    public String getProductFamily() {
+        return productFamily;
+    }
 }

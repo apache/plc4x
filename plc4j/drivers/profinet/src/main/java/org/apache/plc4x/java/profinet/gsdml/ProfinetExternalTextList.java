@@ -12,4 +12,7 @@ public class ProfinetExternalTextList {
     @JacksonXmlProperty(localName="PrimaryLanguage")
     private ProfinetPrimaryLanguage primaryLanguage;
 
+    public ProfinetPrimaryLanguage getPrimaryLanguage() {
+        return primaryLanguage;
+    }
 }

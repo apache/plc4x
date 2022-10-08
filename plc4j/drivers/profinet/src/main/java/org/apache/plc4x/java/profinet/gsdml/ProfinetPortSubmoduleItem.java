@@ -31,5 +31,32 @@ public class ProfinetPortSubmoduleItem extends ProfinetSystemDefinedSubmoduleIte
     @JacksonXmlProperty(localName="MAUTypeList")
     private List<ProfinetValue> mauTypeItem;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getSubmoduleIdentNumber() {
+        return submoduleIdentNumber;
+    }
+
+    public int getSubslotNumber() {
+        return subslotNumber;
+    }
+
+    public String getTextId() {
+        return textId;
+    }
+
+    public int getMaxPortRxDelay() {
+        return maxPortRxDelay;
+    }
+
+    public int getMaxPortTxDelay() {
+        return maxPortTxDelay;
+    }
+
+    public List<ProfinetValue> getMauTypeItem() {
+        return mauTypeItem;
+    }
 }
 

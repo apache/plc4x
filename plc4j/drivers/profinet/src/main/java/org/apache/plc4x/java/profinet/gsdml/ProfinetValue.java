@@ -10,4 +10,8 @@ public class ProfinetValue {
 
     @JacksonXmlProperty(isAttribute=true, localName="Value")
     private String value;
+
+    public String getValue() {
+        return value;
+    }
 }

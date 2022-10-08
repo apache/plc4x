@@ -11,4 +11,7 @@ public class ProfinetDeviceFunction {
     @JacksonXmlProperty(localName="Family")
     private ProfinetFamily family;
 
+    public ProfinetFamily getFamily() {
+        return family;
+    }
 }

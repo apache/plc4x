@@ -14,4 +14,11 @@ public class ProfinetIOConfigData {
     @JacksonXmlProperty(isAttribute=true, localName="MaxOutputLength")
     private int maxOutputLength;
 
+    public int getMaxInputLength() {
+        return maxInputLength;
+    }
+
+    public int getMaxOutputLength() {
+        return maxOutputLength;
+    }
 }

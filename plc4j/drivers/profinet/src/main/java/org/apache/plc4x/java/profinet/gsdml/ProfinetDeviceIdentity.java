@@ -21,4 +21,19 @@ public class ProfinetDeviceIdentity {
     @JacksonXmlProperty(localName="VendorName")
     private ProfinetValue vendorName;
 
+    public String getModuleItemTarget() {
+        return ModuleItemTarget;
+    }
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public ProfinetTextId getInfoText() {
+        return infoText;
+    }
+
+    public ProfinetValue getVendorName() {
+        return vendorName;
+    }
 }

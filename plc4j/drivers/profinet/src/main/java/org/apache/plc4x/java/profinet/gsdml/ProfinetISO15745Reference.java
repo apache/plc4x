@@ -17,4 +17,15 @@ public class ProfinetISO15745Reference {
     @JsonProperty("ProfileTechnology")
     private String profileTechnology;
 
+    public int getIso15745Part() {
+        return iso15745Part;
+    }
+
+    public int getIso15745Edition() {
+        return iso15745Edition;
+    }
+
+    public String getProfileTechnology() {
+        return profileTechnology;
+    }
 }

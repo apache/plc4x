@@ -38,5 +38,44 @@ public class ProfinetInterfaceSubmoduleItem extends ProfinetSystemDefinedSubmodu
     @JacksonXmlProperty(localName="ApplicationRelations")
     private ProfinetApplicationRelations applicationRelations;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getSubmoduleIdentNumber() {
+        return submoduleIdentNumber;
+    }
+
+    public int getSubslotNumber() {
+        return subslotNumber;
+    }
+
+    public String getTextId() {
+        return textId;
+    }
+
+    public String getSupportedRtClasses() {
+        return supportedRtClasses;
+    }
+
+    public String getSupportedProtocols() {
+        return supportedProtocols;
+    }
+
+    public boolean isNetworkComponentDiagnosisSupported() {
+        return networkComponentDiagnosisSupported;
+    }
+
+    public boolean isPtpBoundarySupported() {
+        return ptpBoundarySupported;
+    }
+
+    public boolean isDcpBoundarySupported() {
+        return dcpBoundarySupported;
+    }
+
+    public ProfinetApplicationRelations getApplicationRelations() {
+        return applicationRelations;
+    }
 }
 

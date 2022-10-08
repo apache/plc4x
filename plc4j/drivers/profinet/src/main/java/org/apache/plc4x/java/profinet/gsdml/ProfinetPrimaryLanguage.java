@@ -15,4 +15,7 @@ public class ProfinetPrimaryLanguage {
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetTextIdValue> text;
 
+    public List<ProfinetTextIdValue> getText() {
+        return text;
+    }
 }

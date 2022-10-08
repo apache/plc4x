@@ -11,4 +11,7 @@ public class ProfinetTextId {
     @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
+    public String getTextId() {
+        return textId;
+    }
 }

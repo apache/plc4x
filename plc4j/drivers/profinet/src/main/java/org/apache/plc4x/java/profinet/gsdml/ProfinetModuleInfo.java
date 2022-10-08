@@ -26,4 +26,27 @@ public class ProfinetModuleInfo {
     @JacksonXmlProperty(localName="SoftwareRelease")
     private ProfinetValue softwareRelease;
 
+    public ProfinetTextId getName() {
+        return name;
+    }
+
+    public ProfinetTextId getInfoText() {
+        return infoText;
+    }
+
+    public ProfinetValue getVendorName() {
+        return vendorName;
+    }
+
+    public ProfinetValue getOrderNumber() {
+        return orderNumber;
+    }
+
+    public ProfinetValue getHardwareRelease() {
+        return hardwareRelease;
+    }
+
+    public ProfinetValue getSoftwareRelease() {
+        return softwareRelease;
+    }
 }

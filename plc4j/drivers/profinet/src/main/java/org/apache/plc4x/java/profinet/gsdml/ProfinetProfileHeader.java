@@ -26,4 +26,27 @@ public class ProfinetProfileHeader {
     @JsonProperty("ISO15745Reference")
     private ProfinetISO15745Reference iso15745Reference;
 
+    public String getProfileIdentification() {
+        return profileIdentification;
+    }
+
+    public String getProfileRevision() {
+        return profileRevision;
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public String getProfileSource() {
+        return profileSource;
+    }
+
+    public String getProfileClassID() {
+        return profileClassID;
+    }
+
+    public ProfinetISO15745Reference getIso15745Reference() {
+        return iso15745Reference;
+    }
 }

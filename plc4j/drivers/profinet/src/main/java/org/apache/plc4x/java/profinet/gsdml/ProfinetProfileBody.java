@@ -14,4 +14,16 @@ public class ProfinetProfileBody {
 
     @JsonProperty("ApplicationProcess")
     private ProfinetApplicationProcess applicationProcess;
+
+    public ProfinetDeviceIdentity getDeviceIdentity() {
+        return deviceIdentity;
+    }
+
+    public ProfinetDeviceFunction getDeviceFunction() {
+        return deviceFunction;
+    }
+
+    public ProfinetApplicationProcess getApplicationProcess() {
+        return applicationProcess;
+    }
 }

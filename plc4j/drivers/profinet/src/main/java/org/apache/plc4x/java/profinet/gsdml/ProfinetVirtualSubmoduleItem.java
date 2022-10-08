@@ -33,5 +33,31 @@ public class ProfinetVirtualSubmoduleItem {
     @JacksonXmlProperty(localName="RecordDataList")
     private List<ProfinetParameterRecordDataItem> recordDataList;
 
+    public String getId() {
+        return id;
+    }
 
+    public String getSubmoduleIdentNumber() {
+        return submoduleIdentNumber;
+    }
+
+    public String getWriteableImRecords() {
+        return writeableImRecords;
+    }
+
+    public boolean isMayIssueProcessAlarm() {
+        return mayIssueProcessAlarm;
+    }
+
+    public ProfinetIoData getIoData() {
+        return ioData;
+    }
+
+    public ProfinetModuleInfo getModuleInfo() {
+        return moduleInfo;
+    }
+
+    public List<ProfinetParameterRecordDataItem> getRecordDataList() {
+        return recordDataList;
+    }
 }

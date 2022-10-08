@@ -72,4 +72,88 @@ public class ProfinetDeviceAccessPointItem {
 
     @JacksonXmlProperty(localName="Graphics")
     private ProfinetGraphics graphics;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getPnioVersion() {
+        return pnioVersion;
+    }
+
+    public String getPhysicalSlots() {
+        return physicalSlots;
+    }
+
+    public String getModuleIdentNumber() {
+        return moduleIdentNumber;
+    }
+
+    public int getMinDeviceInterval() {
+        return minDeviceInterval;
+    }
+
+    public String getDnsCompatibleName() {
+        return dnsCompatibleName;
+    }
+
+    public int getFixedInSlots() {
+        return fixedInSlots;
+    }
+
+    public int getObjectUUIDLocalIndex() {
+        return objectUUIDLocalIndex;
+    }
+
+    public boolean isDeviceAccessSupported() {
+        return deviceAccessSupported;
+    }
+
+    public boolean isMultipleWriteSupported() {
+        return multipleWriteSupported;
+    }
+
+    public boolean isCheckDeviceIDAllowed() {
+        return checkDeviceIDAllowed;
+    }
+
+    public boolean isNameOfStationNotTransferable() {
+        return nameOfStationNotTransferable;
+    }
+
+    public boolean isLldpNodSupported() {
+        return lldpNodSupported;
+    }
+
+    public String getResetToFactoryModes() {
+        return resetToFactoryModes;
+    }
+
+    public ProfinetModuleInfo getModuleInfo() {
+        return moduleInfo;
+    }
+
+    public ProfinetCertificationInfo getCertificationInfo() {
+        return certificationInfo;
+    }
+
+    public ProfinetIOConfigData getIoConfigData() {
+        return ioConfigData;
+    }
+
+    public List<ProfinetModuleItemRef> getUseableModules() {
+        return useableModules;
+    }
+
+    public List<ProfinetVirtualSubmoduleItem> getVirtualSubmoduleList() {
+        return virtualSubmoduleList;
+    }
+
+    public List<ProfinetSystemDefinedSubmoduleItem> getSystemDefinedSubmoduleList() {
+        return systemDefinedSubmoduleList;
+    }
+
+    public ProfinetGraphics getGraphics() {
+        return graphics;
+    }
 }

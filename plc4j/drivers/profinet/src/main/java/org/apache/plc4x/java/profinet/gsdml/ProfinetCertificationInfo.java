@@ -17,4 +17,15 @@ public class ProfinetCertificationInfo {
     @JacksonXmlProperty(isAttribute=true, localName="NetloadClass")
     private String netloadClass;
 
+    public String getConformanceClass() {
+        return conformanceClass;
+    }
+
+    public String getApplicationClass() {
+        return applicationClass;
+    }
+
+    public String getNetloadClass() {
+        return netloadClass;
+    }
 }

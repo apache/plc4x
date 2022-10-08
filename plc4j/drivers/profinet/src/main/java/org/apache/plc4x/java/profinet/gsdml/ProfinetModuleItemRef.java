@@ -14,4 +14,11 @@ public class ProfinetModuleItemRef {
     @JacksonXmlProperty(isAttribute=true, localName="AllowedInSlots")
     private String allowedInSlots;
 
+    public String getModuleItemTarget() {
+        return moduleItemTarget;
+    }
+
+    public String getAllowedInSlots() {
+        return allowedInSlots;
+    }
 }
