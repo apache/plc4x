@@ -1,18 +1,13 @@
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.CLASS,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY)
+@JsonTypeInfo(use= JsonTypeInfo.Id.CLASS)
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = ProfinetIoDataInput.class),
-    @JsonSubTypes.Type(value = ProfinetIoDataOutput.class)
+    @JsonSubTypes.Type(value = ProfinetIoDataInput.class, name = "Input"),
+    @JsonSubTypes.Type(value = ProfinetIoDataOutput.class, name = "Output")
 })
-public class ProfinetIoDataItem {
+public abstract class ProfinetIoDataItem {
 
 }

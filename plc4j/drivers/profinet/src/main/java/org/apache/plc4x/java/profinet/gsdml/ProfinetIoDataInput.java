@@ -1,19 +1,21 @@
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("Input")
-public class ProfinetIoDataInput extends ProfinetIoDataItem {
+
+@JsonTypeName("Input")
+public class ProfinetIoDataInput  {
 
     @JacksonXmlProperty(isAttribute=true, localName="Consistency")
     private String consistency;
 
     @JacksonXmlProperty(localName="DataItem")
+    @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetDataItem> dataItemList;
 
 }

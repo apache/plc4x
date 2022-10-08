@@ -12,5 +12,10 @@ import java.util.List;
 public class ProfinetApplicationProcess {
 
     @JacksonXmlProperty(localName="DeviceAccessPointList")
-    private List<ProfinetDeviceAccessPointItem> DeviceAccessPointList;
+    private List<ProfinetDeviceAccessPointItem> deviceAccessPointList;
+
+    @JacksonXmlProperty(localName="ModuleList")
+    private List<ProfinetModuleItem> moduleList;
+
+
 }
