@@ -17,5 +17,13 @@ public class ProfinetApplicationProcess {
     @JacksonXmlProperty(localName="ModuleList")
     private List<ProfinetModuleItem> moduleList;
 
+    @JacksonXmlProperty(localName="LogBookEntryList")
+    private List<ProfinetLogBookEntryItem> logBookEntryList;
+
+    @JacksonXmlProperty(localName="GraphicsList")
+    private List<ProfinetGraphicItem> graphicsList;
+
+    @JacksonXmlProperty(localName="ExternalTextList")
+    private ProfinetExternalTextList externalTextList;
 
 }
