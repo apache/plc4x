@@ -3,6 +3,8 @@ package org.apache.plc4x.java.profinet.gsdml;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import io.vavr.control.Option;
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -10,14 +12,24 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfinetGSDMLParseTest {
 
-    @Test
-    public void readGsdmlFile() throws IOException {
-        XmlMapper xmlMapper = new XmlMapper();
-        ProfinetISO15745Profile value = xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class);
+    private ProfinetISO15745Profile gsdml = null;
 
-        assertEquals(value.getProfileBody().getDeviceIdentity().getVendorName().getValue(), "PLC4X-Dummy");
+    @BeforeAll
+    public void setUp() {
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            this.gsdml = xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class);
+        } catch(IOException e) {
+            assert false;
+        }
+    }
+
+    @Test
+    public void readGsdmlFile()  {
+        assertEquals(this.gsdml.getProfileBody().getDeviceIdentity().getVendorName().getValue(), "Apache PLC4X");
     }
 
 }
