@@ -87,7 +87,7 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
         for (String device : devices) {
             MacAddress macAddress = new MacAddress(Hex.decodeHex(device.replace(":", "")));
-            configuredDevices.put(device.replace(":", ""), new ProfinetDevice(macAddress));
+            configuredDevices.put(device.replace(":", "").toUpperCase(), new ProfinetDevice(macAddress));
         }
     }
 

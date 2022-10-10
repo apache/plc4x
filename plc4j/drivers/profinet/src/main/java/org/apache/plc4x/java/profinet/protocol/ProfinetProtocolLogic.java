@@ -133,6 +133,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         // Initialize some important datastructures, that will be used a lot.
         // TODO: Possibly we can remove the ARP lookup and simply use the mac address in the connection-response.
         // Local connectivity attributes
+
+        for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
+            device.getValue().onConnect();
+        }
+
         profinetDriverContext.setLocalMacAddress(new MacAddress(rawSocketChannel.getLocalMacAddress().getAddress()));
         final InetSocketAddress localAddress = (InetSocketAddress) rawSocketChannel.getLocalAddress();
         Inet4Address localIpAddress = (Inet4Address) localAddress.getAddress();

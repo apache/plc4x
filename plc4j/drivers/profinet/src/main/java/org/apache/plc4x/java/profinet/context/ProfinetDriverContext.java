@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.profinet.context;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
 import org.apache.plc4x.java.profinet.readwrite.IpAddress;
@@ -42,7 +44,13 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
-
+        try {
+            configuration.setDevices(configuration.getDevices());
+        } catch (DecoderException e) {
+            throw new RuntimeException(e);
+        } catch (PlcConnectionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public DceRpc_ActivityUuid getDceRpcActivityUuid() {

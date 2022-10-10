@@ -35,12 +35,9 @@ public class ProfinetDeviceMessageHandler implements PlcDiscoveryItemHandler {
 
     @Override
     public void handle(PlcDiscoveryItem discoveryItem) {
-
-        String macAddress = discoveryItem.getOptions().get("MacAddress");
+        String macAddress = discoveryItem.getOptions().get("macAddress").replace(":", "").toUpperCase();
         if (configuredDevices.containsKey(macAddress)) {
             configuredDevices.get(macAddress).handle(discoveryItem);
-
-
         }
     }
 

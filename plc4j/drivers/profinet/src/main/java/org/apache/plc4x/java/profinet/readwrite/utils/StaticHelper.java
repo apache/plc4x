@@ -158,8 +158,10 @@ public class StaticHelper {
     }
 
     public static boolean isSysexEnd(ReadBuffer io) {
-        byte[] test = ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2);
-        return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2)[0] == (byte) 0x00;
+        int pos = io.getPos();
+        byte[] buffer = ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2);
+        byte[] buffer2 = ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2);
+        return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2)[1] == (byte) 0x00;
     }
 
     public static LldpUnit parseSysexString(ReadBuffer io) {

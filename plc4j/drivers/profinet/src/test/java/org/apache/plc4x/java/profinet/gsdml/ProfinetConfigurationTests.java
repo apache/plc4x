@@ -82,7 +82,7 @@ public class ProfinetConfigurationTests {
         Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
 
         for (String mac : macAddresses) {
-            assert(devices.containsKey(mac.replace(":", "")));
+            assert(devices.containsKey(mac.replace(":", "").toUpperCase()));
         }
     }
 

@@ -54,8 +54,8 @@ public class ProfinetDevice {
     private final MacAddress macAddress;
     private ConversationContext<Ethernet_Frame> context;
     private ProfinetDeviceState state = ProfinetDeviceState.IDLE;
-    private Lldp_Pdu lldpPdu = null;
-    private PnDcp_Pdu dcpPdu = null;
+    private boolean lldpReceived = false;
+    private boolean dcpReceived = false;
     private String ipAddress;
     private String portId;
 
@@ -69,6 +69,11 @@ public class ProfinetDevice {
             throw new RuntimeException(e);
         }
     }
+
+    private String deviceTypeName;
+    private String vendorId;
+    private String deviceId;
+    private String deviceName;
 
 
     private void closeUDPSocket() {
@@ -90,7 +95,6 @@ public class ProfinetDevice {
         }
 
         rawSocketChannel = (RawSocketChannel) channel;
-
 
         // Create an udp socket
         try {
@@ -124,9 +128,7 @@ public class ProfinetDevice {
             this
         );
 
-
-
-        return false;
+        return true;
     }
 
     private int generateSessionKey() {
@@ -140,26 +142,40 @@ public class ProfinetDevice {
     }
 
     public boolean hasLldpPdu() {
-        if (lldpPdu != null) {
-            return true;
-        }
-        return false;
+        return this.lldpReceived;
     }
 
     public boolean hasDcpPdu() {
-        if (dcpPdu != null) {
-            return true;
-        }
-        return false;
+        return this.dcpReceived;
     }
 
     public void handle(PlcDiscoveryItem item) {
         logger.debug("Received Discovered item at device");
-        if (item.getOptions().containsKey("IpAddress")) {
-            this.ipAddress = item.getOptions().get("IpAddress");
+        if (item.getOptions().containsKey("ipAddress")) {
+            this.ipAddress = item.getOptions().get("ipAddress");
         }
-        if (item.getOptions().containsKey("PortId")) {
-            this.portId = item.getOptions().get("PortId");
+        if (item.getOptions().containsKey("portId")) {
+            this.portId = item.getOptions().get("portId");
+        }
+        if (item.getOptions().containsKey("deviceTypeName")) {
+            this.deviceTypeName = item.getOptions().get("deviceTypeName");
+        }
+        if (item.getOptions().containsKey("vendorId")) {
+            this.vendorId = item.getOptions().get("vendorId");
+        }
+        if (item.getOptions().containsKey("deviceId")) {
+            this.deviceId = item.getOptions().get("deviceId");
+        }
+        if (item.getOptions().containsKey("deviceName")) {
+            this.deviceName = item.getOptions().get("deviceName");
+        }
+        if (item.getOptions().containsKey("packetType")) {
+            if (item.getOptions().get("packetType").equals("lldp")) {
+                this.lldpReceived = true;
+            }
+            if (item.getOptions().get("packetType").equals("dcp")) {
+                this.dcpReceived = true;
+            }
         }
     }
 

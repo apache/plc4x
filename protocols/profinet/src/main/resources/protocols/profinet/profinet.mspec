@@ -56,7 +56,9 @@
             // Length of the header + payload
             [implicit uint 16             totalLength                     '28 + payload.lengthInBytes']
             [simple   uint 16             identification                                             ]
-            [const    uint 3              flags                           0x00                       ]
+            [reserved bit                                                 'false'                    ]
+            [simple   bit                 dontFragment                                               ]
+            [simple   bit                 moreFragments                                              ]
             [const    uint 13             fragmentOffset                  0x00                       ]
             [simple   uint 8              timeToLive                                                 ]
             // Protocol: UDP
@@ -70,7 +72,7 @@
             [simple   uint 16             sourcePort                                                 ]
             [simple   uint 16             destinationPort                                            ]
             [implicit uint 16             packetLength    'lengthInBytes'                            ]
-            //[implicit uint 16             headerChecksum  'STATIC_CALL("calculateUdpChecksum", sourceAddress, destinationAddress, sourcePort, destinationPort, packetLength)'                               ]
+            //[implicit uint 16             bodyChecksum  'STATIC_CALL("calculateIPv4Checksum", sourceAddress, destinationAddress, sourcePort, destinationPort, packetLength)'                               ]
             [simple   DceRpc_Packet       payload                                                    ]
         ]
         ['0x8100' Ethernet_FramePayload_VirtualLan
@@ -142,7 +144,12 @@
     [discriminator  TlvProfibusSubType  subType]
     [typeSwitch subType
         ['PORT_STATUS'  TlvProfibusSubTypePortStatus
-            [simple     uint 16                         rtClassPortStatus]
+            [simple     uint 16                         rtClass2PortStatus]
+            [reserved   uint 2                          '0x00'           ]
+            [simple     bit                             preample         ]
+            [simple     bit                             fragmentation    ]
+            [reserved   uint 9                          '0x00'           ]
+            [simple     uint 3                          rtClass3PortStatus]
         ]
         ['CHASSIS_MAC'  TlvProfibusSubTypeChassisMac
             [simple     MacAddress                      macAddress]
@@ -150,7 +157,7 @@
     ]
 ]
 
-[enum   TlvProfibusSubType
+[enum  uint 8 TlvProfibusSubType
     ['0x02' PORT_STATUS]
     ['0x05' CHASSIS_MAC]
 ]
@@ -318,7 +325,7 @@
     ['0x06' SYSTEM_DESCRIPTION   ]
     ['0x07' SYSTEM_CAPABILITIES  ]
     ['0x08' MANAGEMENT_ADDRESS    ]
-    ['0xFF' ORGANIZATION_SPECIFIC]
+    ['0x7F' ORGANIZATION_SPECIFIC]
 ]
 
 [enum uint 8 ManagementAddressSubType
