@@ -32,4 +32,11 @@ public class ProfinetGSDMLParseTest {
         assertEquals(this.gsdml.getProfileBody().getDeviceIdentity().getVendorName().getValue(), "Apache PLC4X");
     }
 
+    @Test
+    public void readGsdmlFileStartupMode()  {
+        ProfinetInterfaceSubmoduleItem interfaceModule = (ProfinetInterfaceSubmoduleItem) this.gsdml.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().get(0);
+        assertEquals(interfaceModule.getApplicationRelations().getStartupMode(), "Advanced");
+    }
+
+
 }

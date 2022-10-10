@@ -20,6 +20,7 @@ package org.apache.plc4x.java.profinet.config;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -32,8 +33,12 @@ import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
+
+    public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})(,)?)*\\]");
 
     @Override
     public boolean getSupportVlans() {
@@ -59,12 +64,48 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     @StringDefaultValue("")
     private String devices;
 
-    public HashMap<MacAddress, ProfinetDevice> configuredDevices = new HashMap<>();
+    @ConfigurationParameter("gsddirectory")
+    @StringDefaultValue("")
+    private String gsdDirectory;
 
-    public void setDevices(String sDevices) throws DecoderException {
-        // TODO:- Add support for passing in configured devices.
-        MacAddress macAddress = new MacAddress(Hex.decodeHex("005056c00001"));
-        configuredDevices.put(macAddress, new ProfinetDevice(macAddress));
+    public HashMap<String, ProfinetDevice> configuredDevices = new HashMap<>();
+
+    public String getDevices() {
+        return devices;
+    }
+
+    public void setDevices(String sDevices) throws DecoderException, PlcConnectionException {
+
+        // Split up the connection string into its individual segments.
+        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(sDevices);
+
+        if (!matcher.matches()) {
+            throw new PlcConnectionException("Profinet Device Array is not in the correct format " + sDevices + ".");
+        };
+
+        String[] devices = sDevices.substring(1, sDevices.length() - 1).split("[ ,]");
+
+        for (String device : devices) {
+            String test = device.replace(":", "");
+            MacAddress macAddress = new MacAddress(Hex.decodeHex(device.replace(":", "")));
+            configuredDevices.put(device.replace(":", ""), new ProfinetDevice(macAddress));
+        }
+    }
+
+    public HashMap<String, ProfinetDevice> getConfiguredDevices() {
+        return configuredDevices;
+    }
+
+    public void setConfiguredDevices(HashMap<String, ProfinetDevice> configuredDevices) {
+        this.configuredDevices = configuredDevices;
+    }
+
+    public String getGsdDirectory() {
+        return gsdDirectory;
+    }
+
+    public void setGsdDirectory(String gsdDirectory) {
+        this.gsdDirectory = gsdDirectory;
     }
 
     @Override

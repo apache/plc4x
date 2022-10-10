@@ -81,7 +81,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     public void setContext(ConversationContext<Ethernet_Frame> context) {
         super.setContext(context);
         this.profinetDriverContext = (ProfinetDriverContext) driverContext;
-        for (Map.Entry<MacAddress, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
+        for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
             device.getValue().setContext(context);
         }
         try {
@@ -111,7 +111,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         int count = 0;
         while (!discovered) {
             discovered = true;
-            for (Map.Entry<MacAddress, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
+            for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
                 if (!device.getValue().hasLldpPdu() || !device.getValue().hasDcpPdu()) {
                     discovered = false;
                 }
@@ -140,7 +140,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         // Use the port of the udp socket
         profinetDriverContext.setLocalUdpPort(udpSocket.getPort());
 
-        for (Map.Entry<MacAddress, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
+        for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
             device.getValue().onConnect();
         }
 

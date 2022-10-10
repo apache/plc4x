@@ -31,21 +31,20 @@ import java.util.Map;
 
 public class ProfinetDeviceMessageHandler implements PlcDiscoveryItemHandler {
 
-    private HashMap<MacAddress, ProfinetDevice> configuredDevices;
+    private HashMap<String, ProfinetDevice> configuredDevices;
 
     @Override
     public void handle(PlcDiscoveryItem discoveryItem) {
-        try {
-            MacAddress macAddress = new MacAddress(Hex.decodeHex(discoveryItem.getOptions().get("MacAddress")));
-            if (configuredDevices.containsKey(macAddress)) {
-                configuredDevices.get(macAddress).handle(discoveryItem);
-            }
-        } catch (DecoderException e) {
-            throw new RuntimeException(e);
+
+        String macAddress = discoveryItem.getOptions().get("MacAddress");
+        if (configuredDevices.containsKey(macAddress)) {
+            configuredDevices.get(macAddress).handle(discoveryItem);
+
+
         }
     }
 
-    public void setConfiguredDevices(HashMap<MacAddress, ProfinetDevice> configuredDevices) {
+    public void setConfiguredDevices(HashMap<String, ProfinetDevice> configuredDevices) {
         this.configuredDevices = configuredDevices;
     }
 }
