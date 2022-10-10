@@ -68,14 +68,6 @@
           <skip>true</skip>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <configuration>
-          <!-- Don't fail the examples on CVSS errors -->
-          <failBuildOnCVSS>11</failBuildOnCVSS>
-        </configuration>
-      </plugin>
       <!-- Build a fat jar containing all dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

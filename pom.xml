@@ -152,7 +152,6 @@
     <milo.version>0.6.8</milo.version>
     <mockito.version>4.8.0</mockito.version>
     <netty.version>4.1.82.Final</netty.version>
-    <owasp-dependency-check.version>7.2.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.3</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
@@ -867,45 +866,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!--
-        Check the referenced dependencies for known vulnerabilities
-        and fail the build if there are critical ones in our classpath
-      -->
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <skip>${skip-dependency-cve-scan}</skip>
-          <!-- Fail the build on any CVE, which is not considered minor -->
-          <failBuildOnCVSS>4</failBuildOnCVSS>
-          <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
-          <!-- On some systems some analysis seems to randomly fail ... don't let this fail the build -->
-          <failOnError>false</failOnError>
-          <excludes>
-            <!-- For some reason the plugin detects our ADS driver as TwinCAT for which CVEs exist. -->
-            <exclude>org.apache.plc4x:plc4j-driver-ads</exclude>
-            <!--
-              CVE-2020-13955 affects Apache Calcite till version 1.26 (excluding)
-              We're using at least 1.28, so this is a false positive.
-            -->
-            <exclude>org.apache.calcite.avatica:avatica-core</exclude>
-            <exclude>javax.ws.rs:javax.ws.rs-api</exclude>
-            <!--
-              With 4.7.0 this gets falsely detected as junit 4.7.0 which the produces a unrelated CVE-2020-15250
-            -->
-            <exclude>org.mockito:mockito-junit-jupiter</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -1325,12 +1285,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.owasp</groupId>
-          <artifactId>dependency-check-maven</artifactId>
-          <version>${owasp-dependency-check.version}</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>3.1.0</version>
@@ -1459,19 +1413,6 @@
           <!- Automatically link Jira issues ->
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
         </configuration>
-      </plugin-->
-
-      <!-- Generates a dependency vulnerability -->
-      <!--plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>aggregate</report>
-            </reports>
-          </reportSet>
-        </reportSets>
       </plugin-->
      </plugins>
   </reporting>

@@ -122,14 +122,6 @@
           </usedDependencies>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
