@@ -4,6 +4,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -40,8 +41,11 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
-        configuration.setDevices(configuration.getDevices());
+        ProfinetDriverContext context = new ProfinetDriverContext();
+        context.setConfiguration(configuration);
+
         Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
+
 
         for (String mac : macAddresses) {
             assert(devices.containsKey(mac.replace(":", "")));
@@ -55,12 +59,32 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
-        configuration.setDevices(configuration.getDevices());
+        ProfinetDriverContext context = new ProfinetDriverContext();
+        context.setConfiguration(configuration);
+
         Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
 
         for (String mac : macAddresses) {
             assert(devices.containsKey(mac.replace(":", "")));
         }
     }
+
+    @Test
+    public void readProfinetLowerCase() throws DecoderException, PlcConnectionException {
+
+        String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
+        ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
+
+        ProfinetDriverContext context = new ProfinetDriverContext();
+        context.setConfiguration(configuration);
+
+        Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
+
+        for (String mac : macAddresses) {
+            assert(devices.containsKey(mac.replace(":", "")));
+        }
+    }
+
 
 }

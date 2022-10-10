@@ -77,7 +77,7 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     public void setDevices(String sDevices) throws DecoderException, PlcConnectionException {
 
         // Split up the connection string into its individual segments.
-        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(sDevices);
+        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(sDevices.toUpperCase());
 
         if (!matcher.matches()) {
             throw new PlcConnectionException("Profinet Device Array is not in the correct format " + sDevices + ".");
@@ -86,7 +86,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
         String[] devices = sDevices.substring(1, sDevices.length() - 1).split("[ ,]");
 
         for (String device : devices) {
-            String test = device.replace(":", "");
             MacAddress macAddress = new MacAddress(Hex.decodeHex(device.replace(":", "")));
             configuredDevices.put(device.replace(":", ""), new ProfinetDevice(macAddress));
         }
