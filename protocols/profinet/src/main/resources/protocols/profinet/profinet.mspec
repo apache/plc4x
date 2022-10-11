@@ -792,7 +792,7 @@
             [simple   uint 32                         recordDataLength                                       ]
             [padding  uint 8      pad '0x00'          '64 - 6 - 2 - 16 - 4 - 2 - 2 - 2 - 2 - 4']
         ]
-        ['IOD_WRITE_RESPONSE_HEADER' IODWriteRequestHeader
+        ['IOD_WRITE_RESPONSE_HEADER' IODWriteResponseHeader
             [simple   uint 16                         sequenceNumber                                         ]
             [simple   Uuid                            arUuid                                                 ]
             [simple   uint 32                         api                                                    ]
