@@ -145,10 +145,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         // Use the port of the udp socket
         profinetDriverContext.setLocalUdpPort(udpSocket.getPort());
 
-        for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
-            device.getValue().onConnect();
-        }
-
         context.fireConnected();
         connected = true;
     }

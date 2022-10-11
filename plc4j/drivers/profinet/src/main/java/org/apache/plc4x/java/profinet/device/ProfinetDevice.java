@@ -62,6 +62,7 @@ public class ProfinetDevice {
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
 
     private static final Uuid ARUUID;
+
     static {
         try {
             ARUUID = new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51"));
@@ -74,6 +75,12 @@ public class ProfinetDevice {
     private String vendorId;
     private String deviceId;
     private String deviceName;
+
+    public ProfinetDevice(MacAddress macAddress) {
+        this.macAddress = macAddress;
+        // Generate a new Activity Id, which will be used throughout the connection.
+        this.uuid = generateActivityUuid();
+    }
 
 
     private void closeUDPSocket() {
@@ -182,12 +189,6 @@ public class ProfinetDevice {
     public void setContext(ConversationContext<Ethernet_Frame> context) {
         this.context = context;
         channel = context.getChannel();
-    }
-
-    public ProfinetDevice(MacAddress macAddress) {
-        this.macAddress = macAddress;
-        // Generate a new Activity Id, which will be used throughout the connection.
-        this.uuid = generateActivityUuid();
     }
 
     protected static DceRpc_ActivityUuid generateActivityUuid() {
@@ -423,16 +424,16 @@ public class ProfinetDevice {
                 macAddress,
                 macAddress,
                 new Ethernet_FramePayload_PnDcp(
-                new PnDcp_Pdu_RealTimeCyclic(
-                    0x8000,
-                    new PnIo_CyclicServiceDataUnit((short) 0,(short) 0, (short) 0),
-                    16696,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false)));
+                    new PnDcp_Pdu_RealTimeCyclic(
+                        0x8000,
+                        new PnIo_CyclicServiceDataUnit((short) 0, (short) 0, (short) 0),
+                        16696,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false)));
         }
 
         @Override
