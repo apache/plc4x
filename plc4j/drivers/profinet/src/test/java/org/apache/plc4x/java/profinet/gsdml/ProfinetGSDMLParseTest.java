@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.vavr.control.Option;
 import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -56,6 +57,5 @@ public class ProfinetGSDMLParseTest {
         ProfinetInterfaceSubmoduleItem interfaceModule = (ProfinetInterfaceSubmoduleItem) this.gsdml.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().get(0);
         assertEquals(interfaceModule.getApplicationRelations().getStartupMode(), "Advanced");
     }
-
 
 }

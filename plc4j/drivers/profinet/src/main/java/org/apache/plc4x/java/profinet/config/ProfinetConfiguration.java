@@ -18,10 +18,12 @@
  */
 package org.apache.plc4x.java.profinet.config;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
@@ -29,14 +31,25 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefau
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
+
+    private final Logger logger = LoggerFactory.getLogger(ProfinetConfiguration.class);
 
     public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})(,)?)*\\]");
 
@@ -70,6 +83,8 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     public HashMap<String, ProfinetDevice> configuredDevices = new HashMap<>();
 
+    private final Map<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
+
     public String getDevices() {
         return devices;
     }
@@ -81,14 +96,41 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
         if (!matcher.matches()) {
             throw new PlcConnectionException("Profinet Device Array is not in the correct format " + sDevices + ".");
-        };
+        }
+        ;
 
         String[] devices = sDevices.substring(1, sDevices.length() - 1).split("[ ,]");
 
         for (String device : devices) {
             MacAddress macAddress = new MacAddress(Hex.decodeHex(device.replace(":", "")));
-            configuredDevices.put(device.replace(":", "").toUpperCase(), new ProfinetDevice(macAddress));
+            configuredDevices.put(device.replace(":", "").toUpperCase(), new ProfinetDevice(macAddress, this));
         }
+    }
+
+    public Map<String, ProfinetISO15745Profile> readGsdFiles() {
+        try {
+            DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(this.gsdDirectory));
+            XmlMapper xmlMapper = new XmlMapper();
+            for (Path file : stream) {
+                try {
+                    ProfinetISO15745Profile gsdFile = xmlMapper.readValue(file.toFile(), ProfinetISO15745Profile.class);
+                    if (gsdFile.getProfileHeader() != null && gsdFile.getProfileHeader().getProfileIdentification().equals("PROFINET Device Profile") && gsdFile.getProfileHeader().getProfileClassID().equals("Device")) {
+                        String id = gsdFile.getProfileBody().getDeviceIdentity().getVendorId() + "-" + gsdFile.getProfileBody().getDeviceIdentity().getDeviceID();
+                        logger.debug("Adding GSDML file for {}", gsdFile.getProfileBody().getDeviceIdentity().getVendorName().getValue());
+                        this.gsdFiles.put(id, gsdFile);
+                    }
+                } catch (IOException e) {
+                    // Pass - Ignore any files that aren't xml files.
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("GSDML File directory is un-readable");
+        }
+        return this.gsdFiles;
+    }
+
+    public Map<String, ProfinetISO15745Profile> getGsdFiles() {
+        return gsdFiles;
     }
 
     public HashMap<String, ProfinetDevice> getConfiguredDevices() {

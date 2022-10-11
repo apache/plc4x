@@ -44,7 +44,26 @@ public class ProfinetConfigurationTests {
     public void readGsdDirectory()  {
 
         String directory = "/home/plc4x/gsd_directory";
-        ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "gsddirectory=" + directory);
+
+        assertEquals(directory, configuration.getGsdDirectory());
+    }
+
+    @Test
+    public void readGsdFilesInDirectory()  {
+
+        String directory = "src/test/resources";
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "gsddirectory=" + directory);
+        Map<String, ProfinetISO15745Profile> gsdFiles = configuration.readGsdFiles();
+        assertEquals(directory, configuration.getGsdDirectory());
+    }
+
+    @Test
+    public void readGsdFilesInDirectoryUsingTilde()  {
+        String directory = "~/Documents/Profinet/gsd";
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=" + directory);
 
         assertEquals(directory, configuration.getGsdDirectory());

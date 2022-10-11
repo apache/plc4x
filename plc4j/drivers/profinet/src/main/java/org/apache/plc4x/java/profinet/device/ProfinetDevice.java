@@ -24,6 +24,8 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
+import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -36,18 +38,22 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProfinetDevice {
 
     private static final int DEFAULT_UDP_PORT = 34964;
+    private static final int DEFAULT_ARGS_MAXIMUM = 16696;
+    private static final int DEFAULT_MAX_ARRAY_COUNT = 16696;
+    private static final int DEFAULT_ACTIVITY_TIMEOUT = 600;
+
+    // Not sure where this comes from?
+    private static final int UDP_RT_PORT = 0x8892;
+
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
     private final DceRpc_ActivityUuid uuid;
-
+    private final ProfinetConfiguration configuration;
     private DatagramSocket udpSocket;
     private RawSocketChannel rawSocketChannel;
     private Channel channel;
@@ -75,9 +81,11 @@ public class ProfinetDevice {
     private String vendorId;
     private String deviceId;
     private String deviceName;
+    private ProfinetISO15745Profile gsdFile;
 
-    public ProfinetDevice(MacAddress macAddress) {
+    public ProfinetDevice(MacAddress macAddress, ProfinetConfiguration configuration) {
         this.macAddress = macAddress;
+        this.configuration = configuration;
         // Generate a new Activity Id, which will be used throughout the connection.
         this.uuid = generateActivityUuid();
     }
@@ -114,11 +122,22 @@ public class ProfinetDevice {
         return true;
     }
 
+    private ProfinetISO15745Profile issueGSDMLFile(String vendorId, String deviceId) {
+        String id = "0x" + vendorId + "-0x" + deviceId;
+        if (this.configuration.getGsdFiles().containsKey(id)) {
+            return this.configuration.getGsdFiles().get(id);
+        } else {
+            throw new RuntimeException("No GSDML file available for device " + this.vendorId + " - " + this.deviceId + " - " + this.deviceName);
+        }
+    }
+
     public boolean onConnect() {
         if (!createUdpSocket()) {
             // Unable to create UDP connection
             return false;
         }
+
+        this.gsdFile = issueGSDMLFile(this.vendorId, this.deviceId);
 
         ProfinetMessageWrapper.sendUdpMessage(
             new CreateConnection(),
@@ -226,84 +245,98 @@ public class ProfinetDevice {
 
         public DceRpc_Packet create() throws PlcException {
             try {
+                List<PnIoCm_Block> blocks = new ArrayList<>();
+                blocks.add(new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
+                    new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")),
+                    ProfinetDevice.this.generateSessionKey(),
+                    ProfinetDevice.this.macAddress,
+                    new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
+                    false,
+                    true,
+                    false,
+                    false,
+                    PnIoCm_CompanionArType.SINGLE_AR,
+                    false,
+                    true,
+                    false,
+                    PnIoCm_State.ACTIVE,
+                    DEFAULT_ACTIVITY_TIMEOUT,
+                    UDP_RT_PORT,
+                    "plc4x"));
+
+
+                List<PnIoCm_Block> blocks = Arrays.asList(
+                    new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
+                        0x0001,
+                        0x8892,
+                        false, false,
+                        false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
+                        0xBBF0, 128, 8, 1, 0, 0xffffffff,
+                        50, 50, 0xC000,
+                        new org.apache.plc4x.java.profinet.readwrite.MacAddress(Hex.decodeHex("000000000000")),
+                        Collections.singletonList(
+                            new PnIoCm_IoCrBlockReqApi(
+                                Arrays.asList(
+                                    new PnIoCm_IoDataObject(0, 0x0001, 0),
+                                    new PnIoCm_IoDataObject(0, 0x8000, 1),
+                                    new PnIoCm_IoDataObject(0, 0x8001, 2)
+                                ),
+                                new ArrayList<PnIoCm_IoCs>(0))
+                        )),
+                    new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.OUTPUT_CR,
+                        0x0002, 0x8892, false, false,
+                        false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
+                        0xFFFF, 128, 8, 1, 0, 0xffffffff,
+                        50, 50, 0xC000,
+                        new MacAddress(Hex.decodeHex("000000000000")),
+                        Collections.singletonList(
+                            new PnIoCm_IoCrBlockReqApi(
+                                new ArrayList<PnIoCm_IoDataObject>(0),
+                                Arrays.asList(
+                                    new PnIoCm_IoCs(0, 0x0001, 0),
+                                    new PnIoCm_IoCs(0, 0x8000, 1),
+                                    new PnIoCm_IoCs(0, 0x8001, 2)
+                                )
+                            )
+                        )
+                    ),
+                    new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
+                        Collections.singletonList(
+                            new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
+                                0x00000001, 0x00000000,
+                                Arrays.asList(
+                                    new PnIoCm_Submodule_NoInputNoOutputData(0x0001,
+                                        0x00000001, false, false,
+                                        false, false),
+                                    new PnIoCm_Submodule_NoInputNoOutputData(0x8000,
+                                        0x00008000, false, false,
+                                        false, false),
+                                    new PnIoCm_Submodule_NoInputNoOutputData(0x8001,
+                                        0x00008001, false, false,
+                                        false, false)
+                                )
+                            )
+                        )
+                    ),
+                    new PnIoCm_Block_AlarmCrReq((short) 1, (short) 0,
+                        PnIoCm_AlarmCrType.ALARM_CR, 0x8892, false, false, 1, 3,
+                        0x0000, 200, 0xC000, 0xA000)
+                );
+
+                long arrayLength = 0;
+                for (PnIoCm_Block block : blocks) {
+                    arrayLength += block.getLengthInBytes();
+                }
+
                 return new DceRpc_Packet(
                     DceRpc_PacketType.REQUEST, true, false, false,
                     IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-                    new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
+                    new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                     new DceRpc_InterfaceUuid_DeviceInterface(),
                     ProfinetDevice.this.uuid,
                     0, 0, DceRpc_Operation.CONNECT,
-                    new PnIoCm_Packet_Req(16696, 16696, 0, 0,
-                        Arrays.asList(
-                            new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
-                                new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")),
-                                ProfinetDevice.this.generateSessionKey(),
-                                ProfinetDevice.this.macAddress,
-                                new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
-                                false, true, false,
-                                false, PnIoCm_CompanionArType.SINGLE_AR, false,
-                                true, false, PnIoCm_State.ACTIVE,
-                                600,
-                                // This actually needs to be set to this value and not the real port number.
-                                0x8892,
-                                // It seems that it must be set to this value, or it won't work.
-                                "plc4x"),
-                            new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
-                                0x0001,
-                                0x8892,
-                                false, false,
-                                false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
-                                0xBBF0, 128, 8, 1, 0, 0xffffffff,
-                                50, 50, 0xC000,
-                                new org.apache.plc4x.java.profinet.readwrite.MacAddress(Hex.decodeHex("000000000000")),
-                                Collections.singletonList(
-                                    new PnIoCm_IoCrBlockReqApi(
-                                        Arrays.asList(
-                                            new PnIoCm_IoDataObject(0, 0x0001, 0),
-                                            new PnIoCm_IoDataObject(0, 0x8000, 1),
-                                            new PnIoCm_IoDataObject(0, 0x8001, 2)
-                                        ),
-                                        new ArrayList<PnIoCm_IoCs>(0))
-                                )),
-                            new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.OUTPUT_CR,
-                                0x0002, 0x8892, false, false,
-                                false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
-                                0xFFFF, 128, 8, 1, 0, 0xffffffff,
-                                50, 50, 0xC000,
-                                new MacAddress(Hex.decodeHex("000000000000")),
-                                Collections.singletonList(
-                                    new PnIoCm_IoCrBlockReqApi(
-                                        new ArrayList<PnIoCm_IoDataObject>(0),
-                                        Arrays.asList(
-                                            new PnIoCm_IoCs(0, 0x0001, 0),
-                                            new PnIoCm_IoCs(0, 0x8000, 1),
-                                            new PnIoCm_IoCs(0, 0x8001, 2)
-                                        )
-                                    )
-                                )
-                            ),
-                            new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                                Collections.singletonList(
-                                    new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
-                                        0x00000001, 0x00000000,
-                                        Arrays.asList(
-                                            new PnIoCm_Submodule_NoInputNoOutputData(0x0001,
-                                                0x00000001, false, false,
-                                                false, false),
-                                            new PnIoCm_Submodule_NoInputNoOutputData(0x8000,
-                                                0x00008000, false, false,
-                                                false, false),
-                                            new PnIoCm_Submodule_NoInputNoOutputData(0x8001,
-                                                0x00008001, false, false,
-                                                false, false)
-                                        )
-                                    )
-                                )
-                            ),
-                            new PnIoCm_Block_AlarmCrReq((short) 1, (short) 0,
-                                PnIoCm_AlarmCrType.ALARM_CR, 0x8892, false, false, 1, 3,
-                                0x0000, 200, 0xC000, 0xA000)
-                        ))
+                    new PnIoCm_Packet_Req(DEFAULT_ARGS_MAXIMUM, DEFAULT_MAX_ARRAY_COUNT, 0, arrayLength, blocks)
+
                 );
 
             /*// Build the UDP/IP/EthernetFrame to transport the package.

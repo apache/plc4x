@@ -28,20 +28,20 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 public class ProfinetDeviceIdentity {
 
 
-    @JacksonXmlProperty(isAttribute=true, localName="ModuleItemTarget")
-    private String ModuleItemTarget;
+    @JacksonXmlProperty(isAttribute = true, localName = "VendorID")
+    private String vendorId;
 
-    @JacksonXmlProperty(isAttribute=true, localName="DeviceID")
+    @JacksonXmlProperty(isAttribute = true, localName = "DeviceID")
     private String deviceID;
 
-    @JacksonXmlProperty(localName="InfoText")
+    @JacksonXmlProperty(localName = "InfoText")
     private ProfinetTextId infoText;
 
-    @JacksonXmlProperty(localName="VendorName")
+    @JacksonXmlProperty(localName = "VendorName")
     private ProfinetValue vendorName;
 
-    public String getModuleItemTarget() {
-        return ModuleItemTarget;
+    public String getVendorId() {
+        return vendorId;
     }
 
     public String getDeviceID() {
