@@ -825,7 +825,7 @@
             [simple   Uuid                            arUuid                                                 ]
             [simple   uint 16                         sessionKey                                             ]
             [simple   MacAddress                      cmInitiatorMacAddr                                     ]
-            [simple   Uuid                            cmInitiatorObjectUuid                                  ]
+            [simple   DceRpc_ObjectUuid               cmInitiatorObjectUuid                                  ]
             // Begin ARProperties
             [simple   bit                             pullModuleAlarmAllowed                                 ]
             [simple   bit                             nonLegacyStartupMode                                   ]

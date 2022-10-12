@@ -28,8 +28,15 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.util.List;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonRootName("IOData")
 public class ProfinetIoData {
+
+    @JacksonXmlProperty(isAttribute=true, localName="IOPS_Length")
+    private int iopsLength;
+
+    @JacksonXmlProperty(isAttribute=true, localName="IOCS_Length")
+    private int iocsLength;
 
     @JacksonXmlProperty(localName="Input")
     @JacksonXmlElementWrapper(useWrapping = false)
@@ -38,6 +45,14 @@ public class ProfinetIoData {
     @JacksonXmlProperty(localName="Output")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetIoDataOutput> output;
+
+    public int getIopsLength() {
+        return iopsLength;
+    }
+
+    public int getIocsLength() {
+        return iocsLength;
+    }
 
     public List<ProfinetIoDataInput> getInput() {
         return input;

@@ -25,7 +25,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
+import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -50,6 +50,19 @@ public class ProfinetDevice {
 
     // Not sure where this comes from?
     private static final int UDP_RT_PORT = 0x8892;
+    private static final short BLOCK_VERSION_HIGH = 1;
+    private static final short BLOCK_VERSION_LOW = 0;
+
+    private static final MacAddress DEFAULT_EMPTY_MAC_ADDRESS;
+    static {
+        try {
+            DEFAULT_EMPTY_MAC_ADDRESS = new MacAddress(Hex.decodeHex("000000000000"));
+        } catch (DecoderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final String DEFAULT_PLC4X_STATION_NAME = "plc4x";
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
     private final DceRpc_ActivityUuid uuid;
@@ -71,7 +84,7 @@ public class ProfinetDevice {
 
     static {
         try {
-            ARUUID = new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51"));
+            ARUUID = new Uuid(Hex.decodeHex(UUID.randomUUID().toString().replace("-", "")));
         } catch (DecoderException e) {
             throw new RuntimeException(e);
         }
@@ -82,6 +95,8 @@ public class ProfinetDevice {
     private String deviceId;
     private String deviceName;
     private ProfinetISO15745Profile gsdFile;
+    private boolean startupMode = false;
+    private int initialFrameId = 0xBBF0;
 
     public ProfinetDevice(MacAddress macAddress, ProfinetConfiguration configuration) {
         this.macAddress = macAddress;
@@ -131,6 +146,21 @@ public class ProfinetDevice {
         }
     }
 
+    private void extractGSDFileInfo(ProfinetISO15745Profile gsdFile) {
+        List<ProfinetDeviceAccessPointItem> deviceAccessList = gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList();
+        // Always just pick the first one, until it's specified in the connection string
+        if (deviceAccessList != null && deviceAccessList.size() > 0) {
+            List<ProfinetInterfaceSubmoduleItem> interfaceSubModules = deviceAccessList.get(0).getSystemDefinedSubmoduleList().getInterfaceSubmodules();
+            if (interfaceSubModules != null && interfaceSubModules.size() > 0) {
+                if (interfaceSubModules.get(0).getApplicationRelations().getStartupMode() != null && interfaceSubModules.get(0).getApplicationRelations().getStartupMode().toLowerCase().contains("advanced")) {
+                    this.startupMode = true;
+                    this.initialFrameId = 0x8001;
+                }
+            }
+
+        }
+    }
+
     public boolean onConnect() {
         if (!createUdpSocket()) {
             // Unable to create UDP connection
@@ -138,6 +168,7 @@ public class ProfinetDevice {
         }
 
         this.gsdFile = issueGSDMLFile(this.vendorId, this.deviceId);
+        extractGSDFileInfo(this.gsdFile);
 
         ProfinetMessageWrapper.sendUdpMessage(
             new CreateConnection(),
@@ -244,15 +275,18 @@ public class ProfinetDevice {
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
 
         public DceRpc_Packet create() throws PlcException {
-            try {
+
                 List<PnIoCm_Block> blocks = new ArrayList<>();
-                blocks.add(new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
-                    new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")),
+                blocks.add(new PnIoCm_Block_ArReq(
+                    BLOCK_VERSION_HIGH,
+                    BLOCK_VERSION_LOW,
+                    PnIoCm_ArType.IO_CONTROLLER,
+                    ARUUID,
                     ProfinetDevice.this.generateSessionKey(),
                     ProfinetDevice.this.macAddress,
-                    new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
+                    new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                     false,
-                    true,
+                    startupMode,
                     false,
                     false,
                     PnIoCm_CompanionArType.SINGLE_AR,
@@ -262,44 +296,137 @@ public class ProfinetDevice {
                     PnIoCm_State.ACTIVE,
                     DEFAULT_ACTIVITY_TIMEOUT,
                     UDP_RT_PORT,
-                    "plc4x"));
+                    DEFAULT_PLC4X_STATION_NAME));
 
-
-                List<PnIoCm_Block> blocks = Arrays.asList(
-                    new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
-                        0x0001,
+                blocks.add(
+                    new PnIoCm_Block_AlarmCrReq(
+                        (short) 1,
+                        (short) 0,
+                        PnIoCm_AlarmCrType.ALARM_CR,
                         0x8892,
-                        false, false,
-                        false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
-                        0xBBF0, 128, 8, 1, 0, 0xffffffff,
-                        50, 50, 0xC000,
-                        new org.apache.plc4x.java.profinet.readwrite.MacAddress(Hex.decodeHex("000000000000")),
-                        Collections.singletonList(
-                            new PnIoCm_IoCrBlockReqApi(
-                                Arrays.asList(
-                                    new PnIoCm_IoDataObject(0, 0x0001, 0),
-                                    new PnIoCm_IoDataObject(0, 0x8000, 1),
-                                    new PnIoCm_IoDataObject(0, 0x8001, 2)
-                                ),
-                                new ArrayList<PnIoCm_IoCs>(0))
-                        )),
-                    new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.OUTPUT_CR,
-                        0x0002, 0x8892, false, false,
-                        false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
-                        0xFFFF, 128, 8, 1, 0, 0xffffffff,
-                        50, 50, 0xC000,
-                        new MacAddress(Hex.decodeHex("000000000000")),
-                        Collections.singletonList(
-                            new PnIoCm_IoCrBlockReqApi(
-                                new ArrayList<PnIoCm_IoDataObject>(0),
-                                Arrays.asList(
-                                    new PnIoCm_IoCs(0, 0x0001, 0),
-                                    new PnIoCm_IoCs(0, 0x8000, 1),
-                                    new PnIoCm_IoCs(0, 0x8001, 2)
-                                )
-                            )
-                        )
-                    ),
+                        false,
+                        false,
+                        1,
+                        3,
+                        0x0000,
+                        200,
+                        0xC000,
+                        0xA000)
+                );
+
+                List<PnIoCm_IoDataObject> inputApiBlocks = new ArrayList<>();
+                List<PnIoCm_IoCs> outputApiBlocks = new ArrayList<>();
+
+                int offsetCount = 0;
+                for (ProfinetVirtualSubmoduleItem virtualItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getVirtualSubmoduleList()) {
+                    Integer identNumber = Integer.decode(virtualItem.getSubmoduleIdentNumber());
+                    inputApiBlocks.add(new PnIoCm_IoDataObject(
+                        0,
+                        identNumber,
+                        offsetCount));
+                    outputApiBlocks.add(new PnIoCm_IoCs(
+                        0,
+                        identNumber,
+                        offsetCount));
+                    offsetCount += 1;
+                }
+
+                for (ProfinetInterfaceSubmoduleItem interfaceItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
+                    Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
+                    inputApiBlocks.add(new PnIoCm_IoDataObject(
+                        0,
+                        identNumber,
+                        offsetCount));
+                    outputApiBlocks.add(new PnIoCm_IoCs(
+                        0,
+                        identNumber,
+                        offsetCount));
+                    offsetCount += 1;
+                }
+
+                for (ProfinetPortSubmoduleItem portItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().getPortSubmodules()) {
+                    Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
+                    inputApiBlocks.add(new PnIoCm_IoDataObject(
+                        0,
+                        identNumber,
+                        offsetCount));
+                    outputApiBlocks.add(new PnIoCm_IoCs(
+                        0,
+                        identNumber,
+                        offsetCount));
+                    offsetCount += 1;
+                }
+
+                List<PnIoCm_IoCrBlockReqApi> inputApis = Collections.singletonList(
+                    new PnIoCm_IoCrBlockReqApi(
+                        inputApiBlocks,
+                        new ArrayList<PnIoCm_IoCs>(0))
+                );
+
+                List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
+                    new PnIoCm_IoCrBlockReqApi(
+                        new ArrayList<PnIoCm_IoDataObject>(0),
+                        outputApiBlocks
+                    )
+                );
+
+                int frameCount = 0;
+
+                blocks.add(
+                    new PnIoCm_Block_IoCrReq(
+                        (short) 1,
+                        (short) 0,
+                        PnIoCm_IoCrType.INPUT_CR,
+                        0x0001,
+                        UDP_RT_PORT,
+                        false,
+                        false,
+                        false,
+                        false,
+                        PnIoCm_RtClass.RT_CLASS_2,
+                        40,
+                        initialFrameId + frameCount,
+                        configuration.getSendClockFactor(),
+                        configuration.getReductionRatio(),
+                        1,
+                        0,
+                        0xffffffff,
+                        configuration.getWatchdogFactor(),
+                        50,
+                        0xC000,
+                        DEFAULT_EMPTY_MAC_ADDRESS,
+                        inputApis
+                        ));
+
+                frameCount += 1;
+
+                blocks.add(
+                    new PnIoCm_Block_IoCrReq(
+                        (short) 1,
+                        (short) 0,
+                        PnIoCm_IoCrType.OUTPUT_CR,
+                        0x0002,
+                        UDP_RT_PORT,
+                        false,
+                        false,
+                        false,
+                        false,
+                        PnIoCm_RtClass.RT_CLASS_2,
+                        40,
+                        initialFrameId + frameCount,
+                        configuration.getSendClockFactor(),
+                        configuration.getReductionRatio(),
+                        1,
+                        0,
+                        0xffffffff,
+                        configuration.getWatchdogFactor(),
+                        50,
+                        0xC000,
+                        DEFAULT_EMPTY_MAC_ADDRESS,
+                        outputApis
+                    ));
+
+                blocks.add(
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
                         Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
@@ -317,11 +444,8 @@ public class ProfinetDevice {
                                 )
                             )
                         )
-                    ),
-                    new PnIoCm_Block_AlarmCrReq((short) 1, (short) 0,
-                        PnIoCm_AlarmCrType.ALARM_CR, 0x8892, false, false, 1, 3,
-                        0x0000, 200, 0xC000, 0xA000)
-                );
+                    ));
+
 
                 long arrayLength = 0;
                 for (PnIoCm_Block block : blocks) {
@@ -345,9 +469,7 @@ public class ProfinetDevice {
                     profinetDriverContext.getLocalIpAddress(), profinetDriverContext.getRemoteIpAddress(),
                     new Udp_Packet(profinetDriverContext.getLocalUdpPort(), profinetDriverContext.getRemoteUdpPort(),
                         dceRpcConnectionRequest)));*/
-            } catch (DecoderException e) {
-                throw new PlcException("Error creating connection request", e);
-            }
+
         }
 
         public void handle(DceRpc_Packet dceRpc_packet) throws PlcException {

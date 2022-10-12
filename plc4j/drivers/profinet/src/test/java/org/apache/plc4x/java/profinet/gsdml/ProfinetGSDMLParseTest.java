@@ -54,7 +54,7 @@ public class ProfinetGSDMLParseTest {
 
     @Test
     public void readGsdmlFileStartupMode()  {
-        ProfinetInterfaceSubmoduleItem interfaceModule = (ProfinetInterfaceSubmoduleItem) this.gsdml.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().get(0);
+        ProfinetInterfaceSubmoduleItem interfaceModule = (ProfinetInterfaceSubmoduleItem) this.gsdml.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().getInterfaceSubmodules().get(0);
         assertEquals(interfaceModule.getApplicationRelations().getStartupMode(), "Advanced");
     }
 

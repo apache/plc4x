@@ -28,6 +28,7 @@ import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
@@ -81,6 +82,18 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     @StringDefaultValue("")
     private String gsdDirectory;
 
+    @ConfigurationParameter("sendclockfactor")
+    @IntDefaultValue(32)
+    private int sendClockFactor;
+
+    @ConfigurationParameter("reductionratio")
+    @IntDefaultValue(4)
+    private int reductionRatio;
+
+    @ConfigurationParameter("watchdogfactor")
+    @IntDefaultValue(50)
+    private int watchdogFactor;
+
     public HashMap<String, ProfinetDevice> configuredDevices = new HashMap<>();
 
     private final Map<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
@@ -121,6 +134,7 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
                     }
                 } catch (IOException e) {
                     // Pass - Ignore any files that aren't xml files.
+                    logger.debug(String.valueOf(e));
                 }
             }
         } catch (IOException e) {
@@ -147,6 +161,18 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     public void setGsdDirectory(String gsdDirectory) {
         this.gsdDirectory = gsdDirectory;
+    }
+
+    public int getSendClockFactor() {
+        return sendClockFactor;
+    }
+
+    public int getReductionRatio() {
+        return reductionRatio;
+    }
+
+    public int getWatchdogFactor() {
+        return watchdogFactor;
     }
 
     @Override

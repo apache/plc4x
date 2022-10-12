@@ -87,7 +87,7 @@ public class ProfinetDeviceAccessPointItem {
     private List<ProfinetVirtualSubmoduleItem> virtualSubmoduleList;
 
     @JacksonXmlProperty(localName="SystemDefinedSubmoduleList")
-    private List<ProfinetSystemDefinedSubmoduleItem> systemDefinedSubmoduleList;
+    private ProfinetSystemDefinedSubmoduleList systemDefinedSubmoduleList;
 
     @JacksonXmlProperty(localName="Graphics")
     private ProfinetGraphics graphics;
@@ -168,7 +168,7 @@ public class ProfinetDeviceAccessPointItem {
         return virtualSubmoduleList;
     }
 
-    public List<ProfinetSystemDefinedSubmoduleItem> getSystemDefinedSubmoduleList() {
+    public ProfinetSystemDefinedSubmoduleList getSystemDefinedSubmoduleList() {
         return systemDefinedSubmoduleList;
     }
 

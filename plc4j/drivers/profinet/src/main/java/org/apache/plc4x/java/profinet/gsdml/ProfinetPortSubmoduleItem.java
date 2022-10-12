@@ -27,7 +27,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonRootName("PortSubmoduleItem")
-public class ProfinetPortSubmoduleItem extends ProfinetSystemDefinedSubmoduleItem{
+public class ProfinetPortSubmoduleItem {
 
     @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;

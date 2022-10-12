@@ -46,7 +46,7 @@ public class ProfinetPoc {
                         new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")), 2,
                         // Local MAC Address
                         new MacAddress(Hex.decodeHex("806d970ff777")),
-                        new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
+                        new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf("0xCAFE"), Integer.valueOf("0x0002")),
                         false, false, false,
                         false, PnIoCm_CompanionArType.SINGLE_AR, false,
                         true, false, PnIoCm_State.ACTIVE,

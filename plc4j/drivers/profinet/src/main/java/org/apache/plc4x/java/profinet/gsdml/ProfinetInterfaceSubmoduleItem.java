@@ -25,7 +25,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonRootName("InterfaceSubmoduleItem")
-public class ProfinetInterfaceSubmoduleItem extends ProfinetSystemDefinedSubmoduleItem{
+public class ProfinetInterfaceSubmoduleItem {
 
     @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
