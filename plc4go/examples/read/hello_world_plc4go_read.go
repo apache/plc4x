@@ -31,7 +31,7 @@ func main() {
 	drivers.RegisterModbusTcpDriver(driverManager)
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus-tcp://192.168.23.30")
+	crc := driverManager.GetConnection("modbus-tcp://192.168.10.180")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -47,6 +47,8 @@ func main() {
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
 		AddQuery("field", "holding-register:26:REAL").
+		AddQuery("field_bool_single", "holding-register:1:BOOL[1]").
+		AddQuery("field_bool_list", "holding-register:1.10:BOOL[20]").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -69,6 +71,23 @@ func main() {
 		return
 	}
 
+	if rrr.GetResponse().GetResponseCode("field_bool_single") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("field_bool_single").GetName())
+		return
+	}
+
+	if rrr.GetResponse().GetResponseCode("field_bool_list") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("field_bool_list").GetName())
+		return
+	}
+
 	value := rrr.GetResponse().GetValue("field")
-	fmt.Printf("Got result %f", value.GetFloat32())
+	fmt.Printf("Got result of field: %f\n", value.GetFloat32())
+
+	valueBoolSingle := rrr.GetResponse().GetValue("field_bool_single")
+	fmt.Printf("Got result of field_bool_single: %t\n", valueBoolSingle.GetBool())
+
+	valueBoolList := rrr.GetResponse().GetValue("field_bool_list")
+	array := valueBoolList.GetList()
+	fmt.Printf("Got result of field_bool_list: %v\n", array)
 }

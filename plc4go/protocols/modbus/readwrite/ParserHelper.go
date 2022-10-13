@@ -40,7 +40,7 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, dataType, numberOfValues)
+		return model.DataItemParse(io, dataType, numberOfValues, 0)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return model.ModbusPDUReadFileRecordResponseItemParse(io)
 	case "ModbusDeviceInformationObject":
