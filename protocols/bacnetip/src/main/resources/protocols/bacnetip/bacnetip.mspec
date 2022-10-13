@@ -338,10 +338,10 @@
                         '_value.isProprietary?(actualLength * 8):0'                     ]
 ]
 
-[discriminatedType BACnetConfirmedServiceRequest(uint 16 serviceRequestLength)
+[discriminatedType BACnetConfirmedServiceRequest(uint 32 serviceRequestLength)
     [discriminator BACnetConfirmedServiceChoice serviceChoice]
     // we substract serviceChoice from our payload
-    [virtual       uint 16  serviceRequestPayloadLength '(serviceRequestLength>0)?(serviceRequestLength - 1):0'    ]
+    [virtual       uint 32  serviceRequestPayloadLength '(serviceRequestLength>0)?(serviceRequestLength - 1):0'    ]
     [typeSwitch serviceChoice
         ////
         // Alarm and Event Services
@@ -473,7 +473,7 @@
             [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier          ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex                  ]
         ]
-        ['READ_PROPERTY_MULTIPLE' *ReadPropertyMultiple(uint 16 serviceRequestPayloadLength)
+        ['READ_PROPERTY_MULTIPLE' *ReadPropertyMultiple(uint 32 serviceRequestPayloadLength)
             [array    BACnetReadAccessSpecification                                                         data
                             length 'serviceRequestPayloadLength'                                                                        ]
         ]
@@ -492,7 +492,7 @@
                                                                                                             propertyValue               ]
             [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               priority                    ]
         ]
-        ['WRITE_PROPERTY_MULTIPLE' *WritePropertyMultiple(uint 16 serviceRequestPayloadLength)
+        ['WRITE_PROPERTY_MULTIPLE' *WritePropertyMultiple(uint 32 serviceRequestPayloadLength)
             [array    BACnetWriteAccessSpecification                                                        data
                             length 'serviceRequestPayloadLength'                                                                        ]
         ]
@@ -536,7 +536,7 @@
             [simple   BACnetVTClassTagged('0', 'TagClass.APPLICATION_TAGS')                                 vtClass                     ]
             [simple   BACnetApplicationTagUnsignedInteger                                                   localVtSessionIdentifier    ]
         ]
-        ['VT_CLOSE' *VTClose(uint 16 serviceRequestPayloadLength)
+        ['VT_CLOSE' *VTClose(uint 32 serviceRequestPayloadLength)
             [array    BACnetApplicationTagUnsignedInteger                                                   listOfRemoteVtSessionIdentifiers
                                                                length 'serviceRequestPayloadLength'                                     ]
         ]
@@ -551,22 +551,22 @@
         ////
         //  Removed Services
 
-        ['AUTHENTICATE' *Authenticate(uint 16 serviceRequestPayloadLength)
+        ['AUTHENTICATE' *Authenticate(uint 32 serviceRequestPayloadLength)
             [array    byte                                                                                  bytesOfRemovedService
                         length 'serviceRequestPayloadLength'                                                                            ]
         ]
-        ['REQUEST_KEY' *RequestKey(uint 16 serviceRequestPayloadLength)
+        ['REQUEST_KEY' *RequestKey(uint 32 serviceRequestPayloadLength)
             [array    byte                                                                                  bytesOfRemovedService
                         length 'serviceRequestPayloadLength'                                                                            ]
         ]
-        ['READ_PROPERTY_CONDITIONAL' *ReadPropertyConditional(uint 16 serviceRequestPayloadLength)
+        ['READ_PROPERTY_CONDITIONAL' *ReadPropertyConditional(uint 32 serviceRequestPayloadLength)
             [array    byte                                                                                  bytesOfRemovedService
                         length 'serviceRequestPayloadLength'                                                                            ]
         ]
         //
         ////
 
-        [* *Unknown(uint 16 serviceRequestPayloadLength)
+        [* *Unknown(uint 32 serviceRequestPayloadLength)
             [array    byte                                                                                  unknownBytes
                         length 'serviceRequestPayloadLength'                                                                            ]
         ]
@@ -946,11 +946,11 @@
     ]
 ]
 
-[discriminatedType BACnetServiceAck(uint 16 serviceAckLength)
+[discriminatedType BACnetServiceAck(uint 32 serviceAckLength)
     [discriminator   BACnetConfirmedServiceChoice
                         serviceChoice                   ]
     // we substract serviceChoice from our payload
-    [virtual       uint 16  serviceAckPayloadLength '(serviceAckLength>0)?(serviceAckLength - 1):0'    ]
+    [virtual       uint 32  serviceAckPayloadLength '(serviceAckLength>0)?(serviceAckLength - 1):0'    ]
     [typeSwitch serviceChoice
         ////
         // Alarm and Event Services
@@ -1003,7 +1003,7 @@
             [optional   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value', '(arrayIndex!=null?arrayIndex.payload:null)')
                                                                                 values                          ]
         ]
-        ['READ_PROPERTY_MULTIPLE'  *ReadPropertyMultiple(uint 16 serviceAckPayloadLength)
+        ['READ_PROPERTY_MULTIPLE'  *ReadPropertyMultiple(uint 32 serviceAckPayloadLength)
             [array    BACnetReadAccessResult                                    data
                             length 'serviceAckPayloadLength'                                                    ]
         ]
@@ -1051,15 +1051,15 @@
         ////
         //  Removed Services
 
-        ['AUTHENTICATE'  *Authenticate(uint 16 serviceAckPayloadLength)
+        ['AUTHENTICATE'  *Authenticate(uint 32 serviceAckPayloadLength)
             [array    byte                                                      bytesOfRemovedService
                         length 'serviceAckPayloadLength'                                                                ]
         ]
-        ['REQUEST_KEY'  *RequestKey(uint 16 serviceAckPayloadLength)
+        ['REQUEST_KEY'  *RequestKey(uint 32 serviceAckPayloadLength)
             [array    byte                                                      bytesOfRemovedService
                         length 'serviceAckPayloadLength'                                                                ]
         ]
-        ['READ_PROPERTY_CONDITIONAL'  *ReadPropertyConditional(uint 16 serviceAckPayloadLength)
+        ['READ_PROPERTY_CONDITIONAL'  *ReadPropertyConditional(uint 32 serviceAckPayloadLength)
             [array    byte                                                      bytesOfRemovedService
                         length 'serviceAckPayloadLength'                                                                ]
         ]

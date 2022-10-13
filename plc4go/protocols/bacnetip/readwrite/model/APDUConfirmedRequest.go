@@ -403,7 +403,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
 		}
-		_val, _err := BACnetConfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(apduHeaderReduction))
+		_val, _err := BACnetConfirmedServiceRequestParse(readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

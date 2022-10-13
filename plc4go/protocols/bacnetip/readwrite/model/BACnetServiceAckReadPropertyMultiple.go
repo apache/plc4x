@@ -48,7 +48,7 @@ type _BACnetServiceAckReadPropertyMultiple struct {
 	Data []BACnetReadAccessResult
 
 	// Arguments.
-	ServiceAckPayloadLength uint16
+	ServiceAckPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetData() []BACnetReadAccessResu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyMultiple factory function for _BACnetServiceAckReadPropertyMultiple
-func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckReadPropertyMultiple {
+func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckReadPropertyMultiple {
 	_result := &_BACnetServiceAckReadPropertyMultiple{
 		Data:              data,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -131,7 +131,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (BACnetServiceAckReadPropertyMultiple, error) {
+func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
@@ -209,7 +209,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Writ
 ////
 // Arguments Getter
 
-func (m *_BACnetServiceAckReadPropertyMultiple) GetServiceAckPayloadLength() uint16 {
+func (m *_BACnetServiceAckReadPropertyMultiple) GetServiceAckPayloadLength() uint32 {
 	return m.ServiceAckPayloadLength
 }
 

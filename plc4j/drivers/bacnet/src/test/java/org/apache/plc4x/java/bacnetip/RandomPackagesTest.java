@@ -6057,7 +6057,7 @@ public class RandomPackagesTest {
                         byte[] actualBytes = writeBuffer.getBytes();
                         assertThat(actualBytes)
                             .withRepresentation(HexadecimalRepresentation.HEXA_REPRESENTATION)
-                            .describedAs("re-serialized output doesn't match original bytes")
+                            .describedAs("re-serialized output doesn't match original bytes:%s", bvlc)
                             .isEqualTo(expectedBytes);
                     }
                 } else {

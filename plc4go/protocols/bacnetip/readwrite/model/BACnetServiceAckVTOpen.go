@@ -83,7 +83,7 @@ func (m *_BACnetServiceAckVTOpen) GetRemoteVtSessionIdentifier() BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
-func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *_BACnetServiceAckVTOpen {
+func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
 	_result := &_BACnetServiceAckVTOpen{
 		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
 		_BACnetServiceAck:         NewBACnetServiceAck(serviceAckLength),
@@ -124,7 +124,7 @@ func (m *_BACnetServiceAckVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckVTOpen, error) {
+func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {

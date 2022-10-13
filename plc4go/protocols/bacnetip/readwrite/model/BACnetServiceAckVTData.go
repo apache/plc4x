@@ -97,7 +97,7 @@ func (m *_BACnetServiceAckVTData) GetVtDataFlag() BACnetApplicationTagUnsignedIn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
-func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *_BACnetServiceAckVTData {
+func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
 	_result := &_BACnetServiceAckVTData{
 		VtSessionIdentifier: vtSessionIdentifier,
 		VtNewData:           vtNewData,
@@ -146,7 +146,7 @@ func (m *_BACnetServiceAckVTData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckVTData, error) {
+func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTData"); pullErr != nil {
