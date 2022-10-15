@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
@@ -29,7 +30,7 @@ import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 import org.pcap4j.packet.Dot1qVlanTagPacket;
 
-public class BacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
+public class BacNetIpConfiguration extends BaseConfiguration implements UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")

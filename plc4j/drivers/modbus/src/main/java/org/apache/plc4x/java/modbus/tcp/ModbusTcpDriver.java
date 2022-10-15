@@ -28,10 +28,10 @@ import org.apache.plc4x.java.modbus.base.field.ModbusField;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldHandler;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -53,7 +53,7 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return ModbusTcpConfiguration.class;
     }
 

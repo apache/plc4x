@@ -23,24 +23,37 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
+import org.apache.plc4x.java.profinet.device.ProfinetChannel;
+import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.field.ProfinetField;
 import org.apache.plc4x.java.profinet.field.ProfinetFieldHandler;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
+import org.apache.plc4x.java.profinet.readwrite.MacAddress;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import org.pcap4j.core.*;
+import org.pcap4j.util.LinkLayerAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
 import java.util.function.ToIntFunction;
 
 public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProfinetDriver.class);
 
     public static final String DRIVER_CODE = "profinet";
 
@@ -66,11 +79,18 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
-        return new DefaultPlcDiscoveryRequest.Builder(new ProfinetPlcDiscoverer());
+        try {
+            ProfinetChannel channel = new ProfinetChannel(Pcaps.findAllDevs());
+            ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(channel);
+            channel.setDiscoverer(discoverer);
+            return new DefaultPlcDiscoveryRequest.Builder(discoverer);
+        } catch (PcapNativeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return ProfinetConfiguration.class;
     }
 
@@ -79,10 +99,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
         return "raw";
     }
 
-    /**
-     * Modbus doesn't have a login procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
     protected boolean awaitSetupComplete() {
         return true;
@@ -90,6 +106,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     /**
      * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     *
      * @return false
      */
     @Override
@@ -137,7 +154,9 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
             .build();
     }
 
-    /** Estimate the Length of a Packet */
+    /**
+     * Estimate the Length of a Packet
+     */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
@@ -146,10 +165,11 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
             }
             return -1;
         }
+
     }
 
     @Override
-    public ProfinetField prepareField(String query){
+    public ProfinetField prepareField(String query) {
         return ProfinetField.of(query);
     }
 

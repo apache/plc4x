@@ -20,6 +20,7 @@ package org.apache.plc4x.java.knxnetip.configuration;
 
 import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
@@ -33,7 +34,7 @@ import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelConfig;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
-public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration, PcapReplayTransportConfiguration, RawSocketTransportConfiguration {
+public class KnxNetIpConfiguration extends BaseConfiguration implements UdpTransportConfiguration, PcapReplayTransportConfiguration, RawSocketTransportConfiguration {
 
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;

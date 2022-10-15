@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.java.spi.configuration;
 
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+
 public interface Configuration {
 
 }

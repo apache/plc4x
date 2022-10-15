@@ -24,7 +24,7 @@ import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;
 import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -48,7 +48,7 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return BacNetIpConfiguration.class;
     }
 

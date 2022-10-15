@@ -316,6 +316,7 @@ public class ProfinetDevice {
 
                 List<PnIoCm_IoDataObject> inputApiBlocks = new ArrayList<>();
                 List<PnIoCm_IoCs> outputApiBlocks = new ArrayList<>();
+                List<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
 
                 int offsetCount = 0;
                 for (ProfinetVirtualSubmoduleItem virtualItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getVirtualSubmoduleList()) {
@@ -328,6 +329,13 @@ public class ProfinetDevice {
                         0,
                         identNumber,
                         offsetCount));
+                    expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
+                        identNumber,
+                        identNumber,
+                        false,
+                        false,
+                        false,
+                        false));
                     offsetCount += 1;
                 }
 
@@ -341,6 +349,13 @@ public class ProfinetDevice {
                         0,
                         identNumber,
                         offsetCount));
+                    expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
+                        identNumber,
+                        identNumber,
+                        false,
+                        false,
+                        false,
+                        false));
                     offsetCount += 1;
                 }
 
@@ -354,18 +369,25 @@ public class ProfinetDevice {
                         0,
                         identNumber,
                         offsetCount));
+                    expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
+                        identNumber,
+                        identNumber,
+                        false,
+                        false,
+                        false,
+                        false));
                     offsetCount += 1;
                 }
 
                 List<PnIoCm_IoCrBlockReqApi> inputApis = Collections.singletonList(
                     new PnIoCm_IoCrBlockReqApi(
                         inputApiBlocks,
-                        new ArrayList<PnIoCm_IoCs>(0))
+                        new ArrayList<>(0))
                 );
 
                 List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
                     new PnIoCm_IoCrBlockReqApi(
-                        new ArrayList<PnIoCm_IoDataObject>(0),
+                        new ArrayList<>(0),
                         outputApiBlocks
                     )
                 );
@@ -430,22 +452,12 @@ public class ProfinetDevice {
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
                         Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
-                                0x00000001, 0x00000000,
-                                Arrays.asList(
-                                    new PnIoCm_Submodule_NoInputNoOutputData(0x0001,
-                                        0x00000001, false, false,
-                                        false, false),
-                                    new PnIoCm_Submodule_NoInputNoOutputData(0x8000,
-                                        0x00008000, false, false,
-                                        false, false),
-                                    new PnIoCm_Submodule_NoInputNoOutputData(0x8001,
-                                        0x00008001, false, false,
-                                        false, false)
-                                )
+                                0x00000001,
+                                0x00000000,
+                                expectedSubModuleApiBlocks
                             )
                         )
                     ));
-
 
                 long arrayLength = 0;
                 for (PnIoCm_Block block : blocks) {
@@ -462,13 +474,6 @@ public class ProfinetDevice {
                     new PnIoCm_Packet_Req(DEFAULT_ARGS_MAXIMUM, DEFAULT_MAX_ARRAY_COUNT, 0, arrayLength, blocks)
 
                 );
-
-            /*// Build the UDP/IP/EthernetFrame to transport the package.
-            return new Ethernet_Frame(profinetDriverContext.getRemoteMacAddress(), profinetDriverContext.getLocalMacAddress(),
-                new Ethernet_FramePayload_IPv4(ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE), (short) 64,
-                    profinetDriverContext.getLocalIpAddress(), profinetDriverContext.getRemoteIpAddress(),
-                    new Udp_Packet(profinetDriverContext.getLocalUdpPort(), profinetDriverContext.getRemoteUdpPort(),
-                        dceRpcConnectionRequest)));*/
 
         }
 

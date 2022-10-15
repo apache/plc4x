@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.ProfinetDriver;
+import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
@@ -65,60 +66,27 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     private static final String DEVICE_OPTIONS = "DEVICE_PROPERTIES_OPTION-5";
     private static final String DEVICE_INSTANCE = "DEVICE_PROPERTIES_OPTION-7";
     private static final String IP_OPTION_IP = "IP_OPTION-2";
+    private final ProfinetChannel channel;
 
     ExecutorService pool = Executors.newSingleThreadExecutor();
-    Map<MacAddress, PcapHandle> openHandles = new HashMap<>();
+    Map<MacAddress, PcapHandle> openHandles;
     List<PlcDiscoveryItem> values = new ArrayList<>();
 
     Set<Timer> periodicTimers = new HashSet<>();
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetPlcDiscoverer.class);
+    private PlcDiscoveryItemHandler handler;
+
+    public ProfinetPlcDiscoverer(ProfinetChannel channel) {
+        this.channel = channel;
+        this.openHandles = channel.getOpenHandles();
+    }
 
     @Override
     public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
         return discoverWithHandler(discoveryRequest, null);
     }
 
-    public void openDiscoverHandles() {
-        try {
-            for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
-                // It turned out on some MAC network devices without any ip addresses
-                // the compiling of the filter expression was causing errors. As
-                // currently there was no other way to detect this, this check seems
-                // to be sufficient.
-                if (dev.getAddresses().size() == 0) {
-                    continue;
-                }
-                if (!dev.isLoopBack()) {
-                    for (LinkLayerAddress linkLayerAddress : dev.getLinkLayerAddresses()) {
-                        org.pcap4j.util.MacAddress macAddress = (org.pcap4j.util.MacAddress) linkLayerAddress;
-                        PcapHandle handle = dev.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
-                        openHandles.put(toPlc4xMacAddress(macAddress), handle);
-
-                        // Only react on PROFINET DCP or LLDP packets targeted at our current MAC address.
-                        handle.setFilter(
-                            "(((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")) or (ether proto 0x88cc)",
-                            BpfProgram.BpfCompileMode.OPTIMIZE);
-                    }
-                }
-            }
-        } catch (NotOpenException | PcapNativeException e) {
-            logger.error("Got an exception while processing raw socket data", e);
-            for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
-                PcapHandle openHandle = entry.getValue();
-                try {
-                    openHandle.breakLoop();
-                    openHandle.close();
-                } catch (NotOpenException error) {
-                    logger.info("Handle already closed.");
-                }
-            }
-            for (Timer timer : periodicTimers) {
-                timer.cancel();
-                timer.purge();
-            }
-        }
-    }
 
     public CompletableFuture<PlcDiscoveryResponse> setDiscoveryEndTimer(PlcDiscoveryRequest discoveryRequest, long delay) {
         CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
@@ -150,62 +118,10 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         return future;
     }
 
-    public PacketListener createListener(PcapHandle handle, PlcDiscoveryItemHandler handler) {
-        PacketListener listener =
-            packet -> {
-                // EthernetPacket is the highest level of abstraction we can be expecting.
-                // Everything inside this we will have to decode ourselves.
-                if (packet instanceof EthernetPacket) {
-                    EthernetPacket ethernetPacket = (EthernetPacket) packet;
-                    boolean isPnPacket = false;
-                    // I have observed sometimes the ethernet packets being wrapped inside a VLAN
-                    // Packet, in this case we simply unpack the content.
-                    if (ethernetPacket.getPayload() instanceof Dot1qVlanTagPacket) {
-                        Dot1qVlanTagPacket vlanPacket = (Dot1qVlanTagPacket) ethernetPacket.getPayload();
-                        if (PN_EtherType.equals(vlanPacket.getHeader().getType()) || LLDP_EtherType.equals(vlanPacket.getHeader().getType())) {
-                            isPnPacket = true;
-                        }
-                    } else if (PN_EtherType.equals(ethernetPacket.getHeader().getType()) || LLDP_EtherType.equals(ethernetPacket.getHeader().getType())) {
-                        isPnPacket = true;
-                    }
 
-                    // It's a PROFINET or LLDP packet.
-                    if (isPnPacket) {
-                        ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
-                        try {
-                            Ethernet_Frame ethernetFrame = Ethernet_Frame.staticParse(reader);
-
-                            // Access the pdu data (either directly or by
-                            // unpacking the content of the VLAN packet.
-                            if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
-                                Ethernet_FramePayload_VirtualLan vlefpl = (Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload();
-                                if (vlefpl.getPayload() instanceof Ethernet_FramePayload_PnDcp) {
-                                    PnDcp_Pdu pdu = ((Ethernet_FramePayload_PnDcp) vlefpl.getPayload()).getPdu();
-                                    processPnDcp(pdu, ethernetPacket, handler);
-                                } else if (vlefpl.getPayload() instanceof Ethernet_FramePayload_LLDP) {
-                                    Lldp_Pdu pdu = ((Ethernet_FramePayload_LLDP) vlefpl.getPayload()).getPdu();
-                                    processLldp(pdu, ethernetPacket, handler);
-                                }
-                            } else if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_PnDcp) {
-                                PnDcp_Pdu pdu = ((Ethernet_FramePayload_PnDcp) ethernetFrame.getPayload()).getPdu();
-                                processPnDcp(pdu, ethernetPacket, handler);
-                            } else if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_LLDP) {
-                                Lldp_Pdu pdu = ((Ethernet_FramePayload_LLDP) ethernetFrame.getPayload()).getPdu();
-                                processLldp(pdu, ethernetPacket, handler);
-                            }
-
-                        } catch (ParseException e) {
-                            logger.error("Got error decoding packet", e);
-                        }
-                    }
-                }
-            };
-        return listener;
-    }
 
     public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
-        openDiscoverHandles();
-        startListener(handler);
+        this.handler = handler;
         startLldpPoll(5000L);
         startPnDcpPoll(30000L);
         CompletableFuture<PlcDiscoveryResponse> future = setDiscoveryEndTimer(discoveryRequest, 10000L);
@@ -213,13 +129,12 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     }
 
     public void ongoingDiscoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler, long lldpPeriod, long dcpPeriod) {
-        openDiscoverHandles();
-        startListener(handler);
+        this.handler = handler;
         startLldpPoll(lldpPeriod);
         startPnDcpPoll(dcpPeriod);
     }
 
-    private void processPnDcp(PnDcp_Pdu pdu, EthernetPacket ethernetPacket, PlcDiscoveryItemHandler handler) {
+    public void processPnDcp(PnDcp_Pdu pdu, EthernetPacket ethernetPacket) {
         // Inspect the PDU itself
         // (in this case we only process identify response packets)
         if (pdu instanceof PnDcp_Pdu_IdentifyRes) {
@@ -322,7 +237,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         }
     }
 
-    private void processLldp(Lldp_Pdu pdu, EthernetPacket ethernetPacket, PlcDiscoveryItemHandler handler) {
+    public void processLldp(Lldp_Pdu pdu) {
 
         Map<String, String> options = new HashMap<>();
 
@@ -362,8 +277,6 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                 }
             }
         }
-
-
 
         String remoteIpAddress = "invalid";
         options.put("packetType", "lldp");
@@ -436,38 +349,6 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                 period);
         }
     }
-
-    public void startListener(PlcDiscoveryItemHandler handler) {
-        for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
-            PcapHandle handle = entry.getValue();
-            MacAddress macAddress = entry.getKey();
-            // Construct and send the search request.
-
-            Function<Object, Boolean> pnDcpTimer =
-                message -> {
-                    PacketListener listener = createListener(handle, handler);
-                    try {
-                        handle.loop(-1, listener);
-                    } catch (InterruptedException e) {
-                        logger.error("Got error handling raw socket", e);
-                        Thread.currentThread().interrupt();
-                    } catch (PcapNativeException | NotOpenException e) {
-                        logger.error("Got error handling raw socket", e);
-                    }
-                    return null;
-                };
-
-            Timer timer = new Timer();
-            periodicTimers.add(timer);
-
-            // Schedule to run after every 3 second(3000 millisecond)
-            timer.schedule(
-                new PeriodicTask(handle, pnDcpTimer),
-                5000,
-                15000);
-        }
-    }
-
 
     public void startLldpPoll(long period) {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
@@ -570,14 +451,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         }
     }
 
-    private static MacAddress toPlc4xMacAddress(org.pcap4j.util.MacAddress pcap4jMacAddress) {
-        byte[] address = pcap4jMacAddress.getAddress();
-        return new MacAddress(new byte[]{address[0], address[1], address[2], address[3], address[4], address[5]});
-    }
-
     private static class PeriodicTask extends TimerTask {
-
-        private final Logger logger = LoggerFactory.getLogger(PeriodicTask.class);
 
         private final PcapHandle handle;
         private final Function<Object, Boolean> operator;
@@ -592,12 +466,6 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
             operator.apply(null);
         }
 
-    }
-
-    public static void main(String[] args) throws Exception {
-        ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer();
-        discoverer.discover(null);
-        Thread.sleep(10000);
     }
 
 }

@@ -52,7 +52,7 @@ public class ConfigurationFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
     // TODO Respect Path Params
-    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String configurationString) {
+    public <T extends BaseConfiguration> T createConfiguration(Class<T> pClazz, String configurationString) {
         // Get a map of all configuration parameter fields.
         // - Get a list of all fields in the given class.
         Map<String, Field> fields = Arrays.stream(FieldUtils.getAllFields(pClazz))

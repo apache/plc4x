@@ -26,10 +26,10 @@ import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -80,7 +80,7 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return AdsConfiguration.class;
     }
 

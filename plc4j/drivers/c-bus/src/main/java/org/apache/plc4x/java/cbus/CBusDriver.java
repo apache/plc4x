@@ -24,7 +24,7 @@ import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
 import org.apache.plc4x.java.cbus.context.CBusDriverContext;
 import org.apache.plc4x.java.cbus.protocol.CBusProtocolLogic;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -56,7 +56,7 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return CBusConfiguration.class;
     }
 

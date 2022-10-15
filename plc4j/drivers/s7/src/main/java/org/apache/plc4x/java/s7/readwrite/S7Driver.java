@@ -26,7 +26,7 @@ import org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
 import org.apache.plc4x.java.s7.readwrite.field.S7PlcFieldHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -51,7 +51,7 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return S7Configuration.class;
     }
 

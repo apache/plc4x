@@ -18,12 +18,13 @@
  */
 package org.apache.plc4x.java.cbus.configuration;
 
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class CBusConfiguration implements Configuration, TcpTransportConfiguration {
+public class CBusConfiguration extends BaseConfiguration implements TcpTransportConfiguration {
 
     @ConfigurationParameter("srchk")
     @BooleanDefaultValue(false)

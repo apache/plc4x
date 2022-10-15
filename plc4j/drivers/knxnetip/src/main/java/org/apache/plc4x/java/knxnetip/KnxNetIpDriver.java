@@ -23,7 +23,7 @@ import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -72,7 +72,7 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return KnxNetIpConfiguration.class;
     }
 

@@ -28,7 +28,7 @@ import org.apache.plc4x.java.canopen.context.CANOpenDriverContext;
 import org.apache.plc4x.java.canopen.field.CANOpenFieldHandler;
 import org.apache.plc4x.java.canopen.protocol.CANOpenProtocolLogic;
 import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.CustomProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -56,7 +56,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return CANOpenConfiguration.class;
     }
 

@@ -64,8 +64,4 @@ public class ProfinetMessageWrapper {
             throw new RuntimeException(e);
         }
     }
-
-
-
-
 }

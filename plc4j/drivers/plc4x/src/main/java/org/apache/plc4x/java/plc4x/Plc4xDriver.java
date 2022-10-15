@@ -24,7 +24,7 @@ import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.field.Plc4xFieldHandler;
 import org.apache.plc4x.java.plc4x.protocol.Plc4xProtocolLogic;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -46,7 +46,7 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return Plc4xConfiguration.class;
     }
 

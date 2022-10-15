@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.configuration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
@@ -34,7 +35,7 @@ import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class AdsConfiguration implements Configuration, TcpTransportConfiguration, SerialTransportConfiguration {
+public class AdsConfiguration extends BaseConfiguration implements TcpTransportConfiguration, SerialTransportConfiguration {
 
     public static final Pattern AMS_NET_ID_PATTERN =
         Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");

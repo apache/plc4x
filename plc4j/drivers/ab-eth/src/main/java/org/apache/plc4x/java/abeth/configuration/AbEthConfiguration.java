@@ -19,11 +19,12 @@
 package org.apache.plc4x.java.abeth.configuration;
 
 import org.apache.plc4x.java.abeth.AbEthDriver;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class AbEthConfiguration implements Configuration, TcpTransportConfiguration {
+public class AbEthConfiguration extends BaseConfiguration implements TcpTransportConfiguration {
 
     @ConfigurationParameter
     private int station;

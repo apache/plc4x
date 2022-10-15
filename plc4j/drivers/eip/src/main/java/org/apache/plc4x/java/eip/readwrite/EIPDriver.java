@@ -23,9 +23,9 @@ import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
 import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
 import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -47,7 +47,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends BaseConfiguration> getConfigurationType() {
         return EIPConfiguration.class;
     }
 

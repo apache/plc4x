@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
@@ -48,7 +49,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
+public class ProfinetConfiguration extends BaseConfiguration implements RawSocketTransportConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetConfiguration.class);
 

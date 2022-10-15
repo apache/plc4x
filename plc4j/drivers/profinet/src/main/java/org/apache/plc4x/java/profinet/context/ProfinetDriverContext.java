@@ -21,18 +21,21 @@ package org.apache.plc4x.java.profinet.context;
 import org.apache.commons.codec.DecoderException;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
 import org.apache.plc4x.java.profinet.readwrite.IpAddress;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
+import org.pcap4j.core.PcapHandle;
 
 import java.net.DatagramSocket;
 import java.util.Map;
 
 public class ProfinetDriverContext  implements DriverContext, HasConfiguration<ProfinetConfiguration> {
 
+    public Map<MacAddress, PcapHandle> openHandles;
     private DceRpc_ActivityUuid dceRpc_activityUuid;
     private MacAddress localMacAddress;
     private IpAddress localIpAddress;
@@ -41,6 +44,7 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
     private IpAddress remoteIpAddress;
     private int remoteUdpPort;
     private int sessionKey;
+    private ProfinetChannel channel;
 
     private DatagramSocket udpSocket;
 
@@ -126,5 +130,13 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
 
     public void setUdpSocket(DatagramSocket udpSocket) {
         this.udpSocket = udpSocket;
+    }
+
+    public ProfinetChannel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(ProfinetChannel channel) {
+        this.channel = channel;
     }
 }

@@ -23,6 +23,7 @@ import org.apache.plc4x.java.opcua.context.CertificateGenerator;
 import org.apache.plc4x.java.opcua.context.CertificateKeyPair;
 import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
 import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
+import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
@@ -43,7 +44,7 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
+public class OpcuaConfiguration extends BaseConfiguration implements TcpTransportConfiguration {
 
     static {
         // Required for SecurityPolicy.Aes256_Sha256_RsaPss

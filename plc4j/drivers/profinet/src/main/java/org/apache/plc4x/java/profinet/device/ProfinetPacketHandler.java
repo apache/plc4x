@@ -16,23 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.df1.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
+package org.apache.plc4x.java.profinet.device;
 
-public class Df1Configuration extends BaseConfiguration implements SerialTransportConfiguration {
+public class ProfinetPacketHandler {
 
-    @ConfigurationParameter("local-addr")
-    private short localAddr;
+    public void handle() {
 
-    @ConfigurationParameter("remote-addr")
-    private short remoteAddr;
-
-    @Override
-    public int getBaudRate() {
-        return 57600;
     }
 
 }
