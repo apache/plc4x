@@ -84,7 +84,7 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetObjectIdentifier() BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestDeleteObject factory function for _BACnetConfirmedServiceRequestDeleteObject
-func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestDeleteObject {
+func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeleteObject {
 	_result := &_BACnetConfirmedServiceRequestDeleteObject{
 		ObjectIdentifier:               objectIdentifier,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -125,7 +125,7 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestDeleteObject, error) {
+func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeleteObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeleteObject"); pullErr != nil {

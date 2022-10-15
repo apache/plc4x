@@ -48,7 +48,7 @@ type _BACnetConfirmedServiceRequestRequestKey struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceRequestPayloadLength uint16
+	ServiceRequestPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetBytesOfRemovedService() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestRequestKey factory function for _BACnetConfirmedServiceRequestRequestKey
-func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestRequestKey {
+func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
 	_result := &_BACnetConfirmedServiceRequestRequestKey{
 		BytesOfRemovedService:          bytesOfRemovedService,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -130,7 +130,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (BACnetConfirmedServiceRequestRequestKey, error) {
+func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRequestKey"); pullErr != nil {
@@ -185,7 +185,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) Serialize(writeBuffer utils.W
 ////
 // Arguments Getter
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) GetServiceRequestPayloadLength() uint16 {
+func (m *_BACnetConfirmedServiceRequestRequestKey) GetServiceRequestPayloadLength() uint32 {
 	return m.ServiceRequestPayloadLength
 }
 

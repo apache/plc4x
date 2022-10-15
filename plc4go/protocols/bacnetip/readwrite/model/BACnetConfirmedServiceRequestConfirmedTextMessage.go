@@ -106,7 +106,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetMessage() BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for _BACnetConfirmedServiceRequestConfirmedTextMessage
-func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestConfirmedTextMessage {
+func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedTextMessage {
 	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
 		TextMessageSourceDevice:        textMessageSourceDevice,
 		MessageClass:                   messageClass,
@@ -161,7 +161,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestConfirmedTextMessage, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedTextMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pullErr != nil {

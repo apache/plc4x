@@ -83,7 +83,7 @@ func (m *_BACnetServiceAckCreateObject) GetObjectIdentifier() BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckCreateObject factory function for _BACnetServiceAckCreateObject
-func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint16) *_BACnetServiceAckCreateObject {
+func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint32) *_BACnetServiceAckCreateObject {
 	_result := &_BACnetServiceAckCreateObject{
 		ObjectIdentifier:  objectIdentifier,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -124,7 +124,7 @@ func (m *_BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckCreateObject, error) {
+func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {

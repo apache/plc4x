@@ -85,7 +85,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLastReceivedObjec
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestGetEventInformation factory function for _BACnetConfirmedServiceRequestGetEventInformation
-func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestGetEventInformation {
+func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEventInformation {
 	_result := &_BACnetConfirmedServiceRequestGetEventInformation{
 		LastReceivedObjectIdentifier:   lastReceivedObjectIdentifier,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -128,7 +128,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestGetEventInformation, error) {
+func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {

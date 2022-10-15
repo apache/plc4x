@@ -40,13 +40,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.owasp</groupId>
-					<artifactId>dependency-check-maven</artifactId>
-					<configuration>
-						<suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
-					</configuration>
-				</plugin>
-				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<configuration>

@@ -83,7 +83,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetFileStartPosition() BACnetContextT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint16) *_BACnetServiceAckAtomicWriteFile {
+func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
 	_result := &_BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -124,7 +124,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckAtomicWriteFile, error) {
+func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {

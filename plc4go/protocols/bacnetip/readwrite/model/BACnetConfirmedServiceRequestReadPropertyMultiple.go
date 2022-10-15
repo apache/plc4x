@@ -48,7 +48,7 @@ type _BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 	Data []BACnetReadAccessSpecification
 
 	// Arguments.
-	ServiceRequestPayloadLength uint16
+	ServiceRequestPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetData() []BACnetR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadPropertyMultiple factory function for _BACnetConfirmedServiceRequestReadPropertyMultiple
-func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []BACnetReadAccessSpecification, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestReadPropertyMultiple {
+func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []BACnetReadAccessSpecification, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestReadPropertyMultiple {
 	_result := &_BACnetConfirmedServiceRequestReadPropertyMultiple{
 		Data:                           data,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -132,7 +132,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
+func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); pullErr != nil {
@@ -210,7 +210,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) Serialize(writeBuff
 ////
 // Arguments Getter
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetServiceRequestPayloadLength() uint16 {
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) GetServiceRequestPayloadLength() uint32 {
 	return m.ServiceRequestPayloadLength
 }
 

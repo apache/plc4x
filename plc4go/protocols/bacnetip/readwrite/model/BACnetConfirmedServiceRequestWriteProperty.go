@@ -113,7 +113,7 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetPriority() BACnetContex
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestWriteProperty factory function for _BACnetConfirmedServiceRequestWriteProperty
-func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestWriteProperty {
+func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestWriteProperty {
 	_result := &_BACnetConfirmedServiceRequestWriteProperty{
 		ObjectIdentifier:               objectIdentifier,
 		PropertyIdentifier:             propertyIdentifier,
@@ -174,7 +174,7 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestWriteProperty, error) {
+func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestWriteProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWriteProperty"); pullErr != nil {

@@ -48,7 +48,7 @@ type _BACnetConfirmedServiceRequestUnknown struct {
 	UnknownBytes []byte
 
 	// Arguments.
-	ServiceRequestPayloadLength uint16
+	ServiceRequestPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetUnknownBytes() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestUnknown factory function for _BACnetConfirmedServiceRequestUnknown
-func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestUnknown {
+func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestUnknown {
 	_result := &_BACnetConfirmedServiceRequestUnknown{
 		UnknownBytes:                   unknownBytes,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -130,7 +130,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (BACnetConfirmedServiceRequestUnknown, error) {
+func BACnetConfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestUnknown"); pullErr != nil {
@@ -185,7 +185,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) Serialize(writeBuffer utils.Writ
 ////
 // Arguments Getter
 
-func (m *_BACnetConfirmedServiceRequestUnknown) GetServiceRequestPayloadLength() uint16 {
+func (m *_BACnetConfirmedServiceRequestUnknown) GetServiceRequestPayloadLength() uint32 {
 	return m.ServiceRequestPayloadLength
 }
 

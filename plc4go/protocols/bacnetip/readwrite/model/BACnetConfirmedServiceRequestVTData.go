@@ -98,7 +98,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetVtDataFlag() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
-func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestVTData {
+func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
 	_result := &_BACnetConfirmedServiceRequestVTData{
 		VtSessionIdentifier:            vtSessionIdentifier,
 		VtNewData:                      vtNewData,
@@ -147,7 +147,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestVTData, error) {
+func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTData"); pullErr != nil {

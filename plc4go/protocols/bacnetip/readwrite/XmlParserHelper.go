@@ -327,11 +327,11 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		return model.BACnetRecipientEnclosedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetConfirmedServiceRequest":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
 			return nil, err
 		}
-		serviceRequestLength := uint16(parsedUint0)
+		serviceRequestLength := uint32(parsedUint0)
 		return model.BACnetConfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceRequestLength)
 	case "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
@@ -884,11 +884,11 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagClass, _ := model.TagClassByName(parserArguments[1])
 		return model.BACnetAccessEventTaggedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetServiceAck":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
 			return nil, err
 		}
-		serviceAckLength := uint16(parsedUint0)
+		serviceAckLength := uint32(parsedUint0)
 		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceAckLength)
 	case "BACnetAccessCredentialDisableTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)

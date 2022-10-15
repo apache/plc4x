@@ -33,7 +33,7 @@ type BACnetConfirmedServiceRequest interface {
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
-	GetServiceRequestPayloadLength() uint16
+	GetServiceRequestPayloadLength() uint32
 }
 
 // BACnetConfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequest.
@@ -48,7 +48,7 @@ type _BACnetConfirmedServiceRequest struct {
 	_BACnetConfirmedServiceRequestChildRequirements
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceRequestLength uint32
 }
 
 type _BACnetConfirmedServiceRequestChildRequirements interface {
@@ -77,8 +77,8 @@ type BACnetConfirmedServiceRequestChild interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint16 {
-	return uint16(utils.InlineIf((bool((m.ServiceRequestLength) > (0))), func() interface{} { return uint16((uint16(m.ServiceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint32 {
+	return uint32(utils.InlineIf((bool((m.ServiceRequestLength) > (0))), func() interface{} { return uint32((uint32(m.ServiceRequestLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32))
 }
 
 ///////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint16
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequest factory function for _BACnetConfirmedServiceRequest
-func NewBACnetConfirmedServiceRequest(serviceRequestLength uint16) *_BACnetConfirmedServiceRequest {
+func NewBACnetConfirmedServiceRequest(serviceRequestLength uint32) *_BACnetConfirmedServiceRequest {
 	return &_BACnetConfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}
 }
 
@@ -120,7 +120,7 @@ func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequest"); pullErr != nil {
@@ -143,8 +143,8 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	}
 
 	// Virtual field
-	_serviceRequestPayloadLength := utils.InlineIf((bool((serviceRequestLength) > (0))), func() interface{} { return uint16((uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
-	serviceRequestPayloadLength := uint16(_serviceRequestPayloadLength)
+	_serviceRequestPayloadLength := utils.InlineIf((bool((serviceRequestLength) > (0))), func() interface{} { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32)
+	serviceRequestPayloadLength := uint32(_serviceRequestPayloadLength)
 	_ = serviceRequestPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -280,7 +280,7 @@ func (pm *_BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 ////
 // Arguments Getter
 
-func (m *_BACnetConfirmedServiceRequest) GetServiceRequestLength() uint16 {
+func (m *_BACnetConfirmedServiceRequest) GetServiceRequestLength() uint32 {
 	return m.ServiceRequestLength
 }
 

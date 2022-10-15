@@ -106,7 +106,7 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) GetListOfElements() BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAddListElement factory function for _BACnetConfirmedServiceRequestAddListElement
-func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestAddListElement {
+func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAddListElement {
 	_result := &_BACnetConfirmedServiceRequestAddListElement{
 		ObjectIdentifier:               objectIdentifier,
 		PropertyIdentifier:             propertyIdentifier,
@@ -163,7 +163,7 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestAddListElement, error) {
+func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAddListElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAddListElement"); pullErr != nil {

@@ -106,7 +106,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetObjectIdentifier(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestLifeSafetyOperation factory function for _BACnetConfirmedServiceRequestLifeSafetyOperation
-func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged, objectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestLifeSafetyOperation {
+func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged, objectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestLifeSafetyOperation {
 	_result := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
 		RequestingProcessIdentifier:    requestingProcessIdentifier,
 		RequestingSource:               requestingSource,
@@ -161,7 +161,7 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
+func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); pullErr != nil {

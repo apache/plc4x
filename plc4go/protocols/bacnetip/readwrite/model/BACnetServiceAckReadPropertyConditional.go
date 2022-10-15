@@ -48,7 +48,7 @@ type _BACnetServiceAckReadPropertyConditional struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckPayloadLength uint16
+	ServiceAckPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetBytesOfRemovedService() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyConditional factory function for _BACnetServiceAckReadPropertyConditional
-func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckReadPropertyConditional {
+func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckReadPropertyConditional {
 	_result := &_BACnetServiceAckReadPropertyConditional{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -129,7 +129,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (BACnetServiceAckReadPropertyConditional, error) {
+func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {
@@ -184,7 +184,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) Serialize(writeBuffer utils.W
 ////
 // Arguments Getter
 
-func (m *_BACnetServiceAckReadPropertyConditional) GetServiceAckPayloadLength() uint16 {
+func (m *_BACnetServiceAckReadPropertyConditional) GetServiceAckPayloadLength() uint32 {
 	return m.ServiceAckPayloadLength
 }
 

@@ -48,7 +48,7 @@ type _BACnetConfirmedServiceRequestVTClose struct {
 	ListOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	ServiceRequestPayloadLength uint16
+	ServiceRequestPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetListOfRemoteVtSessionIdentifi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTClose factory function for _BACnetConfirmedServiceRequestVTClose
-func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestVTClose {
+func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestVTClose {
 	_result := &_BACnetConfirmedServiceRequestVTClose{
 		ListOfRemoteVtSessionIdentifiers: listOfRemoteVtSessionIdentifiers,
 		_BACnetConfirmedServiceRequest:   NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -132,7 +132,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (BACnetConfirmedServiceRequestVTClose, error) {
+func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
@@ -210,7 +210,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) Serialize(writeBuffer utils.Writ
 ////
 // Arguments Getter
 
-func (m *_BACnetConfirmedServiceRequestVTClose) GetServiceRequestPayloadLength() uint16 {
+func (m *_BACnetConfirmedServiceRequestVTClose) GetServiceRequestPayloadLength() uint32 {
 	return m.ServiceRequestPayloadLength
 }
 

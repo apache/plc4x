@@ -115,7 +115,7 @@ func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan m
 	readRequests := d.readRequestInterceptor.InterceptReadRequest(ctx, d)
 	// Shortcut for single-request-requests
 	if len(readRequests) == 1 {
-		return d.reader.Read(nil, readRequests[0])
+		return d.reader.Read(ctx, readRequests[0])
 	}
 	// Create a sub-result-channel slice
 	var subResultChannels []<-chan model.PlcReadRequestResult

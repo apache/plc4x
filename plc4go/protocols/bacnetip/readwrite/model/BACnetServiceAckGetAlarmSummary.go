@@ -97,7 +97,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() BACnetEv
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint16) *_BACnetServiceAckGetAlarmSummary {
+func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
 	_result := &_BACnetServiceAckGetAlarmSummary{
 		ObjectIdentifier:        objectIdentifier,
 		EventState:              eventState,
@@ -146,7 +146,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckGetAlarmSummary, error) {
+func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {

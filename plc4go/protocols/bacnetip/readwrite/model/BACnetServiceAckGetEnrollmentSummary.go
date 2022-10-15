@@ -112,7 +112,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetNotificationClass() BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetEnrollmentSummary factory function for _BACnetServiceAckGetEnrollmentSummary
-func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *_BACnetServiceAckGetEnrollmentSummary {
+func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckGetEnrollmentSummary {
 	_result := &_BACnetServiceAckGetEnrollmentSummary{
 		ObjectIdentifier:  objectIdentifier,
 		EventType:         eventType,
@@ -171,7 +171,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckGetEnrollmentSummary, error) {
+func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEnrollmentSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {

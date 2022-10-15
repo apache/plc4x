@@ -48,7 +48,7 @@ type _BACnetConfirmedServiceRequestWritePropertyMultiple struct {
 	Data []BACnetWriteAccessSpecification
 
 	// Arguments.
-	ServiceRequestPayloadLength uint16
+	ServiceRequestPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetData() []BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestWritePropertyMultiple factory function for _BACnetConfirmedServiceRequestWritePropertyMultiple
-func NewBACnetConfirmedServiceRequestWritePropertyMultiple(data []BACnetWriteAccessSpecification, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestWritePropertyMultiple {
+func NewBACnetConfirmedServiceRequestWritePropertyMultiple(data []BACnetWriteAccessSpecification, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestWritePropertyMultiple {
 	_result := &_BACnetConfirmedServiceRequestWritePropertyMultiple{
 		Data:                           data,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -132,7 +132,7 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
+func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pullErr != nil {
@@ -210,7 +210,7 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(writeBuf
 ////
 // Arguments Getter
 
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceRequestPayloadLength() uint16 {
+func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceRequestPayloadLength() uint32 {
 	return m.ServiceRequestPayloadLength
 }
 
