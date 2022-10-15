@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,10 +21,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {

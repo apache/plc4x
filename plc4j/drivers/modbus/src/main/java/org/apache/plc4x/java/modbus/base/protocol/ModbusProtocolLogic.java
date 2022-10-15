@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,11 +19,9 @@
 package org.apache.plc4x.java.modbus.base.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.modbus.base.field.ModbusField;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldCoil;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldDiscreteInput;
@@ -33,25 +31,17 @@ import org.apache.plc4x.java.modbus.base.field.ModbusExtendedRegister;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcList;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProtocolBase<T> {
@@ -221,7 +211,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             }
             ModbusPDUReadDiscreteInputsRequest req = (ModbusPDUReadDiscreteInputsRequest) request;
             ModbusPDUReadDiscreteInputsResponse resp = (ModbusPDUReadDiscreteInputsResponse) response;
-            return readBooleanList(req.getQuantity(), resp.getValue());
+            return readCoilBooleanList(req.getQuantity(), resp.getValue());
         } else if (request instanceof ModbusPDUReadCoilsRequest) {
             if (!(response instanceof ModbusPDUReadCoilsResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -229,7 +219,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             }
             ModbusPDUReadCoilsRequest req = (ModbusPDUReadCoilsRequest) request;
             ModbusPDUReadCoilsResponse resp = (ModbusPDUReadCoilsResponse) response;
-            return readBooleanList(req.getQuantity(), resp.getValue());
+            return readCoilBooleanList(req.getQuantity(), resp.getValue());
         } else if (request instanceof ModbusPDUReadInputRegistersRequest) {
             if (!(response instanceof ModbusPDUReadInputRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -322,20 +312,34 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
         return Arrays.copyOf(reverse.toByteArray(), 1)[0];
     }
 
-    protected PlcValue readBooleanList(int count, byte[] data) throws ParseException {
+    protected PlcValue readCoilBooleanList(int count, byte[] data) throws ParseException {
         ReadBuffer io = new ReadBufferByteBased(data);
         if (count == 1) {
-            return DataItem.staticParse(io, ModbusDataType.BOOL, 1);
+            // Skip the first 7 bits.
+            io.readInt(7);
+            return new PlcBOOL(io.readBit());
         }
-        // Make sure we read in all the bytes. Unfortunately when requesting 9 bytes
-        // they are ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
-        // Luckily it turns out that this is exactly how BitSet parses byte[]
-        BitSet bits = BitSet.valueOf(data);
-        List<PlcValue> result = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            result.add(new PlcBOOL(bits.get(i)));
+
+        int numFullBytes = count / 8;
+        int numBitsIncompleteByte = count - (numFullBytes * 8);
+        PlcValue[] values = new PlcValue[count];
+        for (int i = 0; i < numFullBytes; i++) {
+            values[(i*8)+7] = new PlcBOOL(io.readBit());
+            values[(i*8)+6] = new PlcBOOL(io.readBit());
+            values[(i*8)+5] = new PlcBOOL(io.readBit());
+            values[(i*8)+4] = new PlcBOOL(io.readBit());
+            values[(i*8)+3] = new PlcBOOL(io.readBit());
+            values[(i*8)+2] = new PlcBOOL(io.readBit());
+            values[(i*8)+1] = new PlcBOOL(io.readBit());
+            values[(i*8)] = new PlcBOOL(io.readBit());
         }
-        return new PlcList(result);
+        if(numBitsIncompleteByte > 0) {
+            io.readInt(8 - numBitsIncompleteByte);
+            for (int i = 1; i <= numBitsIncompleteByte; i++) {
+                values[(numFullBytes*8)+(numBitsIncompleteByte - i)] = new PlcBOOL(io.readBit());
+            }
+        }
+        return new PlcList(Arrays.asList(values));
     }
 
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -143,7 +143,7 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
             // Read in all the bytes in the message.
             final ReadBufferByteBased bufferByteBased = (ReadBufferByteBased) io;
             // Read in all bytes except the last two ones, which contain a line-break and carriage-return.
-            final byte[] bytes = bufferByteBased.getBytes(bufferByteBased.getPos(), (int) bufferByteBased.getTotalBytes() - 2);
+            final byte[] bytes = bufferByteBased.getBytes(bufferByteBased.getPos(), bufferByteBased.getTotalBytes() - 2);
             // Convert the bytes into a string (Which is the hex-encoded message)
             final String inputString = new String(bytes, StandardCharsets.UTF_8);
             // Decode the encoded string back into a byte-array.

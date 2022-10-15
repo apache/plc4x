@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -65,7 +65,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-        // Discriminator Field (parameterType)
+  // Discriminator Field (parameterType)
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = 0;
@@ -160,7 +160,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
   // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_cotp_parameter_get_discriminator(_message->_type).parameterType);
 
-  // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_cotp_parameter_length_in_bytes(_message)) - (2));
   if(_res != OK) {
     return _res;
@@ -240,7 +240,7 @@ uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_c
   // Implicit Field (parameterLength)
   lengthInBits += 8;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 

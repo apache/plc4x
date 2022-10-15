@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -29,7 +29,7 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -85,6 +85,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     Define the serialize-method for elements of this tpye
 -->
 plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* message);
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_for_value(${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())} value);
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string);
 

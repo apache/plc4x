@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -16,9 +16,6 @@
   specific language governing permissions and limitations
   under the License.
 ]]
-
-include_directories("include" "../../api/include" "../../spi/include"
-    "../../generated-sources/s7/include")
 
 # Add the generated sources
 file(GLOB generatedSources "../../generated-sources/s7/src/*.c")
@@ -32,6 +29,14 @@ add_library(plc4c-driver-s7
         src/driver_s7_sm_read.c
         src/driver_s7_sm_write.c
         ${generatedSources} include/plc4c/driver_s7_static.h src/driver_s7_static.c)
+
+target_include_directories(
+        plc4c-driver-s7
+        PUBLIC
+        "include"
+        "../../api/include"
+        "../../spi/include"
+        "../../generated-sources/s7/include")
 
 target_link_libraries(plc4c-driver-s7
         plc4c-spi)

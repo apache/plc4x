@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -229,22 +229,36 @@ struct plc4c_data_t {
   plc4c_data_type data_type;
   size_t size;
   union {
-    bool boolean_value;
-    int8_t char_value;
-    uint8_t uchar_value;
-    int16_t short_value;
-    uint16_t ushort_value;
-    int32_t int_value;
-    uint32_t uint_value;
-    int64_t lint_value;
+    bool bool_value;
+    uint8_t byte_value;
+    uint16_t word_value;
+    uint32_t dword_value;
+    uint64_t lword_value;
+
+    uint8_t usint_value;
+    int8_t sint_value;
+    uint16_t uint_value;
+    int16_t int_value;
+    uint32_t udint_value;
+    int32_t dint_value;
     uint64_t ulint_value;
-    /* more */
-    float float_value;
-    double double_value;
-    char *pstring_value;
-    char *const_string_value;
-    void *pvoid_value;
-    plc4c_list list_value;
+    int64_t lint_value;
+
+    float real_value;
+    double lreal_value;
+
+    uint16_t date_value;
+    uint32_t time_value;
+    uint64_t ltime_value;
+    uint32_t time_of_day_value;
+    uint32_t date_and_time_value;
+
+    char char_value;
+    wchar_t wchar_value;
+    char *string_value;
+    wchar_t *wstring_value;
+
+    plc4c_list* list_value;
   } data;
 
   plc4c_data_custom_destroy custom_destroy;

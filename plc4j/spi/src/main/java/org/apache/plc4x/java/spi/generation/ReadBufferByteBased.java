@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,13 +26,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class ReadBufferByteBased implements ReadBuffer {
 
     private final MyDefaultBitInput bi;
     private ByteOrder byteOrder;
-    private final long totalBytes;
+    private final int totalBytes;
 
     public ReadBufferByteBased(byte[] input) {
         this(input, ByteOrder.BIG_ENDIAN);
@@ -64,7 +65,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         return data;
     }
 
-    public long getTotalBytes() {
+    public int getTotalBytes() {
         return totalBytes;
     }
 
@@ -312,6 +313,36 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     private float readFloat16() throws IOException {
+        // NOTE: KNX uses 4 bits as exponent and 11 as fraction
+        final boolean sign = bi.readBoolean();
+        final byte exponent = bi.readByte(true, 4);
+        short fraction = bi.readShort(true, 11);
+        // This is a 12-bit 2's complement notation ... the first bit belongs to the last 11 bits.
+        // If the first bit is set, then we need to also set the upper 5 bits of the fraction part.
+        if(sign) {
+            fraction = (short) (fraction | 0xF800);
+        }
+        if ((exponent >= 1) && (exponent < 15)) {
+            return (float) (0.01 * fraction * Math.pow(2, exponent));
+        }
+        if (exponent == 0) {
+            if (fraction == 0) {
+                return 0.0f;
+            } else {
+                return (2 ^ (-14)) * (fraction / 10f);
+            }
+        }
+        if (exponent == 15) {
+            if (fraction == 0) {
+                return sign ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
+            } else {
+                return Float.NaN;
+            }
+        }
+        throw new NumberFormatException();
+    }
+
+    /*private float readFloat16() throws IOException {
         // https://en.wikipedia.org/wiki/Half-precision_floating-point_format
         final boolean sign = bi.readBoolean();
         final byte exponent = bi.readByte(true, 5);
@@ -335,7 +366,7 @@ public class ReadBufferByteBased implements ReadBuffer {
             }
         }
         throw new NumberFormatException();
-    }
+    }*/
 
     private float readFloat32(String logicalName) throws ParseException {
         int intValue = readInt(logicalName, 32);
@@ -358,17 +389,65 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) {
-        byte[] strBytes = new byte[bitLength / 8];
-        for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
-            try {
-                strBytes[i] = readByte(logicalName);
-            } catch (Exception e) {
-                throw new PlcRuntimeException(e);
+    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) throws ParseException {
+        encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
+        switch (encoding.toUpperCase()) {
+            case "UTF8": {
+                byte[] strBytes = new byte[bitLength / 8];
+                int realLength = 0;
+                boolean finishedReading = false;
+                for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
+                    try {
+                        byte b = readByte(logicalName);
+                        if (b == 0x00) {
+                            finishedReading = true;
+                        } else if (!finishedReading) {
+                            strBytes[i] = b;
+                            realLength++;
+                        }
+                    } catch (Exception e) {
+                        throw new PlcRuntimeException(e);
+                    }
+                }
+                return new String(strBytes, StandardCharsets.UTF_8).substring(0, realLength);
             }
+            case "UTF16":
+            case "UTF16LE":
+            case "UTF16BE": {
+                byte[] strBytes = new byte[bitLength / 8];
+                int realLength = 0;
+                boolean finishedReading = false;
+                for (int i = 0; (i < (bitLength / 16)) && hasMore(16); i++) {
+                    try {
+                        byte b1 = readByte(logicalName);
+                        byte b2 = readByte(logicalName);
+                        if ((b1 == 0x00) && (b2 == 0x00)) {
+                            finishedReading = true;
+                        } else if (!finishedReading){
+                            strBytes[(i * 2)] = b1;
+                            strBytes[(i * 2) + 1] = b2;
+                            realLength++;
+                        }
+                    } catch (Exception e) {
+                        throw new PlcRuntimeException(e);
+                    }
+                }
+                Charset charset;
+                switch (encoding) {
+                    case "UTF16LE":
+                        charset = StandardCharsets.UTF_16LE;
+                        break;
+                    case "UTF16BE":
+                        charset = StandardCharsets.UTF_16BE;
+                        break;
+                    default:
+                        charset = StandardCharsets.UTF_16;
+                }
+                return new String(strBytes, charset).substring(0, realLength);
+            }
+            default:
+                throw new ParseException("Unsupported encoding: " + encoding);
         }
-        //replaceAll function removes and leading ' char or hypens.
-        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]", "")));
     }
 
 

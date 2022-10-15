@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -65,7 +65,7 @@
         ]
         ['SUBSCRIPTION_RESPONSE' Plc4xSubscriptionResponse
             [simple   uint 16                 connectionId                  ]
-            [simple   Plc4xResponseCode       responseCode                  ]
+            [simple   PlcResponseCode         responseCode                  ]
             [implicit uint 8                  numFields    'COUNT(fields)'  ]
             [array                            fields       count 'numFields']
         ]
@@ -119,14 +119,17 @@
             [reserved uint 7                     '0x00'                          ]
             [simple   bit                        value                           ]
         ]
-        ['BYTE'          BitString
+        ['BYTE'          BYTE
             [simple   uint 8                     value                           ]
         ]
-        ['WORD'          BitString
+        ['WORD'          WORD
             [simple   uint 16                    value                           ]
         ]
-        ['DWORD'         BitString
+        ['DWORD'         DWORD
             [simple   uint 32                    value                           ]
+        ]
+        ['LWORD'         LWORD
+            [simple   uint 64                    value                           ]
         ]
 
         // Unsigned Integers
@@ -208,62 +211,6 @@
     ['0x0C' UNSUBSCRIPTION_RESPONSE]
 ]
 
-[enum uint 8 Plc4xReturnCode
-    ['0x01' OK              ]
-    ['0x02' NOT_FOUND       ]
-    ['0x03' ACCESS_DENIED   ]
-    ['0x04' INVALID_ADDRESS ]
-    ['0x05' INVALID_DATATYPE]
-    ['0x06' INVALID_DATA    ]
-    ['0x07' INTERNAL_ERROR  ]
-    ['0x08' REMOTE_BUSY     ]
-    ['0x09' REMOTE_ERROR    ]
-    ['0x0A' UNSUPPORTED     ]
-    ['0x0B' RESPONSE_PENDING]
-]
-
-[enum uint 8 Plc4xValueType
-    ['0x00' NULL         ]
-
-    // Bit Strings
-    ['0x01' BOOL         ]
-    ['0x02' BYTE         ]
-    ['0x03' WORD         ]
-    ['0x04' DWORD        ]
-
-    // Unsigned Integers
-    ['0x11' USINT        ]
-    ['0x12' UINT         ]
-    ['0x13' UDINT        ]
-    ['0x14' ULINT        ]
-
-    // Signed Integers
-    ['0x21' SINT         ]
-    ['0x22' INT          ]
-    ['0x23' DINT         ]
-    ['0x24' LINT         ]
-
-    // Floating Point Values
-    ['0x31' REAL         ]
-    ['0x32' LREAL        ]
-
-    // Chars and Strings
-    ['0x41' CHAR         ]
-    ['0x42' WCHAR        ]
-    ['0x43' STRING       ]
-    ['0x44' WSTRING      ]
-
-    // Times and Dates
-    ['0x51' TIME         ]
-    ['0x52' TIME_OF_DAY  ]
-    ['0x53' DATE         ]
-    ['0x54' DATE_AND_TIME]
-
-    // Complex types
-    ['0x61' Struct       ]
-    ['0x62' List         ]
-]
-
 [enum uint 8 Plc4xResponseCode
     ['0x01' OK              ]
     ['0x02' NOT_FOUND       ]
@@ -276,4 +223,59 @@
     ['0x0A' REMOTE_ERROR    ]
     ['0x0B' UNSUPPORTED     ]
     ['0x0C' RESPONSE_PENDING]
+]
+
+[enum uint 8 Plc4xValueType
+    ['0x00' NULL          ]
+
+    // Bit Strings
+    ['0x01' BOOL          ]
+    ['0x02' BYTE          ]
+    ['0x03' WORD          ]
+    ['0x04' DWORD         ]
+    ['0x05' LWORD         ]
+
+    // Unsigned Integers
+    ['0x11' USINT         ]
+    ['0x12' UINT          ]
+    ['0x13' UDINT         ]
+    ['0x14' ULINT         ]
+
+    // Signed Integers
+    ['0x21' SINT          ]
+    ['0x22' INT           ]
+    ['0x23' DINT          ]
+    ['0x24' LINT          ]
+
+    // Floating Point Values
+    ['0x31' REAL          ]
+    ['0x32' LREAL         ]
+
+    // Chars and Strings
+    ['0x41' CHAR          ]
+    ['0x42' WCHAR         ]
+    ['0x43' STRING        ]
+    ['0x44' WSTRING       ]
+
+    // Times and Dates
+    ['0x51' TIME          ]
+    ['0x52' LTIME         ]
+    ['0x53' DATE          ]
+    ['0x54' LDATE         ]
+    ['0x55' TIME_OF_DAY   ]
+    ['0x56' LTIME_OF_DAY  ]
+    ['0x57' DATE_AND_TIME ]
+    ['0x58' LDATE_AND_TIME]
+
+    // Complex types
+    ['0x61' Struct        ]
+    ['0x62' List          ]
+
+    ['0x71' RAW_BYTE_ARRAY]
+]
+
+[enum uint 8 Plc4xSubscriptionType
+   ['0x01' CYCLIC         ]
+   ['0x02' CHANGE_OF_STATE]
+   ['0x03' EVENT          ]
 ]

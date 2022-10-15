@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -77,8 +77,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         try {
             onSubscribeCreateMonitoredItemsRequest().get();
         } catch (Exception e) {
-            LOGGER.info("Unable to serialize the Create Monitored Item Subscription Message");
-            e.printStackTrace();
+            LOGGER.info("Unable to serialize the Create Monitored Item Subscription Message", e);
             plcSubscriber.onDisconnect(context);
         }
         startSubscriber();
@@ -141,7 +140,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         CreateMonitoredItemsRequest createMonitoredItemsRequest = new CreateMonitoredItemsRequest(
             requestHeader,
             subscriptionId,
-            TimestampsToReturn.timestampsToReturnNeither,
+            TimestampsToReturn.timestampsToReturnBoth,
             requestList.size(),
             requestList
         );
@@ -175,37 +174,35 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                         plcSubscriber.onDisconnect(context);
                     }
                 } catch (ParseException e) {
-                    LOGGER.error("Unable to parse the returned Subscription response");
-                    e.printStackTrace();
+                    LOGGER.error("Unable to parse the returned Subscription response", e);
                     plcSubscriber.onDisconnect(context);
                 }
-                for (MonitoredItemCreateResult result : responseMessage.getResults().toArray(new MonitoredItemCreateResult[0])) {
+                MonitoredItemCreateResult[] array = responseMessage.getResults().toArray(new MonitoredItemCreateResult[0]);
+                for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
+                    MonitoredItemCreateResult result = array[index];
                     if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
-                        LOGGER.error("Invalid Field {}, subscription created without this field", fieldNames.get((int) result.getMonitoredItemId()));
+                        LOGGER.error("Invalid Field {}, subscription created without this field", fieldNames.get(index));
                     } else {
-                        LOGGER.debug("Field {} was added to the subscription", fieldNames.get((int) result.getMonitoredItemId() - 1));
+                        LOGGER.debug("Field {} was added to the subscription", fieldNames.get(index));
                     }
                 }
                 future.complete(responseMessage);
             };
 
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.info("Timeout while sending the Create Monitored Item Subscription Message");
-                e.printStackTrace();
+                LOGGER.info("Timeout while sending the Create Monitored Item Subscription Message", e);
                 plcSubscriber.onDisconnect(context);
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.info("Error while sending the Create Monitored Item Subscription Message");
-                e.printStackTrace();
+                LOGGER.info("Error while sending the Create Monitored Item Subscription Message", e);
                 plcSubscriber.onDisconnect(context);
             };
 
             channel.submit(context, timeout, error, consumer, buffer);
 
         } catch (SerializationException e) {
-            LOGGER.info("Unable to serialize the Create Monitored Item Subscription Message");
-            e.printStackTrace();
+            LOGGER.info("Unable to serialize the Create Monitored Item Subscription Message", e);
             plcSubscriber.onDisconnect(context);
         }
         return future;
@@ -283,12 +280,11 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                     } else {
                                         serviceFault = (ServiceFault) unknownExtensionObject;
                                         ResponseHeader header = (ResponseHeader) serviceFault.getResponseHeader();
-                                        LOGGER.error("Subscription ServiceFault returned from server with error code,  '{}'", header.getServiceResult().toString());
+                                        LOGGER.debug("Subscription ServiceFault returned from server with error code,  '{}', ignoring as it is probably just a result of a Delete Subscription Request", header.getServiceResult().toString());
                                         //plcSubscriber.onDisconnect(context);
                                     }
                                 } catch (ParseException e) {
-                                    LOGGER.error("Unable to parse the returned Subscription response");
-                                    e.printStackTrace();
+                                    LOGGER.error("Unable to parse the returned Subscription response", e);
                                     plcSubscriber.onDisconnect(context);
                                 }
                                 if (serviceFault == null) {
@@ -312,14 +308,12 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             };
 
                             Consumer<TimeoutException> timeout = e -> {
-                                LOGGER.error("Timeout while waiting for subscription response");
-                                e.printStackTrace();
+                                LOGGER.error("Timeout while waiting for subscription response", e);
                                 plcSubscriber.onDisconnect(context);
                             };
 
                             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                                LOGGER.error("Error while waiting for subscription response");
-                                e.printStackTrace();
+                                LOGGER.error("Error while waiting for subscription response", e);
                                 plcSubscriber.onDisconnect(context);
                             };
 
@@ -327,8 +321,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             channel.submit(context, timeout, error, consumer, buffer);
 
                         } catch (SerializationException e) {
-                            LOGGER.warn("Unable to serialize subscription request");
-                            e.printStackTrace();
+                            LOGGER.warn("Unable to serialize subscription request", e);
                         }
                     }
                     /* Put the subscriber loop to sleep for the rest of the cycle. */
@@ -338,8 +331,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 //sleep(this.revisedCycleTime * 10);
                 complete = true;
             } catch (Exception e) {
-                LOGGER.error("Failed :(");
-                e.printStackTrace();
+                LOGGER.error("Failed to start subscription", e);
             }
             return null;
         });
@@ -397,30 +389,26 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     } else {
                         ServiceFault serviceFault = (ServiceFault) unknownExtensionObject;
                         ResponseHeader header = (ResponseHeader) serviceFault.getResponseHeader();
-                        LOGGER.error("Fault when deleteing Subscription ServiceFault return from server with error code,  '{}'", header.getServiceResult().toString());
+                        LOGGER.debug("Fault when deleting Subscription ServiceFault return from server with error code,  '{}', ignoring as it is probably just a result of a Delete Subscription Request", header.getServiceResult().toString());
                     }
                 } catch (ParseException e) {
-                    LOGGER.error("Unable to parse the returned Delete Subscriptions Response");
-                    e.printStackTrace();
+                    LOGGER.error("Unable to parse the returned Delete Subscriptions Response", e);
                 }
             };
 
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for delete subscription response");
-                e.printStackTrace();
+                LOGGER.error("Timeout while waiting for delete subscription response", e);
                 plcSubscriber.onDisconnect(context);
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for delete subscription response");
-                e.printStackTrace();
+                LOGGER.error("Error while waiting for delete subscription response", e);
                 plcSubscriber.onDisconnect(context);
             };
 
             channel.submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
-            LOGGER.warn("Unable to serialize subscription request");
-            e.printStackTrace();
+            LOGGER.warn("Unable to serialize subscription request", e);
         }
 
         sleep(500);

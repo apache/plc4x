@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,7 +34,8 @@ import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.connectionpool2.CachedDriverManager;
+import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
 import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
@@ -152,8 +153,8 @@ public class Plc4xSourceTask extends SourceTask {
         ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
 
         try {
-            PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
-            TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
+            PlcDriverManager manager = new PooledDriverManager();
+            TriggerCollector triggerCollector = new TriggerCollectorImpl(manager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
                 try {
                     Long timestamp = System.currentTimeMillis();
@@ -233,6 +234,7 @@ public class Plc4xSourceTask extends SourceTask {
             triggerCollector.start();
         } catch (ScraperException e) {
             log.error("Error starting the scraper", e);
+
         }
     }
 

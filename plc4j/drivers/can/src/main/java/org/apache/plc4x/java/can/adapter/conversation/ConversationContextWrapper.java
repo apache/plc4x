@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,6 +22,7 @@ import io.netty.channel.Channel;
 import java.time.Duration;
 import java.util.function.Function;
 
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.transport.can.CANTransport.FrameHandler;
@@ -34,11 +35,19 @@ public class ConversationContextWrapper<C, T> implements ConversationContext<T> 
     private final Function<C, FrameData> adapter;
     private final FrameHandler<C, T> frameHandler;
 
-    public ConversationContextWrapper(ConversationContext<C> delegate, Class<C> wireType, Function<C, FrameData> adapter, FrameHandler<C, T> frameHandler) {
+    private final PlcAuthentication authentication;
+
+    public ConversationContextWrapper(ConversationContext<C> delegate, Class<C> wireType, Function<C, FrameData> adapter, FrameHandler<C, T> frameHandler, PlcAuthentication authentication) {
         this.delegate = delegate;
         this.wireType = wireType;
         this.adapter = adapter;
         this.frameHandler = frameHandler;
+        this.authentication = authentication;
+    }
+
+    @Override
+    public PlcAuthentication getAuthentication() {
+        return authentication;
     }
 
     @Override

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -210,7 +210,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4c_spi_write_b
   // Const Field (protocolIdentifier)
   plc4c_spi_write_unsigned_short(writeBuffer, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER());
 
-  // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->modbus_tcp_adu_pdu)) + (1));
   if(_res != OK) {
     return _res;
@@ -288,7 +288,7 @@ uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bytes(plc4c_modbus_read_wr
 uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bits(plc4c_modbus_read_write_modbus_adu* _message) {
   uint16_t lengthInBits = 0;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_modbus_read_write_modbus_adu_type_plc4c_modbus_read_write_modbus_tcp_adu: {
 

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -38,6 +38,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
 
     private final JsonGenerator generator;
 
+    private int pos = 1;
     private int depth = 0;
 
     private final boolean doRenderAttr;
@@ -73,7 +74,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
 
     @Override
     public int getPos() {
-        return 0;
+        return pos / 8;
     }
 
     @Override
@@ -104,6 +105,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwBitKey, 1, writerArgs);
             generator.writeBooleanField(sanitizedLogicalName, value);
         });
+        move(1);
     }
 
     @Override
@@ -113,6 +115,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwByteKey, 8, writerArgs);
             generator.writeStringField(sanitizedLogicalName, String.format("0x%02x", value));
         });
+        move(8);
     }
 
     @Override
@@ -126,6 +129,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwByteKey, bytes.length * 8, writerArgs);
             generator.writeStringField(sanitizedLogicalName, hexString.toString());
         });
+        move(8 * bytes.length);
     }
 
     @Override
@@ -135,6 +139,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -144,6 +149,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -153,6 +159,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -162,6 +169,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -171,6 +179,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -180,6 +189,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -189,6 +199,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -198,6 +209,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -207,6 +219,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -216,6 +229,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -225,6 +239,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(logicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -234,6 +249,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -243,6 +259,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -253,6 +270,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, sanitizedLogicalName, rwEncodingKey), encoding);
             generator.writeStringField(sanitizedLogicalName, value);
         });
+        move(bitLength);
     }
 
     @Override
@@ -327,5 +345,9 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         if (stringRepresentation.isPresent()) {
             generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwStringRepresentationKey), stringRepresentation.get());
         }
+    }
+
+    private void move(int bits) {
+        pos += bits;
     }
 }

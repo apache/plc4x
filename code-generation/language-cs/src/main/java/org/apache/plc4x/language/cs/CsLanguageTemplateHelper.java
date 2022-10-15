@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -926,9 +926,9 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }*/
         }
         sb.append(")");
-        if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
+        if (variableLiteral.getIndex().isPresent()) {
             // TODO: If this is a byte typed field, this needs to be an array accessor instead.
-            sb.append(".get(").append(variableLiteral.getIndex()).append(")");
+            sb.append(".get(").append(variableLiteral.getIndex().orElseThrow()).append(")");
         }
         return tracer + sb.toString();
     }
@@ -949,9 +949,9 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             sb.append(")");
         }
-        if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
+        if (variableLiteral.getIndex().isPresent()) {
             // TODO: If this is a byte typed field, this needs to be an array accessor instead.
-            sb.append(".get(").append(variableLiteral.getIndex()).append(")");
+            sb.append(".get(").append(variableLiteral.getIndex().orElseThrow()).append(")");
         }
         return tracer + sb.toString() + variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse("");
     }
@@ -1127,10 +1127,10 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         String variableLiteralName = variableLiteral.getName();
         if (variableLiteralName.equals("length")) {
             tracer = tracer.dive("length");
-            return tracer + variableLiteralName + "()" + ((variableLiteral.isIndexed() ? ".get(" + variableLiteral.getIndex() + ")" : "") +
+            return tracer + variableLiteralName + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
                 variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
         }
-        return tracer + "get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.isIndexed() ? ".get(" + variableLiteral.getIndex() + ")" : "") +
+        return tracer + "get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
             variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
     }
 

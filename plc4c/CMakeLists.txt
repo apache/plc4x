@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,7 +17,7 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
 # Set the name of this project
 project(PLC4C)
@@ -91,5 +91,6 @@ add_subdirectory(api)
 add_subdirectory(spi)
 add_subdirectory(transports)
 add_subdirectory(drivers)
+add_subdirectory(tools)
 #add_subdirectory(integrations)
 add_subdirectory(examples)

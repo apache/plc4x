@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -38,9 +39,19 @@ public class PlcStruct extends PlcValueAdapter {
 
     private final Map<String, PlcValue> map;
 
+    @Override
+    public Object getObject() {
+        return map;
+    }
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcStruct(@JsonProperty("map") Map<String, PlcValue> map) {
         this.map = Collections.unmodifiableMap(map);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.Struct;
     }
 
     @Override

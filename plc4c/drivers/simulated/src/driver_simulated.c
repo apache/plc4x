@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -133,7 +133,7 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(
          * we can also set a custom printf method
          * right , now just create a new random value
          */
-        value_item->value = plc4c_data_create_uint32_t_data(rand());
+        value_item->value = plc4c_data_create_dint_data(rand());
 
         // Add the value to the response.
         plc4c_utils_list_insert_tail_value(read_response->items, value_item);
@@ -276,7 +276,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       if (strcmp(datatype_name, "INTEGER") == 0) {
         data_type = PLC4C_INT;
       } else if (strcmp(datatype_name, "STRING") == 0) {
-        data_type = PLC4C_CONSTANT_STRING;
+        data_type = PLC4C_STRING;
       } else {
         free(datatype_name);
         free(name);

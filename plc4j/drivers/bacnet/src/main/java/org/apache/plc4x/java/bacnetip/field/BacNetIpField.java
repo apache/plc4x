@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class BacNetIpField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^(?<deviceIdentifier>(\\d|\\*))/(?<objectType>(\\d|\\*))/(?<objectInstance>(\\d|\\*))");
+        Pattern.compile("TODO: finish me... see golang implementation");
 
     public static final int INT_WILDCARD = -1;
     public static final long LONG_WILDCARD = -1;
@@ -45,7 +45,7 @@ public class BacNetIpField implements PlcField {
 
     public static BacNetIpField of(String fieldString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             long deviceIdentifier = matcher.group("deviceIdentifier").equals("*") ?
                 LONG_WILDCARD : Long.parseLong(matcher.group("deviceIdentifier"));
             int objectType = matcher.group("objectType").equals("*") ?

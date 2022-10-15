@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -21,7 +21,7 @@
 # Run a standard build
 function build() {
   echo "Building ..."
-  mvn -U -P apache-release,with-boost,with-dotnet,with-cpp,with-python,with-proxies,with-sandbox -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
+  mvn -U -P apache-release,with-c,with-dotnet,with-go,with-python,with-sandbox -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
   echo "Done"
 }
 

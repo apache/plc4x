@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -35,7 +35,7 @@ enum plc4c_driver_s7_write_states {
 
 // Forward declaration of helper function to stop PLC4C_DRIVER_S7_WRITE_FINISHED
 // state become too big, TODO: move to some header or inline
-plc4c_return_code plc4c_driver_s7_parse_write_responce( 
+plc4c_return_code plc4c_driver_s7_parse_write_response(
      plc4c_write_request_execution* execution, plc4c_s7_read_write_tpkt_packet* packet);
 
 
@@ -83,15 +83,15 @@ plc4c_return_code plc4c_driver_s7_sm_write_finished(
       plc4c_utils_list_size(execution->write_request->items)) 
     return INTERNAL_ERROR;
   
-  // Make a new responce item and bind to the execution, also bind
-  // the request to the responce (usefull of parseing)
+  // Make a new response item and bind to the execution, also bind
+  // the request to the response (useful of parsing)
   execution->write_response = malloc(sizeof(plc4c_write_response));
   if (execution->write_response == NULL) 
     return NO_MEMORY;
   execution->write_response->write_request = execution->write_request;
   
-  // Set the write responce status from the s7 payload responce status
-  result = plc4c_driver_s7_parse_write_responce(execution, packet);
+  // Set the write response status from the s7 payload response status
+  result = plc4c_driver_s7_parse_write_response(execution, packet);
   
   if (result != OK)
     return result;
@@ -184,10 +184,10 @@ void plc4c_driver_s7_free_write_request(plc4c_write_request *request) {
 void plc4c_driver_s7_free_write_response_item(
     plc4c_list_element* write_item_element) {
   
-  plc4c_response_item* responce_item;
-  responce_item = write_item_element->value;
-  // dont free responce_item-item->item its managed by the request not responce
-  free(responce_item); 
+  plc4c_response_item* response_item;
+  response_item = write_item_element->value;
+  // dont free response_item-item->item its managed by the request not response
+  free(response_item);
 }
 
 void plc4c_driver_s7_free_write_response(plc4c_write_response* response) {
@@ -198,7 +198,7 @@ void plc4c_driver_s7_free_write_response(plc4c_write_response* response) {
 }
 
 
-plc4c_return_code plc4c_driver_s7_parse_write_responce(
+plc4c_return_code plc4c_driver_s7_parse_write_response(
     plc4c_write_request_execution *execution, 
     plc4c_s7_read_write_tpkt_packet* packet) {
 
@@ -210,7 +210,7 @@ plc4c_return_code plc4c_driver_s7_parse_write_responce(
   plc4c_response_item* response_item;
   plc4c_return_code result;
   
-  // Make the unfilled responce a list 
+  // Make the unfilled response a list
   plc4c_utils_list_create(&execution->write_response->response_items);
 
 	// Iterate over the request items setting return codes as needed.
@@ -228,7 +228,7 @@ plc4c_return_code plc4c_driver_s7_parse_write_responce(
 		  return NO_MEMORY;
     response_item->item = request_item->item;
 
-    // TODO: better map transport error codes to responce error codes
+    // TODO: better map transport error codes to response error codes
     if (s7_payload_item->return_code == plc4c_s7_read_write_data_transport_error_code_OK)
       response_item->response_code = PLC4C_RESPONSE_CODE_OK;
     else

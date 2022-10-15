@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -80,11 +80,19 @@ public class FieldWriterFactory {
     }
 
     public static <T> void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        new FieldWriterOptional<T>().writeOptionalField(logicalName, value, dataWriter, writerArgs);
+        new FieldWriterOptional<T>().writeOptionalField(logicalName, value, dataWriter, true, writerArgs);
+    }
+
+    public static <T> void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, boolean condition, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterOptional<T>().writeOptionalField(logicalName, value, dataWriter, condition, writerArgs);
     }
 
     public static <T> void writeOptionalEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        new FieldWriterOptionalEnum<T>().writeOptionalEnumField(logicalName, innerName, value, dataWriter, writerArgs);
+        new FieldWriterOptionalEnum<T>().writeOptionalEnumField(logicalName, innerName, value, dataWriter, true, writerArgs);
+    }
+
+    public static <T> void writeOptionalEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, boolean condition, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterOptionalEnum<T>().writeOptionalEnumField(logicalName, innerName, value, dataWriter, condition, writerArgs);
     }
 
     public static <T> void writePaddingField(String logicalName, int timesPadding, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {

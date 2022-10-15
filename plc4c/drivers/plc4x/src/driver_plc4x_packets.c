@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -61,7 +61,7 @@ int16_t plc4c_driver_plc4x_select_message_function(uint8_t* buffer_data,
                                                    uint16_t buffer_length) {
   if (buffer_length >= 3) {
     uint16_t length = ((uint16_t) *(buffer_data + 1)) << 8 | ((uint16_t) *(buffer_data + 2));
-    return length;
+    return (int16_t) length;
   }
 
   // In all other cases, we'll just have to wait for the next time.

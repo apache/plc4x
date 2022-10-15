@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,7 +23,8 @@ import org.apache.plc4x.protocol.knxnetip.handlers.ProductDescriptionHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class KnxDefinitionsGenerator extends BaseKnxWebserviceContentProcessor {
 
@@ -36,7 +37,7 @@ public class KnxDefinitionsGenerator extends BaseKnxWebserviceContentProcessor {
         " * \"License\"); you may not use this file except in compliance\n" +
         " * with the License.  You may obtain a copy of the License at\n" +
         " *\n" +
-        " *   http://www.apache.org/licenses/LICENSE-2.0\n" +
+        " *   https://www.apache.org/licenses/LICENSE-2.0\n" +
         " *\n" +
         " * Unless required by applicable law or agreed to in writing,\n" +
         " * software distributed under the License is distributed on an\n" +

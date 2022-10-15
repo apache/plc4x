@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4net</artifactId>
@@ -123,7 +123,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-cs</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -131,7 +131,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>

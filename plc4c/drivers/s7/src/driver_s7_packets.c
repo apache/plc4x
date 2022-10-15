@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,7 +18,6 @@
  */
 
 #include <cotp_protocol_class.h>
-#include <ctype.h>
 #include <plc4c/driver_s7.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
@@ -32,7 +31,7 @@
 // probably safe to comment out but on for now.
 //#define DEEP_WRITE_DATA_COPY 
 
-// forward delcaration for helper function todo: move to header or relocate
+// forward declaration for helper function todo: move to header or relocate
     //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
 void plc4c_add_data_to_request(plc4c_data* parsed_value, 
     plc4c_s7_read_write_s7_var_payload_data_item* request_value) {
@@ -44,25 +43,25 @@ void plc4c_add_data_to_request(plc4c_data* parsed_value,
   plc4c_list_element* list_array;
   plc4c_data* the_data;
   int i, j;
-  int items;
-  int item_size;
+  size_t items;
+  size_t item_size;
 
   // If its a list size doesn't really mean anything we care about list len
-  if (parsed_value->data_type == PLC4C_LIST) 
-    items = plc4c_utils_list_size(&parsed_value->data.list_value);
+  if (parsed_value->data_type == PLC4C_LIST)
+    items = plc4c_utils_list_size(parsed_value->data.list_value);
   else
     items = 1; 
 
   for (i = 0 ; i < items ; i++) {
     if (parsed_value->data_type == PLC4C_LIST) {
-      // will not work with nested lists if thats even a thing
-      list_array = (i == 0) ? parsed_value->data.list_value.head : list_array->previous;
+      // will not work with nested lists if that's even a thing
+      list_array = (i == 0) ? parsed_value->data.list_value->head : list_array->previous;
       the_data = list_array->value;
       item_size = the_data->size;
-      data_array = (int8_t*) &the_data->data;
+      data_array = (uint8_t*) &the_data->data;
     } else {
       item_size = parsed_value->size;
-      data_array = (int8_t*) &parsed_value->data;
+      data_array = (uint8_t*) &parsed_value->data;
     }
     // Now add the bytes to a list
     for (j = 0 ; j < item_size ; j++) {
@@ -101,13 +100,13 @@ int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
         buffer_data++;
         if ((*buffer_data == 0x03) && (*(buffer_data + 1) == 0x00)) {
           // We've found a potential new packet start.
-          return -(i - 1);
+          return (int16_t) -(i - 1);
         }
       }
       // We didn't find a new start, delete the entire content except the last
       // byte (as this could be the start of the next frame and we couldn't
       // confirm this.
-      return -(buffer_length - 1);
+      return (int16_t) -(buffer_length - 1);
     }
   }
   // The length information is located in bytes 3 and 4
@@ -116,7 +115,7 @@ int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
         ((uint16_t) *(buffer_data + 2) << 8) |
         ((uint16_t) *(buffer_data + 3));
     if (buffer_length >= packet_length) {
-      return packet_length;
+      return (int16_t) packet_length;
     }
     // 8192 is the maximum pdu size, so if the value is larger, the packet is
     // probably corrupt.
@@ -125,12 +124,12 @@ int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
         buffer_data++;
         if ((*buffer_data == 0x03) && (*(buffer_data + 1) == 0x00)) {
           // We've found a potential new packet start.
-          return -(i - 1);
+          return (int16_t) -(i - 1);
         }
       }
-      return -(buffer_length - 1);
+      return (int16_t) -(buffer_length - 1);
     }
-    return packet_length;
+    return (int16_t) packet_length;
   }
   // In all other cases, we'll just have to wait for the next time.
   return 0;
@@ -200,16 +199,17 @@ plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
 }
 
 void delete_byte_list(plc4c_list_element *element) {
-  int8_t* item;
+  char* item;
   item = element->value;
-  free(item);
+  // TODO: Fix this!
+  //free(item);
 }
 void delete_s7_parameter_list_element(plc4c_list_element *element) {
   plc4c_s7_read_write_s7_parameter *item;
   item = element->value;
   free(item);
 }
-void delete_s7_read_responce_payload_list_element(plc4c_list_element *element) {
+void delete_s7_read_response_payload_list_element(plc4c_list_element *element) {
   plc4c_s7_read_write_s7_var_payload_data_item *item;
   item = element->value;
   plc4c_utils_list_delete_elements(item->data, delete_byte_list);
@@ -221,15 +221,16 @@ void delete_s7_write_request_payload_list_element(plc4c_list_element *element) {
   item = element->value;
   free(item);
 }
-void delete_s7_write_responce_payload_list_element(plc4c_list_element *element) {
+void delete_s7_write_response_payload_list_element(plc4c_list_element *element) {
   plc4c_s7_read_write_s7_var_payload_status_item *item;
   item = element->value;
   free(item);
 }
 void delete_mlfb_list(plc4c_list_element *element) {
-  int8_t* item;
+  char* item;
   item = element->value;
-  free(item);
+  // TODO: Fix this!
+  //free(item);
 }
 void delete_szl_list(plc4c_list_element *element){
   plc4c_s7_read_write_szl_data_tree_item *item;
@@ -338,7 +339,7 @@ void plc4c_driver_s7_destroy_receive_packet(
       switch (s7_payload->_type) {
         case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response:
           plc4c_utils_list_delete_elements(s7_payload->s7_payload_read_var_response_items, 
-              delete_s7_read_responce_payload_list_element);
+              delete_s7_read_response_payload_list_element);
           free(s7_payload->s7_payload_read_var_response_items);
           break;
         case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request:
@@ -348,7 +349,7 @@ void plc4c_driver_s7_destroy_receive_packet(
           break;
         case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_response:
           plc4c_utils_list_delete_elements(s7_payload->s7_payload_write_var_response_items, 
-              delete_s7_write_responce_payload_list_element);
+              delete_s7_write_response_payload_list_element);
           free(s7_payload->s7_payload_write_var_response_items);
           break;
         case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data:

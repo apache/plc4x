@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -267,6 +267,75 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
+    public String getDataIoTypeNameForTypeReference(TypeReference typeReference) {
+        Objects.requireNonNull(typeReference);
+        if (typeReference instanceof SimpleTypeReference) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case BIT:
+                    return "bool";
+                case BYTE:
+                    return "byte";
+                case UINT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "usint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "uint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "udint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "ulint";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
+                case INT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "sint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "int";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "dint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "lint";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
+                case FLOAT:
+                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                    int sizeInBits = floatTypeReference.getSizeInBits();
+                    if (sizeInBits <= 32) {
+                        return "real";
+                    }
+                    if (sizeInBits <= 64) {
+                        return "lreal";
+                    }
+                    throw new FreemarkerException("Unsupported real type with " + sizeInBits + " bits.");
+                case UFLOAT:
+                    throw new FreemarkerException("Unsupported unsigned real type.");
+                case STRING:
+                case VSTRING:
+                    return "char";
+                case TIME:
+                    return "time";//throw new FreemarkerException("Unsupported time type.");
+                case DATE:
+                    return "date";//throw new FreemarkerException("Unsupported date type.");
+                case DATETIME:
+                    return "date_and_time";//throw new FreemarkerException("Unsupported date-time type.");
+            }
+            throw new FreemarkerException("Unsupported simple type. " + simpleTypeReference.getBaseType());
+        } else {
+            return getCTypeName(((NonSimpleTypeReference) typeReference).getName());
+        }
+    }
+
     public String getLoopExpressionSuffix(TypedField field) {
         if (!(field instanceof ArrayField)) {
             return "";
@@ -419,8 +488,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "plc4c_spi_read_double(readBuffer, " + floatTypeReference.getSizeInBits() + ", (double*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
-            case STRING:
-            case VSTRING:
+            case STRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
@@ -429,6 +497,18 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "plc4c_spi_read_string(readBuffer, " + length + ", \"" +
                     encoding + "\"" + ", (char**) " + valueString + ")";
+            }
+            case VSTRING: {
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
+                // Here we need to use the serialized expression of the length instead.
+                String lengthExpression = toParseExpression(thisType, field, simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), null);
+                return "plc4c_spi_read_string(readBuffer, " + lengthExpression + ", \"" +
+                    encoding + "\"" + ", (char**) " + valueString + ")";
+            }
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
         }
@@ -479,8 +559,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "plc4c_spi_write_double(writeBuffer, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
-            case STRING:
-            case VSTRING:
+            case STRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
@@ -489,6 +568,18 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
                     encoding + "\", " + fieldName + ")";
+            }
+            case VSTRING: {
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
+                // Here we need to use the serialized expression of the length instead.
+                String lengthExpression = toSerializationExpression(thisType, field, simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), null);
+                return "plc4c_spi_write_string(writeBuffer, " + lengthExpression + ", \"" +
+                    encoding + "\", " + fieldName + ")";
+            }
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
         }
@@ -709,12 +800,30 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // If the literal is referencing a constant field, we need to reference the constant variable instead.
         final Optional<NamedField> namedField = ((ComplexTypeDefinition) baseType).getNamedFieldByName(name);
         if(namedField.isPresent() && namedField.get() instanceof ConstField) {
-            return getCTypeName(baseType.getName()).toUpperCase() + "_" + name.toUpperCase() + "()";
+            return getCTypeName(baseType.getName()).toUpperCase() + "_" + camelCaseToSnakeCase(name).toUpperCase() + "()";
         }
 
         // Try to find the type of the addressed property.
         Optional<TypeReference> propertyTypeOptional =
             ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(name);
+
+        // If we couldn't find the type in the parent, try checking in the sub-type, that contains the current field.
+        if (propertyTypeOptional.isEmpty() && baseType.isComplexTypeDefinition()) {
+            if(baseType.asComplexTypeDefinition().orElseThrow().getSwitchField().isPresent()) {
+                final SwitchField switchField = baseType.asComplexTypeDefinition().orElseThrow().getSwitchField().get();
+                // Search for a case containing the current field
+                for (DiscriminatedComplexTypeDefinition aCase : switchField.getCases()) {
+                    if(aCase.getFields().stream().anyMatch(field1 -> field1 == field)) {
+                        // Search this case for the referenced field.
+                        final Optional<Field> referencedField = aCase.getFields().stream().filter(field1 -> field1.isNamedField() && field1.asNamedField().orElseThrow().getName().equals(name)).findFirst();
+                        if(referencedField.isPresent()) {
+                            propertyTypeOptional = Optional.of(referencedField.get().asTypedField().orElseThrow().getType());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         // If we couldn't find the type, we didn't find the property.
         if (propertyTypeOptional.isEmpty()) {
@@ -827,8 +936,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             sb.append(")");
         }
-        if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
-            sb.append("[").append(variableLiteral.getIndex()).append("]");
+        if (variableLiteral.getIndex().isPresent()) {
+            sb.append("[").append(variableLiteral.getIndex().orElseThrow()).append("]");
         }
         if (variableLiteral.getChild().isPresent()) {
             sb.append(".");
@@ -927,10 +1036,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         if (variableLiteral.getName().equals(variableLiteral.getName().toUpperCase())) {
             return toUppercaseSerializationExpression(baseType, field, serializerArguments, variableLiteral, tracer);
         }
-        // If we are accessing implicit fields, we need to rely on a local variable instead.
-        if (isVariableLiteralImplicitField(variableLiteral)) {
+        // If we are accessing implicit fields, we need to rely on that referenced field's expression instead.
+        if (isVariableLiteralImplicitField(field, variableLiteral)) {
             tracer = tracer.dive("is variable implicit field");
-            return tracer + toSerializationExpression(thisType, getReferencedImplicitField(variableLiteral), getReferencedImplicitField(variableLiteral).getSerializeExpression(), serializerArguments);
+            final ComplexTypeDefinition referencedImplicitFieldsParent = getReferencedImplicitFieldsParent(field, variableLiteral);
+            final ImplicitField referencedImplicitField = getReferencedImplicitField(field, variableLiteral);
+            return tracer + toSerializationExpression(referencedImplicitFieldsParent, referencedImplicitField, referencedImplicitField.getSerializeExpression(), serializerArguments);
         }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
         boolean isSerializerArg = "checksumRawData".equals(variableLiteral.getName()) || "_value".equals(variableLiteral.getName()) || "element".equals(variableLiteral.getName()) || "size".equals(variableLiteral.getName());
@@ -1161,11 +1272,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     private void appendVariableExpressionRest(StringBuilder sb, TypeDefinition baseType, VariableLiteral variableLiteral) {
         Tracer tracer = Tracer.start("appendVariableExpressionRest");
-        if (variableLiteral.isIndexed()) {
+        if (variableLiteral.getIndex().isPresent()) {
             tracer = tracer.dive("isindexed");
             sb.insert(0, "plc4c_utils_list_get_value(");
             sb.append(camelCaseToSnakeCase(variableLiteral.getName()));
-            sb.append(", ").append(variableLiteral.getIndex()).append(")");
+            sb.append(", ").append(variableLiteral.getIndex().orElseThrow()).append(")");
         } else {
             sb.append(camelCaseToSnakeCase(variableLiteral.getName()));
         }
@@ -1299,5 +1410,69 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         nonSimpleTypeReferences.remove(baseType.getName());
         return nonSimpleTypeReferences;
     }
+
+    boolean isVariableLiteralImplicitField(Field curField, VariableLiteral variableLiteral) {
+        // Check the parent, if this references an implicit field in the parent directly.
+        if (isVariableLiteralImplicitField(variableLiteral)) {
+            return true;
+        }
+        // If there's a switchField, try to find a case that contains the current field and
+        // check that one if the current variableLiteral references an implicit field.
+        if(thisType.isComplexTypeDefinition() && thisType.asComplexTypeDefinition().orElseThrow().getSwitchField().isPresent()) {
+            final SwitchField switchField = thisType.asComplexTypeDefinition().orElseThrow().getSwitchField().get();
+            for (DiscriminatedComplexTypeDefinition aCase : switchField.getCases()) {
+                // If this case contains the currently observed field, then we'll search this case for matching implicit fields.
+                if(aCase.getFields().stream().anyMatch(field -> field == curField)) {
+                    if(aCase.isVariableLiteralImplicitField(variableLiteral)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    protected ComplexTypeDefinition getReferencedImplicitFieldsParent(Field curField, VariableLiteral variableLiteral) {
+        // Check the parent, if this references an implicit field in the parent directly.
+        if (isVariableLiteralImplicitField(variableLiteral)) {
+            return thisType.asComplexTypeDefinition().orElseThrow();
+        }
+        // If there's a switchField, try to find a case that contains the current field and
+        // check that one if the current variableLiteral references an implicit field.
+        if(thisType.isComplexTypeDefinition() && thisType.asComplexTypeDefinition().orElseThrow().getSwitchField().isPresent()) {
+            final SwitchField switchField = thisType.asComplexTypeDefinition().orElseThrow().getSwitchField().get();
+            for (DiscriminatedComplexTypeDefinition aCase : switchField.getCases()) {
+                // If this case contains the currently observed field, then we'll search this case for matching implicit fields.
+                if(aCase.getFields().stream().anyMatch(field -> field == curField)) {
+                    if(aCase.isVariableLiteralImplicitField(variableLiteral)) {
+                        return aCase;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    protected ImplicitField getReferencedImplicitField(Field curField, VariableLiteral variableLiteral) {
+        // Check the parent, if this references an implicit field in the parent directly.
+        if (isVariableLiteralImplicitField(variableLiteral)) {
+            return getReferencedImplicitField(variableLiteral);
+        }
+        // If there's a switchField, try to find a case that contains the current field and
+        // check that one if the current variableLiteral references an implicit field.
+        if(thisType.isComplexTypeDefinition() && thisType.asComplexTypeDefinition().orElseThrow().getSwitchField().isPresent()) {
+            final SwitchField switchField = thisType.asComplexTypeDefinition().orElseThrow().getSwitchField().get();
+            for (DiscriminatedComplexTypeDefinition aCase : switchField.getCases()) {
+                // If this case contains the currently observed field, then we'll search this case for matching implicit fields.
+                if(aCase.getFields().stream().anyMatch(field -> field == curField)) {
+                    if(aCase.isVariableLiteralImplicitField(variableLiteral)) {
+                        return aCase.getReferencedImplicitField(variableLiteral);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 
 }

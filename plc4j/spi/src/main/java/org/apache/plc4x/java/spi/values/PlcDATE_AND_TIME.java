@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -37,7 +38,7 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
             return new PlcDATE_AND_TIME((LocalDateTime) value);
         } else if (value instanceof Long) {
             return new PlcDATE_AND_TIME(LocalDateTime.ofInstant(
-                Instant.ofEpochSecond((long) value), ZoneId.of("UTC")));
+                Instant.ofEpochSecond((long) value), ZoneId.systemDefault()));
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -51,6 +52,22 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     public PlcDATE_AND_TIME(@JsonProperty("value") Long value) {
         super(LocalDateTime.ofInstant(
             Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.DATE_AND_TIME;
+    }
+
+    @Override
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    public long getLong() {
+        Instant instant = value.atZone(ZoneId.systemDefault()).toInstant();
+        return instant.getEpochSecond();
     }
 
     @Override

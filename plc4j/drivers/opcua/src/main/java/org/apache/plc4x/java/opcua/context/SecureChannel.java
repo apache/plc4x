@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -79,7 +79,7 @@ public class SecureChannel {
     protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
         NULL_EXPANDED_NODEID,
         new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension(), false);               // Body
+        new NullExtension(), true);               // Body
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(.(?<transportCode>tcp))?://" +
         "(?<transportHost>[\\w.-]+)(:" +
@@ -347,12 +347,11 @@ public class SecureChannel {
                                 channelId.set((int) ((ChannelSecurityToken) openSecureChannelResponse.getSecurityToken()).getChannelId());
                                 onConnectCreateSessionRequest(context);
                             } catch (PlcConnectionException e) {
-                                LOGGER.error("Error occurred while connecting to OPC UA server");
-                                e.printStackTrace();
+                                LOGGER.error("Error occurred while connecting to OPC UA server", e);
                             }
                         }
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        LOGGER.error("Error parsing", e);
                     }
                 });
             LOGGER.debug("Submitting OpenSecureChannel with id of {}", transactionId);
@@ -450,7 +449,7 @@ public class SecureChannel {
                         }
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error parsing", e);
                 }
 
             };
@@ -461,8 +460,7 @@ public class SecureChannel {
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for subscription response");
-                e.printStackTrace();
+                LOGGER.error("Error while waiting for subscription response", e);
             };
 
             submit(context, timeout, error, consumer, buffer);
@@ -561,29 +559,26 @@ public class SecureChannel {
                                 LOGGER.error("Subscription ServiceFault returned from server with error code,  '{}'", header.getServiceResult().toString());
                             }
                         } catch (ParseException e) {
-                            LOGGER.error("Unable to parse the returned Subscription response");
-                            e.printStackTrace();
+                            LOGGER.error("Unable to parse the returned Subscription response", e);
                         }
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error parsing", e);
                 }
 
             };
 
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for activate session response");
-                e.printStackTrace();
+                LOGGER.error("Timeout while waiting for activate session response", e);
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for activate session response");
-                e.printStackTrace();
+                LOGGER.error("Error while waiting for activate session response", e);
             };
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
-            LOGGER.error("Unable to to Parse Activate Session Request");
+            LOGGER.error("Unable to to Parse Activate Session Request", e);
         }
     }
 
@@ -652,24 +647,22 @@ public class SecureChannel {
                         }
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error parsing", e);
                 }
 
             };
 
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for close session response");
-                e.printStackTrace();
+                LOGGER.error("Timeout while waiting for close session response", e);
             };
 
             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
-                LOGGER.error("Error while waiting for close session response");
-                e.printStackTrace();
+                LOGGER.error("Error while waiting for close session response", e);
             };
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
-            LOGGER.error("Unable to to Parse Close Session Request");
+            LOGGER.error("Unable to to Parse Close Session Request", e);
         }
     }
 
@@ -740,8 +733,10 @@ public class SecureChannel {
                 onDiscoverOpenSecureChannel(context, opcuaAcknowledgeResponse);
             });
 
-        channelTransactionManager.submit(requestConsumer, 1);
+        channelTransactionManager.submit(requestConsumer, channelTransactionManager.getTransactionIdentifier());
+
     }
+
 
     public void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
@@ -762,20 +757,22 @@ public class SecureChannel {
             NULL_BYTE_STRING,
             lifetime);
 
+
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
             new NodeIdFourByte((short) 0, Integer.parseInt(openSecureChannelRequest.getIdentifier())),
             null,
             null);
 
+        ExtensionObject extObject = new ExtensionObject(
+            expandedNodeId,
+            null,
+            openSecureChannelRequest,
+            false);
 
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(openSecureChannelRequest.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            new ExtensionObject(
-                expandedNodeId,
-                null,
-                openSecureChannelRequest,
-                false).serialize(buffer);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
+            extObject.serialize(buffer);
 
             OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
                 0,
@@ -852,13 +849,15 @@ public class SecureChannel {
             null,
             null);
 
+        ExtensionObject extObject = new ExtensionObject(
+            expandedNodeId,
+            null,
+            endpointsRequest,
+            false);
+
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(endpointsRequest.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            new ExtensionObject(
-                expandedNodeId,
-                null,
-                endpointsRequest,
-                false).serialize(buffer);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
+            extObject.serialize(buffer);
 
             OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(FINAL_CHUNK,
                 channelId.get(),
@@ -901,7 +900,7 @@ public class SecureChannel {
                             onDiscoverCloseSecureChannel(context, response);
                         }
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        LOGGER.error("Error parsing", e);
                     }
                 });
 
@@ -1208,7 +1207,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken), false);
+                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken), true);
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
@@ -1237,7 +1236,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken), false);
+                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken), true);
         }
         return null;
     }

@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -32,7 +32,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>
-        <len dataType="uint" bitLength="16">4</len>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
         <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -63,7 +63,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">40</len>
+        <packetLength dataType="uint" bitLength="16">40</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -127,7 +127,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">26</len>
+        <packetLength dataType="uint" bitLength="16">26</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -157,10 +157,10 @@
                     <reserved dataType="uint" bitLength="8">0</reserved>
                     <status dataType="uint" bitLength="8">0</status>
                     <extStatus dataType="uint" bitLength="8">0</extStatus>
-                    <dataType> <!--0xC4-->
+                    <dataType>
                       <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
                     </dataType>
-                    <data dataType="byte" bitLength="32">0x00000216</data>  <!--0x216 but again issue when parsing Object to XML-->
+                    <data dataType="byte" bitLength="32">0x00000216</data>
                   </CipReadResponse>
                 </CipService>
               </service>
@@ -180,7 +180,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">52</len>
+        <packetLength dataType="uint" bitLength="16">52</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -248,7 +248,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">20</len>
+        <packetLength dataType="uint" bitLength="16">20</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">

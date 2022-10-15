@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-	  http://www.apache.org/licenses/LICENSE-2.0
+	  https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -35,7 +35,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/P
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -48,8 +48,8 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/P
 package ${outputFlavor?replace("-","")}
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/${helper.getSanitizedProtocolName()}/${outputFlavor?replace("-","")}/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedProtocolName()}/${outputFlavor?replace("-","")}/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -70,13 +70,13 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 			<#elseif parserArgument.type.isEnumTypeReference()>
-        ${parserArgument.name} := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(arguments[${parserArgument?index}])
+        ${parserArgument.name}, _ := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(arguments[${parserArgument?index}])
 			<#else>
 		var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 			</#if>
 		</#list>
 	</#if>
-		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if parserArgument.type.isComplexTypeReference() && !parserArgument.type.isEnumTypeReference()>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
+		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

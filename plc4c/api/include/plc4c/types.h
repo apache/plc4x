@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -73,20 +73,46 @@ typedef enum plc4c_response_code {
  * PLC4C data types
  */
 typedef enum plc4c_data_type {
+  // Boolean/Bit-String Types
   PLC4C_BOOL,
-  PLC4C_CHAR,
-  PLC4C_UCHAR,
-  PLC4C_SHORT,
-  PLC4C_USHORT,
-  PLC4C_INT,
+  PLC4C_BYTE,
+  PLC4C_WORD,
+  PLC4C_DWORD,
+  PLC4C_LWORD,
+  // Integer Types (Unsigned/Signed)
+  // 1-byte
+  PLC4C_USINT,
+  PLC4C_SINT,
+  // 2-byte
   PLC4C_UINT,
-  PLC4C_LINT,
+  PLC4C_INT,
+  // 4-byte
+  PLC4C_UDINT,
+  PLC4C_DINT,
+  // 8-byte
   PLC4C_ULINT,
-  PLC4C_FLOAT,
-  PLC4C_DOUBLE,
-  PLC4C_STRING_POINTER,
-  PLC4C_CONSTANT_STRING,
-  PLC4C_VOID_POINTER,
+  PLC4C_LINT,
+  // Floating-Point Types
+  PLC4C_REAL,
+  PLC4C_LREAL,
+  // Time Types
+  PLC4C_TIME,
+  PLC4C_LTIME,
+  // Date Types
+  PLC4C_DATE,
+  PLC4C_LDATE,
+  // Time of day Types
+  PLC4C_TIME_OF_DAY,
+  PLC4C_LTIME_OF_DAY,
+  // Date and Time Types
+  PLC4C_DATE_AND_TIME,
+  PLC4C_LDATE_AND_TIME,
+  // Char and String Types
+  PLC4C_CHAR,
+  PLC4C_WCHAR,
+  PLC4C_STRING,
+  PLC4C_WSTRING,
+
   PLC4C_LIST,
   PLC4C_STRUCT
 } plc4c_data_type;

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldHoldingRegister;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldCoil;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -57,7 +58,7 @@ public class ModbusEncodeTest {
         Integer[] object = {1,255,0,4,5,6,7,8};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:BYTE");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,true],[true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false],[false,false,false,false,false,true,false,false],[false,false,false,false,false,true,false,true],[false,false,false,false,false,true,true,false],[false,false,false,false,false,true,true,true],[false,false,false,false,true,false,false,false]]", list.toString());
+        Assertions.assertEquals("[1,255,0,4,5,6,7,8]", list.toString());
     }
 
     @Test
@@ -81,7 +82,7 @@ public class ModbusEncodeTest {
         Integer[] object = {1,65535,10,55000,5,6,7};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:WORD");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,true,false,true,false],[true,true,false,true,false,true,true,false,true,true,false,true,true,false,false,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true]]", list.toString());
+        Assertions.assertEquals("[1,65535,10,55000,5,6,7]", list.toString());
     }
 
     @Test
@@ -105,7 +106,7 @@ public class ModbusEncodeTest {
         Long[] object = {1L,655354775L,0L,4294967295L,5L,6L,7L};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:DWORD");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true],[false,false,true,false,false,true,true,true,false,false,false,false,true,true,true,true,true,true,true,false,true,false,true,true,true,false,false,true,false,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true]]", list.toString());
+        Assertions.assertEquals("[1,655354775,0,4294967295,5,6,7]", list.toString());
     }
 
     @Test
@@ -129,7 +130,7 @@ public class ModbusEncodeTest {
         BigInteger[] object = {BigInteger.valueOf(1L),BigInteger.valueOf(655354775L),BigInteger.valueOf(0),new BigInteger("18446744073709551615"),BigInteger.valueOf(5L),BigInteger.valueOf(6L),BigInteger.valueOf(7L)};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:LWORD");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,true,true,true,false,false,false,false,true,true,true,true,true,true,true,false,true,false,true,true,true,false,false,true,false,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,true],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true]]", list.toString());
+        Assertions.assertEquals("[1,655354775,0,18446744073709551615,5,6,7]", list.toString());
     }
 
     @Test
@@ -137,7 +138,13 @@ public class ModbusEncodeTest {
         Float[] object = {1.1f,1000.1f,100000.1f,3.4028232E38f,-3.4028232E38f,-1f,10384759934840.0f};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:REAL");
         PlcList list = (PlcList) IEC61131ValueHandler.of(holdingregister, object);
-        Assertions.assertEquals("[1.1,1000.1,100000.1,3.4028233E38,-3.4028233E38,-1.0,1.03847601E13]", list.toString());
+        //! When using Java 19 it seems the toString method uses a different precision than the previous versions,
+        //! so we need to check differently in this case.
+        for (int i = 0; i < list.getLength(); i++) {
+            PlcValue plcValue = list.getIndex(i);
+            Float referenceValue = object[i];
+            Assertions.assertEquals(referenceValue, plcValue.getFloat());
+        }
     }
 
     @Test

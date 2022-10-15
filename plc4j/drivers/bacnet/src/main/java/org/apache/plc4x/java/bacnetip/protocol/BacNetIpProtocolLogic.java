@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -151,7 +151,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
                 // These are value change notifications. Ignore the rest.
-                if (baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier() == BACnetPropertyIdentifier.PRESENT_VALUE) {
+                if (baCnetPropertyValue.getPropertyIdentifier().getValue() == BACnetPropertyIdentifier.PRESENT_VALUE) {
                     BACnetConstructedDataElement propertyValue = baCnetPropertyValue.getPropertyValue();
 
                     // Initialize an enriched version of the PlcStruct.
@@ -202,8 +202,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
                 // These are value change notifications. Ignore the rest.
-                if (baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier() == BACnetPropertyIdentifier.PRESENT_VALUE) {
-                    BACnetApplicationTag baCnetTag = ((BACnetConstructedDataUnspecified)baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
+                if (baCnetPropertyValue.getPropertyIdentifier().getValue() == BACnetPropertyIdentifier.PRESENT_VALUE) {
+                    BACnetApplicationTag baCnetTag = ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
 
                     // Initialize an enriched version of the PlcStruct.
                     final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
@@ -247,8 +247,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         for (String fieldName : subscriptionRequest.getFieldNames()) {
             values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
         }
-        return CompletableFuture.completedFuture(
-            new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
+        return CompletableFuture.completedFuture(new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
 
     @Override

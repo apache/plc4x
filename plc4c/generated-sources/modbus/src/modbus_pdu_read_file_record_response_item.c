@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -79,7 +79,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* _message) {
   plc4c_return_code _res = OK;
 
-  // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_spi_evaluation_helper_count(_message->data)) + (1));
   if(_res != OK) {
     return _res;

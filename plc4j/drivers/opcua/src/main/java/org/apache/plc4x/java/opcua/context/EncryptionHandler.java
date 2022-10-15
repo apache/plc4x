@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -36,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.security.*;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+
 
 public class EncryptionHandler {
 
@@ -158,8 +159,7 @@ public class EncryptionHandler {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Unable to decrypt Data");
-            e.printStackTrace();
+            LOGGER.error("Unable to decrypt Data", e);
         }
     }
 
@@ -182,8 +182,7 @@ public class EncryptionHandler {
             cipher.init(Cipher.ENCRYPT_MODE, this.serverCertificate.getPublicKey());
             return cipher.doFinal(data);
         } catch (Exception e) {
-            LOGGER.error("Unable to encrypt Data");
-            e.printStackTrace();
+            LOGGER.error("Unable to encrypt Data", e);
             return null;
         }
     }
@@ -211,8 +210,7 @@ public class EncryptionHandler {
             SecretKeySpec keySpec = new SecretKeySpec(getSecretKey(), "HmacSHA256");
             cipher.init(keySpec);
         } catch (Exception e) {
-            LOGGER.error("Unable to encrypt Data");
-            e.printStackTrace();
+            LOGGER.error("Unable to encrypt Data", e);
         }
     }
 

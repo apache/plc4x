@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -57,7 +57,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-        // Discriminator Field (itemType)
+  // Discriminator Field (itemType)
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = 0;
@@ -190,7 +190,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_serialize(plc4
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions: {
 
-  // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bytes(_message)) - (2));
   if(_res != OK) {
     return _res;
@@ -267,7 +267,7 @@ uint16_t plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bits(plc4c_s7
   // Discriminator Field (itemType)
   lengthInBits += 8;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions: {
 

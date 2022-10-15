@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -222,6 +222,21 @@ plc4c_return_code plc4c_driver_modbus_read_function(
   return OK;
 }
 
+void plc4c_driver_modbus_free_read_request_item(
+    plc4c_list_element* read_item_element) {
+  plc4c_item* value_item =
+      (plc4c_item*)read_item_element->value;
+  plc4c_driver_modbus_item* modbus_item = (plc4c_driver_modbus_item*) value_item->address;
+  free(modbus_item);
+  value_item->address = NULL;
+}
+
+void plc4c_driver_modbus_free_read_request(plc4c_read_request* request) {
+  // the request will be cleaned up elsewhere
+  plc4c_utils_list_delete_elements(request->items,
+                                   plc4c_driver_modbus_free_read_request_item);
+}
+
 void plc4c_driver_modbus_free_read_response_item(
     plc4c_list_element* read_item_element) {
   plc4c_response_value_item* value_item =
@@ -233,5 +248,5 @@ void plc4c_driver_modbus_free_read_response_item(
 void plc4c_driver_modbus_free_read_response(plc4c_read_response* response) {
   // the request will be cleaned up elsewhere
   plc4c_utils_list_delete_elements(response->items,
-                                   &plc4c_driver_modbus_free_read_response_item);
+                                   plc4c_driver_modbus_free_read_response_item);
 }

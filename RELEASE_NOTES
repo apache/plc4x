@@ -1,5 +1,18 @@
 ==============================================================
-(Unreleased) Apache PLC4X 0.10.0-SNAPSHOT
+(Unreleased) Apache PLC4X 0.11.0-SNAPSHOT
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+==============================================================
+(Unreleased) Apache PLC4X 0.10.0
 ==============================================================
 
 A lot of the work in this version went into refactoring and
@@ -20,14 +33,30 @@ New Features
   communication, which however can be tunneled through a
   "tcp" and "udp" transport)
 
+- The KNX driver in Java now supports reading "knxproj" files
+  exported from the new ETS version 6.
+
 Incompatible changes
 --------------------
 
 - The name of the Modbus TCP driver was changed from "modbus"
   to "modbus-tcp".
 
+- Removed the Apache Edgent (incubating) integration and
+  examples related, as Edgent is abandoned and there were
+  CVEs reported, which will not be fixed.
+
+- We have replaced the BitString types with BYTE, WORD, DWORD,
+  and LWORD which generally match their unsigned integer
+  counterparts. So we are no longer returning lists of boolean
+  values for any of these types.
+
 Bug Fixes
 ---------
+
+- Fixed a big bug in the KNX Datapoint decoding, which caused
+  byte-aligned data types to parse with an offset of 8 bit.
+  (This bug affected both the Java and the Go driver)
 
 ==============================================================
 Apache PLC4X 0.9.0

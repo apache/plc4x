@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,12 +17,12 @@
   under the License.
 ]]
 
-include_directories("include")
-
 #[[
 file(GLOB sources "src/*.c")
 
 add_library(plc4c-api SHARED ${sources})
+
+target_include_directories(plc4c-api PUBLIC "include")
 
 if(BUILD_PHASE STREQUAL test-compile)
     file(GLOB testSources "test/*.c")

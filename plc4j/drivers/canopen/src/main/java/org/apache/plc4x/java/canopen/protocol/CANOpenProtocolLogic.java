@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -246,7 +246,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         if (!(field instanceof CANOpenSDOField)) {
             response.completeExceptionally(new IllegalArgumentException("Only CANOpenSDOField instances are supported"));
             return response;
-        };
+        }
 
         readInternally(readRequest, (CANOpenSDOField) field, response);
         return response;
@@ -436,7 +436,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        final DefaultPlcConsumerRegistration consumerRegistration =new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
+        final DefaultPlcConsumerRegistration consumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
         consumers.put(consumerRegistration, consumer);
         return consumerRegistration;
     }

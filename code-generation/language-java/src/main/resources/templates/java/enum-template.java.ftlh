@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -36,7 +36,7 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -48,8 +48,6 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import org.apache.plc4x.java.spi.generation.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +70,7 @@ public enum ${type.name} {
                         ${enumValue.value}
                     </#if>
                 <#else>
-                    ${enumValue.value}
+                    ${enumValue.value}<#if helper.needsLongMarker(type.type)>L</#if>
                 </#if>
             </#if>
             <#if type.constantNames?has_content>
@@ -92,8 +90,6 @@ public enum ${type.name} {
 </@compress>
 
 <#if type.type.isPresent()>
-    private static final Logger logger = LoggerFactory.getLogger(${type.name}.class);
-
     private static final Map<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), false)}, ${type.name}> map;
     static {
         map = new HashMap<>();
@@ -154,9 +150,6 @@ public enum ${type.name} {
 </#if>
 <#if type.type.isPresent()>
     public static ${type.name} enumForValue(${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)} value) {
-        if (!map.containsKey(value)) {
-            logger.error("No ${type.name} for value {}", value);
-        }
         return map.get(value);
     }
 </#if>

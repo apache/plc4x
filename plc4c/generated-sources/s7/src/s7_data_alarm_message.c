@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -308,7 +308,7 @@ uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(plc4c_s7_read_
   // Const Field (numberMessageObj)
   lengthInBits += 8;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_request: {
 

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,13 @@ package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataWriterComplexDefault<T extends Message> implements DataWriterComplex<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataWriterComplexDefault.class);
+
 
     protected final WriteBuffer writeBuffer;
 
@@ -55,7 +60,10 @@ public class DataWriterComplexDefault<T extends Message> implements DataWriterCo
         if (hasLogicalName) {
             writeBuffer.pushContext(logicalName);
         }
-        value.serialize(writeBuffer);
+        if (value == null) {
+            LOGGER.warn("Trying to serialize null value for {}", logicalName);
+        }
+        writeBuffer.writeSerializable(value);
         if (hasLogicalName) {
             writeBuffer.popContext(logicalName);
         }

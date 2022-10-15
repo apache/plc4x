@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,6 +23,7 @@
 #include <plc4c/data.h>
 #include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
+#include <plc4c/spi/types_private.h>
 #include <plc4c/driver_modbus_static.h>
 
 #include "data_item.h"
@@ -74,9 +75,9 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
-    } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) && (numberOfValues == 1)) { /* BitString */
+    } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) && (numberOfValues == 1)) { /* BYTE */
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -97,7 +98,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint8_t_bit_string_data(value);
+                *data_item = plc4c_data_create_byte_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) { /* List */
 
@@ -115,9 +116,9 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
-    } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_WORD) && (numberOfValues == 1)) { /* BitString */
+    } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_WORD) { /* WORD */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -126,27 +127,9 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint16_t_bit_string_data(value);
+                *data_item = plc4c_data_create_word_data(value);
 
-    } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_WORD) { /* List */
-
-        // Array field (value)
-        // Count array
-        plc4c_list* value;
-        plc4c_utils_list_create(&value);
-        int itemCount = (int) (numberOfValues) * (16);
-        for(int curItem = 0; curItem < itemCount; curItem++) {
-            bool* _val = malloc(sizeof(bool) * 1);
-            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
-            if(_res != OK) {
-                return _res;
-            }
-            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
-            plc4c_utils_list_insert_head_value(value, _item);
-        }
-        *data_item = plc4c_data_create_list_data(*value);
-
-    } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_DWORD) && (numberOfValues == 1)) { /* BitString */
+    } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_DWORD) { /* DWORD */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -155,27 +138,9 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint32_t_bit_string_data(value);
+                *data_item = plc4c_data_create_dword_data(value);
 
-    } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_DWORD) { /* List */
-
-        // Array field (value)
-        // Count array
-        plc4c_list* value;
-        plc4c_utils_list_create(&value);
-        int itemCount = (int) (numberOfValues) * (32);
-        for(int curItem = 0; curItem < itemCount; curItem++) {
-            bool* _val = malloc(sizeof(bool) * 1);
-            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
-            if(_res != OK) {
-                return _res;
-            }
-            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
-            plc4c_utils_list_insert_head_value(value, _item);
-        }
-        *data_item = plc4c_data_create_list_data(*value);
-
-    } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_LWORD) && (numberOfValues == 1)) { /* BitString */
+    } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_LWORD) { /* LWORD */
 
                 // Simple Field (value)
                 uint64_t value = 0;
@@ -184,25 +149,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint64_t_bit_string_data(value);
-
-    } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_LWORD) { /* List */
-
-        // Array field (value)
-        // Count array
-        plc4c_list* value;
-        plc4c_utils_list_create(&value);
-        int itemCount = (int) (numberOfValues) * (64);
-        for(int curItem = 0; curItem < itemCount; curItem++) {
-            bool* _val = malloc(sizeof(bool) * 1);
-            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
-            if(_res != OK) {
-                return _res;
-            }
-            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
-            plc4c_utils_list_insert_head_value(value, _item);
-        }
-        *data_item = plc4c_data_create_list_data(*value);
+                *data_item = plc4c_data_create_lword_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_SINT) && (numberOfValues == 1)) { /* SINT */
 
@@ -225,7 +172,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int8_t_data(value);
+                *data_item = plc4c_data_create_sint_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_SINT) { /* List */
 
@@ -240,10 +187,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_int8_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_sint_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_INT) && (numberOfValues == 1)) { /* INT */
 
@@ -254,7 +201,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int16_t_data(value);
+                *data_item = plc4c_data_create_int_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_INT) { /* List */
 
@@ -269,10 +216,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_int16_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_int_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_DINT) && (numberOfValues == 1)) { /* DINT */
 
@@ -283,7 +230,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int32_t_data(value);
+                *data_item = plc4c_data_create_dint_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_DINT) { /* List */
 
@@ -298,10 +245,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_int32_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_dint_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_LINT) && (numberOfValues == 1)) { /* LINT */
 
@@ -312,7 +259,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int64_t_data(value);
+                *data_item = plc4c_data_create_lint_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_LINT) { /* List */
 
@@ -327,10 +274,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_int64_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_lint_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_USINT) && (numberOfValues == 1)) { /* USINT */
 
@@ -353,7 +300,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint8_t_data(value);
+                *data_item = plc4c_data_create_usint_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_USINT) { /* List */
 
@@ -368,10 +315,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint8_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_usint_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_UINT) && (numberOfValues == 1)) { /* UINT */
 
@@ -382,7 +329,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint16_t_data(value);
+                *data_item = plc4c_data_create_uint_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_UINT) { /* List */
 
@@ -397,10 +344,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint16_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_uint_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_UDINT) && (numberOfValues == 1)) { /* UDINT */
 
@@ -411,7 +358,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint32_t_data(value);
+                *data_item = plc4c_data_create_udint_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_UDINT) { /* List */
 
@@ -426,10 +373,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint32_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_udint_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_ULINT) && (numberOfValues == 1)) { /* ULINT */
 
@@ -440,7 +387,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint64_t_data(value);
+                *data_item = plc4c_data_create_ulint_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_ULINT) { /* List */
 
@@ -455,10 +402,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint64_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_ulint_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_REAL) && (numberOfValues == 1)) { /* REAL */
 
@@ -469,7 +416,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_float_data(value);
+                *data_item = plc4c_data_create_real_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_REAL) { /* List */
 
@@ -484,10 +431,10 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_float_data(*_val);
+            plc4c_data* _item = plc4c_data_create_real_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_LREAL) && (numberOfValues == 1)) { /* LREAL */
 
@@ -498,7 +445,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_double_data(value);
+                *data_item = plc4c_data_create_lreal_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_LREAL) { /* List */
 
@@ -513,21 +460,21 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_double_data(*_val);
+            plc4c_data* _item = plc4c_data_create_lreal_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) && (numberOfValues == 1)) { /* CHAR */
 
                 // Simple Field (value)
-                uint8_t value = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &value);
+                char* value = "";
+                _res = plc4c_spi_read_string(readBuffer, 8, "UTF-8", (char**) &value);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint8_t_data(value);
+                *data_item = plc4c_data_create_char_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) { /* List */
 
@@ -537,26 +484,26 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         plc4c_utils_list_create(&value);
         int itemCount = (int) numberOfValues;
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint8_t* _val = malloc(sizeof(uint8_t) * 1);
-            _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _val);
+            char** _val = malloc(sizeof(char*) * 1);
+            _res = plc4c_spi_read_string(readBuffer, 8, "UTF-8", (char**) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint8_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_char_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) && (numberOfValues == 1)) { /* WCHAR */
 
                 // Simple Field (value)
-                uint16_t value = 0;
-                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &value);
+                char* value = "";
+                _res = plc4c_spi_read_string(readBuffer, 16, "UTF-16", (char**) &value);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint16_t_data(value);
+                *data_item = plc4c_data_create_wchar_data(value);
 
     } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) { /* List */
 
@@ -566,34 +513,339 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         plc4c_utils_list_create(&value);
         int itemCount = (int) numberOfValues;
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint16_t* _val = malloc(sizeof(uint16_t) * 1);
-            _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) _val);
+            char** _val = malloc(sizeof(char*) * 1);
+            _res = plc4c_spi_read_string(readBuffer, 16, "UTF-16", (char**) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint16_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_char_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
-        *data_item = plc4c_data_create_list_data(*value);
+        *data_item = plc4c_data_create_list_data(value);
 
     }
 
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_data** data_item) {
+plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_data_type dataType, uint16_t numberOfValues, plc4c_data** data_item) {
   plc4c_return_code _res = OK;
+        if((dataType == plc4c_modbus_read_write_modbus_data_type_BOOL) && (numberOfValues == 1)) { /* BOOL */
 
+                    // Reserved Field (reserved)
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_bit(writeBuffer, (*data_item)->data.bool_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_BOOL) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) && (numberOfValues == 1)) { /* BYTE */
+
+                    // Reserved Field (reserved)
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.byte_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) { /* List */
+
+                    // Array field
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_WORD) { /* WORD */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.word_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_DWORD) { /* DWORD */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.dword_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_LWORD) { /* LWORD */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.lword_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_SINT) && (numberOfValues == 1)) { /* SINT */
+
+                    // Reserved Field (reserved)
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_byte(writeBuffer, 8, (*data_item)->data.sint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_SINT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_INT) && (numberOfValues == 1)) { /* INT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_short(writeBuffer, 16, (*data_item)->data.int_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_INT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_DINT) && (numberOfValues == 1)) { /* DINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_int(writeBuffer, 32, (*data_item)->data.dint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_DINT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_LINT) && (numberOfValues == 1)) { /* LINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_long(writeBuffer, 64, (*data_item)->data.lint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_LINT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_USINT) && (numberOfValues == 1)) { /* USINT */
+
+                    // Reserved Field (reserved)
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.usint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_USINT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_UINT) && (numberOfValues == 1)) { /* UINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.uint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_UINT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_UDINT) && (numberOfValues == 1)) { /* UDINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.udint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_UDINT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_ULINT) && (numberOfValues == 1)) { /* ULINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.ulint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_ULINT) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_REAL) && (numberOfValues == 1)) { /* REAL */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_float(writeBuffer, 32, (*data_item)->data.real_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_REAL) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_LREAL) && (numberOfValues == 1)) { /* LREAL */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_double(writeBuffer, 64, (*data_item)->data.lreal_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_LREAL) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) && (numberOfValues == 1)) { /* CHAR */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (*data_item)->data.char_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) { /* List */
+
+                    // Array field
+        } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) && (numberOfValues == 1)) { /* WCHAR */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (*data_item)->data.wchar_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) { /* List */
+
+                    // Array field
+        }
   return OK;
 }
 
-uint16_t plc4c_modbus_read_write_data_item_length_in_bytes(plc4c_data* data_item) {
-  return plc4c_modbus_read_write_data_item_length_in_bits(data_item) / 8;
+uint16_t plc4c_modbus_read_write_data_item_length_in_bytes(plc4c_data* data_item, plc4c_modbus_read_write_modbus_data_type data_type, uint16_t number_of_values) {
+  return plc4c_modbus_read_write_data_item_length_in_bits(data_item, data_type, number_of_values) / 8;
 }
 
-uint16_t plc4c_modbus_read_write_data_item_length_in_bits(plc4c_data* data_item) {
+uint16_t plc4c_modbus_read_write_data_item_length_in_bits(plc4c_data* data_item, plc4c_modbus_read_write_modbus_data_type dataType, uint16_t numberOfValues) {
   uint16_t lengthInBits = 0;
+    if((dataType == plc4c_modbus_read_write_modbus_data_type_BOOL) && (numberOfValues == 1)) { /* BOOL */
 
+        // Reserved Field (reserved)
+        lengthInBits += 15;
+
+        // Simple field (value)
+        lengthInBits += 1;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_BOOL) { /* List */
+
+        // Array field
+        lengthInBits += 1 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) && (numberOfValues == 1)) { /* BYTE */
+
+        // Reserved Field (reserved)
+        lengthInBits += 8;
+
+        // Simple field (value)
+        lengthInBits += 8;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) { /* List */
+
+        // Array field
+        lengthInBits += 1 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_WORD) { /* WORD */
+
+        // Simple field (value)
+        lengthInBits += 16;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_DWORD) { /* DWORD */
+
+        // Simple field (value)
+        lengthInBits += 32;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_LWORD) { /* LWORD */
+
+        // Simple field (value)
+        lengthInBits += 64;
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_SINT) && (numberOfValues == 1)) { /* SINT */
+
+        // Reserved Field (reserved)
+        lengthInBits += 8;
+
+        // Simple field (value)
+        lengthInBits += 8;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_SINT) { /* List */
+
+        // Array field
+        lengthInBits += 8 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_INT) && (numberOfValues == 1)) { /* INT */
+
+        // Simple field (value)
+        lengthInBits += 16;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_INT) { /* List */
+
+        // Array field
+        lengthInBits += 16 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_DINT) && (numberOfValues == 1)) { /* DINT */
+
+        // Simple field (value)
+        lengthInBits += 32;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_DINT) { /* List */
+
+        // Array field
+        lengthInBits += 32 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_LINT) && (numberOfValues == 1)) { /* LINT */
+
+        // Simple field (value)
+        lengthInBits += 64;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_LINT) { /* List */
+
+        // Array field
+        lengthInBits += 64 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_USINT) && (numberOfValues == 1)) { /* USINT */
+
+        // Reserved Field (reserved)
+        lengthInBits += 8;
+
+        // Simple field (value)
+        lengthInBits += 8;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_USINT) { /* List */
+
+        // Array field
+        lengthInBits += 8 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_UINT) && (numberOfValues == 1)) { /* UINT */
+
+        // Simple field (value)
+        lengthInBits += 16;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_UINT) { /* List */
+
+        // Array field
+        lengthInBits += 16 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_UDINT) && (numberOfValues == 1)) { /* UDINT */
+
+        // Simple field (value)
+        lengthInBits += 32;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_UDINT) { /* List */
+
+        // Array field
+        lengthInBits += 32 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_ULINT) && (numberOfValues == 1)) { /* ULINT */
+
+        // Simple field (value)
+        lengthInBits += 64;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_ULINT) { /* List */
+
+        // Array field
+        lengthInBits += 64 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_REAL) && (numberOfValues == 1)) { /* REAL */
+
+        // Simple field (value)
+        lengthInBits += 32;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_REAL) { /* List */
+
+        // Array field
+        lengthInBits += 32 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_LREAL) && (numberOfValues == 1)) { /* LREAL */
+
+        // Simple field (value)
+        lengthInBits += 64;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_LREAL) { /* List */
+
+        // Array field
+        lengthInBits += 64 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) && (numberOfValues == 1)) { /* CHAR */
+
+        // Simple field (value)
+        lengthInBits += 8;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_CHAR) { /* List */
+
+        // Array field
+        lengthInBits += 8 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if((dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) && (numberOfValues == 1)) { /* WCHAR */
+
+        // Simple field (value)
+        lengthInBits += 16;
+    } else     if(dataType == plc4c_modbus_read_write_modbus_data_type_WCHAR) { /* List */
+
+        // Array field
+        lengthInBits += 16 * plc4c_utils_list_size(data_item->data.list_value);
+    }
   return lengthInBits;
 }
 

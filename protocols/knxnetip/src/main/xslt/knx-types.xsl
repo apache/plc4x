@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -38,7 +38,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -120,91 +120,114 @@
             [simple   bit    value]
         ]
         ['BYTE' BYTE
-            [simple   uint 8    value]
+            [reserved uint 8    '0x00']
+            [simple   uint 8    value ]
         ]
         ['WORD' WORD
+            [reserved uint 8    '0x00']
             [simple   uint 16    value]
         ]
         ['DWORD' DWORD
+            [reserved uint 8    '0x00']
             [simple   uint 32    value]
         ]
         ['LWORD' LWORD
+            [reserved uint 8    '0x00']
             [simple   uint 64    value]
         ]
         ['USINT' USINT
+            [reserved uint 8    '0x00']
             [simple   uint 8     value]
         ]
         ['SINT' SINT
+            [reserved uint 8    '0x00']
             [simple   int 8      value]
         ]
         ['UINT' UINT
+            [reserved uint 8    '0x00']
             [simple   uint 16    value]
         ]
         ['INT' INT
+            [reserved uint 8    '0x00']
             [simple   int 16     value]
         ]
         ['UDINT' UDINT
+            [reserved uint 8    '0x00']
             [simple   uint 32    value]
         ]
         ['DINT' DINT
+            [reserved uint 8    '0x00']
             [simple   int 32     value]
         ]
         ['ULINT' ULINT
+            [reserved uint 8    '0x00']
             [simple   uint 64    value]
         ]
         ['LINT' LINT
+            [reserved uint 8    '0x00']
             [simple   int 64     value]
         ]
         ['REAL' REAL
+            [reserved uint 8    '0x00']
             [simple   float 32 value]
         ]
         ['LREAL' LREAL
-            [simple   float 64 value]
+            [reserved uint 8    '0x00']
+            [simple   float 64  value ]
         ]
         ['CHAR' CHAR
-            [simple   uint 8     value]
+            [reserved uint 8    '0x00']
+            [simple   string 8  value  encoding='"UTF-8"']
         ]
         ['WCHAR' WCHAR
-            [simple   uint 16    value]
+            [reserved uint 8    '0x00']
+            [simple   string 16 value  encoding='"UTF-16"']
         ]
         //['STRING' STRING
         //]
         //['WSTRING' WSTRING
         //]
         ['TIME' TIME
-            [simple uint 32 value]
+            [reserved uint 8    '0x00']
+            [simple   uint 32   value ]
         ]
         ['LTIME' LTIME
-            [simple uint 64 value]
+            [reserved uint 8    '0x00']
+            [simple   uint 64   value ]
         ]
         ['DATE' DATE
-            [simple uint 16 value]
+            [reserved uint 8    '0x00']
+            [simple   uint 16   value ]
         ]
         ['TIME_OF_DAY' TIME_OF_DAY
-            [simple uint 32 value]
+            [reserved uint 8    '0x00']
+            [simple   uint 32   value ]
         ]
         ['TOD' TIME_OF_DAY
-            [simple uint 32 value]
+            [reserved uint 8    '0x00']
+            [simple   uint 32   value ]
         ]
         ['DATE_AND_TIME' DATE_AND_TIME
-            [simple uint 16 year]
-            [simple uint 8  month]
-            [simple uint 8  day]
-            [simple uint 8  dayOfWeek]
-            [simple uint 8  hour]
-            [simple uint 8  minutes]
-            [simple uint 8  seconds]
-            [simple uint 32 nanos]
+            [reserved uint 8  '0x00'   ]
+            [simple   uint 16 year     ]
+            [simple   uint 8  month    ]
+            [simple   uint 8  day      ]
+            [simple   uint 8  dayOfWeek]
+            [simple   uint 8  hour     ]
+            [simple   uint 8  minutes  ]
+            [simple   uint 8  seconds  ]
+            [simple   uint 32 nanos    ]
         ]
         ['DT' DATE_AND_TIME
-            [simple uint 16 year]
-            [simple uint 8  month]
-            [simple uint 8  day]
-            [simple uint 8  dayOfWeek]
-            [simple uint 8  hour]
-            [simple uint 8  minutes]
-            [simple uint 8  seconds]
-            [simple uint 32 nanos]
+            [reserved uint 8  '0x00'   ]
+            [simple   uint 16 year     ]
+            [simple   uint 8  month    ]
+            [simple   uint 8  day      ]
+            [simple   uint 8  dayOfWeek]
+            [simple   uint 8  hour     ]
+            [simple   uint 8  minutes  ]
+            [simple   uint 8  seconds  ]
+            [simple   uint 32 nanos    ]
         ]
 
     <xsl:for-each select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype">
@@ -288,6 +311,7 @@
     <xsl:template match="knx:Manufacturer">
         <xsl:variable name="manufacturerId">
             <xsl:choose>
+                <xsl:when test="@Name = 'Phoenix Contact' and @KnxManufacturerId = '655'">PHOENIX_CONTACT_2</xsl:when>
                 <xsl:when test="@Name = '3ATEL'">THREEATEL</xsl:when>
                 <xsl:when test="@Name = '1Home'">ONEHOME</xsl:when>
                 <xsl:when test="@Name = 'Simon'">SIMON_<xsl:value-of select="@KnxManufacturerId"/></xsl:when>
@@ -387,9 +411,25 @@
                         <xsl:with-param name="fields" select="$resolvedFields/*"/>
                     </xsl:call-template>
                 </xsl:variable>
-                <xsl:if test="(($size mod 8) != 0) and (($size mod 8) &lt;= 6)">
-            [reserved uint <xsl:value-of select="8 - ($size mod 8)"/> '0x00']
-                </xsl:if>
+           // Field Size <xsl:value-of select="$size"/>
+                <xsl:choose>
+                    <!--
+                        If less or equal 6 bits are needed in the first byte, we can use the first byte.
+                        Also if a fully byte-aligned value is read, we need to discard the first byte fully.
+                    -->
+                    <xsl:when test="($size mod 8) &lt;= 6">
+           [reserved uint <xsl:value-of select="8 - ($size mod 8)"/> '0x00']
+
+                    </xsl:when>
+                    <!--
+                        If we're reading something that needs 7 bits from the first byte, we need to discard
+                        that and start reading from the second byte.
+                    -->
+                    <xsl:when test="($size mod 8) = 7">
+                        [reserved uint 9 '0x000']
+
+                    </xsl:when>
+                </xsl:choose>
                 <xsl:for-each select="$resolvedFields/*">
                     <xsl:variable name="fieldType">
                         <xsl:choose>
@@ -437,7 +477,7 @@
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:Bit">
             [reserved uint 7 '0x00']
-            [simple   bit    value]
+            [simple   bit    value ]
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:String">
                 <xsl:variable name="encoding">
@@ -446,25 +486,27 @@
                         <xsl:when test="$datapointSubtype/knx:Format/knx:String/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
                     </xsl:choose>
                 </xsl:variable>
+            [reserved uint 8 '0x00']
             [simple   string <xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/> value encoding='"<xsl:value-of select="$encoding"/>"']
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:UnsignedInteger">
                 <xsl:choose>
-                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt; 6">
-            [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width)"/> '0x00']
+                    <xsl:when test="(fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) mod 8) &lt;= 6">
+            [reserved uint <xsl:value-of select="8 - (fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) mod 8)"/> '0x00']
                     </xsl:when>
                 </xsl:choose>
             [simple   uint <xsl:value-of select="$datapointSubtype/knx:Format/knx:UnsignedInteger/@Width"/> value]
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:SignedInteger">
                 <xsl:choose>
-                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt; 6">
-            [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width)"/> '0x00']
+                    <xsl:when test="(fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) mod 8) &lt;= 6">
+            [reserved uint <xsl:value-of select="8 - (fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) mod 8)"/> '0x00']
                     </xsl:when>
                 </xsl:choose>
             [simple   int <xsl:value-of select="$datapointSubtype/knx:Format/knx:SignedInteger/@Width"/> value]
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:Float">
+            [reserved uint 8 '0x00']
                 <xsl:choose>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 16">
             [simple   float 16 value]
@@ -479,8 +521,8 @@
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration">
                 <xsl:choose>
-                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &lt; 6">
-            [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width)"/> '0x00']
+                    <xsl:when test="(fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) mod 8) &lt;= 6">
+            [reserved uint <xsl:value-of select="8 - (fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) mod 8)"/> '0x00']
                     </xsl:when>
                 </xsl:choose>
             [simple   uint <xsl:value-of select="$datapointSubtype/knx:Format/knx:Enumeration/@Width"/> value]

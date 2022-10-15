@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,10 +29,12 @@ public class FieldWriterOptional<T> implements FieldCommons {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldWriterOptional.class);
 
-    public void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+    public void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, boolean condition, WithWriterArgs... writerArgs) throws SerializationException {
         LOGGER.debug("write field {}", logicalName);
-        if (value != null) {
+        if (condition && value != null) {
             switchSerializeByteOrderIfNecessary(() -> dataWriter.write(logicalName, value, writerArgs), dataWriter, extractByteOrder(writerArgs).orElse(null));
+        } else {
+            LOGGER.debug("field {} not written because value is null({}) or condition({}) didn't evaluate to true", logicalName, value != null, condition);
         }
     }
 

@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,16 +17,14 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <artifactId>plc4j-utils</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils-test-generator</artifactId>
@@ -56,9 +54,9 @@
         </executions>
       </plugin>
       <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-compiler-plugin</artifactId>
-    </plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -71,18 +69,11 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <configuration>
-          <!-- this is a test util -->
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <!-- this is a test util -->
-          <skip>true</skip>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4j-utils-pcap-shared</usedDependency>
+          </usedDependencies>
         </configuration>
       </plugin>
     </plugins>
@@ -93,7 +84,7 @@
       <dependency>
         <groupId>org.spockframework</groupId>
         <artifactId>spock-bom</artifactId>
-        <version>2.0-groovy-3.0</version>
+        <version>2.2-groovy-4.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -102,10 +93,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-xml</artifactId>
       <version>${groovy.version}</version>
-      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.pcap4j</groupId>
@@ -114,18 +104,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
-      <optional>true</optional>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -139,10 +123,6 @@
     </dependency>
     <dependency>
       <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-core</artifactId>
-    </dependency>
-    <dependency>
-     <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-matchers</artifactId>
     </dependency>
   </dependencies>

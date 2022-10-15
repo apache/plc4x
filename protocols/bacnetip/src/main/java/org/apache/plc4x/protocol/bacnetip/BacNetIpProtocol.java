@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,16 +19,17 @@
 package org.apache.plc4x.protocol.bacnetip;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.Map;
+public class BacNetIpProtocol implements Protocol, ProtocolHelpers {
 
-public class BacNetIpProtocol implements Protocol {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BacNetIpProtocol.class);
 
     @Override
     public String getName() {
@@ -37,14 +38,38 @@ public class BacNetIpProtocol implements Protocol {
 
     @Override
     public TypeContext getTypeContext() throws GenerationException {
-        InputStream schemaInputStream = BacNetIpProtocol.class.getResourceAsStream("/protocols/bacnetip/bacnetip.mspec");
-        if(schemaInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
-        }
-        TypeContext typeContext = new MessageFormatParser().parse(schemaInputStream);
-        if (typeContext.getUnresolvedTypeReferences().size() > 0) {
-            throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
-        }
+        ValidatableTypeContext typeContext;
+
+        LOGGER.info("Parsing: bacnet-tags.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-tags"));
+
+        LOGGER.info("Parsing: bacnet-private-enums.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums"), typeContext);
+
+        LOGGER.info("Parsing: bacnet-enums.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-enums"), typeContext);
+
+        LOGGER.info("Parsing: bacnet-bit-strings.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-bit-strings"), typeContext);
+
+        LOGGER.info("Parsing: bacnetip.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream(), typeContext);
+
+        // TODO: those should work above bacnetip.mspec but somehow if we move them we get a concurrent modification exception... debug that.
+        LOGGER.info("Parsing: bacnet-vendorids.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-vendorids"), typeContext);
+
+        LOGGER.info("Parsing: bacnet-private-enums-tagged.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums-tagged"), typeContext);
+
+        LOGGER.info("Parsing: bacnet-enums-tagged.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-enums-tagged"), typeContext);
+
+        LOGGER.info("Parsing: bacnet-enums-tagged.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-bit-strings-tagged"), typeContext);
+
+        typeContext.validate();
+
         return typeContext;
     }
 

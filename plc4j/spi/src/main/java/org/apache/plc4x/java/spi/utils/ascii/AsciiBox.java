@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,15 +34,18 @@ public class AsciiBox {
 
     private final String data;
 
+    // TODO: should be final but for the moment we mutate it in change box name... Maybe we find another solution
+    String compressedBoxSet;
+
     protected AsciiBox(String data) {
-        Objects.requireNonNull(data);
-        asciiBoxWriter = AsciiBoxWriter.DEFAULT;
-        this.data = data;
+        this(AsciiBoxWriter.DEFAULT, data);
     }
 
     protected AsciiBox(AsciiBoxWriter asciiBoxWriter, String data) {
+        Objects.requireNonNull(data);
         this.asciiBoxWriter = asciiBoxWriter;
         this.data = data;
+        this.compressedBoxSet = asciiBoxWriter.boxSet.compressBoxSet();
     }
 
     /**
@@ -85,9 +88,11 @@ public class AsciiBox {
         if (!asciiBoxWriter.hasBorders(this)) {
             return asciiBoxWriter.boxString(newName, this.toString(), 0);
         }
-        int minimumWidthWithNewName = (asciiBoxWriter.upperLeftCorner + asciiBoxWriter.horizontalLine + newName + asciiBoxWriter.upperRightCorner).length();
+        int minimumWidthWithNewName = (asciiBoxWriter.boxSet.upperLeftCorner + asciiBoxWriter.boxSet.horizontalLine + newName + asciiBoxWriter.boxSet.upperRightCorner).length();
         int nameLengthDifference = minimumWidthWithNewName - (asciiBoxWriter.unwrap(this).width() + asciiBoxWriter.borderWidth + asciiBoxWriter.borderWidth);
-        return asciiBoxWriter.boxString(newName, asciiBoxWriter.unwrap(this).toString(), this.width() + nameLengthDifference);
+        AsciiBox asciiBox = asciiBoxWriter.boxString(newName, asciiBoxWriter.unwrap(this).toString(), this.width() + nameLengthDifference);
+        asciiBox.compressedBoxSet = asciiBoxWriter.boxSet.contributeToCompressedBoxSet(this);
+        return asciiBox;
     }
 
     public boolean isEmpty() {

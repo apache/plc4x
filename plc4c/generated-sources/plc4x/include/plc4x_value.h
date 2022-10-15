@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -30,10 +30,10 @@
 
 plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_value_type valueType, plc4c_data** data_item);
 
-plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_data** data_item);
+plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_value_type valueType, plc4c_data** data_item);
 
-uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bytes(plc4c_data* data_item);
+uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bytes(plc4c_data* data_item, plc4c_plc4x_read_write_plc4x_value_type valueType);
 
-uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bits(plc4c_data* data_item);
+uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bits(plc4c_data* data_item, plc4c_plc4x_read_write_plc4x_value_type valueType);
 
 #endif  // PLC4C_PLC4X_READ_WRITE_PLC4X_VALUE_H_

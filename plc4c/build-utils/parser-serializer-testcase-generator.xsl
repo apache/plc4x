@@ -19,7 +19,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -81,7 +81,7 @@ void <xsl:value-of select="normalize-space($testName)"/>() {
     plc4c_<xsl:value-of select="replace(lower-case($protocolName), ' ', '_')"/>_<xsl:value-of select="replace(replace(lower-case($outputFlavor), ' ', '_'), '-', '_')"/>_<xsl:value-of select="$rootTypeName"/>* message = NULL;
     return_code = plc4c_<xsl:value-of select="replace(lower-case($protocolName), ' ', '_')"/>_<xsl:value-of select="replace(replace(lower-case($outputFlavor), ' ', '_'), '-', '_')"/>_<xsl:value-of select="$rootTypeName"/>_parse(read_buffer, <xsl:value-of disable-output-escaping="yes" select="'&#038;'"/>message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;

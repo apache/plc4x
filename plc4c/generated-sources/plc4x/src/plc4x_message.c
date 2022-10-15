@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -99,9 +99,9 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_parse(plc4c_spi_read_buff
     return _res;
   }
   (*_message)->request_id = requestId;
-        // Discriminator Field (requestType)
-  enum plc4c_plc4x_read_write_plc4x_request_type requestType;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &requestType);
+  // Discriminator Field (requestType)
+  plc4c_plc4x_read_write_plc4x_request_type requestType;
+  _res = plc4c_plc4x_read_write_plc4x_request_type_parse(readBuffer, &requestType);
   if(_res != OK) {
     return _res;
   }
@@ -120,7 +120,7 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_CONNECT_REQUEST ) {
 
   // Simple Field (connectionString)
   char* connectionString = "";
-  _res = plc4c_spi_read_string(readBuffer, -1, "UTF-8", (char**) &connectionString);
+  _res = plc4c_spi_read_string(readBuffer, (connectionStringLen) * (8), "UTF-8", (char**) &connectionString);
   if(_res != OK) {
     return _res;
   }
@@ -338,7 +338,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
   // Const Field (version)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_PLC4X_READ_WRITE_PLC4X_MESSAGE_VERSION());
 
-  // Implicit Field (packetLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, plc4c_plc4x_read_write_plc4x_message_length_in_bytes(_message));
   if(_res != OK) {
     return _res;
@@ -351,20 +351,24 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
   }
 
   // Enumerated Discriminator Field (requestType)
-  plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_plc4x_read_write_plc4x_message_get_discriminator(_message->_type).requestType);
+  plc4c_plc4x_read_write_plc4x_request_type _requestType = plc4c_plc4x_read_write_plc4x_message_get_discriminator(_message->_type).requestType;
+  _res = plc4c_plc4x_read_write_plc4x_request_type_serialize(writeBuffer, &_requestType);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request: {
 
-  // Implicit Field (connectionStringLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (connectionStringLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (connectionString)
-  _res = plc4c_spi_write_string(writeBuffer, -1, "UTF-8", _message->plc4x_connect_request_connection_string);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string)) * (8), "UTF-8", _message->plc4x_connect_request_connection_string);
   if(_res != OK) {
     return _res;
   }
@@ -395,7 +399,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_read_request_fields));
   if(_res != OK) {
     return _res;
@@ -430,7 +434,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_read_response_fields));
   if(_res != OK) {
     return _res;
@@ -459,7 +463,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_write_request_fields));
   if(_res != OK) {
     return _res;
@@ -494,7 +498,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_write_response_fields));
   if(_res != OK) {
     return _res;
@@ -539,7 +543,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   // Discriminator Field (requestType)
   lengthInBits += 8;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request: {
 
@@ -548,7 +552,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
 
 
   // Simple field (connectionString)
-  lengthInBits += -1;
+  lengthInBits +=  (plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string)) * (8);
 
       break;
     }

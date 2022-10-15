@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,13 +20,31 @@ package org.apache.plc4x.java.transport.serial;
 
 import java.net.SocketAddress;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SerialSocketAddress extends SocketAddress {
 
     private final String identifier;
 
+    private final Optional<SerialChannelHandler> handler;
+
     public SerialSocketAddress(String identifier) {
         this.identifier = identifier;
+        this.handler = Optional.empty();
+    }
+
+    /**
+     * @param identifier of the port
+     * @param handler for custom behavior.  E.g. testing
+     */
+    public SerialSocketAddress(final String identifier, final SerialChannelHandler handler)
+    {
+        this.identifier = identifier;
+        this.handler = Optional.of(handler);
+    }
+
+    public Optional<SerialChannelHandler> getHandler() {
+        return handler;
     }
 
     public String getIdentifier() {

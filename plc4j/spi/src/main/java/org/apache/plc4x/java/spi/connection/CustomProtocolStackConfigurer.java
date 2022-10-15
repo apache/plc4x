@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,6 +25,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -52,6 +53,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
     private final Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover;
     private final MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler;
+
     private final Object[] parserArgs;
 
     public static <BPC extends Message> CustomProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, Function<Configuration, ? extends MessageInput<BPC>> messageInput) {
@@ -87,8 +89,9 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
     /** Applies the given Stack to the Pipeline */
     @Override
-    public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
-        Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> ignore) {
+    public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(Configuration configuration, ChannelPipeline pipeline,
+                                                                  PlcAuthentication authentication, boolean passive,
+                                                                  List<EventListener> ignore) {
         if (this.encryptionHandler != null) {
             pipeline.addLast(this.encryptionHandler);
         }
@@ -98,7 +101,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         if (driverContext != null) {
             protocol.setDriverContext(driverContext);
         }
-        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, passive, protocol, basePacketClass);
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, passive, protocol, authentication, basePacketClass);
         pipeline.addLast(context);
         return protocol;
     }
@@ -173,7 +176,8 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         public CustomProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
             return new CustomProtocolStackConfigurer<>(
-                basePacketClass, byteOrder, parserArgs, protocol, driverContext, messageInput, packetSizeEstimator, corruptPacketRemover, encryptionHandler);
+                basePacketClass, byteOrder, parserArgs, protocol, driverContext, messageInput, packetSizeEstimator,
+                corruptPacketRemover, encryptionHandler);
         }
 
     }

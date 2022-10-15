@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,21 +19,21 @@
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.ChannelPipeline;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public interface ProtocolStackConfigurer<T extends Message> {
 
-    default Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive) {
-        return configurePipeline(configuration, pipeline, passive, Collections.emptyList());
+    default Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive) {
+        return configurePipeline(configuration, pipeline, authentication, passive, Collections.emptyList());
     }
 
-    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> listeners);
+    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive, List<EventListener> listeners);
 
 }

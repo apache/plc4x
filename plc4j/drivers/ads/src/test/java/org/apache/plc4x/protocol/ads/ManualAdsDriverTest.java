@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,9 +18,16 @@
  */
 package org.apache.plc4x.protocol.ads;
 
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 
-import java.util.Arrays;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ManualAdsDriverTest extends ManualTest {
 
@@ -64,45 +71,67 @@ public class ManualAdsDriverTest extends ManualTest {
      */
 
     public ManualAdsDriverTest(String connectionString) {
-        super(connectionString);
+        super(connectionString, true);
     }
 
     public static void main(String[] args) throws Exception {
         String spsIp = "192.168.23.20";
-        /////
-        // TODO: adjust this to your ip address
         String clientIp = "192.168.23.200";
-        //
-        ////
         String sourceAmsNetId = clientIp + ".1.1";
         int sourceAmsPort = 65534;
         String targetAmsNetId = spsIp + ".1.1";
         int targetAmsPort = 851;
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
-        test.addTestCase("main.hurz_BOOL:BOOL", true);
-        test.addTestCase("main.hurz_BYTE:BYTE", Arrays.asList(false, false, true, false, true, false, true, false));
-        test.addTestCase("main.hurz_WORD:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false));
-        test.addTestCase("main.hurz_DWORD:DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false));
-        test.addTestCase("main.hurz_SINT:SINT", -42);
-        test.addTestCase("main.hurz_USINT:USINT", 42);
-        test.addTestCase("main.hurz_INT:INT", -2424);
-        test.addTestCase("main.hurz_UINT:UINT", 42424);
-        test.addTestCase("main.hurz_DINT:DINT", -242442424);
-        test.addTestCase("main.hurz_UDINT:UDINT", 4242442424L);
-        test.addTestCase("main.hurz_LINT:LINT", -4242442424242424242L);
-        test.addTestCase("main.hurz_ULINT:ULINT", 4242442424242424242L);
-        test.addTestCase("main.hurz_REAL:REAL", 3.14159265359F);
-        test.addTestCase("main.hurz_LREAL:LREAL", 2.71828182846D);
-        test.addTestCase("main.hurz_STRING:STRING", "hurz");
-        test.addTestCase("main.hurz_WSTRING:WSTRING", "wolf");
-        test.addTestCase("main.hurz_TIME:TIME", "PT1.234S");
-        test.addTestCase("main.hurz_LTIME:LTIME", "PT24015H23M12.034002044S");
-        test.addTestCase("main.hurz_DATE:DATE", "1978-03-28");
-        test.addTestCase("main.hurz_TIME_OF_DAY:TIME_OF_DAY", "15:36:30.123");
-        test.addTestCase("main.hurz_TOD:TOD", "16:17:18.123");
-        test.addTestCase("main.hurz_DATE_AND_TIME:DATE_AND_TIME", "1996-05-06T15:36:30");
-        test.addTestCase("main.hurz_DT:DT", "1972-03-29T00:00");
+        test.addTestCase("MAIN.hurz_BOOL", new PlcBOOL(true));
+        test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));
+        test.addTestCase("MAIN.hurz_WORD", new PlcWORD(42424));
+        test.addTestCase("MAIN.hurz_DWORD", new PlcDWORD(4242442424L));
+        test.addTestCase("MAIN.hurz_LWORD", new PlcLWORD(4242442424242424242L));
+        test.addTestCase("MAIN.hurz_SINT", new PlcSINT(-42));
+        test.addTestCase("MAIN.hurz_USINT", new PlcUSINT(42));
+        test.addTestCase("MAIN.hurz_INT", new PlcINT(-2424));
+        test.addTestCase("MAIN.hurz_UINT", new PlcUINT(42424));
+        test.addTestCase("MAIN.hurz_DINT", new PlcDINT(-242442424));
+        test.addTestCase("MAIN.hurz_UDINT", new PlcUDINT(4242442424L));
+        test.addTestCase("MAIN.hurz_LINT", new PlcLINT(-4242442424242424242L));
+        test.addTestCase("MAIN.hurz_ULINT", new PlcULINT(4242442424242424242L));
+        test.addTestCase("MAIN.hurz_REAL", new PlcREAL(3.14159265359F));
+        test.addTestCase("MAIN.hurz_LREAL", new PlcLREAL(2.71828182846D));
+        test.addTestCase("MAIN.hurz_STRING", new PlcSTRING("hurz"));
+        test.addTestCase("MAIN.hurz_WSTRING", new PlcWSTRING("wolf"));
+        test.addTestCase("MAIN.hurz_TIME", new PlcTIME(Duration.parse("PT1.234S")));
+        test.addTestCase("MAIN.hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
+        test.addTestCase("MAIN.hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
+        test.addTestCase("MAIN.hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        test.addTestCase("MAIN.hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        //test.addTestCase("MAIN.hurz_DT", new PlcDT("1972-03-29T00:00"));
+        Map<String, PlcValue> children = new HashMap<>();
+        children.put("hurz_BOOL", new PlcBOOL(true));
+        children.put("hurz_BYTE", new PlcBYTE(1));
+        children.put("hurz_WORD", new PlcWORD(2));
+        children.put("hurz_DWORD", new PlcDWORD(3));
+        children.put("hurz_LWORD", new PlcLWORD(4));
+        children.put("hurz_SINT", new PlcSINT(5));
+        children.put("hurz_USINT", new PlcUSINT(6));
+        children.put("hurz_INT", new PlcINT(7));
+        children.put("hurz_UINT", new PlcUINT(8));
+        children.put("hurz_DINT", new PlcDINT(9));
+        children.put("hurz_UDINT", new PlcUDINT(10));
+        children.put("hurz_LINT", new PlcLINT(11));
+        children.put("hurz_ULINT", new PlcULINT(12));
+        children.put("hurz_REAL", new PlcREAL(13.0));
+        children.put("hurz_LREAL", new PlcLREAL(14.0));
+        children.put("hurz_STRING", new PlcSTRING("hurz"));
+        children.put("hurz_WSTRING", new PlcWSTRING("wolf"));
+        children.put("hurz_TIME", new PlcTIME(Duration.parse("PT1.234S")));
+        children.put("hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
+        children.put("hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
+        children.put("hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        children.put("hurz_TOD", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        children.put("hurz_DT", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
         test.run();
     }
 

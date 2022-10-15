@@ -8,7 +8,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -49,7 +49,7 @@ void parser_serializer_test_s7_read_write_cotp_connection_request() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -86,7 +86,7 @@ void parser_serializer_test_s7_read_write_cotp_connection_response() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -123,7 +123,7 @@ void parser_serializer_test_s7_read_write_s7_setup_communication_request() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -160,7 +160,7 @@ void parser_serializer_test_s7_read_write_s7_setup_communication_response() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -197,7 +197,7 @@ void parser_serializer_test_s7_read_write_s7_read_plc_type_request() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -234,7 +234,7 @@ void parser_serializer_test_s7_read_write_s7_read_plc_type_response() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -271,7 +271,7 @@ void parser_serializer_test_s7_read_write_s7_read_request() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -308,7 +308,7 @@ void parser_serializer_test_s7_read_write_s7_read_response() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -345,7 +345,7 @@ void parser_serializer_test_s7_read_write_s7_read_error_response() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -382,7 +382,7 @@ void parser_serializer_test_s7_read_write_s7_write_request() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;
@@ -419,7 +419,7 @@ void parser_serializer_test_s7_read_write_s7_write_response() {
     plc4c_s7_read_write_tpkt_packet* message = NULL;
     return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
     if (return_code != OK) {
-        TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
+        TEST_FAIL_MESSAGE("Error parsing packet");
     }
 
     plc4c_spi_write_buffer* write_buffer;

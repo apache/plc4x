@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,11 +34,13 @@ plc4c_return_code plc4c_driver_modbus_disconnect_function(
 plc4c_return_code plc4c_driver_modbus_read_function(
     plc4c_read_request_execution* read_request_execution,
     plc4c_system_task** task);
+void plc4c_driver_modbus_free_read_request(plc4c_read_request* request);
 void plc4c_driver_modbus_free_read_response(plc4c_read_response* response);
 
 plc4c_return_code plc4c_driver_modbus_write_function(
     plc4c_write_request_execution* write_request_execution,
     plc4c_system_task** task);
+void plc4c_driver_modbus_free_write_request(plc4c_write_request* request);
 void plc4c_driver_modbus_free_write_response(plc4c_write_response* response);
 
 #ifdef __cplusplus

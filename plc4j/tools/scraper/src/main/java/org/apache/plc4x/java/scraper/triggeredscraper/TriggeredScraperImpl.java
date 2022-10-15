@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -37,7 +37,7 @@ import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfiguratio
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.util.PercentageAboveThreshold;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +85,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     /**
      * Creates a Scraper instance from a configuration.
-     * By default a {@link PooledPlcDriverManager} is used.
+     * By default a {@link PooledDriverManager} is used.
      * @param config Configuration to use.
      * @param resultHandler handler the defines the processing of acquired data
      * @param triggerCollector the trigger collector
@@ -136,7 +136,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
     public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut, int poolSizeScheduler, int poolSizeExecutor) {
         this.resultHandler = resultHandler;
         Validate.notEmpty(jobs);
-        if (!(plcDriverManager instanceof PooledPlcDriverManager)) {
+        if (!(plcDriverManager instanceof PooledDriverManager)) {
             LOGGER.warn("The Triggered Scraper is intended to be used with a Pooled Connection. In other situations leaks could occur!");
         }
         this.driverManager = plcDriverManager;
@@ -174,14 +174,8 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * Then, on reconnect we can fail all getConnection calls (in the ScraperTask) fast until
      * (in the background) the idle connection is created and the getConnection call returns fast.
      */
-    private static PooledPlcDriverManager createPooledDriverManager() {
-        return new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
-            GenericKeyedObjectPoolConfig<PlcConnection> poolConfig = new GenericKeyedObjectPoolConfig<>();
-            poolConfig.setMinIdlePerKey(1);
-            poolConfig.setTestOnBorrow(true);
-            poolConfig.setTestOnReturn(true);
-            return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, poolConfig);
-        });
+    private static PooledDriverManager createPooledDriverManager() {
+        return new PooledDriverManager();
     }
 
     /**

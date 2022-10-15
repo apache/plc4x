@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static org.apache.plc4x.java.spi.utils.ascii.BoxSet.combineCompressedBoxSets;
+
 public class AsciiBoxWriter {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AsciiBoxWriter.class);
@@ -34,14 +36,10 @@ public class AsciiBoxWriter {
     public static AsciiBoxWriter DEFAULT = new AsciiBoxWriter();
 
     //public static AsciiBoxWriter LIGHT = new AsciiBoxWriter("┌","┐","┄","┆","└","┘");
-    public static AsciiBoxWriter LIGHT = new AsciiBoxWriter("╭","╮","┄","┆","╰","╯");
+    public static AsciiBoxWriter LIGHT = new AsciiBoxWriter("╭", "╮", "┄", "┆", "╰", "╯");
 
-    final String upperLeftCorner;
-    final String upperRightCorner;
-    final String horizontalLine;
-    final String verticalLine;
-    final String lowerLeftCorner;
-    final String lowerRightCorner;
+    final BoxSet boxSet;
+
     final String newLine;
     final String emptyPadding;
     // the name gets prefixed with a extra symbol for indent
@@ -60,12 +58,7 @@ public class AsciiBoxWriter {
                           String verticalLine,
                           String lowerLeftCorner,
                           String lowerRightCorner) {
-        this.upperLeftCorner = upperLeftCorner;
-        this.upperRightCorner = upperRightCorner;
-        this.horizontalLine = horizontalLine;
-        this.verticalLine = verticalLine;
-        this.lowerLeftCorner = lowerLeftCorner;
-        this.lowerRightCorner = lowerRightCorner;
+        this.boxSet = new BoxSet(upperLeftCorner, upperRightCorner, horizontalLine, verticalLine, lowerLeftCorner, lowerRightCorner);
         this.newLine = "\n";
         this.emptyPadding = " ";
         // the name gets prefixed with a extra symbol for indent
@@ -84,7 +77,10 @@ public class AsciiBoxWriter {
      * @return boxed data
      */
     public AsciiBox boxBox(String name, AsciiBox box, int charWidth) {
-        return boxString(name, box.toString(), charWidth);
+        // TODO: if there is a box bigger then others in that this will get distorted
+        AsciiBox asciiBox = boxString(name, box.toString(), charWidth);
+        asciiBox.compressedBoxSet = boxSet.contributeToCompressedBoxSet(box);
+        return asciiBox;
     }
 
     /**
@@ -99,7 +95,7 @@ public class AsciiBoxWriter {
         Objects.requireNonNull(data);
         // Convert dos2unix as that messes with box rendering
         data = data.replaceAll("\r\n", "\n");
-        AsciiBox rawBox = new AsciiBox(data);
+        AsciiBox rawBox = new AsciiBox(this, data);
         int longestLine = rawBox.width();
         if (charWidth < longestLine) {
             LOGGER.trace("Overflow by {} chars", longestLine - charWidth);
@@ -107,7 +103,7 @@ public class AsciiBoxWriter {
         }
         StringBuilder boxedString = new StringBuilder();
         int namePadding = (Math.max(charWidth - name.length() - borderWidth - extraNameCharIndent - borderWidth, 0));
-        boxedString.append(upperLeftCorner).append(horizontalLine).append(name).append(StringUtils.repeat(horizontalLine, namePadding)).append(upperRightCorner).append(newLine);
+        boxedString.append(boxSet.upperLeftCorner).append(boxSet.horizontalLine).append(name).append(StringUtils.repeat(boxSet.horizontalLine, namePadding)).append(boxSet.upperRightCorner).append(newLine);
         // Name of the header stretches the box so we align to that
         charWidth = borderWidth + extraNameCharIndent + name.length() + namePadding + borderWidth;
         for (String line : rawBox.lines()) {
@@ -117,11 +113,11 @@ public class AsciiBoxWriter {
             }
             int frontPadding = (int) Math.floor(linePadding / 2.0);
             int backPadding = (int) Math.ceil(linePadding / 2.0);
-            boxedString.append(verticalLine).append(StringUtils.repeat(emptyPadding, frontPadding)).append(line).append(StringUtils.repeat(emptyPadding, backPadding)).append(verticalLine).append(newLine);
+            boxedString.append(boxSet.verticalLine).append(StringUtils.repeat(emptyPadding, frontPadding)).append(line).append(StringUtils.repeat(emptyPadding, backPadding)).append(boxSet.verticalLine).append(newLine);
         }
         int bottomPadding = namePadding + name.length() + extraNameCharIndent;
-        boxedString.append(lowerLeftCorner).append(StringUtils.repeat(horizontalLine, bottomPadding)).append(lowerRightCorner);
-        return new AsciiBox(boxedString.toString());
+        boxedString.append(boxSet.lowerLeftCorner).append(StringUtils.repeat(boxSet.horizontalLine, bottomPadding)).append(boxSet.lowerRightCorner);
+        return new AsciiBox(this, boxedString.toString());
     }
 
     /**
@@ -133,7 +129,7 @@ public class AsciiBoxWriter {
      */
     public AsciiBox alignBoxes(Collection<AsciiBox> boxes, int desiredWidth) {
         if (boxes.size() == 0) {
-            return new AsciiBox("");
+            return new AsciiBox(this, "");
         }
         int actualWidth = desiredWidth;
         for (AsciiBox box : boxes) {
@@ -144,7 +140,7 @@ public class AsciiBoxWriter {
             }
         }
         LOGGER.trace("Working with {} chars", actualWidth);
-        AsciiBox bigBox = new AsciiBox("");
+        AsciiBox bigBox = new AsciiBox(this, "");
         List<AsciiBox> currentBoxRow = new LinkedList<>();
         int currentRowLength = 0;
         for (AsciiBox box : boxes) {
@@ -212,7 +208,9 @@ public class AsciiBoxWriter {
                 aggregateBox.append('\n');
             }
         }
-        return new AsciiBox(aggregateBox.toString());
+        AsciiBox asciiBox = new AsciiBox(aggregateBox.toString());
+        asciiBox.compressedBoxSet = combineCompressedBoxSets(box1, box2);
+        return asciiBox;
     }
 
     /**
@@ -230,7 +228,9 @@ public class AsciiBoxWriter {
         } else if (box2Width < box1Width) {
             box2 = expandBox(box2, box1Width);
         }
-        return new AsciiBox(box1.toString() + "\n" + box2.toString());
+        AsciiBox asciiBox = new AsciiBox(box1.toString() + "\n" + box2.toString());
+        asciiBox.compressedBoxSet = combineCompressedBoxSets(box1, box2);
+        return asciiBox;
     }
 
     AsciiBox mergeHorizontal(List<AsciiBox> boxes) {
@@ -263,7 +263,9 @@ public class AsciiBoxWriter {
                 newBox.append(newLine);
             }
         }
-        return new AsciiBox(newBox.toString());
+        AsciiBox asciiBox = new AsciiBox(this, newBox.toString());
+        asciiBox.compressedBoxSet = boxSet.contributeToCompressedBoxSet(box);
+        return asciiBox;
     }
 
     /**
@@ -277,7 +279,7 @@ public class AsciiBoxWriter {
             return false;
         }
         // Check if the first char is the upper left corner
-        return upperLeftCorner.equals(box.toString().substring(0, 1));
+        return boxSet.upperLeftCorner.equals(box.toString().substring(0, 1));
     }
 
     public AsciiBox unwrap(AsciiBox box) {
@@ -286,6 +288,7 @@ public class AsciiBoxWriter {
         }
         String[] originalLines = box.lines();
         String[] newLines = new String[originalLines.length - 2];
+        String completeBoxSet = boxSet.contributeToCompressedBoxSet(box);
         for (int i = 0; i < originalLines.length; i++) {
             String line = originalLines[i];
             if (i == 0) {
@@ -299,12 +302,15 @@ public class AsciiBoxWriter {
             // Strip the vertical Lines and trim the padding
             String unwrappedLine = line.substring(1, line.length() - 1);
 
-            if (!StringUtils.containsAny(unwrappedLine, verticalLine + horizontalLine)) {
+            if (!StringUtils.containsAny(unwrappedLine, completeBoxSet.replaceAll(",", ""))) {
                 // only trim boxes witch don't contain other boxes
                 unwrappedLine = StringUtils.trim(unwrappedLine);
             }
             newLines[i - 1] = unwrappedLine;
         }
-        return new AsciiBox(StringUtils.join(newLines, newLine));
+        AsciiBox asciiBox = new AsciiBox(StringUtils.join(newLines, newLine));
+        asciiBox.compressedBoxSet = completeBoxSet;
+        return asciiBox;
     }
+
 }

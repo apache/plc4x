@@ -5,7 +5,7 @@
 #  (the "License"); you may not use this file except in compliance with
 #  the License.  You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#      https://www.apache.org/licenses/LICENSE-2.0
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,17 +28,8 @@ RUN apt update -y
 # Install general purpose tools
 RUN apt install -y make libpcap-dev libc-dev git
 
-# Required for "with-boost" profile
-#RUN apt install -y bison flex gcc g++
-
-# Required for "with-cpp" profile
-#RUN apt install -y gcc g++
-
-# Required for "with-proxies" and "with-cpp"
-#RUN apt install -y clang
-
-# Required for "with-proxies" and "with-cpp"
-#RUN apt install -y cmake
+# Required for "with-c" profile
+RUN apt install -y build-essential
 
 # Required for "with-dotnet" profile
 RUN apt install -y wget
@@ -48,13 +39,11 @@ RUN apt install -y software-properties-common
 RUN add-apt-repository universe -y
 RUN apt install -y apt-transport-https
 RUN apt update -y
-RUN apt install -y dotnet-sdk-3.1
-
-# Required for "with-go" profile
-RUN apt install -y golang
+RUN apt install -y dotnet-sdk-6.0
 
 # Required for "with-python" profile
-RUN apt install -y python-setuptools python
+RUN apt install -y python3 python3-venv python3-pip
+RUN pip3 install wheel
 
 # Required for running on Windows systems
 RUN apt install -y dos2unix
@@ -74,12 +63,10 @@ RUN dos2unix .mvn/wrapper/maven-wrapper.properties
 # Tell Maven to fetch all needed dependencies first, so they can get cached
 # (Tried a patched version of the plugin to allow exclusion of inner artifacts.
 # See https://issues.apache.org/jira/browse/MDEP-568 for details)
-#RUN ./mvnw -P with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-python,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
-RUN ./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+RUN ./mvnw -P with-c,with-dotnet,with-go,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
 
 # Build everything with all tests
-#RUN ./mvnw -P skip-prerequisite-check,with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-python,with-sandbox install
-RUN ./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox install
+RUN ./mvnw -P with-c,with-dotnet,with-go,with-sandbox install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version
@@ -89,7 +76,7 @@ RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpressio
 ##########################################################################################
 
 # Move the file to a place we can reference it from without a version
-RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-integration-iotdb/target/plc4j-hello-integration-iotdb-${PROJECT_VERSION}-uber-jar.jar plc4xdemo.jar
+RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-integration-iotdb/target/plc4j-examples-hello-integration-iotdb-${PROJECT_VERSION}-uber-jar.jar plc4xdemo.jar
 
 # Build a highly optimized JRE
 FROM alpine:3.10 as packager

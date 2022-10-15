@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -35,6 +35,9 @@ setup(
     author_email="dev@plc4x.apache.org",
     license="Apache 2.0",
     packages=find_packages(include=["plc4py", "plc4py.*"]),
+    setup_requires=[
+        "wheel",
+    ],
     install_requires=[
         "pytest-asyncio>=0.18.3",
         "pip-tools",

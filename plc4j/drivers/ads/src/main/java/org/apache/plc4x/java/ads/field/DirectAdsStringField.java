@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.ads.field;
 
-import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -37,13 +36,13 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
 
     private final int stringLength;
 
-    public DirectAdsStringField(long indexGroup, long indexOffset, AdsDataType adsDataType, int stringLength, Integer numberOfElements) {
-        super(indexGroup, indexOffset, adsDataType, numberOfElements);
+    public DirectAdsStringField(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
         this.stringLength = stringLength;
     }
 
-    public static DirectAdsStringField of(long indexGroup, long indexOffset, AdsDataType adsDataType, int stringLength, Integer numberOfElements) {
-        return new DirectAdsStringField(indexGroup, indexOffset, adsDataType, stringLength, numberOfElements);
+    public static DirectAdsStringField of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
     }
 
     public static DirectAdsStringField of(String address) {
@@ -72,16 +71,15 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
             indexOffset = Long.parseLong(indexOffsetString);
         }
 
-        String adsDataTypeString = matcher.group("adsDataType");
-        AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
+        String adsDataTypeName = matcher.group("adsDataType");
 
         String stringLengthString = matcher.group("stringLength");
-        Integer stringLength = stringLengthString != null ? Integer.valueOf(stringLengthString) : null;
+        int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 0;
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
 
-        return new DirectAdsStringField(indexGroup, indexOffset, adsDataType, stringLength, numberOfElements);
+        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
     }
 
     public static boolean matches(String address) {

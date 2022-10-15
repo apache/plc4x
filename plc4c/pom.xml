@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4c</artifactId>
@@ -89,10 +89,47 @@
     </profile>
     <!-- Profile for mac -->
     <profile>
-      <id>os-mac</id>
+      <id>os-mac-amd64</id>
       <activation>
         <os>
           <family>mac</family>
+          <arch>amd64</arch>
+        </os>
+      </activation>
+      <!-- Make the cmake executable, executable -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-cmake-executable</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <basedir>${cmake.root}</basedir>
+                  <executable>chmod</executable>
+                  <arguments>
+                    <argument>+x</argument>
+                    <argument>cmake</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Profile for mac -->
+    <profile>
+      <id>os-mac-aarch64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>aarch64</arch>
         </os>
       </activation>
       <!-- Make the cmake executable, executable -->
@@ -166,7 +203,7 @@
             </executions>
             <dependencies>
               <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
                 <version>${groovy.version}</version>
               </dependency>
@@ -211,6 +248,21 @@
               <outputDirectory>${project.build.directory}/dependency</outputDirectory>
             </configuration>
           </execution>
+          <!--
+            Get ClangFormat.cmake
+          -->
+          <!--execution>
+            <id>get-clang-format</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://raw.githubusercontent.com/zemasoft/clangformat-cmake/master/cmake/ClangFormat.cmake</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/clang-format</outputDirectory>
+            </configuration>
+          </execution-->
         </executions>
       </plugin>
       <!--
@@ -340,7 +392,7 @@
           <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>10.5</version>
+            <version>11.4</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -472,7 +524,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-c</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -480,21 +532,21 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-plc4x</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>

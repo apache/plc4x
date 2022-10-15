@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,6 +20,10 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms;
 
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+/**
+ * @deprecated {@link org.apache.plc4x.plugins.codegenerator.types.terms.WildcardTerm} should be used instead
+ */
+@Deprecated
 public class WildcardTerm implements Term {
 
     public static final WildcardTerm INSTANCE = new WildcardTerm();

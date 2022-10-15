@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -53,6 +53,13 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
                                           @JsonProperty("values") Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
+        request.getPreRegisteredConsumers().forEach((subscriptionFieldName, consumers) -> {
+            PlcSubscriptionHandle subscriptionHandle = getSubscriptionHandle(subscriptionFieldName);
+            if (subscriptionHandle == null) {
+                throw new PlcRuntimeException("PlcSubscriptionHandle for " + subscriptionFieldName + " not found");
+            }
+            consumers.forEach(subscriptionHandle::register);
+        });
     }
 
     @Override
@@ -98,7 +105,7 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     @Override
     @JsonIgnore
     public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
-        return values.values().stream().map(ResponseItem<PlcSubscriptionHandle>::getValue).collect(Collectors.toList());
+        return values.values().stream().map(ResponseItem::getValue).collect(Collectors.toList());
     }
 
     public Map<String, ResponseItem<PlcSubscriptionHandle>> getValues() {
@@ -109,7 +116,7 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcSubscriptionResponse");
 
-        if(request instanceof Serializable) {
+        if (request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
         writeBuffer.pushContext("values");

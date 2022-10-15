@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -143,7 +143,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-        // Discriminator Field (errorFlag)
+  // Discriminator Field (errorFlag)
 
   // Discriminator Field (errorFlag) (Used as input to a switch field)
   bool errorFlag = false;
@@ -151,7 +151,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   if(_res != OK) {
     return _res;
   }
-        // Discriminator Field (functionFlag)
+  // Discriminator Field (functionFlag)
 
   // Discriminator Field (functionFlag) (Used as input to a switch field)
   uint8_t functionFlag = 0;
@@ -1275,7 +1275,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_discrete_inputs_response_value));
   if(_res != OK) {
     return _res;
@@ -1311,7 +1311,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_coils_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_coils_response_value));
   if(_res != OK) {
     return _res;
@@ -1375,7 +1375,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     return _res;
   }
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_write_multiple_coils_request_value));
   if(_res != OK) {
     return _res;
@@ -1427,7 +1427,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_input_registers_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_input_registers_response_value));
   if(_res != OK) {
     return _res;
@@ -1463,7 +1463,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_holding_registers_response_value));
   if(_res != OK) {
     return _res;
@@ -1527,7 +1527,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     return _res;
   }
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_write_multiple_holding_registers_request_value));
   if(_res != OK) {
     return _res;
@@ -1587,7 +1587,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     return _res;
   }
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_write_multiple_holding_registers_request_value));
   if(_res != OK) {
     return _res;
@@ -1607,7 +1607,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_write_multiple_holding_registers_response_value));
   if(_res != OK) {
     return _res;
@@ -1681,13 +1681,13 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_fifo_queue_response_fifo_value)) * (2))) + (2));
   if(_res != OK) {
     return _res;
   }
 
-  // Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_fifo_queue_response_fifo_value)) * (2))) / (2));
   if(_res != OK) {
     return _res;
@@ -1707,7 +1707,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_file_record_request: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_read_file_record_request_items));
   if(_res != OK) {
     return _res;
@@ -1730,7 +1730,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_file_record_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_read_file_record_response_items));
   if(_res != OK) {
     return _res;
@@ -1753,7 +1753,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_write_file_record_request: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_write_file_record_request_items));
   if(_res != OK) {
     return _res;
@@ -1776,7 +1776,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_write_file_record_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_write_file_record_response_items));
   if(_res != OK) {
     return _res;
@@ -1869,7 +1869,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_spi_evaluation_helper_count(_message->modbus_pdu_get_com_event_log_response_events)) + (6));
   if(_res != OK) {
     return _res;
@@ -1911,7 +1911,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_report_server_id_response: {
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_report_server_id_response_value));
   if(_res != OK) {
     return _res;
@@ -1983,7 +1983,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     return _res;
   }
 
-  // Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_device_identification_response_objects));
   if(_res != OK) {
     return _res;
@@ -2022,7 +2022,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   // Discriminator Field (functionFlag)
   lengthInBits += 7;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 

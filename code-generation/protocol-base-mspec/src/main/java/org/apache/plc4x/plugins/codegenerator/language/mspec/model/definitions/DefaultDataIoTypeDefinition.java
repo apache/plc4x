@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -32,14 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DefaultDataIoTypeDefinition extends DefaultComplexTypeDefinition implements DataIoTypeDefinition {
-
-    
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataIoTypeDefinition.class);
-    
-    
     private final SwitchField switchField;
     private TypeReference type;
-
     public DefaultDataIoTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, SwitchField switchField) {
         super(name, attributes, parserArguments, false, List.of(switchField));
         this.switchField = Objects.requireNonNull(switchField);

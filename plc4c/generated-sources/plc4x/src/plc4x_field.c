@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -46,7 +46,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_field_parse(plc4c_spi_read_buffer
 
   // Simple Field (name)
   char* name = "";
-  _res = plc4c_spi_read_string(readBuffer, -1, "UTF-8", (char**) &name);
+  _res = plc4c_spi_read_string(readBuffer, (nameLen) * (8), "UTF-8", (char**) &name);
   if(_res != OK) {
     return _res;
   }
@@ -61,7 +61,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_field_parse(plc4c_spi_read_buffer
 
   // Simple Field (fieldQuery)
   char* fieldQuery = "";
-  _res = plc4c_spi_read_string(readBuffer, -1, "UTF-8", (char**) &fieldQuery);
+  _res = plc4c_spi_read_string(readBuffer, (fieldQueryLen) * (8), "UTF-8", (char**) &fieldQuery);
   if(_res != OK) {
     return _res;
   }
@@ -73,26 +73,26 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_field_parse(plc4c_spi_read_buffer
 plc4c_return_code plc4c_plc4x_read_write_plc4x_field_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_field* _message) {
   plc4c_return_code _res = OK;
 
-  // Implicit Field (nameLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (nameLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_str_len(_message->name));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (name)
-  _res = plc4c_spi_write_string(writeBuffer, -1, "UTF-8", _message->name);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->name)) * (8), "UTF-8", _message->name);
   if(_res != OK) {
     return _res;
   }
 
-  // Implicit Field (fieldQueryLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (fieldQueryLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_str_len(_message->field_query));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (fieldQuery)
-  _res = plc4c_spi_write_string(writeBuffer, -1, "UTF-8", _message->field_query);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->field_query)) * (8), "UTF-8", _message->field_query);
   if(_res != OK) {
     return _res;
   }
@@ -111,13 +111,13 @@ uint16_t plc4c_plc4x_read_write_plc4x_field_length_in_bits(plc4c_plc4x_read_writ
   lengthInBits += 8;
 
   // Simple field (name)
-  lengthInBits += -1;
+  lengthInBits +=  (plc4c_spi_evaluation_helper_str_len(_message->name)) * (8);
 
   // Implicit Field (fieldQueryLen)
   lengthInBits += 8;
 
   // Simple field (fieldQuery)
-  lengthInBits += -1;
+  lengthInBits +=  (plc4c_spi_evaluation_helper_str_len(_message->field_query)) * (8);
 
   return lengthInBits;
 }
