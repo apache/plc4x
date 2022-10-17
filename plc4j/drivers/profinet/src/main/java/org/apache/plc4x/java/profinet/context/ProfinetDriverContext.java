@@ -46,7 +46,7 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
     private int sessionKey;
     private ProfinetChannel channel;
 
-    private DatagramSocket udpSocket;
+
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
@@ -124,13 +124,7 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
         this.sessionKey = sessionKey;
     }
 
-    public DatagramSocket getUdpSocket() {
-        return udpSocket;
-    }
 
-    public void setUdpSocket(DatagramSocket udpSocket) {
-        this.udpSocket = udpSocket;
-    }
 
     public ProfinetChannel getChannel() {
         return channel;

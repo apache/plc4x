@@ -31,15 +31,17 @@ import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
+import org.pcap4j.core.NotOpenException;
+import org.pcap4j.core.PacketListener;
+import org.pcap4j.core.PcapNativeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.io.IOException;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 public class ProfinetDevice {
 
@@ -67,9 +69,12 @@ public class ProfinetDevice {
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
     private final DceRpc_ActivityUuid uuid;
     private final ProfinetConfiguration configuration;
+    private final InetAddress localIpAddress;
+    private final DatagramSocket socket;
+    private final DatagramSocket socketProfinetPort;
     private DatagramSocket udpSocket;
     private RawSocketChannel rawSocketChannel;
-    private Channel channel;
+    private ProfinetChannel channel;
     private final MacAddress macAddress;
     private ConversationContext<Ethernet_Frame> context;
     private ProfinetDeviceState state = ProfinetDeviceState.IDLE;
@@ -77,6 +82,7 @@ public class ProfinetDevice {
     private boolean dcpReceived = false;
     private String ipAddress;
     private String portId;
+    private MacAddress localMacAddress;
 
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
 
@@ -101,40 +107,24 @@ public class ProfinetDevice {
     public ProfinetDevice(MacAddress macAddress, ProfinetConfiguration configuration) {
         this.macAddress = macAddress;
         this.configuration = configuration;
+        try {
+            this.localIpAddress = InetAddress.getByName(configuration.getTransportConfig().split(":")[0]);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
         // Generate a new Activity Id, which will be used throughout the connection.
         this.uuid = generateActivityUuid();
-    }
 
-
-    private void closeUDPSocket() {
-        // Handle the closing of the connection, might need to send some messages beforehand.
-        if (udpSocket != null && !udpSocket.isConnected()) {
-            udpSocket.close();
-            context.getChannel().close();
-        }
-    }
-
-    private boolean createUdpSocket() {
-        if (state != ProfinetDeviceState.IDLE) {
-            closeUDPSocket();
-        }
-        if (!(channel instanceof RawSocketChannel)) {
-            logger.warn("Expected a 'raw' transport, closing channel...");
-            closeUDPSocket();
-            return false;
-        }
-
-        rawSocketChannel = (RawSocketChannel) channel;
-
-        // Create an udp socket
         try {
-            udpSocket = new DatagramSocket();
+            socket = new DatagramSocket(50000);
+            socketProfinetPort = new DatagramSocket(DEFAULT_UDP_PORT);
         } catch (SocketException e) {
-            logger.warn("Unable to create udp socket " + e.getMessage());
-            closeUDPSocket();
-            return false;
+            throw new RuntimeException(e);
         }
-        return true;
+    }
+
+    public ProfinetConfiguration getConfiguration() {
+        return configuration;
     }
 
     private ProfinetISO15745Profile issueGSDMLFile(String vendorId, String deviceId) {
@@ -162,10 +152,8 @@ public class ProfinetDevice {
     }
 
     public boolean onConnect() {
-        if (!createUdpSocket()) {
-            // Unable to create UDP connection
-            return false;
-        }
+
+        
 
         this.gsdFile = issueGSDMLFile(this.vendorId, this.deviceId);
         extractGSDFileInfo(this.gsdFile);
@@ -226,6 +214,14 @@ public class ProfinetDevice {
         if (item.getOptions().containsKey("deviceName")) {
             this.deviceName = item.getOptions().get("deviceName");
         }
+        if (item.getOptions().containsKey("localMacAddress")) {
+            String macString = item.getOptions().get("localMacAddress").replace(":", "");
+            try {
+                this.localMacAddress = new MacAddress(Hex.decodeHex(macString));
+            } catch (DecoderException e) {
+                throw new RuntimeException(e);
+            }
+        }
         if (item.getOptions().containsKey("packetType")) {
             if (item.getOptions().get("packetType").equals("lldp")) {
                 this.lldpReceived = true;
@@ -236,9 +232,9 @@ public class ProfinetDevice {
         }
     }
 
-    public void setContext(ConversationContext<Ethernet_Frame> context) {
+    public void setContext(ConversationContext<Ethernet_Frame> context, ProfinetChannel channel) {
         this.context = context;
-        channel = context.getChannel();
+        this.channel = channel;
     }
 
     protected static DceRpc_ActivityUuid generateActivityUuid() {
@@ -256,16 +252,28 @@ public class ProfinetDevice {
         return null;
     }
 
-    public DatagramSocket getUdpSocket() {
-        return this.udpSocket;
-    }
-
     public RawSocketChannel getRawSocket() {
         return this.rawSocketChannel;
     }
 
     public InetAddress getIpAddress() throws UnknownHostException {
         return InetAddress.getByName(this.ipAddress);
+    }
+
+    public MacAddress getMacAddress() {
+        return macAddress;
+    }
+
+    public MacAddress getLocalMacAddress() {
+        return localMacAddress;
+    }
+
+    public InetAddress getLocalIpAddress() {
+        return localIpAddress;
+    }
+
+    public void setLocalMacAddress(MacAddress localMacAddress) {
+        this.localMacAddress = localMacAddress;
     }
 
     public int getPort() {
@@ -487,7 +495,7 @@ public class ProfinetDevice {
                         final PnIoCm_Block_ArRes pnIoCm_block_arRes = (PnIoCm_Block_ArRes) connectResponse.getBlocks().get(0);
 
                         // Update the raw-socket transports filter expression.
-                        ((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(macAddress.getAddress()));
+                        //((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(macAddress.getAddress()));
                     } else {
                         throw new PlcException("Unexpected type of first block.");
                     }
@@ -578,6 +586,10 @@ public class ProfinetDevice {
         }
     }
 
+    public ProfinetChannel getChannel() {
+        return channel;
+    }
+
     public class CyclicData implements ProfinetCallable<Ethernet_Frame> {
         public Ethernet_Frame create() {
             return new Ethernet_Frame(
@@ -595,6 +607,8 @@ public class ProfinetDevice {
                         false,
                         false)));
         }
+
+
 
         @Override
         public void handle(Ethernet_Frame packet) throws PlcException {

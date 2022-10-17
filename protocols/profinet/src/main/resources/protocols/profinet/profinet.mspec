@@ -71,8 +71,8 @@
             // Begin of the UDP packet part
             [simple   uint 16             sourcePort                                                 ]
             [simple   uint 16             destinationPort                                            ]
-            [implicit uint 16             packetLength    'lengthInBytes'                            ]
-            [simple   uint 16             bodyChecksum                                               ]
+            [implicit uint 16             packetLength    '8 + payload.lengthInBytes'                ]
+            [implicit uint 16             bodyChecksum                    'STATIC_CALL("calculateUdpChecksum", sourceAddress, destinationAddress, sourcePort, destinationPort, packetLength, payload)']
             [simple   DceRpc_Packet       payload                                                    ]
         ]
         ['0x8100' Ethernet_FramePayload_VirtualLan

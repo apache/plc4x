@@ -23,12 +23,12 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.Dot1qVlanTagPacket;
 import org.pcap4j.packet.EthernetPacket;
+import org.pcap4j.packet.IllegalRawDataException;
+import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.util.LinkLayerAddress;
 import org.slf4j.Logger;
@@ -50,6 +50,33 @@ public class ProfinetChannel {
     public ProfinetChannel(List<PcapNetworkInterface> devs) {
         this.openHandles = getInterfaceHandles(devs);
         startListener();
+    }
+
+    public void send(Ethernet_Frame ethFrame, ProfinetCallable<DceRpc_Packet> callable) {
+        for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
+            PcapHandle handle = entry.getValue();
+            WriteBufferByteBased buffer = new WriteBufferByteBased(ethFrame.getLengthInBytes());
+            try {
+                ethFrame.serialize(buffer);
+            } catch (SerializationException e) {
+                throw new RuntimeException(e);
+            }
+            Packet packet = null;
+            try {
+                packet = EthernetPacket.newPacket(buffer.getData(), 0, ethFrame.getLengthInBytes());
+            } catch (IllegalRawDataException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                handle.sendPacket(packet);
+            } catch (PcapNativeException e) {
+                throw new RuntimeException(e);
+            } catch (NotOpenException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
     }
 
     public void startListener() {
@@ -75,23 +102,7 @@ public class ProfinetChannel {
         }
     }
 
-    private static class ProfinetRunnable implements Runnable {
 
-        private final Logger logger = LoggerFactory.getLogger(ProfinetRunnable.class);
-        private final PcapHandle handle;
-        private final Function<Object, Boolean> operator;
-
-        public ProfinetRunnable(PcapHandle handle, Function<Object, Boolean> operator) {
-            this.handle = handle;
-            this.operator = operator;
-        }
-
-        @Override
-        public void run() {
-            operator.apply(null);
-        }
-
-    }
 
     public PacketListener createListener() {
         PacketListener listener =
@@ -163,7 +174,7 @@ public class ProfinetChannel {
 
                         // Only react on PROFINET, UDP or LLDP packets targeted at our current MAC address.
                         handle.setFilter(
-                            "(((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")) or (ether proto 0x88cc) or (ether proto 0x0800)",
+                            "(ether proto 0x0800) or (((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")) or (ether proto 0x88cc)",
                             BpfProgram.BpfCompileMode.OPTIMIZE);
                     }
                 }

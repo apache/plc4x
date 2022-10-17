@@ -64,7 +64,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     private ProfinetDriverContext profinetDriverContext;
     private boolean connected = false;
 
-    private DatagramSocket udpSocket;
+
     private RawSocketChannel rawSocketChannel;
     private Channel channel;
 
@@ -94,7 +94,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         }
 
         for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
-            device.getValue().setContext(context);
+            device.getValue().setContext(context, this.profinetDriverContext.getChannel());
         }
         try {
             onDeviceDiscovery();
@@ -198,56 +198,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             throw new RuntimeException("Not Connected");
         }
 
-        final InetSocketAddress remoteAddress = (InetSocketAddress) rawSocketChannel.getRemoteAddress();
-
         try {
-            // Create the packet
-            final Ethernet_FramePayload_PnDcp profinetConnectionRequest = createProfinetCyclicDataRequest();
-            // Serialize it to a byte-payload
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(profinetConnectionRequest.getLengthInBytes());
-            profinetConnectionRequest.serialize(writeBuffer);
-            // Create a udp packet.
-            DatagramPacket connectRequestPacket = new DatagramPacket(writeBuffer.getData(), writeBuffer.getData().length);
-            connectRequestPacket.setAddress(remoteAddress.getAddress());
-            connectRequestPacket.setPort(remoteAddress.getPort());
-            // Send it.
-
-            udpSocket.send(connectRequestPacket);
-
-            // Receive the response.
-            byte[] resultBuffer = new byte[profinetConnectionRequest.getLengthInBytes()];
-            DatagramPacket connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
-            udpSocket.receive(connectResponsePacket);
-            ReadBufferByteBased readBuffer = new ReadBufferByteBased(resultBuffer);
-            final DceRpc_Packet dceRpc_packet = DceRpc_Packet.staticParse(readBuffer);
-            if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
-                if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
-                    // Get the remote MAC address and store it in the context.
-                    final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
-                    if ((connectResponse.getBlocks().size() > 0) && (connectResponse.getBlocks().get(0) instanceof PnIoCm_Block_ArRes)) {
-                        final PnIoCm_Block_ArRes pnIoCm_block_arRes = (PnIoCm_Block_ArRes) connectResponse.getBlocks().get(0);
-                        profinetDriverContext.setRemoteMacAddress(pnIoCm_block_arRes.getCmResponderMacAddr());
-
-                        // Update the raw-socket transports filter expression.
-                        ((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(profinetDriverContext.getRemoteMacAddress().getAddress()));
-                    } else {
-                        throw new PlcException("Unexpected type of first block.");
-                    }
-                } else {
-                    throw new PlcException("Unexpected response");
-                }
-            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
-                throw new PlcException("Device rejected connection request");
-            } else {
-                throw new PlcException("Unexpected response");
-            }
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        } catch (PlcException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            Thread.sleep(10000L);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
