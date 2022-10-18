@@ -34,8 +34,6 @@ The information provided here was provided by the entities named, and is not ver
 |===
 ||Name |Description |Contact Person(s) |Contact Email(s) |Contact Phone(s) |Involvement Level
 
-a|image::users/companies/logo-c-ware.png[c-ware, 200, 200] |https://www.c-ware.de[C-Ware^,opts=nofollow] |commercial support, training, workshops, consulting, individual software-development |Christofer Dutz |christofer.dutz@c-ware.de |  |PMC Member
-
 a|image::users/companies/logo-connectorio.png[connectorio, 200, 200] |https://connectorio.com/solutions/apache-plc4x/[ConnectorIO sp. z o.o.^,opts=nofollow]|workshops, individual software development|Łukasz Dywicki |lukasz@connectorio.com |  |PMC Member
 
 |===
