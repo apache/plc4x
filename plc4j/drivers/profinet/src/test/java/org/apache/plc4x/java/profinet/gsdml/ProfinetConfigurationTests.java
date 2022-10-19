@@ -124,5 +124,28 @@ public class ProfinetConfigurationTests {
         }
     }
 
+    @Test
+    public void readProfinetSubModules() throws DecoderException, PlcConnectionException {
+
+        String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
+        String subModules = "[PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02]";
+        ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
+
+        ProfinetDriverContext context = new ProfinetDriverContext();
+        context.setConfiguration(configuration);
+
+        Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
+        configuration.setSubModules();
+
+        for (String mac : macAddresses) {
+            String[] test = devices.get(mac.replace(":", "").toUpperCase()).getSubModules();
+            assertEquals("PLC4X_01", devices.get(mac.replace(":", "").toUpperCase()).getSubModules()[0]);
+            assertEquals("PLC4X_02", devices.get(mac.replace(":", "").toUpperCase()).getSubModules()[1]);
+            assertEquals("PLC4X_01", devices.get(mac.replace(":", "").toUpperCase()).getSubModules()[2]);
+            assertEquals("PLC4X_02", devices.get(mac.replace(":", "").toUpperCase()).getSubModules()[3]);
+        }
+    }
+
 
 }

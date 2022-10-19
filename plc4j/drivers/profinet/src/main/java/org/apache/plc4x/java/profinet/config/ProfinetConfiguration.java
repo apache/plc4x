@@ -40,6 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +49,7 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetConfiguration.class);
     public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})(,)?)*\\]");
+    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("(\\[[\\w, ]*\\])");
 
     @Override
     public boolean getSupportVlans() {
@@ -81,6 +83,10 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
     @IntDefaultValue(32)
     private int sendClockFactor;
 
+    @ConfigurationParameter("submodules")
+    @StringDefaultValue("")
+    private String subModules;
+
     @ConfigurationParameter("reductionratio")
     @IntDefaultValue(4)
     private int reductionRatio;
@@ -89,7 +95,7 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
     @IntDefaultValue(50)
     private int watchdogFactor;
 
-    public HashMap<String, ProfinetDevice> configuredDevices = new HashMap<>();
+    public LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
 
     private final Map<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
 
@@ -105,13 +111,35 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
         if (!matcher.matches()) {
             throw new PlcConnectionException("Profinet Device Array is not in the correct format " + sDevices + ".");
         }
-        ;
 
         String[] devices = sDevices.substring(1, sDevices.length() - 1).split("[ ,]");
 
         for (String device : devices) {
             MacAddress macAddress = new MacAddress(Hex.decodeHex(device.replace(":", "")));
             configuredDevices.put(device.replace(":", "").toUpperCase(), new ProfinetDevice(macAddress, this));
+        }
+    }
+
+    public void setSubModules() throws DecoderException, PlcConnectionException {
+
+        // Split up the connection string into its individual segments.
+        Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(subModules.toUpperCase());
+        if (!matcher.matches()) {
+            throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + subModules + ".");
+        }
+        String[] devices = new String[matcher.groupCount()];
+        for (int i = 0; i < matcher.groupCount(); i++) {
+            devices[i] = matcher.group(i).replace(" ", "");
+        }
+
+        if (matcher.groupCount() != configuredDevices.size()) {
+            throw new PlcConnectionException("Configured device array size doesn't match the submodule array size");
+        }
+
+        int index = 0;
+        for (Map.Entry<String, ProfinetDevice> entry : configuredDevices.entrySet()) {
+            entry.getValue().setSubModules(devices[index]);
+            index += 1;
         }
     }
 
@@ -146,7 +174,7 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
         return configuredDevices;
     }
 
-    public void setConfiguredDevices(HashMap<String, ProfinetDevice> configuredDevices) {
+    public void setConfiguredDevices(LinkedHashMap<String, ProfinetDevice> configuredDevices) {
         this.configuredDevices = configuredDevices;
     }
 
@@ -160,6 +188,10 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
 
     public int getSendClockFactor() {
         return sendClockFactor;
+    }
+
+    public String getSubModules() {
+        return subModules;
     }
 
     public int getReductionRatio() {

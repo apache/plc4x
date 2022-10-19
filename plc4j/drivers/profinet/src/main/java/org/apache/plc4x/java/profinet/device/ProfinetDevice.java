@@ -81,6 +81,7 @@ public class ProfinetDevice {
     private MacAddress localMacAddress;
     PnIoCm_Block_IoCrReq inputReq = null;
     PnIoCm_Block_IoCrReq outputReq = null;
+    private String[] subModules;
 
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
     private AtomicInteger identificationGenerator = new AtomicInteger(1);
@@ -176,6 +177,14 @@ public class ProfinetDevice {
     private long getObjectId() {
         long id = getAndIncrementIdentification();
         return id;
+    }
+
+    public String[] getSubModules() {
+        return subModules;
+    }
+
+    public void setSubModules(String subModules) {
+        this.subModules = subModules.substring(1, subModules.length() - 1).split("[ ,]");
     }
 
     private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable) {
