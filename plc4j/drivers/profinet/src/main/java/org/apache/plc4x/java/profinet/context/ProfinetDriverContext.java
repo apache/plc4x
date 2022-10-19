@@ -34,19 +34,10 @@ import java.net.DatagramSocket;
 import java.util.Map;
 
 public class ProfinetDriverContext  implements DriverContext, HasConfiguration<ProfinetConfiguration> {
-
-    public Map<MacAddress, PcapHandle> openHandles;
     private DceRpc_ActivityUuid dceRpc_activityUuid;
     private MacAddress localMacAddress;
     private IpAddress localIpAddress;
-    private int localUdpPort;
-    private MacAddress remoteMacAddress;
-    private IpAddress remoteIpAddress;
-    private int remoteUdpPort;
-    private int sessionKey;
     private ProfinetChannel channel;
-
-
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
@@ -83,48 +74,6 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
     public void setLocalIpAddress(IpAddress localIpAddress) {
         this.localIpAddress = localIpAddress;
     }
-
-    public int getLocalUdpPort() {
-        return localUdpPort;
-    }
-
-    public void setLocalUdpPort(int localUdpPort) {
-        this.localUdpPort = localUdpPort;
-    }
-
-    public MacAddress getRemoteMacAddress() {
-        return remoteMacAddress;
-    }
-
-    public void setRemoteMacAddress(MacAddress remoteMacAddress) {
-        this.remoteMacAddress = remoteMacAddress;
-    }
-
-    public IpAddress getRemoteIpAddress() {
-        return remoteIpAddress;
-    }
-
-    public void setRemoteIpAddress(IpAddress remoteIpAddress) {
-        this.remoteIpAddress = remoteIpAddress;
-    }
-
-    public int getRemoteUdpPort() {
-        return remoteUdpPort;
-    }
-
-    public void setRemoteUdpPort(int remoteUdpPort) {
-        this.remoteUdpPort = remoteUdpPort;
-    }
-
-    public int getSessionKey() {
-        return sessionKey;
-    }
-
-    public void setSessionKey(int sessionKey) {
-        this.sessionKey = sessionKey;
-    }
-
-
 
     public ProfinetChannel getChannel() {
         return channel;

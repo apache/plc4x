@@ -19,16 +19,13 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 import org.pcap4j.core.*;
-import org.pcap4j.packet.Dot1qVlanTagPacket;
-import org.pcap4j.packet.EthernetPacket;
-import org.pcap4j.packet.IllegalRawDataException;
-import org.pcap4j.packet.Packet;
+import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.util.LinkLayerAddress;
 import org.slf4j.Logger;
@@ -36,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Function;
-
 
 public class ProfinetChannel {
 
@@ -52,7 +48,7 @@ public class ProfinetChannel {
         startListener();
     }
 
-    public void send(Ethernet_Frame ethFrame, ProfinetCallable<DceRpc_Packet> callable) {
+    public void send(Ethernet_Frame ethFrame) {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
             PcapHandle handle = entry.getValue();
             WriteBufferByteBased buffer = new WriteBufferByteBased(ethFrame.getLengthInBytes());
@@ -63,6 +59,8 @@ public class ProfinetChannel {
             }
             Packet packet = null;
             try {
+                int gg = ethFrame.getLengthInBytes();
+                int dd = buffer.getPos();
                 packet = EthernetPacket.newPacket(buffer.getData(), 0, ethFrame.getLengthInBytes());
             } catch (IllegalRawDataException e) {
                 throw new RuntimeException(e);
@@ -75,8 +73,6 @@ public class ProfinetChannel {
                 throw new RuntimeException(e);
             }
         }
-
-
     }
 
     public void startListener() {
@@ -121,6 +117,12 @@ public class ProfinetChannel {
                         }
                     } else if (PN_EtherType.equals(ethernetPacket.getHeader().getType()) || LLDP_EtherType.equals(ethernetPacket.getHeader().getType())) {
                         isPnPacket = true;
+                    } else if (ethernetPacket.getHeader().getType() == EtherType.IPV4 && ethernetPacket.getPayload().getPayload() instanceof UdpPacket) {
+                        UdpPacket payload = (UdpPacket) ethernetPacket.getPayload().getPayload();
+                        // Check if its a PROFINET packet
+                        if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getSrcPort().value() == -30572) {
+                            isPnPacket = true;
+                        }
                     }
 
                     if (isPnPacket) {
@@ -132,18 +134,22 @@ public class ProfinetChannel {
                                 payload = ((Ethernet_FramePayload_VirtualLan) payload).getPayload();
                             }
 
-                            if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_PnDcp) {
+                            if (payload instanceof Ethernet_FramePayload_PnDcp) {
                                 PnDcp_Pdu pdu = ((Ethernet_FramePayload_PnDcp) payload).getPdu();
                                 if (discoverer != null) {
                                     discoverer.processPnDcp(pdu, ethernetPacket);
                                 }
-                            } else if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_LLDP) {
+                            } else if (payload instanceof Ethernet_FramePayload_LLDP) {
                                 Lldp_Pdu pdu = ((Ethernet_FramePayload_LLDP) payload).getPdu();
                                 if (discoverer != null) {
                                     discoverer.processLldp(pdu);
                                 }
                             } else if (payload instanceof Ethernet_FramePayload_IPv4) {
-                                logger.debug("Udp Packet Found");
+                                String macAddress = Hex.encodeHexString(ethernetFrame.getSource().getAddress()).toUpperCase();
+                                if (configuration != null && configuration.getConfiguredDevices() != null) {
+                                    ProfinetDevice device = configuration.getConfiguredDevices().get(macAddress);
+                                    device.handleResponse((Ethernet_FramePayload_IPv4) payload);
+                                }
                             }
 
                         } catch (ParseException e) {

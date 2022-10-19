@@ -20,10 +20,13 @@
 package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.profinet.readwrite.DceRpc_Packet;
 
 public interface ProfinetCallable<T> {
     void handle(T packet) throws PlcException;
 
     T create() throws PlcException;
+
+    long getId();
+
+    void setId(long id);
 }

@@ -43,14 +43,14 @@ public class ProfinetMessageWrapper {
             Random rand = new Random();
             // Serialize it to a byte-payload
             Ethernet_FramePayload_IPv4 udpFrame = new Ethernet_FramePayload_IPv4(
-                rand.nextInt(65356),
+                rand.nextInt(65536),
                 true,
                 false,
                 (short) 64,
                 new IpAddress(context.getLocalIpAddress().getAddress()),
                 new IpAddress(context.getIpAddress().getAddress()),
-                50000,
-                context.getPort(),
+                context.getSourcePort(),
+                context.getDestinationPort(),
                 packet
             );
             MacAddress srcAddress = context.getLocalMacAddress();
@@ -60,10 +60,19 @@ public class ProfinetMessageWrapper {
                 srcAddress,
                 udpFrame);
 
-            context.getChannel().send(frame, callable);
+            context.getChannel().send(frame);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (PlcException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDevice context) throws RuntimeException {
+        try {
+            Ethernet_Frame packet = callable.create();
+            context.getChannel().send(packet);
         } catch (PlcException e) {
             throw new RuntimeException(e);
         }

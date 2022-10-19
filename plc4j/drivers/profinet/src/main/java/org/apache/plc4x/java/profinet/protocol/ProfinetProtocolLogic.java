@@ -47,34 +47,23 @@ import org.pcap4j.util.Inet4NetworkAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
 
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
     private static final int DEFAULT_UDP_PORT = 34964;
     private final Logger logger = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
-
     private ProfinetDriverContext profinetDriverContext;
     private boolean connected = false;
-
-
-    private RawSocketChannel rawSocketChannel;
-    private Channel channel;
-
-    private String boundIpAddress;
-
     private ProfinetDeviceMessageHandler handler = new ProfinetDeviceMessageHandler();
-
     private ProfinetConfiguration configuration;
-    private Map<MacAddress, PcapHandle> openHandles;
-
+    private DatagramSocket socket;
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
@@ -89,6 +78,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         try {
             PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(InetAddress.getByName(this.configuration.transportConfig.split(":")[0]));
             this.profinetDriverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress)));
+            this.profinetDriverContext.getChannel().setConfiguration(configuration);
         } catch (UnknownHostException | PcapNativeException e) {
             throw new RuntimeException(e);
         }
@@ -110,7 +100,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             new LinkedHashMap<>()
         );
 
-        // TODO:- Add handler for un-requested messages
         discoverer.ongoingDiscoverWithHandler(
             request,
             handler,
@@ -144,17 +133,21 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public void onConnect(ConversationContext<Ethernet_Frame> context) {
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Initialize some important datastructures, that will be used a lot.
-        // TODO: Possibly we can remove the ARP lookup and simply use the mac address in the connection-response.
-        // Local connectivity attributes
-
-        for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
-            device.getValue().onConnect();
+        // Open the receiving UDP port.
+        try {
+            socket = new DatagramSocket(DEFAULT_UDP_PORT);
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
         }
+        try {
+            for (Map.Entry<String, ProfinetDevice> device : configuration.configuredDevices.entrySet()) {
+                device.getValue().onConnect();
+            }
+            context.fireConnected();
 
-        context.fireConnected();
-        connected = true;
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -176,33 +169,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         return future;
     }
 
-    private Ethernet_FramePayload_PnDcp createProfinetCyclicDataRequest() {
-        return new Ethernet_FramePayload_PnDcp(
-            new PnDcp_Pdu_RealTimeCyclic(
-                0x8000,
-                new PnIo_CyclicServiceDataUnit((short) 0, (short) 0, (short) 0),
-                16696,
-                false,
-                false,
-                false,
-                false,
-                false,
-                false));
-    }
-
-
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
-        if (!connected) {
-            throw new RuntimeException("Not Connected");
-        }
-
-        try {
-            Thread.sleep(10000L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
         return future;
     }
@@ -221,25 +190,4 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
         super.decode(context, msg);
     }
-
-
-    private Optional<PcapNetworkInterface> getNetworkInterfaceForConnection(InetAddress address) {
-        try {
-            for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
-                // We're only interested in real running network interfaces, skip the rest.
-                if (dev.isLoopBack() || !dev.isRunning() || dev.isUp()) {
-                    continue;
-                }
-
-                for (PcapAddress curAddress : dev.getAddresses()) {
-
-                }
-            }
-        } catch (PcapNativeException e) {
-            logger.warn(String.format("Error finding network device for connection to %s", address.toString()), e);
-        }
-        return Optional.empty();
-    }
-
-
 }

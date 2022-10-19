@@ -18,10 +18,7 @@
  */
 package org.apache.plc4x.java.profinet.readwrite.utils;
 
-import org.apache.plc4x.java.profinet.readwrite.DceRpc_Packet;
-import org.apache.plc4x.java.profinet.readwrite.IpAddress;
-import org.apache.plc4x.java.profinet.readwrite.LldpUnit;
-import org.apache.plc4x.java.profinet.readwrite.PnDcp_FrameId;
+import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 
 import java.util.List;
@@ -249,6 +246,21 @@ public class StaticHelper {
             lengthInBytes += unit.getLengthInBytes();
         }
         return lengthInBytes;
+    }
+
+    public static void writeDataUnit(WriteBuffer writeBuffer, PnIo_CyclicServiceDataUnit dataUnit) throws SerializationException {
+        dataUnit.serialize(writeBuffer);
+    }
+
+    public static PnIo_CyclicServiceDataUnit readDataUnit(ReadBuffer readBuffer) throws ParseException {
+        int NO_TRAILING_BYTES = 4;
+        int initialPos = readBuffer.getPos();
+        while (readBuffer.hasMore(8)) {
+            readBuffer.readByte();
+        }
+        int dataUnitLength = readBuffer.getPos() - initialPos - NO_TRAILING_BYTES;
+        readBuffer.reset(initialPos);
+        return PnIo_CyclicServiceDataUnit.staticParse(readBuffer, (short) dataUnitLength);
     }
 
 }

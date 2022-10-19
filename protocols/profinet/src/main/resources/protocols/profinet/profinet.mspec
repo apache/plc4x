@@ -370,7 +370,11 @@
     [typeSwitch frameId
         ['RT_CLASS_1' PnDcp_Pdu_RealTimeCyclic
             // TODO: This type needs to be implemented based of the configuration and gsd file ...
-            [simple   PnIo_CyclicServiceDataUnit dataUnit                 ]
+            [manual   PnIo_CyclicServiceDataUnit
+                                          dataUnit
+                                                'STATIC_CALL("readDataUnit", readBuffer)'
+                                                'STATIC_CALL("writeDataUnit", writeBuffer, dataUnit)'
+                                                '(dataUnit.lengthInBytes)*8'      ]
             [simple   uint 16                    cycleCounter             ]
             // Data Status Start (4.7.2.1.3)
             [simple   bit                        ignore                   ]
@@ -495,11 +499,8 @@
     ]
 ]
 
-[type PnIo_CyclicServiceDataUnit
-    [simple uint 8      dummyIOData1]
-    [simple uint 8      dummyIOData2]
-    [simple uint 8      dummyIOData3]
-    [padding  uint 8      pad '0x00'          '37']
+[type PnIo_CyclicServiceDataUnit(int 16 dataUnitLength)
+    [array    byte   data       count 'dataUnitLength'                 ]
 ]
 
 [discriminatedType PnDcp_Block
@@ -762,10 +763,10 @@
             [simple uint 8       errorCode1                           ]
             [simple uint 8       errorDecode                          ]
             [simple uint 8       errorCode                            ]
-            [simple uint 32      argsLength                           ]
+            [implicit uint 32    argsLength       'lengthInBytes - 1 - 1 - 1 - 1 - 4 - 4 - 4 - 4']
             [simple uint 32      arrayMaximumCount                    ]
             [simple uint 32      arrayOffset                          ]
-            [simple uint 32      arrayActualCount                     ]
+            [implicit uint 32    arrayActualCount  'COUNT(blocks)'    ]
             [array  PnIoCm_Block blocks            length 'argsLength']
         ]
         ['REJECT'   PnIoCm_Packet_Rej
