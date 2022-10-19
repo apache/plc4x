@@ -22,7 +22,6 @@ package org.apache.plc4x.java.profinet.device;
 import org.pcap4j.core.PcapHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.function.Function;
 
 public class ProfinetRunnable implements Runnable {

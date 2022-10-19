@@ -19,20 +19,10 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import io.netty.channel.Channel;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
-
 
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.util.Random;
 
 public class ProfinetMessageWrapper {

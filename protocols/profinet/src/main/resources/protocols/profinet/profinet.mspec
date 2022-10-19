@@ -977,6 +977,18 @@
     [simple   uint 16 ioFrameOffset]
 ]
 
+[type PnIoCm_DataUnitIoCs
+    [simple   bit               dataState]
+    [simple   uint 2            instance ]
+    [reserved uint 4            '0x00'   ]
+    [simple   bit               extension]
+]
+
+[type PnIoCm_DataUnitDataObject(uint 16 dataObjectLength)
+    [array    byte              dataState   count  'dataObjectLength']
+    [simple   PnIoCm_DataUnitIoCs iops   ]
+]
+
 [type PnIoCm_ExpectedSubmoduleBlockReqApi
     [const    uint 32          api               0x00000000                       ]
     [simple   uint 16          slotNumber                                           ]

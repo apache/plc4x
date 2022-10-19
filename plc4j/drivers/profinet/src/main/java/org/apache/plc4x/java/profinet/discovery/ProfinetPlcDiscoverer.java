@@ -36,7 +36,6 @@ import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.EtherType;
-import org.pcap4j.util.LinkLayerAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

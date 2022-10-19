@@ -19,9 +19,6 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
-import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

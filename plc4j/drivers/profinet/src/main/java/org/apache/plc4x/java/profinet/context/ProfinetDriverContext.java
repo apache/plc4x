@@ -28,9 +28,7 @@ import org.apache.plc4x.java.profinet.readwrite.IpAddress;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.pcap4j.core.PcapHandle;
 
-import java.net.DatagramSocket;
 import java.util.Map;
 
 public class ProfinetDriverContext  implements DriverContext, HasConfiguration<ProfinetConfiguration> {

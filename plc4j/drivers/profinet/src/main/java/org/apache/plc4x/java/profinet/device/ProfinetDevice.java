@@ -21,7 +21,6 @@ package org.apache.plc4x.java.profinet.device;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
@@ -821,6 +820,40 @@ public class CyclicData implements ProfinetCallable<Ethernet_Frame> {
 
     public Ethernet_Frame create() {
         int elapsedTime = (int) (System.nanoTime() - startTime) % 65536;
+
+        WriteBufferByteBased buffer = new WriteBufferByteBased(outputReq.getDataLength());
+        PnIoCm_IoCrBlockReqApi api = outputReq.getApis().get(0);
+        for (PnIoCm_IoCs iocs : api.getIoCss()) {
+            PnIoCm_DataUnitIoCs ioc = new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false);
+            try {
+                ioc.serialize(buffer);
+            } catch (SerializationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        for (PnIoCm_IoDataObject dataObject : api.getIoDataObjects()) {
+            // TODO: Need to specify the datatype length based on the gsd file
+            PnIoCm_DataUnitDataObject ioc = new PnIoCm_DataUnitDataObject(
+                new byte[1],
+                new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false),
+                1
+            );
+            try {
+                ioc.serialize(buffer);
+            } catch (SerializationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        while (buffer.getPos() < outputReq.getDataLength()) {
+            try {
+                buffer.writeByte((byte) 0x00);
+            } catch (SerializationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         Ethernet_Frame test = new Ethernet_Frame(
             macAddress,
             localMacAddress,
@@ -831,7 +864,7 @@ public class CyclicData implements ProfinetCallable<Ethernet_Frame> {
                 new Ethernet_FramePayload_PnDcp(
                     new PnDcp_Pdu_RealTimeCyclic(
                         outputReq.getFrameId(),
-                        new PnIo_CyclicServiceDataUnit(new byte[40], (short) 40),
+                        new PnIo_CyclicServiceDataUnit(buffer.getBytes(), (short) outputReq.getDataLength()),
                         elapsedTime,
                         false,
                         true,

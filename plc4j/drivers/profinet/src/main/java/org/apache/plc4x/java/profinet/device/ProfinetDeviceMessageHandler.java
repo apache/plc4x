@@ -19,15 +19,10 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
-import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProfinetDeviceMessageHandler implements PlcDiscoveryItemHandler {
 
