@@ -47,6 +47,7 @@
     <module>modbus</module>
     <module>mqtt</module>
     <module>opcua</module>
+    <module>open-protocol</module>
     <module>plc4x</module>
     <module>plc4x-api</module>
     <module>profinet</module>
