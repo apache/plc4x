@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -95,6 +96,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     private final short paramMaxAmqCaller;
     private final short paramMaxAmqCallee;
     private final S7ControllerType paramControllerType;
+    private DeviceGroup deviceGroup = DeviceGroup.OS;
 
     public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
         this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
@@ -134,6 +136,13 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                         case "controller-type":
                             curParamControllerType = S7ControllerType.valueOf(paramValue);
                             break;
+                        case "device-group":
+                            if (Objects.equals(paramValue, "others")) {
+                                this.deviceGroup = DeviceGroup.OTHERS;
+                            } else {
+                                throw new RuntimeException("Only OTHERS as Device Group is allowed!");
+                            }
+                            break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
                     }
@@ -170,7 +179,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, rack, slot);
+        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(this.deviceGroup, rack, slot);
         short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, rack, slot);
 
         return new ChannelInitializer() {
