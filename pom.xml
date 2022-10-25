@@ -136,7 +136,7 @@
     <httpcore.version>4.4.15</httpcore.version>
     <!-- ! 2.13.4 has a known CVE and 2.14.0-rc1 seems to fix that, even if not finally released -->
     <jackson.version>2.14.0-rc2</jackson.version>
-    <woodstox-core.version>6.3.1</woodstox-core.version>
+    <woodstox-core.version>6.4.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.1</jaxb.version>
     <jetty-util.version>11.0.12</jetty-util.version>
