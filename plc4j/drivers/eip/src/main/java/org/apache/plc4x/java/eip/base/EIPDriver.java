@@ -195,7 +195,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(),
+            canRead(), canWrite(), canSubscribe(), canBrowse(),
             getFieldHandler(),
             getValueHandler(),
             configuration,
@@ -204,7 +204,8 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
             awaitDisconnectComplete,
             awaitDiscoverComplete,
             getStackConfigurer(transport),
-            getOptimizer());
+            getOptimizer(),
+            null);
     }
 
     /** Estimate the Length of a Packet */
@@ -213,8 +214,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 //Second byte for the size and then add the header size 24
-                int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
-                return size;
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
             }
             return -1;
         }

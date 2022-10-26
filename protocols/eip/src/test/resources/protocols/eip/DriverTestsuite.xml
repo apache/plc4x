@@ -76,10 +76,10 @@
           <value dataType="uint" bitLength="8">2</value>
         </senderContext>
         <options dataType="uint" bitLength="32">0</options>
-        <EipConnectionRequest>
+        <EipConnectionResponse>
           <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
           <flags dataType="uint" bitLength="16">0</flags>
-        </EipConnectionRequest>
+        </EipConnectionResponse>
       </EipPacket>
 
     </incoming-plc-message>

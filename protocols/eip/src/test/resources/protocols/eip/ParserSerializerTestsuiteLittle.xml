@@ -753,10 +753,10 @@
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x302e382e33202020</senderContext>
         <options dataType="uint" bitLength="32">0</options>
-        <EipConnectionRequest>
+        <EipConnectionResponse>
           <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
           <flags dataType="uint" bitLength="16">0</flags>
-        </EipConnectionRequest>
+        </EipConnectionResponse>
       </EipPacket>
     </xml>
   </testcase>
@@ -953,10 +953,10 @@
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
         <options dataType="uint" bitLength="32">0</options>
-        <EipConnectionRequest>
+        <EipConnectionResponse>
           <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
           <flags dataType="uint" bitLength="16">0</flags>
-        </EipConnectionRequest>
+        </EipConnectionResponse>
       </EipPacket>
     </xml>
   </testcase>

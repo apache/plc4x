@@ -20,7 +20,6 @@ package org.apache.plc4x.java.eip.base.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -43,10 +42,8 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -237,12 +234,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     if ( (long) response.getStatus() != CIPStatus.Success.getValue()) {
                         throw new PlcRuntimeException("Got status code while polling for supported CIP sttributes [" + response.getStatus() + "]");
                     }
-                    for (Integer classId : response.getAttributes().getClassId()) {
-                        if (CIPClassID.enumForValue(classId) == CIPClassID.MessageRouter) {
-                            this.useMessageRouter = true;
-                        }
-                        if (CIPClassID.enumForValue(classId) == CIPClassID.ConnectionManager) {
-                            this.useConnectionManager = true;
+                    if (response.getAttributes() != null) {
+                        for (Integer classId : response.getAttributes().getClassId()) {
+                            if (CIPClassID.enumForValue(classId) == CIPClassID.MessageRouter) {
+                                this.useMessageRouter = true;
+                            }
+                            if (CIPClassID.enumForValue(classId) == CIPClassID.ConnectionManager) {
+                                this.useConnectionManager = true;
+                            }
                         }
                     }
 
@@ -277,16 +276,19 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         context.sendRequest(connectionRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
-            .check(p -> p instanceof EipConnectionRequest)
+            .check(p -> p instanceof EipPacket)
             .handle(p -> {
-                if (p.getStatus() == CIPStatus.Success.getValue()) {
-                    sessionHandle = p.getSessionHandle();
-                    senderContext = p.getSenderContext();
-                    logger.debug("Got assigned with Session handle {}", sessionHandle);
-                    getAllAttributes(context);
+                if (p instanceof EipConnectionResponse) {
+                    if (p.getStatus() == CIPStatus.Success.getValue()) {
+                        sessionHandle = p.getSessionHandle();
+                        senderContext = p.getSenderContext();
+                        logger.debug("Got assigned with Session handle {}", sessionHandle);
+                        getAllAttributes(context);
+                    }  else {
+                        throw new PlcRuntimeException("Got status code while polling for supported EIP services [" + p.getStatus() + "]");
+                    }
                 } else {
-                    logger.warn("Got status code [{}]", p.getStatus());
-                    throw new PlcRuntimeException("Got status code while registering session [" + p.getStatus() + "]");
+                    onConnectOpenConnectionManager(context);
                 }
             });
     }

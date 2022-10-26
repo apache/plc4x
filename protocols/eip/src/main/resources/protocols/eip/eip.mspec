@@ -35,11 +35,19 @@
             ]
             ['0x0004','false' ListServicesRequest
             ]
+            ['0x0004','true','0' NullListServicesResponse
+            ]
             ['0x0004','true' ListServicesResponse
                 [simple     uint    16    itemCount]
                 [array      TypeId('order')         typeId   count   'itemCount']
             ]
-            ['0x0065' EipConnectionRequest
+            ['0x0065','false' EipConnectionRequest
+                [const  uint    16   protocolVersion   0x01]
+                [const  uint    16   flags             0x00]
+            ]
+            ['0x0065','true','0' NullEipConnectionResponse
+            ]
+            ['0x0065','true' EipConnectionResponse
                 [const  uint    16   protocolVersion   0x01]
                 [const  uint    16   flags             0x00]
             ]
