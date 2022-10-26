@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-protocols-opcua</artifactId>
@@ -220,7 +220,7 @@
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
             <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
-            <version>10.8</version>
+            <version>11.4</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -231,7 +231,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

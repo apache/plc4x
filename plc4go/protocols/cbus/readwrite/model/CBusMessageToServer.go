@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -83,10 +83,10 @@ func (m *_CBusMessageToServer) GetRequest() Request {
 ///////////////////////////////////////////////////////////
 
 // NewCBusMessageToServer factory function for _CBusMessageToServer
-func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) *_CBusMessageToServer {
+func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
 	_result := &_CBusMessageToServer{
 		Request:      request,
-		_CBusMessage: NewCBusMessage(requestContext, cBusOptions, messageLength),
+		_CBusMessage: NewCBusMessage(requestContext, cBusOptions),
 	}
 	_result._CBusMessage._CBusMessageChildRequirements = _result
 	return _result
@@ -124,7 +124,7 @@ func (m *_CBusMessageToServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) (CBusMessageToServer, error) {
+func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToServer"); pullErr != nil {
@@ -137,7 +137,7 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for request")
 	}
-	_request, _requestErr := RequestParse(readBuffer, cBusOptions, uint16(messageLength))
+	_request, _requestErr := RequestParse(readBuffer, cBusOptions)
 	if _requestErr != nil {
 		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CBusMessageToServer")
 	}
@@ -152,12 +152,11 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 
 	// Create a partially initialized instance
 	_child := &_CBusMessageToServer{
-		Request: request,
 		_CBusMessage: &_CBusMessage{
 			RequestContext: requestContext,
 			CBusOptions:    cBusOptions,
-			MessageLength:  messageLength,
 		},
+		Request: request,
 	}
 	_child._CBusMessage._CBusMessageChildRequirements = _child
 	return _child, nil
@@ -199,7 +198,7 @@ func (m *_CBusMessageToServer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

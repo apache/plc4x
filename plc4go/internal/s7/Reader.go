@@ -20,13 +20,14 @@
 package s7
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	spiValues "github.com/apache/plc4x/plc4go/internal/spi/values"
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"time"
@@ -46,7 +47,8 @@ func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm *
 	}
 }
 
-func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	// TODO: handle ctx
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
@@ -97,54 +99,49 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 
 			// Send the  over the wire
 			log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(
-				tpktPacket,
-				func(message spi.Message) bool {
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					if tpktPacket == nil {
-						return false
-					}
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-					if cotpPacketData == nil {
-						return false
-					}
-					payload := cotpPacketData.GetPayload()
-					if payload == nil {
-						return false
-					}
-					return payload.GetTpduReference() == tpduId
-				},
-				func(message spi.Message) error {
-					// Convert the response into an
-					log.Trace().Msg("convert response to ")
-					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
-					payload := cotpPacketData.GetPayload()
-					// Convert the s7 response into a PLC4X response
-					log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
+			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
+				tpktPacket, ok := message.(readWriteModel.TPKTPacketExactly)
+				if !ok {
+					return false
+				}
+				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketDataExactly)
+				if !ok {
+					return false
+				}
+				payload := cotpPacketData.GetPayload()
+				if payload == nil {
+					return false
+				}
+				return payload.GetTpduReference() == tpduId
+			}, func(message spi.Message) error {
+				// Convert the response into an
+				log.Trace().Msg("convert response to ")
+				tpktPacket := message.(readWriteModel.TPKTPacket)
+				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
+				payload := cotpPacketData.GetPayload()
+				// Convert the s7 response into a PLC4X response
+				log.Trace().Msg("convert response to PLC4X response")
+				readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
 
-					if err != nil {
-						result <- &plc4goModel.DefaultPlcReadRequestResult{
-							Request: readRequest,
-							Err:     errors.Wrap(err, "Error decoding response"),
-						}
-						return transaction.EndRequest()
-					}
-					result <- &plc4goModel.DefaultPlcReadRequestResult{
-						Request:  readRequest,
-						Response: readResponse,
-					}
-					return transaction.EndRequest()
-				},
-				func(err error) error {
+				if err != nil {
 					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request: readRequest,
-						Err:     errors.Wrap(err, "got timeout while waiting for response"),
+						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 					return transaction.EndRequest()
-				},
-				time.Second*1); err != nil {
+				}
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
+					Request:  readRequest,
+					Response: readResponse,
+				}
+				return transaction.EndRequest()
+			}, func(err error) error {
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
+					Request: readRequest,
+					Err:     errors.Wrap(err, "got timeout while waiting for response"),
+				}
+				return transaction.EndRequest()
+			}, time.Second*1); err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
@@ -211,7 +208,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 
 	payloadItems := payload.GetItems()
 	for i, fieldName := range readRequest.GetFieldNames() {
-		field := readRequest.GetField(fieldName).(S7PlcField)
+		field := readRequest.GetField(fieldName).(PlcField)
 		payloadItem := payloadItems[i]
 
 		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
@@ -236,7 +233,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 // Currently we only support the S7 Any type of addresses. This helper simply converts the S7Field from PLC4X into
 // S7Address objects.
 func encodeS7Address(field model.PlcField) (readWriteModel.S7Address, error) {
-	s7Field, ok := field.(S7PlcField)
+	s7Field, ok := field.(PlcField)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", field)
 	}

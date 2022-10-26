@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -93,7 +92,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetListOfValues() BACnetPro
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestCreateObject factory function for _BACnetConfirmedServiceRequestCreateObject
-func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestCreateObject {
+func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestCreateObject {
 	_result := &_BACnetConfirmedServiceRequestCreateObject{
 		ObjectSpecifier:                objectSpecifier,
 		ListOfValues:                   listOfValues,
@@ -140,7 +139,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestCreateObject, error) {
+func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObject"); pullErr != nil {
@@ -172,7 +171,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of BACnetConfirmedServiceRequestCreateObject")
@@ -190,11 +189,11 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestCreateObject{
-		ObjectSpecifier: objectSpecifier,
-		ListOfValues:    listOfValues,
 		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		ObjectSpecifier: objectSpecifier,
+		ListOfValues:    listOfValues,
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -252,7 +251,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

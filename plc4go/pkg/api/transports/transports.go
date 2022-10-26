@@ -20,11 +20,11 @@
 package transports
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/serial"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/tcp"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/transports/serial"
+	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
 
 func RegisterTcpTransport(driverManager plc4go.PlcDriverManager) {

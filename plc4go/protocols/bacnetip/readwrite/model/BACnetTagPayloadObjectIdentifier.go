@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -148,14 +148,20 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (BACnetT
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field of BACnetTagPayloadObjectIdentifier")
 	}
-	objectType := _objectType.(BACnetObjectType)
+	var objectType BACnetObjectType
+	if _objectType != nil {
+		objectType = _objectType.(BACnetObjectType)
+	}
 
 	// Manual Field (proprietaryValue)
 	_proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(readBuffer, objectType)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetTagPayloadObjectIdentifier")
 	}
-	proprietaryValue := _proprietaryValue.(uint16)
+	var proprietaryValue uint16
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint16)
+	}
 
 	// Virtual field
 	_isProprietary := bool((objectType) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))
@@ -174,7 +180,11 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (BACnetT
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadObjectIdentifier(objectType, proprietaryValue, instanceNumber), nil
+	return &_BACnetTagPayloadObjectIdentifier{
+		ObjectType:       objectType,
+		ProprietaryValue: proprietaryValue,
+		InstanceNumber:   instanceNumber,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -221,7 +231,7 @@ func (m *_BACnetTagPayloadObjectIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

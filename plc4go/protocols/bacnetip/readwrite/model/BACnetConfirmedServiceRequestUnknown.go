@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -48,7 +48,7 @@ type _BACnetConfirmedServiceRequestUnknown struct {
 	UnknownBytes []byte
 
 	// Arguments.
-	ServiceRequestPayloadLength uint16
+	ServiceRequestPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetUnknownBytes() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestUnknown factory function for _BACnetConfirmedServiceRequestUnknown
-func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestUnknown {
+func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestUnknown {
 	_result := &_BACnetConfirmedServiceRequestUnknown{
 		UnknownBytes:                   unknownBytes,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -130,7 +130,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (BACnetConfirmedServiceRequestUnknown, error) {
+func BACnetConfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestUnknown"); pullErr != nil {
@@ -151,10 +151,10 @@ func BACnetConfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, serv
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestUnknown{
-		UnknownBytes: unknownBytes,
 		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		UnknownBytes: unknownBytes,
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -182,6 +182,16 @@ func (m *_BACnetConfirmedServiceRequestUnknown) Serialize(writeBuffer utils.Writ
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetConfirmedServiceRequestUnknown) GetServiceRequestPayloadLength() uint32 {
+	return m.ServiceRequestPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetConfirmedServiceRequestUnknown) isBACnetConfirmedServiceRequestUnknown() bool {
 	return true
 }
@@ -190,7 +200,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

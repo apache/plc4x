@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -150,10 +150,10 @@ func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeA
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueEnumerated{
-		EnumeratedValue: enumeratedValue,
 		_BACnetPriorityValue: &_BACnetPriorityValue{
 			ObjectTypeArgument: objectTypeArgument,
 		},
+		EnumeratedValue: enumeratedValue,
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -195,7 +195,7 @@ func (m *_BACnetPriorityValueEnumerated) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -184,7 +184,12 @@ func ListOfCovNotificationsListParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 
 	// Create the instance
-	return NewListOfCovNotificationsList(openingTag, specifications, closingTag, tagNumber), nil
+	return &_ListOfCovNotificationsList{
+		TagNumber:      tagNumber,
+		OpeningTag:     openingTag,
+		Specifications: specifications,
+		ClosingTag:     closingTag,
+	}, nil
 }
 
 func (m *_ListOfCovNotificationsList) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -238,6 +243,16 @@ func (m *_ListOfCovNotificationsList) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ListOfCovNotificationsList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_ListOfCovNotificationsList) isListOfCovNotificationsList() bool {
 	return true
 }
@@ -246,7 +261,7 @@ func (m *_ListOfCovNotificationsList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

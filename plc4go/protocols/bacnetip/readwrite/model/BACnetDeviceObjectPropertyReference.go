@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -178,7 +177,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetDeviceObjectPropertyReference")
@@ -200,7 +199,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceIdentifier' field of BACnetDeviceObjectPropertyReference")
@@ -217,7 +216,12 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 	}
 
 	// Create the instance
-	return NewBACnetDeviceObjectPropertyReference(objectIdentifier, propertyIdentifier, arrayIndex, deviceIdentifier), nil
+	return &_BACnetDeviceObjectPropertyReference{
+		ObjectIdentifier:   objectIdentifier,
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+		DeviceIdentifier:   deviceIdentifier,
+	}, nil
 }
 
 func (m *_BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -297,7 +301,7 @@ func (m *_BACnetDeviceObjectPropertyReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

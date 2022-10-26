@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -139,7 +139,7 @@ func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,14 +148,22 @@ func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNetworkNumberQualityTagged")
 	}
-	value := _value.(BACnetNetworkNumberQuality)
+	var value BACnetNetworkNumberQuality
+	if _value != nil {
+		value = _value.(BACnetNetworkNumberQuality)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNetworkNumberQualityTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetNetworkNumberQualityTagged")
 	}
 
 	// Create the instance
-	return NewBACnetNetworkNumberQualityTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetNetworkNumberQualityTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetNetworkNumberQualityTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -189,6 +197,19 @@ func (m *_BACnetNetworkNumberQualityTagged) Serialize(writeBuffer utils.WriteBuf
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetNetworkNumberQualityTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetNetworkNumberQualityTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetNetworkNumberQualityTagged) isBACnetNetworkNumberQualityTagged() bool {
 	return true
 }
@@ -197,7 +218,7 @@ func (m *_BACnetNetworkNumberQualityTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

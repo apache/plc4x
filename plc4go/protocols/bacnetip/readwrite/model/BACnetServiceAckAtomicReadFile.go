@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -90,7 +90,7 @@ func (m *_BACnetServiceAckAtomicReadFile) GetAccessMethod() BACnetServiceAckAtom
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicReadFile factory function for _BACnetServiceAckAtomicReadFile
-func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord, serviceAckLength uint16) *_BACnetServiceAckAtomicReadFile {
+func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord, serviceAckLength uint32) *_BACnetServiceAckAtomicReadFile {
 	_result := &_BACnetServiceAckAtomicReadFile{
 		EndOfFile:         endOfFile,
 		AccessMethod:      accessMethod,
@@ -135,7 +135,7 @@ func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckAtomicReadFile, error) {
+func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
@@ -176,11 +176,11 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckAtomicReadFile{
-		EndOfFile:    endOfFile,
-		AccessMethod: accessMethod,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		EndOfFile:    endOfFile,
+		AccessMethod: accessMethod,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -234,7 +234,7 @@ func (m *_BACnetServiceAckAtomicReadFile) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -153,7 +153,7 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	}
 	dataFirstByte := _dataFirstByte
 	// Byte Array field (data)
-	numberOfBytesdata := int(utils.InlineIf(bool(bool((dataLength) < (1))), func() interface{} { return uint16(uint16(0)) }, func() interface{} { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
+	numberOfBytesdata := int(utils.InlineIf((bool((dataLength) < (1))), func() interface{} { return uint16(uint16(0)) }, func() interface{} { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataGroupValueResponse")
@@ -165,11 +165,11 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 
 	// Create a partially initialized instance
 	_child := &_ApduDataGroupValueResponse{
-		DataFirstByte: dataFirstByte,
-		Data:          data,
 		_ApduData: &_ApduData{
 			DataLength: dataLength,
 		},
+		DataFirstByte: dataFirstByte,
+		Data:          data,
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -212,7 +212,7 @@ func (m *_ApduDataGroupValueResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

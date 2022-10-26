@@ -22,6 +22,7 @@ package drivers
 import (
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/eip"
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
@@ -38,6 +39,11 @@ func RegisterAdsDriver(driverManager plc4go.PlcDriverManager) {
 func RegisterBacnetDriver(driverManager plc4go.PlcDriverManager) {
 	driverManager.RegisterDriver(bacnetip.NewDriver())
 	transports.RegisterUdpTransport(driverManager)
+}
+
+func RegisterCBusDriver(driverManager plc4go.PlcDriverManager) {
+	driverManager.RegisterDriver(cbus.NewDriver())
+	transports.RegisterTcpTransport(driverManager)
 }
 
 func RegisterEipDriver(driverManager plc4go.PlcDriverManager) {

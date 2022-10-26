@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -83,7 +83,7 @@ func (m *_BACnetServiceAckCreateObject) GetObjectIdentifier() BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckCreateObject factory function for _BACnetServiceAckCreateObject
-func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint16) *_BACnetServiceAckCreateObject {
+func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint32) *_BACnetServiceAckCreateObject {
 	_result := &_BACnetServiceAckCreateObject{
 		ObjectIdentifier:  objectIdentifier,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -124,7 +124,7 @@ func (m *_BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckCreateObject, error) {
+func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
@@ -152,10 +152,10 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLe
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckCreateObject{
-		ObjectIdentifier: objectIdentifier,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		ObjectIdentifier: objectIdentifier,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -197,7 +197,7 @@ func (m *_BACnetServiceAckCreateObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -193,7 +193,12 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	}
 
 	// Create the instance
-	return NewBACnetSecurityKeySet(keyRevision, activationTime, expirationTime, keyIds), nil
+	return &_BACnetSecurityKeySet{
+		KeyRevision:    keyRevision,
+		ActivationTime: activationTime,
+		ExpirationTime: expirationTime,
+		KeyIds:         keyIds,
+	}, nil
 }
 
 func (m *_BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -265,7 +270,7 @@ func (m *_BACnetSecurityKeySet) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.api.value;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,6 +36,8 @@ import java.util.Set;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcValue {
+
+    PlcValueType getPlcValueType();
     
     Object getObject();
 

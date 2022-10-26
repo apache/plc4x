@@ -56,7 +56,9 @@ TODO: document me
 		} else {
 			log.Info().Msg("All filtering disabled")
 		}
-		analyzer.Analyze(pcapFile, "bacnet")
+		if err := analyzer.Analyze(pcapFile, "bacnet"); err != nil {
+			panic(err)
+		}
 		println("Done")
 	},
 }

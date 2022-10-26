@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AdsReadWriteResponse interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetData returns Data (property field)
@@ -46,7 +46,7 @@ type AdsReadWriteResponseExactly interface {
 
 // _AdsReadWriteResponse is the data-structure of this message
 type _AdsReadWriteResponse struct {
-	*_AdsData
+	*_AmsPacket
 	Result ReturnCode
 	Data   []byte
 }
@@ -69,10 +69,17 @@ func (m *_AdsReadWriteResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsReadWriteResponse) InitializeParent(parent AdsData) {}
+func (m *_AdsReadWriteResponse) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsReadWriteResponse) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsReadWriteResponse) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,13 +101,13 @@ func (m *_AdsReadWriteResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadWriteResponse factory function for _AdsReadWriteResponse
-func NewAdsReadWriteResponse(result ReturnCode, data []byte) *_AdsReadWriteResponse {
+func NewAdsReadWriteResponse(result ReturnCode, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadWriteResponse {
 	_result := &_AdsReadWriteResponse{
-		Result:   result,
-		Data:     data,
-		_AdsData: NewAdsData(),
+		Result:     result,
+		Data:       data,
+		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -144,7 +151,7 @@ func (m *_AdsReadWriteResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsReadWriteResponse, error) {
+func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer) (AdsReadWriteResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadWriteResponse"); pullErr != nil {
@@ -185,11 +192,11 @@ func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 
 	// Create a partially initialized instance
 	_child := &_AdsReadWriteResponse{
-		Result:   result,
-		Data:     data,
-		_AdsData: &_AdsData{},
+		_AmsPacket: &_AmsPacket{},
+		Result:     result,
+		Data:       data,
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 
@@ -242,7 +249,7 @@ func (m *_AdsReadWriteResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -43,4 +43,5 @@ public class SocketCANFrameBuilder implements CANFrameBuilder<SocketCANFrame> {
     public SocketCANFrame create() throws PlcRuntimeException {
         return new SocketCANFrame(nodeId, data);
     }
+
 }

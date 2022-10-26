@@ -21,8 +21,8 @@ package bacnetip
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"strings"
 )
 

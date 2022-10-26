@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -98,7 +98,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetVtDataFlag() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
-func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestVTData {
+func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
 	_result := &_BACnetConfirmedServiceRequestVTData{
 		VtSessionIdentifier:            vtSessionIdentifier,
 		VtNewData:                      vtNewData,
@@ -147,7 +147,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestVTData, error) {
+func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTData"); pullErr != nil {
@@ -201,12 +201,12 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestVTData{
-		VtSessionIdentifier: vtSessionIdentifier,
-		VtNewData:           vtNewData,
-		VtDataFlag:          vtDataFlag,
 		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		VtSessionIdentifier: vtSessionIdentifier,
+		VtNewData:           vtNewData,
+		VtDataFlag:          vtDataFlag,
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -272,7 +272,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,9 +20,9 @@
 package knxnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type ValueDecoder struct {

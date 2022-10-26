@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AdsReadWriteRequest interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset (property field)
@@ -52,7 +52,7 @@ type AdsReadWriteRequestExactly interface {
 
 // _AdsReadWriteRequest is the data-structure of this message
 type _AdsReadWriteRequest struct {
-	*_AdsData
+	*_AmsPacket
 	IndexGroup  uint32
 	IndexOffset uint32
 	ReadLength  uint32
@@ -78,10 +78,17 @@ func (m *_AdsReadWriteRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsReadWriteRequest) InitializeParent(parent AdsData) {}
+func (m *_AdsReadWriteRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsReadWriteRequest) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsReadWriteRequest) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,16 +122,16 @@ func (m *_AdsReadWriteRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadWriteRequest factory function for _AdsReadWriteRequest
-func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) *_AdsReadWriteRequest {
+func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadWriteRequest {
 	_result := &_AdsReadWriteRequest{
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		ReadLength:  readLength,
 		Items:       items,
 		Data:        data,
-		_AdsData:    NewAdsData(),
+		_AmsPacket:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -182,7 +189,7 @@ func (m *_AdsReadWriteRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsReadWriteRequest, error) {
+func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadWriteRequest"); pullErr != nil {
@@ -224,13 +231,13 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	items := make([]AdsMultiRequestItem, utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
+		for curItem := uint16(0); curItem < uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := AdsMultiRequestItemParse(readBuffer, indexGroup)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of AdsReadWriteRequest")
@@ -242,7 +249,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 		return nil, errors.Wrap(closeErr, "Error closing for items")
 	}
 	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(writeLength) - uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
+	numberOfBytesdata := int(uint16(writeLength) - uint16((uint16(uint16(len(items))) * uint16(uint16(12)))))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsReadWriteRequest")
@@ -254,14 +261,14 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 
 	// Create a partially initialized instance
 	_child := &_AdsReadWriteRequest{
+		_AmsPacket:  &_AmsPacket{},
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		ReadLength:  readLength,
 		Items:       items,
 		Data:        data,
-		_AdsData:    &_AdsData{},
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 
@@ -295,7 +302,7 @@ func (m *_AdsReadWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.GetItems())))*uint32(uint32(utils.InlineIf(bool(bool((m.GetIndexGroup()) == (61570))), func() interface{} { return uint32(uint32(16)) }, func() interface{} { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
+		writeLength := uint32(uint32((uint32(uint32(len(m.GetItems()))) * uint32((utils.InlineIf((bool((m.GetIndexGroup()) == (61570))), func() interface{} { return uint32(uint32(16)) }, func() interface{} { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
 		_writeLengthErr := writeBuffer.WriteUint32("writeLength", 32, (writeLength))
 		if _writeLengthErr != nil {
 			return errors.Wrap(_writeLengthErr, "Error serializing 'writeLength' field")
@@ -337,7 +344,7 @@ func (m *_AdsReadWriteRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

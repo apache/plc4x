@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -64,10 +64,9 @@ type _CBusPointToPointCommandIndirect struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointCommandIndirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum) {
+func (m *_CBusPointToPointCommandIndirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData) {
 	m.BridgeAddressCountPeek = bridgeAddressCountPeek
 	m.CalData = calData
-	m.Crc = crc
 }
 
 func (m *_CBusPointToPointCommandIndirect) GetParent() CBusPointToPointCommand {
@@ -97,12 +96,12 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
-func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
+func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
 	_result := &_CBusPointToPointCommandIndirect{
 		BridgeAddress:            bridgeAddress,
 		NetworkRoute:             networkRoute,
 		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, cBusOptions),
+		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
 	}
 	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result
 	return _result
@@ -200,12 +199,12 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptio
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToPointCommandIndirect{
-		BridgeAddress: bridgeAddress,
-		NetworkRoute:  networkRoute,
-		UnitAddress:   unitAddress,
 		_CBusPointToPointCommand: &_CBusPointToPointCommand{
 			CBusOptions: cBusOptions,
 		},
+		BridgeAddress: bridgeAddress,
+		NetworkRoute:  networkRoute,
+		UnitAddress:   unitAddress,
 	}
 	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child
 	return _child, nil
@@ -271,7 +270,7 @@ func (m *_CBusPointToPointCommandIndirect) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

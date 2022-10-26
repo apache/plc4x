@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -113,7 +112,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetNotificationClass() BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetEnrollmentSummary factory function for _BACnetServiceAckGetEnrollmentSummary
-func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *_BACnetServiceAckGetEnrollmentSummary {
+func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckGetEnrollmentSummary {
 	_result := &_BACnetServiceAckGetEnrollmentSummary{
 		ObjectIdentifier:  objectIdentifier,
 		EventType:         eventType,
@@ -172,7 +171,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckGetEnrollmentSummary, error) {
+func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEnrollmentSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {
@@ -243,7 +242,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'notificationClass' field of BACnetServiceAckGetEnrollmentSummary")
@@ -261,14 +260,14 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckGetEnrollmentSummary{
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 		ObjectIdentifier:  objectIdentifier,
 		EventType:         eventType,
 		EventState:        eventState,
 		Priority:          priority,
 		NotificationClass: notificationClass,
-		_BACnetServiceAck: &_BACnetServiceAck{
-			ServiceAckLength: serviceAckLength,
-		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -362,7 +361,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

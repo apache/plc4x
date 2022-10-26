@@ -20,20 +20,29 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
 )
 
 type PlcSubscriptionEvent interface {
 	PlcResponse
-	GetRequest() PlcSubscriptionRequest
+	// GetFieldNames returns all field name which can be found in this event
 	GetFieldNames() []string
+	// GetResponseCode returns the PlcResponseCode for a field
 	GetResponseCode(name string) PlcResponseCode
+	// GetAddress returns the address for an event. This is meant to for reading or writing one item.
+	// Sometimes there are fields which can't be directly addressed (e.g. only through a broadcast).
+	// In that case (if applicable) the GetSource contains the source information about the sending device.
 	GetAddress(name string) string
+	// GetSource returns usually the same as GetAddress in case when the address contains information about the source.
+	// If we have a field which is not directly addressable (see doc for GetAddress) the source is useful to identify the device.
+	GetSource(name string) string
+	// GetValue returns the field value for a named field.
 	GetValue(name string) values.PlcValue
 }
 
-type PlcSubscriptionEventHandler func(event PlcSubscriptionEvent)
+type PlcSubscriptionEventConsumer func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
 	AddCyclicQuery(name string, query string, interval time.Duration) PlcSubscriptionRequestBuilder
@@ -42,7 +51,7 @@ type PlcSubscriptionRequestBuilder interface {
 	AddChangeOfStateField(name string, field PlcField) PlcSubscriptionRequestBuilder
 	AddEventQuery(name string, query string) PlcSubscriptionRequestBuilder
 	AddEventField(name string, field PlcField) PlcSubscriptionRequestBuilder
-	AddItemHandler(handler PlcSubscriptionEventHandler) PlcSubscriptionRequestBuilder
+	AddPreRegisteredConsumer(name string, consumer PlcSubscriptionEventConsumer) PlcSubscriptionRequestBuilder
 	Build() (PlcSubscriptionRequest, error)
 }
 
@@ -53,15 +62,25 @@ type PlcSubscriptionRequestResult interface {
 }
 
 type PlcSubscriptionRequest interface {
-	Execute() <-chan PlcSubscriptionRequestResult
-	GetFieldNames() []string
-	GetField(name string) PlcField
-	GetEventHandler() PlcSubscriptionEventHandler
 	PlcRequest
+	Execute() <-chan PlcSubscriptionRequestResult
+	ExecuteWithContext(ctx context.Context) <-chan PlcSubscriptionRequestResult
 }
 
 type PlcSubscriptionResponse interface {
 	GetRequest() PlcSubscriptionRequest
 	GetFieldNames() []string
 	GetResponseCode(name string) PlcResponseCode
+	GetSubscriptionHandle(name string) (PlcSubscriptionHandle, error)
+	GetSubscriptionHandles() []PlcSubscriptionHandle
+}
+
+type PlcSubscriptionHandle interface {
+	Register(consumer PlcSubscriptionEventConsumer) PlcConsumerRegistration
+}
+
+type PlcConsumerRegistration interface {
+	GetConsumerId() int
+	GetSubscriptionHandles() []PlcSubscriptionHandle
+	Unregister()
 }

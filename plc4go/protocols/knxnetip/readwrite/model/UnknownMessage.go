@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -150,8 +150,8 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (Unkno
 
 	// Create a partially initialized instance
 	_child := &_UnknownMessage{
-		UnknownData:      unknownData,
 		_KnxNetIpMessage: &_KnxNetIpMessage{},
+		UnknownData:      unknownData,
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil
@@ -179,6 +179,16 @@ func (m *_UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_UnknownMessage) GetTotalLength() uint16 {
+	return m.TotalLength
+}
+
+//
+////
+
 func (m *_UnknownMessage) isUnknownMessage() bool {
 	return true
 }
@@ -187,7 +197,7 @@ func (m *_UnknownMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

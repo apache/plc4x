@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -33,12 +32,12 @@ type RequestObsolete interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
-	// GetCalDataOrSetParameter returns CalDataOrSetParameter (property field)
-	GetCalDataOrSetParameter() CALDataOrSetParameter
+	// GetCalData returns CalData (property field)
+	GetCalData() CALData
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
-	// GetObsoletePayloadLength returns ObsoletePayloadLength (virtual field)
-	GetObsoletePayloadLength() uint16
+	// GetCalDataDecoded returns CalDataDecoded (virtual field)
+	GetCalDataDecoded() CALData
 }
 
 // RequestObsoleteExactly can be used when we want exactly this type and not a type which fulfills RequestObsolete.
@@ -51,11 +50,8 @@ type RequestObsoleteExactly interface {
 // _RequestObsolete is the data-structure of this message
 type _RequestObsolete struct {
 	*_Request
-	CalDataOrSetParameter CALDataOrSetParameter
-	Alpha                 Alpha
-
-	// Arguments.
-	PayloadLength uint16
+	CalData CALData
+	Alpha   Alpha
 }
 
 ///////////////////////////////////////////////////////////
@@ -85,8 +81,8 @@ func (m *_RequestObsolete) GetParent() Request {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RequestObsolete) GetCalDataOrSetParameter() CALDataOrSetParameter {
-	return m.CalDataOrSetParameter
+func (m *_RequestObsolete) GetCalData() CALData {
+	return m.CalData
 }
 
 func (m *_RequestObsolete) GetAlpha() Alpha {
@@ -102,10 +98,10 @@ func (m *_RequestObsolete) GetAlpha() Alpha {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_RequestObsolete) GetObsoletePayloadLength() uint16 {
+func (m *_RequestObsolete) GetCalDataDecoded() CALData {
 	alpha := m.Alpha
 	_ = alpha
-	return uint16(uint16(m.PayloadLength) + uint16(uint16(1)))
+	return CastCALData(m.GetCalData())
 }
 
 ///////////////////////
@@ -114,11 +110,11 @@ func (m *_RequestObsolete) GetObsoletePayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewRequestObsolete factory function for _RequestObsolete
-func NewRequestObsolete(calDataOrSetParameter CALDataOrSetParameter, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestObsolete {
+func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestObsolete {
 	_result := &_RequestObsolete{
-		CalDataOrSetParameter: calDataOrSetParameter,
-		Alpha:                 alpha,
-		_Request:              NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		CalData:  calData,
+		Alpha:    alpha,
+		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -146,10 +142,10 @@ func (m *_RequestObsolete) GetLengthInBits() uint16 {
 func (m *_RequestObsolete) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
+	// Manual Field (calData)
+	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
 
-	// Manual Field (calDataOrSetParameter)
-	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
+	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
@@ -163,7 +159,7 @@ func (m *_RequestObsolete) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) (RequestObsolete, error) {
+func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestObsolete"); pullErr != nil {
@@ -172,17 +168,20 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_obsoletePayloadLength := uint16(payloadLength) + uint16(uint16(1))
-	obsoletePayloadLength := uint16(_obsoletePayloadLength)
-	_ = obsoletePayloadLength
-
-	// Manual Field (calDataOrSetParameter)
-	_calDataOrSetParameter, _calDataOrSetParameterErr := ReadCALDataOrSetParameter(readBuffer, obsoletePayloadLength)
-	if _calDataOrSetParameterErr != nil {
-		return nil, errors.Wrap(_calDataOrSetParameterErr, "Error parsing 'calDataOrSetParameter' field of RequestObsolete")
+	// Manual Field (calData)
+	_calData, _calDataErr := ReadCALData(readBuffer)
+	if _calDataErr != nil {
+		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestObsolete")
 	}
-	calDataOrSetParameter := _calDataOrSetParameter.(CALDataOrSetParameter)
+	var calData CALData
+	if _calData != nil {
+		calData = _calData.(CALData)
+	}
+
+	// Virtual field
+	_calDataDecoded := calData
+	calDataDecoded := _calDataDecoded
+	_ = calDataDecoded
 
 	// Optional Field (alpha) (Can be skipped, if a given expression evaluates to false)
 	var alpha Alpha = nil
@@ -194,7 +193,7 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 		_val, _err := AlphaParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of RequestObsolete")
@@ -212,12 +211,11 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 
 	// Create a partially initialized instance
 	_child := &_RequestObsolete{
-		CalDataOrSetParameter: calDataOrSetParameter,
-		Alpha:                 alpha,
 		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
+			CBusOptions: cBusOptions,
 		},
+		CalData: calData,
+		Alpha:   alpha,
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil
@@ -230,15 +228,15 @@ func (m *_RequestObsolete) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("RequestObsolete"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for RequestObsolete")
 		}
-		// Virtual field
-		if _obsoletePayloadLengthErr := writeBuffer.WriteVirtual("obsoletePayloadLength", m.GetObsoletePayloadLength()); _obsoletePayloadLengthErr != nil {
-			return errors.Wrap(_obsoletePayloadLengthErr, "Error serializing 'obsoletePayloadLength' field")
-		}
 
-		// Manual Field (calDataOrSetParameter)
-		_calDataOrSetParameterErr := WriteCALDataOrSetParameter(writeBuffer, m.GetCalDataOrSetParameter())
-		if _calDataOrSetParameterErr != nil {
-			return errors.Wrap(_calDataOrSetParameterErr, "Error serializing 'calDataOrSetParameter' field")
+		// Manual Field (calData)
+		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
+		if _calDataErr != nil {
+			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		}
+		// Virtual field
+		if _calDataDecodedErr := writeBuffer.WriteVirtual("calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
+			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
 		// Optional Field (alpha) (Can be skipped, if the value is null)
@@ -273,7 +271,7 @@ func (m *_RequestObsolete) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

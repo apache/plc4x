@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -174,7 +174,11 @@ func HPAIDiscoveryEndpointParse(readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpo
 	}
 
 	// Create the instance
-	return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
+	return &_HPAIDiscoveryEndpoint{
+		HostProtocolCode: hostProtocolCode,
+		IpAddress:        ipAddress,
+		IpPort:           ipPort,
+	}, nil
 }
 
 func (m *_HPAIDiscoveryEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -236,7 +240,7 @@ func (m *_HPAIDiscoveryEndpoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

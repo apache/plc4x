@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -31,6 +32,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE extends PlcSimpleValue<LocalDate> {
@@ -62,6 +65,22 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE(@JsonProperty("value") Long value) {
         super(LocalDateTime.ofInstant(Instant.ofEpochSecond(value), ZoneId.systemDefault()).toLocalDate(), true);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.DATE;
+    }
+
+    @Override
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    public long getLong() {
+        Instant instant = value.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        return (instant.toEpochMilli() / 1000);
     }
 
     @Override

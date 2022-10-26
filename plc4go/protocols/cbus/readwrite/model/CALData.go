@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -242,10 +241,10 @@ func CALDataParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (C
 		if pullErr := readBuffer.PullContext("additionalData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for additionalData")
 		}
-		_val, _err := CALDataParse(readBuffer, requestContext)
+		_val, _err := CALDataParse(readBuffer, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'additionalData' field of CALData")
@@ -323,6 +322,16 @@ func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CALData) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_CALData) isCALData() bool {
 	return true
 }
@@ -331,7 +340,7 @@ func (m *_CALData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

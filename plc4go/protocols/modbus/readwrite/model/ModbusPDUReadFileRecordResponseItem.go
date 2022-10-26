@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -146,7 +146,10 @@ func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (Modb
 	}
 
 	// Create the instance
-	return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil
+	return &_ModbusPDUReadFileRecordResponseItem{
+		ReferenceType: referenceType,
+		Data:          data,
+	}, nil
 }
 
 func (m *_ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -190,7 +193,7 @@ func (m *_ModbusPDUReadFileRecordResponseItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

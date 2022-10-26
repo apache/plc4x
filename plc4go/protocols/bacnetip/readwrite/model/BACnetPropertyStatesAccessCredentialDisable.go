@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -150,8 +150,8 @@ func BACnetPropertyStatesAccessCredentialDisableParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyStatesAccessCredentialDisable{
-		AccessCredentialDisable: accessCredentialDisable,
 		_BACnetPropertyStates:   &_BACnetPropertyStates{},
+		AccessCredentialDisable: accessCredentialDisable,
 	}
 	_child._BACnetPropertyStates._BACnetPropertyStatesChildRequirements = _child
 	return _child, nil
@@ -193,7 +193,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

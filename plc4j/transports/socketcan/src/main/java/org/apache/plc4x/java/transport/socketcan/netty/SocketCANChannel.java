@@ -19,8 +19,6 @@
 package org.apache.plc4x.java.transport.socketcan.netty;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelConfig;
 import io.netty.channel.ChannelFuture;
@@ -31,10 +29,9 @@ import org.apache.plc4x.java.transport.socketcan.netty.address.SocketCANAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tel.schich.javacan.CanChannels;
-import tel.schich.javacan.CanFrame;
 import tel.schich.javacan.NetworkDevice;
 import tel.schich.javacan.RawCanChannel;
-import tel.schich.javacan.linux.LinuxNetworkDevice;
+import tel.schich.javacan.platform.linux.LinuxNetworkDevice;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -282,4 +279,5 @@ public class SocketCANChannel extends OioByteStreamChannel {
             }
         }
     }
+
 }

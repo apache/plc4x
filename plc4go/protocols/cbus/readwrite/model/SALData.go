@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -32,12 +31,10 @@ import (
 type SALData interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandTypeContainer returns CommandTypeContainer (property field)
-	GetCommandTypeContainer() SALCommandTypeContainer
+	// GetApplicationId returns ApplicationId (discriminator field)
+	GetApplicationId() ApplicationId
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
-	// GetCommandType returns CommandType (virtual field)
-	GetCommandType() SALCommandType
 }
 
 // SALDataExactly can be used when we want exactly this type and not a type which fulfills SALData.
@@ -50,14 +47,14 @@ type SALDataExactly interface {
 // _SALData is the data-structure of this message
 type _SALData struct {
 	_SALDataChildRequirements
-	CommandTypeContainer SALCommandTypeContainer
-	SalData              SALData
+	SalData SALData
 }
 
 type _SALDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	GetApplicationId() ApplicationId
 }
 
 type SALDataParent interface {
@@ -67,7 +64,7 @@ type SALDataParent interface {
 
 type SALDataChild interface {
 	utils.Serializable
-	InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer, salData SALData)
+	InitializeParent(parent SALData, salData SALData)
 	GetParent() *SALData
 
 	GetTypeName() string
@@ -79,10 +76,6 @@ type SALDataChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SALData) GetCommandTypeContainer() SALCommandTypeContainer {
-	return m.CommandTypeContainer
-}
-
 func (m *_SALData) GetSalData() SALData {
 	return m.SalData
 }
@@ -91,25 +84,10 @@ func (m *_SALData) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_SALData) GetCommandType() SALCommandType {
-	salData := m.SalData
-	_ = salData
-	return CastSALCommandType(m.GetCommandTypeContainer().CommandType())
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // NewSALData factory function for _SALData
-func NewSALData(commandTypeContainer SALCommandTypeContainer, salData SALData) *_SALData {
-	return &_SALData{CommandTypeContainer: commandTypeContainer, SalData: salData}
+func NewSALData(salData SALData) *_SALData {
+	return &_SALData{SalData: salData}
 }
 
 // Deprecated: use the interface for direct cast
@@ -130,11 +108,6 @@ func (m *_SALData) GetTypeName() string {
 func (m *_SALData) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (commandTypeContainer)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
-
 	// Optional Field (salData)
 	if m.SalData != nil {
 		lengthInBits += m.SalData.GetLengthInBits()
@@ -147,7 +120,7 @@ func (m *_SALData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
+func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALData"); pullErr != nil {
@@ -156,51 +129,64 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Validation
-	if !(KnowsSALCommandTypeContainer(readBuffer)) {
-		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
-	}
-
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := SALCommandTypeContainerParse(readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of SALData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
-	}
-
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := SALCommandType(_commandType)
-	_ = commandType
-
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type SALDataChildSerializeRequirement interface {
 		SALData
-		InitializeParent(SALData, SALCommandTypeContainer, SALData)
+		InitializeParent(SALData, SALData)
 		GetParent() SALData
 	}
 	var _childTemp interface{}
 	var _child SALDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case commandType == SALCommandType_OFF: // SALDataOff
-		_childTemp, typeSwitchError = SALDataOffParse(readBuffer)
-	case commandType == SALCommandType_ON: // SALDataOn
-		_childTemp, typeSwitchError = SALDataOnParse(readBuffer)
-	case commandType == SALCommandType_RAMP_TO_LEVEL: // SALDataRampToLevel
-		_childTemp, typeSwitchError = SALDataRampToLevelParse(readBuffer)
-	case commandType == SALCommandType_TERMINATE_RAMP: // SALDataTerminateRamp
-		_childTemp, typeSwitchError = SALDataTerminateRampParse(readBuffer)
-	case commandType == SALCommandType_LABEL: // SALDataLabel
-		_childTemp, typeSwitchError = SALDataLabelParse(readBuffer, commandTypeContainer)
+	case applicationId == ApplicationId_RESERVED: // SALDataReserved
+		_childTemp, typeSwitchError = SALDataReservedParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_FREE_USAGE: // SALDataFreeUsage
+		_childTemp, typeSwitchError = SALDataFreeUsageParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_TEMPERATURE_BROADCAST: // SALDataTemperatureBroadcast
+		_childTemp, typeSwitchError = SALDataTemperatureBroadcastParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_ROOM_CONTROL_SYSTEM: // SALDataRoomControlSystem
+		_childTemp, typeSwitchError = SALDataRoomControlSystemParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_LIGHTING: // SALDataLighting
+		_childTemp, typeSwitchError = SALDataLightingParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_VENTILATION: // SALDataVentilation
+		_childTemp, typeSwitchError = SALDataVentilationParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_IRRIGATION_CONTROL: // SALDataIrrigationControl
+		_childTemp, typeSwitchError = SALDataIrrigationControlParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: // SALDataPoolsSpasPondsFountainsControl
+		_childTemp, typeSwitchError = SALDataPoolsSpasPondsFountainsControlParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_HEATING: // SALDataHeating
+		_childTemp, typeSwitchError = SALDataHeatingParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_AIR_CONDITIONING: // SALDataAirConditioning
+		_childTemp, typeSwitchError = SALDataAirConditioningParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_TRIGGER_CONTROL: // SALDataTriggerControl
+		_childTemp, typeSwitchError = SALDataTriggerControlParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_ENABLE_CONTROL: // SALDataEnableControl
+		_childTemp, typeSwitchError = SALDataEnableControlParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_AUDIO_AND_VIDEO: // SALDataAudioAndVideo
+		_childTemp, typeSwitchError = SALDataAudioAndVideoParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_SECURITY: // SALDataSecurity
+		_childTemp, typeSwitchError = SALDataSecurityParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_METERING: // SALDataMetering
+		_childTemp, typeSwitchError = SALDataMeteringParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_ACCESS_CONTROL: // SALDataAccessControl
+		_childTemp, typeSwitchError = SALDataAccessControlParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_CLOCK_AND_TIMEKEEPING: // SALDataClockAndTimekeeping
+		_childTemp, typeSwitchError = SALDataClockAndTimekeepingParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_TELEPHONY_STATUS_AND_CONTROL: // SALDataTelephonyStatusAndControl
+		_childTemp, typeSwitchError = SALDataTelephonyStatusAndControlParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_MEASUREMENT: // SALDataMeasurement
+		_childTemp, typeSwitchError = SALDataMeasurementParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_TESTING: // SALDataTesting
+		_childTemp, typeSwitchError = SALDataTestingParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_MEDIA_TRANSPORT_CONTROL: // SALDataMediaTransport
+		_childTemp, typeSwitchError = SALDataMediaTransportParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_ERROR_REPORTING: // SALDataErrorReporting
+		_childTemp, typeSwitchError = SALDataErrorReportingParse(readBuffer, applicationId)
+	case applicationId == ApplicationId_HVAC_ACTUATOR: // SALDataHvacActuator
+		_childTemp, typeSwitchError = SALDataHvacActuatorParse(readBuffer, applicationId)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [applicationId=%v]", applicationId)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of SALData")
@@ -214,10 +200,10 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for salData")
 		}
-		_val, _err := SALDataParse(readBuffer)
+		_val, _err := SALDataParse(readBuffer, applicationId)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'salData' field of SALData")
@@ -234,7 +220,7 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child, commandTypeContainer, salData)
+	_child.InitializeParent(_child, salData)
 	return _child, nil
 }
 
@@ -246,22 +232,6 @@ func (pm *_SALData) SerializeParent(writeBuffer utils.WriteBuffer, child SALData
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SALData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for SALData")
-	}
-
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
-	}
-	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
-		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -299,7 +269,7 @@ func (m *_SALData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

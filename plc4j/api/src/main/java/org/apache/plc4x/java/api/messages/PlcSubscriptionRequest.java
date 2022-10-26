@@ -18,8 +18,11 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public interface PlcSubscriptionRequest extends PlcSubscriptionFieldRequest {
 
@@ -62,6 +65,18 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionFieldRequest {
          * @return builder.
          */
         PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery);
+
+        /**
+         * Convenience method which attaches the {@link Consumer<PlcSubscriptionEvent>} directly to the handles once the
+         * requests succeeds.
+         * Note: opposed to register on the {@link org.apache.plc4x.java.api.model.PlcSubscriptionHandle} directly you
+         * won't retrieve a {@link PlcConsumerRegistration} which is useful to cancel registrations.
+         *
+         * @param name     alias of the field.
+         * @param preRegisteredConsumer {@link Consumer<PlcSubscriptionEvent>} to be attached
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> preRegisteredConsumer);
 
     }
 

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -120,6 +121,11 @@ public class PlcREAL extends PlcIECValue<Float> {
     public PlcREAL(@JsonProperty("value") float value) {
         this.value = value;
         this.isNullable = false;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.REAL;
     }
 
     @Override

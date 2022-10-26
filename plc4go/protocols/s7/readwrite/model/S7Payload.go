@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -168,6 +168,16 @@ func (pm *_S7Payload) SerializeParent(writeBuffer utils.WriteBuffer, child S7Pay
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_S7Payload) GetParameter() S7Parameter {
+	return m.Parameter
+}
+
+//
+////
+
 func (m *_S7Payload) isS7Payload() bool {
 	return true
 }
@@ -176,7 +186,7 @@ func (m *_S7Payload) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

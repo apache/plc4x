@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -153,7 +153,7 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnkno
 	}
 	unknownTypeRest := _unknownTypeRest
 	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} { return uint16(apduLength) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() interface{} { return uint16(apduLength) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of APDUUnknown")
@@ -165,11 +165,11 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnkno
 
 	// Create a partially initialized instance
 	_child := &_APDUUnknown{
-		UnknownTypeRest: unknownTypeRest,
-		UnknownBytes:    unknownBytes,
 		_APDU: &_APDU{
 			ApduLength: apduLength,
 		},
+		UnknownTypeRest: unknownTypeRest,
+		UnknownBytes:    unknownBytes,
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -212,7 +212,7 @@ func (m *_APDUUnknown) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -83,7 +83,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetFileStartPosition() BACnetContextT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint16) *_BACnetServiceAckAtomicWriteFile {
+func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
 	_result := &_BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -124,7 +124,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckAtomicWriteFile, error) {
+func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
@@ -152,10 +152,10 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAc
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckAtomicWriteFile{
-		FileStartPosition: fileStartPosition,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		FileStartPosition: fileStartPosition,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -197,7 +197,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

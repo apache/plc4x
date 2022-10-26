@@ -59,7 +59,7 @@ class Plc4xNettyWrapperTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        wrapper = new Plc4xNettyWrapper<>(channelPipeline, false, protocol, Date.class);
+        wrapper = new Plc4xNettyWrapper<>(channelPipeline, false, protocol, null, Date.class);
 
         ArgumentCaptor<ConversationContext<Date>> captor = ArgumentCaptor.forClass(ConversationContext.class);
         doNothing().when(protocol).onConnect(captor.capture());

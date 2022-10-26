@@ -20,12 +20,13 @@
 package modbus
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"
@@ -47,7 +48,8 @@ func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
 	}
 }
 
-func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	// TODO: handle ctx
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
@@ -116,43 +118,38 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 
 		// Send the ADU over the wire
 		log.Trace().Msg("Send ADU")
-		if err = m.messageCodec.SendRequest(
-			requestAdu,
-			func(message spi.Message) bool {
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
-					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
-			},
-			func(message spi.Message) error {
-				// Convert the response into an ADU
-				log.Trace().Msg("convert response to ADU")
-				responseAdu := message.(readWriteModel.ModbusTcpADU)
-				// Convert the modbus response into a PLC4X response
-				log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
+		if err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
+		}, func(message spi.Message) error {
+			// Convert the response into an ADU
+			log.Trace().Msg("convert response to ADU")
+			responseAdu := message.(readWriteModel.ModbusTcpADU)
+			// Convert the modbus response into a PLC4X response
+			log.Trace().Msg("convert response to PLC4X response")
+			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
-				if err != nil {
-					result <- &plc4goModel.DefaultPlcReadRequestResult{
-						Request: readRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
-					// TODO: should we return the error here?
-					return nil
-				}
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: readResponse,
-				}
-				return nil
-			},
-			func(err error) error {
+			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
-					Err:     errors.Wrap(err, "got timeout while waiting for response"),
+					Err:     errors.Wrap(err, "Error decoding response"),
 				}
+				// TODO: should we return the error here?
 				return nil
-			},
-			time.Second*1); err != nil {
+			}
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
+				Request:  readRequest,
+				Response: readResponse,
+			}
+			return nil
+		}, func(err error) error {
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
+				Request: readRequest,
+				Err:     errors.Wrap(err, "got timeout while waiting for response"),
+			}
+			return nil
+		}, time.Second*1); err != nil {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,

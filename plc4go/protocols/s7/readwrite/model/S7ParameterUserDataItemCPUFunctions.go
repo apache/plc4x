@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -297,6 +297,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 
 	// Create a partially initialized instance
 	_child := &_S7ParameterUserDataItemCPUFunctions{
+		_S7ParameterUserDataItem: &_S7ParameterUserDataItem{},
 		Method:                   method,
 		CpuFunctionType:          cpuFunctionType,
 		CpuFunctionGroup:         cpuFunctionGroup,
@@ -305,7 +306,6 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 		DataUnitReferenceNumber:  dataUnitReferenceNumber,
 		LastDataUnit:             lastDataUnit,
 		ErrorCode:                errorCode,
-		_S7ParameterUserDataItem: &_S7ParameterUserDataItem{},
 	}
 	_child._S7ParameterUserDataItem._S7ParameterUserDataItemChildRequirements = _child
 	return _child, nil
@@ -407,7 +407,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

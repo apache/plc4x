@@ -202,6 +202,16 @@
     [reserved       uint 8  '0x00']
 ]
 
+[type ReservedTypeTestParent
+    [reserved       uint 8  '0x00']
+    [simple  uint 8 simpleField]
+    [typeSwitch simpleField
+        ['0' ReservedTypeTestChild
+            [reserved       uint 8  '0x00']
+        ]
+    ]
+]
+
 // TODO: So far only trouble in GO, C seems OK.
 [type VirtualFieldTest
     [simple  uint 8 simpleField]
@@ -354,7 +364,8 @@
 
 
 //Test to check if we can include concrete types as fields. Doesn't work in any language at the moment.
-[discriminatedType SimpleDiscriminatedType
+// TODO: Currently C doesn't support directly referencing child types
+/*[discriminatedType SimpleDiscriminatedType
     [discriminator uint 8 discr]
     [typeSwitch discr
         ['0x00' *A
@@ -370,7 +381,7 @@
             [simple        uint 8 simpA]
         ]
     ]
-]
+]*/
 
 ////////////////////////////////////////////////////////////////
 // Enumerated Type Tests

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -48,7 +48,6 @@ type _CBusMessage struct {
 	// Arguments.
 	RequestContext RequestContext
 	CBusOptions    CBusOptions
-	MessageLength  uint16
 }
 
 type _CBusMessageChildRequirements interface {
@@ -73,8 +72,8 @@ type CBusMessageChild interface {
 }
 
 // NewCBusMessage factory function for _CBusMessage
-func NewCBusMessage(requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) *_CBusMessage {
-	return &_CBusMessage{RequestContext: requestContext, CBusOptions: cBusOptions, MessageLength: messageLength}
+func NewCBusMessage(requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessage {
+	return &_CBusMessage{RequestContext: requestContext, CBusOptions: cBusOptions}
 }
 
 // Deprecated: use the interface for direct cast
@@ -102,7 +101,7 @@ func (m *_CBusMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) (CBusMessage, error) {
+func CBusMessageParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessage"); pullErr != nil {
@@ -132,9 +131,9 @@ func CBusMessageParse(readBuffer utils.ReadBuffer, isResponse bool, requestConte
 	var typeSwitchError error
 	switch {
 	case isResponse == bool(false): // CBusMessageToServer
-		_childTemp, typeSwitchError = CBusMessageToServerParse(readBuffer, isResponse, requestContext, cBusOptions, messageLength)
+		_childTemp, typeSwitchError = CBusMessageToServerParse(readBuffer, isResponse, requestContext, cBusOptions)
 	case isResponse == bool(true): // CBusMessageToClient
-		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, isResponse, requestContext, cBusOptions, messageLength)
+		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, isResponse, requestContext, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isResponse=%v]", isResponse)
 	}
@@ -173,6 +172,19 @@ func (pm *_CBusMessage) SerializeParent(writeBuffer utils.WriteBuffer, child CBu
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CBusMessage) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+func (m *_CBusMessage) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+
+//
+////
+
 func (m *_CBusMessage) isCBusMessage() bool {
 	return true
 }
@@ -181,7 +193,7 @@ func (m *_CBusMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -167,7 +167,7 @@ func BACnetTimerStateChangeValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	_ = peekedIsContextTag
 
 	// Validation
-	if !(bool(bool(!(peekedIsContextTag))) || bool(bool(bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
+	if !(bool((!(peekedIsContextTag))) || bool((bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"unexpected opening or closing tag"})
 	}
 
@@ -261,6 +261,16 @@ func (pm *_BACnetTimerStateChangeValue) SerializeParent(writeBuffer utils.WriteB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTimerStateChangeValue) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetTimerStateChangeValue) isBACnetTimerStateChangeValue() bool {
 	return true
 }
@@ -269,7 +279,7 @@ func (m *_BACnetTimerStateChangeValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

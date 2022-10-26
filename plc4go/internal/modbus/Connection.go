@@ -20,14 +20,15 @@
 package modbus
 
 import (
+	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/interceptors"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/interceptors"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"time"
@@ -90,15 +91,19 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	log.Trace().Msg("Pinging")
 	result := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
-		if err := m.messageCodec.SendRequest(
-			pingRequest,
+		if err := m.messageCodec.SendRequest(ctx, pingRequest,
 			func(message spi.Message) bool {
-				responseAdu := readWriteModel.CastModbusTcpADU(message)
+				responseAdu, ok := message.(readWriteModel.ModbusTcpADUExactly)
+				if !ok {
+					return false
+				}
 				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == m.unitIdentifier
 			},
 			func(message spi.Message) error {
@@ -118,7 +123,8 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
 				return nil
 			},
-			time.Second*1); err != nil {
+			time.Second*1,
+		); err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(err)
 		}
 	}()

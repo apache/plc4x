@@ -119,19 +119,19 @@
             [reserved uint 7 '0x00']
             [simple   bit    value]
         ]
-        ['BYTE' BitString
+        ['BYTE' BYTE
             [reserved uint 8    '0x00']
             [simple   uint 8    value ]
         ]
-        ['WORD' BitString
+        ['WORD' WORD
             [reserved uint 8    '0x00']
             [simple   uint 16    value]
         ]
-        ['DWORD' BitString
+        ['DWORD' DWORD
             [reserved uint 8    '0x00']
             [simple   uint 32    value]
         ]
-        ['LWORD' BitString
+        ['LWORD' LWORD
             [reserved uint 8    '0x00']
             [simple   uint 64    value]
         ]
@@ -177,11 +177,11 @@
         ]
         ['CHAR' CHAR
             [reserved uint 8    '0x00']
-            [simple   uint 8    value ]
+            [simple   string 8  value  encoding='"UTF-8"']
         ]
         ['WCHAR' WCHAR
             [reserved uint 8    '0x00']
-            [simple   uint 16   value ]
+            [simple   string 16 value  encoding='"UTF-16"']
         ]
         //['STRING' STRING
         //]
@@ -311,6 +311,7 @@
     <xsl:template match="knx:Manufacturer">
         <xsl:variable name="manufacturerId">
             <xsl:choose>
+                <xsl:when test="@Name = 'Phoenix Contact' and @KnxManufacturerId = '655'">PHOENIX_CONTACT_2</xsl:when>
                 <xsl:when test="@Name = '3ATEL'">THREEATEL</xsl:when>
                 <xsl:when test="@Name = '1Home'">ONEHOME</xsl:when>
                 <xsl:when test="@Name = 'Simon'">SIMON_<xsl:value-of select="@KnxManufacturerId"/></xsl:when>

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -173,7 +173,12 @@ func BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffe
 	}
 
 	// Create the instance
-	return NewBACnetDeviceObjectPropertyReferenceEnclosed(openingTag, value, closingTag, tagNumber), nil
+	return &_BACnetDeviceObjectPropertyReferenceEnclosed{
+		TagNumber:  tagNumber,
+		OpeningTag: openingTag,
+		Value:      value,
+		ClosingTag: closingTag,
+	}, nil
 }
 
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -225,6 +230,16 @@ func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) Serialize(writeBuffer uti
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) isBACnetDeviceObjectPropertyReferenceEnclosed() bool {
 	return true
 }
@@ -233,7 +248,7 @@ func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

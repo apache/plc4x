@@ -51,7 +51,7 @@ class PlcDriver:
         return PlcDriverMetaData()
 
     @abstractmethod
-    def get_connection(
+    async def get_connection(
         self, url: str, authentication: PlcAuthentication = PlcAuthentication()
     ) -> PlcConnection:
         """

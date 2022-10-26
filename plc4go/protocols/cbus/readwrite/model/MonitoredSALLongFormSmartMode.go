@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -39,12 +38,14 @@ type MonitoredSALLongFormSmartMode interface {
 	GetUnitAddress() UnitAddress
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
-	// GetSerialInterfaceAddress returns SerialInterfaceAddress (property field)
-	GetSerialInterfaceAddress() SerialInterfaceAddress
+	// GetApplication returns Application (property field)
+	GetApplication() ApplicationIdContainer
 	// GetReservedByte returns ReservedByte (property field)
 	GetReservedByte() *byte
 	// GetReplyNetwork returns ReplyNetwork (property field)
 	GetReplyNetwork() ReplyNetwork
+	// GetSalData returns SalData (property field)
+	GetSalData() SALData
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
 }
@@ -59,12 +60,15 @@ type MonitoredSALLongFormSmartModeExactly interface {
 // _MonitoredSALLongFormSmartMode is the data-structure of this message
 type _MonitoredSALLongFormSmartMode struct {
 	*_MonitoredSAL
-	TerminatingByte        uint32
-	UnitAddress            UnitAddress
-	BridgeAddress          BridgeAddress
-	SerialInterfaceAddress SerialInterfaceAddress
-	ReservedByte           *byte
-	ReplyNetwork           ReplyNetwork
+	TerminatingByte uint32
+	UnitAddress     UnitAddress
+	BridgeAddress   BridgeAddress
+	Application     ApplicationIdContainer
+	ReservedByte    *byte
+	ReplyNetwork    ReplyNetwork
+	SalData         SALData
+	// Reserved Fields
+	reservedField0 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,10 +81,8 @@ type _MonitoredSALLongFormSmartMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData, crc Checksum) {
+func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte) {
 	m.SalType = salType
-	m.SalData = salData
-	m.Crc = crc
 }
 
 func (m *_MonitoredSALLongFormSmartMode) GetParent() MonitoredSAL {
@@ -104,8 +106,8 @@ func (m *_MonitoredSALLongFormSmartMode) GetBridgeAddress() BridgeAddress {
 	return m.BridgeAddress
 }
 
-func (m *_MonitoredSALLongFormSmartMode) GetSerialInterfaceAddress() SerialInterfaceAddress {
-	return m.SerialInterfaceAddress
+func (m *_MonitoredSALLongFormSmartMode) GetApplication() ApplicationIdContainer {
+	return m.Application
 }
 
 func (m *_MonitoredSALLongFormSmartMode) GetReservedByte() *byte {
@@ -114,6 +116,10 @@ func (m *_MonitoredSALLongFormSmartMode) GetReservedByte() *byte {
 
 func (m *_MonitoredSALLongFormSmartMode) GetReplyNetwork() ReplyNetwork {
 	return m.ReplyNetwork
+}
+
+func (m *_MonitoredSALLongFormSmartMode) GetSalData() SALData {
+	return m.SalData
 }
 
 ///////////////////////
@@ -134,7 +140,9 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 	_ = reservedByte
 	replyNetwork := m.ReplyNetwork
 	_ = replyNetwork
-	return bool(bool(((m.GetTerminatingByte()) & (0xff)) == (0x00)))
+	salData := m.SalData
+	_ = salData
+	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
 
 ///////////////////////
@@ -143,15 +151,16 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, salType byte, salData SALData, crc Checksum, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
+func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
 	_result := &_MonitoredSALLongFormSmartMode{
-		TerminatingByte:        terminatingByte,
-		UnitAddress:            unitAddress,
-		BridgeAddress:          bridgeAddress,
-		SerialInterfaceAddress: serialInterfaceAddress,
-		ReservedByte:           reservedByte,
-		ReplyNetwork:           replyNetwork,
-		_MonitoredSAL:          NewMonitoredSAL(salType, salData, crc, cBusOptions),
+		TerminatingByte: terminatingByte,
+		UnitAddress:     unitAddress,
+		BridgeAddress:   bridgeAddress,
+		Application:     application,
+		ReservedByte:    reservedByte,
+		ReplyNetwork:    replyNetwork,
+		SalData:         salData,
+		_MonitoredSAL:   NewMonitoredSAL(salType, cBusOptions),
 	}
 	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
 	return _result
@@ -194,8 +203,8 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBitsConditional(lastItem boo
 		lengthInBits += m.BridgeAddress.GetLengthInBits()
 	}
 
-	// Simple field (serialInterfaceAddress)
-	lengthInBits += m.SerialInterfaceAddress.GetLengthInBits()
+	// Simple field (application)
+	lengthInBits += 8
 
 	// Optional Field (reservedByte)
 	if m.ReservedByte != nil {
@@ -205,6 +214,11 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBitsConditional(lastItem boo
 	// Optional Field (replyNetwork)
 	if m.ReplyNetwork != nil {
 		lengthInBits += m.ReplyNetwork.GetLengthInBits()
+	}
+
+	// Optional Field (salData)
+	if m.SalData != nil {
+		lengthInBits += m.SalData.GetLengthInBits()
 	}
 
 	return lengthInBits
@@ -223,6 +237,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -230,10 +245,12 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MonitoredSALLongFormSmartMode")
 		}
 		if reserved != byte(0x05) {
-			log.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]interface{}{
 				"expected value": byte(0x05),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -247,7 +264,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isUnitAddress := bool(((terminatingByte) & (0xff)) == (0x00))
+	_isUnitAddress := bool((terminatingByte & 0xff) == (0x00))
 	isUnitAddress := bool(_isUnitAddress)
 	_ = isUnitAddress
 
@@ -261,7 +278,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		_val, _err := UnitAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field of MonitoredSALLongFormSmartMode")
@@ -283,7 +300,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		_val, _err := BridgeAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field of MonitoredSALLongFormSmartMode")
@@ -295,17 +312,17 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		}
 	}
 
-	// Simple Field (serialInterfaceAddress)
-	if pullErr := readBuffer.PullContext("serialInterfaceAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serialInterfaceAddress")
+	// Simple Field (application)
+	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParse(readBuffer)
-	if _serialInterfaceAddressErr != nil {
-		return nil, errors.Wrap(_serialInterfaceAddressErr, "Error parsing 'serialInterfaceAddress' field of MonitoredSALLongFormSmartMode")
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	if _applicationErr != nil {
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALLongFormSmartMode")
 	}
-	serialInterfaceAddress := _serialInterfaceAddress.(SerialInterfaceAddress)
-	if closeErr := readBuffer.CloseContext("serialInterfaceAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serialInterfaceAddress")
+	application := _application
+	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
 	// Optional Field (reservedByte) (Can be skipped, if a given expression evaluates to false)
@@ -333,7 +350,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		_val, _err := ReplyNetworkParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field of MonitoredSALLongFormSmartMode")
@@ -345,21 +362,45 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		}
 	}
 
+	// Optional Field (salData) (Can be skipped, if a given expression evaluates to false)
+	var salData SALData = nil
+	{
+		currentPos = positionAware.GetPos()
+		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
+			return nil, errors.Wrap(pullErr, "Error pulling for salData")
+		}
+		_val, _err := SALDataParse(readBuffer, application.ApplicationId())
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'salData' field of MonitoredSALLongFormSmartMode")
+		default:
+			salData = _val.(SALData)
+			if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
+				return nil, errors.Wrap(closeErr, "Error closing for salData")
+			}
+		}
+	}
+
 	if closeErr := readBuffer.CloseContext("MonitoredSALLongFormSmartMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSALLongFormSmartMode")
 	}
 
 	// Create a partially initialized instance
 	_child := &_MonitoredSALLongFormSmartMode{
-		TerminatingByte:        terminatingByte,
-		UnitAddress:            unitAddress,
-		BridgeAddress:          bridgeAddress,
-		SerialInterfaceAddress: serialInterfaceAddress,
-		ReservedByte:           reservedByte,
-		ReplyNetwork:           replyNetwork,
 		_MonitoredSAL: &_MonitoredSAL{
 			CBusOptions: cBusOptions,
 		},
+		TerminatingByte: terminatingByte,
+		UnitAddress:     unitAddress,
+		BridgeAddress:   bridgeAddress,
+		Application:     application,
+		ReservedByte:    reservedByte,
+		ReplyNetwork:    replyNetwork,
+		SalData:         salData,
+		reservedField0:  reservedField0,
 	}
 	_child._MonitoredSAL._MonitoredSALChildRequirements = _child
 	return _child, nil
@@ -375,7 +416,15 @@ func (m *_MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x05))
+			var reserved byte = byte(0x05)
+			if m.reservedField0 != nil {
+				Plc4xModelLog.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x05),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -417,16 +466,16 @@ func (m *_MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer
 			}
 		}
 
-		// Simple Field (serialInterfaceAddress)
-		if pushErr := writeBuffer.PushContext("serialInterfaceAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serialInterfaceAddress")
+		// Simple Field (application)
+		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_serialInterfaceAddressErr := writeBuffer.WriteSerializable(m.GetSerialInterfaceAddress())
-		if popErr := writeBuffer.PopContext("serialInterfaceAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serialInterfaceAddress")
+		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		if popErr := writeBuffer.PopContext("application"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for application")
 		}
-		if _serialInterfaceAddressErr != nil {
-			return errors.Wrap(_serialInterfaceAddressErr, "Error serializing 'serialInterfaceAddress' field")
+		if _applicationErr != nil {
+			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
 		}
 
 		// Optional Field (reservedByte) (Can be skipped, if the value is null)
@@ -455,6 +504,22 @@ func (m *_MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer
 			}
 		}
 
+		// Optional Field (salData) (Can be skipped, if the value is null)
+		var salData SALData = nil
+		if m.GetSalData() != nil {
+			if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
+				return errors.Wrap(pushErr, "Error pushing for salData")
+			}
+			salData = m.GetSalData()
+			_salDataErr := writeBuffer.WriteSerializable(salData)
+			if popErr := writeBuffer.PopContext("salData"); popErr != nil {
+				return errors.Wrap(popErr, "Error popping for salData")
+			}
+			if _salDataErr != nil {
+				return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
+			}
+		}
+
 		if popErr := writeBuffer.PopContext("MonitoredSALLongFormSmartMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for MonitoredSALLongFormSmartMode")
 		}
@@ -471,7 +536,7 @@ func (m *_MonitoredSALLongFormSmartMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -57,7 +57,9 @@ TODO: document me
 	Run: func(cmd *cobra.Command, args []string) {
 		protocolType := args[0]
 		pcapFile := args[1]
-		analyzer.Analyze(pcapFile, protocolType)
+		if err := analyzer.Analyze(pcapFile, protocolType); err != nil {
+			panic(err)
+		}
 		println("Done")
 	},
 }

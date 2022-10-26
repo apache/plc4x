@@ -20,10 +20,11 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	model2 "github.com/apache/plc4x/plc4go/internal/spi/model"
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi"
+	model2 "github.com/apache/plc4x/plc4go/spi/model"
 	"strconv"
 	"time"
 )
@@ -42,7 +43,8 @@ func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) 
 	}
 }
 
-func (r Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	// TODO: handle ctx
 	ch := make(chan model.PlcReadRequestResult)
 	go func() {
 		var txId string

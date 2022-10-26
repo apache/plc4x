@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -32,14 +32,8 @@ type EncodedReply interface {
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
-	// GetIsCalCommand returns IsCalCommand (virtual field)
-	GetIsCalCommand() bool
-	// GetIsSALStatusRequest returns IsSALStatusRequest (virtual field)
-	GetIsSALStatusRequest() bool
 	// GetIsMonitoredSAL returns IsMonitoredSAL (virtual field)
 	GetIsMonitoredSAL() bool
-	// GetExstat returns Exstat (virtual field)
-	GetExstat() bool
 }
 
 // EncodedReplyExactly can be used when we want exactly this type and not a type which fulfills EncodedReply.
@@ -97,20 +91,8 @@ func (m *_EncodedReply) GetPeekedByte() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_EncodedReply) GetIsCalCommand() bool {
-	return bool(bool(bool(((m.GetPeekedByte())&(0x3F)) == (0x06))) || bool(m.RequestContext.GetSendCalCommandBefore()))
-}
-
-func (m *_EncodedReply) GetIsSALStatusRequest() bool {
-	return bool(bool(bool(((m.GetPeekedByte())&(0xE0)) == (0xC0))) || bool(m.RequestContext.GetSendSALStatusRequestBefore()))
-}
-
 func (m *_EncodedReply) GetIsMonitoredSAL() bool {
-	return bool(bool(((m.GetPeekedByte()) & (0x3F)) == (0x05)))
-}
-
-func (m *_EncodedReply) GetExstat() bool {
-	return bool(m.CBusOptions.GetExstat())
+	return bool(bool((bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))) && bool(!(m.RequestContext.GetSendIdentifyRequestBefore())))
 }
 
 ///////////////////////
@@ -143,12 +125,6 @@ func (m *_EncodedReply) GetParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
 	return lengthInBits
 }
 
@@ -175,24 +151,9 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isCalCommand := bool(bool(((peekedByte)&(0x3F)) == (0x06))) || bool(requestContext.GetSendCalCommandBefore())
-	isCalCommand := bool(_isCalCommand)
-	_ = isCalCommand
-
-	// Virtual field
-	_isSALStatusRequest := bool(bool(((peekedByte)&(0xE0)) == (0xC0))) || bool(requestContext.GetSendSALStatusRequestBefore())
-	isSALStatusRequest := bool(_isSALStatusRequest)
-	_ = isSALStatusRequest
-
-	// Virtual field
-	_isMonitoredSAL := bool(((peekedByte) & (0x3F)) == (0x05))
+	_isMonitoredSAL := bool((bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00))))) && bool(!(requestContext.GetSendIdentifyRequestBefore()))
 	isMonitoredSAL := bool(_isMonitoredSAL)
 	_ = isMonitoredSAL
-
-	// Virtual field
-	_exstat := cBusOptions.GetExstat()
-	exstat := bool(_exstat)
-	_ = exstat
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type EncodedReplyChildSerializeRequirement interface {
@@ -204,16 +165,12 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	var _child EncodedReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case isMonitoredSAL == bool(true) && isCalCommand == bool(false) && isSALStatusRequest == bool(false): // MonitoredSALReply
+	case isMonitoredSAL == bool(true): // MonitoredSALReply
 		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, cBusOptions, requestContext)
-	case 0 == 0 && 1 == 1 && isSALStatusRequest == bool(true) && exstat == bool(false): // EncodedReplyStandardFormatStatusReply
-		_childTemp, typeSwitchError = EncodedReplyStandardFormatStatusReplyParse(readBuffer, cBusOptions, requestContext)
-	case 0 == 0 && 1 == 1 && isSALStatusRequest == bool(true) && exstat == bool(true): // EncodedReplyExtendedFormatStatusReply
-		_childTemp, typeSwitchError = EncodedReplyExtendedFormatStatusReplyParse(readBuffer, cBusOptions, requestContext)
-	case 0 == 0 && isCalCommand == bool(true) && 2 == 2 && 3 == 3: // EncodedReplyCALReply
+	case 0 == 0: // EncodedReplyCALReply
 		_childTemp, typeSwitchError = EncodedReplyCALReplyParse(readBuffer, cBusOptions, requestContext)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v, isCalCommand=%v, isSALStatusRequest=%v, exstat=%v]", isMonitoredSAL, isCalCommand, isSALStatusRequest, exstat)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v]", isMonitoredSAL)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of EncodedReply")
@@ -239,20 +196,8 @@ func (pm *_EncodedReply) SerializeParent(writeBuffer utils.WriteBuffer, child En
 		return errors.Wrap(pushErr, "Error pushing for EncodedReply")
 	}
 	// Virtual field
-	if _isCalCommandErr := writeBuffer.WriteVirtual("isCalCommand", m.GetIsCalCommand()); _isCalCommandErr != nil {
-		return errors.Wrap(_isCalCommandErr, "Error serializing 'isCalCommand' field")
-	}
-	// Virtual field
-	if _isSALStatusRequestErr := writeBuffer.WriteVirtual("isSALStatusRequest", m.GetIsSALStatusRequest()); _isSALStatusRequestErr != nil {
-		return errors.Wrap(_isSALStatusRequestErr, "Error serializing 'isSALStatusRequest' field")
-	}
-	// Virtual field
 	if _isMonitoredSALErr := writeBuffer.WriteVirtual("isMonitoredSAL", m.GetIsMonitoredSAL()); _isMonitoredSALErr != nil {
 		return errors.Wrap(_isMonitoredSALErr, "Error serializing 'isMonitoredSAL' field")
-	}
-	// Virtual field
-	if _exstatErr := writeBuffer.WriteVirtual("exstat", m.GetExstat()); _exstatErr != nil {
-		return errors.Wrap(_exstatErr, "Error serializing 'exstat' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -266,6 +211,19 @@ func (pm *_EncodedReply) SerializeParent(writeBuffer utils.WriteBuffer, child En
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_EncodedReply) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+func (m *_EncodedReply) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_EncodedReply) isEncodedReply() bool {
 	return true
 }
@@ -274,7 +232,7 @@ func (m *_EncodedReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

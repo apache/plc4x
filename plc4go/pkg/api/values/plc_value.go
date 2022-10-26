@@ -19,9 +19,14 @@
 
 package values
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type PlcValue interface {
+	fmt.Stringer
+
 	////
 	// Simple Types
 
@@ -95,6 +100,8 @@ type PlcValue interface {
 
 	IsTime() bool
 	GetTime() time.Time
+	IsDuration() bool
+	GetDuration() time.Duration
 	IsDate() bool
 	GetDate() time.Time
 	IsDateTime() bool
@@ -129,6 +136,8 @@ type PlcValue interface {
 	GetStruct() map[string]PlcValue
 	//
 	///
+
+	GetPlcValueType() PlcValueType
 }
 
 // RawPlcValue This type is used in cases where the driver doesn't have access to type information and therefore can't decode
@@ -143,4 +152,111 @@ type RawPlcValue interface {
 	RawHasMore() bool
 	// RawReset Reset the internal read-buffer (For the case that a raw plc-value has to be parsed multiple times)
 	RawReset()
+}
+
+type PlcValueType uint8
+
+const (
+	BINT PlcValueType = iota
+	BIT_STRING
+	BOOL
+	BREAL
+	BYTE
+	BYTE_ARRAY
+	CHAR
+	DATE
+	DATE_AND_TIME
+	DINT
+	DWORD
+	INT
+	LINT
+	LIST
+	LREAL
+	LTIME
+	LWORD
+	NULL
+	RAW_PLC_VALUE
+	REAL
+	STRUCT
+	SINT
+	STRING
+	TIME
+	TIME_OF_DAY
+	UDINT
+	UINT
+	ULINT
+	USINT
+	WCHAR
+	WORD
+	WSTRING
+)
+
+func (p PlcValueType) String() string {
+	switch {
+	case p == BINT:
+		return "BINT"
+	case p == BIT_STRING:
+		return "BIT_STRING"
+	case p == BOOL:
+		return "BOOL"
+	case p == BREAL:
+		return "BREAL"
+	case p == BYTE:
+		return "BYTE"
+	case p == BYTE_ARRAY:
+		return "BYTE_ARRAY"
+	case p == CHAR:
+		return "CHAR"
+	case p == DATE:
+		return "DATE"
+	case p == DATE_AND_TIME:
+		return "DATE_AND_TIME"
+	case p == DINT:
+		return "DINT"
+	case p == DWORD:
+		return "DWORD"
+	case p == INT:
+		return "INT"
+	case p == LINT:
+		return "LINT"
+	case p == LIST:
+		return "LIST"
+	case p == LREAL:
+		return "LREAL"
+	case p == LTIME:
+		return "LTIME"
+	case p == LWORD:
+		return "LWORD"
+	case p == NULL:
+		return "NULL"
+	case p == RAW_PLC_VALUE:
+		return "RAW_PLC_VALUE"
+	case p == REAL:
+		return "REAL"
+	case p == STRUCT:
+		return "STRUCT"
+	case p == SINT:
+		return "SINT"
+	case p == STRING:
+		return "STRING"
+	case p == TIME:
+		return "TIME"
+	case p == TIME_OF_DAY:
+		return "TIME_OF_DAY"
+	case p == UDINT:
+		return "UDINT"
+	case p == UINT:
+		return "UINT"
+	case p == ULINT:
+		return "ULINT"
+	case p == USINT:
+		return "USINT"
+	case p == WCHAR:
+		return "WCHAR"
+	case p == WORD:
+		return "WORD"
+	case p == WSTRING:
+		return "WSTRING"
+	}
+	return "Unknown"
 }

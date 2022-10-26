@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,10 +30,8 @@ import (
 type ReplyNetwork interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetRouteType returns RouteType (property field)
-	GetRouteType() RouteType
-	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
-	GetAdditionalBridgeAddresses() []BridgeAddress
+	// GetNetworkRoute returns NetworkRoute (property field)
+	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
 }
@@ -47,9 +45,8 @@ type ReplyNetworkExactly interface {
 
 // _ReplyNetwork is the data-structure of this message
 type _ReplyNetwork struct {
-	RouteType                 RouteType
-	AdditionalBridgeAddresses []BridgeAddress
-	UnitAddress               UnitAddress
+	NetworkRoute NetworkRoute
+	UnitAddress  UnitAddress
 }
 
 ///////////////////////////////////////////////////////////
@@ -57,12 +54,8 @@ type _ReplyNetwork struct {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ReplyNetwork) GetRouteType() RouteType {
-	return m.RouteType
-}
-
-func (m *_ReplyNetwork) GetAdditionalBridgeAddresses() []BridgeAddress {
-	return m.AdditionalBridgeAddresses
+func (m *_ReplyNetwork) GetNetworkRoute() NetworkRoute {
+	return m.NetworkRoute
 }
 
 func (m *_ReplyNetwork) GetUnitAddress() UnitAddress {
@@ -75,8 +68,8 @@ func (m *_ReplyNetwork) GetUnitAddress() UnitAddress {
 ///////////////////////////////////////////////////////////
 
 // NewReplyNetwork factory function for _ReplyNetwork
-func NewReplyNetwork(routeType RouteType, additionalBridgeAddresses []BridgeAddress, unitAddress UnitAddress) *_ReplyNetwork {
-	return &_ReplyNetwork{RouteType: routeType, AdditionalBridgeAddresses: additionalBridgeAddresses, UnitAddress: unitAddress}
+func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_ReplyNetwork {
+	return &_ReplyNetwork{NetworkRoute: networkRoute, UnitAddress: unitAddress}
 }
 
 // Deprecated: use the interface for direct cast
@@ -101,16 +94,8 @@ func (m *_ReplyNetwork) GetLengthInBits() uint16 {
 func (m *_ReplyNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (routeType)
-	lengthInBits += 3
-
-	// Array field
-	if len(m.AdditionalBridgeAddresses) > 0 {
-		for i, element := range m.AdditionalBridgeAddresses {
-			last := i == len(m.AdditionalBridgeAddresses)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
-		}
-	}
+	// Simple field (networkRoute)
+	lengthInBits += m.NetworkRoute.GetLengthInBits()
 
 	// Simple field (unitAddress)
 	lengthInBits += m.UnitAddress.GetLengthInBits()
@@ -131,40 +116,17 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (routeType)
-	if pullErr := readBuffer.PullContext("routeType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for routeType")
+	// Simple Field (networkRoute)
+	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
 	}
-	_routeType, _routeTypeErr := RouteTypeParse(readBuffer)
-	if _routeTypeErr != nil {
-		return nil, errors.Wrap(_routeTypeErr, "Error parsing 'routeType' field of ReplyNetwork")
+	_networkRoute, _networkRouteErr := NetworkRouteParse(readBuffer)
+	if _networkRouteErr != nil {
+		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of ReplyNetwork")
 	}
-	routeType := _routeType
-	if closeErr := readBuffer.CloseContext("routeType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for routeType")
-	}
-
-	// Array field (additionalBridgeAddresses)
-	if pullErr := readBuffer.PullContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for additionalBridgeAddresses")
-	}
-	// Count array
-	additionalBridgeAddresses := make([]BridgeAddress, routeType.AdditionalBridges())
-	// This happens when the size is set conditional to 0
-	if len(additionalBridgeAddresses) == 0 {
-		additionalBridgeAddresses = nil
-	}
-	{
-		for curItem := uint16(0); curItem < uint16(routeType.AdditionalBridges()); curItem++ {
-			_item, _err := BridgeAddressParse(readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field of ReplyNetwork")
-			}
-			additionalBridgeAddresses[curItem] = _item.(BridgeAddress)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for additionalBridgeAddresses")
+	networkRoute := _networkRoute.(NetworkRoute)
+	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for networkRoute")
 	}
 
 	// Simple Field (unitAddress)
@@ -185,7 +147,10 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	}
 
 	// Create the instance
-	return NewReplyNetwork(routeType, additionalBridgeAddresses, unitAddress), nil
+	return &_ReplyNetwork{
+		NetworkRoute: networkRoute,
+		UnitAddress:  unitAddress,
+	}, nil
 }
 
 func (m *_ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -195,30 +160,16 @@ func (m *_ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(pushErr, "Error pushing for ReplyNetwork")
 	}
 
-	// Simple Field (routeType)
-	if pushErr := writeBuffer.PushContext("routeType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for routeType")
+	// Simple Field (networkRoute)
+	if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for networkRoute")
 	}
-	_routeTypeErr := writeBuffer.WriteSerializable(m.GetRouteType())
-	if popErr := writeBuffer.PopContext("routeType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for routeType")
+	_networkRouteErr := writeBuffer.WriteSerializable(m.GetNetworkRoute())
+	if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for networkRoute")
 	}
-	if _routeTypeErr != nil {
-		return errors.Wrap(_routeTypeErr, "Error serializing 'routeType' field")
-	}
-
-	// Array Field (additionalBridgeAddresses)
-	if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
-	}
-	for _, _element := range m.GetAdditionalBridgeAddresses() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
+	if _networkRouteErr != nil {
+		return errors.Wrap(_networkRouteErr, "Error serializing 'networkRoute' field")
 	}
 
 	// Simple Field (unitAddress)
@@ -247,7 +198,7 @@ func (m *_ReplyNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

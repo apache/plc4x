@@ -20,8 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
 
@@ -130,7 +130,7 @@ func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (st
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.ReadString("", uint32(stringLength*multiplier))
+	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
 func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {

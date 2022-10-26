@@ -32,21 +32,21 @@ def test_version():
     assert __version__ == "0.1.0"
 
 
-def test_plc_driver_manager_init():
+async def test_plc_driver_manager_init():
     driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
+    async with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, PlcConnection)
 
 
-def test_plc_driver_manager_init_modbus():
+async def test_plc_driver_manager_init_modbus():
     driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
+    async with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, ModbusConnection)
 
 
-def test_plc_driver_manager_init_mock():
+async def test_plc_driver_manager_init_mock():
     driver_manager = PlcDriverManager()
-    with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
+    async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, MockConnection)
 
 
@@ -54,8 +54,7 @@ async def test_plc_driver_manager_init_mock_read_request():
     driver_manager = PlcDriverManager()
     field = "1:BOOL"
 
-    with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
-        connection.connect()
+    async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         with connection.read_request_builder() as builder:
             builder.add_item(field)
             request: PlcFieldRequest = builder.build()

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -44,6 +44,9 @@ type CustomTypesExactly interface {
 // _CustomTypes is the data-structure of this message
 type _CustomTypes struct {
 	CustomString string
+
+	// Arguments.
+	NumBytes uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -61,8 +64,8 @@ func (m *_CustomTypes) GetCustomString() string {
 ///////////////////////////////////////////////////////////
 
 // NewCustomTypes factory function for _CustomTypes
-func NewCustomTypes(customString string) *_CustomTypes {
-	return &_CustomTypes{CustomString: customString}
+func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
+	return &_CustomTypes{CustomString: customString, NumBytes: numBytes}
 }
 
 // Deprecated: use the interface for direct cast
@@ -88,7 +91,7 @@ func (m *_CustomTypes) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (customString)
-	lengthInBits += uint16(int32(8))
+	lengthInBits += uint16(int32(int32(8)) * int32(m.NumBytes))
 
 	return lengthInBits
 }
@@ -97,7 +100,7 @@ func (m *_CustomTypes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CustomTypesParse(readBuffer utils.ReadBuffer) (CustomTypes, error) {
+func CustomTypesParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CustomTypes"); pullErr != nil {
@@ -107,7 +110,7 @@ func CustomTypesParse(readBuffer utils.ReadBuffer) (CustomTypes, error) {
 	_ = currentPos
 
 	// Simple Field (customString)
-	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)))
+	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)*(numBytes)), "UTF-8")
 	if _customStringErr != nil {
 		return nil, errors.Wrap(_customStringErr, "Error parsing 'customString' field of CustomTypes")
 	}
@@ -118,7 +121,10 @@ func CustomTypesParse(readBuffer utils.ReadBuffer) (CustomTypes, error) {
 	}
 
 	// Create the instance
-	return NewCustomTypes(customString), nil
+	return &_CustomTypes{
+		NumBytes:     numBytes,
+		CustomString: customString,
+	}, nil
 }
 
 func (m *_CustomTypes) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -130,7 +136,7 @@ func (m *_CustomTypes) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (customString)
 	customString := string(m.GetCustomString())
-	_customStringErr := writeBuffer.WriteString("customString", uint32((8)), "UTF-8", (customString))
+	_customStringErr := writeBuffer.WriteString("customString", uint32((8)*(m.GetNumBytes())), "UTF-8", (customString))
 	if _customStringErr != nil {
 		return errors.Wrap(_customStringErr, "Error serializing 'customString' field")
 	}
@@ -141,6 +147,16 @@ func (m *_CustomTypes) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CustomTypes) GetNumBytes() uint8 {
+	return m.NumBytes
+}
+
+//
+////
+
 func (m *_CustomTypes) isCustomTypes() bool {
 	return true
 }
@@ -149,7 +165,7 @@ func (m *_CustomTypes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

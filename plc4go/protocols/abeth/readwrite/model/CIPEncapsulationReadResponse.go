@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -160,8 +160,8 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, packetLen ui
 
 	// Create a partially initialized instance
 	_child := &_CIPEncapsulationReadResponse{
-		Response:                response,
 		_CIPEncapsulationPacket: &_CIPEncapsulationPacket{},
+		Response:                response,
 	}
 	_child._CIPEncapsulationPacket._CIPEncapsulationPacketChildRequirements = _child
 	return _child, nil
@@ -195,6 +195,16 @@ func (m *_CIPEncapsulationReadResponse) Serialize(writeBuffer utils.WriteBuffer)
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_CIPEncapsulationReadResponse) GetPacketLen() uint16 {
+	return m.PacketLen
+}
+
+//
+////
+
 func (m *_CIPEncapsulationReadResponse) isCIPEncapsulationReadResponse() bool {
 	return true
 }
@@ -203,7 +213,7 @@ func (m *_CIPEncapsulationReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

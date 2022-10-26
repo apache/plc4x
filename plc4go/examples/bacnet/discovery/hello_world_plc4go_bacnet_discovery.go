@@ -39,7 +39,7 @@ func main() {
 	var connectionStrings []string
 	if len(os.Args) < 2 {
 		// Try to auto-find bacnet devices via broadcast-message discovery
-		if err := driverManager.Discover(func(event model.PlcDiscoveryEvent) {
+		if err := driverManager.Discover(func(event model.PlcDiscoveryItem) {
 			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
 			log.Info().Str("connection string", connStr).Stringer("event", event.(fmt.Stringer)).Msg("Found Bacnet Gateway")
 

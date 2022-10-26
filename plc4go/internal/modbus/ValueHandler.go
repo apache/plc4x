@@ -20,7 +20,7 @@
 package modbus
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/values"
+	"github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type ValueHandler struct {

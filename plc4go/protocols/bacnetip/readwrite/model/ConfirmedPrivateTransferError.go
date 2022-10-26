@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -219,7 +218,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'errorParameters' field of ConfirmedPrivateTransferError")
@@ -237,11 +236,11 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 
 	// Create a partially initialized instance
 	_child := &_ConfirmedPrivateTransferError{
+		_BACnetError:    &_BACnetError{},
 		ErrorType:       errorType,
 		VendorId:        vendorId,
 		ServiceNumber:   serviceNumber,
 		ErrorParameters: errorParameters,
-		_BACnetError:    &_BACnetError{},
 	}
 	_child._BACnetError._BACnetErrorChildRequirements = _child
 	return _child, nil
@@ -323,7 +322,7 @@ func (m *_ConfirmedPrivateTransferError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

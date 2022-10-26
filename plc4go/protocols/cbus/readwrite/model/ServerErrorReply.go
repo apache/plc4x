@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -34,7 +34,7 @@ const ServerErrorReply_ERRORMARKER byte = 0x21
 type ServerErrorReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	ReplyOrConfirmation
 }
 
 // ServerErrorReplyExactly can be used when we want exactly this type and not a type which fulfills ServerErrorReply.
@@ -46,7 +46,7 @@ type ServerErrorReplyExactly interface {
 
 // _ServerErrorReply is the data-structure of this message
 type _ServerErrorReply struct {
-	*_Reply
+	*_ReplyOrConfirmation
 }
 
 ///////////////////////////////////////////////////////////
@@ -59,12 +59,12 @@ type _ServerErrorReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerErrorReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_ServerErrorReply) InitializeParent(parent ReplyOrConfirmation, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_ServerErrorReply) GetParent() Reply {
-	return m._Reply
+func (m *_ServerErrorReply) GetParent() ReplyOrConfirmation {
+	return m._ReplyOrConfirmation
 }
 
 ///////////////////////////////////////////////////////////
@@ -82,11 +82,11 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////////////////////////////////////////
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_Reply: NewReply(peekedByte, cBusOptions, replyLength, requestContext),
+		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _result
 	return _result
 }
 
@@ -122,7 +122,7 @@ func (m *_ServerErrorReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, replyLength uint16, requestContext RequestContext) (ServerErrorReply, error) {
+func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {
@@ -146,13 +146,12 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions,
 
 	// Create a partially initialized instance
 	_child := &_ServerErrorReply{
-		_Reply: &_Reply{
+		_ReplyOrConfirmation: &_ReplyOrConfirmation{
 			CBusOptions:    cBusOptions,
-			ReplyLength:    replyLength,
 			RequestContext: requestContext,
 		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _child
 	return _child, nil
 }
 
@@ -186,7 +185,7 @@ func (m *_ServerErrorReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

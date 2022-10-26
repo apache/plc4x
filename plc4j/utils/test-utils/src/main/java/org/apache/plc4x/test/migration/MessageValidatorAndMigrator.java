@@ -140,6 +140,7 @@ public class MessageValidatorAndMigrator {
 
                     String content;
                     try {
+                        // REMARK: In know IntelliJ tells us this is "optimizable", don't do it as it will break the build.
                         content = new String(Files.readAllBytes(path), charset);
                         // Make sure this also works on Windows
                         // (Mainly when using git to check out Windows style and commit in Unix style)

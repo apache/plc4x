@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AdsDeviceNotificationRequest interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetLength returns Length (property field)
 	GetLength() uint32
 	// GetStamps returns Stamps (property field)
@@ -48,7 +48,7 @@ type AdsDeviceNotificationRequestExactly interface {
 
 // _AdsDeviceNotificationRequest is the data-structure of this message
 type _AdsDeviceNotificationRequest struct {
-	*_AdsData
+	*_AmsPacket
 	Length          uint32
 	Stamps          uint32
 	AdsStampHeaders []AdsStampHeader
@@ -72,10 +72,17 @@ func (m *_AdsDeviceNotificationRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsDeviceNotificationRequest) InitializeParent(parent AdsData) {}
+func (m *_AdsDeviceNotificationRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsDeviceNotificationRequest) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsDeviceNotificationRequest) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,14 +108,14 @@ func (m *_AdsDeviceNotificationRequest) GetAdsStampHeaders() []AdsStampHeader {
 ///////////////////////////////////////////////////////////
 
 // NewAdsDeviceNotificationRequest factory function for _AdsDeviceNotificationRequest
-func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) *_AdsDeviceNotificationRequest {
+func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeviceNotificationRequest {
 	_result := &_AdsDeviceNotificationRequest{
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
-		_AdsData:        NewAdsData(),
+		_AmsPacket:      NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -155,7 +162,7 @@ func (m *_AdsDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsDeviceNotificationRequest, error) {
+func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
@@ -207,12 +214,12 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 
 	// Create a partially initialized instance
 	_child := &_AdsDeviceNotificationRequest{
+		_AmsPacket:      &_AmsPacket{},
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
-		_AdsData:        &_AdsData{},
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 
@@ -268,7 +275,7 @@ func (m *_AdsDeviceNotificationRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -19,35 +19,36 @@
 
 package model
 
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+)
+
 type PlcBrowseRequestBuilder interface {
-	AddItem(name string, query string) PlcBrowseRequestBuilder
+	AddQuery(name string, query string) PlcBrowseRequestBuilder
 	Build() (PlcBrowseRequest, error)
 }
 
-type PlcBrowseQueryResult interface {
-	GetField() PlcField
-	GetName() string
-	IsReadable() bool
-	IsWritable() bool
-	IsSubscribable() bool
-	GetPossibleDataTypes() []string
-}
-
 type PlcBrowseRequest interface {
+	PlcRequest
 	// Execute Will not return until a potential scan is finished and will return all results in one block
 	Execute() <-chan PlcBrowseRequestResult
+	// ExecuteWithContext is the same as Execute but handles the Context if implemented for Driver
+	ExecuteWithContext(ctx context.Context) <-chan PlcBrowseRequestResult
 	// ExecuteWithInterceptor Will call the given callback for every found resource
 	ExecuteWithInterceptor(interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
-	GetQueryNames() []string
-	GetQueryString(name string) string
-	PlcRequest
+	// ExecuteWithInterceptorWithContext Will call the given callback for every found resource
+	ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
+	GetFieldNames() []string
+	GetField(name string) PlcField
 }
 
 type PlcBrowseResponse interface {
-	GetRequest() PlcBrowseRequest
-	GetQueryNames() []string
-	GetQueryResults(name string) []PlcBrowseQueryResult
 	PlcResponse
+	GetRequest() PlcBrowseRequest
+	GetFieldNames() []string
+	GetResponseCode(name string) PlcResponseCode
+	GetQueryResults(name string) []PlcBrowseFoundField
 }
 
 type PlcBrowseRequestResult interface {
@@ -57,8 +58,19 @@ type PlcBrowseRequestResult interface {
 }
 
 type PlcBrowseEvent interface {
+	PlcMessage
 	GetRequest() PlcBrowseRequest
-	GetQueryName() string
-	GetResult() PlcBrowseQueryResult
+	GetFieldName() string
+	GetResult() PlcBrowseFoundField
 	GetErr() error
+}
+
+type PlcBrowseFoundField interface {
+	GetField() PlcField
+	GetName() string
+	IsReadable() bool
+	IsWritable() bool
+	IsSubscribable() bool
+	GetPossibleDataTypes() []string
+	GetAttributes() map[string]values.PlcValue
 }

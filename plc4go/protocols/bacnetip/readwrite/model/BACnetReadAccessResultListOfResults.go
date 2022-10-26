@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -185,7 +185,13 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessResultListOfResults(openingTag, listOfReadAccessProperty, closingTag, tagNumber, objectTypeArgument), nil
+	return &_BACnetReadAccessResultListOfResults{
+		TagNumber:                tagNumber,
+		ObjectTypeArgument:       objectTypeArgument,
+		OpeningTag:               openingTag,
+		ListOfReadAccessProperty: listOfReadAccessProperty,
+		ClosingTag:               closingTag,
+	}, nil
 }
 
 func (m *_BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -239,6 +245,19 @@ func (m *_BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.Write
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetReadAccessResultListOfResults) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetReadAccessResultListOfResults) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetReadAccessResultListOfResults) isBACnetReadAccessResultListOfResults() bool {
 	return true
 }
@@ -247,7 +266,7 @@ func (m *_BACnetReadAccessResultListOfResults) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

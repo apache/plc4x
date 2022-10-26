@@ -319,26 +319,26 @@
             // TODO: Handle adding some reserved bits at the end to fill up the last word.
             [array    bit     value count 'numberOfValues'     ]
         ]
-        ['BYTE','1'  List
+        ['BYTE','1'  BYTE
             [reserved uint 8 '0x00']
-            [array    bit     value count '8'                  ]
+            [simple uint 8 value]
         ]
         ['BYTE' List
             // TODO: If the number of values is odd, add a reserved byte
             [array    bit     value count 'numberOfValues * 8' ]
         ]
-        ['WORD'      List
-            [array    bit     value count 'numberOfValues * 16']
+        ['WORD'      WORD
+            [simple   uint 16 value]
         ]
-        ['DWORD'     List
-            [array    bit     value count 'numberOfValues * 32']
+        ['DWORD'     DWORD
+            [simple   uint 32 value]
         ]
-        ['LWORD' List
-            [array    bit     value count 'numberOfValues * 64']
+        ['LWORD'     LWORD
+            [simple   uint 64 value]
         ]
         ['SINT','1' SINT
-            [reserved uint 8 '0x00']
-            [simple   int 8  value ]
+            [reserved uint 8  '0x00']
+            [simple   int 8   value ]
         ]
         ['SINT' List
             [array int 8 value count 'numberOfValues']
@@ -399,16 +399,16 @@
             [array float 64 value count 'numberOfValues']
         ]
         ['CHAR','1' CHAR
-            [simple uint 8 value]
+            [simple string 8 value encoding='"UTF-8"']
         ]
         ['CHAR' List
-            [array uint 8 value count 'numberOfValues']
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
         ]
         ['WCHAR','1' WCHAR
-            [simple uint 16 value]
+            [simple string 16 value encoding='"UTF-16"']
         ]
         ['WCHAR' List
-            [array uint 16 value count 'numberOfValues']
+            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
         ]
     ]
 ]

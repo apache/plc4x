@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -202,7 +201,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 		_val, _err := HPAIDataEndpointParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field of ConnectionResponse")
@@ -224,7 +223,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field of ConnectionResponse")
@@ -242,11 +241,11 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 
 	// Create a partially initialized instance
 	_child := &_ConnectionResponse{
+		_KnxNetIpMessage:            &_KnxNetIpMessage{},
 		CommunicationChannelId:      communicationChannelId,
 		Status:                      status,
 		HpaiDataEndpoint:            hpaiDataEndpoint,
 		ConnectionResponseDataBlock: connectionResponseDataBlock,
-		_KnxNetIpMessage:            &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil
@@ -327,7 +326,7 @@ func (m *_ConnectionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -200,10 +200,10 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 
 	// Create a partially initialized instance
 	_child := &_SearchResponse{
+		_KnxNetIpMessage:    &_KnxNetIpMessage{},
 		HpaiControlEndpoint: hpaiControlEndpoint,
 		DibDeviceInfo:       dibDeviceInfo,
 		DibSuppSvcFamilies:  dibSuppSvcFamilies,
-		_KnxNetIpMessage:    &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil
@@ -269,7 +269,7 @@ func (m *_SearchResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

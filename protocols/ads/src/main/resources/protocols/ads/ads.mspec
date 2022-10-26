@@ -17,6 +17,10 @@
  * under the License.
  */
 
+[type AdsConstants
+    [const          uint 16     adsTcpDefaultPort 48898]
+]
+
 ////////////////////////////////////////////////////////////////
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
@@ -111,86 +115,37 @@
 // AMS Common
 ////////////////////////////////////////////////////////////////
 
-[type AmsPacket
+[discriminatedType AmsPacket
     // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
-    [simple     AmsNetId        targetAmsNetId                            ]
+    [simple        AmsNetId        targetAmsNetId                            ]
     // This is the AmsPort of the station, for which the packet is intended.
-    [simple     uint        16  targetAmsPort                             ]
+    [simple        uint        16  targetAmsPort                             ]
     // This contains the AmsNetId of the station, from which the packet was sent.
-    [simple     AmsNetId        sourceAmsNetId                            ]
+    [simple        AmsNetId        sourceAmsNetId                            ]
     // This contains the AmsPort of the station, from which the packet was sent.
-    [simple     uint        16  sourceAmsPort                             ]
+    [simple        uint        16  sourceAmsPort                             ]
     // 2 bytes.
-    [simple     CommandId       commandId                                 ]
-    // 2 bytes.
-    [simple     State           state                                     ]
+    [discriminator CommandId       commandId                                 ]
+    // 2 bytes. (I set these as constants in order to minimize the input needed for creating requests)
+    [const         bit             initCommand            false              ]
+    [const         bit             updCommand             false              ]
+    [const         bit             timestampAdded         false              ]
+    [const         bit             highPriorityCommand    false              ]
+    [const         bit             systemCommand          false              ]
+    [const         bit             adsCommand             true               ]
+    [const         bit             noReturn               false              ]
+    [discriminator bit             response                                  ]
+    [const         bit             broadcast              false              ]
+    [reserved      int 7           '0x0'                                     ]
     // 4 bytes	Size of the data range. The unit is byte.
-    [implicit   uint        32  length   'data.lengthInBytes'             ]
+    [implicit      uint        32  length   'lengthInBytes - 32'             ]
     // 4 bytes	AMS error number. See ADS Return Codes.
-    [simple     uint        32  errorCode                                 ]
+    [simple        uint        32  errorCode                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
-    [simple      uint        32  invokeId                                 ]
+    [simple        uint        32  invokeId                                  ]
     // The payload
-    [simple     AdsData('commandId', 'state.response')    data           ]
-]
-
-[enum uint 16 CommandId
-    ['0x0000' INVALID]
-    ['0x0001' ADS_READ_DEVICE_INFO]
-    ['0x0002' ADS_READ]
-    ['0x0003' ADS_WRITE]
-    ['0x0004' ADS_READ_STATE]
-    ['0x0005' ADS_WRITE_CONTROL]
-    ['0x0006' ADS_ADD_DEVICE_NOTIFICATION]
-    ['0x0007' ADS_DELETE_DEVICE_NOTIFICATION]
-    ['0x0008' ADS_DEVICE_NOTIFICATION]
-    ['0x0009' ADS_READ_WRITE]
-]
-
-[type State
-    [simple     bit initCommand           ]
-    [simple     bit updCommand            ]
-    [simple     bit timestampAdded        ]
-    [simple     bit highPriorityCommand   ]
-    [simple     bit systemCommand         ]
-    [simple     bit adsCommand            ]
-    [simple     bit noReturn              ]
-    [simple     bit response              ]
-    [simple     bit broadcast             ]
-    [reserved   int 7 '0x0'                 ]
-]
-
-// It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
-// methods between multiple TwinCAT PC's on the network.
-// <p>
-// Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
-// extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
-// routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).
-// <p>
-// The AmsNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AmsNetId would be e.g.
-// "172.16.17.10.1.1". The storage arrangement in this example is as follows:
-// <p>
-// _____0     1     2     3     4     5
-// __+-----------------------------------+
-// 0 | 127 |  16 |  17 |  10 |   1 |   1 |
-// __+-----------------------------------+
-// <p>
-// The AmsNetId is purely logical and has usually no relation to the IP address. The AmsNetId is configured at the
-// target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
-// documentation for notes about settings of the AMS NetId.
-// @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
-[type AmsNetId
-    [simple     uint        8   octet1            ]
-    [simple     uint        8   octet2            ]
-    [simple     uint        8   octet3            ]
-    [simple     uint        8   octet4            ]
-    [simple     uint        8   octet5            ]
-    [simple     uint        8   octet6            ]
-]
-
-[discriminatedType AdsData(CommandId commandId, bit response)
     [typeSwitch commandId, response
         ['INVALID', 'false' AdsInvalidRequest]
         ['INVALID', 'true' AdsInvalidResponse]
@@ -335,6 +290,47 @@
     ]
 ]
 
+[enum uint 16 CommandId
+    ['0x0000' INVALID                       ]
+    ['0x0001' ADS_READ_DEVICE_INFO          ]
+    ['0x0002' ADS_READ                      ]
+    ['0x0003' ADS_WRITE                     ]
+    ['0x0004' ADS_READ_STATE                ]
+    ['0x0005' ADS_WRITE_CONTROL             ]
+    ['0x0006' ADS_ADD_DEVICE_NOTIFICATION   ]
+    ['0x0007' ADS_DELETE_DEVICE_NOTIFICATION]
+    ['0x0008' ADS_DEVICE_NOTIFICATION       ]
+    ['0x0009' ADS_READ_WRITE                ]
+]
+
+// It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
+// methods between multiple TwinCAT PC's on the network.
+// <p>
+// Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
+// extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
+// routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).
+// <p>
+// The AmsNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AmsNetId would be e.g.
+// "172.16.17.10.1.1". The storage arrangement in this example is as follows:
+// <p>
+// _____0     1     2     3     4     5
+// __+-----------------------------------+
+// 0 | 127 |  16 |  17 |  10 |   1 |   1 |
+// __+-----------------------------------+
+// <p>
+// The AmsNetId is purely logical and has usually no relation to the IP address. The AmsNetId is configured at the
+// target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
+// documentation for notes about settings of the AMS NetId.
+// @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
+[type AmsNetId
+    [simple     uint        8   octet1            ]
+    [simple     uint        8   octet2            ]
+    [simple     uint        8   octet3            ]
+    [simple     uint        8   octet4            ]
+    [simple     uint        8   octet5            ]
+    [simple     uint        8   octet6            ]
+]
+
 [discriminatedType AdsMultiRequestItem(uint 32 indexGroup)
     [typeSwitch indexGroup
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ
@@ -387,12 +383,12 @@
     [array byte data count 'sampleSize']
 ]
 
-[dataIo DataItem(vstring dataFormatName, int 32 stringLength)
-    [typeSwitch dataFormatName
+[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength)
+    [typeSwitch plcValueType
         // -----------------------------------------
         // Bit
         // -----------------------------------------
-        ['"IEC61131_BOOL"' BOOL
+        ['BOOL' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value]
         ]
@@ -401,170 +397,229 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['"IEC61131_BYTE"' BitString
+        ['BYTE' BYTE
             [simple uint 8 value]
         ]
         // 2 byte (16 bit)
-        ['"IEC61131_WORD"' BitString
+        ['WORD' WORD
             [simple uint 16 value]
         ]
         // 4 byte (32 bit)
-        ['"IEC61131_DWORD"' BitString
+        ['DWORD' DWORD
             [simple uint 32 value]
+        ]
+        // 8 byte (64 bit)
+        ['LWORD' LWORD
+            [simple uint 64 value]
         ]
 
         // -----------------------------------------
         // Integers
         // -----------------------------------------
         // 8 bit:
-        ['"IEC61131_SINT"' SINT
+        ['SINT' SINT
             [simple int 8 value]
         ]
-        ['"IEC61131_USINT"' USINT
+        ['USINT' USINT
             [simple uint 8 value]
         ]
         // 16 bit:
-        ['"IEC61131_INT"' INT
+        ['INT' INT
             [simple int 16 value]
         ]
-        ['"IEC61131_UINT"' UINT
+        ['UINT' UINT
             [simple uint 16 value]
         ]
         // 32 bit:
-        ['"IEC61131_DINT"' DINT
+        ['DINT' DINT
             [simple int 32 value]
         ]
-        ['"IEC61131_UDINT"' UDINT
+        ['UDINT' UDINT
             [simple uint 32 value]
         ]
         // 64 bit:
-        ['"IEC61131_LINT"' LINT
+        ['LINT' LINT
             [simple int 64 value]
         ]
-        ['"IEC61131_ULINT"' ULINT
+        ['ULINT' ULINT
             [simple uint 64 value]
         ]
 
         // -----------------------------------------
         // Floating point values
         // -----------------------------------------
-        ['"IEC61131_REAL"' REAL
+        ['REAL' REAL
             [simple float 32  value]
         ]
-        ['"IEC61131_LREAL"' LREAL
+        ['LREAL' LREAL
             [simple float 64 value]
         ]
 
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['"IEC61131_CHAR"' STRING
-            [simple string 8 value]
+        ['CHAR' CHAR
+            [simple   string 8                       value    encoding='"UTF-8"'   ]
         ]
-        ['"IEC61131_WCHAR"' STRING
-            [simple string 16 value encoding='"UTF-16"']
+        ['WCHAR' WCHAR
+            [simple   string 16                      value    encoding='"UTF-16LE"']
         ]
-        ['"IEC61131_STRING"' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
+        ['STRING' STRING
+            [simple   vstring 'stringLength * 8'     value    encoding='"UTF-8"'   ]
+            [reserved uint 8                         '0x00'                        ]
         ]
-        ['"IEC61131_WSTRING"' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2' encoding='"UTF-16"']
+        ['WSTRING' WSTRING
+            [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"']
+            [reserved uint 16                        '0x0000'                      ]
         ]
 
         // -----------------------------------------
         // Date & Times
         // -----------------------------------------
         // Interpreted as "milliseconds"
-        ['"IEC61131_TIME"' TIME
+        ['TIME' TIME
             [simple uint 32 value]
         ]
         // Interpreted as "nanoseconds"
-        ['"IEC61131_LTIME"' LTIME
+        ['LTIME' LTIME
             [simple uint 64 value]
         ]
         // Interpreted as "seconds since epoch"
-        ['"IEC61131_DATE"' DATE
+        ['DATE' DATE
             [simple uint 32 value]
         ]
         // Interpreted as "milliseconds since midnight"
-        ['"IEC61131_TIME_OF_DAY"' TIME_OF_DAY
+        ['TIME_OF_DAY' TIME_OF_DAY
             [simple uint 32 value]
         ]
         // Interpreted as "seconds since epoch"
-        ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
+        ['DATE_AND_TIME' DATE_AND_TIME
             [simple uint 32 secondsSinceEpoch]
         ]
     ]
 ]
 
-[enum int 8 AdsDataType(uint 16 numBytes, vstring dataFormatName)
-    ['0x01' BOOL       ['1', '"IEC61131_BOOL"']]
-    ['0x02' BIT        ['1', '"IEC61131_BOOL"']]
+[enum uint 8 PlcValueType
+    ['0x00' NULL          ]
+
+    // Bit Strings
+    ['0x01' BOOL          ]
+    ['0x02' BYTE          ]
+    ['0x03' WORD          ]
+    ['0x04' DWORD         ]
+    ['0x05' LWORD         ]
+
+    // Unsigned Integers
+    ['0x11' USINT         ]
+    ['0x12' UINT          ]
+    ['0x13' UDINT         ]
+    ['0x14' ULINT         ]
+
+    // Signed Integers
+    ['0x21' SINT          ]
+    ['0x22' INT           ]
+    ['0x23' DINT          ]
+    ['0x24' LINT          ]
+
+    // Floating Point Values
+    ['0x31' REAL          ]
+    ['0x32' LREAL         ]
+
+    // Chars and Strings
+    ['0x41' CHAR          ]
+    ['0x42' WCHAR         ]
+    ['0x43' STRING        ]
+    ['0x44' WSTRING       ]
+
+    // Times and Dates
+    ['0x51' TIME          ]
+    ['0x52' LTIME         ]
+    ['0x53' DATE          ]
+    ['0x54' LDATE         ]
+    ['0x55' TIME_OF_DAY   ]
+    ['0x56' LTIME_OF_DAY  ]
+    ['0x57' DATE_AND_TIME ]
+    ['0x58' LDATE_AND_TIME]
+
+    // Complex types
+    ['0x61' Struct        ]
+    ['0x62' List          ]
+
+    ['0x71' RAW_BYTE_ARRAY]
+]
+
+[enum int 8 AdsDataType(uint 16 numBytes, PlcValueType plcValueType)
+    ['0x01' BOOL           ['1',   'BOOL'         ]]
+    ['0x02' BIT            ['1',   'BOOL'         ]]
 
     // -----------------------------------------
     // Bit-strings
     // -----------------------------------------
     // 1 byte
-    ['0x03' BIT8       ['1', '"IEC61131_BYTE"']]
-    ['0x04' BYTE       ['1', '"IEC61131_BYTE"']]
-    ['0x05' BITARR8    ['1', '"IEC61131_BYTE"']]
+    ['0x03' BIT8           ['1',   'BYTE'         ]]
+    ['0x04' BYTE           ['1',   'BYTE'         ]]
+    ['0x05' BITARR8        ['1',   'BYTE'         ]]
     // 2 byte (16 bit)
-    ['0x06' WORD       ['2', '"IEC61131_WORD"']]
-    ['0x07' BITARR16   ['2', '"IEC61131_WORD"']]
+    ['0x06' WORD           ['2',   'WORD'         ]]
+    ['0x07' BITARR16       ['2',   'WORD'         ]]
     // 4 byte (32 bit)
-    ['0x08' DWORD      ['4', '"IEC61131_DWORD"']]
-    ['0x09' BITARR32   ['4', '"IEC61131_DWORD"']]
+    ['0x08' DWORD          ['4',   'DWORD'        ]]
+    ['0x09' BITARR32       ['4',   'DWORD'        ]]
     // -----------------------------------------
     // Integers
     // -----------------------------------------
     // 8 bit:
-    ['0x0A' SINT       ['1', '"IEC61131_SINT"']]
-    ['0x0B' INT8       ['1', '"IEC61131_SINT"']]
-    ['0x0C' USINT      ['1', '"IEC61131_USINT"']]
-    ['0x0D' UINT8      ['1', '"IEC61131_USINT"']]
+    ['0x0A' SINT           ['1',   'SINT'         ]]
+    ['0x0B' INT8           ['1',   'SINT'         ]]
+    ['0x0C' USINT          ['1',   'USINT'        ]]
+    ['0x0D' UINT8          ['1',   'USINT'        ]]
     // 16 bit:
-    ['0x0E' INT        ['2', '"IEC61131_INT"']]
-    ['0x0F' INT16      ['2', '"IEC61131_INT"']]
-    ['0x10' UINT       ['2', '"IEC61131_UINT"']]
-    ['0x11' UINT16     ['2', '"IEC61131_UINT"']]
+    ['0x0E' INT            ['2',   'INT'          ]]
+    ['0x0F' INT16          ['2',   'INT'          ]]
+    ['0x10' UINT           ['2',   'UINT'         ]]
+    ['0x11' UINT16         ['2',   'UINT'         ]]
     // 32 bit:
-    ['0x12' DINT       ['4', '"IEC61131_DINT"']]
-    ['0x13' INT32      ['4', '"IEC61131_DINT"']]
-    ['0x14' UDINT      ['4', '"IEC61131_UDINT"']]
-    ['0x15' UINT32     ['4', '"IEC61131_UDINT"']]
+    ['0x12' DINT           ['4',   'DINT'         ]]
+    ['0x13' INT32          ['4',   'DINT'         ]]
+    ['0x14' UDINT          ['4',   'UDINT'        ]]
+    ['0x15' UINT32         ['4',   'UDINT'        ]]
     // 64 bit:
-    ['0x16' LINT       ['8', '"IEC61131_LINT"']]
-    ['0x17' INT64      ['8', '"IEC61131_LINT"']]
-    ['0x18' ULINT      ['8', '"IEC61131_ULINT"']]
-    ['0x19' UINT64     ['8', '"IEC61131_ULINT"']]
+    ['0x16' LINT           ['8',   'LINT'         ]]
+    ['0x17' INT64          ['8',   'LINT'         ]]
+    ['0x18' ULINT          ['8',   'ULINT'        ]]
+    ['0x19' UINT64         ['8',   'ULINT'        ]]
     // -----------------------------------------
     // Floating point values
     // -----------------------------------------
-    ['0x1A' REAL       ['4', '"IEC61131_REAL"']]
-    ['0x1B' FLOAT      ['4', '"IEC61131_REAL"']]
-    ['0x1C' LREAL      ['8', '"IEC61131_LREAL"']]
-    ['0x1D' DOUBLE     ['8', '"IEC61131_LREAL"']]
+    ['0x1A' REAL           ['4',   'REAL'         ]]
+    ['0x1B' FLOAT          ['4',   'REAL'         ]]
+    ['0x1C' LREAL          ['8',   'LREAL'        ]]
+    ['0x1D' DOUBLE         ['8',   'LREAL'        ]]
     // -----------------------------------------
     // Characters & Strings
     // -----------------------------------------
-    ['0x1E' CHAR       ['1',   '"IEC61131_CHAR"']]
-    ['0x1F' WCHAR      ['2',   '"IEC61131_WCHAR"']]
-    ['0x20' STRING     ['256', '"IEC61131_STRING"']]
-    ['0x21' WSTRING    ['512', '"IEC61131_WSTRING"']]
+    ['0x1E' CHAR           ['1',   'CHAR'         ]]
+    ['0x1F' WCHAR          ['2',   'WCHAR'        ]]
+    ['0x20' STRING         ['256', 'STRING'       ]]
+    ['0x21' WSTRING        ['512', 'WSTRING'      ]]
     // -----------------------------------------
     // Dates & Times
     // -----------------------------------------
-    ['0x22' TIME           ['4', '"IEC61131_TIME"']]
-    ['0x23' LTIME          ['8', '"IEC61131_LTIME"']]
-    ['0x24' DATE           ['4', '"IEC61131_DATE"']]
-    ['0x25' TIME_OF_DAY    ['4', '"IEC61131_TIME_OF_DAY"']]
-    ['0x26' TOD            ['4', '"IEC61131_TIME_OF_DAY"']]
-    ['0x27' DATE_AND_TIME  ['4', '"IEC61131_DATE_AND_TIME"']]
-    ['0x28' DT             ['4', '"IEC61131_DATE_AND_TIME"']]
+    ['0x22' TIME           ['4',   'TIME'         ]]
+    ['0x23' LTIME          ['8',   'LTIME'        ]]
+    ['0x24' DATE           ['4',   'DATE'         ]]
+    ['0x25' TIME_OF_DAY    ['4',   'TIME_OF_DAY'  ]]
+    ['0x26' TOD            ['4',   'TIME_OF_DAY'  ]]
+    ['0x27' DATE_AND_TIME  ['4',   'DATE_AND_TIME']]
+    ['0x28' DT             ['4',   'DATE_AND_TIME']]
 ]
 
+// https://github.com/Beckhoff/ADS/blob/master/AdsLib/standalone/AdsDef.h
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/ads.go#L145
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/connection.go#L109
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L222
+// Especially interesting for the sum add/delete notification requests
+// https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_ads_intro/117463563.html&id=
 [enum uint 32 ReservedIndexGroups
     ['0x0000F000' ADSIGRP_SYMTAB]
     ['0x0000F001' ADSIGRP_SYMNAME]
@@ -575,24 +630,42 @@
     ['0x0000F006' ADSIGRP_SYM_RELEASEHND]
     ['0x0000F007' ADSIGRP_SYM_INFOBYNAME]
     ['0x0000F008' ADSIGRP_SYM_VERSION]
+    // We can use this GID to read the type information of a given variable
+    // in the operation mode in which we don't read the entire structures on
+    // connection start.
     ['0x0000F009' ADSIGRP_SYM_INFOBYNAMEEX]
     ['0x0000F00A' ADSIGRP_SYM_DOWNLOAD]
+    // Read the symbol-table (All variables defined in the PLC)
     ['0x0000F00B' ADSIGRP_SYM_UPLOAD]
     ['0x0000F00C' ADSIGRP_SYM_UPLOADINFO]
+    // Read the data-type-table (All data-types defined in the PLC)
+    ['0x0000F00E' ADSIGRP_DATA_TYPE_TABLE_UPLOAD]
+    // Read the sizes of the symbol and data-type-tables
+    ['0x0000F00F' ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES]
     ['0x0000F010' ADSIGRP_SYMNOTE]
+    // We can use this GIT to read the data-type information for a given
+    // data type name in the operation mode in which we don't read the
+    // entire structures on connection start.
+    ['0x0000F011' ADSIGRP_DT_INFOBYNAMEEX]
+    // Access to the %I fields
     ['0x0000F020' ADSIGRP_IOIMAGE_RWIB]
     ['0x0000F021' ADSIGRP_IOIMAGE_RWIX]
     ['0x0000F025' ADSIGRP_IOIMAGE_RISIZE]
+    // Access to the %Q fields
     ['0x0000F030' ADSIGRP_IOIMAGE_RWOB]
     ['0x0000F031' ADSIGRP_IOIMAGE_RWOX]
     ['0x0000F035' ADSIGRP_IOIMAGE_RWOSIZE]
     ['0x0000F040' ADSIGRP_IOIMAGE_CLEARI]
     ['0x0000F050' ADSIGRP_IOIMAGE_CLEARO]
     ['0x0000F060' ADSIGRP_IOIMAGE_RWIOB]
+    // Sum Requests
     ['0x0000F080' ADSIGRP_MULTIPLE_READ]
     ['0x0000F081' ADSIGRP_MULTIPLE_WRITE]
     ['0x0000F082' ADSIGRP_MULTIPLE_READ_WRITE]
     ['0x0000F083' ADSIGRP_MULTIPLE_RELEASE_HANDLE]
+    ['0x0000F084' ADSIGRP_SUMUP_READEX2]
+    ['0x0000F085' ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS]
+    ['0x0000F086' ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS]
     ['0x0000F100' ADSIGRP_DEVICE_DATA]
     ['0x00000000' ADSIOFFS_DEVDATA_ADSSTATE]
     ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE]
@@ -730,4 +803,185 @@
     ['0x274C' WSAETIMEDOUT]
     ['0x274D' WSAECONNREFUSED]
     ['0x2751' WSAEHOSTUNREACH]
+]
+
+[type AdsTableSizes byteOrder='LITTLE_ENDIAN'
+	[simple   uint 32 symbolCount   ]
+	[simple   uint 32 symbolLength  ]
+	[simple   uint 32 dataTypeCount ]
+	[simple   uint 32 dataTypeLength]
+	[simple   uint 32 extraCount    ]
+	[simple   uint 32 extraLength   ]
+]
+
+[type AdsSymbolTableEntry byteOrder='LITTLE_ENDIAN'
+  	[simple   uint 32                          entryLength                                     ]
+    [simple   uint 32                          group                                           ]
+    [simple   uint 32                          offset                                          ]
+    [simple   uint 32                          size                                            ]
+    [simple   uint 32                          dataType                                        ]
+    // Start: Flags
+    // https://github.com/jisotalo/ads-server/blob/master/src/ads-commons.ts#L631
+    // Order of the bits if read Little-Endian and then accessing the bit flags
+    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8  |  23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
+    [simple   bit                              flagMethodDeref                                 ]
+    [simple   bit                              flagItfMethodAccess                             ]
+    [simple   bit                              flagReadOnly                                    ]
+    [simple   bit                              flagTComInterfacePointer                        ]
+    [simple   bit                              flagTypeGuid                                    ]
+    [simple   bit                              flagReferenceTo                                 ]
+    [simple   bit                              flagBitValue                                    ]
+    [simple   bit                              flagPersistent                                  ]
+    [reserved uint 3                           '0x00'                                          ]
+    [simple   bit                              flagExtendedFlags                               ]
+    [simple   bit                              flagInitOnReset                                 ]
+    [simple   bit                              flagStatic                                      ]
+    [simple   bit                              flagAttributes                                  ]
+    [simple   bit                              flagContextMask                                 ]
+    [reserved uint 16                          '0x0000'                                        ]
+    // End: Flags
+    [implicit uint 16                          nameLength               'STR_LEN(name)'        ]
+    [implicit uint 16                          dataTypeNameLength       'STR_LEN(dataTypeName)']
+    [implicit uint 16                          commentLength            'STR_LEN(comment)'     ]
+	[simple   vstring 'nameLength * 8'         name                                            ]
+	[const    uint 8                           nameTerminator           0x00                   ]
+	[simple   vstring 'dataTypeNameLength * 8' dataTypeName                                    ]
+	[const    uint 8                           dataTypeNameTerminator   0x00                   ]
+	[simple   vstring 'commentLength * 8'      comment                                         ]
+	[const    uint 8                           commentTerminator        0x00                   ]
+	// Gobbling up the rest, but it seems there is content in here, when looking
+	// at the data in wireshark, it seems to be related to the flags field.
+	// Will have to continue searching for more details on how to decode this.
+	// I would assume that we'll have some "optional" fields here which depend
+	// on values in the flags section.
+	[array    byte                             rest             length 'entryLength - curPos'  ]
+]
+
+// https://gitlab.com/xilix-systems-llc/go-native-ads/-/blob/master/symbols.go#L15
+[discriminatedType AdsDataTypeTableEntry byteOrder='LITTLE_ENDIAN'
+	[simple   uint 32                            entryLength                                                            ]
+	[simple   uint 32                            version                                                                ]
+	[simple   uint 32                            hashValue                                                              ]
+	[simple   uint 32                            typeHashValue                                                          ]
+	[simple   uint 32                            size                                                                   ]
+	[simple   uint 32                            offset                                                                 ]
+	[simple   uint 32                            dataType                                                               ]
+	[simple   uint 32                            flags                                                                  ]
+	[implicit uint 16                            dataTypeNameLength       'STR_LEN(dataTypeName)'                       ]
+	[implicit uint 16                            simpleTypeNameLength     'STR_LEN(simpleTypeName)'                     ]
+	[implicit uint 16                            commentLength            'STR_LEN(comment)'                            ]
+	[simple   uint 16                            arrayDimensions                                                        ]
+	[simple   uint 16                            numChildren                                                            ]
+	[simple   vstring 'dataTypeNameLength * 8'   dataTypeName                                                           ]
+	[const    uint 8                             dataTypeNameTerminator   0x00                                          ]
+	[simple   vstring 'simpleTypeNameLength * 8' simpleTypeName                                                         ]
+	[const    uint 8                             simpleTypeNameTerminator 0x00                                          ]
+	[simple   vstring 'commentLength * 8'        comment                                                                ]
+	[const    uint 8                             commentTerminator        0x00                                          ]
+    [array    AdsDataTypeArrayInfo               arrayInfo                count                   'arrayDimensions'     ]
+   	[array    AdsDataTypeTableChildEntry         children                 count                   'numChildren'         ]
+	// Gobbling up the rest, but it seems there is content in here, when looking
+	// at the data in wireshark, it seems to be related to the flags field.
+	// Will have to continue searching for more details on how to decode this.
+	// I would assume that we'll have some "optional" fields here which depend
+	// on values in the flags section.
+	[array    byte                               rest                     length                  'entryLength - curPos']
+]
+
+// In data-type child entries, the name seems to be used by the property name and the data-type name seems to contain
+// what in the parent case the "name" attribute seems to use.
+// TODO: In general only the propertyName, dataTypeName and offset are interesting here. The rest is mostly not fully initialized
+[discriminatedType AdsDataTypeTableChildEntry byteOrder='LITTLE_ENDIAN'
+	[simple   uint 32                          entryLength                                                            ]
+	[simple   uint 32                          version                                                                ]
+	[simple   uint 32                          hashValue                                                              ]
+	[simple   uint 32                          typeHashValue                                                          ]
+	[simple   uint 32                          size                                                                   ]
+	[simple   uint 32                          offset                                                                 ]
+	[simple   uint 32                          dataType                                                               ]
+	[simple   uint 32                          flags                                                                  ]
+	[implicit uint 16                          propertyNameLength       'STR_LEN(propertyName)'                       ]
+	[implicit uint 16                          dataTypeNameLength       'STR_LEN(dataTypeName)'                       ]
+	[implicit uint 16                          commentLength            'STR_LEN(comment)'                            ]
+	[simple   uint 16                          arrayDimensions                                                        ]
+	[simple   uint 16                          numChildren                                                            ]
+	[simple   vstring 'propertyNameLength * 8' propertyName                                                           ]
+	[const    uint 8                           propertyNameTerminator   0x00                                          ]
+	[simple   vstring 'dataTypeNameLength * 8' dataTypeName                                                           ]
+	[const    uint 8                           dataTypeNameTerminator   0x00                                          ]
+	[simple   vstring 'commentLength * 8'      comment                                                                ]
+	[const    uint 8                           commentTerminator        0x00                                          ]
+    [array    AdsDataTypeArrayInfo             arrayInfo                count                   'arrayDimensions'     ]
+   	[array    AdsDataTypeTableEntry            children                 count                   'numChildren'         ]
+	// Gobbling up the rest, but it seems there is content in here, when looking
+	// at the data in wireshark, it seems to be related to the flags field.
+	// Will have to continue searching for more details on how to decode this.
+	// I would assume that we'll have some "optional" fields here which depend
+	// on values in the flags section.
+	[array    byte                             rest                     length                  'entryLength - curPos']
+]
+
+[type AdsDataTypeArrayInfo byteOrder='LITTLE_ENDIAN'
+    [simple  uint 32 lowerBound                            ]
+    [simple  uint 32 numElements                           ]
+    [virtual uint 32 upperBound  'lowerBound + numElements']
+]
+
+// From: https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/31064331.html&id=
+[enum uint 16 DefaultAmsPorts
+    ['900' CAM_CONTROLLER     ]
+    ['851' RUNTIME_SYSTEM_01  ]
+    ['852' RUNTIME_SYSTEM_02  ]
+    ['853' RUNTIME_SYSTEM_03  ]
+    ['854' RUNTIME_SYSTEM_04  ]
+    ['855' RUNTIME_SYSTEM_05  ]
+    ['856' RUNTIME_SYSTEM_06  ]
+    ['857' RUNTIME_SYSTEM_07  ]
+    ['858' RUNTIME_SYSTEM_08  ]
+    ['859' RUNTIME_SYSTEM_09  ]
+    ['860' RUNTIME_SYSTEM_10  ]
+    ['861' RUNTIME_SYSTEM_11  ]
+    ['862' RUNTIME_SYSTEM_12  ]
+    ['863' RUNTIME_SYSTEM_13  ]
+    ['864' RUNTIME_SYSTEM_14  ]
+    ['865' RUNTIME_SYSTEM_15  ]
+    ['866' RUNTIME_SYSTEM_16  ]
+    ['867' RUNTIME_SYSTEM_17  ]
+    ['868' RUNTIME_SYSTEM_18  ]
+    ['869' RUNTIME_SYSTEM_19  ]
+    ['870' RUNTIME_SYSTEM_20  ]
+    ['871' RUNTIME_SYSTEM_21  ]
+    ['872' RUNTIME_SYSTEM_22  ]
+    ['873' RUNTIME_SYSTEM_23  ]
+    ['874' RUNTIME_SYSTEM_24  ]
+    ['875' RUNTIME_SYSTEM_25  ]
+    ['876' RUNTIME_SYSTEM_26  ]
+    ['877' RUNTIME_SYSTEM_27  ]
+    ['878' RUNTIME_SYSTEM_28  ]
+    ['879' RUNTIME_SYSTEM_29  ]
+    ['880' RUNTIME_SYSTEM_30  ]
+    ['881' RUNTIME_SYSTEM_31  ]
+    ['882' RUNTIME_SYSTEM_32  ]
+    ['883' RUNTIME_SYSTEM_33  ]
+    ['884' RUNTIME_SYSTEM_34  ]
+    ['885' RUNTIME_SYSTEM_35  ]
+    ['886' RUNTIME_SYSTEM_36  ]
+    ['887' RUNTIME_SYSTEM_37  ]
+    ['888' RUNTIME_SYSTEM_38  ]
+    ['889' RUNTIME_SYSTEM_39  ]
+    ['890' RUNTIME_SYSTEM_40  ]
+    ['891' RUNTIME_SYSTEM_41  ]
+    ['892' RUNTIME_SYSTEM_42  ]
+    ['893' RUNTIME_SYSTEM_43  ]
+    ['894' RUNTIME_SYSTEM_44  ]
+    ['895' RUNTIME_SYSTEM_45  ]
+    ['896' RUNTIME_SYSTEM_46  ]
+    ['897' RUNTIME_SYSTEM_47  ]
+    ['898' RUNTIME_SYSTEM_48  ]
+    ['899' RUNTIME_SYSTEM_49  ]
+    ['500' NC                 ]
+    ['400' RESERVED           ]
+    ['300' IO                 ]
+    ['200' REAL_TIME_CORE     ]
+    ['100' EVENT_SYSTEM_LOGGER]
 ]

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -219,7 +219,14 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	}
 
 	// Create the instance
-	return NewBACnetEventPriorities(openingTag, toOffnormal, toFault, toNormal, closingTag, tagNumber), nil
+	return &_BACnetEventPriorities{
+		TagNumber:   tagNumber,
+		OpeningTag:  openingTag,
+		ToOffnormal: toOffnormal,
+		ToFault:     toFault,
+		ToNormal:    toNormal,
+		ClosingTag:  closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventPriorities) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -295,6 +302,16 @@ func (m *_BACnetEventPriorities) Serialize(writeBuffer utils.WriteBuffer) error 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventPriorities) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventPriorities) isBACnetEventPriorities() bool {
 	return true
 }
@@ -303,7 +320,7 @@ func (m *_BACnetEventPriorities) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

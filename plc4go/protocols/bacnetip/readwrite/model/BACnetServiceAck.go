@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -33,7 +33,7 @@ type BACnetServiceAck interface {
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
-	GetServiceAckPayloadLength() uint16
+	GetServiceAckPayloadLength() uint32
 }
 
 // BACnetServiceAckExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAck.
@@ -48,7 +48,7 @@ type _BACnetServiceAck struct {
 	_BACnetServiceAckChildRequirements
 
 	// Arguments.
-	ServiceAckLength uint16
+	ServiceAckLength uint32
 }
 
 type _BACnetServiceAckChildRequirements interface {
@@ -77,8 +77,8 @@ type BACnetServiceAckChild interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetServiceAck) GetServiceAckPayloadLength() uint16 {
-	return uint16(utils.InlineIf(bool(bool((m.ServiceAckLength) > (0))), func() interface{} { return uint16(uint16(uint16(m.ServiceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+func (m *_BACnetServiceAck) GetServiceAckPayloadLength() uint32 {
+	return uint32(utils.InlineIf((bool((m.ServiceAckLength) > (0))), func() interface{} { return uint32((uint32(m.ServiceAckLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32))
 }
 
 ///////////////////////
@@ -87,7 +87,7 @@ func (m *_BACnetServiceAck) GetServiceAckPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAck factory function for _BACnetServiceAck
-func NewBACnetServiceAck(serviceAckLength uint16) *_BACnetServiceAck {
+func NewBACnetServiceAck(serviceAckLength uint32) *_BACnetServiceAck {
 	return &_BACnetServiceAck{ServiceAckLength: serviceAckLength}
 }
 
@@ -120,7 +120,7 @@ func (m *_BACnetServiceAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAck, error) {
+func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAck"); pullErr != nil {
@@ -143,8 +143,8 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint16)
 	}
 
 	// Virtual field
-	_serviceAckPayloadLength := utils.InlineIf(bool(bool((serviceAckLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
-	serviceAckPayloadLength := uint16(_serviceAckPayloadLength)
+	_serviceAckPayloadLength := utils.InlineIf((bool((serviceAckLength) > (0))), func() interface{} { return uint32((uint32(serviceAckLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32)
+	serviceAckPayloadLength := uint32(_serviceAckPayloadLength)
 	_ = serviceAckPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -243,6 +243,16 @@ func (pm *_BACnetServiceAck) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetServiceAck) GetServiceAckLength() uint32 {
+	return m.ServiceAckLength
+}
+
+//
+////
+
 func (m *_BACnetServiceAck) isBACnetServiceAck() bool {
 	return true
 }
@@ -251,7 +261,7 @@ func (m *_BACnetServiceAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

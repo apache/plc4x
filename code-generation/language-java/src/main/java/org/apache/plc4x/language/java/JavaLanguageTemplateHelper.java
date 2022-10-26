@@ -1251,4 +1251,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             .orElse(false);
     }
 
+    public boolean needsLongMarker(Optional<SimpleTypeReference> baseTypeReference) {
+        return baseTypeReference.isPresent() && baseTypeReference.get().isIntegerTypeReference() && baseTypeReference.get().asIntegerTypeReference().orElseThrow().getSizeInBits() >= 32;
+    }
+
 }

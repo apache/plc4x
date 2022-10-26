@@ -48,7 +48,7 @@ public class StaticHelper {
         // NOOP - a placeholder to let mspec compile
     }
 
-    public static Object parseString(ReadBuffer io, int length, String charset) {
+    public static Object parseString(ReadBuffer io, int length, String charset) throws ParseException {
         return io.readString(8 * length, charset);
     }
 

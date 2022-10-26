@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -343,7 +342,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field of BACnetPriorityArray")
@@ -475,7 +474,13 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	}
 
 	// Create the instance
-	return NewBACnetPriorityArray(numberOfDataElements, data, objectTypeArgument, tagNumber, arrayIndexArgument), nil
+	return &_BACnetPriorityArray{
+		ObjectTypeArgument:   objectTypeArgument,
+		TagNumber:            tagNumber,
+		ArrayIndexArgument:   arrayIndexArgument,
+		NumberOfDataElements: numberOfDataElements,
+		Data:                 data,
+	}, nil
 }
 
 func (m *_BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -597,6 +602,22 @@ func (m *_BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPriorityArray) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetPriorityArray) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetPriorityArray) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
+
 func (m *_BACnetPriorityArray) isBACnetPriorityArray() bool {
 	return true
 }
@@ -605,7 +626,7 @@ func (m *_BACnetPriorityArray) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -145,7 +144,7 @@ func BACnetLogDataLogDataEntryAnyValueParse(readBuffer utils.ReadBuffer) (BACnet
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(8), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'anyValue' field of BACnetLogDataLogDataEntryAnyValue")
@@ -163,8 +162,8 @@ func BACnetLogDataLogDataEntryAnyValueParse(readBuffer utils.ReadBuffer) (BACnet
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataEntryAnyValue{
-		AnyValue:                   anyValue,
 		_BACnetLogDataLogDataEntry: &_BACnetLogDataLogDataEntry{},
+		AnyValue:                   anyValue,
 	}
 	_child._BACnetLogDataLogDataEntry._BACnetLogDataLogDataEntryChildRequirements = _child
 	return _child, nil
@@ -210,7 +209,7 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

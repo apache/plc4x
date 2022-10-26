@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -173,7 +173,12 @@ func BACnetPropertyStatesEnclosedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Create the instance
-	return NewBACnetPropertyStatesEnclosed(openingTag, propertyState, closingTag, tagNumber), nil
+	return &_BACnetPropertyStatesEnclosed{
+		TagNumber:     tagNumber,
+		OpeningTag:    openingTag,
+		PropertyState: propertyState,
+		ClosingTag:    closingTag,
+	}, nil
 }
 
 func (m *_BACnetPropertyStatesEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -225,6 +230,16 @@ func (m *_BACnetPropertyStatesEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPropertyStatesEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetPropertyStatesEnclosed) isBACnetPropertyStatesEnclosed() bool {
 	return true
 }
@@ -233,7 +248,7 @@ func (m *_BACnetPropertyStatesEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

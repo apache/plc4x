@@ -21,9 +21,8 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -59,6 +58,8 @@ type _S7Message struct {
 	TpduReference uint16
 	Parameter     S7Parameter
 	Payload       S7Payload
+	// Reserved Fields
+	reservedField0 *uint16
 }
 
 type _S7MessageChildRequirements interface {
@@ -198,6 +199,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of S7Message")
 	}
 
+	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -205,10 +207,12 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7Message")
 		}
 		if reserved != uint16(0x0000) {
-			log.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]interface{}{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -269,7 +273,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		_val, _err := S7ParameterParse(readBuffer, messageType)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field of S7Message")
@@ -291,7 +295,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field of S7Message")
@@ -309,6 +313,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 
 	// Finish initializing
 	_child.InitializeParent(_child, tpduReference, parameter, payload)
+	_child.GetParent().(*_S7Message).reservedField0 = reservedField0
 	return _child, nil
 }
 
@@ -338,7 +343,15 @@ func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Mes
 
 	// Reserved Field (reserved)
 	{
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0000))
+		var reserved uint16 = uint16(0x0000)
+		if pm.reservedField0 != nil {
+			Plc4xModelLog.Info().Fields(map[string]interface{}{
+				"expected value": uint16(0x0000),
+				"got value":      reserved,
+			}).Msg("Overriding reserved field with unexpected value.")
+			reserved = *pm.reservedField0
+		}
+		_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -416,7 +429,7 @@ func (m *_S7Message) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

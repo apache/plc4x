@@ -21,8 +21,8 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
 	firmataIO "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )

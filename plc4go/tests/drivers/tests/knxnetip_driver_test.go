@@ -21,10 +21,10 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	knxIO "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
 	knxModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )

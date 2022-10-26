@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -206,12 +206,12 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 
 	// Create a partially initialized instance
 	_child := &_LDataReq{
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
 		_CEMI: &_CEMI{
 			Size: size,
 		},
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -274,7 +274,7 @@ func (m *_LDataReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

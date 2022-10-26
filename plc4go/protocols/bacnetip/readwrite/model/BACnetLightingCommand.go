@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -191,7 +190,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'targetLevel' field of BACnetLightingCommand")
@@ -213,7 +212,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'rampRate' field of BACnetLightingCommand")
@@ -235,7 +234,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'stepIncrement' field of BACnetLightingCommand")
@@ -257,7 +256,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'fadeTime' field of BACnetLightingCommand")
@@ -279,7 +278,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetLightingCommand")
@@ -296,7 +295,14 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 	}
 
 	// Create the instance
-	return NewBACnetLightingCommand(lightningOperation, targetLevel, rampRate, stepIncrement, fadeTime, priority), nil
+	return &_BACnetLightingCommand{
+		LightningOperation: lightningOperation,
+		TargetLevel:        targetLevel,
+		RampRate:           rampRate,
+		StepIncrement:      stepIncrement,
+		FadeTime:           fadeTime,
+		Priority:           priority,
+	}, nil
 }
 
 func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -412,7 +418,7 @@ func (m *_BACnetLightingCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

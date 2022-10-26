@@ -22,6 +22,7 @@ package pcaphandler
 import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -31,11 +32,14 @@ func GetPacketSource(handle *pcap.Handle) *gopacket.PacketSource {
 }
 
 // GetIndexedPcapHandle returns a *pcap.Handle, the number of packages found and an index which maps timestamp to
-// absolute package number and panics if an error occurs
-func GetIndexedPcapHandle(file, filterExpression string) (*pcap.Handle, int, map[time.Time]int) {
-	timestampToIndexMap := make(map[time.Time]int)
+// absolute package number
+func GetIndexedPcapHandle(file, filterExpression string) (handle *pcap.Handle, numberOfPackages int, timestampToIndexMap map[time.Time]int, err error) {
+	timestampToIndexMap = make(map[time.Time]int)
 	// Count absolute packages and set timestamp map
-	temporaryHandle := GetPcapHandle(file, "")
+	temporaryHandle, err := GetPcapHandle(file, "")
+	if err != nil {
+		return nil, 0, nil, err
+	}
 	defer temporaryHandle.Close()
 	packetSource := GetPacketSource(temporaryHandle)
 	packages := 0
@@ -47,7 +51,10 @@ func GetIndexedPcapHandle(file, filterExpression string) (*pcap.Handle, int, map
 		timestampToIndexMap[packet.Metadata().Timestamp] = packages
 	}
 	// Just count filtered packages
-	temporaryFilteredHandle := GetPcapHandle(file, filterExpression)
+	temporaryFilteredHandle, err := GetPcapHandle(file, filterExpression)
+	if err != nil {
+		return nil, 0, nil, err
+	}
 	defer temporaryFilteredHandle.Close()
 	filteredPacketSource := GetPacketSource(temporaryFilteredHandle)
 	packages = 0
@@ -57,24 +64,23 @@ func GetIndexedPcapHandle(file, filterExpression string) (*pcap.Handle, int, map
 		}
 		packages++
 	}
-	return GetPcapHandle(file, filterExpression), packages, timestampToIndexMap
+	pcapHandle, err := GetPcapHandle(file, filterExpression)
+	if err != nil {
+		return nil, 0, nil, err
+	}
+	return pcapHandle, packages, timestampToIndexMap, nil
 }
 
 // GetPcapHandle returns a *pcap.Handle and panics if an error occurs
-func GetPcapHandle(file, filterExpression string) *pcap.Handle {
-	handle := getPcapHandleOrPanic(file)
-	if filterExpression != "" {
-		if err := handle.SetBPFFilter(filterExpression); err != nil {
-			panic(err)
-		}
-	}
-	return handle
-}
-
-func getPcapHandleOrPanic(file string) *pcap.Handle {
+func GetPcapHandle(file, filterExpression string) (*pcap.Handle, error) {
 	handle, err := pcap.OpenOffline(file)
 	if err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "error open offline")
 	}
-	return handle
+	if filterExpression != "" {
+		if err := handle.SetBPFFilter(filterExpression); err != nil {
+			return nil, errors.Wrap(err, "error setting BPF filter")
+		}
+	}
+	return handle, nil
 }

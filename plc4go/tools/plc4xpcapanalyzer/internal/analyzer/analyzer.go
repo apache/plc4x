@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/bacnetanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/cbusanalyzer"
@@ -31,16 +32,30 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/k0kubun/go-ansi"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/schollz/progressbar/v3"
+	"io"
 	"net"
+	"os"
 	"time"
 )
 
-func Analyze(pcapFile, protocolType string) {
+func Analyze(pcapFile, protocolType string) error {
+	return AnalyzeWithOutput(pcapFile, protocolType, os.Stdout, os.Stderr)
+}
+
+func AnalyzeWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) error {
+	return AnalyzeWithOutputAndCallback(pcapFile, protocolType, stdout, stderr, nil)
+}
+
+func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
 	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.AnalyzeConfigInstance.Filter)
 
-	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, config.AnalyzeConfigInstance.Filter)
+	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.AnalyzeConfigInstance.Filter)
+	if err != nil {
+		return errors.Wrap(err, "Error getting handle")
+	}
 	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
 	defer handle.Close()
 	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
@@ -48,10 +63,10 @@ func Analyze(pcapFile, protocolType string) {
 	var mapPackets = func(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
 		return in
 	}
-	var packageParse func(common.PacketInformation, []byte) (interface{}, error)
-	var serializePackage func(interface{}) ([]byte, error)
-	var prettyPrint = func(item interface{}) {
-		fmt.Printf("%v\n", item)
+	var packageParse func(common.PacketInformation, []byte) (spi.Message, error)
+	var serializePackage func(spi.Message) ([]byte, error)
+	var prettyPrint = func(item spi.Message) {
+		_, _ = fmt.Fprintf(stdout, "%v\n", item)
 	}
 	var byteOutput = hex.Dump
 	switch protocolType {
@@ -63,7 +78,6 @@ func Analyze(pcapFile, protocolType string) {
 		analyzer.Init()
 		packageParse = analyzer.PackageParse
 		serializePackage = analyzer.SerializePackage
-		prettyPrint = analyzer.PrettyPrint
 		mapPackets = analyzer.MapPackets
 		if !config.AnalyzeConfigInstance.NoCustomMapping {
 			byteOutput = analyzer.ByteOutput
@@ -126,6 +140,8 @@ func Analyze(pcapFile, protocolType string) {
 				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is unterminated", realPacketNumber)
 			case common.ErrEmptyPackage:
 				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is empty", realPacketNumber)
+			case common.ErrEcho:
+				log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] is echo", realPacketNumber)
 			default:
 				parseFails++
 				// TODO: write report to xml or something
@@ -133,6 +149,9 @@ func Analyze(pcapFile, protocolType string) {
 			}
 			continue
 		} else {
+			if messageCallback != nil {
+				messageCallback(parsed)
+			}
 			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Parsed", realPacketNumber)
 			if config.AnalyzeConfigInstance.Verbosity > 1 {
 				prettyPrint(parsed)
@@ -157,16 +176,14 @@ func Analyze(pcapFile, protocolType string) {
 				// TODO: write report to xml or something
 				log.Warn().Stringer("packetInformation", packetInformation).Msgf("No.[%d] Bytes don't match.\nOriginal:\n%sSerialized:\n%s", realPacketNumber, byteOutput(payload), byteOutput(serializedBytes))
 				if config.AnalyzeConfigInstance.Verbosity > 0 {
-					println("Original bytes")
-					println(hex.Dump(payload))
-					println("Serialized bytes")
-					println(hex.Dump(serializedBytes))
+					_, _ = fmt.Fprintf(stdout, "Original bytes\n%s\n%s\n", hex.Dump(payload), hex.Dump(serializedBytes))
 				}
 			}
 		}
 	}
 
 	log.Info().Msgf("Done evaluating %d of %d packages (%d failed to parse, %d failed to serialize and %d failed in byte comparison)", currentPackageNum, numberOfPackage, parseFails, serializeFails, compareFails)
+	return nil
 }
 
 func createPacketInformation(pcapFile string, packet gopacket.Packet, timestampToIndexMap map[time.Time]int) common.PacketInformation {

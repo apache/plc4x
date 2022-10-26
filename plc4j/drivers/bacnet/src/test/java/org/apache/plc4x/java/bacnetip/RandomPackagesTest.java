@@ -55,6 +55,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 // Tests from http://kargs.net/captures
 @RequirePcapNg
 @RequireAllTestsFlag
+@Tag("require-all-tests")
 @Tag("bacnet-regression")
 public class RandomPackagesTest {
 
@@ -6056,7 +6057,7 @@ public class RandomPackagesTest {
                         byte[] actualBytes = writeBuffer.getBytes();
                         assertThat(actualBytes)
                             .withRepresentation(HexadecimalRepresentation.HEXA_REPRESENTATION)
-                            .describedAs("re-serialized output doesn't match original bytes")
+                            .describedAs("re-serialized output doesn't match original bytes:%s", bvlc)
                             .isEqualTo(expectedBytes);
                     }
                 } else {

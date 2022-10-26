@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -203,7 +203,14 @@ func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (AmsSerialAckno
 	}
 
 	// Create the instance
-	return NewAmsSerialAcknowledgeFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, length, crc), nil
+	return &_AmsSerialAcknowledgeFrame{
+		MagicCookie:        magicCookie,
+		TransmitterAddress: transmitterAddress,
+		ReceiverAddress:    receiverAddress,
+		FragmentNumber:     fragmentNumber,
+		Length:             length,
+		Crc:                crc,
+	}, nil
 }
 
 func (m *_AmsSerialAcknowledgeFrame) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -269,7 +276,7 @@ func (m *_AmsSerialAcknowledgeFrame) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

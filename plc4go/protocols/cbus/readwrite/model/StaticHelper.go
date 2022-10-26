@@ -21,17 +21,64 @@ package model
 
 import (
 	"encoding/hex"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
-func WriteCBusCommand(writeBuffer utils.WriteBuffer, cbusCommand CBusCommand) error {
-	return writeToHex("cbusCommand", writeBuffer, cbusCommand)
+func ReadAndValidateChecksum(readBuffer utils.ReadBuffer, message spi.Message, srchk bool) (Checksum, error) {
+	if !srchk {
+		return nil, nil
+	}
+	hexBytes, err := readBytesFromHex("chksum", readBuffer, false)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to calculate checksum")
+	}
+	checksum := hexBytes[0]
+	actualChecksum, err := getChecksum(message)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to calculate checksum")
+	}
+	if checksum != actualChecksum {
+		return nil, errors.Errorf("Expected checksum 0x%x doesn't match actual checksum 0x%x", checksum, actualChecksum)
+	}
+	return NewChecksum(checksum), nil
 }
 
-func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, cBusOptions CBusOptions) (CBusCommand, error) {
-	rawBytes, err := readBytesFromHex("cbusCommand", readBuffer, payloadLength)
+func CalculateChecksum(writeBuffer utils.WriteBuffer, message spi.Message, srchk bool) error {
+	if !srchk {
+		// Nothing to do when srchck is disabled
+		return nil
+	}
+	checksum, err := getChecksum(message)
+	if err != nil {
+		return errors.Wrap(err, "Unable to calculate checksum")
+	}
+	return writeToHex("chksum", writeBuffer, []byte{checksum})
+}
+
+func getChecksum(message spi.Message) (byte, error) {
+	checksum := byte(0x0)
+	checksumWriteBuffer := utils.NewWriteBufferByteBased()
+	err := message.Serialize(checksumWriteBuffer)
+	if err != nil {
+		return 0, errors.Wrap(err, "Error serializing")
+	}
+	for _, aByte := range checksumWriteBuffer.GetBytes() {
+		checksum += aByte
+	}
+	checksum = ^checksum
+	checksum++
+	return checksum, nil
+}
+
+func WriteCBusCommand(writeBuffer utils.WriteBuffer, cbusCommand CBusCommand) error {
+	return writeSerializableToHex("cbusCommand", writeBuffer, cbusCommand)
+}
+
+func ReadCBusCommand(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, srchk bool) (CBusCommand, error) {
+	rawBytes, err := readBytesFromHex("cbusCommand", readBuffer, srchk)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
@@ -39,34 +86,35 @@ func ReadCBusCommand(readBuffer utils.ReadBuffer, payloadLength uint16, cBusOpti
 }
 
 func WriteEncodedReply(writeBuffer utils.WriteBuffer, encodedReply EncodedReply) error {
-	return writeToHex("encodedReply", writeBuffer, encodedReply)
+	return writeSerializableToHex("encodedReply", writeBuffer, encodedReply)
 }
 
-func ReadEncodedReply(readBuffer utils.ReadBuffer, payloadLength uint16, options CBusOptions, requestContext RequestContext) (EncodedReply, error) {
-	rawBytes, err := readBytesFromHex("encodedReply", readBuffer, payloadLength)
+func ReadEncodedReply(readBuffer utils.ReadBuffer, options CBusOptions, requestContext RequestContext, srchk bool) (EncodedReply, error) {
+	rawBytes, err := readBytesFromHex("encodedReply", readBuffer, srchk)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
 	return EncodedReplyParse(utils.NewReadBufferByteBased(rawBytes), options, requestContext)
 }
 
-func WriteCALDataOrSetParameter(writeBuffer utils.WriteBuffer, calDataOrSetParameter CALDataOrSetParameter) error {
-	return writeToHex("calDataOrSetParameter", writeBuffer, calDataOrSetParameter)
+func WriteCALData(writeBuffer utils.WriteBuffer, calData CALData) error {
+	return writeSerializableToHex("calData", writeBuffer, calData)
 }
 
-func ReadCALDataOrSetParameter(readBuffer utils.ReadBuffer, payloadLength uint16) (CALDataOrSetParameter, error) {
-	rawBytes, err := readBytesFromHex("calDataOrSetParameter", readBuffer, payloadLength)
+func ReadCALData(readBuffer utils.ReadBuffer) (CALData, error) {
+	rawBytes, err := readBytesFromHex("calData", readBuffer, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALDataOrSetParameterParse(utils.NewReadBufferByteBased(rawBytes))
+	return CALDataParse(utils.NewReadBufferByteBased(rawBytes), nil)
 }
 
-func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLength uint16) ([]byte, error) {
+func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {
+	payloadLength := findHexEnd(readBuffer)
 	if payloadLength == 0 {
-		return nil, errors.New("Length is 0")
+		return nil, utils.ParseAssertError{Message: "Length is 0"}
 	}
-	hexBytes, err := readBuffer.ReadByteArray(logicalName, int(payloadLength))
+	hexBytes, err := readBuffer.ReadByteArray(logicalName, payloadLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing")
 	}
@@ -81,22 +129,55 @@ func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, payloadLe
 	if err != nil {
 		return nil, err
 	}
-	log.Debug().Msgf("%d bytes decoded", n)
+	if srchk {
+		checksum := byte(0x0)
+		for _, aByte := range rawBytes {
+			checksum += aByte
+		}
+		if checksum != 0x0 {
+			return nil, errors.New("Checksum validation failed")
+		}
+		// We need to reset the last to hex bytes
+		readBuffer.Reset(readBuffer.GetPos() - 2)
+		rawBytes = rawBytes[:len(rawBytes)-1]
+	}
+	log.Trace().Msgf("%d bytes decoded", n)
 	return rawBytes, nil
 }
 
-func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable utils.Serializable) error {
+func findHexEnd(readBuffer utils.ReadBuffer) int {
+	// TODO: find out if there is a smarter way to find the end...
+	oldPos := readBuffer.GetPos()
+	payloadLength := 0
+	for readBuffer.HasMore(8) {
+		hexByte, _ := readBuffer.ReadByte("")
+		isHex := hexByte >= 'A' && hexByte <= 'F' || hexByte >= 'a' && hexByte <= 'f'
+		isNumber := hexByte >= '0' && hexByte <= '9'
+		if !isHex && !isNumber {
+			break
+		}
+		payloadLength++
+	}
+	readBuffer.Reset(oldPos)
+	return payloadLength
+}
+
+func writeSerializableToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable utils.Serializable) error {
 	wbbb := utils.NewWriteBufferByteBased()
 	err := serializable.Serialize(wbbb)
 	if err != nil {
 		return errors.Wrap(err, "Error serializing")
 	}
 	bytesToWrite := wbbb.GetBytes()
+	return writeToHex(logicalName, writeBuffer, bytesToWrite)
+}
+
+func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, bytesToWrite []byte) error {
 	hexBytes := make([]byte, hex.EncodedLen(len(bytesToWrite)))
 	// usually you use hex.Encode but we want the encoding in uppercase
 	//n := hex.Encode(hexBytes, wbbb.GetBytes())
 	n := encodeHexUpperCase(hexBytes, bytesToWrite)
-	log.Debug().Msgf("%d bytes encoded", n)
+	log.Trace().Msgf("%d bytes encoded", n)
 	return writeBuffer.WriteByteArray(logicalName, hexBytes)
 }
 
@@ -122,12 +203,132 @@ func KnowsCALCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	return CALCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsSALCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+func KnowsLightingCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
 	if err != nil {
 		return false
 	}
-	return SALCommandTypeContainerKnows(readUint8)
+	return LightingCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsSecurityCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return SecurityCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsMeteringCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return MeteringCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsTriggerControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return TriggerControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsEnableControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return EnableControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsTemperatureBroadcastCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return TemperatureBroadcastCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsAccessControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return AccessControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsMediaTransportControlCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return MediaTransportControlCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsClockAndTimekeepingCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return ClockAndTimekeepingCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsTelephonyCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return TelephonyCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsAirConditioningCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return AirConditioningCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsMeasurementCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return MeasurementCommandTypeContainerKnows(readUint8)
+}
+
+func KnowsErrorReportingCommandTypeContainer(readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return ErrorReportingCommandTypeContainerKnows(readUint8)
 }

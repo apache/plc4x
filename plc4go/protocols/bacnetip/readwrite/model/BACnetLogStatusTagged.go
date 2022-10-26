@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -82,15 +82,15 @@ func (m *_BACnetLogStatusTagged) GetPayload() BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *_BACnetLogStatusTagged) GetLogDisabled() bool {
-	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLogStatusTagged) GetBufferPurged() bool {
-	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLogStatusTagged) GetLogInterrupted() bool {
-	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -172,7 +172,7 @@ func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -190,17 +190,17 @@ func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 
 	// Virtual field
-	_logDisabled := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_logDisabled := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	logDisabled := bool(_logDisabled)
 	_ = logDisabled
 
 	// Virtual field
-	_bufferPurged := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_bufferPurged := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	bufferPurged := bool(_bufferPurged)
 	_ = bufferPurged
 
 	// Virtual field
-	_logInterrupted := utils.InlineIf(bool(bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_logInterrupted := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	logInterrupted := bool(_logInterrupted)
 	_ = logInterrupted
 
@@ -209,7 +209,12 @@ func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 
 	// Create the instance
-	return NewBACnetLogStatusTagged(header, payload, tagNumber, tagClass), nil
+	return &_BACnetLogStatusTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Payload:   payload,
+	}, nil
 }
 
 func (m *_BACnetLogStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -261,6 +266,19 @@ func (m *_BACnetLogStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLogStatusTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLogStatusTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLogStatusTagged) isBACnetLogStatusTagged() bool {
 	return true
 }
@@ -269,7 +287,7 @@ func (m *_BACnetLogStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

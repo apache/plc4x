@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -198,10 +198,10 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 
 	// Create a partially initialized instance
 	_child := &_MultipleServiceRequest{
-		Data: data,
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
 		},
+		Data: data,
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -255,7 +255,7 @@ func (m *_MultipleServiceRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

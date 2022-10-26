@@ -42,8 +42,6 @@ public interface PlcConnectionMetadata {
     /**
      * Indicates that the connection supports browsing.
      */
-    default boolean canBrowse() {
-        return false;
-    }
+    boolean canBrowse();
 
 }

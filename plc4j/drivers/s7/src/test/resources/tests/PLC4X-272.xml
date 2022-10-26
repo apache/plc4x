@@ -61,18 +61,18 @@
             </COTPPacketConnectionRequest>
             <parameters isList="true">
               <COTPParameter>
-                <parameterType dataType="uint" bitLength="8">194</parameterType>
-                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
-                <COTPParameterCalledTsap>
-                  <tsapId dataType="uint" bitLength="16">256</tsapId>
-                </COTPParameterCalledTsap>
-              </COTPParameter>
-              <COTPParameter>
                 <parameterType dataType="uint" bitLength="8">193</parameterType>
                 <parameterLength dataType="uint" bitLength="8">2</parameterLength>
                 <COTPParameterCallingTsap>
                   <tsapId dataType="uint" bitLength="16">785</tsapId>
                 </COTPParameterCallingTsap>
+              </COTPParameter>
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">194</parameterType>
+                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
+                <COTPParameterCalledTsap>
+                  <tsapId dataType="uint" bitLength="16">256</tsapId>
+                </COTPParameterCalledTsap>
               </COTPParameter>
               <COTPParameter>
                 <parameterType dataType="uint" bitLength="8">192</parameterType>

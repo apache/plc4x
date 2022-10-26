@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -173,7 +173,12 @@ func BACnetHostAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 
 	// Create the instance
-	return NewBACnetHostAddressEnclosed(openingTag, hostAddress, closingTag, tagNumber), nil
+	return &_BACnetHostAddressEnclosed{
+		TagNumber:   tagNumber,
+		OpeningTag:  openingTag,
+		HostAddress: hostAddress,
+		ClosingTag:  closingTag,
+	}, nil
 }
 
 func (m *_BACnetHostAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -225,6 +230,16 @@ func (m *_BACnetHostAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetHostAddressEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetHostAddressEnclosed) isBACnetHostAddressEnclosed() bool {
 	return true
 }
@@ -233,7 +248,7 @@ func (m *_BACnetHostAddressEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

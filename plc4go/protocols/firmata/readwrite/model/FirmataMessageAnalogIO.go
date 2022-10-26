@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -182,11 +182,11 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (Fi
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageAnalogIO{
-		Pin:  pin,
-		Data: data,
 		_FirmataMessage: &_FirmataMessage{
 			Response: response,
 		},
+		Pin:  pin,
+		Data: data,
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil
@@ -237,7 +237,7 @@ func (m *_FirmataMessageAnalogIO) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

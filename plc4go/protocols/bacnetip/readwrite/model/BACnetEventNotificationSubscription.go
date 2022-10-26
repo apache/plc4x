@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -176,7 +175,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetEventNotificationSubscription")
@@ -206,7 +205,12 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	}
 
 	// Create the instance
-	return NewBACnetEventNotificationSubscription(recipient, processIdentifier, issueConfirmedNotifications, timeRemaining), nil
+	return &_BACnetEventNotificationSubscription{
+		Recipient:                   recipient,
+		ProcessIdentifier:           processIdentifier,
+		IssueConfirmedNotifications: issueConfirmedNotifications,
+		TimeRemaining:               timeRemaining,
+	}, nil
 }
 
 func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -282,7 +286,7 @@ func (m *_BACnetEventNotificationSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

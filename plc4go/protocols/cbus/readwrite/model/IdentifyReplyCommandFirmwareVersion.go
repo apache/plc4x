@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -134,7 +134,7 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 	_ = currentPos
 
 	// Simple Field (firmwareVersion)
-	_firmwareVersion, _firmwareVersionErr := readBuffer.ReadString("firmwareVersion", uint32(64))
+	_firmwareVersion, _firmwareVersionErr := readBuffer.ReadString("firmwareVersion", uint32(64), "UTF-8")
 	if _firmwareVersionErr != nil {
 		return nil, errors.Wrap(_firmwareVersionErr, "Error parsing 'firmwareVersion' field of IdentifyReplyCommandFirmwareVersion")
 	}
@@ -146,10 +146,10 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandFirmwareVersion{
-		FirmwareVersion: firmwareVersion,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		FirmwareVersion: firmwareVersion,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil
@@ -186,7 +186,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

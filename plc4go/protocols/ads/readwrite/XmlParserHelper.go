@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -45,14 +45,15 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	case "AmsSerialFrame":
 		return model.AmsSerialFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataItem":
-		// TODO: find a way to parse the sub types
-		var dataFormatName string
+		plcValueType, _ := model.PlcValueTypeByName(parserArguments[0])
 		parsedInt1, err := strconv.ParseInt(parserArguments[1], 10, 32)
 		if err != nil {
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataFormatName, stringLength)
+		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength)
+	case "AdsTableSizes":
+		return model.AdsTableSizesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsMultiRequestItem":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
@@ -62,22 +63,26 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		return model.AdsMultiRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AdsData":
-		commandId, _ := model.CommandIdByName(parserArguments[0])
-		response := parserArguments[1] == "true"
-		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), commandId, response)
+	case "AdsDataTypeArrayInfo":
+		return model.AdsDataTypeArrayInfoParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeTableEntry":
+		return model.AdsDataTypeTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsNetId":
 		return model.AmsNetIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsStampHeader":
 		return model.AdsStampHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsSerialResetFrame":
 		return model.AmsSerialResetFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeTableChildEntry":
+		return model.AdsDataTypeTableChildEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsConstants":
+		return model.AdsConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsNotificationSample":
 		return model.AdsNotificationSampleParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsSymbolTableEntry":
+		return model.AdsSymbolTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "State":
-		return model.StateParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsPacket":
 		return model.AmsPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}

@@ -23,8 +23,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/IBM/netaddr"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -34,10 +34,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/options"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Discoverer struct {
@@ -48,7 +48,8 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	// TODO: handle ctx
 	interfaces, err := extractInterfaces(discoveryOptions)
 	if err != nil {
 		return errors.Wrap(err, "error extracting interfaces")
@@ -65,7 +66,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 	}
 
 	// TODO: make adjustable
-	ctx, cancelFunc := context.WithTimeout(context.TODO(), time.Second*60)
+	ctx, cancelFunc := context.WithTimeout(ctx, time.Second*60)
 	defer func() {
 		cancelFunc()
 	}()
@@ -226,7 +227,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 	return incomingBVLCChannel, nil
 }
 
-func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), incomingBVLCChannel chan receivedBvlcMessage) {
+func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), incomingBVLCChannel chan receivedBvlcMessage) {
 	for {
 		select {
 		case receivedBvlc := <-incomingBVLCChannel:
@@ -254,7 +255,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
 					ProtocolCode:  "bacnet-ip",
 					TransportCode: "udp",
 					TransportUrl:  *remoteUrl,
@@ -269,7 +270,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				if err != nil {
 					log.Debug().Err(err).Msg("Error parsing url")
 				}
-				discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+				discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
 					ProtocolCode:  "bacnet-ip",
 					TransportCode: "udp",
 					TransportUrl:  *remoteUrl,
@@ -535,7 +536,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 					prefix := strings.TrimSuffix(otherKey.key, "*")
 					mustBePresent := otherKey.mustBePresent
 					var found bool
-					for key, _ := range filteredOptionMap {
+					for key := range filteredOptionMap {
 						found = found || strings.HasPrefix(key, prefix)
 					}
 					if mustBePresent && !found {
@@ -574,7 +575,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 	} else if err != nil {
 		return nil, err
 	}
-	for key, _ := range filteredOptionMap {
+	for key := range filteredOptionMap {
 		if strings.HasPrefix(key, "who-has-object") {
 			collectedOptions = append(collectedOptions, whoHasOption())
 			break

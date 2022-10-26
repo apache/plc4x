@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.modbus.tcp.discovery;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -57,6 +58,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
+
     @Override
     public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
         return discoverWithHandler(discoveryRequest, null);
@@ -83,7 +85,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                 logger.debug("Found {} addresses: {}", inetAddresses.size(), inetAddresses);
                 possibleAddresses.addAll(inetAddresses);
             }
-        } catch (PcapNativeException e) {
+        } catch (Throwable e) {
             logger.error("Error collecting list of possible IP addresses", e);
             future.complete(new DefaultPlcDiscoveryResponse(
                 discoveryRequest, PlcResponseCode.INTERNAL_ERROR, Collections.emptyList()));
@@ -92,7 +94,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
         try {
             possibleAddresses.add(InetAddress.getByName("localhost"));
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
 
         // Filter out duplicates.
@@ -128,7 +130,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                 // TODO: We should probably not only try to read a coil, but try any of the types and if one works, that's a match.
                 // Possibly we can fine tune this to speed up things.
                 int transactionIdentifier = 1;
-                for(short unitIdentifier = 1; unitIdentifier <= 247; unitIdentifier++) {
+                for (short unitIdentifier = 1; unitIdentifier <= 247; unitIdentifier++) {
                     ModbusTcpADU packet = new ModbusTcpADU(transactionIdentifier++, unitIdentifier,
                         new ModbusPDUReadCoilsRequest(1, 1), false);
                     byte[] deviceIdentificationBytes = null;
@@ -190,17 +192,30 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                         try {
                             ModbusTcpADU response = (ModbusTcpADU) ModbusTcpADU.staticParse(readBuffer, DriverType.MODBUS_TCP, true);
                             PlcDiscoveryItem discoveryItem;
-                            if (!response.getPdu().getErrorFlag()) {
+                            boolean found = false;
+                            // If we got a response telling us the address is unknown, we still know there's a
+                            // Modbus device at the other side. In general ... as soon as we get a valid Modbus
+                            // response, we should accept that we're talking to a Modbus device
+                            if (response.getPdu().getErrorFlag()) {
+                                ModbusPDUError errorPdu = (ModbusPDUError) response.getPdu();
+                                if (errorPdu.getExceptionCode() == ModbusErrorCode.ILLEGAL_DATA_ADDRESS) {
+                                    found = true;
+                                }
+                            } else {
+                                found = true;
+                            }
+                            if (found) {
                                 discoveryItem = new DefaultPlcDiscoveryItem(
-                                    "modbus-tcp", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown");
+                                    "modbus-tcp", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown", Collections.emptyMap());
                                 discoveryItems.add(discoveryItem);
 
                                 // Give a handler the chance to react on the found device.
-                                if(handler != null) {
+                                if (handler != null) {
                                     handler.handle(discoveryItem);
                                 }
                                 break;
                             }
+
                         } catch (ParseException e) {
                             // Ignore.
                         }

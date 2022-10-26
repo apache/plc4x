@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -322,13 +322,13 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadDeviceIdentificationResponse{
+		_ModbusPDU:       &_ModbusPDU{},
 		Level:            level,
 		IndividualAccess: individualAccess,
 		ConformityLevel:  conformityLevel,
 		MoreFollows:      moreFollows,
 		NextObjectId:     nextObjectId,
 		Objects:          objects,
-		_ModbusPDU:       &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil
@@ -435,7 +435,7 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

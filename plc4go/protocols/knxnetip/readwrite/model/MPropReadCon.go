@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -236,15 +236,15 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, 
 
 	// Create a partially initialized instance
 	_child := &_MPropReadCon{
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 		Data:                data,
-		_CEMI: &_CEMI{
-			Size: size,
-		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -316,7 +316,7 @@ func (m *_MPropReadCon) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -184,7 +184,12 @@ func BACnetAssignedLandingCallsLandingCallsListParse(readBuffer utils.ReadBuffer
 	}
 
 	// Create the instance
-	return NewBACnetAssignedLandingCallsLandingCallsList(openingTag, landingCalls, closingTag, tagNumber), nil
+	return &_BACnetAssignedLandingCallsLandingCallsList{
+		TagNumber:    tagNumber,
+		OpeningTag:   openingTag,
+		LandingCalls: landingCalls,
+		ClosingTag:   closingTag,
+	}, nil
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsList) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -238,6 +243,16 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) Serialize(writeBuffer util
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAssignedLandingCallsLandingCallsList) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetAssignedLandingCallsLandingCallsList) isBACnetAssignedLandingCallsLandingCallsList() bool {
 	return true
 }
@@ -246,7 +261,7 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

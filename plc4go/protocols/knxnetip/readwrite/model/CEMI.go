@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -219,6 +219,16 @@ func (pm *_CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child CEMI, seri
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_CEMI) GetSize() uint16 {
+	return m.Size
+}
+
+//
+////
+
 func (m *_CEMI) isCEMI() bool {
 	return true
 }
@@ -227,7 +237,7 @@ func (m *_CEMI) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

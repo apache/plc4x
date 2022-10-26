@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -124,12 +124,12 @@ func (m *_BACnetVendorIdTagged) GetLengthInBitsConditional(lastItem bool) uint16
 	lengthInBits += m.Header.GetLengthInBits()
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (unknownId)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -166,7 +166,7 @@ func BACnetVendorIdTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Validation
-	if !(bool(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS))) && bool(bool((header.GetActualTagNumber()) == (2))))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS))) && bool(bool((header.GetActualTagNumber()) == (2))))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -175,7 +175,10 @@ func BACnetVendorIdTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetVendorIdTagged")
 	}
-	value := _value.(BACnetVendorId)
+	var value BACnetVendorId
+	if _value != nil {
+		value = _value.(BACnetVendorId)
+	}
 
 	// Virtual field
 	_isUnknownId := bool((value) == (BACnetVendorId_UNKNOWN_VENDOR))
@@ -187,14 +190,23 @@ func BACnetVendorIdTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if _unknownIdErr != nil {
 		return nil, errors.Wrap(_unknownIdErr, "Error parsing 'unknownId' field of BACnetVendorIdTagged")
 	}
-	unknownId := _unknownId.(uint32)
+	var unknownId uint32
+	if _unknownId != nil {
+		unknownId = _unknownId.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVendorIdTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetVendorIdTagged")
 	}
 
 	// Create the instance
-	return NewBACnetVendorIdTagged(header, value, unknownId, tagNumber, tagClass), nil
+	return &_BACnetVendorIdTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+		UnknownId: unknownId,
+	}, nil
 }
 
 func (m *_BACnetVendorIdTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -238,6 +250,19 @@ func (m *_BACnetVendorIdTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetVendorIdTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetVendorIdTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetVendorIdTagged) isBACnetVendorIdTagged() bool {
 	return true
 }
@@ -246,7 +271,7 @@ func (m *_BACnetVendorIdTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

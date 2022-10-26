@@ -18,98 +18,139 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-integrations</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.apache.plc4x</groupId>
+		<artifactId>plc4j-integrations</artifactId>
+		<version>0.11.0-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>plc4j-apache-nifi</artifactId>
-  <packaging>pom</packaging>
+	<artifactId>plc4j-apache-nifi</artifactId>
+	<packaging>pom</packaging>
 
-  <name>PLC4J: Integrations: Apache Nifi</name>
-  <description>Integration module for integrating PLC4X into Apache Nifi.</description>
+	<name>PLC4J: Integrations: Apache Nifi</name>
+	<description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
-  <properties>
-    <nifi.version>1.16.3</nifi.version>
-  </properties>
+	<properties>
+		<nifi.version>1.18.0</nifi.version>
+		<avro.version>1.11.1</avro.version>
+	</properties>
 
-  <modules>
-    <module>nifi-plc4x-processors</module>
-    <module>nifi-plc4x-nar</module>
-  </modules>
+	<modules>
+		<module>nifi-plc4x-processors</module>
+		<module>nifi-plc4x-nar</module>
+	</modules>
 
-  <build>
-    <plugins>
-      <!-- Add the ability to create nar packages -->
-      <plugin>
-        <groupId>org.apache.nifi</groupId>
-        <artifactId>nifi-nar-maven-plugin</artifactId>
-        <version>1.3.3</version>
-        <extensions>true</extensions>
-      </plugin>
-      <!-- Makes buildRevision and buildBranch available to the NAR Plugin, so they can be populated in the MANIFEST -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <inherited>true</inherited>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-          <shortRevisionLength>7</shortRevisionLength>
-          <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-          <revisionOnScmFailure />
-          <buildNumberPropertyName>buildRevision</buildNumberPropertyName>
-          <scmBranchPropertyName>buildBranch</scmBranchPropertyName>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<!-- Add the ability to create nar packages -->
+			<plugin>
+				<groupId>org.apache.nifi</groupId>
+				<artifactId>nifi-nar-maven-plugin</artifactId>
+				<version>1.3.5</version>
+				<extensions>true</extensions>
+			</plugin>
+			<!-- Makes buildRevision and buildBranch available to the NAR Plugin, so they can be populated in the MANIFEST -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<inherited>true</inherited>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<shortRevisionLength>7</shortRevisionLength>
+					<getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+					<revisionOnScmFailure />
+					<buildNumberPropertyName>buildRevision</buildNumberPropertyName>
+					<scmBranchPropertyName>buildBranch</scmBranchPropertyName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-  <dependencyManagement>
-    <dependencies>
+	<dependencyManagement>
+		<dependencies>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+			<dependency>
+				<groupId>org.apache.nifi</groupId>
+				<artifactId>nifi</artifactId>
+				<version>${nifi.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!--dependency>
+				<groupId>org.apache.nifi</groupId>
+				<artifactId>nifi-api</artifactId>
+				<version>${nifi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.nifi</groupId>
+				<artifactId>nifi-mock</artifactId>
+				<version>${nifi.version}</version>
+			</dependency-->
+			<dependency>
+				<groupId>org.apache.nifi</groupId>
+				<artifactId>nifi-utils</artifactId>
+				<version>${nifi.version}</version>
+			</dependency>
       <dependency>
         <groupId>org.apache.nifi</groupId>
-        <artifactId>nifi-api</artifactId>
+        <artifactId>nifi-avro-record-utils</artifactId>
         <version>${nifi.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.nifi</groupId>
-        <artifactId>nifi-mock</artifactId>
+        <artifactId>nifi-record-serialization-services</artifactId>
         <version>${nifi.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>1.6.6</version>
+        <groupId>org.apache.nifi</groupId>
+        <artifactId>nifi-standard-nar</artifactId>
+        <version>${nifi.version}</version>
+        <type>nar</type>
       </dependency>
-      <dependency>
-        <groupId>org.glassfish.jaxb</groupId>
-        <artifactId>jaxb-runtime</artifactId>
-        <version>${jaxb.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.xml.bind</groupId>
-        <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>4.0.0</version>
-        <exclusions>
-          <exclusion>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+			<dependency>
+				<groupId>org.apache.nifi</groupId>
+				<artifactId>nifi-nar-bundles</artifactId>
+				<version>${nifi.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-annotations</artifactId>
+				<version>1.6.8</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>${jaxb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.xml.bind</groupId>
+				<artifactId>jakarta.xml.bind-api</artifactId>
+				<version>4.0.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>jakarta.activation</groupId>
+						<artifactId>jakarta.activation-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>

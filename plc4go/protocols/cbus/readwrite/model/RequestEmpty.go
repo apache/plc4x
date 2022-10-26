@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -68,9 +68,9 @@ func (m *_RequestEmpty) GetParent() Request {
 }
 
 // NewRequestEmpty factory function for _RequestEmpty
-func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_RequestEmpty {
+func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
 	_result := &_RequestEmpty{
-		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		_Request: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -105,7 +105,7 @@ func (m *_RequestEmpty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestEmptyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (RequestEmpty, error) {
+func RequestEmptyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestEmpty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestEmpty"); pullErr != nil {
@@ -121,8 +121,7 @@ func RequestEmptyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, mes
 	// Create a partially initialized instance
 	_child := &_RequestEmpty{
 		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child
@@ -153,7 +152,7 @@ func (m *_RequestEmpty) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

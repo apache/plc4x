@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -170,7 +170,11 @@ func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	}
 
 	// Create the instance
-	return NewAlarmMessageAckResponseType(functionId, numberOfObjects, messageObjects), nil
+	return &_AlarmMessageAckResponseType{
+		FunctionId:      functionId,
+		NumberOfObjects: numberOfObjects,
+		MessageObjects:  messageObjects,
+	}, nil
 }
 
 func (m *_AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -222,7 +226,7 @@ func (m *_AlarmMessageAckResponseType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

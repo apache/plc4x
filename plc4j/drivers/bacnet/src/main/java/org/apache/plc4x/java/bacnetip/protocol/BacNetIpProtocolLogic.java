@@ -203,7 +203,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
                 // These are value change notifications. Ignore the rest.
                 if (baCnetPropertyValue.getPropertyIdentifier().getValue() == BACnetPropertyIdentifier.PRESENT_VALUE) {
-                    BACnetApplicationTag baCnetTag = ((BACnetConstructedDataUnspecified)baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
+                    BACnetApplicationTag baCnetTag = ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
 
                     // Initialize an enriched version of the PlcStruct.
                     final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
@@ -247,8 +247,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         for (String fieldName : subscriptionRequest.getFieldNames()) {
             values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
         }
-        return CompletableFuture.completedFuture(
-            new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
+        return CompletableFuture.completedFuture(new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
 
     @Override

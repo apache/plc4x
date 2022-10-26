@@ -68,14 +68,13 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(config.RootConfigInstance.CfgFile)
 	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
+		// Find user config directory.
+		home, err := os.UserConfigDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".plc4xpcapanalyzer" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".plc4xpcapanalyzer")
+		viper.SetConfigName("plc4xpcapanalyzer-viper")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

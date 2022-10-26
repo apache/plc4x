@@ -68,6 +68,34 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
         }
     }
 
+    private CompletableFuture<? extends PlcBrowseResponse> wrapBrowseWithTimeout(CompletableFuture<? extends PlcBrowseResponse> future, long timeoutMillis) {
+        //schedule watcher
+        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
+        schedulerExecutor.schedule(() -> {
+            if (!future.isDone()) {
+                logger.debug("Timing out the PLC request!");
+                future.cancel(true);
+                responseFuture.completeExceptionally(new TimeoutException("Response did not finish in Time!"));
+            } else {
+                logger.trace("Unnecessary to cancel the request!");
+            }
+        }, timeoutMillis, TimeUnit.MILLISECONDS);
+        future.handle(new BiFunction<PlcBrowseResponse, Throwable, Object>() {
+            @Override
+            public Object apply(PlcBrowseResponse plcBrowseResponse, Throwable throwable) {
+                if (plcBrowseResponse != null) {
+                    logger.debug("Request finsihed successfull!");
+                    responseFuture.complete(plcBrowseResponse);
+                } else {
+                    logger.debug("Request failed", throwable);
+                    responseFuture.completeExceptionally(throwable);
+                }
+                return null;
+            }
+        });
+        return responseFuture;
+    }
+
     private CompletableFuture<? extends PlcReadResponse> wrapReadWithTimeout(CompletableFuture<? extends PlcReadResponse> future, long timeoutMillis) {
         //schedule watcher
         final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
@@ -122,6 +150,34 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
             }
         });
         return responseFuture;
+    }
+
+    public CompletableFuture<? extends PlcBrowseResponse> execute(PlcBrowseRequest request) {
+        logger.trace("Trying to executing Request {}", request);
+        if (closed) {
+            throw new IllegalStateException("Trying to execute a Request on a closed Connection!");
+        }
+        try {
+            logger.trace("Executing Request {}", request);
+            final CompletableFuture<? extends PlcBrowseResponse> responseFuture = wrapBrowseWithTimeout(request.execute(), 5_000);
+            // The following code handles the case, that a read fails (which is handled async and thus not really connected
+            // to the connection, yet
+            // Thus, we register our own listener who gets the notification and reports the connection as broken
+            final CompletableFuture<PlcBrowseResponse> handledResponseFuture = responseFuture.handleAsync(new BiFunction<PlcBrowseResponse, Throwable, PlcBrowseResponse>() {
+                @Override
+                public PlcBrowseResponse apply(PlcBrowseResponse plcBrowseResponse, Throwable throwable) {
+                    if (throwable != null) {
+                        // Do something here...
+                        logger.warn("Request finished with exception. Reporting Connection as Broken", throwable);
+                        closeConnectionExceptionally(null);
+                    }
+                    return plcBrowseResponse;
+                }
+            });
+            return handledResponseFuture;
+        } catch (Exception e) {
+            return (CompletableFuture<? extends PlcBrowseResponse>) closeConnectionExceptionally(e);
+        }
     }
 
     /**
@@ -228,6 +284,14 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
     }
 
     @Override
+    public PlcBrowseRequest.Builder browseRequestBuilder() {
+        if (closed) {
+            throw new IllegalStateException("Trying to build a Request on a closed Connection!");
+        }
+        return new CachedBrowseRequestBuilder(this, this.getActiveConnection().browseRequestBuilder());
+    }
+
+    @Override
     public PlcReadRequest.Builder readRequestBuilder() {
         if (closed) {
             throw new IllegalStateException("Trying to build a Request on a closed Connection!");
@@ -251,6 +315,15 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
     @Override
     public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean canBrowse() {
+        if (closed) {
+            return false;
+        } else {
+            return this.activeConnection.getMetadata().canBrowse();
+        }
     }
 
     @Override

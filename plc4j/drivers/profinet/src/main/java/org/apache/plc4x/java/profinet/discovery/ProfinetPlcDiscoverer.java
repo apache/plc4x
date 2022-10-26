@@ -74,6 +74,13 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         List<PlcDiscoveryItem> values = new ArrayList<>();
         try {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
+                // It turned out on some MAC network devices without any ip addresses
+                // the compiling of the filter expression was causing errors. As
+                // currently there was no other way to detect this, this check seems
+                // to be sufficient.
+                if(dev.getAddresses().size() == 0) {
+                    continue;
+                }
                 if (!dev.isLoopBack()) {
                     for (LinkLayerAddress linkLayerAddress : dev.getLinkLayerAddresses()) {
                         org.pcap4j.util.MacAddress macAddress = (org.pcap4j.util.MacAddress) linkLayerAddress;
@@ -138,13 +145,13 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                                 String deviceTypeName = "unknown";
                                                 if (blocks.containsKey(DEVICE_TYPE_NAME)) {
                                                     PnDcp_Block_DevicePropertiesDeviceVendor block = (PnDcp_Block_DevicePropertiesDeviceVendor) blocks.get(DEVICE_TYPE_NAME);
-                                                    deviceTypeName = new String(block.getDeviceVendorValue());
+                                                    deviceTypeName = new String(block.getDeviceVendorValue()).replace(" ", "%20");
                                                 }
 
                                                 String deviceName = "unknown";
                                                 if (blocks.containsKey(DEVICE_NAME_OF_STATION)) {
                                                     PnDcp_Block_DevicePropertiesNameOfStation block = (PnDcp_Block_DevicePropertiesNameOfStation) blocks.get(DEVICE_NAME_OF_STATION);
-                                                    deviceName = new String(block.getNameOfStation());
+                                                    deviceName = new String(block.getNameOfStation()).replace(" ", "%20");
                                                 }
 
                                                 String role = "unknown";
@@ -207,7 +214,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                                 String name = deviceTypeName + " - " + deviceName;
                                                 PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
                                                     ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
-                                                    remoteIpAddress, options, name);
+                                                    remoteIpAddress, options, name, Collections.emptyMap());
                                                 values.add(value);
 
                                                 // If we have a discovery handler, pass it to the handler callback

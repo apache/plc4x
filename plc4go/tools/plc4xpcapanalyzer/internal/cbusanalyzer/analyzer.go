@@ -21,14 +21,18 @@ package cbusanalyzer
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/google/gopacket"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"net"
+	"reflect"
 )
 
 type Analyzer struct {
@@ -39,90 +43,68 @@ type Analyzer struct {
 	currentInboundPayloads          map[string][]byte
 	currentPrefilterInboundPayloads map[string][]byte
 	mappedPacketChan                chan gopacket.Packet
+
+	lastParsePayload []byte
+	lastMapPayload   []byte
 }
 
 func (a *Analyzer) Init() {
 	if a.initialized {
 		return
 	}
-	a.requestContext = model.NewRequestContext(false, false, false)
+	a.requestContext = model.NewRequestContext(false)
 	a.cBusOptions = model.NewCBusOptions(config.CBusConfigInstance.Connect, config.CBusConfigInstance.Smart, config.CBusConfigInstance.Idmon, config.CBusConfigInstance.Exstat, config.CBusConfigInstance.Monitor, config.CBusConfigInstance.Monall, config.CBusConfigInstance.Pun, config.CBusConfigInstance.Pcn, config.CBusConfigInstance.Srchk)
 	a.currentInboundPayloads = make(map[string][]byte)
 	a.currentPrefilterInboundPayloads = make(map[string][]byte)
 	a.initialized = true
 }
 
-func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
+func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payload []byte) (spi.Message, error) {
 	if !a.initialized {
 		log.Warn().Msg("Not initialized... doing that now")
 		a.Init()
 	}
-	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, a.cBusOptions, payload)
+	cBusOptions := a.cBusOptions
+	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, cBusOptions, payload)
 	isResponse := a.isResponse(packetInformation)
-	currentPayload, err := a.getCurrentPayload(packetInformation, payload, isResponse, true, false)
+	if isResponse {
+		// Responses should have a checksum
+		cBusOptions = model.NewCBusOptions(
+			cBusOptions.GetConnect(),
+			cBusOptions.GetSmart(),
+			cBusOptions.GetIdmon(),
+			cBusOptions.GetExstat(),
+			cBusOptions.GetMonitor(),
+			cBusOptions.GetMonall(),
+			cBusOptions.GetPun(),
+			cBusOptions.GetPcn(),
+			true,
+		)
+	}
+	mergeCallback := func(index int) {
+		log.Warn().Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d", index)
+	}
+	currentPayload, err := a.getCurrentPayload(packetInformation, payload, mergeCallback, a.currentInboundPayloads, &a.lastParsePayload)
 	if err != nil {
 		return nil, err
 	}
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, a.cBusOptions, uint16(len(currentPayload)))
+	if reflect.DeepEqual(currentPayload, a.lastParsePayload) {
+		return nil, common.ErrEcho
+	}
+	a.lastParsePayload = currentPayload
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions)
 	if err != nil {
-		return nil, errors.Wrap(err, "Error parsing CBusCommand")
-	}
-	switch cBusMessage := parse.(type) {
-	case model.CBusMessageToServerExactly:
-		switch request := cBusMessage.GetRequest().(type) {
-		case model.RequestDirectCommandAccessExactly:
-			sendIdentifyRequestBefore := false
-			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
-			case model.CALDataOrSetParameterValueExactly:
-				switch calDataOrSetParameter.GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
-			}
-			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-		case model.RequestCommandExactly:
-			switch command := request.GetCbusCommand().(type) {
-			case model.CBusCommandDeviceManagementExactly:
-				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				a.requestContext = model.NewRequestContext(true, false, false)
-			case model.CBusCommandPointToPointExactly:
-				sendIdentifyRequestBefore := false
-				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				switch command.GetCommand().GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
-				a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
-			case model.CBusCommandPointToMultiPointExactly:
-				switch command.GetCommand().(type) {
-				case model.CBusPointToMultiPointCommandStatusExactly:
-					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true, false)
-				}
-			case model.CBusCommandPointToPointToMultiPointExactly:
-				switch command.GetCommand().(type) {
-				case model.CBusPointToPointToMultipointCommandStatusExactly:
-					log.Debug().Msgf("No.[%d] SAL status request detected", packetInformation.PacketNumber)
-					a.requestContext = model.NewRequestContext(false, true, false)
-				}
-			}
-		case model.RequestObsoleteExactly:
-			sendIdentifyRequestBefore := false
-			log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-			switch calDataOrSetParameter := request.GetCalDataOrSetParameter().(type) {
-			case model.CALDataOrSetParameterValueExactly:
-				switch calDataOrSetParameter.GetCalData().(type) {
-				case model.CALDataIdentifyExactly:
-					sendIdentifyRequestBefore = true
-				}
-			}
-			a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
+		if secondParse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
+			log.Debug().Err(err).Msg("Second parse failed too")
+			return nil, errors.Wrap(err, "Error parsing CBusCommand")
+		} else {
+			log.Warn().Stringer("packetInformation", packetInformation).Msgf("package got overridden by second parse... probably a MMI\n%s", secondParse)
+			parse = secondParse
 		}
-	case model.CBusMessageToClientExactly:
-		// We received a request so we need to reset our flags
-		a.requestContext = model.NewRequestContext(false, false, false)
 	}
+	a.requestContext = cbus.CreateRequestContextWithInfoCallback(parse, func(infoString string) {
+		log.Debug().Msgf("No.[%d] %s", packetInformation.PacketNumber, infoString)
+	})
 	log.Debug().Msgf("Parsed c-bus command \n%v", parse)
 	return parse, nil
 }
@@ -133,64 +115,45 @@ func (a *Analyzer) isResponse(packetInformation common.PacketInformation) bool {
 	return isResponse
 }
 
-func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation, payload []byte, isResponse bool, warnAboutSplit bool, usePrefilterPayloads bool) ([]byte, error) {
+func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation, payload []byte, mergeCallback func(int), currentInboundPayloads map[string][]byte, lastPayload *[]byte) ([]byte, error) {
 	srcUip := packetInformation.SrcIp.String()
 	payload = filterXOnXOff(payload)
 	if len(payload) == 0 {
 		return nil, common.ErrEmptyPackage
 	}
-	// Check if we have a termination in the middle
-	currentInboundPayloads := a.currentInboundPayloads
-	if usePrefilterPayloads {
-		currentInboundPayloads = a.currentPrefilterInboundPayloads
-	}
 	currentPayload := currentInboundPayloads[srcUip]
-	currentPayload = append(currentPayload, payload...)
-	shouldClearInboundPayload := true
-	isMergedMessage := false
-	// Check if we have a merged message
-mergeCheck:
-	for i, b := range currentPayload {
-		if i == 0 {
-			// TODO: we ignore the first byte as this is typical for reset etc... so maybe this is good or bad we will see
-			continue
-		}
-		switch b {
-		case 0x0D:
-			if i+1 < len(currentPayload) && currentPayload[i+1] == 0x0A {
-				// If we know the next is a newline we jump to that index...
-				i++
-			}
-			// ... other than that the logic is the same
-			fallthrough
-		case 0x0A:
-			// We have a merged message if we are not at the end
-			if i < len(currentPayload)-1 {
-				event := log.Warn()
-				if !warnAboutSplit {
-					event = log.Debug()
-				}
-				event.Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d (usePrefilterPayloads=%t)", i, usePrefilterPayloads)
-				// In this case we need to put the tail into our "buffer"
-				currentInboundPayloads[srcUip] = currentPayload[i+1:]
-				// and use the beginning as current payload
-				currentPayload = currentPayload[:i+1]
-				shouldClearInboundPayload = false
-				isMergedMessage = true
-				break mergeCheck
-			}
-		}
+	if currentPayload != nil {
+		log.Debug().Func(func(e *zerolog.Event) {
+			e.Msgf("Prepending current payload %+q to actual payload %+q: %+q", currentPayload, payload, append(currentPayload, payload...))
+		})
+		currentPayload = append(currentPayload, payload...)
+	} else {
+		currentPayload = payload
 	}
+	if len(currentPayload) == 1 && currentPayload[0] == '!' {
+		// This is an errormessage from the server
+		return currentPayload, nil
+	}
+	containsError := false
+	// We ensure that there are no random ! in the string
+	currentPayload, containsError = filterOneServerError(currentPayload)
+	if containsError {
+		// Save the current inbound payload for the next try
+		currentInboundPayloads[srcUip] = currentPayload
+		return []byte{'!'}, nil
+	}
+	// Check if we have a termination in the middle
+	isMergedMessage, shouldClearInboundPayload := mergeCheck(&currentPayload, srcUip, mergeCallback, currentInboundPayloads, lastPayload)
 	if !isMergedMessage {
 		// When we have a merge message we already set the current payload to the tail
 		currentInboundPayloads[srcUip] = currentPayload
 	} else {
 		log.Debug().Stringer("packetInformation", packetInformation).Msgf("Remainder %+q", currentInboundPayloads[srcUip])
 	}
-	if lastElement := currentPayload[len(currentPayload)-1]; (!isResponse /*a request must end with cr*/ && lastElement != 0x0D /*cr*/) || (isResponse /*a response must end with lf*/ && lastElement != 0x0A /*lf*/) {
+	if lastElement := currentPayload[len(currentPayload)-1]; (lastElement != '\r') && (lastElement != '\n') {
 		return nil, common.ErrUnterminatedPackage
 	} else {
-		log.Debug().Msgf("Last element 0x%x", lastElement)
+		log.Debug().Stringer("packetInformation", packetInformation).Msgf("Last element 0x%x", lastElement)
 		if shouldClearInboundPayload {
 			if currentSavedPayload := currentInboundPayloads[srcUip]; currentSavedPayload != nil {
 				// We remove our current payload from the beginning of the cache
@@ -207,12 +170,55 @@ mergeCheck:
 	return currentPayload, nil
 }
 
+func mergeCheck(currentPayload *[]byte, srcUip string, mergeCallback func(int), currentInboundPayloads map[string][]byte, lastPayload *[]byte) (isMergedMessage, shouldClearInboundPayload bool) {
+	// Check if we have a merged message
+	for i, b := range *currentPayload {
+		if i == 0 {
+			// we ignore the first byte as this is typical for reset etc... so maybe this is good or bad we will see
+			continue
+		}
+		switch b {
+		case 0x0D:
+			if i+1 < len(*currentPayload) && (*currentPayload)[i+1] == 0x0A {
+				// If we know the next is a newline we jump to that index...
+				i++
+			}
+			// ... other than that the logic is the same
+			fallthrough
+		case 0x0A:
+			// We have a merged message if we are not at the end
+			if i < len(*currentPayload)-1 {
+				headPayload := (*currentPayload)[:i+1]
+				tailPayload := (*currentPayload)[i+1:]
+				if reflect.DeepEqual(headPayload, *lastPayload) {
+					// This means that we have a merge where the last payload is an echo. In that case we discard that here to not offset all numbers
+					*currentPayload = tailPayload
+					log.Debug().Msgf("We cut the echo message %s out of the response to keep numbering", headPayload)
+					return mergeCheck(currentPayload, srcUip, mergeCallback, currentInboundPayloads, lastPayload)
+				} else {
+					if mergeCallback != nil {
+						mergeCallback(i)
+					}
+					// In this case we need to put the tail into our "buffer"
+					currentInboundPayloads[srcUip] = tailPayload
+					// and use the beginning as current payload
+					*currentPayload = headPayload
+					return true, false
+				}
+			}
+		}
+	}
+	return false, true
+}
+
 func filterXOnXOff(payload []byte) []byte {
 	n := 0
-	for _, b := range payload {
+	for i, b := range payload {
 		switch b {
 		case 0x11: // Filter XON
+			fallthrough
 		case 0x13: // Filter XOFF
+			log.Trace().Msgf("Filtering %x at %d for %+q", b, i, payload)
 		default:
 			payload[n] = b
 			n++
@@ -221,7 +227,17 @@ func filterXOnXOff(payload []byte) []byte {
 	return payload[:n]
 }
 
-func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {
+func filterOneServerError(unfilteredPayload []byte) (filteredPayload []byte, containsError bool) {
+	for i, b := range unfilteredPayload {
+		if b == '!' {
+			return append(unfilteredPayload[:i], unfilteredPayload[i+1:]...), true
+
+		}
+	}
+	return unfilteredPayload, false
+}
+
+func (a *Analyzer) SerializePackage(message spi.Message) ([]byte, error) {
 	if message, ok := message.(model.CBusMessage); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")
@@ -234,78 +250,14 @@ func (a *Analyzer) SerializePackage(message interface{}) ([]byte, error) {
 	}
 }
 
-// PrettyPrint as messages switch encoding (hex strings) we print the inner messages too
-func (a *Analyzer) PrettyPrint(message interface{}) {
-	if message, ok := message.(model.CBusMessage); !ok {
-		log.Fatal().Msgf("Unsupported type %T supplied", message)
-		panic("unreachable statement")
-	} else {
-		fmt.Printf("%v\n", message)
-		switch message := message.(type) {
-		case model.CBusMessageToServerExactly:
-			switch request := message.GetRequest().(type) {
-			case model.RequestDirectCommandAccessExactly:
-				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
-			case model.RequestObsoleteExactly:
-				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
-			case model.RequestCommandExactly:
-				fmt.Printf("%v\n", request.GetCbusCommand())
-			}
-		case model.CBusMessageToClientExactly:
-			switch reply := message.GetReply().(type) {
-			case model.ReplyOrConfirmationConfirmationExactly:
-				switch reply := reply.GetEmbeddedReply().(type) {
-				// TODO: add recursion
-				case model.ReplyOrConfirmationReplyExactly:
-					switch reply := reply.GetReply().(type) {
-					case model.ReplyEncodedReplyExactly:
-						switch reply := reply.GetEncodedReply().(type) {
-						case model.EncodedReplyExtendedFormatStatusReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetReply())
-						case model.EncodedReplyStandardFormatStatusReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetReply())
-						case model.EncodedReplyCALReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetCalReply())
-						case model.MonitoredSALReplyExactly:
-							// We print this a second time as the first print contains only the hex part
-							fmt.Printf("%v\n", reply.GetMonitoredSAL())
-						}
-					}
-				}
-			case model.ReplyOrConfirmationReplyExactly:
-				switch reply := reply.GetReply().(type) {
-				case model.ReplyEncodedReplyExactly:
-					switch reply := reply.GetEncodedReply().(type) {
-					case model.EncodedReplyExtendedFormatStatusReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetReply())
-					case model.EncodedReplyStandardFormatStatusReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetReply())
-					case model.EncodedReplyCALReplyExactly:
-						// We print this a second time as the first print contains only the hex part
-						fmt.Printf("%v\n", reply.GetCalReply())
-					}
-				}
-			}
-		}
-	}
-}
-
 // MapPackets reorders the packages as they were not split
 func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
 	if a.mappedPacketChan == nil {
 		a.mappedPacketChan = make(chan gopacket.Packet)
 		go func() {
 			defer close(a.mappedPacketChan)
-			currentPackageNum := uint(0)
-			currentPackageNum++
 		mappingLoop:
 			for packet := range in {
-				currentPackageNum++
 				switch {
 				case packet == nil:
 					log.Debug().Msg("Done reading packages. (nil returned)")
@@ -315,15 +267,20 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 					a.mappedPacketChan <- packet
 				default:
 					packetInformation := packetInformationCreator(packet)
-					if payload, err := a.getCurrentPayload(packetInformation, packet.ApplicationLayer().Payload(), a.isResponse(packetInformation), false, true); err != nil {
+					mergeCallback := func(index int) {
+						log.Warn().Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d", index)
+					}
+					if payload, err := a.getCurrentPayload(packetInformation, packet.ApplicationLayer().Payload(), mergeCallback, a.currentPrefilterInboundPayloads, &a.lastMapPayload); err != nil {
 						log.Debug().Err(err).Stringer("packetInformation", packetInformation).Msg("Filtering message")
 						a.mappedPacketChan <- common.NewFilteredPackage(err, packet)
 					} else {
 						currentApplicationLayer := packet.ApplicationLayer()
-						newApplicationLayer := gopacket.Payload(payload)
-						if len(currentApplicationLayer.Payload()) != len(newApplicationLayer) {
-							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newApplicationLayer}
+						newPayload := gopacket.Payload(payload)
+						if !reflect.DeepEqual(currentApplicationLayer.Payload(), payload) {
+							log.Debug().Msgf("Replacing payload %q with %q", currentApplicationLayer.Payload(), payload)
+							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newPayload}
 						}
+						a.lastMapPayload = payload
 						a.mappedPacketChan <- packet
 					}
 				}

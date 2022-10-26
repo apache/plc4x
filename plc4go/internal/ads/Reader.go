@@ -20,12 +20,13 @@
 package ads
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"
@@ -57,20 +58,21 @@ func NewReader(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsN
 	}
 }
 
-func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	// TODO: handle ctx
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 		if len(readRequest.GetFieldNames()) <= 1 {
-			m.singleRead(readRequest, result)
+			m.singleRead(ctx, readRequest, result)
 		} else {
-			m.multiRead(readRequest, result)
+			m.multiRead(ctx, readRequest, result)
 		}
 	}()
 	return result
 }
 
-func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
+func (m *Reader) singleRead(ctx context.Context, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
 	if len(readRequest.GetFieldNames()) != 1 {
 		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
@@ -94,7 +96,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 			log.Debug().Msgf("Invalid field item type %T", field)
 			return
 		}
-		field, err = m.resolveField(adsField)
+		field, err = m.resolveField(ctx, adsField)
 		if err != nil {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
@@ -115,17 +117,6 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 		log.Debug().Msgf("Invalid field item type %T", field)
 		return
 	}
-	userdata := readWriteModel.NewAmsPacket(
-		m.targetAmsNetId,
-		m.targetAmsPort,
-		m.sourceAmsNetId,
-		m.sourceAmsPort,
-		readWriteModel.CommandId_ADS_READ,
-		readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-		0,
-		0,
-		nil,
-	)
 
 	readLength := uint32(adsField.Datatype.NumBytes())
 	switch {
@@ -146,12 +137,21 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 	default:
 		readLength = uint32(adsField.Datatype.NumBytes())
 	}
-	userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, readLength)
+	userdata := readWriteModel.NewAdsReadRequest(
+		adsField.IndexGroup,
+		adsField.IndexOffset,
+		readLength,
+		m.targetAmsNetId,
+		m.targetAmsPort,
+		m.sourceAmsNetId,
+		m.sourceAmsPort,
+		0,
+		m.getInvokeId())
 
-	m.sendOverTheWire(userdata, readRequest, result)
+	m.sendOverTheWire(ctx, userdata, readRequest, result)
 }
 
-func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
+func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
 	// Calculate the size of all fields together.
 	// Calculate the expected size of the response data.
 	expectedResponseDataSize := uint32(0)
@@ -188,18 +188,6 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 		expectedResponseDataSize += 4 + (size * field.GetNumberOfElements())
 	}
 
-	userdata := readWriteModel.NewAmsPacket(
-		m.targetAmsNetId,
-		m.targetAmsPort,
-		m.sourceAmsNetId,
-		m.sourceAmsPort,
-		readWriteModel.CommandId_ADS_READ_WRITE,
-		readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-		0,
-		0,
-		nil,
-	)
-
 	items := make([]readWriteModel.AdsMultiRequestItem, len(readRequest.GetFieldNames()))
 	for i, fieldName := range readRequest.GetFieldNames() {
 		field := readRequest.GetField(fieldName)
@@ -214,7 +202,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 				log.Debug().Msgf("Invalid field item type %T", field)
 				return
 			}
-			field, err = m.resolveField(adsField)
+			field, err = m.resolveField(ctx, adsField)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
@@ -238,12 +226,23 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 		// With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
 		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements)
 	}
-	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil)
+	userdata := readWriteModel.NewAdsReadWriteRequest(
+		uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ),
+		uint32(len(readRequest.GetFieldNames())),
+		expectedResponseDataSize,
+		items,
+		nil,
+		m.targetAmsNetId,
+		m.targetAmsPort,
+		m.sourceAmsNetId,
+		m.sourceAmsPort,
+		0,
+		m.getInvokeId())
 
-	m.sendOverTheWire(userdata, readRequest, result)
+	m.sendOverTheWire(ctx, userdata, readRequest, result)
 }
 
-func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
+func (m *Reader) sendOverTheWire(ctx context.Context, userdata readWriteModel.AmsPacket, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
 	// Calculate a new transaction identifier
 	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
 	if transactionIdentifier > math.MaxUint8 {
@@ -251,17 +250,6 @@ func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest 
 		atomic.StoreUint32(&m.transactionIdentifier, 1)
 	}
 	log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
-	userdata = readWriteModel.NewAmsPacket(
-		userdata.GetTargetAmsNetId(),
-		userdata.GetTargetAmsPort(),
-		userdata.GetSourceAmsNetId(),
-		userdata.GetSourceAmsPort(),
-		userdata.GetCommandId(),
-		userdata.GetState(),
-		userdata.GetErrorCode(),
-		transactionIdentifier,
-		userdata.GetData(),
-	)
 
 	// Assemble the finished tcp paket
 	log.Trace().Msg("Assemble tcp paket")
@@ -269,42 +257,37 @@ func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest 
 
 	// Send the TCP Paket over the wire
 	log.Trace().Msg("Send TCP Paket")
-	if err := m.messageCodec.SendRequest(
-		amsTcpPaket,
-		func(message spi.Message) bool {
-			paket := message.(readWriteModel.AmsTCPPacket)
-			return paket.GetUserdata().GetInvokeId() == transactionIdentifier
-		},
-		func(message spi.Message) error {
-			// Convert the response into an amsTcpPaket
-			log.Trace().Msg("convert response to amsTcpPaket")
-			receivedAmsTcpPaket := message.(readWriteModel.AmsTCPPacket)
-			// Convert the ads response into a PLC4X response
-			log.Trace().Msg("convert response to PLC4X response")
-			readResponse, err := m.ToPlc4xReadResponse(receivedAmsTcpPaket, readRequest)
+	if err := m.messageCodec.SendRequest(ctx, amsTcpPaket, func(message spi.Message) bool {
+		paket := message.(readWriteModel.AmsTCPPacket)
+		return paket.GetUserdata().GetInvokeId() == transactionIdentifier
+	}, func(message spi.Message) error {
+		// Convert the response into an amsTcpPaket
+		log.Trace().Msg("convert response to amsTcpPaket")
+		receivedAmsTcpPaket := message.(readWriteModel.AmsTCPPacket)
+		// Convert the ads response into a PLC4X response
+		log.Trace().Msg("convert response to PLC4X response")
+		readResponse, err := m.ToPlc4xReadResponse(receivedAmsTcpPaket, readRequest)
 
-			if err != nil {
-				result <- &plc4goModel.DefaultPlcReadRequestResult{
-					Request: readRequest,
-					Err:     errors.Wrap(err, "Error decoding response"),
-				}
-				// TODO: should we return the error here?
-				return nil
-			}
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: readResponse,
-			}
-			return nil
-		},
-		func(err error) error {
+		if err != nil {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request: readRequest,
-				Err:     errors.Wrap(err, "got timeout while waiting for response"),
+				Err:     errors.Wrap(err, "Error decoding response"),
 			}
+			// TODO: should we return the error here?
 			return nil
-		},
-		time.Second*1); err != nil {
+		}
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
+			Request:  readRequest,
+			Response: readResponse,
+		}
+		return nil
+	}, func(err error) error {
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
+			Request: readRequest,
+			Err:     errors.Wrap(err, "got timeout while waiting for response"),
+		}
+		return nil
+	}, time.Second*1); err != nil {
 		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: nil,
@@ -313,7 +296,7 @@ func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest 
 	}
 }
 
-func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, error) {
+func (m *Reader) resolveField(ctx context.Context, symbolicField SymbolicPlcField) (DirectPlcField, error) {
 	if directPlcField, ok := m.fieldMapping[symbolicField]; ok {
 		return directPlcField, nil
 	}
@@ -323,28 +306,22 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 	if directPlcField, ok := m.fieldMapping[symbolicField]; ok {
 		return directPlcField, nil
 	}
-	userdata := readWriteModel.NewAmsPacket(
-		m.targetAmsNetId,
-		m.targetAmsPort,
-		m.sourceAmsNetId,
-		m.sourceAmsPort,
-		readWriteModel.CommandId_ADS_READ_WRITE,
-		readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-		0,
-		0,
-		nil,
-	)
-	userdata.Data = readWriteModel.NewAdsReadWriteRequest(
+	userdata := readWriteModel.NewAdsReadWriteRequest(
 		uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME),
 		0,
 		4,
 		nil,
 		[]byte(symbolicField.SymbolicAddress+"\000"),
-	)
+		m.targetAmsNetId,
+		m.targetAmsPort,
+		m.sourceAmsNetId,
+		m.sourceAmsPort,
+		0,
+		m.getInvokeId())
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 		dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
-		m.sendOverTheWire(userdata, dummyRequest, result)
+		m.sendOverTheWire(ctx, userdata, dummyRequest, result)
 	}()
 	// We wait synchronous for the resolution response before we can continue
 	response := <-result
@@ -375,7 +352,7 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
 	var rb utils.ReadBuffer
 	responseCodes := map[string]model.PlcResponseCode{}
-	switch data := amsTcpPaket.GetUserdata().GetData().(type) {
+	switch data := amsTcpPaket.GetUserdata().(type) {
 	case readWriteModel.AdsReadResponse:
 		rb = utils.NewLittleEndianReadBufferByteBased(data.GetData())
 		for _, fieldName := range readRequest.GetFieldNames() {
@@ -421,7 +398,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().DataFormatName(), field.GetStringLength())
+		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().PlcValueType(), field.GetStringLength())
 		if err != nil {
 			log.Error().Err(err).Msg("Error parsing data item")
 			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
@@ -434,4 +411,14 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	// Return the response
 	log.Trace().Msg("Returning the response")
 	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+}
+
+func (m *Reader) getInvokeId() uint32 {
+	// Calculate a new transaction identifier
+	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
+	if transactionIdentifier > math.MaxUint8 {
+		transactionIdentifier = 1
+		atomic.StoreUint32(&m.transactionIdentifier, 1)
+	}
+	return transactionIdentifier
 }

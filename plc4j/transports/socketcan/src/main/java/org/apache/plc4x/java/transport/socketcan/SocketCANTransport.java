@@ -107,4 +107,5 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
             }
         };
     }
+
 }

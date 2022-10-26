@@ -66,7 +66,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
     @Override
     public void onConnect(ConversationContext<Ethernet_Frame> context) {
         final Channel channel = context.getChannel();
-        if(!(channel instanceof RawSocketChannel)) {
+        if (!(channel instanceof RawSocketChannel)) {
             logger.warn("Expected a 'raw' transport, closing channel...");
             context.getChannel().close();
             return;
@@ -116,7 +116,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         // Generate a new session key.
         profinetDriverContext.setSessionKey(sessionKeyGenerator.getAndIncrement());
         // Reset the session key as soon as it reaches the max for a 16 bit uint
-        if(sessionKeyGenerator.get() == 0xFFFF) {
+        if (sessionKeyGenerator.get() == 0xFFFF) {
             sessionKeyGenerator.set(1);
         }
 
@@ -141,7 +141,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             udpSocket.receive(connectResponsePacket);
             ReadBufferByteBased readBuffer = new ReadBufferByteBased(resultBuffer);
             final DceRpc_Packet dceRpc_packet = DceRpc_Packet.staticParse(readBuffer);
-            if((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+            if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
                 if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
                     // Get the remote MAC address and store it in the context.
                     final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
@@ -152,25 +152,21 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                         // Update the raw-socket transports filter expression.
                         ((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(profinetDriverContext.getRemoteMacAddress().getAddress()));
                     } else {
-                        throw new PlcException("Unexpected type of frist block.");
+                        throw new PlcException("Unexpected type of first block.");
                     }
                 } else {
                     throw new PlcException("Unexpected response");
                 }
+            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
+                throw new PlcException("Device rejected connection request");
             } else {
                 throw new PlcException("Unexpected response");
             }
-        } catch (SerializationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (PlcException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (SerializationException | IOException | PlcException | ParseException e) {
+            logger.error("Error", e);
         }
 
-        System.out.println(rawSocketChannel);
+        //System.out.println(rawSocketChannel);
     }
 
     @Override
@@ -196,7 +192,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
     protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
         super.decode(context, msg);
     }
-
 
 
     private Optional<PcapNetworkInterface> getNetworkInterfaceForConnection(InetAddress address) {
@@ -226,7 +221,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 profinetDriverContext.getDceRpcActivityUuid(),
                 0, 0, DceRpc_Operation.CONNECT,
-                new PnIoCm_Packet_Req(404, 404, 404,0, 404,
+                new PnIoCm_Packet_Req(404, 404, 404, 0, 404,
                     Arrays.asList(
                         new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                             new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")),

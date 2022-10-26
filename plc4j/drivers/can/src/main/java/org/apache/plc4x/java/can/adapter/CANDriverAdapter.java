@@ -62,22 +62,22 @@ public class CANDriverAdapter<C, T> extends Plc4xProtocolBase<C> {
 
     @Override
     public void setContext(ConversationContext<C> context) {
-        delegate.setContext(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler));
+        delegate.setContext(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler, context.getAuthentication()));
     }
 
     @Override
     public void onConnect(ConversationContext<C> context) {
-        delegate.onConnect(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler));
+        delegate.onConnect(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler, context.getAuthentication()));
     }
 
     @Override
     public void onDisconnect(ConversationContext<C> context) {
-        delegate.onDisconnect(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler));
+        delegate.onDisconnect(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler, context.getAuthentication()));
     }
 
     @Override
     protected void decode(ConversationContext<C> context, C msg) throws Exception {
-        delegate.decode(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler), frameHandler.fromCAN(adapter.apply(msg)));
+        delegate.decode(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler, context.getAuthentication()), frameHandler.fromCAN(adapter.apply(msg)));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class CANDriverAdapter<C, T> extends Plc4xProtocolBase<C> {
 
     @Override
     public void close(ConversationContext<C> context) {
-        delegate.close(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler));
+        delegate.close(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler, context.getAuthentication()));
     }
 
 }

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -145,13 +145,13 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]bool, uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
+	data := make([]bool, uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
+		for curItem := uint16(0); curItem < uint16(uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
 			_item, _err := readBuffer.ReadBit("")
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetTagPayloadBitString")
@@ -191,7 +191,12 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadBitString(unusedBits, data, unused, actualLength), nil
+	return &_BACnetTagPayloadBitString{
+		ActualLength: actualLength,
+		UnusedBits:   unusedBits,
+		Data:         data,
+		Unused:       unused,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -242,6 +247,16 @@ func (m *_BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTagPayloadBitString) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetTagPayloadBitString) isBACnetTagPayloadBitString() bool {
 	return true
 }
@@ -250,7 +265,7 @@ func (m *_BACnetTagPayloadBitString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

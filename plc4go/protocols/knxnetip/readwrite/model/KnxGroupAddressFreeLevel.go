@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -146,8 +146,8 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 
 	// Create a partially initialized instance
 	_child := &_KnxGroupAddressFreeLevel{
-		SubGroup:         subGroup,
 		_KnxGroupAddress: &_KnxGroupAddress{},
+		SubGroup:         subGroup,
 	}
 	_child._KnxGroupAddress._KnxGroupAddressChildRequirements = _child
 	return _child, nil
@@ -184,7 +184,7 @@ func (m *_KnxGroupAddressFreeLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

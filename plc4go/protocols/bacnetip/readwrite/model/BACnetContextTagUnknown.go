@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -152,10 +152,10 @@ func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagUnknown{
-		UnknownData: unknownData,
 		_BACnetContextTag: &_BACnetContextTag{
 			TagNumberArgument: tagNumberArgument,
 		},
+		UnknownData: unknownData,
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -183,6 +183,16 @@ func (m *_BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) erro
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetContextTagUnknown) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetContextTagUnknown) isBACnetContextTagUnknown() bool {
 	return true
 }
@@ -191,7 +201,7 @@ func (m *_BACnetContextTagUnknown) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

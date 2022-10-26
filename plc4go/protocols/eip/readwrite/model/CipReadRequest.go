@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -164,7 +164,7 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRea
 	}
 	requestPathSize := _requestPathSize
 	// Byte Array field (tag)
-	numberOfBytestag := int(uint16(uint16(requestPathSize) * uint16(uint16(2))))
+	numberOfBytestag := int((uint16(requestPathSize) * uint16(uint16(2))))
 	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field of CipReadRequest")
@@ -183,12 +183,12 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRea
 
 	// Create a partially initialized instance
 	_child := &_CipReadRequest{
-		RequestPathSize: requestPathSize,
-		Tag:             tag,
-		ElementNb:       elementNb,
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
 		},
+		RequestPathSize: requestPathSize,
+		Tag:             tag,
+		ElementNb:       elementNb,
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -238,7 +238,7 @@ func (m *_CipReadRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

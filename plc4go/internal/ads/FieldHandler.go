@@ -22,9 +22,9 @@ package ads
 import (
 	"encoding/binary"
 	"encoding/hex"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	model2 "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"regexp"

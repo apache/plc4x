@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -143,7 +142,7 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACnetPropertyRe
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetPropertyReference")
@@ -160,7 +159,10 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACnetPropertyRe
 	}
 
 	// Create the instance
-	return NewBACnetPropertyReference(propertyIdentifier, arrayIndex), nil
+	return &_BACnetPropertyReference{
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+	}, nil
 }
 
 func (m *_BACnetPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -212,7 +214,7 @@ func (m *_BACnetPropertyReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

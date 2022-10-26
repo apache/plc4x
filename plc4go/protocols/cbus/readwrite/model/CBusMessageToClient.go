@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -83,10 +83,10 @@ func (m *_CBusMessageToClient) GetReply() ReplyOrConfirmation {
 ///////////////////////////////////////////////////////////
 
 // NewCBusMessageToClient factory function for _CBusMessageToClient
-func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) *_CBusMessageToClient {
+func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToClient {
 	_result := &_CBusMessageToClient{
 		Reply:        reply,
-		_CBusMessage: NewCBusMessage(requestContext, cBusOptions, messageLength),
+		_CBusMessage: NewCBusMessage(requestContext, cBusOptions),
 	}
 	_result._CBusMessage._CBusMessageChildRequirements = _result
 	return _result
@@ -124,7 +124,7 @@ func (m *_CBusMessageToClient) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions, messageLength uint16) (CBusMessageToClient, error) {
+func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToClient"); pullErr != nil {
@@ -137,7 +137,7 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := ReplyOrConfirmationParse(readBuffer, cBusOptions, uint16(messageLength), requestContext)
+	_reply, _replyErr := ReplyOrConfirmationParse(readBuffer, cBusOptions, requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of CBusMessageToClient")
 	}
@@ -152,12 +152,11 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 
 	// Create a partially initialized instance
 	_child := &_CBusMessageToClient{
-		Reply: reply,
 		_CBusMessage: &_CBusMessage{
 			RequestContext: requestContext,
 			CBusOptions:    cBusOptions,
-			MessageLength:  messageLength,
 		},
+		Reply: reply,
 	}
 	_child._CBusMessage._CBusMessageChildRequirements = _child
 	return _child, nil
@@ -199,7 +198,7 @@ func (m *_CBusMessageToClient) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

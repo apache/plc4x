@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -174,8 +174,8 @@ func (m *_BACnetTagHeader) GetActualLength() uint32 {
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
 	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() interface{} { return uint32((*m.GetExtExtExtLength())) }, func() interface{} {
-		return uint32(uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() interface{} { return uint32((*m.GetExtExtLength())) }, func() interface{} {
-			return uint32(uint32(utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() interface{} { return uint32((*m.GetExtLength())) }, func() interface{} { return uint32(m.GetLengthValueType()) }).(uint32)))
+		return uint32((utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() interface{} { return uint32((*m.GetExtExtLength())) }, func() interface{} {
+			return uint32((utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() interface{} { return uint32((*m.GetExtLength())) }, func() interface{} { return uint32(m.GetLengthValueType()) }).(uint32)))
 		}).(uint32)))
 	}).(uint32))
 }
@@ -356,8 +356,8 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 
 	// Virtual field
 	_actualLength := utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() interface{} { return uint32((*extExtExtLength)) }, func() interface{} {
-		return uint32(uint32(utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() interface{} { return uint32((*extExtLength)) }, func() interface{} {
-			return uint32(uint32(utils.InlineIf(bool((lengthValueType) == (5)), func() interface{} { return uint32((*extLength)) }, func() interface{} { return uint32(lengthValueType) }).(uint32)))
+		return uint32((utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() interface{} { return uint32((*extExtLength)) }, func() interface{} {
+			return uint32((utils.InlineIf(bool((lengthValueType) == (5)), func() interface{} { return uint32((*extLength)) }, func() interface{} { return uint32(lengthValueType) }).(uint32)))
 		}).(uint32)))
 	}).(uint32)
 	actualLength := uint32(_actualLength)
@@ -368,7 +368,15 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	}
 
 	// Create the instance
-	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength), nil
+	return &_BACnetTagHeader{
+		TagNumber:       tagNumber,
+		TagClass:        tagClass,
+		LengthValueType: lengthValueType,
+		ExtTagNumber:    extTagNumber,
+		ExtLength:       extLength,
+		ExtExtLength:    extExtLength,
+		ExtExtExtLength: extExtExtLength,
+	}, nil
 }
 
 func (m *_BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -478,7 +486,7 @@ func (m *_BACnetTagHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

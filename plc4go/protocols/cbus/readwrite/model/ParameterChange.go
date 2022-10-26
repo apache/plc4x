@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -138,7 +138,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) 
 	}
 
 	// Create the instance
-	return NewParameterChange(), nil
+	return &_ParameterChange{}, nil
 }
 
 func (m *_ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -174,7 +174,7 @@ func (m *_ParameterChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

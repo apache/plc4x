@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AdsInvalidRequest interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 }
 
 // AdsInvalidRequestExactly can be used when we want exactly this type and not a type which fulfills AdsInvalidRequest.
@@ -42,7 +42,7 @@ type AdsInvalidRequestExactly interface {
 
 // _AdsInvalidRequest is the data-structure of this message
 type _AdsInvalidRequest struct {
-	*_AdsData
+	*_AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -63,18 +63,25 @@ func (m *_AdsInvalidRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsInvalidRequest) InitializeParent(parent AdsData) {}
+func (m *_AdsInvalidRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsInvalidRequest) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsInvalidRequest) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 // NewAdsInvalidRequest factory function for _AdsInvalidRequest
-func NewAdsInvalidRequest() *_AdsInvalidRequest {
+func NewAdsInvalidRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidRequest {
 	_result := &_AdsInvalidRequest{
-		_AdsData: NewAdsData(),
+		_AmsPacket: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -107,7 +114,7 @@ func (m *_AdsInvalidRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsInvalidRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsInvalidRequest, error) {
+func AdsInvalidRequestParse(readBuffer utils.ReadBuffer) (AdsInvalidRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsInvalidRequest"); pullErr != nil {
@@ -122,9 +129,9 @@ func AdsInvalidRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, re
 
 	// Create a partially initialized instance
 	_child := &_AdsInvalidRequest{
-		_AdsData: &_AdsData{},
+		_AmsPacket: &_AmsPacket{},
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 
@@ -152,7 +159,7 @@ func (m *_AdsInvalidRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

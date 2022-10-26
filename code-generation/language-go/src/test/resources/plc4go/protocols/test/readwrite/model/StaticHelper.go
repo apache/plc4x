@@ -19,7 +19,7 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/internal/spi/utils"
+import "github.com/apache/plc4x/plc4go/spi/utils"
 
 func ParseBit(io utils.ReadBuffer) int8 {
 	return 0

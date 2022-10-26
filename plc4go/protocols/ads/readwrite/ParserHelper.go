@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -35,15 +35,14 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	case "AmsSerialFrame":
 		return model.AmsSerialFrameParse(io)
 	case "DataItem":
-		dataFormatName, err := utils.StrToString(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
+		plcValueType, _ := model.PlcValueTypeByName(arguments[0])
 		stringLength, err := utils.StrToInt32(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, dataFormatName, stringLength)
+		return model.DataItemParse(io, plcValueType, stringLength)
+	case "AdsTableSizes":
+		return model.AdsTableSizesParse(io)
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])
 		if err != nil {
@@ -52,25 +51,26 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return model.AdsMultiRequestItemParse(io, indexGroup)
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(io)
-	case "AdsData":
-		commandId, _ := model.CommandIdByName(arguments[0])
-		response, err := utils.StrToBool(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.AdsDataParse(io, commandId, response)
+	case "AdsDataTypeArrayInfo":
+		return model.AdsDataTypeArrayInfoParse(io)
+	case "AdsDataTypeTableEntry":
+		return model.AdsDataTypeTableEntryParse(io)
 	case "AmsNetId":
 		return model.AmsNetIdParse(io)
 	case "AdsStampHeader":
 		return model.AdsStampHeaderParse(io)
 	case "AmsSerialResetFrame":
 		return model.AmsSerialResetFrameParse(io)
+	case "AdsDataTypeTableChildEntry":
+		return model.AdsDataTypeTableChildEntryParse(io)
+	case "AdsConstants":
+		return model.AdsConstantsParse(io)
 	case "AdsNotificationSample":
 		return model.AdsNotificationSampleParse(io)
+	case "AdsSymbolTableEntry":
+		return model.AdsSymbolTableEntryParse(io)
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(io)
-	case "State":
-		return model.StateParse(io)
 	case "AmsPacket":
 		return model.AmsPacketParse(io)
 	}

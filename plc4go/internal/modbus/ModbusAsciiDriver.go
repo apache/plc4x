@@ -21,10 +21,10 @@ package modbus
 
 import (
 	"encoding/json"
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"

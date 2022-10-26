@@ -88,9 +88,7 @@ public class MockDriver implements PlcDriver {
                 }).collect(Collectors.toList());
             PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);*/
             PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(mock(PlcSubscriptionRequest.class), new HashMap<>());
-            CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
-            responseFuture.complete(response);
-            return responseFuture;
+            return CompletableFuture.completedFuture(response);
         });
         return plcConnectionMock;
     }

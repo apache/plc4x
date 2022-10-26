@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -168,8 +168,8 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (Sy
 
 	// Create a partially initialized instance
 	_child := &_SysexCommandExtendedId{
-		Id:            id,
 		_SysexCommand: &_SysexCommand{},
+		Id:            id,
 	}
 	_child._SysexCommand._SysexCommandChildRequirements = _child
 	return _child, nil
@@ -213,7 +213,7 @@ func (m *_SysexCommandExtendedId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

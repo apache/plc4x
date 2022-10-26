@@ -37,15 +37,25 @@ public interface PlcUnsubscriptionRequest extends PlcRequest {
         PlcUnsubscriptionRequest build();
 
         /**
-         * TODO document me:
+         * {@link PlcSubscriptionHandle} that should be removed from the subscription
          *
-         * @param plcSubscriptionHandle
-         * @return
+         * @param plcSubscriptionHandle {@link PlcSubscriptionHandle} to be removed
          */
         PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle);
 
+        /**
+         * {@link PlcSubscriptionHandle}s that should be removed from the subscription
+         *
+         * @param plcSubscriptionHandle1 {@link PlcSubscriptionHandle} to be removed
+         * @param plcSubscriptionHandles {@link PlcSubscriptionHandle} to be removed
+         */
         PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles);
 
+        /**
+         * {@link PlcSubscriptionHandle}s that should be removed from the subscription
+         *
+         * @param plcSubscriptionHandle {@link PlcSubscriptionHandle} to be removed
+         */
         PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle);
     }
 

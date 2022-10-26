@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -124,12 +124,12 @@ func (m *_BACnetVTClassTagged) GetLengthInBitsConditional(lastItem bool) uint16 
 	lengthInBits += m.Header.GetLengthInBits()
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -166,7 +166,7 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -175,7 +175,10 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetVTClassTagged")
 	}
-	value := _value.(BACnetVTClass)
+	var value BACnetVTClass
+	if _value != nil {
+		value = _value.(BACnetVTClass)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetVTClass_VENDOR_PROPRIETARY_VALUE))
@@ -187,14 +190,23 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetVTClassTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVTClassTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetVTClassTagged")
 	}
 
 	// Create the instance
-	return NewBACnetVTClassTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return &_BACnetVTClassTagged{
+		TagNumber:        tagNumber,
+		TagClass:         tagClass,
+		Header:           header,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetVTClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -238,6 +250,19 @@ func (m *_BACnetVTClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetVTClassTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetVTClassTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetVTClassTagged) isBACnetVTClassTagged() bool {
 	return true
 }
@@ -246,7 +271,7 @@ func (m *_BACnetVTClassTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,11 +20,12 @@
 package knxnetip
 
 import (
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/options"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
@@ -40,12 +41,12 @@ func NewDriver() *Driver {
 	}
 }
 
-func (m Driver) CheckQuery(query string) error {
+func (m *Driver) CheckQuery(query string) error {
 	_, err := m.GetPlcFieldHandler().ParseQuery(query)
 	return err
 }
 
-func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
@@ -73,10 +74,14 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	return connection.Connect()
 }
 
-func (m Driver) SupportsDiscovery() bool {
+func (m *Driver) SupportsDiscovery() bool {
 	return true
 }
 
-func (m Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
-	return NewDiscoverer().Discover(callback, discoveryOptions...)
+func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return m.DiscoverWithContext(context.TODO(), callback, discoveryOptions...)
+}
+
+func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return NewDiscoverer().Discover(ctx, callback, discoveryOptions...)
 }

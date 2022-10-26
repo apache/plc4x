@@ -20,90 +20,65 @@
 package knxnetip
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
 type Browser struct {
+	_default.DefaultBrowser
 	connection      *Connection
 	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
 }
 
 func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser {
-	return &Browser{
+	browser := Browser{
 		connection:      connection,
 		messageCodec:    messageCodec,
 		sequenceCounter: 0,
 	}
+	browser.DefaultBrowser = _default.NewDefaultBrowser(browser)
+	return &browser
 }
 
-func (m Browser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return m.BrowseWithInterceptor(browseRequest, func(result apiModel.PlcBrowseEvent) bool {
-		return true
-	})
-}
-
-func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
-	result := make(chan apiModel.PlcBrowseRequestResult)
-	sendResult := func(browseResponse apiModel.PlcBrowseResponse, err error) {
-		result <- &model.DefaultPlcBrowseRequestResult{
-			Request:  browseRequest,
-			Response: browseResponse,
-			Err:      err,
+func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool, fieldName string, field apiModel.PlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField) {
+	switch field.(type) {
+	case DeviceQueryField:
+		queryResults, err := m.executeDeviceQuery(ctx, field.(DeviceQueryField), browseRequest, fieldName, interceptor)
+		if err != nil {
+			log.Warn().Err(err).Msg("Error executing device query")
+			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+		} else {
+			return apiModel.PlcResponseCode_OK, queryResults
 		}
+	case CommunicationObjectQueryField:
+		queryResults, err := m.executeCommunicationObjectQuery(ctx, field.(CommunicationObjectQueryField))
+		if err != nil {
+			log.Warn().Err(err).Msg("Error executing device query")
+			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+		} else {
+			return apiModel.PlcResponseCode_OK, queryResults
+		}
+	default:
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
 	}
-
-	go func() {
-		results := map[string][]apiModel.PlcBrowseQueryResult{}
-		for _, queryName := range browseRequest.GetQueryNames() {
-			queryString := browseRequest.GetQueryString(queryName)
-			field, err := m.connection.fieldHandler.ParseQuery(queryString)
-			if err != nil {
-				sendResult(nil, err)
-				return
-			}
-
-			switch field.(type) {
-			case DeviceQueryField:
-				queryResults, err := m.executeDeviceQuery(field.(DeviceQueryField), browseRequest, queryName, interceptor)
-				if err != nil {
-					// TODO: Return some sort of return code like with the read and write APIs
-					results[queryName] = nil
-				} else {
-					results[queryName] = queryResults
-				}
-			case CommunicationObjectQueryField:
-				queryResults, err := m.executeCommunicationObjectQuery(field.(CommunicationObjectQueryField))
-				if err != nil {
-					// TODO: Return some sort of return code like with the read and write APIs
-					results[queryName] = nil
-				} else {
-					results[queryName] = queryResults
-				}
-			default:
-				// TODO: Return some sort of return code like with the read and write APIs
-				results[queryName] = nil
-			}
-		}
-		sendResult(model.NewDefaultPlcBrowseResponse(browseRequest, results), nil)
-	}()
-	return result
 }
 
-func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiModel.PlcBrowseRequest, queryName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseQueryResult, error) {
+func (m Browser) executeDeviceQuery(ctx context.Context, field DeviceQueryField, browseRequest apiModel.PlcBrowseRequest, fieldName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseFoundField, error) {
 	// Create a list of address strings, which doesn't contain any ranges, lists or wildcards
 	knxAddresses, err := m.calculateAddresses(field)
 	if err != nil {
@@ -113,12 +88,12 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 		return nil, errors.New("query resulted in not a single valid address")
 	}
 
-	var queryResults []apiModel.PlcBrowseQueryResult
+	var queryResults []apiModel.PlcBrowseFoundField
 	// Parse each of these expanded addresses and handle them accordingly.
 	for _, knxAddress := range knxAddresses {
 		// Send a connection request to the device
 		connectTtlTimer := time.NewTimer(m.connection.defaultTtl)
-		deviceConnections := m.connection.DeviceConnect(knxAddress)
+		deviceConnections := m.connection.DeviceConnect(ctx, knxAddress)
 		select {
 		case deviceConnection := <-deviceConnections:
 			if !connectTtlTimer.Stop() {
@@ -141,7 +116,7 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 				if interceptor != nil {
 					add = interceptor(&model.DefaultPlcBrowseEvent{
 						Request:   browseRequest,
-						QueryName: queryName,
+						FieldName: fieldName,
 						Result:    queryResult,
 						Err:       nil,
 					})
@@ -153,7 +128,7 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 				}
 
 				disconnectTtlTimer := time.NewTimer(m.connection.defaultTtl * 10)
-				deviceDisconnections := m.connection.DeviceDisconnect(knxAddress)
+				deviceDisconnections := m.connection.DeviceDisconnect(ctx, knxAddress)
 				select {
 				case _ = <-deviceDisconnections:
 					if !disconnectTtlTimer.Stop() {
@@ -174,15 +149,15 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 	return queryResults, nil
 }
 
-func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryField) ([]apiModel.PlcBrowseQueryResult, error) {
-	var results []apiModel.PlcBrowseQueryResult
+func (m Browser) executeCommunicationObjectQuery(ctx context.Context, field CommunicationObjectQueryField) ([]apiModel.PlcBrowseFoundField, error) {
+	var results []apiModel.PlcBrowseFoundField
 
 	knxAddress := field.toKnxAddress()
 	knxAddressString := KnxAddressToString(knxAddress)
 
 	// If we have a building Key, try that to login in order to access protected
 	if m.connection.buildingKey != nil {
-		arr := m.connection.DeviceAuthenticate(knxAddress, m.connection.buildingKey)
+		arr := m.connection.DeviceAuthenticate(ctx, knxAddress, m.connection.buildingKey)
 		<-arr
 	}
 
@@ -404,7 +379,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 				continue
 			}
 
-			// Assemble a PlcBrowseQueryResult
+			// Assemble a PlcBrowseFoundField
 			var field apiModel.PlcField
 			communicationEnable := descriptor.GetCommunicationEnable()
 			readable := communicationEnable && descriptor.GetReadEnable()

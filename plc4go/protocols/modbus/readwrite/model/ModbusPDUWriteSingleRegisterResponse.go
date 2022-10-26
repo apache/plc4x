@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -172,9 +172,9 @@ func ModbusPDUWriteSingleRegisterResponseParse(readBuffer utils.ReadBuffer, resp
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUWriteSingleRegisterResponse{
+		_ModbusPDU: &_ModbusPDU{},
 		Address:    address,
 		Value:      value,
-		_ModbusPDU: &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil
@@ -218,7 +218,7 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

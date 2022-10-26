@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.ads.model;
 
-import org.apache.plc4x.java.ads.readwrite.AdsDataType;
+import org.apache.plc4x.java.ads.readwrite.AdsDataTypeTableEntry;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 
@@ -28,11 +28,11 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private final String plcFieldName;
 
-    private final AdsDataType adsDataType;
+    private final AdsDataTypeTableEntry adsDataType;
 
     private final Long notificationHandle;
 
-    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String plcFieldName, AdsDataType adsDataType, Long notificationHandle) {
+    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String plcFieldName, AdsDataTypeTableEntry adsDataType, Long notificationHandle) {
         super(plcSubscriber);
         this.plcFieldName = plcFieldName;
         this.adsDataType = adsDataType;
@@ -43,7 +43,7 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         return plcFieldName;
     }
 
-    public AdsDataType getAdsDataType() {
+    public AdsDataTypeTableEntry getAdsDataType() {
         return adsDataType;
     }
 

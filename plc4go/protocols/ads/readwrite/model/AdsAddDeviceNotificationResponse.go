@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AdsAddDeviceNotificationResponse interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetNotificationHandle returns NotificationHandle (property field)
@@ -46,7 +46,7 @@ type AdsAddDeviceNotificationResponseExactly interface {
 
 // _AdsAddDeviceNotificationResponse is the data-structure of this message
 type _AdsAddDeviceNotificationResponse struct {
-	*_AdsData
+	*_AmsPacket
 	Result             ReturnCode
 	NotificationHandle uint32
 }
@@ -69,10 +69,17 @@ func (m *_AdsAddDeviceNotificationResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsAddDeviceNotificationResponse) InitializeParent(parent AdsData) {}
+func (m *_AdsAddDeviceNotificationResponse) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsAddDeviceNotificationResponse) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsAddDeviceNotificationResponse) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,13 +101,13 @@ func (m *_AdsAddDeviceNotificationResponse) GetNotificationHandle() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
-func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle uint32) *_AdsAddDeviceNotificationResponse {
+func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsAddDeviceNotificationResponse {
 	_result := &_AdsAddDeviceNotificationResponse{
 		Result:             result,
 		NotificationHandle: notificationHandle,
-		_AdsData:           NewAdsData(),
+		_AmsPacket:         NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -139,7 +146,7 @@ func (m *_AdsAddDeviceNotificationResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsAddDeviceNotificationResponse, error) {
+func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationResponse"); pullErr != nil {
@@ -174,11 +181,11 @@ func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandI
 
 	// Create a partially initialized instance
 	_child := &_AdsAddDeviceNotificationResponse{
+		_AmsPacket:         &_AmsPacket{},
 		Result:             result,
 		NotificationHandle: notificationHandle,
-		_AdsData:           &_AdsData{},
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 
@@ -225,7 +232,7 @@ func (m *_AdsAddDeviceNotificationResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

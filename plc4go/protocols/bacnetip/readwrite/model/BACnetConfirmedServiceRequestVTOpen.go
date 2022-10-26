@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -91,7 +91,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLocalVtSessionIdentifier() BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTOpen factory function for _BACnetConfirmedServiceRequestVTOpen
-func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestVTOpen {
+func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTOpen {
 	_result := &_BACnetConfirmedServiceRequestVTOpen{
 		VtClass:                        vtClass,
 		LocalVtSessionIdentifier:       localVtSessionIdentifier,
@@ -136,7 +136,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestVTOpen, error) {
+func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
@@ -177,11 +177,11 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestVTOpen{
-		VtClass:                  vtClass,
-		LocalVtSessionIdentifier: localVtSessionIdentifier,
 		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
+		VtClass:                  vtClass,
+		LocalVtSessionIdentifier: localVtSessionIdentifier,
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -235,7 +235,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

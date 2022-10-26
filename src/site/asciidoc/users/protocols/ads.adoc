@@ -17,16 +17,64 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-== ADS/AMS
+== ADS (Automation Device Specification)
+image::ads_banner.png[banner,512,167]
+
+The ADS (automation device specification) describes a device-independent and fieldbus independent interface for communication between Beckhoff automation devices running TwinCAT and other devices implementing this interface. https://www.home-assistant.io/integrations/ads/ Source (accessed 7 August 2022)
+
+ADS device concept: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
+
+Specifcation for ADS devices: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
+
 === Structure AMS/TCP Packet
+ADS (Automation Device Specification) is the TwinCAT communication protocol that specifies the interaction between two ADS devices. For example, it defines what operations can be executed on another ADS device, what parameters are necessary for that and what return value is sent after execution.
 
-[cols=1*]
+AMS (Automation Message Specification) specifies the exchange of the ADS data. A major component of the communication protocol is the AmsNetId. This is specified in the AMS/ADS package for the source and target device. An ADS device can be explicitly addressed using the AmsNetId.
+Source https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= (accessed 7 August 2022)
+
+=== Connection String Options
+
+[cols="2,2a,5a"]
 |===
-| AMS/TCP Header
+|Name |Value |Description
 
-| AMS Header
+|Code
+2+|`ADS`
 
-| ADS Data
+|Name
+2+|ADS Protocol
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-ads</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Default Transport:
+2+| `tcp`
+3+|Supported Operations
+
+|
+| `read`
+| 
+
+3+|Options
+
+| AmsNetId
+| getTargetAmsNetId()
+| setTargetAmsNetId(AmsNetId targetAmsNetId)
+
+| AmsNetIdConverter
+| 
+|
+
+| targetAmsPort
+| getDefaultPort(48898)
+| Defaults to 48898
 
 |===
 
@@ -51,6 +99,7 @@
 |===
 
 === More details on
-For details about the protocol look here: http://www.beckhoff.com/
+For details about the protocol look here: http://www.beckhoff.com/ 
+& (German Handbook: https://download.beckhoff.com/download/Document/automation/twincat3/TwinCAT_3_ADS_INTRO_DE.pdf)
 
-Source: https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsamsspec/html/tcadsamsspec_intro.htm[Structure AMS/TCP Packet]
+

@@ -21,12 +21,12 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/pcap"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/transports/pcap"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 	"io"
@@ -37,7 +37,7 @@ import (
 	"time"
 )
 
-func Test(t *testing.T) {
+func TestBacnetDriverWithPcap(t *testing.T) {
 	t.Skip() // Manual test don't check in un-skipped
 
 	config.TraceTransactionManagerWorkers = false
@@ -63,7 +63,7 @@ func Test(t *testing.T) {
 	defer connection.Close()
 	build, err := connection.SubscriptionRequestBuilder().
 		AddEventQuery("furz", "*/*/*").
-		AddItemHandler(func(event model.PlcSubscriptionEvent) {
+		AddPreRegisteredConsumer("furz", func(event model.PlcSubscriptionEvent) {
 			println(event)
 		}).
 		Build()

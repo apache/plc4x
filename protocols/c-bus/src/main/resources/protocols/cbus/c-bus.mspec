@@ -22,10 +22,6 @@
 ]
 
 [type RequestContext
-    // Useful for response parsing: Set this to true if you send a CAL before. This will change the way the response will be parsed
-    [simple   bit       sendCalCommandBefore        ]
-    // Useful for response parsing: Set this to true if you send a SAL status request before. This will change the way the response will be parsed
-    [simple   bit       sendSALStatusRequestBefore  ]
     // Useful for response parsing: Set this to true if you send a identify request before. This will change the way the response will be parsed
     [simple   bit       sendIdentifyRequestBefore   ]
 ]
@@ -47,30 +43,29 @@
     [simple bit pun    ]
     // causes parameter change notifications to be emitted.
     [simple bit pcn    ]
-    // enabled the crc checks
+    // enabled the checksum checks
     [simple bit srchk ]
 ]
 
-[type CBusMessage(bit isResponse, RequestContext requestContext, CBusOptions cBusOptions, uint 16 messageLength)
+[type CBusMessage(bit isResponse, RequestContext requestContext, CBusOptions cBusOptions)
     [validation 'requestContext != null' "requestContext required"  ]
     [validation 'cBusOptions != null'    "cBusOptions required"     ]
     [typeSwitch isResponse
        ['false' *ToServer
-            [simple   Request('cBusOptions', 'messageLength')         request         ]
+            [simple   Request('cBusOptions')         request        ]
        ]
        ['true' *ToClient
-            [simple   ReplyOrConfirmation('cBusOptions', 'messageLength', 'requestContext')  reply           ]
+            [simple   ReplyOrConfirmation('cBusOptions', 'requestContext')  reply           ]
        ]
     ]
 ]
 
-[type Request(CBusOptions cBusOptions, uint 16 messageLength)
+[type Request(CBusOptions cBusOptions)
     [peek     RequestType peekedByte                                        ]
     [optional RequestType startingCR       'peekedByte == RequestType.EMPTY']
     [optional RequestType resetMode        'peekedByte == RequestType.RESET']
     [peek     RequestType secondPeek                                        ]
     [virtual  RequestType actualPeek       '(startingCR==null&&resetMode==null)||(startingCR==null&&resetMode!=null&&secondPeek==RequestType.EMPTY)?peekedByte:secondPeek'  ]
-    [virtual uint 16 payloadLength         '(messageLength-2)-((resetMode!=null)?(1):(0))'                                                                                  ] // We subtract the command itself and the termination
     [typeSwitch actualPeek
         ['SMART_CONNECT_SHORTCUT' *SmartConnectShortcut
             [const    byte        pipe      0x7C                            ]
@@ -78,22 +73,38 @@
             [optional byte        secondPipe 'pipePeek == RequestType.SMART_CONNECT_SHORTCUT']
         ]
         ['RESET' *Reset
+            [peek     RequestType tildePeek                                     ]
+            [optional RequestType secondTilde 'tildePeek == RequestType.RESET'  ]
+            [peek     RequestType tildePeek2                                    ]
+            [optional RequestType thirdTilde 'tildePeek2 == RequestType.RESET'  ]
         ]
-        ['DIRECT_COMMAND' *DirectCommandAccess(uint 16 payloadLength)
-            [const    byte         at        0x40                           ]
-            [manual   CALDataOrSetParameter
-                                          calDataOrSetParameter
-                        'STATIC_CALL("readCALDataOrSetParameter", readBuffer, payloadLength)'
-                        'STATIC_CALL("writeCALDataOrSetParameter", writeBuffer, calDataOrSetParameter)'
-                        '_value.lengthInBytes*2'                            ]
+        ['DIRECT_COMMAND' *DirectCommandAccess
+            [const    byte    at        0x40                                ]
+            [manual   CALData
+                              calData
+                        'STATIC_CALL("readCALData", readBuffer)'
+                        'STATIC_CALL("writeCALData", writeBuffer, calData)'
+                        '(calData.lengthInBytes*2)*8'                       ]
+            [virtual  CALData
+                              calDataDecoded 'calData'                      ]
+            [optional Alpha         alpha                                   ]
         ]
-        ['REQUEST_COMMAND' *Command(uint 16 payloadLength)
-            [const    byte                initiator 0x5C                    ] // 0x5C == "/"
+        ['REQUEST_COMMAND' *Command
+            [const    byte  initiator 0x5C                                  ] // 0x5C == "\"
             [manual   CBusCommand
-                                          cbusCommand
-                        'STATIC_CALL("readCBusCommand", readBuffer, payloadLength, cBusOptions)'
+                              cbusCommand
+                        'STATIC_CALL("readCBusCommand", readBuffer, cBusOptions, cBusOptions.srchk)'
                         'STATIC_CALL("writeCBusCommand", writeBuffer, cbusCommand)'
-                        '_value.lengthInBytes*2'                            ]
+                        '(cbusCommand.lengthInBytes*2)*8'                   ]
+            [virtual  CBusCommand
+                              cbusCommandDecoded 'cbusCommand'              ]
+            [manual   Checksum
+                              chksum
+                        'STATIC_CALL("readAndValidateChecksum", readBuffer, cbusCommand, cBusOptions.srchk)'
+                        'STATIC_CALL("calculateChecksum", writeBuffer, cbusCommand, cBusOptions.srchk)'
+                        '(cBusOptions.srchk)?(16):(0)'                      ]
+            [virtual  Checksum
+                              chksumDecoded 'chksum'                        ]
             [optional Alpha         alpha                                   ]
         ]
         ['NULL' *Null
@@ -102,14 +113,15 @@
         ['EMPTY' *Empty
         ]
         // TODO: we should check if we are in basic mode
-        [* *Obsolete(uint 16 payloadLength)
-            [virtual  uint 16 obsoletePayloadLength 'payloadLength+1']
-            [manual   CALDataOrSetParameter
-                                          calDataOrSetParameter
-                        'STATIC_CALL("readCALDataOrSetParameter", readBuffer, obsoletePayloadLength)'
-                        'STATIC_CALL("writeCALDataOrSetParameter", writeBuffer, calDataOrSetParameter)'
-                        '_value.lengthInBytes*2'                            ]
-            [optional Alpha         alpha                                   ]
+        [* *Obsolete
+            [manual   CALData
+                              calData
+                        'STATIC_CALL("readCALData", readBuffer)'
+                        'STATIC_CALL("writeCALData", writeBuffer, calData)'
+                        '(calData.lengthInBytes*2)*8'                       ]
+            [virtual  CALData
+                              calDataDecoded 'calData'                      ]
+            [optional Alpha   alpha                                         ]
         ]
     ]
     [simple   RequestTermination  termination                               ]
@@ -134,10 +146,11 @@
         [*, 'true' *DeviceManagement
             [simple     Parameter paramNo                                 ]
             [const      byte      delimiter       0x0                     ]
+            // TODO: check if this is one byte or many bytes
             [simple     byte      parameterValue                          ]
         ]
         ['PointToPointToMultiPoint' *PointToPointToMultiPoint
-            [simple CBusPointToPointToMultipointCommand('cBusOptions') command]
+            [simple CBusPointToPointToMultiPointCommand('cBusOptions') command]
         ]
         ['PointToMultiPoint'        *PointToMultiPoint
             [simple CBusPointToMultiPointCommand('cBusOptions')        command]
@@ -186,29 +199,8 @@
 ]
 
 [type NetworkRoute
-    [reserved uint 2      '0x00'                                                       ]
-    [simple RouteType     reverseRouteType                                             ]
-    [simple RouteType     routeType                                                    ]
-    [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-]
-
-// The last 3 bits are the total number of bridges ... subtracting 1 results in the number of additional bridges.
-// It also seems as if these are generally 2 empty bits and then twice the number of bridges as 3-bit numbers.
-// The block of 3 in bit's 3..5 seem to be the reverse route.
-//
-// Observations on failing packets:
-// - In the first case the first two bits are not empty, but 01 ... the first block of bridges is then increased by one.
-// - In another packet the first two bits are 0, but the first group ist set to 111 and the number of bridges is set to 000.
-// - In another packet the first two bits are 0, the first group is set to 001 and the second to 101
-[enum uint 3 RouteType(uint 3 additionalBridges)
-    ['0x0' NoBridgeAtAll         ['0']]
-    ['0x1' NoAdditionalBridge    ['0']]
-    ['0x2' OneAdditionalBridge   ['1']]
-    ['0x3' TwoAdditionalBridge   ['2']]
-    ['0x4' ThreeAdditionalBridge ['3']]
-    ['0x5' FourAdditionalBridge  ['4']]
-    ['0x6' FiveAdditionalBridge  ['5']]
-    ['0x7' SixAdditionalBridge   ['6']]
+    [simple NetworkProtocolControlInformation networkPCI                                ]
+    [array  BridgeAddress additionalBridgeAddresses count 'networkPCI.stackDepth-1'     ] // We substract 1 as when a route is used we always have one prefixed
 ]
 
 [discriminatedType CBusPointToPointCommand(CBusOptions cBusOptions)
@@ -226,7 +218,6 @@
         ]
     ]
     [simple   CALData('null') calData                                                           ]
-    [optional Checksum      crc      'cBusOptions.srchk'                                        ] // checksum is optional but mspec checksum isn't
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(CBusOptions cBusOptions)
@@ -237,16 +228,15 @@
             [reserved byte          '0x00'                                                             ]
             [simple   StatusRequest statusRequest                                                      ]
         ]
-        [         *Normal
-            [simple   ApplicationIdContainer   application                                             ]
-            [reserved byte                     '0x00'                                                  ]
-            [simple   SALData                  salData                                                 ]
+        [*        *Normal
+            [simple   ApplicationIdContainer                application                                ]
+            [reserved byte                                  '0x00'                                     ]
+            [simple   SALData('application.applicationId')  salData                                    ]
         ]
     ]
-    [optional Checksum      crc           'cBusOptions.srchk'                                          ] // checksum is optional but mspec checksum isn't
 ]
 
-[discriminatedType CBusPointToPointToMultipointCommand(CBusOptions cBusOptions)
+[discriminatedType CBusPointToPointToMultiPointCommand(CBusOptions cBusOptions)
     [simple BridgeAddress bridgeAddress                                                              ]
     [simple NetworkRoute  networkRoute                                                               ]
     [peek    byte       peekedApplication                                                            ]
@@ -256,11 +246,10 @@
             [simple StatusRequest statusRequest                                                      ]
         ]
         [*        *Normal
-            [simple   ApplicationIdContainer application                                             ]
-            [simple   SALData                salData                                                 ]
+            [simple   ApplicationIdContainer                application                              ]
+            [simple   SALData('application.applicationId')  salData                                  ]
         ]
     ]
-    [optional Checksum      crc           'cBusOptions.srchk'                                        ] // checksum is optional but mspec checksum isn't
 ]
 
 /*
@@ -288,6 +277,11 @@
     ['0x11' TELEPHONY_STATUS_AND_CONTROL      ]
     ['0x12' MEASUREMENT                       ]
     ['0x13' TESTING                           ]
+    ['0x14' MEDIA_TRANSPORT_CONTROL           ]
+    ['0x15' ERROR_REPORTING                   ]
+    ['0x16' HVAC_ACTUATOR                     ]
+    ['0x17' INFO_MESSAGES                     ]
+    ['0x18' NETWORK_CONTROL                   ]
 ]
 
 [enum uint 4 LightingCompatible
@@ -413,8 +407,8 @@
     ['0x70' VENTILATION_70                        ['VENTILATION'                       , 'YES'                 ]]
     ['0x71' IRRIGATION_CONTROL_71                 ['IRRIGATION_CONTROL'                , 'YES'                 ]]
     ['0x72' POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72 ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL', 'YES'                 ]]
-    ['0x73' RESERVED_73                           ['RESERVED'                          , 'NA'                  ]] // HVAC_ACTUATOR
-    ['0x74' RESERVED_74                           ['RESERVED'                          , 'NA'                  ]] // HVAC_ACTUATOR
+    ['0x73' HVAC_ACTUATOR_73                      ['HVAC_ACTUATOR'                     , 'NA'                  ]]
+    ['0x74' HVAC_ACTUATOR_74                      ['HVAC_ACTUATOR'                     , 'NA'                  ]]
     ['0x75' RESERVED_75                           ['RESERVED'                          , 'NA'                  ]]
     ['0x76' RESERVED_76                           ['RESERVED'                          , 'NA'                  ]]
     ['0x77' RESERVED_77                           ['RESERVED'                          , 'NA'                  ]]
@@ -471,7 +465,7 @@
     ['0xAA' RESERVED_AA                           ['RESERVED'                          , 'NA'                  ]]
     ['0xAB' RESERVED_AB                           ['RESERVED'                          , 'NA'                  ]]
     ['0xAC' AIR_CONDITIONING_AC                   ['AIR_CONDITIONING'                  , 'NO'                  ]]
-    ['0xAD' RESERVED_AD                           ['RESERVED'                          , 'NA'                  ]] // INFO_MESSAGES
+    ['0xAD' INFO_MESSAGES                         ['INFO_MESSAGES'                     , 'NA'                  ]]
     ['0xAE' RESERVED_AE                           ['RESERVED'                          , 'NA'                  ]]
     ['0xAF' RESERVED_AF                           ['RESERVED'                          , 'NA'                  ]]
     ['0xB0' RESERVED_B0                           ['RESERVED'                          , 'NA'                  ]]
@@ -490,7 +484,7 @@
     ['0xBD' RESERVED_BD                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBE' RESERVED_BE                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBF' RESERVED_BF                           ['RESERVED'                          , 'NA'                  ]]
-    ['0xC0' MEDIA_TRANSPORT_C0                    ['RESERVED'                          , 'NA'                  ]] // MEDIA_TRANSPORT
+    ['0xC0' MEDIA_TRANSPORT_CONTROL_C0            ['MEDIA_TRANSPORT_CONTROL'           , 'NA'                  ]]
     ['0xC1' RESERVED_C1                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC2' RESERVED_C2                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC3' RESERVED_C3                           ['RESERVED'                          , 'NA'                  ]]
@@ -504,7 +498,7 @@
     ['0xCB' ENABLE_CONTROL_CB                     ['ENABLE_CONTROL'                    , 'YES_BUT_RESTRICTIONS']]
     ['0xCC' I_HAVE_NO_IDEA_CC                     ['RESERVED'                          , 'NA'                  ]] // This is the only value actually not defined in the spec.
     ['0xCD' AUDIO_AND_VIDEO_CD                    ['AUDIO_AND_VIDEO'                   , 'YES_BUT_RESTRICTIONS']]
-    ['0xCE' ERROR_REPORTING_CE                    ['RESERVED'                          , 'NA'                  ]] // ERROR_REPORTING
+    ['0xCE' ERROR_REPORTING_CE                    ['ERROR_REPORTING'                   , 'NA'                  ]]
     ['0xCF' RESERVED_CF                           ['RESERVED'                          , 'NA'                  ]]
     ['0xD0' SECURITY_D0                           ['SECURITY'                          , 'NO'                  ]]
     ['0xD1' METERING_D1                           ['METERING'                          , 'NO'                  ]]
@@ -553,24 +547,7 @@
     ['0xFC' RESERVED_FC                           ['RESERVED'                          , 'NO'                  ]]
     ['0xFD' RESERVED_FD                           ['RESERVED'                          , 'NO'                  ]]
     ['0xFE' RESERVED_FE                           ['RESERVED'                          , 'NO'                  ]]
-    ['0xFF' RESERVED_FF                           ['RESERVED'                          , 'NO'                  ]] // NETWORK_CONTROL
-]
-
-[type CALDataOrSetParameter
-    [peek    byte     firstByte           ]
-    [typeSwitch firstByte
-        ['0xA3' *SetParameter
-            [const      uint 8    magicId         0xA3                    ]
-            [simple     Parameter paramNo                                 ]
-            // TODO: the delimiter should be a const like that but atm there are too many which have a value there so we use reserved for now
-            //[const      byte      delimiter       0x0                     ]
-            [reserved   byte                      '0x0'                   ]
-            [simple     byte      parameterValue                          ]
-        ]
-        [* *Value
-            [simple   CALData('null') calData]
-        ]
-    ]
+    ['0xFF' NETWORK_CONTROL                       ['NETWORK_CONTROL'                   , 'NO'                  ]]
 ]
 
 [type CALData(RequestContext requestContext)
@@ -580,314 +557,327 @@
     [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
     [virtual bit  sendIdentifyRequestBefore       'requestContext!=null?requestContext.sendIdentifyRequestBefore:false']
     [typeSwitch commandType, sendIdentifyRequestBefore
-        ['RESET'            *Reset // Request
+        ['RESET'            *Reset                                                              // Request
         ]
-        ['RECALL'           *Recall // Request
+        ['RECALL'           *Recall                                                             // Request
             [simple Parameter paramNo                                                       ]
             [simple uint 8    count                                                         ]
         ]
-        ['IDENTIFY'         *Identify // Request
+        ['IDENTIFY'         *Identify                                                           // Request
             [simple Attribute attribute                                                     ]
         ]
         ['GET_STATUS'       *GetStatus // Request
             [simple Parameter paramNo                                                       ]
             [simple uint 8    count                                                         ]
         ]
-        ['WRITE'            *Write(CALCommandTypeContainer commandTypeContainer) // Request
+        ['WRITE'            *Write(CALCommandTypeContainer commandTypeContainer)                // Request
             [simple Parameter paramNo                                                       ]
-            [array  byte      data        count 'commandTypeContainer.numBytes-1'           ]
+            [simple byte      code                                                          ]
+            [simple ParameterValue('paramNo.parameterType', 'commandTypeContainer.numBytes - 2')
+                              parameterValue                                                ]
         ]
-        ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer) // Reply
+        ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer)        // Reply
             [simple Attribute   attribute                                                   ]
             [simple IdentifyReplyCommand('attribute', 'commandTypeContainer.numBytes - 1')
                                 identifyReplyCommand                                        ]
         ]
-        ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer) // Reply
+        ['REPLY'            *Reply(CALCommandTypeContainer commandTypeContainer)                // Reply
             [simple Parameter paramNo                                                       ]
-            [array  byte      data        count 'commandTypeContainer.numBytes-1'           ]
+            [simple ParameterValue('paramNo.parameterType', 'commandTypeContainer.numBytes - 1')
+                              parameterValue                                                ]
         ]
         ['ACKNOWLEDGE'      *Acknowledge // Reply
             [simple Parameter paramNo                                                       ]
             [simple uint 8    code                                                          ]
         ]
-        ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer) // Reply
-            [simple ApplicationIdContainer application                                                 ]
-            [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ]
+        ['STATUS'           *Status(CALCommandTypeContainer commandTypeContainer)               // Reply
+            [simple     ApplicationIdContainer
+                                application                                 ]
+            [simple     uint 8  blockStart                                  ]
+            [array      StatusByte
+                                statusBytes
+                                    count
+                                    'commandTypeContainer.numBytes - 2'     ]
         ]
-        ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer) // Reply
-            [simple uint 8                 coding                                                      ]
-            [virtual bit                   isBinaryBySerialInterface 'coding == 0x00'                  ]
-            [virtual bit                   isBinaryByElsewhere       'coding == 0x40'                  ]
-            [virtual bit                   isLevelBySerialInterface  'coding == 0x07'                  ]
-            [virtual bit                   isLevelByElsewhere        'coding == 0x47'                  ]
-            [virtual bit                   isReserved                '!isBinaryBySerialInterface && !isBinaryByElsewhere && !isLevelBySerialInterface && !isLevelByElsewhere']
-            [simple ApplicationIdContainer application                                                 ]
-            [simple uint 8                 blockStart                                                  ]
-            [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ] // TODO: this should be -3 but somehow it is -2 with the examples
+        ['STATUS_EXTENDED'  *StatusExtended(CALCommandTypeContainer commandTypeContainer)       // Reply
+            [simple     StatusCoding
+                                coding                                      ]
+            [simple     ApplicationIdContainer
+                                application                                 ]
+            [simple     uint 8  blockStart                                  ]
+            [virtual    uint 5  numberOfStatusBytes '(coding == StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.BINARY_BY_ELSEWHERE)?(commandTypeContainer.numBytes - 3):(0)']
+            [virtual    uint 5  numberOfLevelInformation '(coding == StatusCoding.LEVEL_BY_THIS_SERIAL_INTERFACE || coding == StatusCoding.LEVEL_BY_ELSEWHERE)?((commandTypeContainer.numBytes - 3) / 2):(0)']
+            [array      StatusByte
+                                statusBytes
+                                    count
+                                    'numberOfStatusBytes'                   ]
+            [array      LevelInformation
+                                levelInformation
+                                    count
+                                    'numberOfLevelInformation'              ]
         ]
     ]
-    // TODO: we need to check that we don't read the crc by accident
-    [optional CALData('requestContext') additionalData]
+    // Note: we omit the request context as it is only useful for the first element
+    [optional CALData('null') additionalData]
 ]
 
-[enum uint 8 Parameter(vstring group, vstring parameterDescription, vstring form, bit isVolatile, ProtectionLevel protectionLevel)
-    ['0x00' UNKNOWN_01                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x01' UNKNOWN_02                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x02' UNKNOWN_03                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x03' UNKNOWN_04                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x04' UNKNOWN_05                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x05' UNKNOWN_06                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x06' UNKNOWN_07                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x07' UNKNOWN_08                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x08' UNKNOWN_09                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x09' UNKNOWN_10                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x0A' UNKNOWN_11                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x0B' UNKNOWN_12                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x0C' UNKNOWN_13                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x0D' UNKNOWN_14                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x0E' UNKNOWN_15                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x0F' UNKNOWN_16                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x10' UNKNOWN_17                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x11' UNKNOWN_18                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x12' UNKNOWN_19                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x13' UNKNOWN_20                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x14' UNKNOWN_21                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x15' UNKNOWN_22                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x16' UNKNOWN_23                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x17' UNKNOWN_24                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x18' UNKNOWN_25                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x19' UNKNOWN_26                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x1A' UNKNOWN_27                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x1B' UNKNOWN_28                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x1C' UNKNOWN_29                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x1D' UNKNOWN_30                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x1E' UNKNOWN_31                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x1F' UNKNOWN_32                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x20' UNKNOWN_33                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x21' APPLICATION_ADDRESS_1                   ['"Mgmt"', '"Application Address 1"',                   '"Byte (Note 1)"',          'false', 'UNLOCK_REQUIRED']]
-    ['0x22' APPLICATION_ADDRESS_2                   ['"Mgmt"', '"Application Address 2"',                   '"Byte (Note 1)"',          'false', 'UNLOCK_REQUIRED']]
-    ['0x23' UNKOWN_35                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x24' UNKOWN_36                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x25' UNKOWN_37                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x26' UNKOWN_38                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x27' UNKOWN_39                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x28' UNKOWN_40                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x29' UNKOWN_41                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x2A' UNKOWN_42                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x2B' UNKOWN_43                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x2C' UNKOWN_44                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x2D' UNKOWN_45                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x2E' UNKOWN_46                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x2F' UNKOWN_47                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x30' INTERFACE_OPTIONS_1                     ['"Unit"', '"Interface options 1"',                     '"8 Bits (Note 2)"',        'true',  'NO_WRITE_ACCESS']]
-    ['0x31' UNKOWN_49                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x32' UNKOWN_50                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x33' UNKOWN_51                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x34' UNKOWN_52                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x35' UNKOWN_53                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x36' UNKOWN_54                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x37' UNKOWN_55                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x38' UNKOWN_56                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x39' UNKOWN_57                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x3A' UNKOWN_58                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x3B' UNKOWN_59                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x3C' UNKOWN_60                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x3D' BAUD_RATE_SELECTOR                      ['"Unit"', '"Baud rate selector"',                      '"Byte (Note 3)"',          'false', 'NO_WRITE_ACCESS']]
-    ['0x3E' INTERFACE_OPTIONS_2                     ['"Unit"', '"Interface options 2"',                     '"Byte (Note 4)"',          'false', 'NONE'           ]]
-    ['0x3F' UNKOWN_63                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x40' UNKOWN_64                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x41' INTERFACE_OPTIONS_1_POWER_UP_SETTINGS   ['"Unit"', '"Interface options 2 power up settings"',   '"8 Bits (Note 5)"',        'false', 'UNLOCK_REQUIRED']]
-    ['0x42' INTERFACE_OPTIONS_3                     ['"Unit"', '"Interface options 3"',                     '"Byte (Note 6)"',          'false', 'UNLOCK_REQUIRED']]
-    ['0x43' UNKOWN_67                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x44' UNKOWN_68                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x45' UNKOWN_69                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x46' UNKOWN_70                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x47' UNKOWN_71                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x48' UNKOWN_72                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x49' UNKOWN_73                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x4A' UNKOWN_74                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x4B' UNKOWN_75                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x4C' UNKOWN_76                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x4D' UNKOWN_77                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x4E' UNKOWN_78                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x4F' UNKOWN_79                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x50' UNKOWN_80                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x51' UNKOWN_81                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x52' UNKOWN_82                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x53' UNKOWN_83                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x54' UNKOWN_84                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x55' UNKOWN_85                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x56' UNKOWN_86                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x57' UNKOWN_87                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x58' UNKOWN_88                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x59' UNKOWN_89                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x5A' UNKOWN_90                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x5B' UNKOWN_91                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x5C' UNKOWN_92                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x5D' UNKOWN_93                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x5E' UNKOWN_94                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x5F' UNKOWN_95                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x60' UNKOWN_96                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x61' UNKOWN_97                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x62' UNKOWN_98                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x63' UNKOWN_99                               ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x64' UNKOWN_100                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x65' UNKOWN_101                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x66' UNKOWN_102                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x67' UNKOWN_103                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x68' UNKOWN_104                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x69' UNKOWN_105                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x6A' UNKOWN_106                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x6B' UNKOWN_107                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x6C' UNKOWN_108                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x6D' UNKOWN_109                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x6E' UNKOWN_110                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x6F' UNKOWN_111                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x70' UNKOWN_112                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x71' UNKOWN_113                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x72' UNKOWN_114                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x73' UNKOWN_115                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x74' UNKOWN_116                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x75' UNKOWN_117                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x76' UNKOWN_118                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x77' UNKOWN_119                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x78' UNKOWN_120                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x79' UNKOWN_121                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x7A' UNKOWN_122                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x7B' UNKOWN_123                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x7C' UNKOWN_124                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x7D' UNKOWN_125                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x7E' UNKOWN_126                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x7F' UNKOWN_127                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x80' UNKOWN_128                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x81' UNKOWN_129                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x82' UNKOWN_130                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x83' UNKOWN_131                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x84' UNKOWN_132                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x85' UNKOWN_133                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x86' UNKOWN_134                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x87' UNKOWN_135                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x88' UNKOWN_136                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x89' UNKOWN_137                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x8A' UNKOWN_138                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x8B' UNKOWN_139                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x8C' UNKOWN_140                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x8D' UNKOWN_141                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x8E' UNKOWN_142                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x8F' UNKOWN_143                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x90' UNKOWN_144                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x91' UNKOWN_145                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x92' UNKOWN_146                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x93' UNKOWN_147                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x94' UNKOWN_148                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x95' UNKOWN_149                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x96' UNKOWN_150                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x97' UNKOWN_151                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x98' UNKOWN_152                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x99' UNKOWN_153                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x9A' UNKOWN_154                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x9B' UNKOWN_155                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x9C' UNKOWN_156                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x9D' UNKOWN_157                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x9E' UNKOWN_158                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0x9F' UNKOWN_159                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA0' UNKOWN_160                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA1' UNKOWN_161                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA2' UNKOWN_162                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA3' UNKOWN_163                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA4' UNKOWN_164                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA5' UNKOWN_165                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA6' UNKOWN_166                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA7' UNKOWN_167                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA8' UNKOWN_168                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xA9' UNKOWN_169                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xAA' UNKOWN_170                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xAB' UNKOWN_171                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xAC' UNKOWN_172                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xAD' UNKOWN_173                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xAE' UNKOWN_174                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xAF' UNKOWN_175                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB0' UNKOWN_176                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB1' UNKOWN_177                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB2' UNKOWN_178                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB3' UNKOWN_179                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB4' UNKOWN_180                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB5' UNKOWN_181                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB6' UNKOWN_182                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB7' UNKOWN_183                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB8' UNKOWN_184                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xB9' UNKOWN_185                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xBA' UNKOWN_186                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xBB' UNKOWN_187                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xBC' UNKOWN_188                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xBD' UNKOWN_189                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xBE' UNKOWN_190                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xBF' UNKOWN_191                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC0' UNKOWN_192                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC1' UNKOWN_193                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC2' UNKOWN_194                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC3' UNKOWN_195                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC4' UNKOWN_196                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC5' UNKOWN_197                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC6' UNKOWN_198                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC7' UNKOWN_199                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC8' UNKOWN_200                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xC9' UNKOWN_201                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xCA' UNKOWN_202                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xCB' UNKOWN_203                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xCC' UNKOWN_204                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xCD' UNKOWN_205                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xCE' UNKOWN_206                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xCF' UNKOWN_207                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD0' UNKOWN_208                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD1' UNKOWN_209                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD2' UNKOWN_210                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD3' UNKOWN_211                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD4' UNKOWN_212                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD5' UNKOWN_213                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD6' UNKOWN_214                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD7' UNKOWN_215                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD8' UNKOWN_216                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xD9' UNKOWN_217                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xDA' UNKOWN_218                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xDB' UNKOWN_219                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xDC' UNKOWN_220                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xDD' UNKOWN_221                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xDE' UNKOWN_222                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xDF' UNKOWN_223                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE0' UNKOWN_224                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE1' UNKOWN_225                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE2' UNKOWN_226                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE3' UNKOWN_227                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE4' UNKOWN_228                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE5' UNKOWN_229                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE6' UNKOWN_230                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE7' UNKOWN_231                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE8' UNKOWN_232                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xE9' UNKOWN_233                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xEA' UNKOWN_234                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
-    ['0xEB' CUSTOM_MANUFACTURER_1                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
-    ['0xEC' CUSTOM_MANUFACTURER_2                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
-    ['0xED' CUSTOM_MANUFACTURER_3                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
-    ['0xEE' CUSTOM_MANUFACTURER_4                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
-    ['0xEF' CUSTOM_MANUFACTURER_5                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
-    ['0xF0' CUSTOM_MANUFACTURER_6                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
-    ['0xF1' CUSTOM_MANUFACTURER_7                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
-    ['0xF2' CUSTOM_MANUFACTURER_8                   ['"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'READ_ONLY'      ]]
-    ['0xF3' SERIAL_NUMBER_1                         ['"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
-    ['0xF4' SERIAL_NUMBER_2                         ['"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
-    ['0xF5' SERIAL_NUMBER_3                         ['"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
-    ['0xF6' SERIAL_NUMBER_4                         ['"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
-    ['0xF7' CUSTOM_TYPE_1                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xF8' CUSTOM_TYPE_2                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xF9' CUSTOM_TYPE_3                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xFA' CUSTOM_TYPE_4                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xFB' CUSTOM_TYPE_5                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xFC' CUSTOM_TYPE_6                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xFD' CUSTOM_TYPE_7                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xFE' CUSTOM_TYPE_8                           ['"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
-    ['0xFF' UNKOWN_255                              ['""',     '""',                                        '""',                       'false', 'NONE'           ]]
+[enum uint 8 Parameter(ParameterType parameterType, vstring group, vstring parameterDescription, vstring form, bit isVolatile, ProtectionLevel protectionLevel)
+    ['0x00' UNKNOWN_01                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x01' UNKNOWN_02                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x02' UNKNOWN_03                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x03' UNKNOWN_04                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x04' UNKNOWN_05                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x05' UNKNOWN_06                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x06' UNKNOWN_07                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x07' UNKNOWN_08                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x08' UNKNOWN_09                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x09' UNKNOWN_10                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x0A' UNKNOWN_11                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x0B' UNKNOWN_12                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x0C' UNKNOWN_13                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x0D' UNKNOWN_14                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x0E' UNKNOWN_15                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x0F' UNKNOWN_16                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x10' UNKNOWN_17                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x11' UNKNOWN_18                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x12' UNKNOWN_19                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x13' UNKNOWN_20                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x14' UNKNOWN_21                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x15' UNKNOWN_22                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x16' UNKNOWN_23                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x17' UNKNOWN_24                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x18' UNKNOWN_25                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x19' UNKNOWN_26                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x1A' UNKNOWN_27                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x1B' UNKNOWN_28                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x1C' UNKNOWN_29                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x1D' UNKNOWN_30                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x1E' UNKNOWN_31                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x1F' UNKNOWN_32                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x20' UNKNOWN_33                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x21' APPLICATION_ADDRESS_1                   ['APPLICATION_ADDRESS_1',                   '"Mgmt"', '"Application Address 1"',                   '"Byte (Note 1)"',          'false', 'UNLOCK_REQUIRED']]
+    ['0x22' APPLICATION_ADDRESS_2                   ['APPLICATION_ADDRESS_2',                   '"Mgmt"', '"Application Address 2"',                   '"Byte (Note 1)"',          'false', 'UNLOCK_REQUIRED']]
+    ['0x23' UNKOWN_35                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x24' UNKOWN_36                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x25' UNKOWN_37                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x26' UNKOWN_38                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x27' UNKOWN_39                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x28' UNKOWN_40                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x29' UNKOWN_41                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x2A' UNKOWN_42                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x2B' UNKOWN_43                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x2C' UNKOWN_44                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x2D' UNKOWN_45                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x2E' UNKOWN_46                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x2F' UNKOWN_47                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x30' INTERFACE_OPTIONS_1                     ['INTERFACE_OPTIONS_1',                     '"Unit"', '"Interface options 1"',                     '"8 Bits (Note 2)"',        'true',  'NO_WRITE_ACCESS']]
+    ['0x31' UNKOWN_49                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x32' UNKOWN_50                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x33' UNKOWN_51                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x34' UNKOWN_52                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x35' UNKOWN_53                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x36' UNKOWN_54                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x37' UNKOWN_55                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x38' UNKOWN_56                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x39' UNKOWN_57                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x3A' UNKOWN_58                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x3B' UNKOWN_59                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x3C' UNKOWN_60                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x3D' BAUD_RATE_SELECTOR                      ['BAUD_RATE_SELECTOR',                      '"Unit"', '"Baud rate selector"',                      '"Byte (Note 3)"',          'false', 'NO_WRITE_ACCESS']]
+    ['0x3E' INTERFACE_OPTIONS_2                     ['INTERFACE_OPTIONS_2',                     '"Unit"', '"Interface options 2"',                     '"Byte (Note 4)"',          'false', 'NONE'           ]]
+    ['0x3F' UNKOWN_63                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x40' UNKOWN_64                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x41' INTERFACE_OPTIONS_1_POWER_UP_SETTINGS   ['INTERFACE_OPTIONS_1_POWER_UP_SETTINGS',   '"Unit"', '"Interface options 2 power up settings"',   '"8 Bits (Note 5)"',        'false', 'UNLOCK_REQUIRED']]
+    ['0x42' INTERFACE_OPTIONS_3                     ['INTERFACE_OPTIONS_3',                     '"Unit"', '"Interface options 3"',                     '"Byte (Note 6)"',          'false', 'UNLOCK_REQUIRED']]
+    ['0x43' UNKOWN_67                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x44' UNKOWN_68                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x45' UNKOWN_69                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x46' UNKOWN_70                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x47' UNKOWN_71                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x48' UNKOWN_72                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x49' UNKOWN_73                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x4A' UNKOWN_74                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x4B' UNKOWN_75                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x4C' UNKOWN_76                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x4D' UNKOWN_77                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x4E' UNKOWN_78                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x4F' UNKOWN_79                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x50' UNKOWN_80                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x51' UNKOWN_81                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x52' UNKOWN_82                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x53' UNKOWN_83                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x54' UNKOWN_84                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x55' UNKOWN_85                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x56' UNKOWN_86                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x57' UNKOWN_87                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x58' UNKOWN_88                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x59' UNKOWN_89                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x5A' UNKOWN_90                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x5B' UNKOWN_91                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x5C' UNKOWN_92                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x5D' UNKOWN_93                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x5E' UNKOWN_94                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x5F' UNKOWN_95                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x60' UNKOWN_96                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x61' UNKOWN_97                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x62' UNKOWN_98                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x63' UNKOWN_99                               ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x64' UNKOWN_100                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x65' UNKOWN_101                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x66' UNKOWN_102                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x67' UNKOWN_103                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x68' UNKOWN_104                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x69' UNKOWN_105                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x6A' UNKOWN_106                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x6B' UNKOWN_107                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x6C' UNKOWN_108                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x6D' UNKOWN_109                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x6E' UNKOWN_110                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x6F' UNKOWN_111                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x70' UNKOWN_112                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x71' UNKOWN_113                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x72' UNKOWN_114                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x73' UNKOWN_115                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x74' UNKOWN_116                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x75' UNKOWN_117                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x76' UNKOWN_118                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x77' UNKOWN_119                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x78' UNKOWN_120                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x79' UNKOWN_121                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x7A' UNKOWN_122                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x7B' UNKOWN_123                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x7C' UNKOWN_124                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x7D' UNKOWN_125                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x7E' UNKOWN_126                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x7F' UNKOWN_127                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x80' UNKOWN_128                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x81' UNKOWN_129                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x82' UNKOWN_130                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x83' UNKOWN_131                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x84' UNKOWN_132                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x85' UNKOWN_133                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x86' UNKOWN_134                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x87' UNKOWN_135                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x88' UNKOWN_136                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x89' UNKOWN_137                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x8A' UNKOWN_138                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x8B' UNKOWN_139                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x8C' UNKOWN_140                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x8D' UNKOWN_141                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x8E' UNKOWN_142                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x8F' UNKOWN_143                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x90' UNKOWN_144                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x91' UNKOWN_145                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x92' UNKOWN_146                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x93' UNKOWN_147                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x94' UNKOWN_148                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x95' UNKOWN_149                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x96' UNKOWN_150                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x97' UNKOWN_151                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x98' UNKOWN_152                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x99' UNKOWN_153                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x9A' UNKOWN_154                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x9B' UNKOWN_155                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x9C' UNKOWN_156                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x9D' UNKOWN_157                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x9E' UNKOWN_158                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0x9F' UNKOWN_159                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA0' UNKOWN_160                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA1' UNKOWN_161                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA2' UNKOWN_162                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA3' UNKOWN_163                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA4' UNKOWN_164                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA5' UNKOWN_165                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA6' UNKOWN_166                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA7' UNKOWN_167                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA8' UNKOWN_168                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xA9' UNKOWN_169                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xAA' UNKOWN_170                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xAB' UNKOWN_171                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xAC' UNKOWN_172                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xAD' UNKOWN_173                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xAE' UNKOWN_174                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xAF' UNKOWN_175                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB0' UNKOWN_176                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB1' UNKOWN_177                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB2' UNKOWN_178                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB3' UNKOWN_179                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB4' UNKOWN_180                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB5' UNKOWN_181                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB6' UNKOWN_182                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB7' UNKOWN_183                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB8' UNKOWN_184                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xB9' UNKOWN_185                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xBA' UNKOWN_186                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xBB' UNKOWN_187                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xBC' UNKOWN_188                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xBD' UNKOWN_189                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xBE' UNKOWN_190                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xBF' UNKOWN_191                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC0' UNKOWN_192                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC1' UNKOWN_193                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC2' UNKOWN_194                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC3' UNKOWN_195                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC4' UNKOWN_196                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC5' UNKOWN_197                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC6' UNKOWN_198                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC7' UNKOWN_199                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC8' UNKOWN_200                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xC9' UNKOWN_201                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xCA' UNKOWN_202                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xCB' UNKOWN_203                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xCC' UNKOWN_204                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xCD' UNKOWN_205                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xCE' UNKOWN_206                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xCF' UNKOWN_207                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD0' UNKOWN_208                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD1' UNKOWN_209                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD2' UNKOWN_210                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD3' UNKOWN_211                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD4' UNKOWN_212                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD5' UNKOWN_213                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD6' UNKOWN_214                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD7' UNKOWN_215                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD8' UNKOWN_216                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xD9' UNKOWN_217                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xDA' UNKOWN_218                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xDB' UNKOWN_219                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xDC' UNKOWN_220                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xDD' UNKOWN_221                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xDE' UNKOWN_222                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xDF' UNKOWN_223                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE0' UNKOWN_224                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE1' UNKOWN_225                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE2' UNKOWN_226                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE3' UNKOWN_227                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE4' UNKOWN_228                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE5' UNKOWN_229                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE6' UNKOWN_230                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE7' UNKOWN_231                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE8' UNKOWN_232                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xE9' UNKOWN_233                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xEA' UNKOWN_234                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
+    ['0xEB' CUSTOM_MANUFACTURER_1                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
+    ['0xEC' CUSTOM_MANUFACTURER_2                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
+    ['0xED' CUSTOM_MANUFACTURER_3                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
+    ['0xEE' CUSTOM_MANUFACTURER_4                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
+    ['0xEF' CUSTOM_MANUFACTURER_5                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
+    ['0xF0' CUSTOM_MANUFACTURER_6                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
+    ['0xF1' CUSTOM_MANUFACTURER_7                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'UNLOCK_REQUIRED']]
+    ['0xF2' CUSTOM_MANUFACTURER_8                   ['CUSTOM_MANUFACTURER',                     '"Mgmt"', '"Custom Manufacturer (8 bytes)"',           '"ASCII Chars (Note 7)"',   'false', 'READ_ONLY'      ]]
+    ['0xF3' SERIAL_NUMBER_1                         ['SERIAL_NUMBER',                           '"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
+    ['0xF4' SERIAL_NUMBER_2                         ['SERIAL_NUMBER',                           '"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
+    ['0xF5' SERIAL_NUMBER_3                         ['SERIAL_NUMBER',                           '"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
+    ['0xF6' SERIAL_NUMBER_4                         ['SERIAL_NUMBER',                           '"Mgmt"', '"Serial Number"',                           '"Bytes (Note 8)"',         'false', 'READ_ONLY'      ]]
+    ['0xF7' CUSTOM_TYPE_1                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xF8' CUSTOM_TYPE_2                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xF9' CUSTOM_TYPE_3                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xFA' CUSTOM_TYPE_4                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xFB' CUSTOM_TYPE_5                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xFC' CUSTOM_TYPE_6                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xFD' CUSTOM_TYPE_7                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xFE' CUSTOM_TYPE_8                           ['CUSTOM_TYPE',                             '"Mgmt"', '"Custom Type (8 bytes)"',                   '"ASCII Chars (Note 9)"',   'false', 'READ_ONLY'      ]]
+    ['0xFF' UNKOWN_255                              ['UNKNOWN',                                 '""',     '""',                                        '""',                       'false', 'NONE'           ]]
 ]
 
 [enum uint 4 ProtectionLevel(vstring description)
@@ -895,6 +885,80 @@
     ['1' NO_WRITE_ACCESS    ['"No write access via C-BUS port"' ]]
     ['2' NONE               ['"None"'                           ]]
     ['3' READ_ONLY          ['"Read only"'                      ]]
+]
+
+[enum uint 8 ParameterType
+    ['0' UNKNOWN                                ]
+    ['1' APPLICATION_ADDRESS_1                  ]
+    ['2' APPLICATION_ADDRESS_2                  ]
+    ['3' INTERFACE_OPTIONS_1                    ]
+    ['4' INTERFACE_OPTIONS_2                    ]
+    ['5' INTERFACE_OPTIONS_3                    ]
+    ['6' BAUD_RATE_SELECTOR                     ]
+    ['7' INTERFACE_OPTIONS_1_POWER_UP_SETTINGS  ]
+    ['8' CUSTOM_MANUFACTURER                    ]
+    ['9' SERIAL_NUMBER                          ]
+    ['10' CUSTOM_TYPE                            ]
+]
+
+[type ParameterValue(ParameterType parameterType, uint 8 numBytes)
+    [typeSwitch parameterType
+        ['APPLICATION_ADDRESS_1'    *ApplicationAddress1
+            [validation 'numBytes >= 1' "ApplicationAddress1 has exactly one byte"  ]
+            [simple ApplicationAddress1 value                                       ]
+            // TODO: find out what additional bytes mean here... would that be application address 2 then?
+            [array  byte      data        count 'numBytes-1'                        ]
+        ]
+        ['APPLICATION_ADDRESS_2'    *ApplicationAddress2
+            [validation 'numBytes >= 1' "ApplicationAddress2 has exactly one byte"  ]
+            [simple ApplicationAddress2 value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
+        ]
+        ['INTERFACE_OPTIONS_1'      *InterfaceOptions1
+            [validation 'numBytes >= 1' "InterfaceOptions1 has exactly one byte"    ]
+            [simple InterfaceOptions1   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
+        ]
+        ['BAUD_RATE_SELECTOR'       *BaudRateSelector
+            [validation 'numBytes >= 1' "BaudRateSelector has exactly one byte"     ]
+            [simple BaudRateSelector    value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
+        ]
+        ['INTERFACE_OPTIONS_2'      *InterfaceOptions2
+            [validation 'numBytes >= 1' "InterfaceOptions2 has exactly one byte"    ]
+            [simple InterfaceOptions2   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
+        ]
+        ['INTERFACE_OPTIONS_1_POWER_UP_SETTINGS'    *InterfaceOptions1PowerUpSettings
+            [validation 'numBytes >= 1' "InterfaceOptions1PowerUpSettings has exactly one byte" ]
+            [simple InterfaceOptions1PowerUpSettings   value                                    ]
+        ]
+        ['INTERFACE_OPTIONS_3'      *InterfaceOptions3
+            [validation 'numBytes >= 1' "InterfaceOptions3 has exactly one byte"    ]
+            [simple InterfaceOptions3   value                                       ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-1'                        ]
+        ]
+        ['CUSTOM_MANUFACTURER'      *CustomManufacturer
+            [simple CustomManufacturer('numBytes')   value                          ]
+        ]
+        ['SERIAL_NUMBER'            *SerialNumber
+            [validation 'numBytes >= 4' "SerialNumber has exactly four bytes"       ]
+            [simple SerialNumber   value                                            ]
+            // TODO: find out what additional bytes mean here...
+            [array  byte      data        count 'numBytes-4'                        ]
+        ]
+        ['CUSTOM_TYPE'              *CustomTypes
+            [simple CustomTypes('numBytes')   value                                 ]
+        ]
+        [*                          *Raw
+            [array  byte      data        count 'numBytes']
+        ]
+    ]
 ]
 
 [type ApplicationAddress1 // Note 1
@@ -955,9 +1019,8 @@
     [simple   bit  pcn                           ]
 ]
 
-[type CustomManufacturer // Note 7
-    // TODO: 8 is a placeholder at the moment
-    [simple vstring '8' customString                 ]
+[type CustomManufacturer(uint 8 numBytes) // Note 7
+    [simple vstring '8 * numBytes' customString        ]
 ]
 
 [type SerialNumber // Note 8
@@ -967,9 +1030,8 @@
     [simple byte octet4]
 ]
 
-[type CustomTypes // Note 9
-    // TODO: 8 is a placeholder at the moment
-    [simple vstring '8' customString                 ]
+[type CustomTypes(uint 8 numBytes) // Note 9
+    [simple vstring '8 * numBytes' customString        ]
 ]
 
 [enum uint 8 Attribute(uint 8 bytesReturned)
@@ -1004,8 +1066,8 @@
         ['FirmwareVersion'              IdentifyReplyCommandFirmwareVersion
             [simple string 64  firmwareVersion  ]
         ]
-        ['Summary'                      IdentifyReplyCommandFirmwareSummary
-            [simple string 48  firmwareVersion  ]
+        ['Summary'                      IdentifyReplyCommandSummary
+            [simple string 48  partName         ]
             [simple byte       unitServiceType  ]
             [simple string 32  version          ]
         ]
@@ -1035,25 +1097,25 @@
             [simple   bit                     microPowerReset        ]
         ]
         ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
-            [array  byte        minimumLevels        count 'numBytes'       ] // TODO: check datatype
+            [array  byte        networkTerminalLevels  count 'numBytes'       ] // TODO: check datatype
         ]
         ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
             [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
         ]
         ['NetworkVoltage'               IdentifyReplyCommandNetworkVoltage
-           [simple string 2     volts                   ]
+           [simple string 16    volts                   ]
            [const  byte         dot     0x2C            ]
-           [simple string 2     voltsDecimalPlace       ]
+           [simple string 16    voltsDecimalPlace       ]
            [const  byte         v       0x56            ]
         ]
         ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent
-            [array  byte        values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
         ]
         ['GAVValuesStored'              IdentifyReplyCommandGAVValuesStored
-            [array  byte        values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
         ]
         ['GAVPhysicalAddresses'         IdentifyReplyCommandGAVPhysicalAddresses
-            [array  byte        values  count   '16'    ] // TODO: check datatype
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
         ]
         ['LogicalAssignment'            IdentifyReplyCommandLogicalAssignment
             [array  LogicAssignment   logicAssigment        count 'numBytes'       ]
@@ -1072,11 +1134,10 @@
             [array  byte        currentSenseLevels  count 'numBytes'       ]
         ]
         ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
-            // TODO: we can use the bytes from above, but how is that dynamic? repeat the complete block here?
             [simple   IdentifyReplyCommandUnitSummary
                              unitFlags                              ]
-            [simple   byte   gavStoreEnabledByte1                   ]
-            [simple   byte   gavStoreEnabledByte2                   ]
+            [optional byte   gavStoreEnabledByte1  'numBytes>1'     ]
+            [optional byte   gavStoreEnabledByte2  'numBytes>2'     ]
             [simple   uint 8 timeFromLastRecoverOfMainsInSeconds    ]
         ]
         ['DSIStatus'                    IdentifyReplyCommandDSIStatus
@@ -1133,10 +1194,10 @@
 // The invalid packets are receiving a value of 13 / 0x0D -> Short form command: length = 5 (no idea what the bit number 4 means, which is set)
 [enum uint 8 CALCommandTypeContainer(CALCommandType commandType, uint 5 numBytes)
     ['0x08' CALCommandReset                  ['RESET',            '0']]
-    ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
-    ['0x21' CALCommandIdentify               ['IDENTIFY',         '0']]
-    ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '0']]
-    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '0']]
+    ['0x1A' CALCommandRecall                 ['RECALL',           '2']]
+    ['0x21' CALCommandIdentify               ['IDENTIFY',         '1']]
+    ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '2']]
+    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '2']]
     ['0x80' CALCommandReply_0Bytes           ['REPLY',            '0']]
     ['0x81' CALCommandReply_1Bytes           ['REPLY',            '1']]
     ['0x82' CALCommandReply_2Bytes           ['REPLY',            '2']]
@@ -1269,20 +1330,20 @@
     [peek    byte     statusType           ]
     [typeSwitch statusType
         ['0x7A' *BinaryState
-            [reserved   byte      '0x7A'                                              ]
-            [simple     byte      application                                         ]
-            [reserved   byte      '0x00'                                              ]
+            [reserved   byte                    '0x7A'                                              ]
+            [simple     ApplicationIdContainer  application                                         ]
+            [reserved   byte                    '0x00'                                              ]
         ]
         ['0xFA' *BinaryStateDeprecated
-            [reserved   byte      '0xFA'                                              ]
-            [simple     byte      application                                         ]
-            [reserved   byte      '0x00'                                              ]
+            [reserved   byte                    '0xFA'                                              ]
+            [simple     ApplicationIdContainer  application                                         ]
+            [reserved   byte                    '0x00'                                              ]
         ]
         ['0x73' *Level
-            [reserved   byte      '0x73'                                              ]
-            [reserved   byte      '0x07'                                              ]
-            [simple     byte      application                                         ]
-            [simple     byte      startingGroupAddressLabel                           ]
+            [reserved   byte                    '0x73'                                              ]
+            [reserved   byte                    '0x07'                                              ]
+            [simple     ApplicationIdContainer  application                                         ]
+            [simple     byte                    startingGroupAddressLabel                           ]
             [validation           'startingGroupAddressLabel == 0x00
                                 || startingGroupAddressLabel == 0x20
                                 || startingGroupAddressLabel == 0x40
@@ -1295,254 +1356,143 @@
     ]
 ]
 
-[type SALData
-    //TODO: golang doesn't like checking for null so we use that static call to check that the enum is known
-    [validation 'STATIC_CALL("knowsSALCommandTypeContainer", readBuffer)' "no command type could be found" shouldFail=false]
-    [simple  SALCommandTypeContainer commandTypeContainer                                   ]
-    [virtual SALCommandType          commandType          'commandTypeContainer.commandType']
-    [typeSwitch commandType
-        ['OFF'            *Off
-            [simple byte group                                                              ]
+// TODO: this is currently lightning only so we need more typeSwitched based on the applicationid
+[type SALData(ApplicationId applicationId)
+    [typeSwitch applicationId
+        ['RESERVED'                             *Reserved
+            [validation '1==2' "RESERVED Not yet implemented"] // TODO: implement me
         ]
-        ['ON'             *On
-            [simple byte group                                                              ]
+        ['FREE_USAGE'                           *FreeUsage
+            [validation '1==2' "FREE_USAGE Not yet implemented"] // TODO: implement me
         ]
-        ['RAMP_TO_LEVEL'  *RampToLevel
-            [simple byte group                                                              ]
-            [simple byte level                                                              ]
+        ['TEMPERATURE_BROADCAST'                *TemperatureBroadcast
+            [simple TemperatureBroadcastData temperatureBroadcastData]
         ]
-        ['TERMINATE_RAMP' *TerminateRamp
-            [simple byte group                                                              ]
+        ['ROOM_CONTROL_SYSTEM'                  *RoomControlSystem
+            [validation '1==2' "ROOM_CONTROL_SYSTEM Not yet implemented"] // TODO: implement me
         ]
-        ['LABEL'          *Label(SALCommandTypeContainer commandTypeContainer)
-            [simple byte            group                                                   ]
-            [simple LabelOptions    labelOptions                                            ]
-            [simple Language        language                                                ]
-            [array  byte      data        count 'commandTypeContainer.numBytes-3'           ]
+        ['LIGHTING'                             *Lighting
+            [simple LightingData lightingData]
+        ]
+        ['VENTILATION'                          *Ventilation
+            // Note: the documentation states that the data for ventilation uses LightingData
+            [simple LightingData ventilationData]
+        ]
+        ['IRRIGATION_CONTROL'                   *IrrigationControl
+             // Note: the documentation states that the data for irrigation control uses LightingData
+            [simple LightingData irrigationControlData]
+        ]
+        ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL'   *PoolsSpasPondsFountainsControl
+             // Note: the documentation states that the data for pools spas ponds fountains uses LightingData
+            [simple LightingData poolsSpaPondsFountainsData]
+        ]
+        ['HEATING'                              *Heating
+            // Note: the documentation states that the data for heating uses LightingData
+            [simple LightingData heatingData]
+        ]
+        ['AIR_CONDITIONING'                     *AirConditioning
+            [simple AirConditioningData airConditioningData]
+        ]
+        ['TRIGGER_CONTROL'                      *TriggerControl
+            [simple TriggerControlData triggerControlData]
+        ]
+        ['ENABLE_CONTROL'                       *EnableControl
+            [simple EnableControlData enableControlData]
+        ]
+        ['AUDIO_AND_VIDEO'                      *AudioAndVideo
+             // Note: the documentation states that the data for audio video data uses LightingData
+            [simple LightingData audioVideoData]
+        ]
+        ['SECURITY'                             *Security
+            [simple SecurityData securityData]
+        ]
+        ['METERING'                             *Metering
+            [simple MeteringData meteringData]
+        ]
+        ['ACCESS_CONTROL'                       *AccessControl
+            [simple AccessControlData accessControlData]
+        ]
+        ['CLOCK_AND_TIMEKEEPING'                *ClockAndTimekeeping
+            [simple ClockAndTimekeepingData clockAndTimekeepingData]
+        ]
+        ['TELEPHONY_STATUS_AND_CONTROL'         *TelephonyStatusAndControl
+            [simple TelephonyData telephonyData]
+        ]
+        ['MEASUREMENT'                          *Measurement
+            [simple MeasurementData measurementData]
+        ]
+        ['TESTING'                              *Testing
+            [validation '1==2' "TESTING Not yet implemented"] // TODO: implement me
+        ]
+        ['MEDIA_TRANSPORT_CONTROL'              *MediaTransport
+            [simple MediaTransportControlData   mediaTransportControlData]
+        ]
+        ['ERROR_REPORTING'                      *ErrorReporting
+            [simple ErrorReportingData   errorReportingData]
+        ]
+        ['HVAC_ACTUATOR'                        *HvacActuator
+             // Note: the documentation states that the data for hvac actuator uses LightingData
+            [simple LightingData hvacActuatorData]
         ]
     ]
-    // TODO: we need to check that we don't read the crc by accident
-    [optional SALData salData                                                               ]
+    [optional SALData('applicationId') salData                                  ]
 ]
 
-[type LabelOptions
-    [simple   bit           reservedBit7] // only for dynamic icon loading can switch to 1 (note this could use mspec reserved field but sadly this discards data)
-    [simple   LabelFlavour  labelFlavour]
-    [reserved bit           'false'     ]
-    [simple   bit           reservedBit4] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
-    [simple   LabelType     labelType   ]
-    [simple   bit           reservedBit0] // For Lighting, this bit must be 0 (note this could use mspec reserved field but sadly this discards data)
-]
-
-[enum uint 2 LabelFlavour
-    ['0' FLAVOUR_1              ]
-    ['1' FLAVOUR_2              ]
-    ['2' FLAVOUR_3              ]
-    ['3' FLAVOUR_4              ]
-]
-
-[enum uint 2 LabelType
-    ['0' TEXT_LABEL             ]
-    ['1' PREDEFINED_ICON        ]
-    ['2' LOAD_DYNAMIC_ICON      ]
-    ['3' SET_PREFERRED_LANGUAGE ]
-]
-
-[enum uint 8 Language
-    ['0x00' NO_LANGUAGE                 ]
-    ['0x01' ENGLISH                     ]
-    ['0x02' ENGLISH_AUSTRALIA           ]
-    ['0x03' ENGLISH_BELIZE              ]
-    ['0x04' ENGLISH_CANADA              ]
-    ['0x05' ENGLISH_CARRIBEAN           ]
-    ['0x06' ENGLISH_IRELAND             ]
-    ['0x07' ENGLISH_JAMAICA             ]
-    ['0x08' ENGLISH_NEW_ZEALAND         ]
-    ['0x09' ENGLISH_PHILIPPINES         ]
-    ['0x0A' ENGLISH_SOUTH_AFRICA        ]
-    ['0x0B' ENGLISH_TRINIDAD            ]
-    ['0x0C' ENGLISH_UK                  ]
-    ['0x0D' ENGLISH_USA                 ]
-    ['0x0E' ENGLISH_ZIMBABWE            ]
-    ['0x40' AFRIKAANS                   ]
-    ['0x41' BASQUE                      ]
-    ['0x42' CATALAN                     ]
-    ['0x43' DANISH                      ]
-    ['0x44' DUTCH_BELGIUM               ]
-    ['0x45' DUTCH_NETHERLANDS           ]
-    ['0x46' FAEROESE                    ]
-    ['0x47' FINNISH                     ]
-    ['0x48' FRENCH_BELGIUM              ]
-    ['0x49' FRENCH_CANADA               ]
-    ['0x4A' FRENCH                      ]
-    ['0x4B' FRENCH_LUXEMBOURG           ]
-    ['0x4C' FRENCH_MONACO               ]
-    ['0x4D' FRENCH_SWITZERLAND          ]
-    ['0x4E' GALICIAN                    ]
-    ['0x4F' GERMAN_AUSTRIA              ]
-    ['0x50' GERMAN                      ]
-    ['0x51' GERMAN_LIECHTENSTEIN        ]
-    ['0x52' GERMAN_LUXEMBOURG           ]
-    ['0x53' GERMAN_SWITZERLAND          ]
-    ['0x54' ICELANDIC                   ]
-    ['0x55' INDONESIAN                  ]
-    ['0x56' ITALIAN                     ]
-    ['0x57' ITALIAN_SWITZERLAND         ]
-    ['0x58' MALAY_BRUNEI                ]
-    ['0x59' MALAY                       ]
-    ['0x5A' NORWEGIAN                   ]
-    ['0x5B' NORWEGIAN_NYNORSK           ]
-    ['0x5C' PORTUGUESE_BRAZIL           ]
-    ['0x5D' PORTUGUESE                  ]
-    ['0x5E' SPANISH_ARGENTINE           ]
-    ['0x5F' SPANISH_BOLIVIA             ]
-    ['0x60' SPANISH_CHILE               ]
-    ['0x61' SPANISH_COLOMBIA            ]
-    ['0x62' SPANISH_COSTA_RICA          ]
-    ['0x63' SPANISH_DOMINICAN_REPUBLIC  ]
-    ['0x64' SPANISH_ECUADOR             ]
-    ['0x65' SPANISH_EL_SALVADOR         ]
-    ['0x66' SPANISH_GUATEMALA           ]
-    ['0x67' SPANISH_HONDURAS            ]
-    ['0x68' SPANISH                     ]
-    ['0x69' SPANISH_MEXICO              ]
-    ['0x6A' SPANISH_NICARAGUA           ]
-    ['0x6B' SPANISH_PANAMA              ]
-    ['0x6C' SPANISH_PARAGUAY            ]
-    ['0x6D' SPANISH_PERU                ]
-    ['0x6E' SPANISH_PERTO_RICO          ]
-    ['0x6F' SPANISH_TRADITIONAL         ]
-    ['0x70' SPANISH_URUGUAY             ]
-    ['0x71' SPANISH_VENEZUELA           ]
-    ['0x72' SWAHILI                     ]
-    ['0x73' SWEDISH                     ]
-    ['0x74' SWEDISH_FINLAND             ]
-    ['0xCA' CHINESE_CP936               ]
-]
-
-[enum uint 8 SALCommandTypeContainer(SALCommandType commandType, uint 5 numBytes)
-    ['0x01' SALCommandOff                       ['OFF',             '1' ]]
-    ['0x79' SALCommandOn                        ['ON',              '1' ]]
-    ['0x02' SALCommandRampToLevel_Instantaneous ['RAMP_TO_LEVEL',   '1' ]]
-    ['0x0A' SALCommandRampToLevel_4Second       ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x12' SALCommandRampToLevel_8Second       ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x1A' SALCommandRampToLevel_12Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x22' SALCommandRampToLevel_20Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x2A' SALCommandRampToLevel_30Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x32' SALCommandRampToLevel_40Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x3A' SALCommandRampToLevel_60Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x42' SALCommandRampToLevel_90Second      ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x4A' SALCommandRampToLevel_120Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x52' SALCommandRampToLevel_180Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x5A' SALCommandRampToLevel_300Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x62' SALCommandRampToLevel_420Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x6A' SALCommandRampToLevel_600Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x72' SALCommandRampToLevel_900Second     ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x7A' SALCommandRampToLevel_1020Second    ['RAMP_TO_LEVEL',   '2' ]]
-    ['0x09' SALCommandTerminateRamp             ['TERMINATE_RAMP',  '1' ]]
-    ['0xA0' SALCommandLabel_0Bytes              ['LABEL',           '0' ]]
-    ['0xA1' SALCommandLabel_1Bytes              ['LABEL',           '1' ]]
-    ['0xA2' SALCommandLabel_2Bytes              ['LABEL',           '2' ]]
-    ['0xA3' SALCommandLabel_3Bytes              ['LABEL',           '3' ]]
-    ['0xA4' SALCommandLabel_4Bytes              ['LABEL',           '4' ]]
-    ['0xA5' SALCommandLabel_5Bytes              ['LABEL',           '5' ]]
-    ['0xA6' SALCommandLabel_6Bytes              ['LABEL',           '6' ]]
-    ['0xA7' SALCommandLabel_7Bytes              ['LABEL',           '7' ]]
-    ['0xA8' SALCommandLabel_8Bytes              ['LABEL',           '8' ]]
-    ['0xA9' SALCommandLabel_9Bytes              ['LABEL',           '9' ]]
-    ['0xAA' SALCommandLabel_10Bytes             ['LABEL',          '10' ]]
-    ['0xAB' SALCommandLabel_11Bytes             ['LABEL',          '11' ]]
-    ['0xAC' SALCommandLabel_12Bytes             ['LABEL',          '12' ]]
-    ['0xAD' SALCommandLabel_13Bytes             ['LABEL',          '13' ]]
-    ['0xAE' SALCommandLabel_14Bytes             ['LABEL',          '14' ]]
-    ['0xAF' SALCommandLabel_15Bytes             ['LABEL',          '15' ]]
-    ['0xB0' SALCommandLabel_16Bytes             ['LABEL',          '16' ]]
-    ['0xB1' SALCommandLabel_17Bytes             ['LABEL',          '17' ]]
-    ['0xB2' SALCommandLabel_18Bytes             ['LABEL',          '18' ]]
-    ['0xB3' SALCommandLabel_19Bytes             ['LABEL',          '19' ]]
-    ['0xB4' SALCommandLabel_20Bytes             ['LABEL',          '20' ]]
-    ['0xB5' SALCommandLabel_21Bytes             ['LABEL',          '21' ]]
-    ['0xB6' SALCommandLabel_22Bytes             ['LABEL',          '22' ]]
-    ['0xB7' SALCommandLabel_23Bytes             ['LABEL',          '23' ]]
-    ['0xB8' SALCommandLabel_24Bytes             ['LABEL',          '24' ]]
-    ['0xB9' SALCommandLabel_25Bytes             ['LABEL',          '25' ]]
-    ['0xBA' SALCommandLabel_26Bytes             ['LABEL',          '26' ]]
-    ['0xBB' SALCommandLabel_27Bytes             ['LABEL',          '27' ]]
-    ['0xBC' SALCommandLabel_28Bytes             ['LABEL',          '28' ]]
-    ['0xBD' SALCommandLabel_29Bytes             ['LABEL',          '29' ]]
-    ['0xBE' SALCommandLabel_30Bytes             ['LABEL',          '30' ]]
-    ['0xBF' SALCommandLabel_32Bytes             ['LABEL',          '31' ]]
-]
-
-[enum uint 4 SALCommandType
-    ['0x00' OFF           ]
-    ['0x01' ON            ]
-    ['0x02' RAMP_TO_LEVEL ]
-    ['0x03' TERMINATE_RAMP]
-    ['0x04' LABEL         ]
-]
-
-[type CommandHeader
-    [simple byte value]
-]
-
-[type ReplyOrConfirmation(CBusOptions cBusOptions, uint 16 messageLength, RequestContext requestContext)
+[type ReplyOrConfirmation(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                ]
     [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'    ]
-    [typeSwitch isAlpha
-        ['true' *Confirmation
-            [simple   Confirmation                      confirmation        ]
-            [optional ReplyOrConfirmation('cBusOptions','messageLength-confirmation.lengthInBytes', 'requestContext') embeddedReply]
+    [typeSwitch isAlpha, peekedByte
+        ['false', '0x21' ServerErrorReply // is a !
+            [const  byte    errorMarker     0x21                            ]
         ]
-        ['false' *Reply
-            [virtual  uint 16                       replyLength 'messageLength-2'] // remove the termination \r\n
-            [simple   Reply('cBusOptions', 'replyLength', 'requestContext')    reply               ]
+        ['true'         *Confirmation
+            [simple   Confirmation                      confirmation        ]
+            [optional ReplyOrConfirmation('cBusOptions', 'requestContext') embeddedReply]
+        ]
+        ['false'        *Reply
+            [simple   Reply('cBusOptions', 'requestContext')    reply               ]
             [simple   ResponseTermination               termination         ]
         ]
     ]
 ]
 
-[type Reply(CBusOptions cBusOptions, uint 16 replyLength, RequestContext requestContext)
+[type Reply(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                                ]
     [typeSwitch peekedByte
         ['0x2B' PowerUpReply // is a +
-            [simple PowerUp isA]
+            [simple PowerUp powerUpIndicator                                ]
         ]
         ['0x3D' ParameterChangeReply // is a =
-            [simple ParameterChange isA                 ]
-        ]
-        ['0x21' ServerErrorReply // is a !
-            [const  byte    errorMarker     0x21        ]
+            [simple ParameterChange parameterChange                         ]
         ]
         [*      *EncodedReply
-            [virtual uint 16 payloadLength 'replyLength']
             [manual   EncodedReply
                               encodedReply
-                                    'STATIC_CALL("readEncodedReply", readBuffer, payloadLength, cBusOptions, requestContext)'
+                                    'STATIC_CALL("readEncodedReply", readBuffer, cBusOptions, requestContext, cBusOptions.srchk)'
                                     'STATIC_CALL("writeEncodedReply", writeBuffer, encodedReply)'
-                                    '_value.lengthInBytes*2'                                     ]
+                                    '(encodedReply.lengthInBytes*2)*8'      ]
+            [virtual  EncodedReply
+                              encodedReplyDecoded 'encodedReply'            ]
+            [manual   Checksum
+                              chksum
+                        'STATIC_CALL("readAndValidateChecksum", readBuffer, encodedReply, cBusOptions.srchk)'
+                        'STATIC_CALL("calculateChecksum", writeBuffer, encodedReply, cBusOptions.srchk)'
+                        '(cBusOptions.srchk)?(16):(0)'                      ]
+            [virtual  Checksum
+                              chksumDecoded 'chksum'                        ]
         ]
     ]
 ]
 
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
-    [peek    byte peekedByte                                                                ]
+    [peek    byte peekedByte                                                        ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
-    [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'       ]
-    [virtual bit  isSALStatusRequest        '(peekedByte & 0xE0) == 0xC0 || requestContext.sendSALStatusRequestBefore' ]
-    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05'         ]
-    [virtual bit  exstat                    'cBusOptions.exstat'                  ]
-    [typeSwitch isMonitoredSAL, isCalCommand, isSALStatusRequest, exstat
-        ['true', 'false', 'false'   MonitoredSALReply
-            [simple   MonitoredSAL('cBusOptions') monitoredSAL    ]
+    [virtual bit  isMonitoredSAL            '((peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00) && !requestContext.sendIdentifyRequestBefore'] // First check if it is in long mode, second for short mode, third for bridged short mode
+    [typeSwitch isMonitoredSAL
+        ['true'  MonitoredSALReply
+            [simple   MonitoredSAL('cBusOptions')                   monitoredSAL    ]
         ]
-        [*, *, 'true', 'false'      *StandardFormatStatusReply
-            [simple   StandardFormatStatusReply                     reply           ]
-        ]
-        [*, *, 'true', 'true'       *ExtendedFormatStatusReply
-            [simple   ExtendedFormatStatusReply                     reply           ]
-        ]
-        [*, 'true', *, *            *CALReply
+        [*       *CALReply
             [simple   CALReply('cBusOptions', 'requestContext')     calReply        ]
         ]
     ]
@@ -1567,45 +1517,33 @@
         ]
     ]
     [simple   CALData('requestContext')   calData                                                ]
-    [optional Checksum      crc      'cBusOptions.srchk'                                         ] // checksum is optional but mspec checksum isn't
-]
-
-[type BridgeCount
-    [simple uint 8 count]
-]
-
-[type NetworkNumber
-    [simple uint 8 number]
 ]
 
 [type MonitoredSAL(CBusOptions cBusOptions)
     [peek    byte     salType             ]
     [typeSwitch salType
-        ['0x05' MonitoredSALLongFormSmartMode
+        ['0x05' *LongFormSmartMode
             [reserved byte '0x05']
-            [peek    uint 24     terminatingByte                        ]
+            [peek    uint 24     terminatingByte                                ]
             // TODO: this should be subSub type but mspec doesn't support that yet directly
-            [virtual bit isUnitAddress '(terminatingByte & 0xff) == 0x00' ]
-            [optional   UnitAddress
-                         unitAddress     'isUnitAddress'                ]
-            [optional   BridgeAddress
-                         bridgeAddress   '!isUnitAddress'               ]
-            [simple     SerialInterfaceAddress
-                         serialInterfaceAddress                         ]
-            [optional   byte    reservedByte    'isUnitAddress'         ]
+            [virtual  bit isUnitAddress '(terminatingByte & 0xff) == 0x00'      ]
+            [optional UnitAddress            unitAddress     'isUnitAddress'    ]
+            [optional BridgeAddress          bridgeAddress   '!isUnitAddress'   ]
+            [simple   ApplicationIdContainer application                        ]
+            [optional byte                   reservedByte    'isUnitAddress'    ]
             [validation 'isUnitAddress && reservedByte == 0x00 || !isUnitAddress' "invalid unit address"]
-            [optional   ReplyNetwork     replyNetwork       '!isUnitAddress'        ]
+            [optional ReplyNetwork           replyNetwork       '!isUnitAddress']
+            [optional SALData('application.applicationId')   salData            ]
         ]
-        [    MonitoredSALShortFormBasicMode
-            [peek    byte                  counts                                  ]
-            [optional BridgeCount          bridgeCount     'counts != 0x00'        ]
-            [optional NetworkNumber        networkNumber   'counts != 0x00'        ]
-            [optional byte                 noCounts        'counts == 0x00'        ] // TODO: add validation that this is 0x00 when no bridge and network number are set
-            [simple ApplicationIdContainer application                             ]
+        [*      *ShortFormBasicMode
+            [peek     byte                   counts                             ]
+            [optional uint 8                 bridgeCount     'counts != 0x00'   ]
+            [optional uint 8                 networkNumber   'counts != 0x00'   ]
+            [optional byte                   noCounts        'counts == 0x00'   ] // TODO: add validation that this is 0x00 when no bridge and network number are set
+            [simple   ApplicationIdContainer application                        ]
+            [optional SALData('application.applicationId')  salData             ]
         ]
     ]
-    [optional SALData salData                                               ]
-    [optional Checksum      crc      'cBusOptions.srchk'                                                    ] // checksum is optional but mspec checksum isn't
 ]
 
 [type Confirmation
@@ -1622,13 +1560,12 @@
     ['0x24'    NOT_TRANSMITTED_CORRUPTION               ] // "$"
     ['0x25'    NOT_TRANSMITTED_SYNC_LOSS                ] // "%"
     ['0x27'    NOT_TRANSMITTED_TOO_LONG                 ] // "'"
+    ['0x21'    CHECKSUM_FAILURE                         ] // "!"
 ]
 
 [type PowerUp
-    [const    byte        powerUpIndicator       0x2B                  ] // "+"
-    // TODO: do we really need a static helper to peek for terminated?=
-    //[array    uint 8        garbage   terminated  '0x0D'                 ] // read all following +
-    [simple   RequestTermination  reqTermination                       ] // TODO: maybe should be externalized
+    [const    byte        powerUpIndicator1       0x2B                  ] // "+"
+    [const    byte        powerUpIndicator2       0x2B                  ] // "+"
 ]
 
 [type ParameterChange
@@ -1637,67 +1574,12 @@
 ]
 
 [type ReplyNetwork
-     [simple RouteType     routeType                                                    ]
-     [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-     [simple UnitAddress   unitAddress                                                  ]
+    [simple NetworkRoute  networkRoute                              ]
+    [simple UnitAddress   unitAddress                               ]
 ]
 
 [type Checksum
-    [simple byte crc]
-]
-
-[type StandardFormatStatusReply
-    [simple     StatusHeader
-                        statusHeader                                ]
-    [simple     ApplicationIdContainer
-                        application                                 ]
-    [simple     uint 8  blockStart                                  ]
-    [array      StatusByte
-                        statusBytes
-                        count
-                        'statusHeader.numberOfCharacterPairs - 2'   ]
-    [simple     Checksum
-                        crc                                         ]
-]
-
-[type StatusHeader
-    [reserved   uint 2                 '0x3'                        ]
-    [simple     uint 6  numberOfCharacterPairs                      ]
-]
-
-[type ExtendedFormatStatusReply
-    [simple     ExtendedStatusHeader
-                        statusHeader                                ]
-    [simple     StatusCoding
-                        coding                                      ]
-    [simple     ApplicationIdContainer
-                        application                                 ]
-    [simple     uint 8  blockStart                                  ]
-    [array      StatusByte
-                        statusBytes
-                        count
-                        'statusHeader.numberOfCharacterPairs - 3'   ]
-    [simple     Checksum
-                        crc                                         ]
-]
-
-[type ExtendedStatusHeader
-    [reserved   uint 3                 '0x7'                        ]
-    [simple     uint 5  numberOfCharacterPairs                      ]
-]
-
-[type StatusByte
-    [simple GAVState    gav3                                        ]
-    [simple GAVState    gav2                                        ]
-    [simple GAVState    gav1                                        ]
-    [simple GAVState    gav0                                        ]
-]
-
-[enum uint 2 GAVState
-    ['0' DOES_NOT_EXIST                                             ]
-    ['1' ON                                                         ]
-    ['2' OFF                                                        ]
-    ['3' ERROR                                                      ]
+    [simple byte value]
 ]
 
 [enum byte StatusCoding
@@ -1707,10 +1589,72 @@
     ['0x47' LEVEL_BY_ELSEWHERE                  ]
 ]
 
+[type StatusByte
+    [simple GAVState    gav3                                        ]
+    [simple GAVState    gav2                                        ]
+    [simple GAVState    gav1                                        ]
+    [simple GAVState    gav0                                        ]
+]
+
+[type LevelInformation
+    [peek    uint 16    raw                                         ]
+    [virtual uint 4     nibble1 '(raw & 0xF000) >> 12'              ]
+    [virtual uint 4     nibble2 '(raw & 0x0F00) >> 8'               ]
+    [virtual uint 4     nibble3 '(raw & 0x00F0) >> 4'               ]
+    [virtual uint 4     nibble4 '(raw & 0x000F) >> 0'               ]
+    [virtual bit        isAbsent 'nibble1 == 0x0 && nibble2 == 0x0 && nibble3 == 0x0 && nibble4 == 0x0']
+    [virtual bit        isCorruptedByNoise '!isAbsent && (((nibble1 < 0x5) || (nibble1 == 0x8) || (nibble1 == 0xC)) || ((nibble2 < 0x5) || (nibble2 == 0x8) || (nibble2 == 0xC)) || ((nibble3 < 0x5) || (nibble3 == 0x8) || (nibble3 == 0xC)) || ((nibble4 < 0x5) || (nibble4 == 0x8) || (nibble4 == 0xC)))']
+    [virtual bit        isCorruptedByNoiseOrLevelsDiffer '!isAbsent && (((nibble1 == 0x7) || (nibble1 == 0xB) || (nibble1 > 0xC)) || ((nibble2 == 0x7) || (nibble2 == 0xB) || (nibble2 > 0xC)) || ((nibble3 == 0x7) || (nibble3 == 0xB) || (nibble3 > 0xC)) || ((nibble4 == 0x7) || (nibble4 == 0xB) || (nibble4 > 0xC)))']
+    [virtual bit        isCorrupted 'isCorruptedByNoise || isCorruptedByNoiseOrLevelsDiffer']
+    [typeSwitch isAbsent, isCorrupted
+        ['true'     *Absent
+            [reserved uint 16 '0x0000'                                      ]
+        ]
+        [*, 'true'  *Corrupted
+            [simple  uint 4    corruptedNibble1]
+            [simple  uint 4    corruptedNibble2]
+            [simple  uint 4    corruptedNibble3]
+            [simple  uint 4    corruptedNibble4]
+        ]
+        [*          *Normal
+            [simple  LevelInformationNibblePair  pair1                      ]
+            [simple  LevelInformationNibblePair  pair2                      ]
+            [virtual uint   8  actualLevel 'pair2.nibbleValue << 4 | pair1.nibbleValue']
+            [virtual float 32  actualLevelInPercent '100 * (actualLevel + 2) / 255 )'  ]
+        ]
+    ]
+]
+
+[enum uint 8 LevelInformationNibblePair(uint 4 nibbleValue)
+    ['0x55' Value_F ['0xF']]
+    ['0x56' Value_E ['0xE']]
+    ['0x59' Value_D ['0xD']]
+    ['0x5A' Value_C ['0xC']]
+    ['0x65' Value_B ['0xB']]
+    ['0x66' Value_A ['0xA']]
+    ['0x69' Value_9 ['0x9']]
+    ['0x6A' Value_8 ['0x8']]
+    ['0x95' Value_7 ['0x7']]
+    ['0x96' Value_6 ['0x6']]
+    ['0x99' Value_5 ['0x5']]
+    ['0x9A' Value_4 ['0x4']]
+    ['0xA5' Value_3 ['0x3']]
+    ['0xA6' Value_2 ['0x2']]
+    ['0xA9' Value_1 ['0x1']]
+    ['0xAA' Value_0 ['0x0']]
+]
+
+[enum uint 2 GAVState
+    ['0' DOES_NOT_EXIST                                             ]
+    ['1' ON                                                         ]
+    ['2' OFF                                                        ]
+    ['3' ERROR                                                      ]
+]
+
 [type NetworkProtocolControlInformation
     [reserved   uint 2  '0x0'           ]
-    [simple     uint 3  stackCounter    ]
-    [simple     uint 3  stackDepth      ]
+    [simple     uint 3  stackCounter    ] // Number of bridges required to transmit information from source to destination
+    [simple     uint 3  stackDepth      ] // Number of bridges required to complete the transmission from source to destination
 ]
 
 [type RequestTermination

@@ -20,9 +20,9 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/internal/spi/values"
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -45,54 +45,38 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
-	case dataProtocolId == "IEC61131_BYTE": // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((8)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+	case dataProtocolId == "IEC61131_BYTE": // BYTE
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcList(value), nil
-	case dataProtocolId == "IEC61131_WORD": // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((16)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+		return values.NewPlcBYTE(value), nil
+	case dataProtocolId == "IEC61131_WORD": // WORD
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcList(value), nil
-	case dataProtocolId == "IEC61131_DWORD": // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((32)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+		return values.NewPlcWORD(value), nil
+	case dataProtocolId == "IEC61131_DWORD": // DWORD
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint32("value", 32)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcList(value), nil
-	case dataProtocolId == "IEC61131_LWORD": // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((64)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+		return values.NewPlcDWORD(value), nil
+	case dataProtocolId == "IEC61131_LWORD": // LWORD
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint64("value", 64)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcList(value), nil
+		return values.NewPlcLWORD(value), nil
 	case dataProtocolId == "IEC61131_SINT": // SINT
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
@@ -174,16 +158,16 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
-		// Manual Field (value)
-		value, _valueErr := ParseS7Char(readBuffer, "UTF-8")
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
-		// Manual Field (value)
-		value, _valueErr := ParseS7Char(readBuffer, "UTF-16")
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32(16), "UTF-16")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -314,37 +298,25 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case dataProtocolId == "IEC61131_BYTE": // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((8)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case dataProtocolId == "IEC61131_BYTE": // BYTE
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case dataProtocolId == "IEC61131_WORD": // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((16)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case dataProtocolId == "IEC61131_WORD": // WORD
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case dataProtocolId == "IEC61131_DWORD": // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((32)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case dataProtocolId == "IEC61131_DWORD": // DWORD
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case dataProtocolId == "IEC61131_LWORD": // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((64)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case dataProtocolId == "IEC61131_LWORD": // LWORD
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_SINT": // SINT
 		// Simple Field (value)
@@ -397,26 +369,24 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
-		// Manual Field (value)
-		_valueErr := SerializeS7Char(writeBuffer, value, "UTF-8")
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint32(8), "UTF-8", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
-		// Manual Field (value)
-		_valueErr := SerializeS7Char(writeBuffer, value, "UTF-16")
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, m.StringLength, "UTF-8")
+		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, m.StringLength, "UTF-16")
+		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

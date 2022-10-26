@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -132,7 +131,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'virtualMacAddress' field of BACnetVMACEntry")
@@ -154,7 +153,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'nativeMacAddress' field of BACnetVMACEntry")
@@ -171,7 +170,10 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 	}
 
 	// Create the instance
-	return NewBACnetVMACEntry(virtualMacAddress, nativeMacAddress), nil
+	return &_BACnetVMACEntry{
+		VirtualMacAddress: virtualMacAddress,
+		NativeMacAddress:  nativeMacAddress,
+	}, nil
 }
 
 func (m *_BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -227,7 +229,7 @@ func (m *_BACnetVMACEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

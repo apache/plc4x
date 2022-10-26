@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -65,6 +64,8 @@ type _CALReplyLong struct {
 	SerialInterfaceAddress SerialInterfaceAddress
 	ReservedByte           *byte
 	ReplyNetwork           ReplyNetwork
+	// Reserved Fields
+	reservedField0 *byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,10 +78,9 @@ type _CALReplyLong struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALReplyLong) InitializeParent(parent CALReply, calType byte, calData CALData, crc Checksum) {
+func (m *_CALReplyLong) InitializeParent(parent CALReply, calType byte, calData CALData) {
 	m.CalType = calType
 	m.CalData = calData
-	m.Crc = crc
 }
 
 func (m *_CALReplyLong) GetParent() CALReply {
@@ -134,7 +134,7 @@ func (m *_CALReplyLong) GetIsUnitAddress() bool {
 	_ = reservedByte
 	replyNetwork := m.ReplyNetwork
 	_ = replyNetwork
-	return bool(bool(((m.GetTerminatingByte()) & (0xff)) == (0x00)))
+	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
 
 ///////////////////////
@@ -143,7 +143,7 @@ func (m *_CALReplyLong) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyLong factory function for _CALReplyLong
-func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, calType byte, calData CALData, crc Checksum, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyLong {
+func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyLong {
 	_result := &_CALReplyLong{
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
@@ -151,7 +151,7 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddr
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_CALReply:              NewCALReply(calType, calData, crc, cBusOptions, requestContext),
+		_CALReply:              NewCALReply(calType, calData, cBusOptions, requestContext),
 	}
 	_result._CALReply._CALReplyChildRequirements = _result
 	return _result
@@ -223,6 +223,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
+	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
@@ -230,10 +231,12 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CALReplyLong")
 		}
 		if reserved != byte(0x86) {
-			log.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]interface{}{
 				"expected value": byte(0x86),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
+			// We save the value, so it can be re-serialized
+			reservedField0 = &reserved
 		}
 	}
 
@@ -247,7 +250,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isUnitAddress := bool(((terminatingByte) & (0xff)) == (0x00))
+	_isUnitAddress := bool((terminatingByte & 0xff) == (0x00))
 	isUnitAddress := bool(_isUnitAddress)
 	_ = isUnitAddress
 
@@ -261,7 +264,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 		_val, _err := UnitAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field of CALReplyLong")
@@ -283,7 +286,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 		_val, _err := BridgeAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field of CALReplyLong")
@@ -333,7 +336,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 		_val, _err := ReplyNetworkParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field of CALReplyLong")
@@ -351,16 +354,17 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 
 	// Create a partially initialized instance
 	_child := &_CALReplyLong{
+		_CALReply: &_CALReply{
+			CBusOptions:    cBusOptions,
+			RequestContext: requestContext,
+		},
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
 		BridgeAddress:          bridgeAddress,
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_CALReply: &_CALReply{
-			CBusOptions:    cBusOptions,
-			RequestContext: requestContext,
-		},
+		reservedField0:         reservedField0,
 	}
 	_child._CALReply._CALReplyChildRequirements = _child
 	return _child, nil
@@ -376,7 +380,15 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := writeBuffer.WriteByte("reserved", byte(0x86))
+			var reserved byte = byte(0x86)
+			if m.reservedField0 != nil {
+				Plc4xModelLog.Info().Fields(map[string]interface{}{
+					"expected value": byte(0x86),
+					"got value":      reserved,
+				}).Msg("Overriding reserved field with unexpected value.")
+				reserved = *m.reservedField0
+			}
+			_err := writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -472,7 +484,7 @@ func (m *_CALReplyLong) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

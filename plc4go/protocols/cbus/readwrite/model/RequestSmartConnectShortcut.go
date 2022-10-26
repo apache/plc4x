@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -109,11 +109,11 @@ func (m *_RequestSmartConnectShortcut) GetPipe() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
-func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16) *_RequestSmartConnectShortcut {
+func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestSmartConnectShortcut {
 	_result := &_RequestSmartConnectShortcut{
 		PipePeek:   pipePeek,
 		SecondPipe: secondPipe,
-		_Request:   NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		_Request:   NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -156,7 +156,7 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16) (RequestSmartConnectShortcut, error) {
+func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestSmartConnectShortcut"); pullErr != nil {
@@ -205,12 +205,11 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions C
 
 	// Create a partially initialized instance
 	_child := &_RequestSmartConnectShortcut{
+		_Request: &_Request{
+			CBusOptions: cBusOptions,
+		},
 		PipePeek:   pipePeek,
 		SecondPipe: secondPipe,
-		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
-		},
 	}
 	_child._Request._RequestChildRequirements = _child
 	return _child, nil
@@ -256,7 +255,7 @@ func (m *_RequestSmartConnectShortcut) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

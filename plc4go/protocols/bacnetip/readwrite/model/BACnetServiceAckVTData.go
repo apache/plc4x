@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -97,7 +97,7 @@ func (m *_BACnetServiceAckVTData) GetVtDataFlag() BACnetApplicationTagUnsignedIn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
-func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *_BACnetServiceAckVTData {
+func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
 	_result := &_BACnetServiceAckVTData{
 		VtSessionIdentifier: vtSessionIdentifier,
 		VtNewData:           vtNewData,
@@ -146,7 +146,7 @@ func (m *_BACnetServiceAckVTData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckVTData, error) {
+func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTData"); pullErr != nil {
@@ -200,12 +200,12 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength u
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckVTData{
-		VtSessionIdentifier: vtSessionIdentifier,
-		VtNewData:           vtNewData,
-		VtDataFlag:          vtDataFlag,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		VtSessionIdentifier: vtSessionIdentifier,
+		VtNewData:           vtNewData,
+		VtDataFlag:          vtDataFlag,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -271,7 +271,7 @@ func (m *_BACnetServiceAckVTData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

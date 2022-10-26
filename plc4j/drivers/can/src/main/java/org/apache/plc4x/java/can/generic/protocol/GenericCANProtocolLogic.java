@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.can.generic.protocol;
 
 import java.util.Map.Entry;
+
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;

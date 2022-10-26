@@ -20,16 +20,16 @@
 package ads
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"
 	"sync/atomic"
-	"time"
 )
 
 type Writer struct {
@@ -54,7 +54,8 @@ func NewWriter(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsN
 	}
 }
 
-func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
 		// If we are requesting only one field, use a
@@ -81,7 +82,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 				log.Debug().Msgf("Invalid field item type %T", field)
 				return
 			}
-			field, err = m.reader.resolveField(adsField)
+			field, err = m.reader.resolveField(ctx, adsField)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
@@ -105,7 +106,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewLittleEndianWriteBufferByteBased()
-		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.DataFormatName(), adsField.StringLength); err != nil {
+		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.PlcValueType(), adsField.StringLength); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
@@ -113,7 +114,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 			}
 			return
 		}
-		data := io.GetBytes()
+		/*data := io.GetBytes()
 
 		userdata := readWriteModel.NewAmsPacket(
 			m.targetAmsNetId,
@@ -125,10 +126,10 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 			0,
 			0,
 			nil,
-		)
+		)*/
 		switch adsField.FieldType {
 		case DirectAdsStringField:
-			userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
+			//userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
 			panic("implement me")
 		case DirectAdsField:
 			panic("implement me")
@@ -144,52 +145,41 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		}
 
 		// Calculate a new unit identifier
-		// TODO: this is not threadsafe as the whole operation is not atomic
-		transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
-		if transactionIdentifier > math.MaxUint8 {
-			transactionIdentifier = 0
-			atomic.StoreUint32(&m.transactionIdentifier, 0)
-		}
-		userdata.InvokeId = transactionIdentifier
+		/*userdata.InvokeId = m.getInvokeId()
 
 		// Assemble the finished amsTcpPaket
 		log.Trace().Msg("Assemble amsTcpPaket")
 		amsTcpPaket := readWriteModel.NewAmsTCPPacket(userdata)
 
 		// Send the TCP Paket over the wire
-		err = m.messageCodec.SendRequest(
-			amsTcpPaket,
-			func(message spi.Message) bool {
-				paket := readWriteModel.CastAmsTCPPacket(message)
-				return paket.GetUserdata().GetInvokeId() == transactionIdentifier
-			},
-			func(message spi.Message) error {
-				// Convert the response into an responseAmsTcpPaket
-				responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
-				// Convert the ads response into a PLC4X response
-				readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, responseAmsTcpPaket, writeRequest)
+		err = m.messageCodec.SendRequest(ctx, amsTcpPaket, func(message spi.Message) bool {
+			paket := readWriteModel.CastAmsTCPPacket(message)
+			return paket.GetUserdata().GetInvokeId() == transactionIdentifier
+		}, func(message spi.Message) error {
+			// Convert the response into an responseAmsTcpPaket
+			responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
+			// Convert the ads response into a PLC4X response
+			readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, responseAmsTcpPaket, writeRequest)
 
-				if err != nil {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
-				} else {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: readResponse,
-					}
-				}
-				return nil
-			},
-			func(err error) error {
+			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
-					Err:     errors.New("got timeout while waiting for response"),
+					Err:     errors.Wrap(err, "Error decoding response"),
 				}
-				return nil
-			},
-			time.Second*1)
+			} else {
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: readResponse,
+				}
+			}
+			return nil
+		}, func(err error) error {
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
+				Request: writeRequest,
+				Err:     errors.New("got timeout while waiting for response"),
+			}
+			return nil
+		}, time.Second*1)*/
 	}()
 	return result
 }
@@ -200,15 +190,24 @@ func (m *Writer) ToPlc4xWriteResponse(requestTcpPaket readWriteModel.AmsTCPPacke
 
 	// we default to an error until its proven wrong
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-	switch responseTcpPaket.GetUserdata().GetData().(type) {
-	case readWriteModel.AdsWriteResponse:
-		resp := readWriteModel.CastAdsWriteResponse(responseTcpPaket.GetUserdata().GetData())
-		responseCodes[fieldName] = model.PlcResponseCode(resp.GetResult())
+	switch writeResponse := responseTcpPaket.GetUserdata().(type) {
+	case readWriteModel.AdsWriteResponseExactly:
+		responseCodes[fieldName] = model.PlcResponseCode(writeResponse.GetResult())
 	default:
-		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata().GetData())
+		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata())
 	}
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
 	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+}
+
+func (m *Writer) getInvokeId() uint32 {
+	// Calculate a new transaction identifier
+	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
+	if transactionIdentifier > math.MaxUint8 {
+		transactionIdentifier = 1
+		atomic.StoreUint32(&m.transactionIdentifier, 1)
+	}
+	return transactionIdentifier
 }

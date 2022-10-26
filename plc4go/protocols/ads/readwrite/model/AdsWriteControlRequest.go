@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AdsWriteControlRequest interface {
 	utils.LengthAware
 	utils.Serializable
-	AdsData
+	AmsPacket
 	// GetAdsState returns AdsState (property field)
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
@@ -48,7 +48,7 @@ type AdsWriteControlRequestExactly interface {
 
 // _AdsWriteControlRequest is the data-structure of this message
 type _AdsWriteControlRequest struct {
-	*_AdsData
+	*_AmsPacket
 	AdsState    uint16
 	DeviceState uint16
 	Data        []byte
@@ -72,10 +72,17 @@ func (m *_AdsWriteControlRequest) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_AdsWriteControlRequest) InitializeParent(parent AdsData) {}
+func (m *_AdsWriteControlRequest) InitializeParent(parent AmsPacket, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) {
+	m.TargetAmsNetId = targetAmsNetId
+	m.TargetAmsPort = targetAmsPort
+	m.SourceAmsNetId = sourceAmsNetId
+	m.SourceAmsPort = sourceAmsPort
+	m.ErrorCode = errorCode
+	m.InvokeId = invokeId
+}
 
-func (m *_AdsWriteControlRequest) GetParent() AdsData {
-	return m._AdsData
+func (m *_AdsWriteControlRequest) GetParent() AmsPacket {
+	return m._AmsPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,14 +108,14 @@ func (m *_AdsWriteControlRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteControlRequest factory function for _AdsWriteControlRequest
-func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *_AdsWriteControlRequest {
+func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteControlRequest {
 	_result := &_AdsWriteControlRequest{
 		AdsState:    adsState,
 		DeviceState: deviceState,
 		Data:        data,
-		_AdsData:    NewAdsData(),
+		_AmsPacket:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
-	_result._AdsData._AdsDataChildRequirements = _result
+	_result._AmsPacket._AmsPacketChildRequirements = _result
 	return _result
 }
 
@@ -155,7 +162,7 @@ func (m *_AdsWriteControlRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (AdsWriteControlRequest, error) {
+func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {
@@ -197,12 +204,12 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 
 	// Create a partially initialized instance
 	_child := &_AdsWriteControlRequest{
+		_AmsPacket:  &_AmsPacket{},
 		AdsState:    adsState,
 		DeviceState: deviceState,
 		Data:        data,
-		_AdsData:    &_AdsData{},
 	}
-	_child._AdsData._AdsDataChildRequirements = _child
+	_child._AmsPacket._AmsPacketChildRequirements = _child
 	return _child, nil
 }
 
@@ -257,7 +264,7 @@ func (m *_AdsWriteControlRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

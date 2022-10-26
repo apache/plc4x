@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -143,7 +143,9 @@ func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadBoolean(actualLength), nil
+	return &_BACnetTagPayloadBoolean{
+		ActualLength: actualLength,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,6 +173,16 @@ func (m *_BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTagPayloadBoolean) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetTagPayloadBoolean) isBACnetTagPayloadBoolean() bool {
 	return true
 }
@@ -179,7 +191,7 @@ func (m *_BACnetTagPayloadBoolean) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

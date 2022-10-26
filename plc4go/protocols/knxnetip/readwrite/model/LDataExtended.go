@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -269,13 +269,13 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (LDataExtended, error) {
 
 	// Create a partially initialized instance
 	_child := &_LDataExtended{
+		_LDataFrame:         &_LDataFrame{},
 		GroupAddress:        groupAddress,
 		HopCount:            hopCount,
 		ExtendedFrameFormat: extendedFrameFormat,
 		SourceAddress:       sourceAddress,
 		DestinationAddress:  destinationAddress,
 		Apdu:                apdu,
-		_LDataFrame:         &_LDataFrame{},
 	}
 	_child._LDataFrame._LDataFrameChildRequirements = _child
 	return _child, nil
@@ -363,7 +363,7 @@ func (m *_LDataExtended) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

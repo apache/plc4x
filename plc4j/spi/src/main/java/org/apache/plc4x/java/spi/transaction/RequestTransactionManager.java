@@ -101,10 +101,12 @@ public class RequestTransactionManager {
 
     private void processWorklog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
-            RequestTransaction next = workLog.remove();
-            this.runningRequests.add(next);
-            Future<?> completionFuture = executor.submit(next.operation);
-            next.setCompletionFuture(completionFuture);
+            RequestTransaction next = workLog.poll();
+            if (next != null) {
+                this.runningRequests.add(next);
+                Future<?> completionFuture = executor.submit(next.operation);
+                next.setCompletionFuture(completionFuture);
+            }
         }
     }
 

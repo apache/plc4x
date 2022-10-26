@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -120,7 +119,7 @@ func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointRe
 		_val, _err := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'setPointReference' field of BACnetSetpointReference")
@@ -137,7 +136,9 @@ func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointRe
 	}
 
 	// Create the instance
-	return NewBACnetSetpointReference(setPointReference), nil
+	return &_BACnetSetpointReference{
+		SetPointReference: setPointReference,
+	}, nil
 }
 
 func (m *_BACnetSetpointReference) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -177,7 +178,7 @@ func (m *_BACnetSetpointReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

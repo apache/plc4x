@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -125,8 +125,8 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute,
 		_childTemp, typeSwitchError = IdentifyReplyCommandTypeParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_FirmwareVersion: // IdentifyReplyCommandFirmwareVersion
 		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareVersionParse(readBuffer, attribute, numBytes)
-	case attribute == Attribute_Summary: // IdentifyReplyCommandFirmwareSummary
-		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareSummaryParse(readBuffer, attribute, numBytes)
+	case attribute == Attribute_Summary: // IdentifyReplyCommandSummary
+		_childTemp, typeSwitchError = IdentifyReplyCommandSummaryParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_ExtendedDiagnosticSummary: // IdentifyReplyCommandExtendedDiagnosticSummary
 		_childTemp, typeSwitchError = IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer, attribute, numBytes)
 	case attribute == Attribute_NetworkTerminalLevels: // IdentifyReplyCommandNetworkTerminalLevels
@@ -193,6 +193,16 @@ func (pm *_IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, 
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_IdentifyReplyCommand) GetNumBytes() uint8 {
+	return m.NumBytes
+}
+
+//
+////
+
 func (m *_IdentifyReplyCommand) isIdentifyReplyCommand() bool {
 	return true
 }
@@ -201,7 +211,7 @@ func (m *_IdentifyReplyCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

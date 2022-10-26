@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -90,7 +90,7 @@ func (m *_BACnetServiceAckGetEventInformation) GetMoreEvents() BACnetContextTagB
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint16) *_BACnetServiceAckGetEventInformation {
+func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
 	_result := &_BACnetServiceAckGetEventInformation{
 		ListOfEventSummaries: listOfEventSummaries,
 		MoreEvents:           moreEvents,
@@ -135,7 +135,7 @@ func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckGetEventInformation, error) {
+func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
@@ -176,11 +176,11 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckGetEventInformation{
-		ListOfEventSummaries: listOfEventSummaries,
-		MoreEvents:           moreEvents,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		ListOfEventSummaries: listOfEventSummaries,
+		MoreEvents:           moreEvents,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -234,7 +234,7 @@ func (m *_BACnetServiceAckGetEventInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

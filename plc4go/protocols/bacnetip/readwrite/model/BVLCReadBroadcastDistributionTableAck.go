@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -167,8 +167,8 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 
 	// Create a partially initialized instance
 	_child := &_BVLCReadBroadcastDistributionTableAck{
-		Table: table,
 		_BVLC: &_BVLC{},
+		Table: table,
 	}
 	_child._BVLC._BVLCChildRequirements = _child
 	return _child, nil
@@ -204,6 +204,16 @@ func (m *_BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.Wri
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BVLCReadBroadcastDistributionTableAck) GetBvlcPayloadLength() uint16 {
+	return m.BvlcPayloadLength
+}
+
+//
+////
+
 func (m *_BVLCReadBroadcastDistributionTableAck) isBVLCReadBroadcastDistributionTableAck() bool {
 	return true
 }
@@ -212,7 +222,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

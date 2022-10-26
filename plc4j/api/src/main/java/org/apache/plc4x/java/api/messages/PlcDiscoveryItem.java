@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.value.PlcValue;
+
 import java.util.Map;
 
 public interface PlcDiscoveryItem {
@@ -46,6 +48,11 @@ public interface PlcDiscoveryItem {
      * @return returns something I bet made sense some time, but I have forgotten why I added it to plc4go ;-)
      */
     String getName();
+
+    /**
+     * @return returns a map of all additional attributes assigned to this item (Usually additional information, which is not directly needed for connecting, such as Versions, Names, Supported features etc.)
+     */
+    Map<String, PlcValue> getAttributes();
 
     /**
      * @return returns a plc4x connection string that can be used in any PLC4X driver to connect to the given device (Generally just a concatenation of the other parts of this object)

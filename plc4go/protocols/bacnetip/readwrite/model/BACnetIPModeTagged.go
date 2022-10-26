@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -139,7 +139,7 @@ func BACnetIPModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagCl
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -148,14 +148,22 @@ func BACnetIPModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagCl
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetIPModeTagged")
 	}
-	value := _value.(BACnetIPMode)
+	var value BACnetIPMode
+	if _value != nil {
+		value = _value.(BACnetIPMode)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetIPModeTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetIPModeTagged")
 	}
 
 	// Create the instance
-	return NewBACnetIPModeTagged(header, value, tagNumber, tagClass), nil
+	return &_BACnetIPModeTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Value:     value,
+	}, nil
 }
 
 func (m *_BACnetIPModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -189,6 +197,19 @@ func (m *_BACnetIPModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetIPModeTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetIPModeTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetIPModeTagged) isBACnetIPModeTagged() bool {
 	return true
 }
@@ -197,7 +218,7 @@ func (m *_BACnetIPModeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

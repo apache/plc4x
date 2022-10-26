@@ -20,13 +20,16 @@
 package model
 
 import (
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"net/url"
 )
 
-type PlcDiscoveryEvent interface {
+type PlcDiscoveryItem interface {
 	GetProtocolCode() string
 	GetTransportCode() string
 	GetTransportUrl() url.URL
 	GetOptions() map[string][]string
 	GetName() string
+	GetAttributes() map[string]values.PlcValue
+	GetConnectionUrl() string
 }

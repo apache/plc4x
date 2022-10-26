@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -188,7 +187,7 @@ func BACnetPropertyAccessResultParse(readBuffer utils.ReadBuffer) (BACnetPropert
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field of BACnetPropertyAccessResult")
@@ -210,7 +209,7 @@ func BACnetPropertyAccessResultParse(readBuffer utils.ReadBuffer) (BACnetPropert
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceIdentifier' field of BACnetPropertyAccessResult")
@@ -226,7 +225,7 @@ func BACnetPropertyAccessResultParse(readBuffer utils.ReadBuffer) (BACnetPropert
 	if pullErr := readBuffer.PullContext("accessResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessResult")
 	}
-	_accessResult, _accessResultErr := BACnetPropertyAccessResultAccessResultParse(readBuffer, BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+	_accessResult, _accessResultErr := BACnetPropertyAccessResultAccessResultParse(readBuffer, BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _accessResultErr != nil {
 		return nil, errors.Wrap(_accessResultErr, "Error parsing 'accessResult' field of BACnetPropertyAccessResult")
 	}
@@ -240,7 +239,13 @@ func BACnetPropertyAccessResultParse(readBuffer utils.ReadBuffer) (BACnetPropert
 	}
 
 	// Create the instance
-	return NewBACnetPropertyAccessResult(objectIdentifier, propertyIdentifier, propertyArrayIndex, deviceIdentifier, accessResult), nil
+	return &_BACnetPropertyAccessResult{
+		ObjectIdentifier:   objectIdentifier,
+		PropertyIdentifier: propertyIdentifier,
+		PropertyArrayIndex: propertyArrayIndex,
+		DeviceIdentifier:   deviceIdentifier,
+		AccessResult:       accessResult,
+	}, nil
 }
 
 func (m *_BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -332,7 +337,7 @@ func (m *_BACnetPropertyAccessResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

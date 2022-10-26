@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.values;
 
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.math.BigDecimal;
@@ -31,6 +32,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlcNull implements PlcValue {
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.NULL;
+    }
 
     @Override
     public Object getObject() {

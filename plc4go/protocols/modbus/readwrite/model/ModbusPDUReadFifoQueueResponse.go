@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -192,8 +192,8 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadFifoQueueResponse{
-		FifoValue:  fifoValue,
 		_ModbusPDU: &_ModbusPDU{},
+		FifoValue:  fifoValue,
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil
@@ -208,14 +208,14 @@ func (m *_ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.GetFifoValue())))*uint16(uint16(2)))) + uint16(uint16(2)))
+		byteCount := uint16(uint16((uint16(uint16(len(m.GetFifoValue()))) * uint16(uint16(2)))) + uint16(uint16(2)))
 		_byteCountErr := writeBuffer.WriteUint16("byteCount", 16, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.GetFifoValue())))*uint16(uint16(2)))) / uint16(uint16(2)))
+		fifoCount := uint16(uint16((uint16(uint16(len(m.GetFifoValue()))) * uint16(uint16(2)))) / uint16(uint16(2)))
 		_fifoCountErr := writeBuffer.WriteUint16("fifoCount", 16, (fifoCount))
 		if _fifoCountErr != nil {
 			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
@@ -251,7 +251,7 @@ func (m *_ModbusPDUReadFifoQueueResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

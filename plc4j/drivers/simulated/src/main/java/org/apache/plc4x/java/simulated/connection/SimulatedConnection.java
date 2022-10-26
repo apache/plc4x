@@ -78,7 +78,8 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     private final Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
     public SimulatedConnection(SimulatedDevice device) {
-        super(true, true, true, new SimulatedFieldHandler(), new IEC61131ValueHandler(), null);
+        super(true, true, true, false,
+            new SimulatedFieldHandler(), new IEC61131ValueHandler(), null, null);
         this.device = device;
     }
 

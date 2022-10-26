@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -152,6 +151,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	var startPos = positionAware.GetPos()
+	_ = startPos
 	var curPos uint16
 
 	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -205,10 +205,10 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	// Length array
 	var parameters []COTPParameter
 	{
-		_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
+		_parametersLength := uint16((uint16(headerLength) + uint16(uint16(1)))) - uint16(curPos)
 		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
 		for positionAware.GetPos() < _parametersEndPos {
-			_item, _err := COTPParameterParse(readBuffer, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
+			_item, _err := COTPParameterParse(readBuffer, uint8((uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of COTPPacket")
 			}
@@ -231,7 +231,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 		_val, _err := S7MessageParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field of COTPPacket")
@@ -263,7 +263,7 @@ func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTP
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.GetPayload()) != (nil))), func() interface{} { return uint8((m.GetPayload()).GetLengthInBytes()) }, func() interface{} { return uint8(uint8(0)) }).(uint8)))+uint8(uint8(1)))))
+	headerLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8((uint8((utils.InlineIf((bool((m.GetPayload()) != (nil))), func() interface{} { return uint8((m.GetPayload()).GetLengthInBytes()) }, func() interface{} { return uint8(uint8(0)) }).(uint8))) + uint8(uint8(1)))))
 	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
@@ -318,6 +318,16 @@ func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTP
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_COTPPacket) GetCotpLen() uint16 {
+	return m.CotpLen
+}
+
+//
+////
+
 func (m *_COTPPacket) isCOTPPacket() bool {
 	return true
 }
@@ -326,7 +336,7 @@ func (m *_COTPPacket) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

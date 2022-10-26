@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -158,7 +157,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetReadAccessProperty")
@@ -177,10 +176,10 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for readResult")
 		}
-		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'readResult' field of BACnetReadAccessProperty")
@@ -197,7 +196,12 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessProperty(propertyIdentifier, arrayIndex, readResult, objectTypeArgument), nil
+	return &_BACnetReadAccessProperty{
+		ObjectTypeArgument: objectTypeArgument,
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+		ReadResult:         readResult,
+	}, nil
 }
 
 func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -257,6 +261,16 @@ func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetReadAccessProperty) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetReadAccessProperty) isBACnetReadAccessProperty() bool {
 	return true
 }
@@ -265,7 +279,7 @@ func (m *_BACnetReadAccessProperty) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

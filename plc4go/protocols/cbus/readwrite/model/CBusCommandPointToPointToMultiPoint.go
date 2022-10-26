@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -32,7 +32,7 @@ type CBusCommandPointToPointToMultiPoint interface {
 	utils.Serializable
 	CBusCommand
 	// GetCommand returns Command (property field)
-	GetCommand() CBusPointToPointToMultipointCommand
+	GetCommand() CBusPointToPointToMultiPointCommand
 }
 
 // CBusCommandPointToPointToMultiPointExactly can be used when we want exactly this type and not a type which fulfills CBusCommandPointToPointToMultiPoint.
@@ -45,7 +45,7 @@ type CBusCommandPointToPointToMultiPointExactly interface {
 // _CBusCommandPointToPointToMultiPoint is the data-structure of this message
 type _CBusCommandPointToPointToMultiPoint struct {
 	*_CBusCommand
-	Command CBusPointToPointToMultipointCommand
+	Command CBusPointToPointToMultiPointCommand
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ func (m *_CBusCommandPointToPointToMultiPoint) GetParent() CBusCommand {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CBusCommandPointToPointToMultiPoint) GetCommand() CBusPointToPointToMultipointCommand {
+func (m *_CBusCommandPointToPointToMultiPoint) GetCommand() CBusPointToPointToMultiPointCommand {
 	return m.Command
 }
 
@@ -81,7 +81,7 @@ func (m *_CBusCommandPointToPointToMultiPoint) GetCommand() CBusPointToPointToMu
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPointToMultiPoint factory function for _CBusCommandPointToPointToMultiPoint
-func NewCBusCommandPointToPointToMultiPoint(command CBusPointToPointToMultipointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToPointToMultiPoint {
+func NewCBusCommandPointToPointToMultiPoint(command CBusPointToPointToMultiPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToPointToMultiPoint {
 	_result := &_CBusCommandPointToPointToMultiPoint{
 		Command:      command,
 		_CBusCommand: NewCBusCommand(header, cBusOptions),
@@ -135,11 +135,11 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusO
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToPointToMultipointCommandParse(readBuffer, cBusOptions)
+	_command, _commandErr := CBusPointToPointToMultiPointCommandParse(readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToPointToMultiPoint")
 	}
-	command := _command.(CBusPointToPointToMultipointCommand)
+	command := _command.(CBusPointToPointToMultiPointCommand)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
@@ -150,10 +150,10 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusO
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToPointToMultiPoint{
-		Command: command,
 		_CBusCommand: &_CBusCommand{
 			CBusOptions: cBusOptions,
 		},
+		Command: command,
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child
 	return _child, nil
@@ -195,7 +195,7 @@ func (m *_CBusCommandPointToPointToMultiPoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

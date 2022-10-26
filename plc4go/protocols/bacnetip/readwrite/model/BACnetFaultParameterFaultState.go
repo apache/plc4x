@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -198,10 +198,10 @@ func BACnetFaultParameterFaultStateParse(readBuffer utils.ReadBuffer) (BACnetFau
 
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultState{
+		_BACnetFaultParameter: &_BACnetFaultParameter{},
 		OpeningTag:            openingTag,
 		ListOfFaultValues:     listOfFaultValues,
 		ClosingTag:            closingTag,
-		_BACnetFaultParameter: &_BACnetFaultParameter{},
 	}
 	_child._BACnetFaultParameter._BACnetFaultParameterChildRequirements = _child
 	return _child, nil
@@ -267,7 +267,7 @@ func (m *_BACnetFaultParameterFaultState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

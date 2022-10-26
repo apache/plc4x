@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -33,8 +33,10 @@ type CALDataWrite interface {
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
-	// GetData returns Data (property field)
-	GetData() []byte
+	// GetCode returns Code (property field)
+	GetCode() byte
+	// GetParameterValue returns ParameterValue (property field)
+	GetParameterValue() ParameterValue
 }
 
 // CALDataWriteExactly can be used when we want exactly this type and not a type which fulfills CALDataWrite.
@@ -47,8 +49,9 @@ type CALDataWriteExactly interface {
 // _CALDataWrite is the data-structure of this message
 type _CALDataWrite struct {
 	*_CALData
-	ParamNo Parameter
-	Data    []byte
+	ParamNo        Parameter
+	Code           byte
+	ParameterValue ParameterValue
 }
 
 ///////////////////////////////////////////////////////////
@@ -79,8 +82,12 @@ func (m *_CALDataWrite) GetParamNo() Parameter {
 	return m.ParamNo
 }
 
-func (m *_CALDataWrite) GetData() []byte {
-	return m.Data
+func (m *_CALDataWrite) GetCode() byte {
+	return m.Code
+}
+
+func (m *_CALDataWrite) GetParameterValue() ParameterValue {
+	return m.ParameterValue
 }
 
 ///////////////////////
@@ -89,11 +96,12 @@ func (m *_CALDataWrite) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataWrite factory function for _CALDataWrite
-func NewCALDataWrite(paramNo Parameter, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataWrite {
+func NewCALDataWrite(paramNo Parameter, code byte, parameterValue ParameterValue, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataWrite {
 	_result := &_CALDataWrite{
-		ParamNo:  paramNo,
-		Data:     data,
-		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:        paramNo,
+		Code:           code,
+		ParameterValue: parameterValue,
+		_CALData:       NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result
@@ -124,10 +132,11 @@ func (m *_CALDataWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (paramNo)
 	lengthInBits += 8
 
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
-	}
+	// Simple field (code)
+	lengthInBits += 8
+
+	// Simple field (parameterValue)
+	lengthInBits += m.ParameterValue.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -157,11 +166,25 @@ func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(1)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataWrite")
+
+	// Simple Field (code)
+	_code, _codeErr := readBuffer.ReadByte("code")
+	if _codeErr != nil {
+		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataWrite")
+	}
+	code := _code
+
+	// Simple Field (parameterValue)
+	if pullErr := readBuffer.PullContext("parameterValue"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for parameterValue")
+	}
+	_parameterValue, _parameterValueErr := ParameterValueParse(readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2))))
+	if _parameterValueErr != nil {
+		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CALDataWrite")
+	}
+	parameterValue := _parameterValue.(ParameterValue)
+	if closeErr := readBuffer.CloseContext("parameterValue"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for parameterValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataWrite"); closeErr != nil {
@@ -170,11 +193,12 @@ func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 
 	// Create a partially initialized instance
 	_child := &_CALDataWrite{
-		ParamNo: paramNo,
-		Data:    data,
 		_CALData: &_CALData{
 			RequestContext: requestContext,
 		},
+		ParamNo:        paramNo,
+		Code:           code,
+		ParameterValue: parameterValue,
 	}
 	_child._CALData._CALDataChildRequirements = _child
 	return _child, nil
@@ -200,10 +224,23 @@ func (m *_CALDataWrite) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
-			return errors.Wrap(err, "Error serializing 'data' field")
+		// Simple Field (code)
+		code := byte(m.GetCode())
+		_codeErr := writeBuffer.WriteByte("code", (code))
+		if _codeErr != nil {
+			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		}
+
+		// Simple Field (parameterValue)
+		if pushErr := writeBuffer.PushContext("parameterValue"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for parameterValue")
+		}
+		_parameterValueErr := writeBuffer.WriteSerializable(m.GetParameterValue())
+		if popErr := writeBuffer.PopContext("parameterValue"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for parameterValue")
+		}
+		if _parameterValueErr != nil {
+			return errors.Wrap(_parameterValueErr, "Error serializing 'parameterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataWrite"); popErr != nil {
@@ -222,7 +259,7 @@ func (m *_CALDataWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

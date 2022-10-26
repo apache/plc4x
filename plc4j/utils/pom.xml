@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils</artifactId>
@@ -42,6 +42,9 @@
     <!-- Utilities for building tests -->
     <module>test-generator</module>
     <module>test-utils</module>
+
+    <!-- Utilities for working with PLCs -->
+    <module>plc-simulator</module>
   </modules>
 
 </project>

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -170,11 +170,11 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSetPinMode{
-		Pin:  pin,
-		Mode: mode,
 		_FirmataCommand: &_FirmataCommand{
 			Response: response,
 		},
+		Pin:  pin,
+		Mode: mode,
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil
@@ -223,7 +223,7 @@ func (m *_FirmataCommandSetPinMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -164,7 +164,7 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (Tun
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
-	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
+	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of TunnelingRequest")
 	}
@@ -179,9 +179,9 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (Tun
 
 	// Create a partially initialized instance
 	_child := &_TunnelingRequest{
+		_KnxNetIpMessage:          &_KnxNetIpMessage{},
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
 		Cemi:                      cemi,
-		_KnxNetIpMessage:          &_KnxNetIpMessage{},
 	}
 	_child._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _child
 	return _child, nil
@@ -227,6 +227,16 @@ func (m *_TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_TunnelingRequest) GetTotalLength() uint16 {
+	return m.TotalLength
+}
+
+//
+////
+
 func (m *_TunnelingRequest) isTunnelingRequest() bool {
 	return true
 }
@@ -235,7 +245,7 @@ func (m *_TunnelingRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

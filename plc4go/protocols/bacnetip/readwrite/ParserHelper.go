@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -282,7 +282,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		return model.BACnetRecipientEnclosedParse(io, tagNumber)
 	case "BACnetConfirmedServiceRequest":
-		serviceRequestLength, err := utils.StrToUint16(arguments[0])
+		serviceRequestLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
@@ -775,7 +775,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		tagClass, _ := model.TagClassByName(arguments[1])
 		return model.BACnetAccessEventTaggedParse(io, tagNumber, tagClass)
 	case "BACnetServiceAck":
-		serviceAckLength, err := utils.StrToUint16(arguments[0])
+		serviceAckLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}

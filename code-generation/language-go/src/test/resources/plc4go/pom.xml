@@ -40,7 +40,7 @@
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-resources-plugin</artifactId>
-      <version>2.5</version>
+      <version>3.3.0</version>
       <executions>
         <execution>
           <id>go-pkg</id>
@@ -67,11 +67,11 @@
             <goal>copy-resources</goal>
           </goals>
           <configuration>
-            <outputDirectory>./internal/spi</outputDirectory>
+            <outputDirectory>./spi</outputDirectory>
             <resources>
               <resource>
                 <targetPath>.</targetPath>
-                <directory>../../../../../plc4go/internal/spi</directory>
+                <directory>../../../../../plc4go/spi</directory>
                 <excludes>
                   <exclude>testutils/**</exclude>
                 </excludes>

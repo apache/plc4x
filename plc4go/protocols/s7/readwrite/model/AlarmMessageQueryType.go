@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -248,7 +248,13 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	}
 
 	// Create the instance
-	return NewAlarmMessageQueryType(functionId, numberOfObjects, returnCode, transportSize, messageObjects), nil
+	return &_AlarmMessageQueryType{
+		FunctionId:      functionId,
+		NumberOfObjects: numberOfObjects,
+		ReturnCode:      returnCode,
+		TransportSize:   transportSize,
+		MessageObjects:  messageObjects,
+	}, nil
 }
 
 func (m *_AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -330,7 +336,7 @@ func (m *_AlarmMessageQueryType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

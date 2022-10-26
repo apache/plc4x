@@ -19,13 +19,14 @@
 package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.ads.ADSPlcDriver;
+import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
@@ -63,6 +64,10 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
     @ConfigurationParameter("timeout-request")
     @IntDefaultValue(4000)
     protected int timeoutRequest;
+
+    @ConfigurationParameter("load-symbol-and-data-type-tables")
+    @BooleanDefaultValue(true)
+    protected boolean loadSymbolAndDataTypeTables;
 
     public AmsNetId getTargetAmsNetId() {
         return targetAmsNetId;
@@ -112,9 +117,17 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
         this.timeoutRequest = timeoutRequest;
     }
 
+    public boolean isLoadSymbolAndDataTypeTables() {
+        return loadSymbolAndDataTypeTables;
+    }
+
+    public void setLoadSymbolAndDataTypeTables(boolean loadSymbolAndDataTypeTables) {
+        this.loadSymbolAndDataTypeTables = loadSymbolAndDataTypeTables;
+    }
+
     @Override
     public int getDefaultPort() {
-        return ADSPlcDriver.TCP_PORT;
+        return AdsConstants.ADSTCPDEFAULTPORT;
     }
 
     @Override

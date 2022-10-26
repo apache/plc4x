@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -181,49 +181,70 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (DateAndTime, error) {
 	if _yearErr != nil {
 		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field of DateAndTime")
 	}
-	year := _year.(uint8)
+	var year uint8
+	if _year != nil {
+		year = _year.(uint8)
+	}
 
 	// Manual Field (month)
 	_month, _monthErr := BcdToInt(readBuffer)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of DateAndTime")
 	}
-	month := _month.(uint8)
+	var month uint8
+	if _month != nil {
+		month = _month.(uint8)
+	}
 
 	// Manual Field (day)
 	_day, _dayErr := BcdToInt(readBuffer)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of DateAndTime")
 	}
-	day := _day.(uint8)
+	var day uint8
+	if _day != nil {
+		day = _day.(uint8)
+	}
 
 	// Manual Field (hour)
 	_hour, _hourErr := BcdToInt(readBuffer)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of DateAndTime")
 	}
-	hour := _hour.(uint8)
+	var hour uint8
+	if _hour != nil {
+		hour = _hour.(uint8)
+	}
 
 	// Manual Field (minutes)
 	_minutes, _minutesErr := BcdToInt(readBuffer)
 	if _minutesErr != nil {
 		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field of DateAndTime")
 	}
-	minutes := _minutes.(uint8)
+	var minutes uint8
+	if _minutes != nil {
+		minutes = _minutes.(uint8)
+	}
 
 	// Manual Field (seconds)
 	_seconds, _secondsErr := BcdToInt(readBuffer)
 	if _secondsErr != nil {
 		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field of DateAndTime")
 	}
-	seconds := _seconds.(uint8)
+	var seconds uint8
+	if _seconds != nil {
+		seconds = _seconds.(uint8)
+	}
 
 	// Manual Field (msec)
 	_msec, _msecErr := S7msecToInt(readBuffer)
 	if _msecErr != nil {
 		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field of DateAndTime")
 	}
-	msec := _msec.(uint16)
+	var msec uint16
+	if _msec != nil {
+		msec = _msec.(uint16)
+	}
 
 	// Simple Field (dow)
 	_dow, _dowErr := readBuffer.ReadUint8("dow", 4)
@@ -237,7 +258,16 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (DateAndTime, error) {
 	}
 
 	// Create the instance
-	return NewDateAndTime(year, month, day, hour, minutes, seconds, msec, dow), nil
+	return &_DateAndTime{
+		Year:    year,
+		Month:   month,
+		Day:     day,
+		Hour:    hour,
+		Minutes: minutes,
+		Seconds: seconds,
+		Msec:    msec,
+		Dow:     dow,
+	}, nil
 }
 
 func (m *_DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -310,7 +340,7 @@ func (m *_DateAndTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

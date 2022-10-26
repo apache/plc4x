@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -99,7 +98,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() BACnetConst
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint16) *_BACnetServiceAckConfirmedPrivateTransfer {
+func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
 	_result := &_BACnetServiceAckConfirmedPrivateTransfer{
 		VendorId:          vendorId,
 		ServiceNumber:     serviceNumber,
@@ -150,7 +149,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckConfirmedPrivateTransfer, error) {
+func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckConfirmedPrivateTransfer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedPrivateTransfer"); pullErr != nil {
@@ -195,7 +194,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'resultBlock' field of BACnetServiceAckConfirmedPrivateTransfer")
@@ -213,12 +212,12 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckConfirmedPrivateTransfer{
-		VendorId:      vendorId,
-		ServiceNumber: serviceNumber,
-		ResultBlock:   resultBlock,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		VendorId:      vendorId,
+		ServiceNumber: serviceNumber,
+		ResultBlock:   resultBlock,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -288,7 +287,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

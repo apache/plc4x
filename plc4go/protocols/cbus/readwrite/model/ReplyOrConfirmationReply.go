@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -35,8 +35,6 @@ type ReplyOrConfirmationReply interface {
 	GetReply() Reply
 	// GetTermination returns Termination (property field)
 	GetTermination() ResponseTermination
-	// GetReplyLength returns ReplyLength (virtual field)
-	GetReplyLength() uint16
 }
 
 // ReplyOrConfirmationReplyExactly can be used when we want exactly this type and not a type which fulfills ReplyOrConfirmationReply.
@@ -88,26 +86,13 @@ func (m *_ReplyOrConfirmationReply) GetTermination() ResponseTermination {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_ReplyOrConfirmationReply) GetReplyLength() uint16 {
-	return uint16(uint16(m.MessageLength) - uint16(uint16(2)))
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // NewReplyOrConfirmationReply factory function for _ReplyOrConfirmationReply
-func NewReplyOrConfirmationReply(reply Reply, termination ResponseTermination, peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_ReplyOrConfirmationReply {
+func NewReplyOrConfirmationReply(reply Reply, termination ResponseTermination, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationReply {
 	_result := &_ReplyOrConfirmationReply{
 		Reply:                reply,
 		Termination:          termination,
-		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, messageLength, requestContext),
+		_ReplyOrConfirmation: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
 	}
 	_result._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _result
 	return _result
@@ -135,8 +120,6 @@ func (m *_ReplyOrConfirmationReply) GetLengthInBits() uint16 {
 func (m *_ReplyOrConfirmationReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
 	// Simple field (reply)
 	lengthInBits += m.Reply.GetLengthInBits()
 
@@ -150,7 +133,7 @@ func (m *_ReplyOrConfirmationReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyOrConfirmationReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (ReplyOrConfirmationReply, error) {
+func ReplyOrConfirmationReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmationReply"); pullErr != nil {
@@ -159,16 +142,11 @@ func ReplyOrConfirmationReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBus
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_replyLength := uint16(messageLength) - uint16(uint16(2))
-	replyLength := uint16(_replyLength)
-	_ = replyLength
-
 	// Simple Field (reply)
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := ReplyParse(readBuffer, cBusOptions, uint16(replyLength), requestContext)
+	_reply, _replyErr := ReplyParse(readBuffer, cBusOptions, requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of ReplyOrConfirmationReply")
 	}
@@ -196,13 +174,12 @@ func ReplyOrConfirmationReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBus
 
 	// Create a partially initialized instance
 	_child := &_ReplyOrConfirmationReply{
-		Reply:       reply,
-		Termination: termination,
 		_ReplyOrConfirmation: &_ReplyOrConfirmation{
 			CBusOptions:    cBusOptions,
-			MessageLength:  messageLength,
 			RequestContext: requestContext,
 		},
+		Reply:       reply,
+		Termination: termination,
 	}
 	_child._ReplyOrConfirmation._ReplyOrConfirmationChildRequirements = _child
 	return _child, nil
@@ -214,10 +191,6 @@ func (m *_ReplyOrConfirmationReply) Serialize(writeBuffer utils.WriteBuffer) err
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ReplyOrConfirmationReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ReplyOrConfirmationReply")
-		}
-		// Virtual field
-		if _replyLengthErr := writeBuffer.WriteVirtual("replyLength", m.GetReplyLength()); _replyLengthErr != nil {
-			return errors.Wrap(_replyLengthErr, "Error serializing 'replyLength' field")
 		}
 
 		// Simple Field (reply)
@@ -260,7 +233,7 @@ func (m *_ReplyOrConfirmationReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

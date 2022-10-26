@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -175,9 +175,9 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer 
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 		Result:                 result,
 		Reserved01:             reserved01,
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil
@@ -221,7 +221,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() s
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

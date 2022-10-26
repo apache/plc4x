@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -141,7 +141,7 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
 
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
 	var vendorId *BACnetVendorId = nil
-	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
+	if bool((bool((messageType) >= (128)))) && bool((bool((messageType) <= (255)))) {
 		if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 		}
@@ -247,6 +247,16 @@ func (pm *_NLM) SerializeParent(writeBuffer utils.WriteBuffer, child NLM, serial
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_NLM) GetApduLength() uint16 {
+	return m.ApduLength
+}
+
+//
+////
+
 func (m *_NLM) isNLM() bool {
 	return true
 }
@@ -255,7 +265,7 @@ func (m *_NLM) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

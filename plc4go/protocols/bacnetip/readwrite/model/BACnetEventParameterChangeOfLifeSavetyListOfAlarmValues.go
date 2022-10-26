@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -184,7 +184,12 @@ func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParse(readBuffer uti
 	}
 
 	// Create the instance
-	return NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(openingTag, listOfAlarmValues, closingTag, tagNumber), nil
+	return &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues{
+		TagNumber:         tagNumber,
+		OpeningTag:        openingTag,
+		ListOfAlarmValues: listOfAlarmValues,
+		ClosingTag:        closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -238,6 +243,16 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) Serialize(wri
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) isBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues() bool {
 	return true
 }
@@ -246,7 +261,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) String() stri
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

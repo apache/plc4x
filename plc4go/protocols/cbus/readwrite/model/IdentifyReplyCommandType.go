@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -134,7 +134,7 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 	_ = currentPos
 
 	// Simple Field (unitType)
-	_unitType, _unitTypeErr := readBuffer.ReadString("unitType", uint32(64))
+	_unitType, _unitTypeErr := readBuffer.ReadString("unitType", uint32(64), "UTF-8")
 	if _unitTypeErr != nil {
 		return nil, errors.Wrap(_unitTypeErr, "Error parsing 'unitType' field of IdentifyReplyCommandType")
 	}
@@ -146,10 +146,10 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandType{
-		UnitType: unitType,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		UnitType: unitType,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil
@@ -186,7 +186,7 @@ func (m *_IdentifyReplyCommandType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

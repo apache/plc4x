@@ -92,8 +92,8 @@ func (k GroupAddress3LevelPlcField) IsPatternField() bool {
 }
 
 func (k GroupAddress3LevelPlcField) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
-	level3KnxGroupAddress := driverModel.CastKnxGroupAddress3Level(knxGroupAddress)
-	if level3KnxGroupAddress == nil {
+	level3KnxGroupAddress, ok := knxGroupAddress.(driverModel.KnxGroupAddress3LevelExactly)
+	if !ok {
 		return false
 	}
 	return matches(k.MainGroup, strconv.Itoa(int(level3KnxGroupAddress.GetMainGroup()))) &&
@@ -160,8 +160,8 @@ func (k GroupAddress2LevelPlcField) IsPatternField() bool {
 }
 
 func (k GroupAddress2LevelPlcField) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
-	level2KnxGroupAddress := driverModel.CastKnxGroupAddress2Level(knxGroupAddress)
-	if level2KnxGroupAddress == nil {
+	level2KnxGroupAddress, ok := knxGroupAddress.(driverModel.KnxGroupAddress2LevelExactly)
+	if !ok {
 		return false
 	}
 	return matches(k.MainGroup, strconv.Itoa(int(level2KnxGroupAddress.GetMainGroup()))) &&
@@ -218,8 +218,8 @@ func (k GroupAddress1LevelPlcField) IsPatternField() bool {
 }
 
 func (k GroupAddress1LevelPlcField) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
-	level1KnxGroupAddress := driverModel.CastKnxGroupAddressFreeLevel(knxGroupAddress)
-	if level1KnxGroupAddress == nil {
+	level1KnxGroupAddress, ok := knxGroupAddress.(driverModel.KnxGroupAddressFreeLevel)
+	if !ok {
 		return false
 	}
 	return matches(k.MainGroup, strconv.Itoa(int(level1KnxGroupAddress.GetSubGroup())))

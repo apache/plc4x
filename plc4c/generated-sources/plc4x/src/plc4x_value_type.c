@@ -124,14 +124,26 @@ plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_
     if(strcmp(value_string, "TIME") == 0) {
         return plc4c_plc4x_read_write_plc4x_value_type_TIME;
     }
-    if(strcmp(value_string, "TIME_OF_DAY") == 0) {
-        return plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY;
+    if(strcmp(value_string, "LTIME") == 0) {
+        return plc4c_plc4x_read_write_plc4x_value_type_LTIME;
     }
     if(strcmp(value_string, "DATE") == 0) {
         return plc4c_plc4x_read_write_plc4x_value_type_DATE;
     }
+    if(strcmp(value_string, "LDATE") == 0) {
+        return plc4c_plc4x_read_write_plc4x_value_type_LDATE;
+    }
+    if(strcmp(value_string, "TIME_OF_DAY") == 0) {
+        return plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY;
+    }
+    if(strcmp(value_string, "LTIME_OF_DAY") == 0) {
+        return plc4c_plc4x_read_write_plc4x_value_type_LTIME_OF_DAY;
+    }
     if(strcmp(value_string, "DATE_AND_TIME") == 0) {
         return plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME;
+    }
+    if(strcmp(value_string, "LDATE_AND_TIME") == 0) {
+        return plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME;
     }
     if(strcmp(value_string, "Struct") == 0) {
         return plc4c_plc4x_read_write_plc4x_value_type_Struct;
@@ -139,11 +151,14 @@ plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_
     if(strcmp(value_string, "List") == 0) {
         return plc4c_plc4x_read_write_plc4x_value_type_List;
     }
+    if(strcmp(value_string, "RAW_BYTE_ARRAY") == 0) {
+        return plc4c_plc4x_read_write_plc4x_value_type_RAW_BYTE_ARRAY;
+    }
     return -1;
 }
 
 int plc4c_plc4x_read_write_plc4x_value_type_num_values() {
-  return 26;
+  return 31;
 }
 
 plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_value_for_index(int index) {
@@ -212,19 +227,34 @@ plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_
         return plc4c_plc4x_read_write_plc4x_value_type_TIME;
       }
       case 21: {
-        return plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY;
+        return plc4c_plc4x_read_write_plc4x_value_type_LTIME;
       }
       case 22: {
         return plc4c_plc4x_read_write_plc4x_value_type_DATE;
       }
       case 23: {
-        return plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME;
+        return plc4c_plc4x_read_write_plc4x_value_type_LDATE;
       }
       case 24: {
-        return plc4c_plc4x_read_write_plc4x_value_type_Struct;
+        return plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY;
       }
       case 25: {
+        return plc4c_plc4x_read_write_plc4x_value_type_LTIME_OF_DAY;
+      }
+      case 26: {
+        return plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME;
+      }
+      case 27: {
+        return plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME;
+      }
+      case 28: {
+        return plc4c_plc4x_read_write_plc4x_value_type_Struct;
+      }
+      case 29: {
         return plc4c_plc4x_read_write_plc4x_value_type_List;
+      }
+      case 30: {
+        return plc4c_plc4x_read_write_plc4x_value_type_RAW_BYTE_ARRAY;
       }
       default: {
         return -1;

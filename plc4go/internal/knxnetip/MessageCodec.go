@@ -20,11 +20,11 @@
 package knxnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -54,7 +54,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	knxMessage := model.CastKnxNetIpMessage(message)
+	knxMessage := message.(model.KnxNetIpMessage)
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased()
 	err := knxMessage.Serialize(wb)
@@ -71,9 +71,8 @@ func (m *MessageCodec) Send(message spi.Message) error {
 }
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
-	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.GetTransportInstance().GetNumReadableBytes(); (err == nil) && (num >= 6) {
+	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
 		log.Debug().Msgf("we got %d readable bytes", num)
 		data, err := m.GetTransportInstance().PeekReadableBytes(6)
 		if err != nil {
@@ -108,15 +107,15 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	return nil, nil
 }
 
-func CustomMessageHandling(codec *_default.DefaultCodecRequirements, message spi.Message) bool {
+func CustomMessageHandling(codec _default.DefaultCodecRequirements, message spi.Message) bool {
 	// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
-	tunnelingResponse := model.CastTunnelingResponse(message)
+	tunnelingResponse := message.(model.TunnelingResponse)
 	if tunnelingResponse != nil {
 		return true
 	}
 
 	// If this is an incoming tunneling request, automatically send a tunneling ACK back to the gateway
-	tunnelingRequest := model.CastTunnelingRequest(message)
+	tunnelingRequest := message.(model.TunnelingRequest)
 	if tunnelingRequest != nil {
 		response := model.NewTunnelingResponse(
 			model.NewTunnelingResponseDataBlock(
@@ -124,13 +123,13 @@ func CustomMessageHandling(codec *_default.DefaultCodecRequirements, message spi
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetSequenceCounter(),
 				model.Status_NO_ERROR),
 		)
-		err := (*codec).Send(response)
+		err := codec.Send(response)
 		if err != nil {
 			log.Warn().Err(err).Msg("got an error sending ACK from transport")
 		}
 	}
 
-	localCodec := (*codec).(*MessageCodec)
+	localCodec := codec.(*MessageCodec)
 	// Handle the packet itself
 	// Give a message interceptor a chance to intercept
 	if (*localCodec).messageInterceptor != nil {

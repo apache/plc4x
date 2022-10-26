@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -170,7 +169,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetPropertyWriteDefinition")
@@ -189,10 +188,10 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue(), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field of BACnetPropertyWriteDefinition")
@@ -214,7 +213,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetPropertyWriteDefinition")
@@ -231,7 +230,13 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 	}
 
 	// Create the instance
-	return NewBACnetPropertyWriteDefinition(propertyIdentifier, arrayIndex, propertyValue, priority, objectTypeArgument), nil
+	return &_BACnetPropertyWriteDefinition{
+		ObjectTypeArgument: objectTypeArgument,
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+		PropertyValue:      propertyValue,
+		Priority:           priority,
+	}, nil
 }
 
 func (m *_BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -307,6 +312,16 @@ func (m *_BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetPropertyWriteDefinition) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+
+//
+////
+
 func (m *_BACnetPropertyWriteDefinition) isBACnetPropertyWriteDefinition() bool {
 	return true
 }
@@ -315,7 +330,7 @@ func (m *_BACnetPropertyWriteDefinition) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

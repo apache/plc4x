@@ -83,16 +83,30 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            for(int i = 0; i < byteBuf.readableBytes() - 1; i++) {
-                if((byteBuf.getUnsignedByte(i) == (short) 0x0D) && (byteBuf.getUnsignedByte(i + 1) == (short) 0x0A)) {
+            // TODO: we might need to try multiple times because the ln might not be here in time
+            for (int i = 0; i < byteBuf.readableBytes(); i++) {
+                boolean hasOneMore = i + 1 < byteBuf.readableBytes();
+
+                char currentChar = (char) byteBuf.getByte(i);
+
+                boolean isCR = currentChar == '\r';
+                boolean followUpIsLF = hasOneMore && (byteBuf.getByte(i + 1) == '\n');
+                boolean followUpIsNotLF = hasOneMore && (byteBuf.getByte(i + 1) != '\n');
+
+                if ((!hasOneMore && isCR) || (isCR && followUpIsNotLF)) {
                     return i + 1;
+                }
+                if (isCR && followUpIsLF) {
+                    return i + 2;
                 }
             }
             return -1;
         }
     }
 
-    /** Consumes all Bytes till a backslash is found */
+    /**
+     * Consumes all Bytes till a backslash is found
+     */
     public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
         @Override
         public void accept(ByteBuf byteBuf) {

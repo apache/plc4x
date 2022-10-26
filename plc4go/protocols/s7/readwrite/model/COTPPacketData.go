@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -167,11 +167,11 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacke
 
 	// Create a partially initialized instance
 	_child := &_COTPPacketData{
-		Eot:     eot,
-		TpduRef: tpduRef,
 		_COTPPacket: &_COTPPacket{
 			CotpLen: cotpLen,
 		},
+		Eot:     eot,
+		TpduRef: tpduRef,
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil
@@ -215,7 +215,7 @@ func (m *_COTPPacketData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

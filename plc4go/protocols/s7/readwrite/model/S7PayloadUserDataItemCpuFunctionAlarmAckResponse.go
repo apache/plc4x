@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -203,9 +203,9 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
+		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 		FunctionId:             functionId,
 		MessageObjects:         messageObjects,
-		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil
@@ -263,7 +263,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

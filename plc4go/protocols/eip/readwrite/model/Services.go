@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -194,7 +194,12 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, e
 	}
 
 	// Create the instance
-	return NewServices(serviceNb, offsets, services, servicesLen), nil
+	return &_Services{
+		ServicesLen: servicesLen,
+		ServiceNb:   serviceNb,
+		Offsets:     offsets,
+		Services:    services,
+	}, nil
 }
 
 func (m *_Services) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -245,6 +250,16 @@ func (m *_Services) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_Services) GetServicesLen() uint16 {
+	return m.ServicesLen
+}
+
+//
+////
+
 func (m *_Services) isServices() bool {
 	return true
 }
@@ -253,7 +268,7 @@ func (m *_Services) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -160,8 +160,8 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (DF1Unprotecte
 
 	// Create a partially initialized instance
 	_child := &_DF1UnprotectedReadResponse{
-		Data:        data,
 		_DF1Command: &_DF1Command{},
+		Data:        data,
 	}
 	_child._DF1Command._DF1CommandChildRequirements = _child
 	return _child, nil
@@ -202,7 +202,7 @@ func (m *_DF1UnprotectedReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

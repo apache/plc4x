@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -237,12 +237,12 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_ModbusPDUReadWriteMultipleHoldingRegistersRequest{
+		_ModbusPDU:           &_ModbusPDU{},
 		ReadStartingAddress:  readStartingAddress,
 		ReadQuantity:         readQuantity,
 		WriteStartingAddress: writeStartingAddress,
 		WriteQuantity:        writeQuantity,
 		Value:                value,
-		_ModbusPDU:           &_ModbusPDU{},
 	}
 	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil
@@ -313,7 +313,7 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

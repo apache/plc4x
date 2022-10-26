@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -145,13 +145,13 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBitsConditional(lastIte
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (volts)
-	lengthInBits += 2
+	lengthInBits += 16
 
 	// Const Field (dot)
 	lengthInBits += 8
 
 	// Simple field (voltsDecimalPlace)
-	lengthInBits += 2
+	lengthInBits += 16
 
 	// Const Field (v)
 	lengthInBits += 8
@@ -173,7 +173,7 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 	_ = currentPos
 
 	// Simple Field (volts)
-	_volts, _voltsErr := readBuffer.ReadString("volts", uint32(2))
+	_volts, _voltsErr := readBuffer.ReadString("volts", uint32(16), "UTF-8")
 	if _voltsErr != nil {
 		return nil, errors.Wrap(_voltsErr, "Error parsing 'volts' field of IdentifyReplyCommandNetworkVoltage")
 	}
@@ -189,7 +189,7 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 	}
 
 	// Simple Field (voltsDecimalPlace)
-	_voltsDecimalPlace, _voltsDecimalPlaceErr := readBuffer.ReadString("voltsDecimalPlace", uint32(2))
+	_voltsDecimalPlace, _voltsDecimalPlaceErr := readBuffer.ReadString("voltsDecimalPlace", uint32(16), "UTF-8")
 	if _voltsDecimalPlaceErr != nil {
 		return nil, errors.Wrap(_voltsDecimalPlaceErr, "Error parsing 'voltsDecimalPlace' field of IdentifyReplyCommandNetworkVoltage")
 	}
@@ -210,11 +210,11 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 
 	// Create a partially initialized instance
 	_child := &_IdentifyReplyCommandNetworkVoltage{
-		Volts:             volts,
-		VoltsDecimalPlace: voltsDecimalPlace,
 		_IdentifyReplyCommand: &_IdentifyReplyCommand{
 			NumBytes: numBytes,
 		},
+		Volts:             volts,
+		VoltsDecimalPlace: voltsDecimalPlace,
 	}
 	_child._IdentifyReplyCommand._IdentifyReplyCommandChildRequirements = _child
 	return _child, nil
@@ -230,7 +230,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (volts)
 		volts := string(m.GetVolts())
-		_voltsErr := writeBuffer.WriteString("volts", uint32(2), "UTF-8", (volts))
+		_voltsErr := writeBuffer.WriteString("volts", uint32(16), "UTF-8", (volts))
 		if _voltsErr != nil {
 			return errors.Wrap(_voltsErr, "Error serializing 'volts' field")
 		}
@@ -243,7 +243,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (voltsDecimalPlace)
 		voltsDecimalPlace := string(m.GetVoltsDecimalPlace())
-		_voltsDecimalPlaceErr := writeBuffer.WriteString("voltsDecimalPlace", uint32(2), "UTF-8", (voltsDecimalPlace))
+		_voltsDecimalPlaceErr := writeBuffer.WriteString("voltsDecimalPlace", uint32(16), "UTF-8", (voltsDecimalPlace))
 		if _voltsDecimalPlaceErr != nil {
 			return errors.Wrap(_voltsDecimalPlaceErr, "Error serializing 'voltsDecimalPlace' field")
 		}
@@ -270,7 +270,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

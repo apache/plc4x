@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -48,7 +48,7 @@ type _BACnetServiceAckReadPropertyMultiple struct {
 	Data []BACnetReadAccessResult
 
 	// Arguments.
-	ServiceAckPayloadLength uint16
+	ServiceAckPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetData() []BACnetReadAccessResu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyMultiple factory function for _BACnetServiceAckReadPropertyMultiple
-func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckReadPropertyMultiple {
+func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckReadPropertyMultiple {
 	_result := &_BACnetServiceAckReadPropertyMultiple{
 		Data:              data,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -131,7 +131,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (BACnetServiceAckReadPropertyMultiple, error) {
+func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
@@ -167,10 +167,10 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckReadPropertyMultiple{
-		Data: data,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		Data: data,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -206,6 +206,16 @@ func (m *_BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Writ
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetServiceAckReadPropertyMultiple) GetServiceAckPayloadLength() uint32 {
+	return m.ServiceAckPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetServiceAckReadPropertyMultiple) isBACnetServiceAckReadPropertyMultiple() bool {
 	return true
 }
@@ -214,7 +224,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

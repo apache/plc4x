@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -50,7 +50,6 @@ type _ReplyOrConfirmation struct {
 
 	// Arguments.
 	CBusOptions    CBusOptions
-	MessageLength  uint16
 	RequestContext RequestContext
 }
 
@@ -93,7 +92,7 @@ func (m *_ReplyOrConfirmation) GetPeekedByte() byte {
 ///////////////////////
 
 func (m *_ReplyOrConfirmation) GetIsAlpha() bool {
-	return bool(bool(bool(bool((m.GetPeekedByte()) >= (0x67)))) && bool(bool(bool((m.GetPeekedByte()) <= (0x7A)))))
+	return bool(bool((bool((m.GetPeekedByte()) >= (0x67)))) && bool((bool((m.GetPeekedByte()) <= (0x7A)))))
 }
 
 ///////////////////////
@@ -102,8 +101,8 @@ func (m *_ReplyOrConfirmation) GetIsAlpha() bool {
 ///////////////////////////////////////////////////////////
 
 // NewReplyOrConfirmation factory function for _ReplyOrConfirmation
-func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) *_ReplyOrConfirmation {
-	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, MessageLength: messageLength, RequestContext: requestContext}
+func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
+	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
 
 // Deprecated: use the interface for direct cast
@@ -133,7 +132,7 @@ func (m *_ReplyOrConfirmation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, requestContext RequestContext) (ReplyOrConfirmation, error) {
+func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmation"); pullErr != nil {
@@ -152,7 +151,7 @@ func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptio
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isAlpha := bool(bool(bool((peekedByte) >= (0x67)))) && bool(bool(bool((peekedByte) <= (0x7A))))
+	_isAlpha := bool((bool((peekedByte) >= (0x67)))) && bool((bool((peekedByte) <= (0x7A))))
 	isAlpha := bool(_isAlpha)
 	_ = isAlpha
 
@@ -166,12 +165,14 @@ func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptio
 	var _child ReplyOrConfirmationChildSerializeRequirement
 	var typeSwitchError error
 	switch {
+	case isAlpha == bool(false) && peekedByte == 0x21: // ServerErrorReply
+		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
-		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParse(readBuffer, cBusOptions, messageLength, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParse(readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
-		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParse(readBuffer, cBusOptions, messageLength, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParse(readBuffer, cBusOptions, requestContext)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v]", isAlpha)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v, peekedByte=%v]", isAlpha, peekedByte)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of ReplyOrConfirmation")
@@ -212,6 +213,19 @@ func (pm *_ReplyOrConfirmation) SerializeParent(writeBuffer utils.WriteBuffer, c
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_ReplyOrConfirmation) GetCBusOptions() CBusOptions {
+	return m.CBusOptions
+}
+func (m *_ReplyOrConfirmation) GetRequestContext() RequestContext {
+	return m.RequestContext
+}
+
+//
+////
+
 func (m *_ReplyOrConfirmation) isReplyOrConfirmation() bool {
 	return true
 }
@@ -220,7 +234,7 @@ func (m *_ReplyOrConfirmation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

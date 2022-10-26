@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -243,7 +243,12 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTim
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadTime(hour, minute, second, fractional), nil
+	return &_BACnetTagPayloadTime{
+		Hour:       hour,
+		Minute:     minute,
+		Second:     second,
+		Fractional: fractional,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -315,7 +320,7 @@ func (m *_BACnetTagPayloadTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

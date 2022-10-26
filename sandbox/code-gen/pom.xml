@@ -23,7 +23,7 @@
   <parent>
     <artifactId>plc4x-sandbox</artifactId>
     <groupId>org.apache.plc4x.sandbox</groupId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>code-gen</artifactId>
@@ -46,7 +46,7 @@
 
   <dependencies>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy-test-junit5</artifactId>        
         <scope>test</scope>
       </dependency>

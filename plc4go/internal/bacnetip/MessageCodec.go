@@ -20,11 +20,11 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -63,9 +63,8 @@ func (m *MessageCodec) Send(message spi.Message) error {
 }
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
-	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.GetTransportInstance().GetNumReadableBytes(); (err == nil) && (num >= 4) {
+	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
 		log.Debug().Msgf("we got %d readable bytes", num)
 		data, err := m.GetTransportInstance().PeekReadableBytes(4)
 		if err != nil {
@@ -100,7 +99,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	return nil, nil
 }
 
-func (m *MessageCodec) handleCustomMessage(_ *_default.DefaultCodecRequirements, message spi.Message) bool {
+func (m *MessageCodec) handleCustomMessage(_ _default.DefaultCodecRequirements, message spi.Message) bool {
 	// For now, we just put them in the incoming channel
 	m.GetDefaultIncomingMessageChannel() <- message
 	return true

@@ -31,6 +31,8 @@ public interface PlcDiscoveryRequest extends PlcRequest {
         @Override
         PlcDiscoveryRequest build();
 
+        Builder addQuery(String name, String query);
+
     }
 
 }

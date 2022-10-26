@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -216,7 +216,13 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}
 
 	// Create the instance
-	return NewBACnetCOVMultipleSubscription(recipient, issueConfirmedNotifications, timeRemaining, maxNotificationDelay, listOfCovSubscriptionSpecification), nil
+	return &_BACnetCOVMultipleSubscription{
+		Recipient:                          recipient,
+		IssueConfirmedNotifications:        issueConfirmedNotifications,
+		TimeRemaining:                      timeRemaining,
+		MaxNotificationDelay:               maxNotificationDelay,
+		ListOfCovSubscriptionSpecification: listOfCovSubscriptionSpecification,
+	}, nil
 }
 
 func (m *_BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -300,7 +306,7 @@ func (m *_BACnetCOVMultipleSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

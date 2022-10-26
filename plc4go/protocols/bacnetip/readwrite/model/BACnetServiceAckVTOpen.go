@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -83,7 +83,7 @@ func (m *_BACnetServiceAckVTOpen) GetRemoteVtSessionIdentifier() BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
-func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *_BACnetServiceAckVTOpen {
+func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
 	_result := &_BACnetServiceAckVTOpen{
 		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
 		_BACnetServiceAck:         NewBACnetServiceAck(serviceAckLength),
@@ -124,7 +124,7 @@ func (m *_BACnetServiceAckVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckVTOpen, error) {
+func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
@@ -152,10 +152,10 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength u
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckVTOpen{
-		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -197,7 +197,7 @@ func (m *_BACnetServiceAckVTOpen) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

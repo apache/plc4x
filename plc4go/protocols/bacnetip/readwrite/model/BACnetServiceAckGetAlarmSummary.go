@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -97,7 +97,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() BACnetEv
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint16) *_BACnetServiceAckGetAlarmSummary {
+func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
 	_result := &_BACnetServiceAckGetAlarmSummary{
 		ObjectIdentifier:        objectIdentifier,
 		EventState:              eventState,
@@ -146,7 +146,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (BACnetServiceAckGetAlarmSummary, error) {
+func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
@@ -200,12 +200,12 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckGetAlarmSummary{
-		ObjectIdentifier:        objectIdentifier,
-		EventState:              eventState,
-		AcknowledgedTransitions: acknowledgedTransitions,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		ObjectIdentifier:        objectIdentifier,
+		EventState:              eventState,
+		AcknowledgedTransitions: acknowledgedTransitions,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -271,7 +271,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

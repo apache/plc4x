@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-integrations</artifactId>
@@ -35,10 +35,22 @@
 
   <modules>
     <module>apache-camel</module>
-    <module>apache-kafka</module>
     <module>apache-nifi</module>
     <module>apache-calcite</module>
     <module>opcua-server</module>
   </modules>
+
+  <!-- ! the kafka maven plugin currently seems to have issues with Java 19 -->
+  <profiles>
+    <profile>
+      <id>java-version-not-19</id>
+      <activation>
+        <jdk>[1.8, 19)</jdk>
+      </activation>
+      <modules>
+        <module>apache-kafka</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

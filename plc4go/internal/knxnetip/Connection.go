@@ -21,23 +21,24 @@ package knxnetip
 
 import (
 	"bytes"
+	"context"
 	"encoding/hex"
 	"fmt"
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/interceptors"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/interceptors"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -214,6 +215,8 @@ func (m *Connection) GetTracer() *spi.Tracer {
 }
 
 func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionConnectResult)
 	sendResult := func(connection plc4go.PlcConnection, err error) {
 		result <- _default.NewDefaultPlcConnectionConnectResult(connection, err)
@@ -228,7 +231,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		}
 
 		// Send a search request before connecting to the device.
-		searchResponse, err := m.sendGatewaySearchRequest()
+		searchResponse, err := m.sendGatewaySearchRequest(ctx)
 		if err != nil {
 			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error discovering device capabilities")) })
 			return
@@ -261,7 +264,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		// Via this connection we then get access to the entire KNX network this Gateway is connected to.
 		if supportsTunneling {
 			// As soon as we got a successful search-response back, send a connection request.
-			connectionResponse, err := m.sendGatewayConnectionRequest()
+			connectionResponse, err := m.sendGatewayConnectionRequest(ctx)
 			if err != nil {
 				m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error connecting to device")) })
 				return
@@ -279,9 +282,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			switch connectionResponse.GetStatus() {
 			case driverModel.Status_NO_ERROR:
 				// Save the KNX Address the Gateway assigned to us for this connection.
-				tunnelConnectionDataBlock := driverModel.CastConnectionResponseDataBlockTunnelConnection(
-					connectionResponse.GetConnectionResponseDataBlock(),
-				)
+				tunnelConnectionDataBlock := connectionResponse.GetConnectionResponseDataBlock().(driverModel.ConnectionResponseDataBlockTunnelConnection)
 				m.ClientKnxAddress = tunnelConnectionDataBlock.GetKnxAddress()
 
 				// Create a go routine to handle incoming tunneling-requests which haven't been
@@ -292,10 +293,10 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
 					for m.handleTunnelingRequests {
 						incomingMessage := <-defaultIncomingMessageChannel
-						tunnelingRequest := driverModel.CastTunnelingRequest(incomingMessage)
-						if tunnelingRequest == nil {
-							tunnelingResponse := driverModel.CastTunnelingResponse(incomingMessage)
-							if tunnelingResponse != nil {
+						tunnelingRequest, ok := incomingMessage.(driverModel.TunnelingRequestExactly)
+						if !ok {
+							tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponseExactly)
+							if ok {
 								log.Warn().Msgf("Got an unhandled TunnelingResponse message %v\n", tunnelingResponse)
 							} else {
 								log.Warn().Msgf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
@@ -308,12 +309,12 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 							continue
 						}
 
-						lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
-						if lDataInd == nil {
+						lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
+						if !ok {
 							continue
 						}
 						// Get APDU, source and target address
-						lDataFrameData := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+						lDataFrameData := lDataInd.GetDataFrame().(driverModel.LDataExtended)
 						sourceAddress := lDataFrameData.GetSourceAddress()
 
 						// If this is not an APDU, there is no need to further handle it.
@@ -324,17 +325,17 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 						// If this is an incoming disconnect request, remove the device
 						// from the device connections, otherwise handle it as normal
 						// incoming message.
-						apduControlContainer := driverModel.CastApduControlContainer(lDataFrameData.GetApdu())
-						if apduControlContainer != nil {
-							disconnectApdu := driverModel.CastApduControlDisconnect(apduControlContainer.GetControlApdu())
-							if disconnectApdu != nil {
+						apduControlContainer, ok := lDataFrameData.GetApdu().(driverModel.ApduControlContainerExactly)
+						if ok {
+							_, ok := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnectExactly)
+							if ok {
 								if m.DeviceConnections[sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
 									// Remove the connection
 									delete(m.DeviceConnections, sourceAddress)
 								}
 							}
 						} else {
-							m.handleIncomingTunnelingRequest(tunnelingRequest)
+							m.handleIncomingTunnelingRequest(ctx, tunnelingRequest)
 						}
 					}
 					log.Warn().Msg("Tunneling handler shat down")
@@ -379,6 +380,8 @@ func (m *Connection) BlockingClose() {
 }
 
 func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionCloseResult)
 
 	go func() {
@@ -390,7 +393,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		// Disconnect from all knx devices we are still connected to.
 		for targetAddress := range m.DeviceConnections {
 			ttlTimer := time.NewTimer(m.defaultTtl)
-			disconnects := m.DeviceDisconnect(targetAddress)
+			disconnects := m.DeviceDisconnect(ctx, targetAddress)
 			select {
 			case _ = <-disconnects:
 				if !ttlTimer.Stop() {
@@ -404,7 +407,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		}
 
 		// Send a disconnect request from the gateway.
-		_, err := m.sendGatewayDisconnectionRequest()
+		_, err := m.sendGatewayDisconnectionRequest(ctx)
 		if err != nil {
 			result <- _default.NewDefaultPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
 		} else {
@@ -435,11 +438,13 @@ func (m *Connection) IsConnected() bool {
 }
 
 func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	result := make(chan plc4go.PlcConnectionPingResult)
 
 	go func() {
 		// Send the connection state request
-		_, err := m.sendConnectionStateRequest()
+		_, err := m.sendConnectionStateRequest(ctx)
 		if err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got an error"))
 		} else {
@@ -471,7 +476,7 @@ func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(NewBrowser(m, m.messageCodec))
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.fieldHandler, NewBrowser(m, m.messageCodec))
 }
 
 func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {

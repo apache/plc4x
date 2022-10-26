@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -48,7 +48,7 @@ type _BACnetServiceAckReadPropertyConditional struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckPayloadLength uint16
+	ServiceAckPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetBytesOfRemovedService() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyConditional factory function for _BACnetServiceAckReadPropertyConditional
-func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckReadPropertyConditional {
+func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckReadPropertyConditional {
 	_result := &_BACnetServiceAckReadPropertyConditional{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -129,7 +129,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (BACnetServiceAckReadPropertyConditional, error) {
+func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {
@@ -150,10 +150,10 @@ func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, s
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckReadPropertyConditional{
-		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck: &_BACnetServiceAck{
 			ServiceAckLength: serviceAckLength,
 		},
+		BytesOfRemovedService: bytesOfRemovedService,
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -181,6 +181,16 @@ func (m *_BACnetServiceAckReadPropertyConditional) Serialize(writeBuffer utils.W
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetServiceAckReadPropertyConditional) GetServiceAckPayloadLength() uint32 {
+	return m.ServiceAckPayloadLength
+}
+
+//
+////
+
 func (m *_BACnetServiceAckReadPropertyConditional) isBACnetServiceAckReadPropertyConditional() bool {
 	return true
 }
@@ -189,7 +199,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

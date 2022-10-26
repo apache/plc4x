@@ -24,19 +24,21 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils-pcap-replay</artifactId>
 
   <name>PLC4J: Utils: Pcap-Replay</name>
-  <description>An implementation of a Netty Channel that uses a PCAP packet dump as input and simulates a raw socket device by replaying the recorded traffic.</description>
+  <description>An implementation of a Netty Channel that uses a PCAP packet dump as input and simulates a raw socket
+    device by replaying the recorded traffic.
+  </description>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

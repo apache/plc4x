@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -80,11 +80,11 @@ func (m *_BACnetLimitEnableTagged) GetPayload() BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *_BACnetLimitEnableTagged) GetLowLimitEnable() bool {
-	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLimitEnableTagged) GetHighLimitEnable() bool {
-	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -164,7 +164,7 @@ func BACnetLimitEnableTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
@@ -182,12 +182,12 @@ func BACnetLimitEnableTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Virtual field
-	_lowLimitEnable := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_lowLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	lowLimitEnable := bool(_lowLimitEnable)
 	_ = lowLimitEnable
 
 	// Virtual field
-	_highLimitEnable := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_highLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	highLimitEnable := bool(_highLimitEnable)
 	_ = highLimitEnable
 
@@ -196,7 +196,12 @@ func BACnetLimitEnableTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Create the instance
-	return NewBACnetLimitEnableTagged(header, payload, tagNumber, tagClass), nil
+	return &_BACnetLimitEnableTagged{
+		TagNumber: tagNumber,
+		TagClass:  tagClass,
+		Header:    header,
+		Payload:   payload,
+	}, nil
 }
 
 func (m *_BACnetLimitEnableTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -244,6 +249,19 @@ func (m *_BACnetLimitEnableTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetLimitEnableTagged) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+func (m *_BACnetLimitEnableTagged) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+//
+////
+
 func (m *_BACnetLimitEnableTagged) isBACnetLimitEnableTagged() bool {
 	return true
 }
@@ -252,7 +270,7 @@ func (m *_BACnetLimitEnableTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

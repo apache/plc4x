@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.df1;
 
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.df1.configuration.Df1Configuration;
 import org.apache.plc4x.java.df1.field.Df1FieldHandler;

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -114,7 +114,7 @@ func AlphaParse(readBuffer utils.ReadBuffer) (Alpha, error) {
 	character := _character
 
 	// Validation
-	if !(bool(bool(bool((character) >= (0x67)))) && bool(bool(bool((character) <= (0x7A))))) {
+	if !(bool((bool((character) >= (0x67)))) && bool((bool((character) <= (0x7A))))) {
 		return nil, errors.WithStack(utils.ParseAssertError{"character not in alpha space"})
 	}
 
@@ -123,7 +123,9 @@ func AlphaParse(readBuffer utils.ReadBuffer) (Alpha, error) {
 	}
 
 	// Create the instance
-	return NewAlpha(character), nil
+	return &_Alpha{
+		Character: character,
+	}, nil
 }
 
 func (m *_Alpha) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -154,7 +156,7 @@ func (m *_Alpha) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

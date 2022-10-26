@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -168,7 +168,11 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (DeviceCo
 	}
 
 	// Create the instance
-	return NewDeviceConfigurationAckDataBlock(communicationChannelId, sequenceCounter, status), nil
+	return &_DeviceConfigurationAckDataBlock{
+		CommunicationChannelId: communicationChannelId,
+		SequenceCounter:        sequenceCounter,
+		Status:                 status,
+	}, nil
 }
 
 func (m *_DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -225,7 +229,7 @@ func (m *_DeviceConfigurationAckDataBlock) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

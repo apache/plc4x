@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -173,7 +173,12 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 
 	// Create the instance
-	return NewBACnetEventTimestampsEnclosed(openingTag, eventTimestamps, closingTag, tagNumber), nil
+	return &_BACnetEventTimestampsEnclosed{
+		TagNumber:       tagNumber,
+		OpeningTag:      openingTag,
+		EventTimestamps: eventTimestamps,
+		ClosingTag:      closingTag,
+	}, nil
 }
 
 func (m *_BACnetEventTimestampsEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -225,6 +230,16 @@ func (m *_BACnetEventTimestampsEnclosed) Serialize(writeBuffer utils.WriteBuffer
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetEventTimestampsEnclosed) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+//
+////
+
 func (m *_BACnetEventTimestampsEnclosed) isBACnetEventTimestampsEnclosed() bool {
 	return true
 }
@@ -233,7 +248,7 @@ func (m *_BACnetEventTimestampsEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

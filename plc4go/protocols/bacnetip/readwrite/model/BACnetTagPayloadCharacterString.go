@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -155,7 +155,7 @@ func BACnetTagPayloadCharacterStringParse(readBuffer utils.ReadBuffer, actualLen
 	_ = actualLengthInBit
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
+	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit), "UTF-8")
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadCharacterString")
 	}
@@ -166,7 +166,11 @@ func BACnetTagPayloadCharacterStringParse(readBuffer utils.ReadBuffer, actualLen
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadCharacterString(encoding, value, actualLength), nil
+	return &_BACnetTagPayloadCharacterString{
+		ActualLength: actualLength,
+		Encoding:     encoding,
+		Value:        value,
+	}, nil
 }
 
 func (m *_BACnetTagPayloadCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -205,6 +209,16 @@ func (m *_BACnetTagPayloadCharacterString) Serialize(writeBuffer utils.WriteBuff
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetTagPayloadCharacterString) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetTagPayloadCharacterString) isBACnetTagPayloadCharacterString() bool {
 	return true
 }
@@ -213,7 +227,7 @@ func (m *_BACnetTagPayloadCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

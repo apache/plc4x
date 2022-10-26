@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -227,12 +227,12 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 
 	// Create a partially initialized instance
 	_child := &_ModbusTcpADU{
-		TransactionIdentifier: transactionIdentifier,
-		UnitIdentifier:        unitIdentifier,
-		Pdu:                   pdu,
 		_ModbusADU: &_ModbusADU{
 			Response: response,
 		},
+		TransactionIdentifier: transactionIdentifier,
+		UnitIdentifier:        unitIdentifier,
+		Pdu:                   pdu,
 	}
 	_child._ModbusADU._ModbusADUChildRequirements = _child
 	return _child, nil
@@ -301,7 +301,7 @@ func (m *_ModbusTcpADU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

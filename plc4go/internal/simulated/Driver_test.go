@@ -20,34 +20,26 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/options"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"net/url"
 	"testing"
 	"time"
 )
 
 func TestDriver_CheckQuery(t *testing.T) {
-	type fields struct {
-		fieldHandler FieldHandler
-		valueHandler ValueHandler
-	}
 	type args struct {
 		query string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
 		{
 			name: "valid query",
-			fields: fields{
-				fieldHandler: NewFieldHandler(),
-				valueHandler: NewValueHandler(),
-			},
 			args: args{
 				query: "STATE/test:UINT[2]",
 			},
@@ -56,10 +48,7 @@ func TestDriver_CheckQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
-				valueHandler: tt.fields.valueHandler,
-			}
+			d := NewDriver()
 			if err := d.CheckQuery(tt.args.query); (err != nil) != tt.wantErr {
 				t.Errorf("CheckQuery() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -69,11 +58,10 @@ func TestDriver_CheckQuery(t *testing.T) {
 
 func TestDriver_Discover(t *testing.T) {
 	type fields struct {
-		fieldHandler FieldHandler
 		valueHandler ValueHandler
 	}
 	type args struct {
-		callback         func(event model.PlcDiscoveryEvent)
+		callback         func(event model.PlcDiscoveryItem)
 		discoveryOptions []options.WithDiscoveryOption
 	}
 	tests := []struct {
@@ -85,7 +73,6 @@ func TestDriver_Discover(t *testing.T) {
 		{
 			name: "discovery fails",
 			fields: fields{
-				fieldHandler: NewFieldHandler(),
 				valueHandler: NewValueHandler(),
 			},
 			args: args{
@@ -99,7 +86,6 @@ func TestDriver_Discover(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 			}
 			if err := d.Discover(tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
@@ -110,10 +96,6 @@ func TestDriver_Discover(t *testing.T) {
 }
 
 func TestDriver_GetConnection(t *testing.T) {
-	type fields struct {
-		fieldHandler FieldHandler
-		valueHandler ValueHandler
-	}
 	type args struct {
 		in0     url.URL
 		in1     map[string]transports.Transport
@@ -121,16 +103,11 @@ func TestDriver_GetConnection(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
 		{
 			name: "simple no options",
-			fields: fields{
-				fieldHandler: NewFieldHandler(),
-				valueHandler: NewValueHandler(),
-			},
 			// Input doesn't really matter, as the code simply ignores most of it.
 			args: args{
 				in0:     url.URL{},
@@ -141,10 +118,6 @@ func TestDriver_GetConnection(t *testing.T) {
 		},
 		{
 			name: "simple with options",
-			fields: fields{
-				fieldHandler: NewFieldHandler(),
-				valueHandler: NewValueHandler(),
-			},
 			// Input doesn't really matter, as the code simply ignores most of it.
 			args: args{
 				in0: url.URL{},
@@ -158,11 +131,10 @@ func TestDriver_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
-				valueHandler: tt.fields.valueHandler,
-			}
+			d := NewDriver()
 			connectionChan := d.GetConnection(tt.args.in0, tt.args.in1, tt.args.options)
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case connectResult := <-connectionChan:
 				if tt.wantErr && (connectResult.GetErr() == nil) {
@@ -170,7 +142,7 @@ func TestDriver_GetConnection(t *testing.T) {
 				} else if connectResult.GetErr() != nil {
 					t.Errorf("PlcConnectionPool.GetConnection() error = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("PlcConnectionPool.GetConnection() got timeout")
 			}
 		})
@@ -178,30 +150,18 @@ func TestDriver_GetConnection(t *testing.T) {
 }
 
 func TestDriver_GetDefaultTransport(t *testing.T) {
-	type fields struct {
-		fieldHandler FieldHandler
-		valueHandler ValueHandler
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		want string
 	}{
 		{
 			name: "simple",
-			fields: fields{
-				fieldHandler: NewFieldHandler(),
-				valueHandler: NewValueHandler(),
-			},
 			want: "none",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
-				valueHandler: tt.fields.valueHandler,
-			}
+			d := NewDriver()
 			if got := d.GetDefaultTransport(); got != tt.want {
 				t.Errorf("GetDefaultTransport() = %v, want %v", got, tt.want)
 			}
@@ -210,30 +170,18 @@ func TestDriver_GetDefaultTransport(t *testing.T) {
 }
 
 func TestDriver_GetProtocolCode(t *testing.T) {
-	type fields struct {
-		fieldHandler FieldHandler
-		valueHandler ValueHandler
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		want string
 	}{
 		{
 			name: "simple",
-			fields: fields{
-				fieldHandler: NewFieldHandler(),
-				valueHandler: NewValueHandler(),
-			},
 			want: "simulated",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
-				valueHandler: tt.fields.valueHandler,
-			}
+			d := NewDriver()
 			if got := d.GetProtocolCode(); got != tt.want {
 				t.Errorf("GetProtocolCode() = %v, want %v", got, tt.want)
 			}
@@ -242,64 +190,20 @@ func TestDriver_GetProtocolCode(t *testing.T) {
 }
 
 func TestDriver_GetProtocolName(t *testing.T) {
-	type fields struct {
-		fieldHandler FieldHandler
-		valueHandler ValueHandler
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		want string
 	}{
 		{
 			name: "simple",
-			fields: fields{
-				fieldHandler: NewFieldHandler(),
-				valueHandler: NewValueHandler(),
-			},
 			want: "Simulated PLC4X Datasource",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
-				valueHandler: tt.fields.valueHandler,
-			}
+			d := NewDriver()
 			if got := d.GetProtocolName(); got != tt.want {
 				t.Errorf("GetProtocolName() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestDriver_SupportsDiscovery(t *testing.T) {
-	type fields struct {
-		fieldHandler FieldHandler
-		valueHandler ValueHandler
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   bool
-	}{
-		{
-			name: "simple",
-			fields: fields{
-				fieldHandler: NewFieldHandler(),
-				valueHandler: NewValueHandler(),
-			},
-			want: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			d := &Driver{
-				fieldHandler: tt.fields.fieldHandler,
-				valueHandler: tt.fields.valueHandler,
-			}
-			if got := d.SupportsDiscovery(); got != tt.want {
-				t.Errorf("SupportsDiscovery() = %v, want %v", got, tt.want)
 			}
 		})
 	}

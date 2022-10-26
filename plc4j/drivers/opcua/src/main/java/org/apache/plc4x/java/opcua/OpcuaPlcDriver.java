@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.field.OpcuaField;
 import org.apache.plc4x.java.opcua.field.OpcuaPlcFieldHandler;
@@ -101,6 +100,11 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     @Override
     protected boolean canSubscribe() {
         return true;
+    }
+
+    @Override
+    protected boolean canBrowse() {
+        return false;
     }
 
     @Override
@@ -223,7 +227,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(),
+            canRead(), canWrite(), canSubscribe(), canBrowse(),
             getFieldHandler(),
             getValueHandler(),
             configuration,
@@ -232,12 +236,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             awaitDisconnectComplete,
             awaitDiscoverComplete,
             getStackConfigurer(),
-            getOptimizer());
-    }
-
-    @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("Authentication not supported.");
+            getOptimizer(),
+            null);
     }
 
     /** Estimate the Length of a Packet */

@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,8 +30,8 @@ import (
 type Checksum interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetCrc returns Crc (property field)
-	GetCrc() byte
+	// GetValue returns Value (property field)
+	GetValue() byte
 }
 
 // ChecksumExactly can be used when we want exactly this type and not a type which fulfills Checksum.
@@ -43,7 +43,7 @@ type ChecksumExactly interface {
 
 // _Checksum is the data-structure of this message
 type _Checksum struct {
-	Crc byte
+	Value byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -51,8 +51,8 @@ type _Checksum struct {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_Checksum) GetCrc() byte {
-	return m.Crc
+func (m *_Checksum) GetValue() byte {
+	return m.Value
 }
 
 ///////////////////////
@@ -61,8 +61,8 @@ func (m *_Checksum) GetCrc() byte {
 ///////////////////////////////////////////////////////////
 
 // NewChecksum factory function for _Checksum
-func NewChecksum(crc byte) *_Checksum {
-	return &_Checksum{Crc: crc}
+func NewChecksum(value byte) *_Checksum {
+	return &_Checksum{Value: value}
 }
 
 // Deprecated: use the interface for direct cast
@@ -87,7 +87,7 @@ func (m *_Checksum) GetLengthInBits() uint16 {
 func (m *_Checksum) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (crc)
+	// Simple field (value)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -106,19 +106,21 @@ func ChecksumParse(readBuffer utils.ReadBuffer) (Checksum, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (crc)
-	_crc, _crcErr := readBuffer.ReadByte("crc")
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of Checksum")
+	// Simple Field (value)
+	_value, _valueErr := readBuffer.ReadByte("value")
+	if _valueErr != nil {
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of Checksum")
 	}
-	crc := _crc
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("Checksum"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Checksum")
 	}
 
 	// Create the instance
-	return NewChecksum(crc), nil
+	return &_Checksum{
+		Value: value,
+	}, nil
 }
 
 func (m *_Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,11 +130,11 @@ func (m *_Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(pushErr, "Error pushing for Checksum")
 	}
 
-	// Simple Field (crc)
-	crc := byte(m.GetCrc())
-	_crcErr := writeBuffer.WriteByte("crc", (crc))
-	if _crcErr != nil {
-		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
+	// Simple Field (value)
+	value := byte(m.GetValue())
+	_valueErr := writeBuffer.WriteByte("value", (value))
+	if _valueErr != nil {
+		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Checksum"); popErr != nil {
@@ -149,7 +151,7 @@ func (m *_Checksum) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

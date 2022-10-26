@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -113,12 +113,12 @@ func (m *_BACnetAbortReasonTagged) GetLengthInBitsConditional(lastItem bool) uin
 	lengthInBits := uint16(0)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.ActualLength) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.ActualLength) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(int32(m.ActualLength) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.ActualLength) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -141,7 +141,10 @@ func BACnetAbortReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uint
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAbortReasonTagged")
 	}
-	value := _value.(BACnetAbortReason)
+	var value BACnetAbortReason
+	if _value != nil {
+		value = _value.(BACnetAbortReason)
+	}
 
 	// Virtual field
 	_isProprietary := bool((value) == (BACnetAbortReason_VENDOR_PROPRIETARY_VALUE))
@@ -153,14 +156,21 @@ func BACnetAbortReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uint
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAbortReasonTagged")
 	}
-	proprietaryValue := _proprietaryValue.(uint32)
+	var proprietaryValue uint32
+	if _proprietaryValue != nil {
+		proprietaryValue = _proprietaryValue.(uint32)
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAbortReasonTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAbortReasonTagged")
 	}
 
 	// Create the instance
-	return NewBACnetAbortReasonTagged(value, proprietaryValue, actualLength), nil
+	return &_BACnetAbortReasonTagged{
+		ActualLength:     actualLength,
+		Value:            value,
+		ProprietaryValue: proprietaryValue,
+	}, nil
 }
 
 func (m *_BACnetAbortReasonTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -192,6 +202,16 @@ func (m *_BACnetAbortReasonTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetAbortReasonTagged) GetActualLength() uint32 {
+	return m.ActualLength
+}
+
+//
+////
+
 func (m *_BACnetAbortReasonTagged) isBACnetAbortReasonTagged() bool {
 	return true
 }
@@ -200,7 +220,7 @@ func (m *_BACnetAbortReasonTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}

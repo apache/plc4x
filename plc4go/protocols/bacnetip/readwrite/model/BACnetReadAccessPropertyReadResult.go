@@ -20,9 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -178,7 +177,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field of BACnetReadAccessPropertyReadResult")
@@ -191,7 +190,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	}
 
 	// Validation
-	if !(bool(bool(bool(bool((peekedTagNumber) == (4))) && bool(bool((propertyValue) != (nil))))) || bool(bool((peekedTagNumber) != (4)))) {
+	if !(bool((bool(bool((peekedTagNumber) == (4))) && bool(bool((propertyValue) != (nil))))) || bool(bool((peekedTagNumber) != (4)))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 4"})
 	}
 
@@ -205,7 +204,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 		_val, _err := ErrorEnclosedParse(readBuffer, uint8(5))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyAccessError' field of BACnetReadAccessPropertyReadResult")
@@ -218,7 +217,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	}
 
 	// Validation
-	if !(bool(bool(bool(bool((peekedTagNumber) == (5))) && bool(bool((propertyAccessError) != (nil))))) || bool(bool((peekedTagNumber) != (5)))) {
+	if !(bool((bool(bool((peekedTagNumber) == (5))) && bool(bool((propertyAccessError) != (nil))))) || bool(bool((peekedTagNumber) != (5)))) {
 		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 5"})
 	}
 
@@ -232,7 +231,14 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessPropertyReadResult(peekedTagHeader, propertyValue, propertyAccessError, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument), nil
+	return &_BACnetReadAccessPropertyReadResult{
+		ObjectTypeArgument:         objectTypeArgument,
+		PropertyIdentifierArgument: propertyIdentifierArgument,
+		ArrayIndexArgument:         arrayIndexArgument,
+		PeekedTagHeader:            peekedTagHeader,
+		PropertyValue:              propertyValue,
+		PropertyAccessError:        propertyAccessError,
+	}, nil
 }
 
 func (m *_BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -284,6 +290,22 @@ func (m *_BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteB
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_BACnetReadAccessPropertyReadResult) GetObjectTypeArgument() BACnetObjectType {
+	return m.ObjectTypeArgument
+}
+func (m *_BACnetReadAccessPropertyReadResult) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return m.PropertyIdentifierArgument
+}
+func (m *_BACnetReadAccessPropertyReadResult) GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger {
+	return m.ArrayIndexArgument
+}
+
+//
+////
+
 func (m *_BACnetReadAccessPropertyReadResult) isBACnetReadAccessPropertyReadResult() bool {
 	return true
 }
@@ -292,7 +314,7 @@ func (m *_BACnetReadAccessPropertyReadResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
