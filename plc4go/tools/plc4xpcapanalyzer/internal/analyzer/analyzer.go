@@ -70,7 +70,7 @@ func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr 
 	}
 	var byteOutput = hex.Dump
 	switch protocolType {
-	case "bacnet":
+	case "bacnetip":
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
 	case "c-bus":
@@ -84,6 +84,8 @@ func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr 
 		} else {
 			log.Info().Msg("Custom mapping disabled")
 		}
+	default:
+		return errors.Errorf("Unsupported protocol type %s", protocolType)
 	}
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStderr()),
 		progressbar.OptionSetVisibility(!config.RootConfigInstance.HideProgressBar),
