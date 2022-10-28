@@ -143,7 +143,7 @@ var rootCommand = Command{
 				for _, dirEntry := range readDir {
 					name := dirEntry.Name()
 					name = strings.TrimPrefix(name, currentDir)
-					if strings.HasSuffix(dirEntry.Name(), ".pcap") || strings.HasSuffix(name, ".pcapng") {
+					if strings.HasSuffix(dirEntry.Name(), ".cap") || strings.HasSuffix(dirEntry.Name(), ".pcap") || strings.HasSuffix(name, ".pcapng") {
 						entries = append(entries, name)
 					}
 				}
