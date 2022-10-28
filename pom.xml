@@ -1179,7 +1179,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <!-- It seems that when going to 3.3.0 the apache-rat-plugin fails when the shade plugin is also being run -->
-          <version>3.2.4</version>
+          <version>3.4.1</version>
           <configuration>
             <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}</outputFile>
             <transformers>
