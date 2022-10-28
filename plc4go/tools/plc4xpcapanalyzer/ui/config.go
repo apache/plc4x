@@ -31,7 +31,10 @@ import (
 
 var plc4xpcapanalyzerConfigDir string
 var configFile string
-var config Config
+var config = Config{
+	MaxConsoleLines: 500,
+	MaxOutputLines:  500,
+}
 
 type Config struct {
 	HostIp  string `yaml:"host_ip"`
