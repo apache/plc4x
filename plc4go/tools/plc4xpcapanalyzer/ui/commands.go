@@ -83,6 +83,8 @@ var rootCommand = Command{
 					proposedCurrentDir = currentDir + strings.TrimPrefix(newDir, ".")
 				} else if strings.HasPrefix(newDir, ""+string(os.PathSeparator)) {
 					proposedCurrentDir = newDir
+				} else {
+					proposedCurrentDir = currentDir + string(os.PathSeparator) + newDir
 				}
 				stat, err := os.Stat(proposedCurrentDir)
 				if err != nil {
