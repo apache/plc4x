@@ -48,7 +48,7 @@ github:
 
   features:
     wiki: false
-    issues: false
+    issues: true
     projects: true
 
   enabled_merge_buttons:
