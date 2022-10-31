@@ -20,6 +20,7 @@
 package extractor
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
@@ -35,10 +36,10 @@ import (
 )
 
 func Extract(pcapFile, protocolType string) error {
-	return ExtractWithOutput(pcapFile, protocolType, ansi.NewAnsiStdout(), ansi.NewAnsiStderr())
+	return ExtractWithOutput(context.TODO(), pcapFile, protocolType, ansi.NewAnsiStdout(), ansi.NewAnsiStderr())
 }
 
-func ExtractWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) error {
+func ExtractWithOutput(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer) error {
 	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.ExtractConfigInstance.Filter)
 
 	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.ExtractConfigInstance.Filter)
@@ -108,6 +109,10 @@ func ExtractWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) 
 	serializeFails := 0
 	compareFails := 0
 	for packet := range source.Packets() {
+		if ctx.Err() == context.Canceled {
+			log.Info().Msgf("Aborted after %d packages", currentPackageNum)
+			break
+		}
 		currentPackageNum++
 		if currentPackageNum < config.ExtractConfigInstance.StartPackageNumber {
 			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.ExtractConfigInstance.StartPackageNumber)

@@ -21,6 +21,7 @@ package analyzer
 
 import (
 	"bytes"
+	"context"
 	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -46,10 +47,10 @@ func Analyze(pcapFile, protocolType string) error {
 }
 
 func AnalyzeWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) error {
-	return AnalyzeWithOutputAndCallback(pcapFile, protocolType, stdout, stderr, nil)
+	return AnalyzeWithOutputAndCallback(context.TODO(), pcapFile, protocolType, stdout, stderr, nil)
 }
 
-func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
+func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
 	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.AnalyzeConfigInstance.Filter)
 
 	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.AnalyzeConfigInstance.Filter)
@@ -107,6 +108,10 @@ func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr 
 	for packet := range mapPackets(source.Packets(), func(packet gopacket.Packet) common.PacketInformation {
 		return createPacketInformation(pcapFile, packet, timestampToIndexMap)
 	}) {
+		if ctx.Err() == context.Canceled {
+			log.Info().Msgf("Aborted after %d packages", currentPackageNum)
+			break
+		}
 		currentPackageNum++
 		if currentPackageNum < config.AnalyzeConfigInstance.StartPackageNumber {
 			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.AnalyzeConfigInstance.StartPackageNumber)

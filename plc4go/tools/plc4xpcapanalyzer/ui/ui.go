@@ -20,12 +20,14 @@
 package ui
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/gdamore/tcell/v2"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
+	"math/rand"
 	"regexp"
 	"strconv"
 	"time"
@@ -167,7 +169,12 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 						}
 					}
 					_, _ = fmt.Fprintf(enteredCommandsView, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
-					if err := Execute(commandText); err != nil {
+					ctx, cancelFunc := context.WithCancel(rootContext)
+					randomId := rand.Uint32()
+					cancelFunctions[randomId] = cancelFunc
+					defer delete(cancelFunctions, randomId)
+
+					if err := Execute(ctx, commandText); err != nil {
 						_, _ = fmt.Fprintf(enteredCommandsView, "[#ff0000]%s %s[white]\n", time.Now().Format("04:05"), err)
 						return
 					}

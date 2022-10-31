@@ -20,6 +20,7 @@
 package ui
 
 import (
+	"context"
 	"fmt"
 	plc4x_config "github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -44,7 +45,7 @@ var rootCommand = Command{
 		{
 			Name:        "ls",
 			Description: "list directories",
-			action: func(_ Command, dir string) error {
+			action: func(_ context.Context, _ Command, dir string) error {
 				if dir == "" {
 					dir = currentDir
 				}
@@ -71,7 +72,7 @@ var rootCommand = Command{
 		{
 			Name:        "cd",
 			Description: "changes directory",
-			action: func(_ Command, newDir string) error {
+			action: func(_ context.Context, _ Command, newDir string) error {
 				var proposedCurrentDir string
 				if newDir == "" {
 					var err error
@@ -125,7 +126,7 @@ var rootCommand = Command{
 		{
 			Name:        "pwd",
 			Description: "shows current directory",
-			action: func(_ Command, _ string) error {
+			action: func(_ context.Context, _ Command, _ string) error {
 				_, _ = fmt.Fprintf(commandOutput, "current directory: %s\n", currentDir)
 				return nil
 			},
@@ -133,7 +134,7 @@ var rootCommand = Command{
 		{
 			Name:        "open",
 			Description: "open file",
-			action: func(_ Command, pcapFile string) error {
+			action: func(_ context.Context, _ Command, pcapFile string) error {
 				return OpenFile(pcapFile)
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
@@ -155,7 +156,7 @@ var rootCommand = Command{
 		{
 			Name:        "analyze",
 			Description: "Analyzes a pcap file using a driver",
-			action: func(_ Command, protocolTypeAndPcapFile string) error {
+			action: func(ctx context.Context, _ Command, protocolTypeAndPcapFile string) error {
 				split := strings.Split(protocolTypeAndPcapFile, " ")
 				if len(split) != 2 {
 					return errors.Errorf("expect protocol and pcapfile")
@@ -166,7 +167,7 @@ var rootCommand = Command{
 				cliConfig.RootConfigInstance.HideProgressBar = true
 				// disabled as we get this output anyway with the message call back
 				//cliConfig.RootConfigInstance.Verbosity = 4
-				return analyzer.AnalyzeWithOutputAndCallback(pcapFile, protocolType, tview.ANSIWriter(messageOutput), tview.ANSIWriter(messageOutput), func(parsed spi.Message) {
+				return analyzer.AnalyzeWithOutputAndCallback(ctx, pcapFile, protocolType, tview.ANSIWriter(messageOutput), tview.ANSIWriter(messageOutput), func(parsed spi.Message) {
 					spiNumberOfMessagesReceived++
 					spiMessageReceived(spiNumberOfMessagesReceived, time.Now(), parsed)
 				})
@@ -183,7 +184,7 @@ var rootCommand = Command{
 		{
 			Name:        "extract",
 			Description: "Extract a pcap file using a driver",
-			action: func(_ Command, protocolTypeAndPcapFile string) error {
+			action: func(ctx context.Context, _ Command, protocolTypeAndPcapFile string) error {
 				split := strings.Split(protocolTypeAndPcapFile, " ")
 				if len(split) != 2 {
 					return errors.Errorf("expect protocol and pcapfile")
@@ -193,7 +194,7 @@ var rootCommand = Command{
 				cliConfig.PcapConfigInstance.Client = config.HostIp
 				cliConfig.RootConfigInstance.HideProgressBar = true
 				cliConfig.RootConfigInstance.Verbosity = 4
-				return extractor.ExtractWithOutput(pcapFile, protocolType, tview.ANSIWriter(messageOutput), tview.ANSIWriter(messageOutput))
+				return extractor.ExtractWithOutput(ctx, pcapFile, protocolType, tview.ANSIWriter(messageOutput), tview.ANSIWriter(messageOutput))
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
 				for _, file := range loadedPcapFiles {
@@ -210,14 +211,14 @@ var rootCommand = Command{
 			subCommands: []Command{
 				{
 					Name: "set",
-					action: func(_ Command, host string) error {
+					action: func(_ context.Context, _ Command, host string) error {
 						config.HostIp = host
 						return nil
 					},
 				},
 				{
 					Name: "get",
-					action: func(_ Command, host string) error {
+					action: func(_ context.Context, _ Command, host string) error {
 						_, _ = fmt.Fprintf(commandOutput, "current set host %s", config.HostIp)
 						return nil
 					},
@@ -227,7 +228,7 @@ var rootCommand = Command{
 		{
 			Name:        "register",
 			Description: "register a driver in the subsystem",
-			action: func(_ Command, driver string) error {
+			action: func(_ context.Context, _ Command, driver string) error {
 				return registerDriver(driver)
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
@@ -250,7 +251,7 @@ var rootCommand = Command{
 				{
 					Name:        "get",
 					Description: "Get a log level",
-					action: func(_ Command, _ string) error {
+					action: func(_ context.Context, _ Command, _ string) error {
 						_, _ = fmt.Fprintf(commandOutput, "Current log level %s", log.Logger.GetLevel())
 						return nil
 					},
@@ -258,7 +259,7 @@ var rootCommand = Command{
 				{
 					Name:        "set",
 					Description: "Sets a log level",
-					action: func(_ Command, level string) error {
+					action: func(_ context.Context, _ Command, level string) error {
 						parseLevel, err := zerolog.ParseLevel(level)
 						if err != nil {
 							return errors.Wrapf(err, "Error setting log level")
@@ -296,7 +297,7 @@ var rootCommand = Command{
 						{
 							Name:        "on",
 							Description: "trace on",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4x_config.TraceTransactionManagerWorkers = true
 								return nil
 							},
@@ -304,7 +305,7 @@ var rootCommand = Command{
 						{
 							Name:        "off",
 							Description: "trace off",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4x_config.TraceTransactionManagerWorkers = false
 								return nil
 							},
@@ -318,7 +319,7 @@ var rootCommand = Command{
 						{
 							Name:        "on",
 							Description: "trace on",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4x_config.TraceTransactionManagerTransactions = true
 								return nil
 							},
@@ -326,7 +327,7 @@ var rootCommand = Command{
 						{
 							Name:        "off",
 							Description: "trace off",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4x_config.TraceTransactionManagerTransactions = false
 								return nil
 							},
@@ -340,7 +341,7 @@ var rootCommand = Command{
 						{
 							Name:        "on",
 							Description: "trace on",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4x_config.TraceDefaultMessageCodecWorker = true
 								return nil
 							},
@@ -348,7 +349,7 @@ var rootCommand = Command{
 						{
 							Name:        "off",
 							Description: "trace off",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4x_config.TraceDefaultMessageCodecWorker = false
 								return nil
 							},
@@ -362,7 +363,7 @@ var rootCommand = Command{
 						{
 							Name:        "on",
 							Description: "debug on",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4xpcapanalyzerLog = zerolog.New(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)})
 								return nil
 							},
@@ -370,7 +371,7 @@ var rootCommand = Command{
 						{
 							Name:        "off",
 							Description: "debug off",
-							action: func(_ Command, _ string) error {
+							action: func(_ context.Context, _ Command, _ string) error {
 								plc4xpcapanalyzerLog = zerolog.Nop()
 								return nil
 							},
@@ -383,14 +384,14 @@ var rootCommand = Command{
 					subCommands: []Command{
 						{
 							Name: "list",
-							action: func(currentCommand Command, argument string) error {
+							action: func(_ context.Context, currentCommand Command, argument string) error {
 								_, _ = fmt.Fprintf(commandOutput, "Auto-register enabled drivers:\n  %s\n", strings.Join(config.AutoRegisterDrivers, "\n  "))
 								return nil
 							},
 						},
 						{
 							Name: "enable",
-							action: func(_ Command, argument string) error {
+							action: func(_ context.Context, _ Command, argument string) error {
 								return enableAutoRegister(argument)
 							},
 							parameterSuggestions: func(currentText string) (entries []string) {
@@ -404,7 +405,7 @@ var rootCommand = Command{
 						},
 						{
 							Name: "disable",
-							action: func(_ Command, argument string) error {
+							action: func(_ context.Context, _ Command, argument string) error {
 								return disableAutoRegister(argument)
 							},
 							parameterSuggestions: func(currentText string) (entries []string) {
@@ -423,7 +424,7 @@ var rootCommand = Command{
 		{
 			Name:        "history",
 			Description: "outputs the last commands",
-			action: func(_ Command, _ string) error {
+			action: func(_ context.Context, _ Command, _ string) error {
 				outputCommandHistory()
 				return nil
 			},
@@ -431,7 +432,7 @@ var rootCommand = Command{
 		{
 			Name:        "clear",
 			Description: "clear all outputs",
-			action: func(_ Command, _ string) error {
+			action: func(_ context.Context, _ Command, _ string) error {
 				messageOutputClear()
 				consoleOutputClear()
 				commandOutputClear()
@@ -441,7 +442,7 @@ var rootCommand = Command{
 				{
 					Name:        "message",
 					Description: "clears message output",
-					action: func(_ Command, _ string) error {
+					action: func(_ context.Context, _ Command, _ string) error {
 						messageOutputClear()
 						return nil
 					},
@@ -449,7 +450,7 @@ var rootCommand = Command{
 				{
 					Name:        "console",
 					Description: "clears console output",
-					action: func(_ Command, _ string) error {
+					action: func(_ context.Context, _ Command, _ string) error {
 						consoleOutputClear()
 						return nil
 					},
@@ -457,11 +458,21 @@ var rootCommand = Command{
 				{
 					Name:        "command",
 					Description: "clears command output",
-					action: func(_ Command, _ string) error {
+					action: func(_ context.Context, _ Command, _ string) error {
 						commandOutputClear()
 						return nil
 					},
 				},
+			},
+		},
+		{
+			Name:        "abort",
+			Description: "abort currently running jobs",
+			action: func(_ context.Context, _ Command, _ string) error {
+				for _, cancelFunc := range cancelFunctions {
+					cancelFunc()
+				}
+				return nil
 			},
 		},
 	},
@@ -472,7 +483,7 @@ func init() {
 	rootCommand.subCommands = append(rootCommand.subCommands, Command{
 		Name:        "help",
 		Description: "prints out this help",
-		action: func(_ Command, _ string) error {
+		action: func(_ context.Context, _ Command, _ string) error {
 			_, _ = fmt.Fprintf(commandOutput, "[#0000ff]Available commands[white]\n")
 			rootCommand.visit(0, func(currentIndent int, command Command) {
 				indentString := strings.Repeat("  ", currentIndent)
@@ -492,7 +503,7 @@ var NotDirectlyExecutable = errors.New("Not directly executable")
 type Command struct {
 	Name                 string
 	Description          string
-	action               func(currentCommand Command, argument string) error
+	action               func(ctx context.Context, currentCommand Command, argument string) error
 	subCommands          []Command
 	parameterSuggestions func(currentText string) (entries []string)
 }
@@ -572,15 +583,15 @@ func (c Command) hasDirectExecution() bool {
 	return c.action != nil
 }
 
-func Execute(commandText string) error {
-	err := rootCommand.Execute(commandText)
+func Execute(ctx context.Context, commandText string) error {
+	err := rootCommand.Execute(ctx, commandText)
 	if err == nil {
 		addCommandHistoryEntry(commandText)
 	}
 	return err
 }
 
-func (c Command) Execute(commandText string) error {
+func (c Command) Execute(ctx context.Context, commandText string) error {
 	plc4xpcapanalyzerLog.Debug().Msgf("%s executes %s", c, commandText)
 	if !c.acceptsCurrentText(commandText) {
 		return errors.Errorf("%s doesn't understand %s", c.Name, commandText)
@@ -590,7 +601,7 @@ func (c Command) Execute(commandText string) error {
 		for _, command := range c.subCommands {
 			if command.acceptsCurrentText(prepareForSubCommandForSubCommand) {
 				plc4xpcapanalyzerLog.Debug().Msgf("%s delegates to sub %s", c, command)
-				return command.Execute(prepareForSubCommandForSubCommand)
+				return command.Execute(ctx, prepareForSubCommandForSubCommand)
 			}
 		}
 		return errors.Errorf("%s not accepted by any subcommands of %s", commandText, c.Name)
@@ -600,7 +611,7 @@ func (c Command) Execute(commandText string) error {
 		}
 		plc4xpcapanalyzerLog.Debug().Msgf("%s executes %s directly", c, commandText)
 		preparedForParameters := c.prepareForParameters(commandText)
-		return c.action(c, preparedForParameters)
+		return c.action(ctx, c, preparedForParameters)
 	}
 }
 
