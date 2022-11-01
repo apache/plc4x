@@ -63,9 +63,25 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 	var byteOutput = hex.Dump
 	switch protocolType {
 	case "bacnetip":
+		if !config.BacnetConfigInstance.NoFilter {
+			if config.BacnetConfigInstance.Filter == "" && config.BacnetConfigInstance.BacnetFilter != "" {
+				log.Debug().Str("filter", config.BacnetConfigInstance.Filter).Msg("Setting bacnet filter")
+				config.BacnetConfigInstance.Filter = config.BacnetConfigInstance.BacnetFilter
+			}
+		} else {
+			log.Info().Msg("All filtering disabled")
+		}
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
 	case "c-bus":
+		if !config.CBusConfigInstance.NoFilter {
+			if config.CBusConfigInstance.Filter == "" && config.CBusConfigInstance.CBusFilter != "" {
+				log.Debug().Str("filter", config.CBusConfigInstance.Filter).Msg("Setting cbus filter")
+				config.CBusConfigInstance.Filter = config.CBusConfigInstance.CBusFilter
+			}
+		} else {
+			log.Info().Msg("All filtering disabled")
+		}
 		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(config.AnalyzeConfigInstance.Client)}
 		analyzer.Init()
 		packageParse = analyzer.PackageParse
