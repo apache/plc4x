@@ -26,7 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/pcaphandler"
 	"github.com/fatih/color"
-	"github.com/google/gopacket/layers"
+	"github.com/gopacket/gopacket/layers"
 	"github.com/k0kubun/go-ansi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"

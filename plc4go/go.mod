@@ -26,7 +26,7 @@ require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/fatih/color v1.13.0
 	github.com/gdamore/tcell/v2 v2.5.3
-	github.com/google/gopacket v1.1.19
+	github.com/gopacket/gopacket v0.0.0-20221006103438-9e6d99b9b443
 	github.com/icza/bitio v1.1.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
