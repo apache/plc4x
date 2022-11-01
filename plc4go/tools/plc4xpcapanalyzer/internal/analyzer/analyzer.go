@@ -52,6 +52,9 @@ func AnalyzeWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) 
 
 func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
 	var filterExpression = config.AnalyzeConfigInstance.Filter
+	if filterExpression != "" {
+		log.Info().Msgf("Using global filter %s", filterExpression)
+	}
 	var mapPackets = func(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
 		return in
 	}
@@ -63,10 +66,10 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 	var byteOutput = hex.Dump
 	switch protocolType {
 	case "bacnetip":
-		if !config.BacnetConfigInstance.NoFilter {
-			if config.BacnetConfigInstance.Filter == "" && config.BacnetConfigInstance.BacnetFilter != "" {
+		if !config.AnalyzeConfigInstance.NoFilter {
+			if config.AnalyzeConfigInstance.Filter == "" && config.BacnetConfigInstance.BacnetFilter != "" {
 				log.Debug().Str("filter", config.BacnetConfigInstance.Filter).Msg("Setting bacnet filter")
-				config.BacnetConfigInstance.Filter = config.BacnetConfigInstance.BacnetFilter
+				filterExpression = config.BacnetConfigInstance.BacnetFilter
 			}
 		} else {
 			log.Info().Msg("All filtering disabled")
@@ -74,10 +77,10 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
 	case "c-bus":
-		if !config.CBusConfigInstance.NoFilter {
-			if config.CBusConfigInstance.Filter == "" && config.CBusConfigInstance.CBusFilter != "" {
+		if !config.AnalyzeConfigInstance.NoFilter {
+			if config.AnalyzeConfigInstance.Filter == "" && config.CBusConfigInstance.CBusFilter != "" {
 				log.Debug().Str("filter", config.CBusConfigInstance.Filter).Msg("Setting cbus filter")
-				config.CBusConfigInstance.Filter = config.CBusConfigInstance.CBusFilter
+				filterExpression = config.CBusConfigInstance.CBusFilter
 			}
 		} else {
 			log.Info().Msg("All filtering disabled")
