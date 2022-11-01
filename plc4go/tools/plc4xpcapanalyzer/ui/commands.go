@@ -34,6 +34,7 @@ import (
 	"os"
 	"path"
 	"reflect"
+	"runtime/debug"
 	"strings"
 	"time"
 )
@@ -665,7 +666,13 @@ func Execute(ctx context.Context, commandText string) error {
 	return err
 }
 
-func (c Command) Execute(ctx context.Context, commandText string) error {
+func (c Command) Execute(ctx context.Context, commandText string) (err error) {
+	defer func() {
+		if recoveredErr := recover(); recoveredErr != nil {
+			log.Debug().Msgf("Panic '%v' stack:\n%s", recoveredErr, debug.Stack())
+			err = errors.Errorf("panic occurred: %v.", recoveredErr)
+		}
+	}()
 	plc4xpcapanalyzerLog.Debug().Msgf("%s executes %s", c, commandText)
 	if !c.acceptsCurrentText(commandText) {
 		return errors.Errorf("%s doesn't understand %s", c.Name, commandText)
