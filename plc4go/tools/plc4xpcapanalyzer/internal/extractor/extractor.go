@@ -40,16 +40,6 @@ func Extract(pcapFile, protocolType string) error {
 }
 
 func ExtractWithOutput(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer) error {
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.ExtractConfigInstance.Filter)
-
-	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.ExtractConfigInstance.Filter)
-	if err != nil {
-		return errors.Wrap(err, "Error getting handle")
-	}
-	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
-	defer handle.Close()
-	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
-	source := pcaphandler.GetPacketSource(handle)
 	var printPayload = func(packetInformation common.PacketInformation, item []byte) {
 		_, _ = fmt.Fprintf(stdout, "%x\n", item)
 	}
@@ -91,6 +81,17 @@ func ExtractWithOutput(ctx context.Context, pcapFile, protocolType string, stdou
 			}
 		}
 	}
+	filterExpression := config.ExtractConfigInstance.Filter
+	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filterExpression)
+
+	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, filterExpression)
+	if err != nil {
+		return errors.Wrap(err, "Error getting handle")
+	}
+	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
+	defer handle.Close()
+	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
+	source := pcaphandler.GetPacketSource(handle)
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStderr()),
 		progressbar.OptionSetVisibility(!config.RootConfigInstance.HideProgressBar),
 		progressbar.OptionEnableColorCodes(true),

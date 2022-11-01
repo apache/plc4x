@@ -51,16 +51,7 @@ func AnalyzeWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) 
 }
 
 func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.AnalyzeConfigInstance.Filter)
-
-	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.AnalyzeConfigInstance.Filter)
-	if err != nil {
-		return errors.Wrap(err, "Error getting handle")
-	}
-	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
-	defer handle.Close()
-	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
-	source := pcaphandler.GetPacketSource(handle)
+	var filterExpression = config.AnalyzeConfigInstance.Filter
 	var mapPackets = func(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
 		return in
 	}
@@ -88,6 +79,16 @@ func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType st
 	default:
 		return errors.Errorf("Unsupported protocol type %s", protocolType)
 	}
+
+	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filterExpression)
+	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, filterExpression)
+	if err != nil {
+		return errors.Wrap(err, "Error getting handle")
+	}
+	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
+	defer handle.Close()
+	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
+	source := pcaphandler.GetPacketSource(handle)
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStderr()),
 		progressbar.OptionSetVisibility(!config.RootConfigInstance.HideProgressBar),
 		progressbar.OptionEnableColorCodes(true),

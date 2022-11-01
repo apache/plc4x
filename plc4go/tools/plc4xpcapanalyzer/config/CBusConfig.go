@@ -20,8 +20,8 @@
 package config
 
 type CBusConfig struct {
-	*AnalyzeConfig
-	CBusFilter string
+	*AnalyzeConfig `json:"-"`
+	CBusFilter     string
 
 	Connect bool
 	Smart   bool

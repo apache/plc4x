@@ -33,6 +33,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"os"
 	"path"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -287,6 +288,142 @@ var rootCommand = Command{
 			},
 		},
 		{
+			Name:        "conf",
+			Description: "Various settings for plc4xpcapanalyzer",
+			subCommands: []Command{
+				{
+					Name:        "list",
+					Description: "list config values with their current settings",
+					action: func(_ context.Context, _ Command, _ string) error {
+						allCliConfigsValue := reflect.ValueOf(allCliConfigsInstances)
+						for i := 0; i < allCliConfigsValue.NumField(); i++ {
+							allConfigField := allCliConfigsValue.Field(i)
+							allConfigFieldType := allCliConfigsValue.Type().Field(i)
+							_, _ = fmt.Fprintf(commandOutput, "%s:\n", allConfigFieldType.Name)
+							configInstanceReflectValue := reflect.ValueOf(allConfigField.Interface())
+							if configInstanceReflectValue.Kind() == reflect.Ptr {
+								configInstanceReflectValue = configInstanceReflectValue.Elem()
+							}
+							for j := 0; j < configInstanceReflectValue.NumField(); j++ {
+								configField := configInstanceReflectValue.Field(j)
+								configFieldType := configInstanceReflectValue.Type().Field(j)
+								if configFieldType.Tag.Get("json") == "-" {
+									// Ignore those
+									continue
+								}
+								_, _ = fmt.Fprintf(commandOutput, "  %s: %s\t= %v\n", configFieldType.Name, configFieldType.Type, configField.Interface())
+							}
+						}
+						return nil
+					},
+				},
+				{
+					Name:        "set",
+					Description: "sets a config value",
+					subCommands: func() []Command {
+						var configCommand []Command
+						allCliConfigsValue := reflect.ValueOf(allCliConfigsInstances)
+						for i := 0; i < allCliConfigsValue.NumField(); i++ {
+							allConfigField := allCliConfigsValue.Field(i)
+							allConfigFieldType := allCliConfigsValue.Type().Field(i)
+							configCommand = append(configCommand, Command{
+								Name:        allConfigFieldType.Name,
+								Description: fmt.Sprintf("Setting for %s", allConfigFieldType.Name),
+								subCommands: func() []Command {
+									var configElementCommands []Command
+									configInstanceReflectValue := reflect.ValueOf(allConfigField.Interface())
+									if configInstanceReflectValue.Kind() == reflect.Ptr {
+										configInstanceReflectValue = configInstanceReflectValue.Elem()
+									}
+									for i := 0; i < configInstanceReflectValue.NumField(); i++ {
+										field := configInstanceReflectValue.Field(i)
+										fieldOfType := configInstanceReflectValue.Type().Field(i)
+										if fieldOfType.Tag.Get("json") == "-" {
+											// Ignore those
+											continue
+										}
+										configElementCommands = append(configElementCommands, Command{
+											Name:        fieldOfType.Name,
+											Description: fmt.Sprintf("Sets value for %s", fieldOfType.Name),
+											action: func(_ context.Context, _ Command, argument string) error {
+												field.SetString(argument)
+												return nil
+											},
+										})
+									}
+									return configElementCommands
+								}(),
+							})
+						}
+						return configCommand
+					}(),
+				},
+				{
+					Name:        "plc4xpcapanalyzer-debug",
+					Description: "Prints out debug information of the pcap analyzer itself",
+					subCommands: []Command{
+						{
+							Name:        "on",
+							Description: "debug on",
+							action: func(_ context.Context, _ Command, _ string) error {
+								plc4xpcapanalyzerLog = zerolog.New(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)})
+								return nil
+							},
+						},
+						{
+							Name:        "off",
+							Description: "debug off",
+							action: func(_ context.Context, _ Command, _ string) error {
+								plc4xpcapanalyzerLog = zerolog.Nop()
+								return nil
+							},
+						},
+					},
+				},
+				{
+					Name:        "auto-register",
+					Description: "autoregister driver at startup",
+					subCommands: []Command{
+						{
+							Name: "list",
+							action: func(_ context.Context, currentCommand Command, argument string) error {
+								_, _ = fmt.Fprintf(commandOutput, "Auto-register enabled drivers:\n  %s\n", strings.Join(config.AutoRegisterDrivers, "\n  "))
+								return nil
+							},
+						},
+						{
+							Name: "enable",
+							action: func(_ context.Context, _ Command, argument string) error {
+								return enableAutoRegister(argument)
+							},
+							parameterSuggestions: func(currentText string) (entries []string) {
+								for _, protocol := range protocolList {
+									if strings.HasPrefix(protocol, currentText) {
+										entries = append(entries, protocol)
+									}
+								}
+								return
+							},
+						},
+						{
+							Name: "disable",
+							action: func(_ context.Context, _ Command, argument string) error {
+								return disableAutoRegister(argument)
+							},
+							parameterSuggestions: func(currentText string) (entries []string) {
+								for _, protocol := range protocolList {
+									if strings.HasPrefix(protocol, currentText) {
+										entries = append(entries, protocol)
+									}
+								}
+								return
+							},
+						},
+					},
+				},
+			},
+		},
+		{
 			Name:        "plc4x-conf",
 			Description: "plc4x related settings",
 			subCommands: []Command{
@@ -352,69 +489,6 @@ var rootCommand = Command{
 							action: func(_ context.Context, _ Command, _ string) error {
 								plc4x_config.TraceDefaultMessageCodecWorker = false
 								return nil
-							},
-						},
-					},
-				},
-				{
-					Name:        "plc4xpcapanalyzer-debug",
-					Description: "Prints out debug information of the pcap analyzer itself",
-					subCommands: []Command{
-						{
-							Name:        "on",
-							Description: "debug on",
-							action: func(_ context.Context, _ Command, _ string) error {
-								plc4xpcapanalyzerLog = zerolog.New(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)})
-								return nil
-							},
-						},
-						{
-							Name:        "off",
-							Description: "debug off",
-							action: func(_ context.Context, _ Command, _ string) error {
-								plc4xpcapanalyzerLog = zerolog.Nop()
-								return nil
-							},
-						},
-					},
-				},
-				{
-					Name:        "auto-register",
-					Description: "autoregister driver at startup",
-					subCommands: []Command{
-						{
-							Name: "list",
-							action: func(_ context.Context, currentCommand Command, argument string) error {
-								_, _ = fmt.Fprintf(commandOutput, "Auto-register enabled drivers:\n  %s\n", strings.Join(config.AutoRegisterDrivers, "\n  "))
-								return nil
-							},
-						},
-						{
-							Name: "enable",
-							action: func(_ context.Context, _ Command, argument string) error {
-								return enableAutoRegister(argument)
-							},
-							parameterSuggestions: func(currentText string) (entries []string) {
-								for _, protocol := range protocolList {
-									if strings.HasPrefix(protocol, currentText) {
-										entries = append(entries, protocol)
-									}
-								}
-								return
-							},
-						},
-						{
-							Name: "disable",
-							action: func(_ context.Context, _ Command, argument string) error {
-								return disableAutoRegister(argument)
-							},
-							parameterSuggestions: func(currentText string) (entries []string) {
-								for _, protocol := range protocolList {
-									if strings.HasPrefix(protocol, currentText) {
-										entries = append(entries, protocol)
-									}
-								}
-								return
 							},
 						},
 					},
