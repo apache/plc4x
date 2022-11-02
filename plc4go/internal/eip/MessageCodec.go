@@ -20,6 +20,7 @@
 package eip
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -48,7 +49,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	eipPacket := message.(model.EipPacket)
 	// Serialize the request
-	wb := utils.NewLittleEndianWriteBufferByteBased()
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	err := eipPacket.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")

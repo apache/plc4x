@@ -21,6 +21,7 @@ package eip
 
 import (
 	"context"
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -316,7 +317,7 @@ func toAnsi(tag string) ([]byte, error) {
 		}
 	}
 
-	buffer := utils.NewLittleEndianWriteBufferByteBased()
+	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 
 	err := buffer.WriteByte("", 0x91)
 	if err != nil {

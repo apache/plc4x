@@ -285,7 +285,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if m.byteOrder == binary.BigEndian {
 			expectedWriteBuffer = utils.NewWriteBufferByteBased()
 		} else {
-			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
+			expectedWriteBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
 		err = expectedSerializable.Serialize(expectedWriteBuffer)
 		if err != nil {
@@ -371,7 +371,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if m.byteOrder == binary.BigEndian {
 			wb = utils.NewWriteBufferByteBased()
 		} else {
-			wb = utils.NewLittleEndianWriteBufferByteBased()
+			wb = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
 		err = expectedSerializable.Serialize(wb)
 		if err != nil {

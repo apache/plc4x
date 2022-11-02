@@ -214,7 +214,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 				var writeBuffer utils.WriteBufferByteBased
 				if byteOrder == binary.LittleEndian {
-					writeBuffer = utils.NewLittleEndianWriteBufferByteBased()
+					writeBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 				} else {
 					writeBuffer = utils.NewWriteBufferByteBased()
 				}

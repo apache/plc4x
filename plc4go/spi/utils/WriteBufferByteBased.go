@@ -35,32 +35,37 @@ type WriteBufferByteBased interface {
 	GetTotalBytes() uint64
 }
 
-func NewWriteBufferByteBased() WriteBufferByteBased {
+func NewWriteBufferByteBased(options ...WriteBufferByteBasedOptions) WriteBufferByteBased {
 	data := new(bytes.Buffer)
 	writer := bitio.NewWriter(data)
-	return &byteWriteBuffer{
+	b := &byteWriteBuffer{
 		data:      data,
 		writer:    writer,
 		byteOrder: binary.BigEndian,
 	}
+	for _, option := range options {
+		option(b)
+	}
+	return b
 }
 
-func NewLittleEndianWriteBufferByteBased() WriteBufferByteBased {
-	data := new(bytes.Buffer)
-	writer := bitio.NewWriter(data)
-	return &byteWriteBuffer{
-		data:      data,
-		writer:    writer,
-		byteOrder: binary.LittleEndian,
+type WriteBufferByteBasedOptions = func(b *byteWriteBuffer)
+
+func WithInitialSizeForByteBasedBuffer(length int) WriteBufferByteBasedOptions {
+	return func(b *byteWriteBuffer) {
+		b.data = bytes.NewBuffer(make([]byte, length))
 	}
 }
 
-func NewCustomWriteBufferByteBased(buffer *bytes.Buffer, byteOrder binary.ByteOrder) WriteBufferByteBased {
-	writer := bitio.NewWriter(buffer)
-	return &byteWriteBuffer{
-		data:      buffer,
-		writer:    writer,
-		byteOrder: byteOrder,
+func WithByteOrderForByteBasedBuffer(byteOrder binary.ByteOrder) WriteBufferByteBasedOptions {
+	return func(b *byteWriteBuffer) {
+		b.byteOrder = byteOrder
+	}
+}
+
+func WithCustomBufferForByteBasedBuffer(buffer *bytes.Buffer) WriteBufferByteBasedOptions {
+	return func(b *byteWriteBuffer) {
+		b.data = buffer
 	}
 }
 

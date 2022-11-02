@@ -21,6 +21,7 @@ package eip
 
 import (
 	"context"
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -276,7 +277,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 }
 
 func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, elements uint16) ([]byte, error) {
-	buffer := utils.NewLittleEndianWriteBufferByteBased()
+	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	switch _type {
 	case readWriteModel.CIPDataTypeCode_SINT:
 		err := buffer.WriteByte("", value.GetUint8())
