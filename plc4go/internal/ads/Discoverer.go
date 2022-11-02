@@ -20,6 +20,7 @@
 package ads
 
 import (
+	"bytes"
 	"context"
 	"encoding/binary"
 	"fmt"
@@ -213,7 +214,8 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				discoveryRequestMessage := model.NewAdsDiscovery(0, model.Operation_DISCOVERY_REQUEST, amsNetId, model.AdsPortNumbers_SYSTEM_SERVICE, []model.AdsDiscoveryBlock{})
 
 				// Serialize the message
-				writeBuffer := utils.NewLittleEndianWriteBufferByteBased()
+				buffer := bytes.NewBuffer(make([]byte, discoveryRequestMessage.GetLengthInBytes()))
+				writeBuffer := utils.NewCustomWriteBufferByteBased(buffer, binary.LittleEndian)
 				discoveryRequestMessage.Serialize(writeBuffer)
 
 				// Create a not-connected UDP connection to the broadcast address
