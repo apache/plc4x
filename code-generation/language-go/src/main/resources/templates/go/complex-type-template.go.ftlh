@@ -1565,7 +1565,15 @@ func (pm *_${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child ${
 	m := child
 	_ = m
 <#else>
-func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_${type.name}) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))<@emitImport import="encoding/binary" /> // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 </#if>
 	positionAware := writeBuffer
 	_ = positionAware

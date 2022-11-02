@@ -204,7 +204,15 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 	return nil, errors.New("unsupported type")<@emitImport import="github.com/pkg/errors" />
 }
 
-func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func ${type.name}Serialize(value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))<@emitImport import="encoding/binary" /> // TODO: get endianness from mspec
+	if err := ${type.name}SerializeWithWriteBuffer(wb, value<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func ${type.name}SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 	<#if parserArguments?has_content>
 	m := struct {
     	<#list parserArguments as parserArgument>

@@ -49,6 +49,8 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -60,12 +62,12 @@ import (
 type ${type.name} ${baseType}
 
 type I${type.name} interface {
+	utils.Serializable
 <#if type.constantNames?has_content>
 	<#list type.constantNames as constantName>
 	${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}
 	</#list>
 </#if>
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const(
@@ -190,7 +192,15 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	}
 }
 
-func (e ${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ${type.name}) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.PLC4XEnumName())")}
 }
 	</#if>
