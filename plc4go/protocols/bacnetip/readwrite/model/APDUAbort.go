@@ -152,7 +152,11 @@ func (m *_APDUAbort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {
+func APDUAbortParse(theBytes []byte, apduLength uint16) (APDUAbort, error) {
+	return APDUAbortParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+}
+
+func APDUAbortParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
@@ -196,7 +200,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 	if pullErr := readBuffer.PullContext("abortReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for abortReason")
 	}
-	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParse(readBuffer, uint32(uint32(1)))
+	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParseWithBuffer(readBuffer, uint32(uint32(1)))
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field of APDUAbort")
 	}

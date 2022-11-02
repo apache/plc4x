@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesNetworkNumberQualityParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkNumberQuality, error) {
+func BACnetPropertyStatesNetworkNumberQualityParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkNumberQuality, error) {
+	return BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkNumberQuality, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkNumberQuality"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesNetworkNumberQualityParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("networkNumberQuality"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumberQuality")
 	}
-	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkNumberQualityErr != nil {
 		return nil, errors.Wrap(_networkNumberQualityErr, "Error parsing 'networkNumberQuality' field of BACnetPropertyStatesNetworkNumberQuality")
 	}

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataInstanceOf) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInstanceOfParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstanceOf, error) {
+func BACnetConstructedDataInstanceOfParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstanceOf, error) {
+	return BACnetConstructedDataInstanceOfParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataInstanceOfParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstanceOf, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInstanceOf"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataInstanceOfParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("instanceOf"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for instanceOf")
 	}
-	_instanceOf, _instanceOfErr := BACnetApplicationTagParse(readBuffer)
+	_instanceOf, _instanceOfErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _instanceOfErr != nil {
 		return nil, errors.Wrap(_instanceOfErr, "Error parsing 'instanceOf' field of BACnetConstructedDataInstanceOf")
 	}

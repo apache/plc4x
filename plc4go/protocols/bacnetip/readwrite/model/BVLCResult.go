@@ -125,7 +125,11 @@ func (m *_BVLCResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCResultParse(readBuffer utils.ReadBuffer) (BVLCResult, error) {
+func BVLCResultParse(theBytes []byte) (BVLCResult, error) {
+	return BVLCResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCResultParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
@@ -138,7 +142,7 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	if pullErr := readBuffer.PullContext("code"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for code")
 	}
-	_code, _codeErr := BVLCResultCodeParse(readBuffer)
+	_code, _codeErr := BVLCResultCodeParseWithBuffer(readBuffer)
 	if _codeErr != nil {
 		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of BVLCResult")
 	}

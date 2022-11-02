@@ -98,7 +98,11 @@ func (m *_BridgeAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BridgeAddressParse(readBuffer utils.ReadBuffer) (BridgeAddress, error) {
+func BridgeAddressParse(theBytes []byte) (BridgeAddress, error) {
+	return BridgeAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BridgeAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BridgeAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BridgeAddress"); pullErr != nil {

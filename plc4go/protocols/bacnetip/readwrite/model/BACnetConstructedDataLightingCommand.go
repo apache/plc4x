@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLightingCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
+func BACnetConstructedDataLightingCommandParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
+	return BACnetConstructedDataLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommand"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("lightingCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommand")
 	}
-	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParse(readBuffer)
+	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParseWithBuffer(readBuffer)
 	if _lightingCommandErr != nil {
 		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field of BACnetConstructedDataLightingCommand")
 	}

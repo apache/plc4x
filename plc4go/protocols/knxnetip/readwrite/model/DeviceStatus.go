@@ -103,7 +103,11 @@ func (m *_DeviceStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceStatusParse(readBuffer utils.ReadBuffer) (DeviceStatus, error) {
+func DeviceStatusParse(theBytes []byte) (DeviceStatus, error) {
+	return DeviceStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceStatusParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceStatus"); pullErr != nil {

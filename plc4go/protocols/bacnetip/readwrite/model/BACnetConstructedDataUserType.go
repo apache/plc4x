@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataUserType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUserTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserType, error) {
+func BACnetConstructedDataUserTypeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserType, error) {
+	return BACnetConstructedDataUserTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataUserTypeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserType"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataUserTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("userType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userType")
 	}
-	_userType, _userTypeErr := BACnetAccessUserTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_userType, _userTypeErr := BACnetAccessUserTypeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _userTypeErr != nil {
 		return nil, errors.Wrap(_userTypeErr, "Error parsing 'userType' field of BACnetConstructedDataUserType")
 	}

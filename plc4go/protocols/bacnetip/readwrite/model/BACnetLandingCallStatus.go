@@ -121,7 +121,11 @@ func (m *_BACnetLandingCallStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
+func BACnetLandingCallStatusParse(theBytes []byte) (BACnetLandingCallStatus, error) {
+	return BACnetLandingCallStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLandingCallStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatus"); pullErr != nil {
@@ -134,7 +138,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
 	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
 		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingCallStatus")
 	}
@@ -147,7 +151,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := BACnetLandingCallStatusCommandParse(readBuffer)
+	_command, _commandErr := BACnetLandingCallStatusCommandParseWithBuffer(readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of BACnetLandingCallStatus")
 	}
@@ -163,7 +167,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 		if pullErr := readBuffer.PullContext("floorText"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for floorText")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

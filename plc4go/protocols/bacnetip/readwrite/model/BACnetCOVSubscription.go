@@ -141,7 +141,11 @@ func (m *_BACnetCOVSubscription) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
+func BACnetCOVSubscriptionParse(theBytes []byte) (BACnetCOVSubscription, error) {
+	return BACnetCOVSubscriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetCOVSubscriptionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCOVSubscription"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
-	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(uint8(0)))
+	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
 		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetCOVSubscription")
 	}
@@ -167,7 +171,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	if pullErr := readBuffer.PullContext("monitoredPropertyReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredPropertyReference")
 	}
-	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _monitoredPropertyReferenceErr != nil {
 		return nil, errors.Wrap(_monitoredPropertyReferenceErr, "Error parsing 'monitoredPropertyReference' field of BACnetCOVSubscription")
 	}
@@ -180,7 +184,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 	}
-	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _issueConfirmedNotificationsErr != nil {
 		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetCOVSubscription")
 	}
@@ -193,7 +197,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
 		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetCOVSubscription")
 	}
@@ -209,7 +213,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVSubscript
 		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(4), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

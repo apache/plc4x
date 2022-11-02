@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6DHCPServerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPServer, error) {
+func BACnetConstructedDataIPv6DHCPServerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPServer, error) {
+	return BACnetConstructedDataIPv6DHCPServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPv6DHCPServerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPServer"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIPv6DHCPServerParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("dhcpServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dhcpServer")
 	}
-	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParse(readBuffer)
+	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dhcpServerErr != nil {
 		return nil, errors.Wrap(_dhcpServerErr, "Error parsing 'dhcpServer' field of BACnetConstructedDataIPv6DHCPServer")
 	}

@@ -248,7 +248,11 @@ func (m ClockAndTimekeepingCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ClockAndTimekeepingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandTypeContainer, error) {
+func ClockAndTimekeepingCommandTypeContainerParse(theBytes []byte) (ClockAndTimekeepingCommandTypeContainer, error) {
+	return ClockAndTimekeepingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ClockAndTimekeepingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("ClockAndTimekeepingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandTypeContainer")

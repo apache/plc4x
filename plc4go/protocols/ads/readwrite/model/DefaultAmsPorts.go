@@ -415,7 +415,11 @@ func (m DefaultAmsPorts) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DefaultAmsPortsParse(readBuffer utils.ReadBuffer) (DefaultAmsPorts, error) {
+func DefaultAmsPortsParse(theBytes []byte) (DefaultAmsPorts, error) {
+	return DefaultAmsPortsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DefaultAmsPortsParseWithBuffer(readBuffer utils.ReadBuffer) (DefaultAmsPorts, error) {
 	val, err := readBuffer.ReadUint16("DefaultAmsPorts", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DefaultAmsPorts")

@@ -123,7 +123,11 @@ func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntryWeekNDay, error) {
+func BACnetCalendarEntryWeekNDayParse(theBytes []byte) (BACnetCalendarEntryWeekNDay, error) {
+	return BACnetCalendarEntryWeekNDayParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetCalendarEntryWeekNDayParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCalendarEntryWeekNDay, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryWeekNDay"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetCalend
 	if pullErr := readBuffer.PullContext("weekNDay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for weekNDay")
 	}
-	_weekNDay, _weekNDayErr := BACnetWeekNDayTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_weekNDay, _weekNDayErr := BACnetWeekNDayTaggedParseWithBuffer(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _weekNDayErr != nil {
 		return nil, errors.Wrap(_weekNDayErr, "Error parsing 'weekNDay' field of BACnetCalendarEntryWeekNDay")
 	}

@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryRealParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReal, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryRealParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryReal, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryRealParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryRealParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryReal"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryRealParse(readBuffer utils.
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParse(readBuffer)
+	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetFaultParameterFaultExtendedParametersEntryReal")
 	}

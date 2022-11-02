@@ -127,7 +127,11 @@ func (m *_ParameterValueRaw) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueRawParse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
+func ParameterValueRawParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
+	return ParameterValueRawParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes) // TODO: get endianness from mspec
+}
+
+func ParameterValueRawParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueRaw"); pullErr != nil {

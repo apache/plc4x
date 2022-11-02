@@ -135,7 +135,11 @@ func (m *_TelephonyDataLineOffHook) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataLineOffHookParse(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
+func TelephonyDataLineOffHookParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
+	return TelephonyDataLineOffHookParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func TelephonyDataLineOffHookParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataLineOffHook"); pullErr != nil {
@@ -148,7 +152,7 @@ func TelephonyDataLineOffHookParse(readBuffer utils.ReadBuffer, commandTypeConta
 	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reason")
 	}
-	_reason, _reasonErr := LineOffHookReasonParse(readBuffer)
+	_reason, _reasonErr := LineOffHookReasonParseWithBuffer(readBuffer)
 	if _reasonErr != nil {
 		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataLineOffHook")
 	}

@@ -123,7 +123,11 @@ func (m *_BACnetRecipientDevice) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
+func BACnetRecipientDeviceParse(theBytes []byte) (BACnetRecipientDevice, error) {
+	return BACnetRecipientDeviceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetRecipientDeviceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientDevice"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (BACnetRecipientDev
 	if pullErr := readBuffer.PullContext("deviceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceValue")
 	}
-	_deviceValue, _deviceValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_deviceValue, _deviceValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _deviceValueErr != nil {
 		return nil, errors.Wrap(_deviceValueErr, "Error parsing 'deviceValue' field of BACnetRecipientDevice")
 	}

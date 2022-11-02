@@ -99,7 +99,11 @@ func (m *_RequestTermination) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestTerminationParse(readBuffer utils.ReadBuffer) (RequestTermination, error) {
+func RequestTerminationParse(theBytes []byte) (RequestTermination, error) {
+	return RequestTerminationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func RequestTerminationParseWithBuffer(readBuffer utils.ReadBuffer) (RequestTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestTermination"); pullErr != nil {

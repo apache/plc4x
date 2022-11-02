@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueDateParse(readBuffer utils.ReadBuffer) (BACnetChannelValueDate, error) {
+func BACnetChannelValueDateParse(theBytes []byte) (BACnetChannelValueDate, error) {
+	return BACnetChannelValueDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueDate"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueDateParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
+	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetChannelValueDate")
 	}

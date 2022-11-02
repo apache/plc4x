@@ -125,7 +125,11 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
+func BACnetServiceAckAtomicWriteFileParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
+	return BACnetServiceAckAtomicWriteFileParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckAtomicWriteFileParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicWriteFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAc
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicWriteFile")
 	}

@@ -181,7 +181,11 @@ func (m ApduType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduTypeParse(readBuffer utils.ReadBuffer) (ApduType, error) {
+func ApduTypeParse(theBytes []byte) (ApduType, error) {
+	return ApduTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ApduTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ApduType, error) {
 	val, err := readBuffer.ReadUint8("ApduType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ApduType")

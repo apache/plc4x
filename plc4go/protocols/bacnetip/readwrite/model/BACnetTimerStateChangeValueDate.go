@@ -123,7 +123,11 @@ func (m *_BACnetTimerStateChangeValueDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerStateChangeValueDateParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDate, error) {
+func BACnetTimerStateChangeValueDateParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDate, error) {
+	return BACnetTimerStateChangeValueDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetTimerStateChangeValueDateParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueDate"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetTimerStateChangeValueDateParse(readBuffer utils.ReadBuffer, objectTyp
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
+	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetTimerStateChangeValueDate")
 	}

@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesNetworkPortCommandParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
+func BACnetPropertyStatesNetworkPortCommandParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
+	return BACnetPropertyStatesNetworkPortCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkPortCommand"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesNetworkPortCommandParse(readBuffer utils.ReadBuffer, pe
 	if pullErr := readBuffer.PullContext("networkPortCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkPortCommand")
 	}
-	_networkPortCommand, _networkPortCommandErr := BACnetNetworkPortCommandTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_networkPortCommand, _networkPortCommandErr := BACnetNetworkPortCommandTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkPortCommandErr != nil {
 		return nil, errors.Wrap(_networkPortCommandErr, "Error parsing 'networkPortCommand' field of BACnetPropertyStatesNetworkPortCommand")
 	}

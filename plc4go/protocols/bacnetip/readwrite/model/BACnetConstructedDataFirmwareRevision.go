@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFirmwareRevisionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFirmwareRevision, error) {
+func BACnetConstructedDataFirmwareRevisionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFirmwareRevision, error) {
+	return BACnetConstructedDataFirmwareRevisionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataFirmwareRevisionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFirmwareRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFirmwareRevision"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataFirmwareRevisionParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("firmwareRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firmwareRevision")
 	}
-	_firmwareRevision, _firmwareRevisionErr := BACnetApplicationTagParse(readBuffer)
+	_firmwareRevision, _firmwareRevisionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _firmwareRevisionErr != nil {
 		return nil, errors.Wrap(_firmwareRevisionErr, "Error parsing 'firmwareRevision' field of BACnetConstructedDataFirmwareRevision")
 	}

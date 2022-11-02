@@ -196,7 +196,11 @@ func (m *_AirConditioningDataSetPlantHvacLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (AirConditioningDataSetPlantHvacLevel, error) {
+func AirConditioningDataSetPlantHvacLevelParse(theBytes []byte) (AirConditioningDataSetPlantHvacLevel, error) {
+	return AirConditioningDataSetPlantHvacLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataSetPlantHvacLevelParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataSetPlantHvacLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetPlantHvacLevel"); pullErr != nil {
@@ -216,7 +220,7 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParse(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataSetPlantHvacLevel")
 	}
@@ -229,7 +233,7 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 	if pullErr := readBuffer.PullContext("hvacModeAndFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacModeAndFlags")
 	}
-	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACModeAndFlagsParse(readBuffer)
+	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACModeAndFlagsParseWithBuffer(readBuffer)
 	if _hvacModeAndFlagsErr != nil {
 		return nil, errors.Wrap(_hvacModeAndFlagsErr, "Error parsing 'hvacModeAndFlags' field of AirConditioningDataSetPlantHvacLevel")
 	}
@@ -242,7 +246,7 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 	if pullErr := readBuffer.PullContext("hvacType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacType")
 	}
-	_hvacType, _hvacTypeErr := HVACTypeParse(readBuffer)
+	_hvacType, _hvacTypeErr := HVACTypeParseWithBuffer(readBuffer)
 	if _hvacTypeErr != nil {
 		return nil, errors.Wrap(_hvacTypeErr, "Error parsing 'hvacType' field of AirConditioningDataSetPlantHvacLevel")
 	}
@@ -258,7 +262,7 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 		if pullErr := readBuffer.PullContext("level"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for level")
 		}
-		_val, _err := HVACTemperatureParse(readBuffer)
+		_val, _err := HVACTemperatureParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -280,7 +284,7 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 		if pullErr := readBuffer.PullContext("rawLevel"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for rawLevel")
 		}
-		_val, _err := HVACRawLevelsParse(readBuffer)
+		_val, _err := HVACRawLevelsParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -302,7 +306,7 @@ func AirConditioningDataSetPlantHvacLevelParse(readBuffer utils.ReadBuffer) (Air
 		if pullErr := readBuffer.PullContext("auxLevel"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for auxLevel")
 		}
-		_val, _err := HVACAuxiliaryLevelParse(readBuffer)
+		_val, _err := HVACAuxiliaryLevelParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

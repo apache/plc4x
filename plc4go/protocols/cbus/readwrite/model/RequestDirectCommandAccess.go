@@ -180,7 +180,11 @@ func (m *_RequestDirectCommandAccess) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+func RequestDirectCommandAccessParse(theBytes []byte, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+	return RequestDirectCommandAccessParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func RequestDirectCommandAccessParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestDirectCommandAccess"); pullErr != nil {
@@ -220,7 +224,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

@@ -139,7 +139,11 @@ func (m *_BACnetLiftCarDriveStatusTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftCarDriveStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftCarDriveStatusTagged, error) {
+func BACnetLiftCarDriveStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLiftCarDriveStatusTagged, error) {
+	return BACnetLiftCarDriveStatusTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetLiftCarDriveStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftCarDriveStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLiftCarDriveStatusTagged"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetLiftCarDriveStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLiftCarDriveStatusTagged")
 	}

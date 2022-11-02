@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataChangesPending) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
+func BACnetConstructedDataChangesPendingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
+	return BACnetConstructedDataChangesPendingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataChangesPendingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangesPending"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("changesPending"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changesPending")
 	}
-	_changesPending, _changesPendingErr := BACnetApplicationTagParse(readBuffer)
+	_changesPending, _changesPendingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _changesPendingErr != nil {
 		return nil, errors.Wrap(_changesPendingErr, "Error parsing 'changesPending' field of BACnetConstructedDataChangesPending")
 	}

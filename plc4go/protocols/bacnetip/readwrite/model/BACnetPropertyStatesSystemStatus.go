@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesSystemStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesSystemStatusParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSystemStatus, error) {
+func BACnetPropertyStatesSystemStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesSystemStatus, error) {
+	return BACnetPropertyStatesSystemStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesSystemStatusParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSystemStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSystemStatus"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesSystemStatusParse(readBuffer utils.ReadBuffer, peekedTa
 	if pullErr := readBuffer.PullContext("systemStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for systemStatus")
 	}
-	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _systemStatusErr != nil {
 		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field of BACnetPropertyStatesSystemStatus")
 	}

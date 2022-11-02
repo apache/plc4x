@@ -97,7 +97,11 @@ func (m TagClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {
+func TagClassParse(theBytes []byte) (TagClass, error) {
+	return TagClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TagClassParseWithBuffer(readBuffer utils.ReadBuffer) (TagClass, error) {
 	val, err := readBuffer.ReadUint8("TagClass", 1)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TagClass")

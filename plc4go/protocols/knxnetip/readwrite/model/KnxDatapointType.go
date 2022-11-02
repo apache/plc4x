@@ -6423,7 +6423,11 @@ func (m KnxDatapointType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
+func KnxDatapointTypeParse(theBytes []byte) (KnxDatapointType, error) {
+	return KnxDatapointTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxDatapointTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
 	val, err := readBuffer.ReadUint32("KnxDatapointType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxDatapointType")

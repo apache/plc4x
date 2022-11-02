@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataValueSource) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSource, error) {
+func BACnetConstructedDataValueSourceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSource, error) {
+	return BACnetConstructedDataValueSourceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataValueSourceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSource, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSource"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("valueSource"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for valueSource")
 	}
-	_valueSource, _valueSourceErr := BACnetValueSourceParse(readBuffer)
+	_valueSource, _valueSourceErr := BACnetValueSourceParseWithBuffer(readBuffer)
 	if _valueSourceErr != nil {
 		return nil, errors.Wrap(_valueSourceErr, "Error parsing 'valueSource' field of BACnetConstructedDataValueSource")
 	}

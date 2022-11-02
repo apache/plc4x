@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAttemptedSamples) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAttemptedSamplesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAttemptedSamples, error) {
+func BACnetConstructedDataAttemptedSamplesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAttemptedSamples, error) {
+	return BACnetConstructedDataAttemptedSamplesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAttemptedSamplesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAttemptedSamples, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAttemptedSamples"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAttemptedSamplesParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("attemptedSamples"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for attemptedSamples")
 	}
-	_attemptedSamples, _attemptedSamplesErr := BACnetApplicationTagParse(readBuffer)
+	_attemptedSamples, _attemptedSamplesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _attemptedSamplesErr != nil {
 		return nil, errors.Wrap(_attemptedSamplesErr, "Error parsing 'attemptedSamples' field of BACnetConstructedDataAttemptedSamples")
 	}

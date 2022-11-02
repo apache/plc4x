@@ -115,7 +115,11 @@ func (m BACnetMaintenance) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetMaintenanceParse(readBuffer utils.ReadBuffer) (BACnetMaintenance, error) {
+func BACnetMaintenanceParse(theBytes []byte) (BACnetMaintenance, error) {
+	return BACnetMaintenanceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetMaintenanceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetMaintenance, error) {
 	val, err := readBuffer.ReadUint8("BACnetMaintenance", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetMaintenance")

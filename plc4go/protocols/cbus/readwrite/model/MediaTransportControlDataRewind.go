@@ -197,7 +197,11 @@ func (m *_MediaTransportControlDataRewind) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataRewindParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
+func MediaTransportControlDataRewindParse(theBytes []byte) (MediaTransportControlDataRewind, error) {
+	return MediaTransportControlDataRewindParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataRewindParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRewind"); pullErr != nil {

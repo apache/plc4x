@@ -235,7 +235,11 @@ func (m BACnetAuthenticationFactorType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationFactorTypeParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
+func BACnetAuthenticationFactorTypeParse(theBytes []byte) (BACnetAuthenticationFactorType, error) {
+	return BACnetAuthenticationFactorTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAuthenticationFactorTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationFactorType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthenticationFactorType")

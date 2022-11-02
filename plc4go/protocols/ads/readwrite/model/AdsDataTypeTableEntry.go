@@ -305,7 +305,11 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
+func AdsDataTypeTableEntryParse(theBytes []byte) (AdsDataTypeTableEntry, error) {
+	return AdsDataTypeTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsDataTypeTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDataTypeTableEntry"); pullErr != nil {
@@ -468,7 +472,7 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(arrayDimensions); curItem++ {
-			_item, _err := AdsDataTypeArrayInfoParse(readBuffer)
+			_item, _err := AdsDataTypeArrayInfoParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'arrayInfo' field of AdsDataTypeTableEntry")
 			}
@@ -491,7 +495,7 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numChildren); curItem++ {
-			_item, _err := AdsDataTypeTableChildEntryParse(readBuffer)
+			_item, _err := AdsDataTypeTableChildEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'children' field of AdsDataTypeTableEntry")
 			}

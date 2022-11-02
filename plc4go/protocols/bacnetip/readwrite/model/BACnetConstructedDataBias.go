@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBias) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBias, error) {
+func BACnetConstructedDataBiasParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBias, error) {
+	return BACnetConstructedDataBiasParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBiasParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBias, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBias"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("bias"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bias")
 	}
-	_bias, _biasErr := BACnetApplicationTagParse(readBuffer)
+	_bias, _biasErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _biasErr != nil {
 		return nil, errors.Wrap(_biasErr, "Error parsing 'bias' field of BACnetConstructedDataBias")
 	}

@@ -139,7 +139,11 @@ func (m *_BACnetEscalatorModeTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorModeTagged, error) {
+func BACnetEscalatorModeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetEscalatorModeTagged, error) {
+	return BACnetEscalatorModeTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetEscalatorModeTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorModeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEscalatorModeTagged"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetEscalatorModeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetEscalatorModeTagged")
 	}

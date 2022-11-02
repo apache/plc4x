@@ -163,7 +163,11 @@ func (m *_AdsWriteControlRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {
+func AdsWriteControlRequestParse(theBytes []byte) (AdsWriteControlRequest, error) {
+	return AdsWriteControlRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsWriteControlRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {

@@ -125,7 +125,11 @@ func (m *_FirmataMessageCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (FirmataMessageCommand, error) {
+func FirmataMessageCommandParse(theBytes []byte, response bool) (FirmataMessageCommand, error) {
+	return FirmataMessageCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataMessageCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageCommand"); pullErr != nil {
@@ -138,7 +142,7 @@ func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (Fir
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := FirmataCommandParse(readBuffer, bool(response))
+	_command, _commandErr := FirmataCommandParseWithBuffer(readBuffer, bool(response))
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of FirmataMessageCommand")
 	}

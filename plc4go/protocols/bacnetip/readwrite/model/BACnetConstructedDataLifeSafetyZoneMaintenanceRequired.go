@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInByt
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
+func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
+	return BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer util
 	if pullErr := readBuffer.PullContext("maintenanceRequired"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maintenanceRequired")
 	}
-	_maintenanceRequired, _maintenanceRequiredErr := BACnetApplicationTagParse(readBuffer)
+	_maintenanceRequired, _maintenanceRequiredErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maintenanceRequiredErr != nil {
 		return nil, errors.Wrap(_maintenanceRequiredErr, "Error parsing 'maintenanceRequired' field of BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 	}

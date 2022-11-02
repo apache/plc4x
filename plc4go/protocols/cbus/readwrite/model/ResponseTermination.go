@@ -107,7 +107,11 @@ func (m *_ResponseTermination) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ResponseTerminationParse(readBuffer utils.ReadBuffer) (ResponseTermination, error) {
+func ResponseTerminationParse(theBytes []byte) (ResponseTermination, error) {
+	return ResponseTerminationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ResponseTerminationParseWithBuffer(readBuffer utils.ReadBuffer) (ResponseTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ResponseTermination"); pullErr != nil {

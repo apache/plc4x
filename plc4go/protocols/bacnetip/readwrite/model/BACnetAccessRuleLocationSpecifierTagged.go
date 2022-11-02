@@ -112,7 +112,11 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleLocationSpecifierTagged, error) {
+func BACnetAccessRuleLocationSpecifierTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleLocationSpecifierTagged, error) {
+	return BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleLocationSpecifierTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessRuleLocationSpecifierTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAccessRuleLocationSpecifierTagged")
 	}

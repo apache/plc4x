@@ -175,7 +175,11 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicWriteFile, error) {
+func BACnetConfirmedServiceRequestAtomicWriteFileParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicWriteFile, error) {
+	return BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicWriteFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pullErr != nil {
@@ -188,7 +192,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
@@ -204,7 +208,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 		}
-		_val, _err := BACnetOpeningTagParse(readBuffer, uint8(0))
+		_val, _err := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -223,7 +227,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParse(readBuffer)
+	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
@@ -236,7 +240,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("fileData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileData")
 	}
-	_fileData, _fileDataErr := BACnetApplicationTagParse(readBuffer)
+	_fileData, _fileDataErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileDataErr != nil {
 		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field of BACnetConfirmedServiceRequestAtomicWriteFile")
 	}
@@ -252,7 +256,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 		}
-		_val, _err := BACnetClosingTagParse(readBuffer, uint8(0))
+		_val, _err := BACnetClosingTagParseWithBuffer(readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

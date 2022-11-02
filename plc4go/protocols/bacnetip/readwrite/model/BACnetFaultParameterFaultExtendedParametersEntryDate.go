@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryDateParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryDateParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryDate"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryDateParse(readBuffer utils.
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
+	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetFaultParameterFaultExtendedParametersEntryDate")
 	}

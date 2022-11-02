@@ -129,7 +129,11 @@ func (m *_S7ParameterWriteVarResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterWriteVarResponse, error) {
+func S7ParameterWriteVarResponseParse(theBytes []byte, messageType uint8) (S7ParameterWriteVarResponse, error) {
+	return S7ParameterWriteVarResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+}
+
+func S7ParameterWriteVarResponseParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterWriteVarResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterWriteVarResponse"); pullErr != nil {

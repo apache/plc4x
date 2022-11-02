@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataStateDescription) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStateDescriptionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStateDescription, error) {
+func BACnetConstructedDataStateDescriptionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStateDescription, error) {
+	return BACnetConstructedDataStateDescriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataStateDescriptionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStateDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStateDescription"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataStateDescriptionParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("stateDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for stateDescription")
 	}
-	_stateDescription, _stateDescriptionErr := BACnetApplicationTagParse(readBuffer)
+	_stateDescription, _stateDescriptionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _stateDescriptionErr != nil {
 		return nil, errors.Wrap(_stateDescriptionErr, "Error parsing 'stateDescription' field of BACnetConstructedDataStateDescription")
 	}

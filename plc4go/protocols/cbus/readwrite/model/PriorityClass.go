@@ -109,7 +109,11 @@ func (m PriorityClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PriorityClassParse(readBuffer utils.ReadBuffer) (PriorityClass, error) {
+func PriorityClassParse(theBytes []byte) (PriorityClass, error) {
+	return PriorityClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func PriorityClassParseWithBuffer(readBuffer utils.ReadBuffer) (PriorityClass, error) {
 	val, err := readBuffer.ReadUint8("PriorityClass", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PriorityClass")

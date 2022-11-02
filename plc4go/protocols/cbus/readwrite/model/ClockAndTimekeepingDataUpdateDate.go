@@ -168,7 +168,11 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ClockAndTimekeepingDataUpdateDateParse(readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateDate, error) {
+func ClockAndTimekeepingDataUpdateDateParse(theBytes []byte) (ClockAndTimekeepingDataUpdateDate, error) {
+	return ClockAndTimekeepingDataUpdateDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ClockAndTimekeepingDataUpdateDateParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingDataUpdateDate"); pullErr != nil {

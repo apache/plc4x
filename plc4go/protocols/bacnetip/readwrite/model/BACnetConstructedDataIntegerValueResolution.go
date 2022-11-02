@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIntegerValueResolution) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegerValueResolutionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueResolution, error) {
+func BACnetConstructedDataIntegerValueResolutionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueResolution, error) {
+	return BACnetConstructedDataIntegerValueResolutionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIntegerValueResolutionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueResolution, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueResolution"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIntegerValueResolutionParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("resolution"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for resolution")
 	}
-	_resolution, _resolutionErr := BACnetApplicationTagParse(readBuffer)
+	_resolution, _resolutionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _resolutionErr != nil {
 		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field of BACnetConstructedDataIntegerValueResolution")
 	}

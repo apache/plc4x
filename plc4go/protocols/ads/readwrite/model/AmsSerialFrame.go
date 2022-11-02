@@ -158,7 +158,11 @@ func (m *_AmsSerialFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
+func AmsSerialFrameParse(theBytes []byte) (AmsSerialFrame, error) {
+	return AmsSerialFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AmsSerialFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialFrame"); pullErr != nil {
@@ -206,7 +210,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
-	_userdata, _userdataErr := AmsPacketParse(readBuffer)
+	_userdata, _userdataErr := AmsPacketParseWithBuffer(readBuffer)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsSerialFrame")
 	}

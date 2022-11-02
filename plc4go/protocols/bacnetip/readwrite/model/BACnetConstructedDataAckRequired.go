@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAckRequired) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckRequired, error) {
+func BACnetConstructedDataAckRequiredParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckRequired, error) {
+	return BACnetConstructedDataAckRequiredParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAckRequiredParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAckRequired"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("ackRequired"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackRequired")
 	}
-	_ackRequired, _ackRequiredErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_ackRequired, _ackRequiredErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackRequiredErr != nil {
 		return nil, errors.Wrap(_ackRequiredErr, "Error parsing 'ackRequired' field of BACnetConstructedDataAckRequired")
 	}

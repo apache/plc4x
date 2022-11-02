@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
+func BACnetConstructedDataLandingCallControlParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
+	return BACnetConstructedDataLandingCallControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLandingCallControlParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingCallControl"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("landingCallControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCallControl")
 	}
-	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParse(readBuffer)
+	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParseWithBuffer(readBuffer)
 	if _landingCallControlErr != nil {
 		return nil, errors.Wrap(_landingCallControlErr, "Error parsing 'landingCallControl' field of BACnetConstructedDataLandingCallControl")
 	}

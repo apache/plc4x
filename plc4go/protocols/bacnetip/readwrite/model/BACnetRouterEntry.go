@@ -131,7 +131,11 @@ func (m *_BACnetRouterEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
+func BACnetRouterEntryParse(theBytes []byte) (BACnetRouterEntry, error) {
+	return BACnetRouterEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetRouterEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRouterEntry"); pullErr != nil {
@@ -144,7 +148,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
 	}
-	_networkNumber, _networkNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_networkNumber, _networkNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _networkNumberErr != nil {
 		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetRouterEntry")
 	}
@@ -157,7 +161,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
 	}
-	_macAddress, _macAddressErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
+	_macAddress, _macAddressErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _macAddressErr != nil {
 		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetRouterEntry")
 	}
@@ -170,7 +174,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := BACnetRouterEntryStatusTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_status, _statusErr := BACnetRouterEntryStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of BACnetRouterEntry")
 	}
@@ -186,7 +190,7 @@ func BACnetRouterEntryParse(readBuffer utils.ReadBuffer) (BACnetRouterEntry, err
 		if pullErr := readBuffer.PullContext("performanceIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for performanceIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

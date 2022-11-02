@@ -149,7 +149,11 @@ func (m *_CipReadRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipReadRequest, error) {
+func CipReadRequestParse(theBytes []byte, serviceLen uint16) (CipReadRequest, error) {
+	return CipReadRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceLen) // TODO: get endianness from mspec
+}
+
+func CipReadRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipReadRequest"); pullErr != nil {

@@ -416,7 +416,11 @@ func (m SupportedPhysicalMedia) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
+func SupportedPhysicalMediaParse(theBytes []byte) (SupportedPhysicalMedia, error) {
+	return SupportedPhysicalMediaParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SupportedPhysicalMediaParseWithBuffer(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
 	val, err := readBuffer.ReadUint8("SupportedPhysicalMedia", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SupportedPhysicalMedia")

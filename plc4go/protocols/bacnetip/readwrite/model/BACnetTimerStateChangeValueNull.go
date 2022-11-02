@@ -123,7 +123,11 @@ func (m *_BACnetTimerStateChangeValueNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerStateChangeValueNullParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNull, error) {
+func BACnetTimerStateChangeValueNullParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNull, error) {
+	return BACnetTimerStateChangeValueNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetTimerStateChangeValueNullParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueNull"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetTimerStateChangeValueNullParse(readBuffer utils.ReadBuffer, objectTyp
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
+	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetTimerStateChangeValueNull")
 	}

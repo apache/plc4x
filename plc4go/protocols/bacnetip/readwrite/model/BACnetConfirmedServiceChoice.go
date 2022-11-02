@@ -277,7 +277,11 @@ func (m BACnetConfirmedServiceChoice) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceChoiceParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceChoice, error) {
+func BACnetConfirmedServiceChoiceParse(theBytes []byte) (BACnetConfirmedServiceChoice, error) {
+	return BACnetConfirmedServiceChoiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceChoice, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceChoice", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceChoice")

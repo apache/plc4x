@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataStopWhenFull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopWhenFull, error) {
+func BACnetConstructedDataStopWhenFullParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopWhenFull, error) {
+	return BACnetConstructedDataStopWhenFullParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataStopWhenFullParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopWhenFull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopWhenFull"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("stopWhenFull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for stopWhenFull")
 	}
-	_stopWhenFull, _stopWhenFullErr := BACnetApplicationTagParse(readBuffer)
+	_stopWhenFull, _stopWhenFullErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _stopWhenFullErr != nil {
 		return nil, errors.Wrap(_stopWhenFullErr, "Error parsing 'stopWhenFull' field of BACnetConstructedDataStopWhenFull")
 	}

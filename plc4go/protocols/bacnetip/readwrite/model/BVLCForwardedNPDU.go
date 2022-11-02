@@ -152,7 +152,11 @@ func (m *_BVLCForwardedNPDU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
+func BVLCForwardedNPDUParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
+	return BVLCForwardedNPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+}
+
+func BVLCForwardedNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCForwardedNPDU"); pullErr != nil {
@@ -195,7 +199,7 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
 	}
-	_npdu, _npduErr := NPDUParse(readBuffer, uint16(uint16(bvlcPayloadLength)-uint16(uint16(6))))
+	_npdu, _npduErr := NPDUParseWithBuffer(readBuffer, uint16(uint16(bvlcPayloadLength)-uint16(uint16(6))))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCForwardedNPDU")
 	}

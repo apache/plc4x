@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
+func BACnetConstructedDataElapsedActiveTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
+	return BACnetConstructedDataElapsedActiveTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElapsedActiveTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("elapsedActiveTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for elapsedActiveTime")
 	}
-	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParse(readBuffer)
+	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _elapsedActiveTimeErr != nil {
 		return nil, errors.Wrap(_elapsedActiveTimeErr, "Error parsing 'elapsedActiveTime' field of BACnetConstructedDataElapsedActiveTime")
 	}

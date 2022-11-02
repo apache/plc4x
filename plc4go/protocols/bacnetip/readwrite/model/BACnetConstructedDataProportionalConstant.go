@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataProportionalConstant) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
+func BACnetConstructedDataProportionalConstantParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
+	return BACnetConstructedDataProportionalConstantParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataProportionalConstantParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProportionalConstant"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("proportionalConstant"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for proportionalConstant")
 	}
-	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParse(readBuffer)
+	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _proportionalConstantErr != nil {
 		return nil, errors.Wrap(_proportionalConstantErr, "Error parsing 'proportionalConstant' field of BACnetConstructedDataProportionalConstant")
 	}

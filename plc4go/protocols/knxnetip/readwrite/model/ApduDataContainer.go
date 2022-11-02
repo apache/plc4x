@@ -128,7 +128,11 @@ func (m *_ApduDataContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataContainer, error) {
+func ApduDataContainerParse(theBytes []byte, dataLength uint8) (ApduDataContainer, error) {
+	return ApduDataContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataContainer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataContainer"); pullErr != nil {
@@ -141,7 +145,7 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu
 	if pullErr := readBuffer.PullContext("dataApdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataApdu")
 	}
-	_dataApdu, _dataApduErr := ApduDataParse(readBuffer, uint8(dataLength))
+	_dataApdu, _dataApduErr := ApduDataParseWithBuffer(readBuffer, uint8(dataLength))
 	if _dataApduErr != nil {
 		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field of ApduDataContainer")
 	}

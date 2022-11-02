@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataReadOnly) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReadOnly, error) {
+func BACnetConstructedDataReadOnlyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReadOnly, error) {
+	return BACnetConstructedDataReadOnlyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataReadOnlyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReadOnly, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReadOnly"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("readOnly"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for readOnly")
 	}
-	_readOnly, _readOnlyErr := BACnetApplicationTagParse(readBuffer)
+	_readOnly, _readOnlyErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _readOnlyErr != nil {
 		return nil, errors.Wrap(_readOnlyErr, "Error parsing 'readOnly' field of BACnetConstructedDataReadOnly")
 	}

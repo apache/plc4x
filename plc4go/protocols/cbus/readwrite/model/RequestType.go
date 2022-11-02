@@ -173,7 +173,11 @@ func (m RequestType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestTypeParse(readBuffer utils.ReadBuffer) (RequestType, error) {
+func RequestTypeParse(theBytes []byte) (RequestType, error) {
+	return RequestTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func RequestTypeParseWithBuffer(readBuffer utils.ReadBuffer) (RequestType, error) {
 	val, err := readBuffer.ReadUint8("RequestType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading RequestType")

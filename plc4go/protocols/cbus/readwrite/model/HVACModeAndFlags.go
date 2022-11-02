@@ -216,7 +216,11 @@ func (m *_HVACModeAndFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error) {
+func HVACModeAndFlagsParse(theBytes []byte) (HVACModeAndFlags, error) {
+	return HVACModeAndFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACModeAndFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACModeAndFlags"); pullErr != nil {
@@ -314,7 +318,7 @@ func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := HVACModeAndFlagsModeParse(readBuffer)
+	_mode, _modeErr := HVACModeAndFlagsModeParseWithBuffer(readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACModeAndFlags")
 	}

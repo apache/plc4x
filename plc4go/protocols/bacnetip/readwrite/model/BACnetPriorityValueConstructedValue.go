@@ -123,7 +123,11 @@ func (m *_BACnetPriorityValueConstructedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueConstructedValue, error) {
+func BACnetPriorityValueConstructedValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueConstructedValue, error) {
+	return BACnetPriorityValueConstructedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetPriorityValueConstructedValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueConstructedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueConstructedValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for constructedValue")
 	}
-	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_constructedValue, _constructedValueErr := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _constructedValueErr != nil {
 		return nil, errors.Wrap(_constructedValueErr, "Error parsing 'constructedValue' field of BACnetPriorityValueConstructedValue")
 	}

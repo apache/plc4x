@@ -124,7 +124,11 @@ func (m *_TelephonyDataDialInFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataDialInFailureParse(readBuffer utils.ReadBuffer) (TelephonyDataDialInFailure, error) {
+func TelephonyDataDialInFailureParse(theBytes []byte) (TelephonyDataDialInFailure, error) {
+	return TelephonyDataDialInFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyDataDialInFailureParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataDialInFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataDialInFailure"); pullErr != nil {
@@ -137,7 +141,7 @@ func TelephonyDataDialInFailureParse(readBuffer utils.ReadBuffer) (TelephonyData
 	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reason")
 	}
-	_reason, _reasonErr := DialInFailureReasonParse(readBuffer)
+	_reason, _reasonErr := DialInFailureReasonParseWithBuffer(readBuffer)
 	if _reasonErr != nil {
 		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataDialInFailure")
 	}

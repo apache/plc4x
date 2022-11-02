@@ -129,7 +129,11 @@ func (m *_SysexCommandPinStateQuery) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {
+func SysexCommandPinStateQueryParse(theBytes []byte, response bool) (SysexCommandPinStateQuery, error) {
+	return SysexCommandPinStateQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandPinStateQueryParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateQuery"); pullErr != nil {

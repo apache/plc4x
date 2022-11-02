@@ -157,7 +157,11 @@ func (m BACnetNetworkType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkTypeParse(readBuffer utils.ReadBuffer) (BACnetNetworkType, error) {
+func BACnetNetworkTypeParse(theBytes []byte) (BACnetNetworkType, error) {
+	return BACnetNetworkTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetNetworkTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNetworkType")

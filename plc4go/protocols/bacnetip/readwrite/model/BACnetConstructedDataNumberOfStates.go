@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataNumberOfStates) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNumberOfStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfStates, error) {
+func BACnetConstructedDataNumberOfStatesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfStates, error) {
+	return BACnetConstructedDataNumberOfStatesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataNumberOfStatesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfStates, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfStates"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataNumberOfStatesParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("numberOfState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for numberOfState")
 	}
-	_numberOfState, _numberOfStateErr := BACnetApplicationTagParse(readBuffer)
+	_numberOfState, _numberOfStateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _numberOfStateErr != nil {
 		return nil, errors.Wrap(_numberOfStateErr, "Error parsing 'numberOfState' field of BACnetConstructedDataNumberOfStates")
 	}

@@ -108,7 +108,11 @@ func (m *_SysexCommandAnalogMappingResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandAnalogMappingResponseParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingResponse, error) {
+func SysexCommandAnalogMappingResponseParse(theBytes []byte, response bool) (SysexCommandAnalogMappingResponse, error) {
+	return SysexCommandAnalogMappingResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandAnalogMappingResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingResponse"); pullErr != nil {

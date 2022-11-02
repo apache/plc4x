@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataFaultParameters) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFaultParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultParameters, error) {
+func BACnetConstructedDataFaultParametersParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultParameters, error) {
+	return BACnetConstructedDataFaultParametersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataFaultParametersParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultParameters"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataFaultParametersParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("faultParameters"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultParameters")
 	}
-	_faultParameters, _faultParametersErr := BACnetFaultParameterParse(readBuffer)
+	_faultParameters, _faultParametersErr := BACnetFaultParameterParseWithBuffer(readBuffer)
 	if _faultParametersErr != nil {
 		return nil, errors.Wrap(_faultParametersErr, "Error parsing 'faultParameters' field of BACnetConstructedDataFaultParameters")
 	}

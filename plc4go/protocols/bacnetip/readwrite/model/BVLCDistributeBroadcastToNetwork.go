@@ -128,7 +128,11 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCDistributeBroadcastToNetwork, error) {
+func BVLCDistributeBroadcastToNetworkParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCDistributeBroadcastToNetwork, error) {
+	return BVLCDistributeBroadcastToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+}
+
+func BVLCDistributeBroadcastToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCDistributeBroadcastToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCDistributeBroadcastToNetwork"); pullErr != nil {
@@ -141,7 +145,7 @@ func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayl
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
 	}
-	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcPayloadLength))
+	_npdu, _npduErr := NPDUParseWithBuffer(readBuffer, uint16(bvlcPayloadLength))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCDistributeBroadcastToNetwork")
 	}

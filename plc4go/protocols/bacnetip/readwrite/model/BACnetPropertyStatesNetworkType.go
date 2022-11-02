@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesNetworkType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesNetworkTypeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkType, error) {
+func BACnetPropertyStatesNetworkTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNetworkType, error) {
+	return BACnetPropertyStatesNetworkTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesNetworkTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkType"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesNetworkTypeParse(readBuffer utils.ReadBuffer, peekedTag
 	if pullErr := readBuffer.PullContext("networkType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkType")
 	}
-	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkTypeErr != nil {
 		return nil, errors.Wrap(_networkTypeErr, "Error parsing 'networkType' field of BACnetPropertyStatesNetworkType")
 	}

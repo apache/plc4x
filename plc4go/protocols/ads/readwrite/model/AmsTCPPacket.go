@@ -106,7 +106,11 @@ func (m *_AmsTCPPacket) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
+func AmsTCPPacketParse(theBytes []byte) (AmsTCPPacket, error) {
+	return AmsTCPPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AmsTCPPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsTCPPacket"); pullErr != nil {
@@ -143,7 +147,7 @@ func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
-	_userdata, _userdataErr := AmsPacketParse(readBuffer)
+	_userdata, _userdataErr := AmsPacketParseWithBuffer(readBuffer)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsTCPPacket")
 	}

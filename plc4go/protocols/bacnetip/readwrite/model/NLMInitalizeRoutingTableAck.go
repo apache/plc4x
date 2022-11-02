@@ -143,7 +143,11 @@ func (m *_NLMInitalizeRoutingTableAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
+func NLMInitalizeRoutingTableAckParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
+	return NLMInitalizeRoutingTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+}
+
+func NLMInitalizeRoutingTableAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTableAck"); pullErr != nil {
@@ -171,7 +175,7 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfPorts); curItem++ {
-			_item, _err := NLMInitalizeRoutingTablePortMappingParse(readBuffer)
+			_item, _err := NLMInitalizeRoutingTablePortMappingParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field of NLMInitalizeRoutingTableAck")
 			}

@@ -154,7 +154,11 @@ func (m *_HVACAuxiliaryLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACAuxiliaryLevelParse(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+func HVACAuxiliaryLevelParse(theBytes []byte) (HVACAuxiliaryLevel, error) {
+	return HVACAuxiliaryLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACAuxiliaryLevelParseWithBuffer(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACAuxiliaryLevel"); pullErr != nil {

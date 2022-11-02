@@ -127,7 +127,11 @@ func (m *_SALDataSecurity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataSecurityParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataSecurity, error) {
+func SALDataSecurityParse(theBytes []byte, applicationId ApplicationId) (SALDataSecurity, error) {
+	return SALDataSecurityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataSecurityParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataSecurity, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataSecurity"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataSecurityParse(readBuffer utils.ReadBuffer, applicationId Application
 	if pullErr := readBuffer.PullContext("securityData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securityData")
 	}
-	_securityData, _securityDataErr := SecurityDataParse(readBuffer)
+	_securityData, _securityDataErr := SecurityDataParseWithBuffer(readBuffer)
 	if _securityDataErr != nil {
 		return nil, errors.Wrap(_securityDataErr, "Error parsing 'securityData' field of SALDataSecurity")
 	}

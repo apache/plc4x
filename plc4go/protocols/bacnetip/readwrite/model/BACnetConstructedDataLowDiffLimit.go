@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLowDiffLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLowDiffLimit, error) {
+func BACnetConstructedDataLowDiffLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLowDiffLimit, error) {
+	return BACnetConstructedDataLowDiffLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLowDiffLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLowDiffLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLowDiffLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("lowDiffLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowDiffLimit")
 	}
-	_lowDiffLimit, _lowDiffLimitErr := BACnetOptionalREALParse(readBuffer)
+	_lowDiffLimit, _lowDiffLimitErr := BACnetOptionalREALParseWithBuffer(readBuffer)
 	if _lowDiffLimitErr != nil {
 		return nil, errors.Wrap(_lowDiffLimitErr, "Error parsing 'lowDiffLimit' field of BACnetConstructedDataLowDiffLimit")
 	}

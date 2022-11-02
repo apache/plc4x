@@ -104,7 +104,11 @@ func (m *_ApduDataRestart) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataRestart, error) {
+func ApduDataRestartParse(theBytes []byte, dataLength uint8) (ApduDataRestart, error) {
+	return ApduDataRestartParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataRestartParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataRestart, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {

@@ -112,7 +112,11 @@ func (m *_MaxSegmentsAcceptedTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MaxSegmentsAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (MaxSegmentsAcceptedTagged, error) {
+func MaxSegmentsAcceptedTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (MaxSegmentsAcceptedTagged, error) {
+	return MaxSegmentsAcceptedTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func MaxSegmentsAcceptedTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (MaxSegmentsAcceptedTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MaxSegmentsAcceptedTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func MaxSegmentsAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of MaxSegmentsAcceptedTagged")
 	}

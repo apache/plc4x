@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTrackingValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrackingValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrackingValue, error) {
+func BACnetConstructedDataTrackingValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrackingValue, error) {
+	return BACnetConstructedDataTrackingValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTrackingValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrackingValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrackingValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTrackingValueParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("trackingValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for trackingValue")
 	}
-	_trackingValue, _trackingValueErr := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_trackingValue, _trackingValueErr := BACnetLifeSafetyStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _trackingValueErr != nil {
 		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field of BACnetConstructedDataTrackingValue")
 	}

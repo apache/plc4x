@@ -293,7 +293,11 @@ func (m AirConditioningCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningCommandTypeParse(readBuffer utils.ReadBuffer) (AirConditioningCommandType, error) {
+func AirConditioningCommandTypeParse(theBytes []byte) (AirConditioningCommandType, error) {
+	return AirConditioningCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningCommandType, error) {
 	val, err := readBuffer.ReadUint8("AirConditioningCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AirConditioningCommandType")

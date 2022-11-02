@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
+func BACnetConstructedDataSlaveProxyEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
+	return BACnetConstructedDataSlaveProxyEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveProxyEnable"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("slaveProxyEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for slaveProxyEnable")
 	}
-	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParse(readBuffer)
+	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _slaveProxyEnableErr != nil {
 		return nil, errors.Wrap(_slaveProxyEnableErr, "Error parsing 'slaveProxyEnable' field of BACnetConstructedDataSlaveProxyEnable")
 	}

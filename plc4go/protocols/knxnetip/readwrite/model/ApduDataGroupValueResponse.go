@@ -138,7 +138,11 @@ func (m *_ApduDataGroupValueResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {
+func ApduDataGroupValueResponseParse(theBytes []byte, dataLength uint8) (ApduDataGroupValueResponse, error) {
+	return ApduDataGroupValueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataGroupValueResponseParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueResponse"); pullErr != nil {

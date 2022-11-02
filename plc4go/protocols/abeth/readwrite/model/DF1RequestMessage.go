@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -154,7 +155,11 @@ func (m *_DF1RequestMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, error) {
+func DF1RequestMessageParse(theBytes []byte) (DF1RequestMessage, error) {
+	return DF1RequestMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DF1RequestMessageParseWithBuffer(readBuffer utils.ReadBuffer) (DF1RequestMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestMessage"); pullErr != nil {
@@ -225,7 +230,7 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, err
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
-		_childTemp, typeSwitchError = DF1CommandRequestMessageParse(readBuffer)
+		_childTemp, typeSwitchError = DF1CommandRequestMessageParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}

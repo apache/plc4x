@@ -103,7 +103,11 @@ func (m *_CALDataReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataResetParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
+func CALDataResetParse(theBytes []byte, requestContext RequestContext) (CALDataReset, error) {
+	return CALDataResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext) // TODO: get endianness from mspec
+}
+
+func CALDataResetParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReset"); pullErr != nil {

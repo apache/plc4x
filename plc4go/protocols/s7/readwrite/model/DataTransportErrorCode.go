@@ -121,7 +121,11 @@ func (m DataTransportErrorCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
+func DataTransportErrorCodeParse(theBytes []byte) (DataTransportErrorCode, error) {
+	return DataTransportErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DataTransportErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
 	val, err := readBuffer.ReadUint8("DataTransportErrorCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")

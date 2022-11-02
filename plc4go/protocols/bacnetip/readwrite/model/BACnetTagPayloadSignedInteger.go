@@ -424,7 +424,11 @@ func (m *_BACnetTagPayloadSignedInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
+func BACnetTagPayloadSignedIntegerParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
+	return BACnetTagPayloadSignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), actualLength) // TODO: get endianness from mspec
+}
+
+func BACnetTagPayloadSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadSignedInteger"); pullErr != nil {

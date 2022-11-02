@@ -139,7 +139,11 @@ func (m *_ModbusRtuADU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusRtuADU, error) {
+func ModbusRtuADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusRtuADU, error) {
+	return ModbusRtuADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response) // TODO: get endianness from mspec
+}
+
+func ModbusRtuADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusRtuADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusRtuADU"); pullErr != nil {
@@ -159,7 +163,7 @@ func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pdu")
 	}
-	_pdu, _pduErr := ModbusPDUParse(readBuffer, bool(response))
+	_pdu, _pduErr := ModbusPDUParseWithBuffer(readBuffer, bool(response))
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusRtuADU")
 	}

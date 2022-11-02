@@ -155,7 +155,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAck, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmAckParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAck, error) {
+	return S7PayloadUserDataItemCpuFunctionAlarmAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataItemCpuFunctionAlarmAckParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAck"); pullErr != nil {
@@ -190,7 +194,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, 
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageObjectAckTypeParse(readBuffer)
+			_item, _err := AlarmMessageObjectAckTypeParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAck")
 			}

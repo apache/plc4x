@@ -125,7 +125,11 @@ func (m *_DeviceConfigurationAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
+func DeviceConfigurationAckParse(theBytes []byte) (DeviceConfigurationAck, error) {
+	return DeviceConfigurationAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceConfigurationAckParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
@@ -138,7 +142,7 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (DeviceConfigurati
 	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationAckDataBlock")
 	}
-	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(readBuffer)
+	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParseWithBuffer(readBuffer)
 	if _deviceConfigurationAckDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field of DeviceConfigurationAck")
 	}

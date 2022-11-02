@@ -33,9 +33,9 @@ type Df1ParserHelper struct {
 func (m Df1ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "DF1Symbol":
-		return model.DF1SymbolParse(io)
+		return model.DF1SymbolParseWithBuffer(io)
 	case "DF1Command":
-		return model.DF1CommandParse(io)
+		return model.DF1CommandParseWithBuffer(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

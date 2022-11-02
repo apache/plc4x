@@ -128,7 +128,11 @@ func (m *_BACnetSecurityKeySet) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
+func BACnetSecurityKeySetParse(theBytes []byte) (BACnetSecurityKeySet, error) {
+	return BACnetSecurityKeySetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSecurityKeySetParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSecurityKeySet"); pullErr != nil {
@@ -141,7 +145,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	if pullErr := readBuffer.PullContext("keyRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for keyRevision")
 	}
-	_keyRevision, _keyRevisionErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_keyRevision, _keyRevisionErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _keyRevisionErr != nil {
 		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field of BACnetSecurityKeySet")
 	}
@@ -154,7 +158,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	if pullErr := readBuffer.PullContext("activationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for activationTime")
 	}
-	_activationTime, _activationTimeErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(1)))
+	_activationTime, _activationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _activationTimeErr != nil {
 		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetSecurityKeySet")
 	}
@@ -167,7 +171,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
 	}
-	_expirationTime, _expirationTimeErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(2)))
+	_expirationTime, _expirationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _expirationTimeErr != nil {
 		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field of BACnetSecurityKeySet")
 	}
@@ -180,7 +184,7 @@ func BACnetSecurityKeySetParse(readBuffer utils.ReadBuffer) (BACnetSecurityKeySe
 	if pullErr := readBuffer.PullContext("keyIds"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for keyIds")
 	}
-	_keyIds, _keyIdsErr := BACnetSecurityKeySetKeyIdsParse(readBuffer, uint8(uint8(3)))
+	_keyIds, _keyIdsErr := BACnetSecurityKeySetKeyIdsParseWithBuffer(readBuffer, uint8(uint8(3)))
 	if _keyIdsErr != nil {
 		return nil, errors.Wrap(_keyIdsErr, "Error parsing 'keyIds' field of BACnetSecurityKeySet")
 	}

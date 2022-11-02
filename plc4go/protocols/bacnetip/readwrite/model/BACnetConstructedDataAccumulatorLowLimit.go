@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccumulatorLowLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorLowLimit, error) {
+func BACnetConstructedDataAccumulatorLowLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorLowLimit, error) {
+	return BACnetConstructedDataAccumulatorLowLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAccumulatorLowLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorLowLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccumulatorLowLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAccumulatorLowLimitParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
 	}
-	_lowLimit, _lowLimitErr := BACnetApplicationTagParse(readBuffer)
+	_lowLimit, _lowLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _lowLimitErr != nil {
 		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetConstructedDataAccumulatorLowLimit")
 	}

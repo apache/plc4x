@@ -123,7 +123,11 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataEntryEnumeratedValueParse(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
+func BACnetLogDataLogDataEntryEnumeratedValueParse(theBytes []byte) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
+	return BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryEnumeratedValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetLogDataLogDataEntryEnumeratedValueParse(readBuffer utils.ReadBuffer) 
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_ENUMERATED))
+	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_ENUMERATED))
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetLogDataLogDataEntryEnumeratedValue")
 	}

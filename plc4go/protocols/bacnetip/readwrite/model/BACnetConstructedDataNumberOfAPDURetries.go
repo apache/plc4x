@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAPDURetries, error) {
+func BACnetConstructedDataNumberOfAPDURetriesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAPDURetries, error) {
+	return BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAPDURetries, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAPDURetries"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("numberOfApduRetries"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for numberOfApduRetries")
 	}
-	_numberOfApduRetries, _numberOfApduRetriesErr := BACnetApplicationTagParse(readBuffer)
+	_numberOfApduRetries, _numberOfApduRetriesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _numberOfApduRetriesErr != nil {
 		return nil, errors.Wrap(_numberOfApduRetriesErr, "Error parsing 'numberOfApduRetries' field of BACnetConstructedDataNumberOfAPDURetries")
 	}

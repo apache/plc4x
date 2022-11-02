@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogMultipleLogBufferParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
+func BACnetConstructedDataTrendLogMultipleLogBufferParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
+	return BACnetConstructedDataTrendLogMultipleLogBufferParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTrendLogMultipleLogBufferParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogMultipleLogBuffer"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataTrendLogMultipleLogBufferParse(readBuffer utils.ReadBu
 	var floorText []BACnetLogMultipleRecord
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLogMultipleRecordParse(readBuffer)
+			_item, _err := BACnetLogMultipleRecordParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetConstructedDataTrendLogMultipleLogBuffer")
 			}

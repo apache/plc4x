@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataOccupancyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyState, error) {
+func BACnetConstructedDataOccupancyStateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyState, error) {
+	return BACnetConstructedDataOccupancyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataOccupancyStateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyState"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("occupancyState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyState")
 	}
-	_occupancyState, _occupancyStateErr := BACnetAccessZoneOccupancyStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_occupancyState, _occupancyStateErr := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _occupancyStateErr != nil {
 		return nil, errors.Wrap(_occupancyStateErr, "Error parsing 'occupancyState' field of BACnetConstructedDataOccupancyState")
 	}

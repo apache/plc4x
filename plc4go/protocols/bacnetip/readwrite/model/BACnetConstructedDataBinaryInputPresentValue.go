@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBinaryInputPresentValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBinaryInputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryInputPresentValue, error) {
+func BACnetConstructedDataBinaryInputPresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryInputPresentValue, error) {
+	return BACnetConstructedDataBinaryInputPresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBinaryInputPresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryInputPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryInputPresentValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBinaryInputPresentValueParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_presentValue, _presentValueErr := BACnetBinaryPVTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataBinaryInputPresentValue")
 	}

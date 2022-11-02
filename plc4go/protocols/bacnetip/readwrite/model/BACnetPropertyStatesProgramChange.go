@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesProgramChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesProgramChangeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProgramChange, error) {
+func BACnetPropertyStatesProgramChangeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesProgramChange, error) {
+	return BACnetPropertyStatesProgramChangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesProgramChangeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProgramChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesProgramChange"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesProgramChangeParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("programState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for programState")
 	}
-	_programState, _programStateErr := BACnetProgramStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_programState, _programStateErr := BACnetProgramStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _programStateErr != nil {
 		return nil, errors.Wrap(_programStateErr, "Error parsing 'programState' field of BACnetPropertyStatesProgramChange")
 	}

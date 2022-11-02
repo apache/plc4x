@@ -151,7 +151,11 @@ func (m ParameterType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterTypeParse(readBuffer utils.ReadBuffer) (ParameterType, error) {
+func ParameterTypeParse(theBytes []byte) (ParameterType, error) {
+	return ParameterTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ParameterTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ParameterType, error) {
 	val, err := readBuffer.ReadUint8("ParameterType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ParameterType")

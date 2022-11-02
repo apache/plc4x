@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastCredentialAddedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAdded, error) {
+func BACnetConstructedDataLastCredentialAddedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAdded, error) {
+	return BACnetConstructedDataLastCredentialAddedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastCredentialAddedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAdded, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialAdded"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLastCredentialAddedParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("lastCredentialAdded"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialAdded")
 	}
-	_lastCredentialAdded, _lastCredentialAddedErr := BACnetDeviceObjectReferenceParse(readBuffer)
+	_lastCredentialAdded, _lastCredentialAddedErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 	if _lastCredentialAddedErr != nil {
 		return nil, errors.Wrap(_lastCredentialAddedErr, "Error parsing 'lastCredentialAdded' field of BACnetConstructedDataLastCredentialAdded")
 	}

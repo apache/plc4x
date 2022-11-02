@@ -138,7 +138,11 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
+func IdentifyReplyCommandDelaysParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
+	return IdentifyReplyCommandDelaysParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandDelaysParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDelays"); pullErr != nil {

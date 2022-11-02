@@ -100,7 +100,11 @@ func (m *_MACAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MACAddressParse(readBuffer utils.ReadBuffer) (MACAddress, error) {
+func MACAddressParse(theBytes []byte) (MACAddress, error) {
+	return MACAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MACAddressParseWithBuffer(readBuffer utils.ReadBuffer) (MACAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MACAddress"); pullErr != nil {

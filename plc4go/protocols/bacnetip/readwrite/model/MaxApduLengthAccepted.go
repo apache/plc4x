@@ -181,7 +181,11 @@ func (m MaxApduLengthAccepted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MaxApduLengthAcceptedParse(readBuffer utils.ReadBuffer) (MaxApduLengthAccepted, error) {
+func MaxApduLengthAcceptedParse(theBytes []byte) (MaxApduLengthAccepted, error) {
+	return MaxApduLengthAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MaxApduLengthAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxApduLengthAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxApduLengthAccepted", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MaxApduLengthAccepted")

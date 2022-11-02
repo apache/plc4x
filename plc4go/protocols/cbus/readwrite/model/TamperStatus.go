@@ -131,7 +131,11 @@ func (m *_TamperStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TamperStatusParse(readBuffer utils.ReadBuffer) (TamperStatus, error) {
+func TamperStatusParse(theBytes []byte) (TamperStatus, error) {
+	return TamperStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TamperStatusParseWithBuffer(readBuffer utils.ReadBuffer) (TamperStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TamperStatus"); pullErr != nil {

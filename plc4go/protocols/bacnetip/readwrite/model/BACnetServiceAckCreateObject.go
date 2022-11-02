@@ -125,7 +125,11 @@ func (m *_BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
+func BACnetServiceAckCreateObjectParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
+	return BACnetServiceAckCreateObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckCreateObjectParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLe
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckCreateObject")
 	}

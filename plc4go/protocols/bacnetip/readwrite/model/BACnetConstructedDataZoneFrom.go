@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataZoneFrom) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataZoneFromParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneFrom, error) {
+func BACnetConstructedDataZoneFromParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneFrom, error) {
+	return BACnetConstructedDataZoneFromParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataZoneFromParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneFrom, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataZoneFrom"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataZoneFromParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("zoneFrom"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneFrom")
 	}
-	_zoneFrom, _zoneFromErr := BACnetDeviceObjectReferenceParse(readBuffer)
+	_zoneFrom, _zoneFromErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 	if _zoneFromErr != nil {
 		return nil, errors.Wrap(_zoneFromErr, "Error parsing 'zoneFrom' field of BACnetConstructedDataZoneFrom")
 	}

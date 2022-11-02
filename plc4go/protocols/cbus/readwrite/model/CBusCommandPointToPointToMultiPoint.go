@@ -123,7 +123,11 @@ func (m *_CBusCommandPointToPointToMultiPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToPointToMultiPoint, error) {
+func CBusCommandPointToPointToMultiPointParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandPointToPointToMultiPoint, error) {
+	return CBusCommandPointToPointToMultiPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusCommandPointToPointToMultiPointParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToPointToMultiPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPointToMultiPoint"); pullErr != nil {
@@ -136,7 +140,7 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusO
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToPointToMultiPointCommandParse(readBuffer, cBusOptions)
+	_command, _commandErr := CBusPointToPointToMultiPointCommandParseWithBuffer(readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToPointToMultiPoint")
 	}

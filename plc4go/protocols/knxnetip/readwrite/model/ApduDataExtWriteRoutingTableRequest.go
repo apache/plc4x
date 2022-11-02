@@ -104,7 +104,11 @@ func (m *_ApduDataExtWriteRoutingTableRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtWriteRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtWriteRoutingTableRequest, error) {
+func ApduDataExtWriteRoutingTableRequestParse(theBytes []byte, length uint8) (ApduDataExtWriteRoutingTableRequest, error) {
+	return ApduDataExtWriteRoutingTableRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtWriteRoutingTableRequestParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtWriteRoutingTableRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRoutingTableRequest"); pullErr != nil {

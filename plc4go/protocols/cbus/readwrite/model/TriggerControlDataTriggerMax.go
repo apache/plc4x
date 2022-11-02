@@ -103,7 +103,11 @@ func (m *_TriggerControlDataTriggerMax) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataTriggerMaxParse(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
+func TriggerControlDataTriggerMaxParse(theBytes []byte) (TriggerControlDataTriggerMax, error) {
+	return TriggerControlDataTriggerMaxParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlDataTriggerMaxParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMax"); pullErr != nil {

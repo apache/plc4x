@@ -157,7 +157,11 @@ func (m *_LogicAssignment) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LogicAssignmentParse(readBuffer utils.ReadBuffer) (LogicAssignment, error) {
+func LogicAssignmentParse(theBytes []byte) (LogicAssignment, error) {
+	return LogicAssignmentParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LogicAssignmentParseWithBuffer(readBuffer utils.ReadBuffer) (LogicAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LogicAssignment"); pullErr != nil {

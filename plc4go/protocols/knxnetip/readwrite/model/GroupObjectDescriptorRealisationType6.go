@@ -78,7 +78,11 @@ func (m *_GroupObjectDescriptorRealisationType6) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType6Parse(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType6, error) {
+func GroupObjectDescriptorRealisationType6Parse(theBytes []byte) (GroupObjectDescriptorRealisationType6, error) {
+	return GroupObjectDescriptorRealisationType6ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func GroupObjectDescriptorRealisationType6ParseWithBuffer(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType6, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType6"); pullErr != nil {

@@ -146,7 +146,11 @@ func (m *_CALDataWrite) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataWrite, error) {
+func CALDataWriteParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataWrite, error) {
+	return CALDataWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext, commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func CALDataWriteParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataWrite"); pullErr != nil {
@@ -159,7 +163,7 @@ func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataWrite")
 	}
@@ -179,7 +183,7 @@ func CALDataWriteParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	if pullErr := readBuffer.PullContext("parameterValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameterValue")
 	}
-	_parameterValue, _parameterValueErr := ParameterValueParse(readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2))))
+	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2))))
 	if _parameterValueErr != nil {
 		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CALDataWrite")
 	}

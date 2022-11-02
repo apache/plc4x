@@ -136,7 +136,11 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
+	return BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileRecord"); pullErr != nil {
@@ -149,7 +153,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("fileStartRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartRecord")
 	}
-	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParse(readBuffer)
+	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileStartRecordErr != nil {
 		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}
@@ -162,7 +166,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("requestRecordCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for requestRecordCount")
 	}
-	_requestRecordCount, _requestRecordCountErr := BACnetApplicationTagParse(readBuffer)
+	_requestRecordCount, _requestRecordCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _requestRecordCountErr != nil {
 		return nil, errors.Wrap(_requestRecordCountErr, "Error parsing 'requestRecordCount' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}

@@ -153,7 +153,11 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBy
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
@@ -169,7 +173,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 		if pullErr := readBuffer.PullContext("timeDuration"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for timeDuration")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -188,7 +192,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("enableDisable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enableDisable")
 	}
-	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _enableDisableErr != nil {
 		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
 	}
@@ -204,7 +208,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for password")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_CHARACTER_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

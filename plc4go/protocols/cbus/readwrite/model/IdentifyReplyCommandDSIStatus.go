@@ -224,7 +224,11 @@ func (m *_IdentifyReplyCommandDSIStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {
+func IdentifyReplyCommandDSIStatusParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {
+	return IdentifyReplyCommandDSIStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandDSIStatusParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDSIStatus"); pullErr != nil {
@@ -237,7 +241,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus1")
 	}
-	_channelStatus1, _channelStatus1Err := ChannelStatusParse(readBuffer)
+	_channelStatus1, _channelStatus1Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus1Err != nil {
 		return nil, errors.Wrap(_channelStatus1Err, "Error parsing 'channelStatus1' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -250,7 +254,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus2")
 	}
-	_channelStatus2, _channelStatus2Err := ChannelStatusParse(readBuffer)
+	_channelStatus2, _channelStatus2Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus2Err != nil {
 		return nil, errors.Wrap(_channelStatus2Err, "Error parsing 'channelStatus2' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -263,7 +267,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus3"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus3")
 	}
-	_channelStatus3, _channelStatus3Err := ChannelStatusParse(readBuffer)
+	_channelStatus3, _channelStatus3Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus3Err != nil {
 		return nil, errors.Wrap(_channelStatus3Err, "Error parsing 'channelStatus3' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -276,7 +280,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus4"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus4")
 	}
-	_channelStatus4, _channelStatus4Err := ChannelStatusParse(readBuffer)
+	_channelStatus4, _channelStatus4Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus4Err != nil {
 		return nil, errors.Wrap(_channelStatus4Err, "Error parsing 'channelStatus4' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -289,7 +293,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus5"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus5")
 	}
-	_channelStatus5, _channelStatus5Err := ChannelStatusParse(readBuffer)
+	_channelStatus5, _channelStatus5Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus5Err != nil {
 		return nil, errors.Wrap(_channelStatus5Err, "Error parsing 'channelStatus5' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -302,7 +306,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus6"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus6")
 	}
-	_channelStatus6, _channelStatus6Err := ChannelStatusParse(readBuffer)
+	_channelStatus6, _channelStatus6Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus6Err != nil {
 		return nil, errors.Wrap(_channelStatus6Err, "Error parsing 'channelStatus6' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -315,7 +319,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus7"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus7")
 	}
-	_channelStatus7, _channelStatus7Err := ChannelStatusParse(readBuffer)
+	_channelStatus7, _channelStatus7Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus7Err != nil {
 		return nil, errors.Wrap(_channelStatus7Err, "Error parsing 'channelStatus7' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -328,7 +332,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("channelStatus8"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus8")
 	}
-	_channelStatus8, _channelStatus8Err := ChannelStatusParse(readBuffer)
+	_channelStatus8, _channelStatus8Err := ChannelStatusParseWithBuffer(readBuffer)
 	if _channelStatus8Err != nil {
 		return nil, errors.Wrap(_channelStatus8Err, "Error parsing 'channelStatus8' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -341,7 +345,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	if pullErr := readBuffer.PullContext("unitStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitStatus")
 	}
-	_unitStatus, _unitStatusErr := UnitStatusParse(readBuffer)
+	_unitStatus, _unitStatusErr := UnitStatusParseWithBuffer(readBuffer)
 	if _unitStatusErr != nil {
 		return nil, errors.Wrap(_unitStatusErr, "Error parsing 'unitStatus' field of IdentifyReplyCommandDSIStatus")
 	}

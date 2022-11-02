@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataValueChangeTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataValueChangeTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueChangeTime, error) {
+func BACnetConstructedDataValueChangeTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueChangeTime, error) {
+	return BACnetConstructedDataValueChangeTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataValueChangeTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueChangeTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueChangeTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataValueChangeTimeParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("valueChangeTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for valueChangeTime")
 	}
-	_valueChangeTime, _valueChangeTimeErr := BACnetDateTimeParse(readBuffer)
+	_valueChangeTime, _valueChangeTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _valueChangeTimeErr != nil {
 		return nil, errors.Wrap(_valueChangeTimeErr, "Error parsing 'valueChangeTime' field of BACnetConstructedDataValueChangeTime")
 	}

@@ -178,7 +178,11 @@ func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType7, error) {
+func GroupObjectDescriptorRealisationType7Parse(theBytes []byte) (GroupObjectDescriptorRealisationType7, error) {
+	return GroupObjectDescriptorRealisationType7ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func GroupObjectDescriptorRealisationType7ParseWithBuffer(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType7, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType7"); pullErr != nil {
@@ -240,7 +244,7 @@ func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (Gr
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
-	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParseWithBuffer(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of GroupObjectDescriptorRealisationType7")
 	}
@@ -253,7 +257,7 @@ func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (Gr
 	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for valueType")
 	}
-	_valueType, _valueTypeErr := ComObjectValueTypeParse(readBuffer)
+	_valueType, _valueTypeErr := ComObjectValueTypeParseWithBuffer(readBuffer)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field of GroupObjectDescriptorRealisationType7")
 	}

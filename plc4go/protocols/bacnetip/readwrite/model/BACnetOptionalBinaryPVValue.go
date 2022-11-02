@@ -123,7 +123,11 @@ func (m *_BACnetOptionalBinaryPVValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOptionalBinaryPVValueParse(readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVValue, error) {
+func BACnetOptionalBinaryPVValueParse(theBytes []byte) (BACnetOptionalBinaryPVValue, error) {
+	return BACnetOptionalBinaryPVValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetOptionalBinaryPVValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalBinaryPVValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetOptionalBinaryPVValueParse(readBuffer utils.ReadBuffer) (BACnetOption
 	if pullErr := readBuffer.PullContext("binaryPv"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for binaryPv")
 	}
-	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _binaryPvErr != nil {
 		return nil, errors.Wrap(_binaryPvErr, "Error parsing 'binaryPv' field of BACnetOptionalBinaryPVValue")
 	}

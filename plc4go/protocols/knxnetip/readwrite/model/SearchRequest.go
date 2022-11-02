@@ -125,7 +125,11 @@ func (m *_SearchRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SearchRequestParse(readBuffer utils.ReadBuffer) (SearchRequest, error) {
+func SearchRequestParse(theBytes []byte) (SearchRequest, error) {
+	return SearchRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SearchRequestParseWithBuffer(readBuffer utils.ReadBuffer) (SearchRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SearchRequest"); pullErr != nil {
@@ -138,7 +142,7 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (SearchRequest, error) {
 	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiIDiscoveryEndpoint")
 	}
-	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
+	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(readBuffer)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field of SearchRequest")
 	}

@@ -259,7 +259,11 @@ func (m *_APDUComplexAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUComplexAck, error) {
+func APDUComplexAckParse(theBytes []byte, apduLength uint16) (APDUComplexAck, error) {
+	return APDUComplexAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+}
+
+func APDUComplexAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUComplexAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
@@ -338,7 +342,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 		if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for serviceAck")
 		}
-		_val, _err := BACnetServiceAckParse(readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
+		_val, _err := BACnetServiceAckParseWithBuffer(readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

@@ -97,7 +97,11 @@ func (m BACnetBinaryPV) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
+func BACnetBinaryPVParse(theBytes []byte) (BACnetBinaryPV, error) {
+	return BACnetBinaryPVParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetBinaryPVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
 	val, err := readBuffer.ReadUint8("BACnetBinaryPV", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetBinaryPV")

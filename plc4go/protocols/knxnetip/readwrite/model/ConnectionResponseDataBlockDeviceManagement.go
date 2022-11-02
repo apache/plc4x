@@ -105,7 +105,11 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {
+func ConnectionResponseDataBlockDeviceManagementParse(theBytes []byte) (ConnectionResponseDataBlockDeviceManagement, error) {
+	return ConnectionResponseDataBlockDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionResponseDataBlockDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {

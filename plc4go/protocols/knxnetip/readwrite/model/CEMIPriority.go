@@ -109,7 +109,11 @@ func (m CEMIPriority) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
+func CEMIPriorityParse(theBytes []byte) (CEMIPriority, error) {
+	return CEMIPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CEMIPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 	val, err := readBuffer.ReadUint8("CEMIPriority", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CEMIPriority")

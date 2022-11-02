@@ -103,7 +103,11 @@ func (m AccessControlDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDirectionParse(readBuffer utils.ReadBuffer) (AccessControlDirection, error) {
+func AccessControlDirectionParse(theBytes []byte) (AccessControlDirection, error) {
+	return AccessControlDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDirection, error) {
 	val, err := readBuffer.ReadUint8("AccessControlDirection", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlDirection")

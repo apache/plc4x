@@ -3706,7 +3706,11 @@ func (m ApplicationIdContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApplicationIdContainerParse(readBuffer utils.ReadBuffer) (ApplicationIdContainer, error) {
+func ApplicationIdContainerParse(theBytes []byte) (ApplicationIdContainer, error) {
+	return ApplicationIdContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ApplicationIdContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ApplicationIdContainer, error) {
 	val, err := readBuffer.ReadUint8("ApplicationIdContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ApplicationIdContainer")

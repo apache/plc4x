@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitStringValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitStringValueRelinquishDefault, error) {
+func BACnetConstructedDataBitStringValueRelinquishDefaultParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitStringValueRelinquishDefault, error) {
+	return BACnetConstructedDataBitStringValueRelinquishDefaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBitStringValueRelinquishDefaultParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitStringValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitStringValueRelinquishDefault"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBitStringValueRelinquishDefaultParse(readBuffer utils.
 	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParse(readBuffer)
+	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _relinquishDefaultErr != nil {
 		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataBitStringValueRelinquishDefault")
 	}

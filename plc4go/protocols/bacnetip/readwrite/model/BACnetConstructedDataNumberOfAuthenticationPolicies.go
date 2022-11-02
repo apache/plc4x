@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
+func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
+	return BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("numberOfAuthenticationPolicies"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for numberOfAuthenticationPolicies")
 	}
-	_numberOfAuthenticationPolicies, _numberOfAuthenticationPoliciesErr := BACnetApplicationTagParse(readBuffer)
+	_numberOfAuthenticationPolicies, _numberOfAuthenticationPoliciesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _numberOfAuthenticationPoliciesErr != nil {
 		return nil, errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error parsing 'numberOfAuthenticationPolicies' field of BACnetConstructedDataNumberOfAuthenticationPolicies")
 	}

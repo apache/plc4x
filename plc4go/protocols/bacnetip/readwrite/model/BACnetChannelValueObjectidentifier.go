@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueObjectidentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (BACnetChannelValueObjectidentifier, error) {
+func BACnetChannelValueObjectidentifierParse(theBytes []byte) (BACnetChannelValueObjectidentifier, error) {
+	return BACnetChannelValueObjectidentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueObjectidentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueObjectidentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueObjectidentifier"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
-	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
+	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectidentifierValueErr != nil {
 		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetChannelValueObjectidentifier")
 	}

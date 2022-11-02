@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesLiftCarDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
+func BACnetPropertyStatesLiftCarDirectionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
+	return BACnetPropertyStatesLiftCarDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLiftCarDirectionParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDirection"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peek
 	if pullErr := readBuffer.PullContext("liftCarDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDirection")
 	}
-	_liftCarDirection, _liftCarDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_liftCarDirection, _liftCarDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDirectionErr != nil {
 		return nil, errors.Wrap(_liftCarDirectionErr, "Error parsing 'liftCarDirection' field of BACnetPropertyStatesLiftCarDirection")
 	}

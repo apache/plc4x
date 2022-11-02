@@ -124,7 +124,11 @@ func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataSystemArmedDisarmedParse(readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {
+func SecurityDataSystemArmedDisarmedParse(theBytes []byte) (SecurityDataSystemArmedDisarmed, error) {
+	return SecurityDataSystemArmedDisarmedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataSystemArmedDisarmedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataSystemArmedDisarmed"); pullErr != nil {
@@ -137,7 +141,7 @@ func SecurityDataSystemArmedDisarmedParse(readBuffer utils.ReadBuffer) (Security
 	if pullErr := readBuffer.PullContext("armCodeType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for armCodeType")
 	}
-	_armCodeType, _armCodeTypeErr := SecurityArmCodeParse(readBuffer)
+	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(readBuffer)
 	if _armCodeTypeErr != nil {
 		return nil, errors.Wrap(_armCodeTypeErr, "Error parsing 'armCodeType' field of SecurityDataSystemArmedDisarmed")
 	}

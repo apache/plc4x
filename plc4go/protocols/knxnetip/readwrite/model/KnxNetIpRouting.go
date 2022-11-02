@@ -125,7 +125,11 @@ func (m *_KnxNetIpRouting) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (KnxNetIpRouting, error) {
+func KnxNetIpRoutingParse(theBytes []byte) (KnxNetIpRouting, error) {
+	return KnxNetIpRoutingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxNetIpRoutingParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpRouting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpRouting"); pullErr != nil {

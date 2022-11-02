@@ -144,7 +144,11 @@ func (m *_BACnetContextTagReal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagRealParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagReal, error) {
+func BACnetContextTagRealParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagReal, error) {
+	return BACnetContextTagRealParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument, dataType) // TODO: get endianness from mspec
+}
+
+func BACnetContextTagRealParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagReal"); pullErr != nil {
@@ -157,7 +161,7 @@ func BACnetContextTagRealParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadRealParse(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadRealParseWithBuffer(readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagReal")
 	}

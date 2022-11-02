@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLockStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
+func BACnetConstructedDataLockStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
+	return BACnetConstructedDataLockStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLockStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockStatus"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("lockStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lockStatus")
 	}
-	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lockStatusErr != nil {
 		return nil, errors.Wrap(_lockStatusErr, "Error parsing 'lockStatus' field of BACnetConstructedDataLockStatus")
 	}

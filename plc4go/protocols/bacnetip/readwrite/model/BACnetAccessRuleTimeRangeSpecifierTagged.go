@@ -112,7 +112,11 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessRuleTimeRangeSpecifierTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleTimeRangeSpecifierTagged, error) {
+func BACnetAccessRuleTimeRangeSpecifierTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleTimeRangeSpecifierTagged, error) {
+	return BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleTimeRangeSpecifierTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessRuleTimeRangeSpecifierTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAccessRuleTimeRangeSpecifierTagged")
 	}

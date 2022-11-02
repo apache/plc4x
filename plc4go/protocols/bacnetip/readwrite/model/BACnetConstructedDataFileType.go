@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataFileType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileType, error) {
+func BACnetConstructedDataFileTypeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileType, error) {
+	return BACnetConstructedDataFileTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataFileTypeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileType"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("fileType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileType")
 	}
-	_fileType, _fileTypeErr := BACnetApplicationTagParse(readBuffer)
+	_fileType, _fileTypeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileTypeErr != nil {
 		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field of BACnetConstructedDataFileType")
 	}

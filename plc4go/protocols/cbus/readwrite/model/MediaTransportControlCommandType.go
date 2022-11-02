@@ -257,7 +257,11 @@ func (m MediaTransportControlCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlCommandTypeParse(readBuffer utils.ReadBuffer) (MediaTransportControlCommandType, error) {
+func MediaTransportControlCommandTypeParse(theBytes []byte) (MediaTransportControlCommandType, error) {
+	return MediaTransportControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("MediaTransportControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MediaTransportControlCommandType")

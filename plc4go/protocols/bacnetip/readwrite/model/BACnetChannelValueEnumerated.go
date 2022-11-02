@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueEnumerated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueEnumeratedParse(readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
+func BACnetChannelValueEnumeratedParse(theBytes []byte) (BACnetChannelValueEnumerated, error) {
+	return BACnetChannelValueEnumeratedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueEnumeratedParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueEnumerated"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueEnumeratedParse(readBuffer utils.ReadBuffer) (BACnetChann
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
+	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetChannelValueEnumerated")
 	}

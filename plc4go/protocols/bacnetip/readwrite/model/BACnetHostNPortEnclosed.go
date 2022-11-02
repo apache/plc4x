@@ -121,7 +121,11 @@ func (m *_BACnetHostNPortEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostNPortEnclosed, error) {
+func BACnetHostNPortEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetHostNPortEnclosed, error) {
+	return BACnetHostNPortEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetHostNPortEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostNPortEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostNPortEnclosed"); pullErr != nil {
@@ -134,7 +138,7 @@ func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetHostNPortEnclosed")
 	}
@@ -147,7 +151,7 @@ func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("bacnetHostNPort"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetHostNPort")
 	}
-	_bacnetHostNPort, _bacnetHostNPortErr := BACnetHostNPortParse(readBuffer)
+	_bacnetHostNPort, _bacnetHostNPortErr := BACnetHostNPortParseWithBuffer(readBuffer)
 	if _bacnetHostNPortErr != nil {
 		return nil, errors.Wrap(_bacnetHostNPortErr, "Error parsing 'bacnetHostNPort' field of BACnetHostNPortEnclosed")
 	}
@@ -160,7 +164,7 @@ func BACnetHostNPortEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetHostNPortEnclosed")
 	}

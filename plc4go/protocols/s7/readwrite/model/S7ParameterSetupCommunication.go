@@ -156,7 +156,11 @@ func (m *_S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
+func S7ParameterSetupCommunicationParse(theBytes []byte, messageType uint8) (S7ParameterSetupCommunication, error) {
+	return S7ParameterSetupCommunicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+}
+
+func S7ParameterSetupCommunicationParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {

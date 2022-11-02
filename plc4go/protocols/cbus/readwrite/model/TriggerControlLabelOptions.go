@@ -125,7 +125,11 @@ func (m *_TriggerControlLabelOptions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+func TriggerControlLabelOptionsParse(theBytes []byte) (TriggerControlLabelOptions, error) {
+	return TriggerControlLabelOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlLabelOptions"); pullErr != nil {
@@ -155,7 +159,7 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
 	}
-	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParse(readBuffer)
+	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParseWithBuffer(readBuffer)
 	if _labelFlavourErr != nil {
 		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of TriggerControlLabelOptions")
 	}
@@ -202,7 +206,7 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelType")
 	}
-	_labelType, _labelTypeErr := TriggerControlLabelTypeParse(readBuffer)
+	_labelType, _labelTypeErr := TriggerControlLabelTypeParseWithBuffer(readBuffer)
 	if _labelTypeErr != nil {
 		return nil, errors.Wrap(_labelTypeErr, "Error parsing 'labelType' field of TriggerControlLabelOptions")
 	}

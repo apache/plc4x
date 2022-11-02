@@ -158,7 +158,11 @@ func (m *_AdsReadRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadRequestParse(readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
+func AdsReadRequestParse(theBytes []byte) (AdsReadRequest, error) {
+	return AdsReadRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsReadRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadRequest"); pullErr != nil {

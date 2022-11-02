@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
+func BACnetConstructedDataProtocolServicesSupportedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
+	return BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolServicesSupported"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("protocolServicesSupported"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolServicesSupported")
 	}
-	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _protocolServicesSupportedErr != nil {
 		return nil, errors.Wrap(_protocolServicesSupportedErr, "Error parsing 'protocolServicesSupported' field of BACnetConstructedDataProtocolServicesSupported")
 	}

@@ -364,7 +364,11 @@ func (m *_AdsSymbolTableEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
+func AdsSymbolTableEntryParse(theBytes []byte) (AdsSymbolTableEntry, error) {
+	return AdsSymbolTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsSymbolTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsSymbolTableEntry"); pullErr != nil {

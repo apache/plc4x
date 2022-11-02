@@ -103,7 +103,11 @@ func (m DeviceGroup) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
+func DeviceGroupParse(theBytes []byte) (DeviceGroup, error) {
+	return DeviceGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceGroupParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 	val, err := readBuffer.ReadUint8("DeviceGroup", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceGroup")

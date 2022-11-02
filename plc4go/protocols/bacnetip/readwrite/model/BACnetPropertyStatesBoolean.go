@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
+func BACnetPropertyStatesBooleanParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
+	return BACnetPropertyStatesBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesBooleanParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBoolean"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, peekedTagNumb
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_BOOLEAN))
+	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetPropertyStatesBoolean")
 	}

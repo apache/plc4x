@@ -109,7 +109,11 @@ func (m LightingLabelType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingLabelTypeParse(readBuffer utils.ReadBuffer) (LightingLabelType, error) {
+func LightingLabelTypeParse(theBytes []byte) (LightingLabelType, error) {
+	return LightingLabelTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingLabelTypeParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelType, error) {
 	val, err := readBuffer.ReadUint8("LightingLabelType", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingLabelType")

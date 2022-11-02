@@ -123,7 +123,11 @@ func (m *_AirConditioningDataRefresh) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataRefreshParse(readBuffer utils.ReadBuffer) (AirConditioningDataRefresh, error) {
+func AirConditioningDataRefreshParse(theBytes []byte) (AirConditioningDataRefresh, error) {
+	return AirConditioningDataRefreshParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataRefreshParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataRefresh, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataRefresh"); pullErr != nil {

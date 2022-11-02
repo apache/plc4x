@@ -174,7 +174,11 @@ func (m *_APDUSegmentAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSegmentAck, error) {
+func APDUSegmentAckParse(theBytes []byte, apduLength uint16) (APDUSegmentAck, error) {
+	return APDUSegmentAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+}
+
+func APDUSegmentAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSegmentAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUSegmentAck"); pullErr != nil {

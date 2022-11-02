@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLoopAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoopAction, error) {
+func BACnetConstructedDataLoopActionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoopAction, error) {
+	return BACnetConstructedDataLoopActionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLoopActionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoopAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoopAction"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("action"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for action")
 	}
-	_action, _actionErr := BACnetActionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_action, _actionErr := BACnetActionTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _actionErr != nil {
 		return nil, errors.Wrap(_actionErr, "Error parsing 'action' field of BACnetConstructedDataLoopAction")
 	}

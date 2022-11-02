@@ -140,7 +140,11 @@ func (m *_BACnetApplicationTagSignedInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagSignedInteger, error) {
+func BACnetApplicationTagSignedIntegerParse(theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagSignedInteger, error) {
+	return BACnetApplicationTagSignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), header) // TODO: get endianness from mspec
+}
+
+func BACnetApplicationTagSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagSignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagSignedInteger"); pullErr != nil {
@@ -153,7 +157,7 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header 
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadSignedIntegerParse(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadSignedIntegerParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagSignedInteger")
 	}

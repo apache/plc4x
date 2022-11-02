@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDatePatternValueRelinquishDefault) GetLengthInByt
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDatePatternValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatePatternValueRelinquishDefault, error) {
+func BACnetConstructedDataDatePatternValueRelinquishDefaultParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatePatternValueRelinquishDefault, error) {
+	return BACnetConstructedDataDatePatternValueRelinquishDefaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDatePatternValueRelinquishDefaultParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatePatternValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDatePatternValueRelinquishDefault"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDatePatternValueRelinquishDefaultParse(readBuffer util
 	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParse(readBuffer)
+	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _relinquishDefaultErr != nil {
 		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataDatePatternValueRelinquishDefault")
 	}

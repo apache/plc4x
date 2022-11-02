@@ -145,7 +145,11 @@ func (m ModbusErrorCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusErrorCodeParse(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {
+func ModbusErrorCodeParse(theBytes []byte) (ModbusErrorCode, error) {
+	return ModbusErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModbusErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {
 	val, err := readBuffer.ReadUint8("ModbusErrorCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusErrorCode")

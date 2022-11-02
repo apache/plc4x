@@ -104,7 +104,11 @@ func (m *_ApduControlConnect) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlConnectParse(readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
+func ApduControlConnectParse(theBytes []byte) (ApduControlConnect, error) {
+	return ApduControlConnectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ApduControlConnectParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlConnect"); pullErr != nil {

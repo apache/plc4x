@@ -130,7 +130,11 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
+func CBusPointToPointToMultiPointCommandStatusParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
+	return CBusPointToPointToMultiPointCommandStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommandStatus"); pullErr != nil {
@@ -160,7 +164,7 @@ func CBusPointToPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
 	}
-	_statusRequest, _statusRequestErr := StatusRequestParse(readBuffer)
+	_statusRequest, _statusRequestErr := StatusRequestParseWithBuffer(readBuffer)
 	if _statusRequestErr != nil {
 		return nil, errors.Wrap(_statusRequestErr, "Error parsing 'statusRequest' field of CBusPointToPointToMultiPointCommandStatus")
 	}

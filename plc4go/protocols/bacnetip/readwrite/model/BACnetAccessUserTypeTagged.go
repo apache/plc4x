@@ -139,7 +139,11 @@ func (m *_BACnetAccessUserTypeTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessUserTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessUserTypeTagged, error) {
+func BACnetAccessUserTypeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessUserTypeTagged, error) {
+	return BACnetAccessUserTypeTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetAccessUserTypeTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessUserTypeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessUserTypeTagged"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetAccessUserTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAccessUserTypeTagged")
 	}

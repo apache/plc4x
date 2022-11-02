@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBufferSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBufferSizeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBufferSize, error) {
+func BACnetConstructedDataBufferSizeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBufferSize, error) {
+	return BACnetConstructedDataBufferSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBufferSizeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBufferSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBufferSize"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBufferSizeParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("bufferSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bufferSize")
 	}
-	_bufferSize, _bufferSizeErr := BACnetApplicationTagParse(readBuffer)
+	_bufferSize, _bufferSizeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _bufferSizeErr != nil {
 		return nil, errors.Wrap(_bufferSizeErr, "Error parsing 'bufferSize' field of BACnetConstructedDataBufferSize")
 	}

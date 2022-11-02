@@ -19470,7 +19470,11 @@ func (m BACnetVendorId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVendorIdParse(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
+func BACnetVendorIdParse(theBytes []byte) (BACnetVendorId, error) {
+	return BACnetVendorIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetVendorIdParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
 	val, err := readBuffer.ReadUint16("BACnetVendorId", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVendorId")

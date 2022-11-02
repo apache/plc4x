@@ -115,7 +115,11 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLe
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")

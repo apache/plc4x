@@ -124,7 +124,11 @@ func (m *_MeteringDataElectricityConsumption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataElectricityConsumptionParse(readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
+func MeteringDataElectricityConsumptionParse(theBytes []byte) (MeteringDataElectricityConsumption, error) {
+	return MeteringDataElectricityConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringDataElectricityConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataElectricityConsumption"); pullErr != nil {

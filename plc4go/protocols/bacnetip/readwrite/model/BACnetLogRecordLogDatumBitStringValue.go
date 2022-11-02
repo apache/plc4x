@@ -125,7 +125,11 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumBitStringValueParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
+func BACnetLogRecordLogDatumBitStringValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
+	return BACnetLogRecordLogDatumBitStringValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumBitStringValue"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetLogRecordLogDatumBitStringValueParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
-	_bitStringValue, _bitStringValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_bitStringValue, _bitStringValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitStringValueErr != nil {
 		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetLogRecordLogDatumBitStringValue")
 	}

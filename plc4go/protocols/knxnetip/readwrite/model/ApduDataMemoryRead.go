@@ -136,7 +136,11 @@ func (m *_ApduDataMemoryRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryRead, error) {
+func ApduDataMemoryReadParse(theBytes []byte, dataLength uint8) (ApduDataMemoryRead, error) {
+	return ApduDataMemoryReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataMemoryReadParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataMemoryRead"); pullErr != nil {

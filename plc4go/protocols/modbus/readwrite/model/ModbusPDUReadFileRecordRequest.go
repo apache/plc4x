@@ -140,7 +140,11 @@ func (m *_ModbusPDUReadFileRecordRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFileRecordRequest, error) {
+func ModbusPDUReadFileRecordRequestParse(theBytes []byte, response bool) (ModbusPDUReadFileRecordRequest, error) {
+	return ModbusPDUReadFileRecordRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUReadFileRecordRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFileRecordRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequest"); pullErr != nil {
@@ -166,7 +170,7 @@ func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response b
 		_itemsLength := byteCount
 		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
 		for positionAware.GetPos() < _itemsEndPos {
-			_item, _err := ModbusPDUReadFileRecordRequestItemParse(readBuffer)
+			_item, _err := ModbusPDUReadFileRecordRequestItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of ModbusPDUReadFileRecordRequest")
 			}

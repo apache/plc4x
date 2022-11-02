@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataElevatorGroup) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElevatorGroupParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElevatorGroup, error) {
+func BACnetConstructedDataElevatorGroupParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElevatorGroup, error) {
+	return BACnetConstructedDataElevatorGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataElevatorGroupParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElevatorGroup, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElevatorGroup"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataElevatorGroupParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("elevatorGroup"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for elevatorGroup")
 	}
-	_elevatorGroup, _elevatorGroupErr := BACnetApplicationTagParse(readBuffer)
+	_elevatorGroup, _elevatorGroupErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _elevatorGroupErr != nil {
 		return nil, errors.Wrap(_elevatorGroupErr, "Error parsing 'elevatorGroup' field of BACnetConstructedDataElevatorGroup")
 	}

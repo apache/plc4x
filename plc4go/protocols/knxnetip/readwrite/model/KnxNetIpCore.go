@@ -125,7 +125,11 @@ func (m *_KnxNetIpCore) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (KnxNetIpCore, error) {
+func KnxNetIpCoreParse(theBytes []byte) (KnxNetIpCore, error) {
+	return KnxNetIpCoreParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxNetIpCoreParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpCore, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpCore"); pullErr != nil {

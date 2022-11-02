@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLogInterval) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogInterval, error) {
+func BACnetConstructedDataLogIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogInterval, error) {
+	return BACnetConstructedDataLogIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLogIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogInterval"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("logInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logInterval")
 	}
-	_logInterval, _logIntervalErr := BACnetApplicationTagParse(readBuffer)
+	_logInterval, _logIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _logIntervalErr != nil {
 		return nil, errors.Wrap(_logIntervalErr, "Error parsing 'logInterval' field of BACnetConstructedDataLogInterval")
 	}

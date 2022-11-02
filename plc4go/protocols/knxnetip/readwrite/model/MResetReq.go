@@ -104,7 +104,11 @@ func (m *_MResetReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (MResetReq, error) {
+func MResetReqParse(theBytes []byte, size uint16) (MResetReq, error) {
+	return MResetReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func MResetReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MResetReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MResetReq"); pullErr != nil {

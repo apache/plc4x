@@ -126,7 +126,11 @@ func (m *_SecurityDataEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataEventParse(readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
+func SecurityDataEventParse(theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
+	return SecurityDataEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func SecurityDataEventParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEvent"); pullErr != nil {

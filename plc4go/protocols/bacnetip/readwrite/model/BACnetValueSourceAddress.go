@@ -123,7 +123,11 @@ func (m *_BACnetValueSourceAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetValueSourceAddressParse(readBuffer utils.ReadBuffer) (BACnetValueSourceAddress, error) {
+func BACnetValueSourceAddressParse(theBytes []byte) (BACnetValueSourceAddress, error) {
+	return BACnetValueSourceAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetValueSourceAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetValueSourceAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetValueSourceAddress"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetValueSourceAddressParse(readBuffer utils.ReadBuffer) (BACnetValueSour
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for address")
 	}
-	_address, _addressErr := BACnetAddressEnclosedParse(readBuffer, uint8(uint8(2)))
+	_address, _addressErr := BACnetAddressEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of BACnetValueSourceAddress")
 	}

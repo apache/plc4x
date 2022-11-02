@@ -103,7 +103,11 @@ func (m QueryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
+func QueryTypeParse(theBytes []byte) (QueryType, error) {
+	return QueryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func QueryTypeParseWithBuffer(readBuffer utils.ReadBuffer) (QueryType, error) {
 	val, err := readBuffer.ReadUint8("QueryType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading QueryType")

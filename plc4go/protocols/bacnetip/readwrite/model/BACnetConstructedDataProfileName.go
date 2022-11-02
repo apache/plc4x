@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataProfileName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProfileNameParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileName, error) {
+func BACnetConstructedDataProfileNameParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileName, error) {
+	return BACnetConstructedDataProfileNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataProfileNameParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProfileName"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataProfileNameParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("profileName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for profileName")
 	}
-	_profileName, _profileNameErr := BACnetApplicationTagParse(readBuffer)
+	_profileName, _profileNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _profileNameErr != nil {
 		return nil, errors.Wrap(_profileNameErr, "Error parsing 'profileName' field of BACnetConstructedDataProfileName")
 	}

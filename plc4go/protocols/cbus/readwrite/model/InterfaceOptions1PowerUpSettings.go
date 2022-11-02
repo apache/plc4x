@@ -98,7 +98,11 @@ func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func InterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
+func InterfaceOptions1PowerUpSettingsParse(theBytes []byte) (InterfaceOptions1PowerUpSettings, error) {
+	return InterfaceOptions1PowerUpSettingsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func InterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InterfaceOptions1PowerUpSettings"); pullErr != nil {
@@ -111,7 +115,7 @@ func InterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBuffer) (Interfa
 	if pullErr := readBuffer.PullContext("interfaceOptions1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceOptions1")
 	}
-	_interfaceOptions1, _interfaceOptions1Err := InterfaceOptions1Parse(readBuffer)
+	_interfaceOptions1, _interfaceOptions1Err := InterfaceOptions1ParseWithBuffer(readBuffer)
 	if _interfaceOptions1Err != nil {
 		return nil, errors.Wrap(_interfaceOptions1Err, "Error parsing 'interfaceOptions1' field of InterfaceOptions1PowerUpSettings")
 	}

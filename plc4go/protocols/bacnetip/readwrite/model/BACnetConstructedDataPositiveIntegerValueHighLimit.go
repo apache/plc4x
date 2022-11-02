@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
+func BACnetConstructedDataPositiveIntegerValueHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
+	return BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueHighLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPositiveIntegerValueHighLimitParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
-	_highLimit, _highLimitErr := BACnetApplicationTagParse(readBuffer)
+	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _highLimitErr != nil {
 		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetConstructedDataPositiveIntegerValueHighLimit")
 	}

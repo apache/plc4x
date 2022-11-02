@@ -136,7 +136,11 @@ func (m *_DisconnectResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DisconnectResponseParse(readBuffer utils.ReadBuffer) (DisconnectResponse, error) {
+func DisconnectResponseParse(theBytes []byte) (DisconnectResponse, error) {
+	return DisconnectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DisconnectResponse"); pullErr != nil {
@@ -156,7 +160,7 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (DisconnectResponse, e
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DisconnectResponse")
 	}

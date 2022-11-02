@@ -123,7 +123,11 @@ func (m *_LightingDataTerminateRamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingDataTerminateRampParse(readBuffer utils.ReadBuffer) (LightingDataTerminateRamp, error) {
+func LightingDataTerminateRampParse(theBytes []byte) (LightingDataTerminateRamp, error) {
+	return LightingDataTerminateRampParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingDataTerminateRampParseWithBuffer(readBuffer utils.ReadBuffer) (LightingDataTerminateRamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataTerminateRamp"); pullErr != nil {

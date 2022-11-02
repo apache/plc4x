@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -151,7 +152,11 @@ func (m *_AccessControlData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataParse(readBuffer utils.ReadBuffer) (AccessControlData, error) {
+func AccessControlDataParse(theBytes []byte) (AccessControlData, error) {
+	return AccessControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlData"); pullErr != nil {
@@ -169,7 +174,7 @@ func AccessControlDataParse(readBuffer utils.ReadBuffer) (AccessControlData, err
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := AccessControlCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := AccessControlCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of AccessControlData")
 	}
@@ -208,21 +213,21 @@ func AccessControlDataParse(readBuffer utils.ReadBuffer) (AccessControlData, err
 	var typeSwitchError error
 	switch {
 	case commandType == AccessControlCommandType_VALID_ACCESS: // AccessControlDataValidAccessRequest
-		_childTemp, typeSwitchError = AccessControlDataValidAccessRequestParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = AccessControlDataValidAccessRequestParseWithBuffer(readBuffer, commandTypeContainer)
 	case commandType == AccessControlCommandType_INVALID_ACCESS: // AccessControlDataInvalidAccessRequest
-		_childTemp, typeSwitchError = AccessControlDataInvalidAccessRequestParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = AccessControlDataInvalidAccessRequestParseWithBuffer(readBuffer, commandTypeContainer)
 	case commandType == AccessControlCommandType_ACCESS_POINT_LEFT_OPEN: // AccessControlDataAccessPointLeftOpen
-		_childTemp, typeSwitchError = AccessControlDataAccessPointLeftOpenParse(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataAccessPointLeftOpenParseWithBuffer(readBuffer)
 	case commandType == AccessControlCommandType_ACCESS_POINT_FORCED_OPEN: // AccessControlDataAccessPointForcedOpen
-		_childTemp, typeSwitchError = AccessControlDataAccessPointForcedOpenParse(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataAccessPointForcedOpenParseWithBuffer(readBuffer)
 	case commandType == AccessControlCommandType_ACCESS_POINT_CLOSED: // AccessControlDataAccessPointClosed
-		_childTemp, typeSwitchError = AccessControlDataAccessPointClosedParse(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataAccessPointClosedParseWithBuffer(readBuffer)
 	case commandType == AccessControlCommandType_REQUEST_TO_EXIT: // AccessControlDataRequestToExit
-		_childTemp, typeSwitchError = AccessControlDataRequestToExitParse(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataRequestToExitParseWithBuffer(readBuffer)
 	case commandType == AccessControlCommandType_CLOSE_ACCESS_POINT: // AccessControlDataCloseAccessPoint
-		_childTemp, typeSwitchError = AccessControlDataCloseAccessPointParse(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataCloseAccessPointParseWithBuffer(readBuffer)
 	case commandType == AccessControlCommandType_LOCK_ACCESS_POINT: // AccessControlDataLockAccessPoint
-		_childTemp, typeSwitchError = AccessControlDataLockAccessPointParse(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataLockAccessPointParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

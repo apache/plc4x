@@ -103,7 +103,11 @@ func (m BACnetIPMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetIPModeParse(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
+func BACnetIPModeParse(theBytes []byte) (BACnetIPMode, error) {
+	return BACnetIPModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetIPModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetIPMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetIPMode")

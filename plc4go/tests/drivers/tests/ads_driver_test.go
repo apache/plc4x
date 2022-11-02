@@ -31,7 +31,7 @@ import (
 
 func TestAdsDriver(t *testing.T) {
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return adsModel.AmsTCPPacketParse(readBufferByteBased)
+		return adsModel.AmsTCPPacketParseWithBuffer(readBufferByteBased)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml", adsIO.AdsXmlParserHelper{}, options)
 }

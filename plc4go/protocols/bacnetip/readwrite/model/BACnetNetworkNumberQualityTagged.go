@@ -112,7 +112,11 @@ func (m *_BACnetNetworkNumberQualityTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
+func BACnetNetworkNumberQualityTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
+	return BACnetNetworkNumberQualityTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetNetworkNumberQualityTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNetworkNumberQualityTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetNetworkNumberQualityTaggedParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetNetworkNumberQualityTagged")
 	}

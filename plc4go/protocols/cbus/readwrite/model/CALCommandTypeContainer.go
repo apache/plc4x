@@ -1760,7 +1760,11 @@ func (m CALCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (CALCommandTypeContainer, error) {
+func CALCommandTypeContainerParse(theBytes []byte) (CALCommandTypeContainer, error) {
+	return CALCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CALCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (CALCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("CALCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CALCommandTypeContainer")

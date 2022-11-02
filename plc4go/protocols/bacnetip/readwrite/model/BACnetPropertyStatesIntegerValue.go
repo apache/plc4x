@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesIntegerValueParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesIntegerValue, error) {
+func BACnetPropertyStatesIntegerValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesIntegerValue, error) {
+	return BACnetPropertyStatesIntegerValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesIntegerValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesIntegerValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesIntegerValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesIntegerValueParse(readBuffer utils.ReadBuffer, peekedTa
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_integerValue, _integerValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetPropertyStatesIntegerValue")
 	}

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPositiveIntegerValueFaultHighLimit) GetLengthInBy
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueFaultHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueFaultHighLimit, error) {
+func BACnetConstructedDataPositiveIntegerValueFaultHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueFaultHighLimit, error) {
+	return BACnetConstructedDataPositiveIntegerValueFaultHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPositiveIntegerValueFaultHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueFaultHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueFaultHighLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPositiveIntegerValueFaultHighLimitParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("faultHighLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultHighLimit")
 	}
-	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParse(readBuffer)
+	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _faultHighLimitErr != nil {
 		return nil, errors.Wrap(_faultHighLimitErr, "Error parsing 'faultHighLimit' field of BACnetConstructedDataPositiveIntegerValueFaultHighLimit")
 	}

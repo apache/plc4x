@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxFailedAttempts, error) {
+func BACnetConstructedDataMaxFailedAttemptsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxFailedAttempts, error) {
+	return BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxFailedAttempts, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxFailedAttempts"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("maxFailedAttempts"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxFailedAttempts")
 	}
-	_maxFailedAttempts, _maxFailedAttemptsErr := BACnetApplicationTagParse(readBuffer)
+	_maxFailedAttempts, _maxFailedAttemptsErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxFailedAttemptsErr != nil {
 		return nil, errors.Wrap(_maxFailedAttemptsErr, "Error parsing 'maxFailedAttempts' field of BACnetConstructedDataMaxFailedAttempts")
 	}

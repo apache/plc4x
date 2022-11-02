@@ -121,7 +121,11 @@ func (m DialOutFailureReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DialOutFailureReasonParse(readBuffer utils.ReadBuffer) (DialOutFailureReason, error) {
+func DialOutFailureReasonParse(theBytes []byte) (DialOutFailureReason, error) {
+	return DialOutFailureReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DialOutFailureReasonParseWithBuffer(readBuffer utils.ReadBuffer) (DialOutFailureReason, error) {
 	val, err := readBuffer.ReadUint8("DialOutFailureReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DialOutFailureReason")

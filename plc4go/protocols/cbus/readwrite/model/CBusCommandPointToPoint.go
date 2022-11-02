@@ -123,7 +123,11 @@ func (m *_CBusCommandPointToPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToPoint, error) {
+func CBusCommandPointToPointParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandPointToPoint, error) {
+	return CBusCommandPointToPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusCommandPointToPointParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPoint"); pullErr != nil {
@@ -136,7 +140,7 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, cBusOptions CBusO
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToPointCommandParse(readBuffer, cBusOptions)
+	_command, _commandErr := CBusPointToPointCommandParseWithBuffer(readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToPoint")
 	}

@@ -147,7 +147,11 @@ func (m *_SearchResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
+func SearchResponseParse(theBytes []byte) (SearchResponse, error) {
+	return SearchResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SearchResponseParseWithBuffer(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SearchResponse"); pullErr != nil {
@@ -160,7 +164,7 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of SearchResponse")
 	}
@@ -173,7 +177,7 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dibDeviceInfo")
 	}
-	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
+	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParseWithBuffer(readBuffer)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field of SearchResponse")
 	}
@@ -186,7 +190,7 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dibSuppSvcFamilies")
 	}
-	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
+	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParseWithBuffer(readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field of SearchResponse")
 	}

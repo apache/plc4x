@@ -104,7 +104,11 @@ func (m *_BVLCReadForeignDeviceTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableParse(readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTable, error) {
+func BVLCReadForeignDeviceTableParse(theBytes []byte) (BVLCReadForeignDeviceTable, error) {
+	return BVLCReadForeignDeviceTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCReadForeignDeviceTableParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTable"); pullErr != nil {

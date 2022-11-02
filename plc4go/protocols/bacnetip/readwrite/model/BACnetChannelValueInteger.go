@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueIntegerParse(readBuffer utils.ReadBuffer) (BACnetChannelValueInteger, error) {
+func BACnetChannelValueIntegerParse(theBytes []byte) (BACnetChannelValueInteger, error) {
+	return BACnetChannelValueIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueIntegerParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueInteger"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueIntegerParse(readBuffer utils.ReadBuffer) (BACnetChannelV
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
+	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetChannelValueInteger")
 	}

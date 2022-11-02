@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkPortMaxMasterParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
+func BACnetConstructedDataNetworkPortMaxMasterParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
+	return BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataNetworkPortMaxMasterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkPortMaxMaster, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkPortMaxMaster"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataNetworkPortMaxMasterParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("maxMaster"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxMaster")
 	}
-	_maxMaster, _maxMasterErr := BACnetApplicationTagParse(readBuffer)
+	_maxMaster, _maxMasterErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxMasterErr != nil {
 		return nil, errors.Wrap(_maxMasterErr, "Error parsing 'maxMaster' field of BACnetConstructedDataNetworkPortMaxMaster")
 	}

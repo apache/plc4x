@@ -160,7 +160,11 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleCoilsRequest, error) {
+func ModbusPDUWriteMultipleCoilsRequestParse(theBytes []byte, response bool) (ModbusPDUWriteMultipleCoilsRequest, error) {
+	return ModbusPDUWriteMultipleCoilsRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUWriteMultipleCoilsRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleCoilsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleCoilsRequest"); pullErr != nil {

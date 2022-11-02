@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTrigger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTriggerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
+func BACnetConstructedDataTriggerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
+	return BACnetConstructedDataTriggerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTriggerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrigger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrigger"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTriggerParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("trigger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for trigger")
 	}
-	_trigger, _triggerErr := BACnetApplicationTagParse(readBuffer)
+	_trigger, _triggerErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _triggerErr != nil {
 		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field of BACnetConstructedDataTrigger")
 	}

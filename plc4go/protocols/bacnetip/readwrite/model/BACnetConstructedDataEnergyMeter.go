@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEnergyMeterParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
+func BACnetConstructedDataEnergyMeterParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
+	return BACnetConstructedDataEnergyMeterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEnergyMeterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnergyMeter"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataEnergyMeterParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("energyMeter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for energyMeter")
 	}
-	_energyMeter, _energyMeterErr := BACnetApplicationTagParse(readBuffer)
+	_energyMeter, _energyMeterErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _energyMeterErr != nil {
 		return nil, errors.Wrap(_energyMeterErr, "Error parsing 'energyMeter' field of BACnetConstructedDataEnergyMeter")
 	}

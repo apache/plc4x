@@ -108,7 +108,11 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(theBytes []byte) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry"); pullErr != nil {
@@ -121,7 +125,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(r
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
@@ -134,7 +138,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(r
 	if pullErr := readBuffer.PullContext("listOfCovReferences"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovReferences")
 	}
-	_listOfCovReferences, _listOfCovReferencesErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesParse(readBuffer, uint8(uint8(1)))
+	_listOfCovReferences, _listOfCovReferencesErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _listOfCovReferencesErr != nil {
 		return nil, errors.Wrap(_listOfCovReferencesErr, "Error parsing 'listOfCovReferences' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}

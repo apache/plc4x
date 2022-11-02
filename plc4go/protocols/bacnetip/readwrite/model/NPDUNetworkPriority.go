@@ -109,7 +109,11 @@ func (m NPDUNetworkPriority) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NPDUNetworkPriorityParse(readBuffer utils.ReadBuffer) (NPDUNetworkPriority, error) {
+func NPDUNetworkPriorityParse(theBytes []byte) (NPDUNetworkPriority, error) {
+	return NPDUNetworkPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NPDUNetworkPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (NPDUNetworkPriority, error) {
 	val, err := readBuffer.ReadUint8("NPDUNetworkPriority", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading NPDUNetworkPriority")

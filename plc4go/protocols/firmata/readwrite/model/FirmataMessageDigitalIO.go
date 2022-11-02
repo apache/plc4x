@@ -138,7 +138,11 @@ func (m *_FirmataMessageDigitalIO) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (FirmataMessageDigitalIO, error) {
+func FirmataMessageDigitalIOParse(theBytes []byte, response bool) (FirmataMessageDigitalIO, error) {
+	return FirmataMessageDigitalIOParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataMessageDigitalIOParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageDigitalIO, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageDigitalIO"); pullErr != nil {

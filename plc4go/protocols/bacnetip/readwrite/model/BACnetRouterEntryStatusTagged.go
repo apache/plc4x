@@ -112,7 +112,11 @@ func (m *_BACnetRouterEntryStatusTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRouterEntryStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {
+func BACnetRouterEntryStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {
+	return BACnetRouterEntryStatusTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetRouterEntryStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRouterEntryStatusTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetRouterEntryStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetRouterEntryStatusTagged")
 	}

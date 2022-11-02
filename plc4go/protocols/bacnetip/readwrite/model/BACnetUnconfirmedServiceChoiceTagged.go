@@ -112,7 +112,11 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceChoiceTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetUnconfirmedServiceChoiceTagged, error) {
+func BACnetUnconfirmedServiceChoiceTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetUnconfirmedServiceChoiceTagged, error) {
+	return BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetUnconfirmedServiceChoiceTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceChoiceTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetUnconfirmedServiceChoiceTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetUnconfirmedServiceChoiceTagged")
 	}

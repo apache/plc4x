@@ -99,7 +99,11 @@ func (m *_ModbusConstants) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusConstantsParse(readBuffer utils.ReadBuffer) (ModbusConstants, error) {
+func ModbusConstantsParse(theBytes []byte) (ModbusConstants, error) {
+	return ModbusConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModbusConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {

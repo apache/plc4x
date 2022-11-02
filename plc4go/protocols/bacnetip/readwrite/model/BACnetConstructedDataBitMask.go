@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBitMask) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitMask, error) {
+func BACnetConstructedDataBitMaskParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitMask, error) {
+	return BACnetConstructedDataBitMaskParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBitMaskParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitMask, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitMask"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("bitString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitString")
 	}
-	_bitString, _bitStringErr := BACnetApplicationTagParse(readBuffer)
+	_bitString, _bitStringErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _bitStringErr != nil {
 		return nil, errors.Wrap(_bitStringErr, "Error parsing 'bitString' field of BACnetConstructedDataBitMask")
 	}

@@ -139,7 +139,11 @@ func (m BACnetNetworkPortCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkPortCommandParse(readBuffer utils.ReadBuffer) (BACnetNetworkPortCommand, error) {
+func BACnetNetworkPortCommandParse(theBytes []byte) (BACnetNetworkPortCommand, error) {
+	return BACnetNetworkPortCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetNetworkPortCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkPortCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkPortCommand", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNetworkPortCommand")

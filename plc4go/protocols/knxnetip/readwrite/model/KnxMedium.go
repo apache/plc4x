@@ -121,7 +121,11 @@ func (m KnxMedium) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
+func KnxMediumParse(theBytes []byte) (KnxMedium, error) {
+	return KnxMediumParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxMediumParseWithBuffer(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 	val, err := readBuffer.ReadUint8("KnxMedium", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxMedium")

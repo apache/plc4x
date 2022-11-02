@@ -97,7 +97,11 @@ func (m BACnetFileAccessMethod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFileAccessMethodParse(readBuffer utils.ReadBuffer) (BACnetFileAccessMethod, error) {
+func BACnetFileAccessMethodParse(theBytes []byte) (BACnetFileAccessMethod, error) {
+	return BACnetFileAccessMethodParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFileAccessMethodParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFileAccessMethod, error) {
 	val, err := readBuffer.ReadUint8("BACnetFileAccessMethod", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetFileAccessMethod")

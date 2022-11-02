@@ -108,7 +108,11 @@ func (m *_BACnetTimeValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeValueParse(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) {
+func BACnetTimeValueParse(theBytes []byte) (BACnetTimeValue, error) {
+	return BACnetTimeValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTimeValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeValue"); pullErr != nil {
@@ -121,7 +125,7 @@ func BACnetTimeValueParse(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) 
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
+	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetTimeValue")
 	}
@@ -134,7 +138,7 @@ func BACnetTimeValueParse(readBuffer utils.ReadBuffer) (BACnetTimeValue, error) 
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_value, _valueErr := BACnetConstructedDataElementParseWithBuffer(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTimeValue")
 	}

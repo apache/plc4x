@@ -128,7 +128,11 @@ func (m *_BACnetAbortReasonTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAbortReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
+func BACnetAbortReasonTaggedParse(theBytes []byte, actualLength uint32) (BACnetAbortReasonTagged, error) {
+	return BACnetAbortReasonTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), actualLength) // TODO: get endianness from mspec
+}
+
+func BACnetAbortReasonTaggedParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAbortReasonTagged"); pullErr != nil {

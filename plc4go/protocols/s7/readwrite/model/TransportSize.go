@@ -1593,7 +1593,11 @@ func (m TransportSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TransportSizeParse(readBuffer utils.ReadBuffer) (TransportSize, error) {
+func TransportSizeParse(theBytes []byte) (TransportSize, error) {
+	return TransportSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TransportSizeParseWithBuffer(readBuffer utils.ReadBuffer) (TransportSize, error) {
 	val, err := readBuffer.ReadUint8("TransportSize", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TransportSize")

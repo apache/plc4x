@@ -136,7 +136,11 @@ func (m *_FirmataCommandProtocolVersion) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {
+func FirmataCommandProtocolVersionParse(theBytes []byte, response bool) (FirmataCommandProtocolVersion, error) {
+	return FirmataCommandProtocolVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataCommandProtocolVersionParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {

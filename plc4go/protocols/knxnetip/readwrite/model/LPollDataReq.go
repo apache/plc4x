@@ -104,7 +104,11 @@ func (m *_LPollDataReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LPollDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LPollDataReq, error) {
+func LPollDataReqParse(theBytes []byte, size uint16) (LPollDataReq, error) {
+	return LPollDataReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func LPollDataReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LPollDataReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollDataReq"); pullErr != nil {

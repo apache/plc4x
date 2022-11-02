@@ -103,7 +103,11 @@ func (m BACnetDoorSecuredStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorSecuredStatusParse(readBuffer utils.ReadBuffer) (BACnetDoorSecuredStatus, error) {
+func BACnetDoorSecuredStatusParse(theBytes []byte) (BACnetDoorSecuredStatus, error) {
+	return BACnetDoorSecuredStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetDoorSecuredStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorSecuredStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorSecuredStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorSecuredStatus")

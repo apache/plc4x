@@ -136,7 +136,11 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
+	return BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); pullErr != nil {
@@ -149,7 +153,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("referenceIndex"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referenceIndex")
 	}
-	_referenceIndex, _referenceIndexErr := BACnetApplicationTagParse(readBuffer)
+	_referenceIndex, _referenceIndexErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _referenceIndexErr != nil {
 		return nil, errors.Wrap(_referenceIndexErr, "Error parsing 'referenceIndex' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}
@@ -162,7 +166,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
-	_count, _countErr := BACnetApplicationTagParse(readBuffer)
+	_count, _countErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}

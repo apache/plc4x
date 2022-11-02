@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityPDUTimeout, error) {
+func BACnetConstructedDataSecurityPDUTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityPDUTimeout, error) {
+	return BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityPDUTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityPDUTimeout"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("securityPduTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securityPduTimeout")
 	}
-	_securityPduTimeout, _securityPduTimeoutErr := BACnetApplicationTagParse(readBuffer)
+	_securityPduTimeout, _securityPduTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _securityPduTimeoutErr != nil {
 		return nil, errors.Wrap(_securityPduTimeoutErr, "Error parsing 'securityPduTimeout' field of BACnetConstructedDataSecurityPDUTimeout")
 	}

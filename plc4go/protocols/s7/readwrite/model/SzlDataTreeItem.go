@@ -140,7 +140,11 @@ func (m *_SzlDataTreeItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
+func SzlDataTreeItemParse(theBytes []byte) (SzlDataTreeItem, error) {
+	return SzlDataTreeItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SzlDataTreeItemParseWithBuffer(readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SzlDataTreeItem"); pullErr != nil {

@@ -154,7 +154,11 @@ func (m *_CBusCommandDeviceManagement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
+func CBusCommandDeviceManagementParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
+	return CBusCommandDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusCommandDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandDeviceManagement"); pullErr != nil {
@@ -167,7 +171,7 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions C
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CBusCommandDeviceManagement")
 	}

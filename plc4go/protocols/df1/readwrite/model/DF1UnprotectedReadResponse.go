@@ -128,7 +128,11 @@ func (m *_DF1UnprotectedReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (DF1UnprotectedReadResponse, error) {
+func DF1UnprotectedReadResponseParse(theBytes []byte) (DF1UnprotectedReadResponse, error) {
+	return DF1UnprotectedReadResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DF1UnprotectedReadResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DF1UnprotectedReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadResponse"); pullErr != nil {

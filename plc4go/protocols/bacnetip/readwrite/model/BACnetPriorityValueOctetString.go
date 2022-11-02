@@ -123,7 +123,11 @@ func (m *_BACnetPriorityValueOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueOctetStringParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
+func BACnetPriorityValueOctetStringParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
+	return BACnetPriorityValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetPriorityValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueOctetString"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPriorityValueOctetStringParse(readBuffer utils.ReadBuffer, objectType
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetPriorityValueOctetString")
 	}

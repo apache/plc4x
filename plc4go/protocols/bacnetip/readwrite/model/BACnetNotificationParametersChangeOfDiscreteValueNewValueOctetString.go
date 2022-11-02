@@ -125,7 +125,11 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error) {
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(r
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString")
 	}

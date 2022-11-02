@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
+func BACnetConstructedDataChangeOfStateCountParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
+	return BACnetConstructedDataChangeOfStateCountParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataChangeOfStateCountParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangeOfStateCount"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("changeIfStateCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changeIfStateCount")
 	}
-	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParse(readBuffer)
+	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _changeIfStateCountErr != nil {
 		return nil, errors.Wrap(_changeIfStateCountErr, "Error parsing 'changeIfStateCount' field of BACnetConstructedDataChangeOfStateCount")
 	}

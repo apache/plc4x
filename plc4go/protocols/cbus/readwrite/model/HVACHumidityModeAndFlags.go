@@ -216,7 +216,11 @@ func (m *_HVACHumidityModeAndFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACHumidityModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
+func HVACHumidityModeAndFlagsParse(theBytes []byte) (HVACHumidityModeAndFlags, error) {
+	return HVACHumidityModeAndFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACHumidityModeAndFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACHumidityModeAndFlags"); pullErr != nil {
@@ -314,7 +318,7 @@ func HVACHumidityModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityMod
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := HVACHumidityModeAndFlagsModeParse(readBuffer)
+	_mode, _modeErr := HVACHumidityModeAndFlagsModeParseWithBuffer(readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACHumidityModeAndFlags")
 	}

@@ -109,7 +109,11 @@ func (m ZoneStatusTemp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ZoneStatusTempParse(readBuffer utils.ReadBuffer) (ZoneStatusTemp, error) {
+func ZoneStatusTempParse(theBytes []byte) (ZoneStatusTemp, error) {
+	return ZoneStatusTempParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ZoneStatusTempParseWithBuffer(readBuffer utils.ReadBuffer) (ZoneStatusTemp, error) {
 	val, err := readBuffer.ReadUint8("ZoneStatusTemp", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ZoneStatusTemp")

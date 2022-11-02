@@ -192,7 +192,11 @@ func (m AccessLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessLevelParse(readBuffer utils.ReadBuffer) (AccessLevel, error) {
+func AccessLevelParse(theBytes []byte) (AccessLevel, error) {
+	return AccessLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessLevelParseWithBuffer(readBuffer utils.ReadBuffer) (AccessLevel, error) {
 	val, err := readBuffer.ReadUint8("AccessLevel", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessLevel")

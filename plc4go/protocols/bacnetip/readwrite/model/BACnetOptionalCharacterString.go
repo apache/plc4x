@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetOptionalCharacterString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOptionalCharacterStringParse(readBuffer utils.ReadBuffer) (BACnetOptionalCharacterString, error) {
+func BACnetOptionalCharacterStringParse(theBytes []byte) (BACnetOptionalCharacterString, error) {
+	return BACnetOptionalCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetOptionalCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterString"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetOptionalCharacterStringParse(readBuffer utils.ReadBuffer) (BACnetOpti
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,9 +166,9 @@ func BACnetOptionalCharacterStringParse(readBuffer utils.ReadBuffer) (BACnetOpti
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalCharacterStringNull
-		_childTemp, typeSwitchError = BACnetOptionalCharacterStringNullParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetOptionalCharacterStringNullParseWithBuffer(readBuffer)
 	case 0 == 0: // BACnetOptionalCharacterStringValue
-		_childTemp, typeSwitchError = BACnetOptionalCharacterStringValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetOptionalCharacterStringValueParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

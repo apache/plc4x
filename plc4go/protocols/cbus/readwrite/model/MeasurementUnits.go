@@ -337,7 +337,11 @@ func (m MeasurementUnits) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeasurementUnitsParse(readBuffer utils.ReadBuffer) (MeasurementUnits, error) {
+func MeasurementUnitsParse(theBytes []byte) (MeasurementUnits, error) {
+	return MeasurementUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeasurementUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementUnits, error) {
 	val, err := readBuffer.ReadUint8("MeasurementUnits", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeasurementUnits")

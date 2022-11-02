@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +133,11 @@ func (m *_Apdu) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
+func ApduParse(theBytes []byte, dataLength uint8) (Apdu, error) {
+	return ApduParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Apdu"); pullErr != nil {
@@ -172,9 +177,9 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
 	var typeSwitchError error
 	switch {
 	case control == uint8(1): // ApduControlContainer
-		_childTemp, typeSwitchError = ApduControlContainerParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduControlContainerParseWithBuffer(readBuffer, dataLength)
 	case control == uint8(0): // ApduDataContainer
-		_childTemp, typeSwitchError = ApduDataContainerParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataContainerParseWithBuffer(readBuffer, dataLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [control=%v]", control)
 	}

@@ -126,7 +126,11 @@ func (m *_TPKTPacket) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
+func TPKTPacketParse(theBytes []byte) (TPKTPacket, error) {
+	return TPKTPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TPKTPacketParseWithBuffer(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
@@ -172,7 +176,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := COTPPacketParse(readBuffer, uint16(uint16(len)-uint16(uint16(4))))
+	_payload, _payloadErr := COTPPacketParseWithBuffer(readBuffer, uint16(uint16(len)-uint16(uint16(4))))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of TPKTPacket")
 	}

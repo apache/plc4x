@@ -103,7 +103,11 @@ func (m DriverType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DriverTypeParse(readBuffer utils.ReadBuffer) (DriverType, error) {
+func DriverTypeParse(theBytes []byte) (DriverType, error) {
+	return DriverTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DriverTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DriverType, error) {
 	val, err := readBuffer.ReadUint32("DriverType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DriverType")

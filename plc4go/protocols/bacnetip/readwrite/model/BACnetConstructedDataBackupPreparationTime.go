@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBackupPreparationTime) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBackupPreparationTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupPreparationTime, error) {
+func BACnetConstructedDataBackupPreparationTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupPreparationTime, error) {
+	return BACnetConstructedDataBackupPreparationTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBackupPreparationTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupPreparationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupPreparationTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBackupPreparationTimeParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("backupPreparationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for backupPreparationTime")
 	}
-	_backupPreparationTime, _backupPreparationTimeErr := BACnetApplicationTagParse(readBuffer)
+	_backupPreparationTime, _backupPreparationTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _backupPreparationTimeErr != nil {
 		return nil, errors.Wrap(_backupPreparationTimeErr, "Error parsing 'backupPreparationTime' field of BACnetConstructedDataBackupPreparationTime")
 	}

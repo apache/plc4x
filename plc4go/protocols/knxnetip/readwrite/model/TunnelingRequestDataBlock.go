@@ -116,7 +116,11 @@ func (m *_TunnelingRequestDataBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TunnelingRequestDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
+func TunnelingRequestDataBlockParse(theBytes []byte) (TunnelingRequestDataBlock, error) {
+	return TunnelingRequestDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TunnelingRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingRequestDataBlock"); pullErr != nil {

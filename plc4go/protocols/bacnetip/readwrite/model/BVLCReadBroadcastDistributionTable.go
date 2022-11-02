@@ -104,7 +104,11 @@ func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
+func BVLCReadBroadcastDistributionTableParse(theBytes []byte) (BVLCReadBroadcastDistributionTable, error) {
+	return BVLCReadBroadcastDistributionTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCReadBroadcastDistributionTableParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTable"); pullErr != nil {

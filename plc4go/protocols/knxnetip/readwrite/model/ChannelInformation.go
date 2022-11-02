@@ -108,7 +108,11 @@ func (m *_ChannelInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ChannelInformationParse(readBuffer utils.ReadBuffer) (ChannelInformation, error) {
+func ChannelInformationParse(theBytes []byte) (ChannelInformation, error) {
+	return ChannelInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ChannelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (ChannelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {

@@ -159,7 +159,11 @@ func (m *_BACnetLightingCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
+func BACnetLightingCommandParse(theBytes []byte) (BACnetLightingCommand, error) {
+	return BACnetLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLightingCommand"); pullErr != nil {
@@ -172,7 +176,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
 	}
-	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
 		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetLightingCommand")
 	}
@@ -188,7 +192,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("targetLevel"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for targetLevel")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -210,7 +214,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("rampRate"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for rampRate")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -232,7 +236,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("stepIncrement"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for stepIncrement")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -254,7 +258,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("fadeTime"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for fadeTime")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -276,7 +280,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for priority")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

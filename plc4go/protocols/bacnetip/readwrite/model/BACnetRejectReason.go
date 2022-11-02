@@ -151,7 +151,11 @@ func (m BACnetRejectReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRejectReasonParse(readBuffer utils.ReadBuffer) (BACnetRejectReason, error) {
+func BACnetRejectReasonParse(theBytes []byte) (BACnetRejectReason, error) {
+	return BACnetRejectReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRejectReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRejectReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRejectReason")

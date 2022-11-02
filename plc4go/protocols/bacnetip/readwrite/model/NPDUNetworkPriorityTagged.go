@@ -112,7 +112,11 @@ func (m *_NPDUNetworkPriorityTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NPDUNetworkPriorityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (NPDUNetworkPriorityTagged, error) {
+func NPDUNetworkPriorityTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (NPDUNetworkPriorityTagged, error) {
+	return NPDUNetworkPriorityTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func NPDUNetworkPriorityTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (NPDUNetworkPriorityTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDUNetworkPriorityTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func NPDUNetworkPriorityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of NPDUNetworkPriorityTagged")
 	}

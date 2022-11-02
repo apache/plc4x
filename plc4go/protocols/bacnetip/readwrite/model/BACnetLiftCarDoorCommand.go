@@ -103,7 +103,11 @@ func (m BACnetLiftCarDoorCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftCarDoorCommandParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDoorCommand, error) {
+func BACnetLiftCarDoorCommandParse(theBytes []byte) (BACnetLiftCarDoorCommand, error) {
+	return BACnetLiftCarDoorCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLiftCarDoorCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarDoorCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftCarDoorCommand", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDoorCommand")

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataCarMovingDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMovingDirection, error) {
+func BACnetConstructedDataCarMovingDirectionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMovingDirection, error) {
+	return BACnetConstructedDataCarMovingDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataCarMovingDirectionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMovingDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMovingDirection"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("carMovingDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for carMovingDirection")
 	}
-	_carMovingDirection, _carMovingDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_carMovingDirection, _carMovingDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carMovingDirectionErr != nil {
 		return nil, errors.Wrap(_carMovingDirectionErr, "Error parsing 'carMovingDirection' field of BACnetConstructedDataCarMovingDirection")
 	}

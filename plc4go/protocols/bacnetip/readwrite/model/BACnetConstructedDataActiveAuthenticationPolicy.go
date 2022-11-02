@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataActiveAuthenticationPolicy) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveAuthenticationPolicy, error) {
+func BACnetConstructedDataActiveAuthenticationPolicyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveAuthenticationPolicy, error) {
+	return BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveAuthenticationPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveAuthenticationPolicy"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("activeAuthenticationPolicy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for activeAuthenticationPolicy")
 	}
-	_activeAuthenticationPolicy, _activeAuthenticationPolicyErr := BACnetApplicationTagParse(readBuffer)
+	_activeAuthenticationPolicy, _activeAuthenticationPolicyErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _activeAuthenticationPolicyErr != nil {
 		return nil, errors.Wrap(_activeAuthenticationPolicyErr, "Error parsing 'activeAuthenticationPolicy' field of BACnetConstructedDataActiveAuthenticationPolicy")
 	}

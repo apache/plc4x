@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataSetting) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSettingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetting, error) {
+func BACnetConstructedDataSettingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetting, error) {
+	return BACnetConstructedDataSettingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSettingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetting"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataSettingParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("setting"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setting")
 	}
-	_setting, _settingErr := BACnetApplicationTagParse(readBuffer)
+	_setting, _settingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _settingErr != nil {
 		return nil, errors.Wrap(_settingErr, "Error parsing 'setting' field of BACnetConstructedDataSetting")
 	}

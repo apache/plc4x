@@ -104,7 +104,11 @@ func (m *_LPollDataCon) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (LPollDataCon, error) {
+func LPollDataConParse(theBytes []byte, size uint16) (LPollDataCon, error) {
+	return LPollDataConParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func LPollDataConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LPollDataCon, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollDataCon"); pullErr != nil {

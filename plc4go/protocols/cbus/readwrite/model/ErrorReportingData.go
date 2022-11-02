@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,7 +132,11 @@ func (m *_ErrorReportingData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingDataParse(readBuffer utils.ReadBuffer) (ErrorReportingData, error) {
+func ErrorReportingDataParse(theBytes []byte) (ErrorReportingData, error) {
+	return ErrorReportingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingData"); pullErr != nil {
@@ -149,7 +154,7 @@ func ErrorReportingDataParse(readBuffer utils.ReadBuffer) (ErrorReportingData, e
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := ErrorReportingCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := ErrorReportingCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of ErrorReportingData")
 	}
@@ -174,7 +179,7 @@ func ErrorReportingDataParse(readBuffer utils.ReadBuffer) (ErrorReportingData, e
 	var typeSwitchError error
 	switch {
 	case 0 == 0: // ErrorReportingDataGeneric
-		_childTemp, typeSwitchError = ErrorReportingDataGenericParse(readBuffer)
+		_childTemp, typeSwitchError = ErrorReportingDataGenericParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

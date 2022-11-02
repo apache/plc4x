@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesLiftFault) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLiftFaultParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {
+func BACnetPropertyStatesLiftFaultParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {
+	return BACnetPropertyStatesLiftFaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLiftFaultParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftFault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftFault"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesLiftFaultParse(readBuffer utils.ReadBuffer, peekedTagNu
 	if pullErr := readBuffer.PullContext("liftFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for liftFault")
 	}
-	_liftFault, _liftFaultErr := BACnetLiftFaultTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_liftFault, _liftFaultErr := BACnetLiftFaultTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftFaultErr != nil {
 		return nil, errors.Wrap(_liftFaultErr, "Error parsing 'liftFault' field of BACnetPropertyStatesLiftFault")
 	}

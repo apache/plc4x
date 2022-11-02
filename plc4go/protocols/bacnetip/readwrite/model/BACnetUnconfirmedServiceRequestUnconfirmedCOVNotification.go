@@ -170,7 +170,11 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
+	return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pullErr != nil {
@@ -183,7 +187,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -196,7 +200,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for initiatingDeviceIdentifier")
 	}
-	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _initiatingDeviceIdentifierErr != nil {
 		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -209,7 +213,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -222,7 +226,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("lifetimeInSeconds"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lifetimeInSeconds")
 	}
-	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _lifetimeInSecondsErr != nil {
 		return nil, errors.Wrap(_lifetimeInSecondsErr, "Error parsing 'lifetimeInSeconds' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}
@@ -235,7 +239,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(4)), BACnetObjectType(monitoredObjectIdentifier.GetObjectType()))
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetObjectType(monitoredObjectIdentifier.GetObjectType()))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
 	}

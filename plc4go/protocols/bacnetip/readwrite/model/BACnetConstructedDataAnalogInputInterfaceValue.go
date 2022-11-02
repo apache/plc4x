@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogInputInterfaceValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogInputInterfaceValue, error) {
+func BACnetConstructedDataAnalogInputInterfaceValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogInputInterfaceValue, error) {
+	return BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogInputInterfaceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogInputInterfaceValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAnalogInputInterfaceValueParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("interfaceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceValue")
 	}
-	_interfaceValue, _interfaceValueErr := BACnetOptionalREALParse(readBuffer)
+	_interfaceValue, _interfaceValueErr := BACnetOptionalREALParseWithBuffer(readBuffer)
 	if _interfaceValueErr != nil {
 		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataAnalogInputInterfaceValue")
 	}

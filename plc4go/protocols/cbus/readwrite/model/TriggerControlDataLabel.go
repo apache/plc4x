@@ -161,7 +161,11 @@ func (m *_TriggerControlDataLabel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
+func TriggerControlDataLabelParse(theBytes []byte, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
+	return TriggerControlDataLabelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func TriggerControlDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataLabel"); pullErr != nil {
@@ -174,7 +178,7 @@ func TriggerControlDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContai
 	if pullErr := readBuffer.PullContext("triggerControlOptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlOptions")
 	}
-	_triggerControlOptions, _triggerControlOptionsErr := TriggerControlLabelOptionsParse(readBuffer)
+	_triggerControlOptions, _triggerControlOptionsErr := TriggerControlLabelOptionsParseWithBuffer(readBuffer)
 	if _triggerControlOptionsErr != nil {
 		return nil, errors.Wrap(_triggerControlOptionsErr, "Error parsing 'triggerControlOptions' field of TriggerControlDataLabel")
 	}
@@ -196,7 +200,7 @@ func TriggerControlDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContai
 		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for language")
 		}
-		_val, _err := LanguageParse(readBuffer)
+		_val, _err := LanguageParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'language' field of TriggerControlDataLabel")
 		}

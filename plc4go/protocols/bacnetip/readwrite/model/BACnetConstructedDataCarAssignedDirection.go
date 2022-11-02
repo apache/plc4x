@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarAssignedDirectionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
+func BACnetConstructedDataCarAssignedDirectionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
+	return BACnetConstructedDataCarAssignedDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarAssignedDirection"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataCarAssignedDirectionParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("assignedDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for assignedDirection")
 	}
-	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _assignedDirectionErr != nil {
 		return nil, errors.Wrap(_assignedDirectionErr, "Error parsing 'assignedDirection' field of BACnetConstructedDataCarAssignedDirection")
 	}

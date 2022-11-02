@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesDoorAlarmStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
+func BACnetPropertyStatesDoorAlarmStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
+	return BACnetPropertyStatesDoorAlarmStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesDoorAlarmStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorAlarmState"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesDoorAlarmStateParse(readBuffer utils.ReadBuffer, peeked
 	if pullErr := readBuffer.PullContext("doorAlarmState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorAlarmState")
 	}
-	_doorAlarmState, _doorAlarmStateErr := BACnetDoorAlarmStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorAlarmState, _doorAlarmStateErr := BACnetDoorAlarmStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorAlarmStateErr != nil {
 		return nil, errors.Wrap(_doorAlarmStateErr, "Error parsing 'doorAlarmState' field of BACnetPropertyStatesDoorAlarmState")
 	}

@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesProtocolLevelParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
+func BACnetPropertyStatesProtocolLevelParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
+	return BACnetPropertyStatesProtocolLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesProtocolLevelParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesProtocolLevel"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesProtocolLevelParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("protocolLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolLevel")
 	}
-	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _protocolLevelErr != nil {
 		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field of BACnetPropertyStatesProtocolLevel")
 	}

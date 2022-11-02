@@ -109,7 +109,11 @@ func (m ModbusDeviceInformationLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusDeviceInformationLevelParse(readBuffer utils.ReadBuffer) (ModbusDeviceInformationLevel, error) {
+func ModbusDeviceInformationLevelParse(theBytes []byte) (ModbusDeviceInformationLevel, error) {
+	return ModbusDeviceInformationLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModbusDeviceInformationLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDeviceInformationLevel, error) {
 	val, err := readBuffer.ReadUint8("ModbusDeviceInformationLevel", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationLevel")

@@ -152,7 +152,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); pullErr != nil {

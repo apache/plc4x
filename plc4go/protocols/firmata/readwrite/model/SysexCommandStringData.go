@@ -108,7 +108,11 @@ func (m *_SysexCommandStringData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandStringData, error) {
+func SysexCommandStringDataParse(theBytes []byte, response bool) (SysexCommandStringData, error) {
+	return SysexCommandStringDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandStringDataParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandStringData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandStringData"); pullErr != nil {

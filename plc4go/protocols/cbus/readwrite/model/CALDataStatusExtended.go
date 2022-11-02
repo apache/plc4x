@@ -205,7 +205,11 @@ func (m *_CALDataStatusExtended) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatusExtended, error) {
+func CALDataStatusExtendedParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatusExtended, error) {
+	return CALDataStatusExtendedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext, commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func CALDataStatusExtendedParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatusExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataStatusExtended"); pullErr != nil {
@@ -218,7 +222,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	if pullErr := readBuffer.PullContext("coding"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for coding")
 	}
-	_coding, _codingErr := StatusCodingParse(readBuffer)
+	_coding, _codingErr := StatusCodingParseWithBuffer(readBuffer)
 	if _codingErr != nil {
 		return nil, errors.Wrap(_codingErr, "Error parsing 'coding' field of CALDataStatusExtended")
 	}
@@ -231,7 +235,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CALDataStatusExtended")
 	}
@@ -271,7 +275,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfStatusBytes); curItem++ {
-			_item, _err := StatusByteParse(readBuffer)
+			_item, _err := StatusByteParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field of CALDataStatusExtended")
 			}
@@ -294,7 +298,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfLevelInformation); curItem++ {
-			_item, _err := LevelInformationParse(readBuffer)
+			_item, _err := LevelInformationParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'levelInformation' field of CALDataStatusExtended")
 			}

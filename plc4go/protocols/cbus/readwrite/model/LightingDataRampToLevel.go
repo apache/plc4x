@@ -134,7 +134,11 @@ func (m *_LightingDataRampToLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingDataRampToLevelParse(readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
+func LightingDataRampToLevelParse(theBytes []byte) (LightingDataRampToLevel, error) {
+	return LightingDataRampToLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingDataRampToLevelParseWithBuffer(readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataRampToLevel"); pullErr != nil {

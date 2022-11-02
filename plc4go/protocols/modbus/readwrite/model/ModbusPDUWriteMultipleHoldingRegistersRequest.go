@@ -160,7 +160,11 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
+func ModbusPDUWriteMultipleHoldingRegistersRequestParse(theBytes []byte, response bool) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
+	return ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleHoldingRegistersRequest"); pullErr != nil {

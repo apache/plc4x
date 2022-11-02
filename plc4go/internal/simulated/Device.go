@@ -22,7 +22,6 @@ package simulated
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
 	"math/rand"
 )
@@ -67,8 +66,7 @@ func (t *Device) getRandomValue(field SimulatedField) *values.PlcValue {
 	size := field.GetDataTypeSize().DataTypeSize()
 	data := make([]byte, uint16(size)*field.Quantity)
 	rand.Read(data)
-	readBuffer := utils.NewReadBufferByteBased(data)
-	plcValue, err := model.DataItemParse(readBuffer, field.DataTypeSize.String(), field.Quantity)
+	plcValue, err := model.DataItemParse(data, field.DataTypeSize.String(), field.Quantity)
 	if err != nil {
 		panic("Unable to parse random bytes")
 	}

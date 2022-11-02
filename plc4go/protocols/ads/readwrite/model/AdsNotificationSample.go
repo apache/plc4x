@@ -120,7 +120,11 @@ func (m *_AdsNotificationSample) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
+func AdsNotificationSampleParse(theBytes []byte) (AdsNotificationSample, error) {
+	return AdsNotificationSampleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsNotificationSampleParseWithBuffer(readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsNotificationSample"); pullErr != nil {

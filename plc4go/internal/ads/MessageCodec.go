@@ -84,8 +84,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewLittleEndianReadBufferByteBased(data)
-		tcpPacket, err := model.AmsTCPPacketParse(rb)
+		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+		tcpPacket, err := model.AmsTCPPacketParseWithBuffer(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

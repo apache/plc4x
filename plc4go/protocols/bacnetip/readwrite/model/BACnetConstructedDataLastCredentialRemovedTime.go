@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastCredentialRemovedTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemovedTime, error) {
+func BACnetConstructedDataLastCredentialRemovedTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemovedTime, error) {
+	return BACnetConstructedDataLastCredentialRemovedTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastCredentialRemovedTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemovedTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialRemovedTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLastCredentialRemovedTimeParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("lastCredentialRemovedTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialRemovedTime")
 	}
-	_lastCredentialRemovedTime, _lastCredentialRemovedTimeErr := BACnetDateTimeParse(readBuffer)
+	_lastCredentialRemovedTime, _lastCredentialRemovedTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _lastCredentialRemovedTimeErr != nil {
 		return nil, errors.Wrap(_lastCredentialRemovedTimeErr, "Error parsing 'lastCredentialRemovedTime' field of BACnetConstructedDataLastCredentialRemovedTime")
 	}

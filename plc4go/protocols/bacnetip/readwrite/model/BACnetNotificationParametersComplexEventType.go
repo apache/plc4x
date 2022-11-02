@@ -125,7 +125,11 @@ func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersComplexEventType, error) {
+func BACnetNotificationParametersComplexEventTypeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersComplexEventType, error) {
+	return BACnetNotificationParametersComplexEventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersComplexEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersComplexEventType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersComplexEventType"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectTypeArgument))
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectTypeArgument))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetNotificationParametersComplexEventType")
 	}

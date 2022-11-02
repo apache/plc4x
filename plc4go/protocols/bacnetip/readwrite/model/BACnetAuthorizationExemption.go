@@ -133,7 +133,11 @@ func (m BACnetAuthorizationExemption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthorizationExemptionParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
+func BACnetAuthorizationExemptionParse(theBytes []byte) (BACnetAuthorizationExemption, error) {
+	return BACnetAuthorizationExemptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAuthorizationExemptionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthorizationExemption", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationExemption")

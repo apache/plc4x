@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueCharacterString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueCharacterStringParse(readBuffer utils.ReadBuffer) (BACnetChannelValueCharacterString, error) {
+func BACnetChannelValueCharacterStringParse(theBytes []byte) (BACnetChannelValueCharacterString, error) {
+	return BACnetChannelValueCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueCharacterString"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueCharacterStringParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
 	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _characterStringValueErr != nil {
 		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetChannelValueCharacterString")
 	}

@@ -156,7 +156,11 @@ func (m *_AirConditioningDataZoneHumidity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataZoneHumidityParse(readBuffer utils.ReadBuffer) (AirConditioningDataZoneHumidity, error) {
+func AirConditioningDataZoneHumidityParse(theBytes []byte) (AirConditioningDataZoneHumidity, error) {
+	return AirConditioningDataZoneHumidityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataZoneHumidityParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataZoneHumidity, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataZoneHumidity"); pullErr != nil {
@@ -176,7 +180,7 @@ func AirConditioningDataZoneHumidityParse(readBuffer utils.ReadBuffer) (AirCondi
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParse(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataZoneHumidity")
 	}
@@ -189,7 +193,7 @@ func AirConditioningDataZoneHumidityParse(readBuffer utils.ReadBuffer) (AirCondi
 	if pullErr := readBuffer.PullContext("humidity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for humidity")
 	}
-	_humidity, _humidityErr := HVACHumidityParse(readBuffer)
+	_humidity, _humidityErr := HVACHumidityParseWithBuffer(readBuffer)
 	if _humidityErr != nil {
 		return nil, errors.Wrap(_humidityErr, "Error parsing 'humidity' field of AirConditioningDataZoneHumidity")
 	}
@@ -202,7 +206,7 @@ func AirConditioningDataZoneHumidityParse(readBuffer utils.ReadBuffer) (AirCondi
 	if pullErr := readBuffer.PullContext("sensorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sensorStatus")
 	}
-	_sensorStatus, _sensorStatusErr := HVACSensorStatusParse(readBuffer)
+	_sensorStatus, _sensorStatusErr := HVACSensorStatusParseWithBuffer(readBuffer)
 	if _sensorStatusErr != nil {
 		return nil, errors.Wrap(_sensorStatusErr, "Error parsing 'sensorStatus' field of AirConditioningDataZoneHumidity")
 	}

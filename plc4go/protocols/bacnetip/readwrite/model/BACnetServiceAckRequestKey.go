@@ -130,7 +130,11 @@ func (m *_BACnetServiceAckRequestKey) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
+func BACnetServiceAckRequestKeyParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
+	return BACnetServiceAckRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength, serviceAckPayloadLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRequestKey"); pullErr != nil {

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLockout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLockoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockout, error) {
+func BACnetConstructedDataLockoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockout, error) {
+	return BACnetConstructedDataLockoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLockoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockout"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLockoutParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("lockout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lockout")
 	}
-	_lockout, _lockoutErr := BACnetApplicationTagParse(readBuffer)
+	_lockout, _lockoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _lockoutErr != nil {
 		return nil, errors.Wrap(_lockoutErr, "Error parsing 'lockout' field of BACnetConstructedDataLockout")
 	}

@@ -160,7 +160,11 @@ func (m *_TelephonyDataRecallLastNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataRecallLastNumberParse(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
+func TelephonyDataRecallLastNumberParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
+	return TelephonyDataRecallLastNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func TelephonyDataRecallLastNumberParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRecallLastNumber"); pullErr != nil {

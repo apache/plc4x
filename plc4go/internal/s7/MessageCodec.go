@@ -24,7 +24,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -83,8 +82,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBufferByteBased(data)
-		tpktPacket, err := model.TPKTPacketParse(rb)
+		tpktPacket, err := model.TPKTPacketParse(data)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

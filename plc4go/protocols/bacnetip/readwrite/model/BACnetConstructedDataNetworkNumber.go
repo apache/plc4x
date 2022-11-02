@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataNetworkNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkNumberParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkNumber, error) {
+func BACnetConstructedDataNetworkNumberParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkNumber, error) {
+	return BACnetConstructedDataNetworkNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataNetworkNumberParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkNumber"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataNetworkNumberParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
 	}
-	_networkNumber, _networkNumberErr := BACnetApplicationTagParse(readBuffer)
+	_networkNumber, _networkNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _networkNumberErr != nil {
 		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetConstructedDataNetworkNumber")
 	}

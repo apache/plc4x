@@ -129,7 +129,11 @@ func (m *_NLMRouterAvailableToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMRouterAvailableToNetwork, error) {
+func NLMRouterAvailableToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMRouterAvailableToNetwork, error) {
+	return NLMRouterAvailableToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+}
+
+func NLMRouterAvailableToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMRouterAvailableToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRouterAvailableToNetwork"); pullErr != nil {

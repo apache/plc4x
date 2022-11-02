@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDefaultGateway, error) {
+func BACnetConstructedDataIPDefaultGatewayParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDefaultGateway, error) {
+	return BACnetConstructedDataIPDefaultGatewayParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPDefaultGatewayParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDefaultGateway, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDefaultGateway"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("ipDefaultGateway"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipDefaultGateway")
 	}
-	_ipDefaultGateway, _ipDefaultGatewayErr := BACnetApplicationTagParse(readBuffer)
+	_ipDefaultGateway, _ipDefaultGatewayErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipDefaultGatewayErr != nil {
 		return nil, errors.Wrap(_ipDefaultGatewayErr, "Error parsing 'ipDefaultGateway' field of BACnetConstructedDataIPDefaultGateway")
 	}

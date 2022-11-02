@@ -151,7 +151,11 @@ func (m BACnetAccessCredentialDisableReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessCredentialDisableReasonParse(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisableReason, error) {
+func BACnetAccessCredentialDisableReasonParse(theBytes []byte) (BACnetAccessCredentialDisableReason, error) {
+	return BACnetAccessCredentialDisableReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessCredentialDisableReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisableReason, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessCredentialDisableReason", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisableReason")

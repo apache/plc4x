@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataInProgress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProgress, error) {
+func BACnetConstructedDataInProgressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProgress, error) {
+	return BACnetConstructedDataInProgressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataInProgressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProgress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInProgress"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("inProgress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for inProgress")
 	}
-	_inProgress, _inProgressErr := BACnetLightingInProgressTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_inProgress, _inProgressErr := BACnetLightingInProgressTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _inProgressErr != nil {
 		return nil, errors.Wrap(_inProgressErr, "Error parsing 'inProgress' field of BACnetConstructedDataInProgress")
 	}

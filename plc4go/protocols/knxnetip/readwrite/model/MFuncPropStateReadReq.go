@@ -104,7 +104,11 @@ func (m *_MFuncPropStateReadReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (MFuncPropStateReadReq, error) {
+func MFuncPropStateReadReqParse(theBytes []byte, size uint16) (MFuncPropStateReadReq, error) {
+	return MFuncPropStateReadReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func MFuncPropStateReadReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MFuncPropStateReadReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MFuncPropStateReadReq"); pullErr != nil {

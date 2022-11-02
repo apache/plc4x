@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLastRestoreTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastRestoreTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
+func BACnetConstructedDataLastRestoreTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
+	return BACnetConstructedDataLastRestoreTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastRestoreTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastRestoreTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLastRestoreTimeParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("lastRestoreTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastRestoreTime")
 	}
-	_lastRestoreTime, _lastRestoreTimeErr := BACnetTimeStampParse(readBuffer)
+	_lastRestoreTime, _lastRestoreTimeErr := BACnetTimeStampParseWithBuffer(readBuffer)
 	if _lastRestoreTimeErr != nil {
 		return nil, errors.Wrap(_lastRestoreTimeErr, "Error parsing 'lastRestoreTime' field of BACnetConstructedDataLastRestoreTime")
 	}

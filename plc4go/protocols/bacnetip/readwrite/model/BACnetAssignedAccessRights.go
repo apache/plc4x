@@ -108,7 +108,11 @@ func (m *_BACnetAssignedAccessRights) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAssignedAccessRightsParse(readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
+func BACnetAssignedAccessRightsParse(theBytes []byte) (BACnetAssignedAccessRights, error) {
+	return BACnetAssignedAccessRightsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAssignedAccessRightsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedAccessRights"); pullErr != nil {
@@ -121,7 +125,7 @@ func BACnetAssignedAccessRightsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	if pullErr := readBuffer.PullContext("assignedAccessRights"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for assignedAccessRights")
 	}
-	_assignedAccessRights, _assignedAccessRightsErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
+	_assignedAccessRights, _assignedAccessRightsErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _assignedAccessRightsErr != nil {
 		return nil, errors.Wrap(_assignedAccessRightsErr, "Error parsing 'assignedAccessRights' field of BACnetAssignedAccessRights")
 	}
@@ -134,7 +138,7 @@ func BACnetAssignedAccessRightsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enable")
 	}
-	_enable, _enableErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_enable, _enableErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _enableErr != nil {
 		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetAssignedAccessRights")
 	}

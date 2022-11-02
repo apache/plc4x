@@ -149,7 +149,11 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataShuffleOnOffParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
+func MediaTransportControlDataShuffleOnOffParse(theBytes []byte) (MediaTransportControlDataShuffleOnOff, error) {
+	return MediaTransportControlDataShuffleOnOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataShuffleOnOffParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataShuffleOnOff"); pullErr != nil {

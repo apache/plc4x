@@ -139,7 +139,11 @@ func (m *_COTPPacketTpduError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketTpduError, error) {
+func COTPPacketTpduErrorParse(theBytes []byte, cotpLen uint16) (COTPPacketTpduError, error) {
+	return COTPPacketTpduErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cotpLen) // TODO: get endianness from mspec
+}
+
+func COTPPacketTpduErrorParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketTpduError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketTpduError"); pullErr != nil {

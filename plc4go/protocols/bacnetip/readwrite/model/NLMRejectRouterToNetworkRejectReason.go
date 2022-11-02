@@ -127,7 +127,11 @@ func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
+func NLMRejectRouterToNetworkRejectReasonParse(theBytes []byte) (NLMRejectRouterToNetworkRejectReason, error) {
+	return NLMRejectRouterToNetworkRejectReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
 	val, err := readBuffer.ReadUint8("NLMRejectRouterToNetworkRejectReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")

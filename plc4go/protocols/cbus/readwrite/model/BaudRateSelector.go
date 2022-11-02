@@ -121,7 +121,11 @@ func (m BaudRateSelector) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BaudRateSelectorParse(readBuffer utils.ReadBuffer) (BaudRateSelector, error) {
+func BaudRateSelectorParse(theBytes []byte) (BaudRateSelector, error) {
+	return BaudRateSelectorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BaudRateSelectorParseWithBuffer(readBuffer utils.ReadBuffer) (BaudRateSelector, error) {
 	val, err := readBuffer.ReadUint8("BaudRateSelector", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BaudRateSelector")

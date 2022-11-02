@@ -112,7 +112,11 @@ func (m *_BACnetAuthenticationFactorTypeTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationFactorTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationFactorTypeTagged, error) {
+func BACnetAuthenticationFactorTypeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationFactorTypeTagged, error) {
+	return BACnetAuthenticationFactorTypeTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetAuthenticationFactorTypeTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationFactorTypeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactorTypeTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetAuthenticationFactorTypeTaggedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAuthenticationFactorTypeTagged")
 	}

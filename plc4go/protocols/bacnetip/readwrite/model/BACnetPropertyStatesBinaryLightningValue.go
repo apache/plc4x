@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBinaryLightningValueParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
+func BACnetPropertyStatesBinaryLightningValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
+	return BACnetPropertyStatesBinaryLightningValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryLightningValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesBinaryLightningValueParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("binaryLightningValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for binaryLightningValue")
 	}
-	_binaryLightningValue, _binaryLightningValueErr := BACnetBinaryLightingPVTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_binaryLightningValue, _binaryLightningValueErr := BACnetBinaryLightingPVTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryLightningValueErr != nil {
 		return nil, errors.Wrap(_binaryLightningValueErr, "Error parsing 'binaryLightningValue' field of BACnetPropertyStatesBinaryLightningValue")
 	}

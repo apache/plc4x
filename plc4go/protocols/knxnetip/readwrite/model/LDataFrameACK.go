@@ -114,7 +114,11 @@ func (m *_LDataFrameACK) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataFrameACKParse(readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
+func LDataFrameACKParse(theBytes []byte) (LDataFrameACK, error) {
+	return LDataFrameACKParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LDataFrameACKParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {

@@ -115,7 +115,11 @@ func (m BACnetLightingInProgress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLightingInProgressParse(readBuffer utils.ReadBuffer) (BACnetLightingInProgress, error) {
+func BACnetLightingInProgressParse(theBytes []byte) (BACnetLightingInProgress, error) {
+	return BACnetLightingInProgressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLightingInProgressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingInProgress, error) {
 	val, err := readBuffer.ReadUint8("BACnetLightingInProgress", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingInProgress")

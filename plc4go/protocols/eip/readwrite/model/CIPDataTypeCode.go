@@ -187,7 +187,11 @@ func (m CIPDataTypeCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
+func CIPDataTypeCodeParse(theBytes []byte) (CIPDataTypeCode, error) {
+	return CIPDataTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CIPDataTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPDataTypeCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CIPDataTypeCode")

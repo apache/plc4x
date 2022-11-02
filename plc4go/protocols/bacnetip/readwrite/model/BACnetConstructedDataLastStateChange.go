@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLastStateChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastStateChange, error) {
+func BACnetConstructedDataLastStateChangeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastStateChange, error) {
+	return BACnetConstructedDataLastStateChangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastStateChangeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastStateChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastStateChange"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("lastStateChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastStateChange")
 	}
-	_lastStateChange, _lastStateChangeErr := BACnetTimerTransitionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_lastStateChange, _lastStateChangeErr := BACnetTimerTransitionTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastStateChangeErr != nil {
 		return nil, errors.Wrap(_lastStateChangeErr, "Error parsing 'lastStateChange' field of BACnetConstructedDataLastStateChange")
 	}

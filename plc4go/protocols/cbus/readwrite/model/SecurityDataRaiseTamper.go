@@ -103,7 +103,11 @@ func (m *_SecurityDataRaiseTamper) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataRaiseTamperParse(readBuffer utils.ReadBuffer) (SecurityDataRaiseTamper, error) {
+func SecurityDataRaiseTamperParse(theBytes []byte) (SecurityDataRaiseTamper, error) {
+	return SecurityDataRaiseTamperParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataRaiseTamperParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataRaiseTamper, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataRaiseTamper"); pullErr != nil {

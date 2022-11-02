@@ -139,7 +139,11 @@ func (m BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevic
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParse(theBytes []byte) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
+	return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice")

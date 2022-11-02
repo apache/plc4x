@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectPropertyReference, error) {
+func BACnetConstructedDataObjectPropertyReferenceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectPropertyReference, error) {
+	return BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectPropertyReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectPropertyReference"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("propertyReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyReference")
 	}
-	_propertyReference, _propertyReferenceErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
+	_propertyReference, _propertyReferenceErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
 	if _propertyReferenceErr != nil {
 		return nil, errors.Wrap(_propertyReferenceErr, "Error parsing 'propertyReference' field of BACnetConstructedDataObjectPropertyReference")
 	}

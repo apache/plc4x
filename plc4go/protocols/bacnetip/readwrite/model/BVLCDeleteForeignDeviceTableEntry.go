@@ -138,7 +138,11 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
+func BVLCDeleteForeignDeviceTableEntryParse(theBytes []byte) (BVLCDeleteForeignDeviceTableEntry, error) {
+	return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {

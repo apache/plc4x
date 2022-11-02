@@ -143,7 +143,11 @@ func (m ProtectionLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ProtectionLevelParse(readBuffer utils.ReadBuffer) (ProtectionLevel, error) {
+func ProtectionLevelParse(theBytes []byte) (ProtectionLevel, error) {
+	return ProtectionLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ProtectionLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ProtectionLevel, error) {
 	val, err := readBuffer.ReadUint8("ProtectionLevel", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ProtectionLevel")

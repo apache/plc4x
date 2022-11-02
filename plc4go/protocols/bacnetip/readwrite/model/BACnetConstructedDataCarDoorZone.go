@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataCarDoorZone) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarDoorZoneParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDoorZone, error) {
+func BACnetConstructedDataCarDoorZoneParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDoorZone, error) {
+	return BACnetConstructedDataCarDoorZoneParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataCarDoorZoneParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDoorZone, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDoorZone"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataCarDoorZoneParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("carDoorZone"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for carDoorZone")
 	}
-	_carDoorZone, _carDoorZoneErr := BACnetApplicationTagParse(readBuffer)
+	_carDoorZone, _carDoorZoneErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _carDoorZoneErr != nil {
 		return nil, errors.Wrap(_carDoorZoneErr, "Error parsing 'carDoorZone' field of BACnetConstructedDataCarDoorZone")
 	}

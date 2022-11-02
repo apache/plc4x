@@ -127,7 +127,11 @@ func (m *_SALDataAirConditioning) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataAirConditioningParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
+func SALDataAirConditioningParse(theBytes []byte, applicationId ApplicationId) (SALDataAirConditioning, error) {
+	return SALDataAirConditioningParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataAirConditioningParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAirConditioning"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataAirConditioningParse(readBuffer utils.ReadBuffer, applicationId Appl
 	if pullErr := readBuffer.PullContext("airConditioningData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for airConditioningData")
 	}
-	_airConditioningData, _airConditioningDataErr := AirConditioningDataParse(readBuffer)
+	_airConditioningData, _airConditioningDataErr := AirConditioningDataParseWithBuffer(readBuffer)
 	if _airConditioningDataErr != nil {
 		return nil, errors.Wrap(_airConditioningDataErr, "Error parsing 'airConditioningData' field of SALDataAirConditioning")
 	}

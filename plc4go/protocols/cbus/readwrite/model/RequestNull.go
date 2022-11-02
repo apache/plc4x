@@ -127,7 +127,11 @@ func (m *_RequestNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestNullParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {
+func RequestNullParse(theBytes []byte, cBusOptions CBusOptions) (RequestNull, error) {
+	return RequestNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func RequestNullParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestNull"); pullErr != nil {

@@ -346,7 +346,11 @@ func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TemperatureBroadcastCommandTypeContainerParse(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandTypeContainer, error) {
+func TemperatureBroadcastCommandTypeContainerParse(theBytes []byte) (TemperatureBroadcastCommandTypeContainer, error) {
+	return TemperatureBroadcastCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TemperatureBroadcastCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("TemperatureBroadcastCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TemperatureBroadcastCommandTypeContainer")

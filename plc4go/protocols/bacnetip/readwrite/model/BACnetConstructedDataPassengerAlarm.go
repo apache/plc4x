@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPassengerAlarm) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPassengerAlarmParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassengerAlarm, error) {
+func BACnetConstructedDataPassengerAlarmParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassengerAlarm, error) {
+	return BACnetConstructedDataPassengerAlarmParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPassengerAlarmParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassengerAlarm, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassengerAlarm"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPassengerAlarmParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("passengerAlarm"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for passengerAlarm")
 	}
-	_passengerAlarm, _passengerAlarmErr := BACnetApplicationTagParse(readBuffer)
+	_passengerAlarm, _passengerAlarmErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _passengerAlarmErr != nil {
 		return nil, errors.Wrap(_passengerAlarmErr, "Error parsing 'passengerAlarm' field of BACnetConstructedDataPassengerAlarm")
 	}

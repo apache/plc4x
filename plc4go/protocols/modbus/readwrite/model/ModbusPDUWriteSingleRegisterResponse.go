@@ -144,7 +144,11 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleRegisterResponseParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteSingleRegisterResponse, error) {
+func ModbusPDUWriteSingleRegisterResponseParse(theBytes []byte, response bool) (ModbusPDUWriteSingleRegisterResponse, error) {
+	return ModbusPDUWriteSingleRegisterResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUWriteSingleRegisterResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteSingleRegisterResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleRegisterResponse"); pullErr != nil {

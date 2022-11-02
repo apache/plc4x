@@ -139,7 +139,11 @@ func (m *_BACnetLifeSafetyOperationTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLifeSafetyOperationTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyOperationTagged, error) {
+func BACnetLifeSafetyOperationTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyOperationTagged, error) {
+	return BACnetLifeSafetyOperationTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetLifeSafetyOperationTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyOperationTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLifeSafetyOperationTagged"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetLifeSafetyOperationTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLifeSafetyOperationTagged")
 	}

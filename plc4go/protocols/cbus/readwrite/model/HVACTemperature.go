@@ -115,7 +115,11 @@ func (m *_HVACTemperature) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACTemperatureParse(readBuffer utils.ReadBuffer) (HVACTemperature, error) {
+func HVACTemperatureParse(theBytes []byte) (HVACTemperature, error) {
+	return HVACTemperatureParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACTemperatureParseWithBuffer(readBuffer utils.ReadBuffer) (HVACTemperature, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACTemperature"); pullErr != nil {

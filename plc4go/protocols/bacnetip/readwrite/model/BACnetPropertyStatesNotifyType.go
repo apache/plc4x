@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesNotifyType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesNotifyTypeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNotifyType, error) {
+func BACnetPropertyStatesNotifyTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNotifyType, error) {
+	return BACnetPropertyStatesNotifyTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesNotifyTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNotifyType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNotifyType"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesNotifyTypeParse(readBuffer utils.ReadBuffer, peekedTagN
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
 	}
-	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
 		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetPropertyStatesNotifyType")
 	}

@@ -178,7 +178,11 @@ func (m *_MultipleServiceResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceResponse, error) {
+func MultipleServiceResponseParse(theBytes []byte, serviceLen uint16) (MultipleServiceResponse, error) {
+	return MultipleServiceResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceLen) // TODO: get endianness from mspec
+}
+
+func MultipleServiceResponseParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {

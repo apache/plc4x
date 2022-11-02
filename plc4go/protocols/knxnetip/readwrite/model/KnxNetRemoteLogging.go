@@ -125,7 +125,11 @@ func (m *_KnxNetRemoteLogging) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (KnxNetRemoteLogging, error) {
+func KnxNetRemoteLoggingParse(theBytes []byte) (KnxNetRemoteLogging, error) {
+	return KnxNetRemoteLoggingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxNetRemoteLoggingParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetRemoteLogging, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {

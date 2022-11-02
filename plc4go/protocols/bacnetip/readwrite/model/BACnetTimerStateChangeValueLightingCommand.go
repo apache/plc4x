@@ -123,7 +123,11 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerStateChangeValueLightingCommandParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
+func BACnetTimerStateChangeValueLightingCommandParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
+	return BACnetTimerStateChangeValueLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueLightingCommand"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetTimerStateChangeValueLightingCommandParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("ligthingCommandValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ligthingCommandValue")
 	}
-	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParse(readBuffer, uint8(uint8(3)))
+	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(readBuffer, uint8(uint8(3)))
 	if _ligthingCommandValueErr != nil {
 		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field of BACnetTimerStateChangeValueLightingCommand")
 	}

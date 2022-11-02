@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesTimerTransition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesTimerTransitionParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
+func BACnetPropertyStatesTimerTransitionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
+	return BACnetPropertyStatesTimerTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesTimerTransitionParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesTimerTransition"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesTimerTransitionParse(readBuffer utils.ReadBuffer, peeke
 	if pullErr := readBuffer.PullContext("timerTransition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timerTransition")
 	}
-	_timerTransition, _timerTransitionErr := BACnetTimerTransitionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_timerTransition, _timerTransitionErr := BACnetTimerTransitionTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timerTransitionErr != nil {
 		return nil, errors.Wrap(_timerTransitionErr, "Error parsing 'timerTransition' field of BACnetPropertyStatesTimerTransition")
 	}

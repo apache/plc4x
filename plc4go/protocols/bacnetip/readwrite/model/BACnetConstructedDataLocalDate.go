@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLocalDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalDate, error) {
+func BACnetConstructedDataLocalDateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalDate, error) {
+	return BACnetConstructedDataLocalDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLocalDateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalDate"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("localDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for localDate")
 	}
-	_localDate, _localDateErr := BACnetApplicationTagParse(readBuffer)
+	_localDate, _localDateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _localDateErr != nil {
 		return nil, errors.Wrap(_localDateErr, "Error parsing 'localDate' field of BACnetConstructedDataLocalDate")
 	}

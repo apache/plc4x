@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataInstallationID) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstallationID, error) {
+func BACnetConstructedDataInstallationIDParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstallationID, error) {
+	return BACnetConstructedDataInstallationIDParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataInstallationIDParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstallationID, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInstallationID"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("installationId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for installationId")
 	}
-	_installationId, _installationIdErr := BACnetApplicationTagParse(readBuffer)
+	_installationId, _installationIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _installationIdErr != nil {
 		return nil, errors.Wrap(_installationIdErr, "Error parsing 'installationId' field of BACnetConstructedDataInstallationID")
 	}

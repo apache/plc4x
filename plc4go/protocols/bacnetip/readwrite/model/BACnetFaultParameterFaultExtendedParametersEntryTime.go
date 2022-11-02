@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryTimeParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryTime, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryTimeParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryTime, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryTime"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryTimeParse(readBuffer utils.
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
+	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetFaultParameterFaultExtendedParametersEntryTime")
 	}

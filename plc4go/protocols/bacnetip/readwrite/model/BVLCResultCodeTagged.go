@@ -112,7 +112,11 @@ func (m *_BVLCResultCodeTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCResultCodeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {
+func BVLCResultCodeTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {
+	return BVLCResultCodeTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BVLCResultCodeTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCResultCodeTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BVLCResultCodeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BVLCResultCodeTagged")
 	}

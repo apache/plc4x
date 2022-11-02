@@ -138,7 +138,11 @@ func (m *_BACnetPropertyWriteDefinition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyWriteDefinition, error) {
+func BACnetPropertyWriteDefinitionParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPropertyWriteDefinition, error) {
+	return BACnetPropertyWriteDefinitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyWriteDefinitionParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyWriteDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyWriteDefinition"); pullErr != nil {
@@ -151,7 +155,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetPropertyWriteDefinition")
 	}
@@ -167,7 +171,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -189,7 +193,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -211,7 +215,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for priority")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

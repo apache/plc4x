@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetFaultParameter) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (BACnetFaultParameter, error) {
+func BACnetFaultParameterParse(theBytes []byte) (BACnetFaultParameter, error) {
+	return BACnetFaultParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameter"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (BACnetFaultParamete
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,21 +166,21 @@ func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (BACnetFaultParamete
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetFaultParameterNone
-		_childTemp, typeSwitchError = BACnetFaultParameterNoneParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterNoneParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetFaultParameterFaultCharacterString
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultCharacterStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultCharacterStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetFaultParameterFaultExtended
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(3): // BACnetFaultParameterFaultLifeSafety
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultLifeSafetyParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultLifeSafetyParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(4): // BACnetFaultParameterFaultState
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultStateParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultStateParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(5): // BACnetFaultParameterFaultStatusFlags
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultStatusFlagsParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultStatusFlagsParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(6): // BACnetFaultParameterFaultOutOfRange
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(7): // BACnetFaultParameterFaultListed
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultListedParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultListedParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

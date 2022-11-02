@@ -132,7 +132,11 @@ func (m *_StatusRequestBinaryState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {
+func StatusRequestBinaryStateParse(theBytes []byte) (StatusRequestBinaryState, error) {
+	return StatusRequestBinaryStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func StatusRequestBinaryStateParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestBinaryState"); pullErr != nil {
@@ -162,7 +166,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryState")
 	}

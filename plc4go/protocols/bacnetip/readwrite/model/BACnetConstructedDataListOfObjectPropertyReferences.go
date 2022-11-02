@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataListOfObjectPropertyReferences, error) {
+func BACnetConstructedDataListOfObjectPropertyReferencesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataListOfObjectPropertyReferences, error) {
+	return BACnetConstructedDataListOfObjectPropertyReferencesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataListOfObjectPropertyReferencesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataListOfObjectPropertyReferences, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataListOfObjectPropertyReferences"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 	var references []BACnetDeviceObjectPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
+			_item, _err := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'references' field of BACnetConstructedDataListOfObjectPropertyReferences")
 			}

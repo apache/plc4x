@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesFileAccessMethodParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
+func BACnetPropertyStatesFileAccessMethodParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
+	return BACnetPropertyStatesFileAccessMethodParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesFileAccessMethodParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesFileAccessMethod"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesFileAccessMethodParse(readBuffer utils.ReadBuffer, peek
 	if pullErr := readBuffer.PullContext("fileAccessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileAccessMethod")
 	}
-	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _fileAccessMethodErr != nil {
 		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field of BACnetPropertyStatesFileAccessMethod")
 	}

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataModificationDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataModificationDateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataModificationDate, error) {
+func BACnetConstructedDataModificationDateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataModificationDate, error) {
+	return BACnetConstructedDataModificationDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataModificationDateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataModificationDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataModificationDate"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataModificationDateParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("modificationDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for modificationDate")
 	}
-	_modificationDate, _modificationDateErr := BACnetDateTimeParse(readBuffer)
+	_modificationDate, _modificationDateErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _modificationDateErr != nil {
 		return nil, errors.Wrap(_modificationDateErr, "Error parsing 'modificationDate' field of BACnetConstructedDataModificationDate")
 	}

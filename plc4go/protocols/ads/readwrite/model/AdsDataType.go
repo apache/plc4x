@@ -682,7 +682,11 @@ func (m AdsDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDataTypeParse(readBuffer utils.ReadBuffer) (AdsDataType, error) {
+func AdsDataTypeParse(theBytes []byte) (AdsDataType, error) {
+	return AdsDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataType, error) {
 	val, err := readBuffer.ReadInt8("AdsDataType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AdsDataType")

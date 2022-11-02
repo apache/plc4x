@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +100,11 @@ func (m *_S7Address) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7AddressParse(readBuffer utils.ReadBuffer) (S7Address, error) {
+func S7AddressParse(theBytes []byte) (S7Address, error) {
+	return S7AddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7AddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7Address, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Address"); pullErr != nil {
@@ -125,7 +130,7 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (S7Address, error) {
 	var typeSwitchError error
 	switch {
 	case addressType == 0x10: // S7AddressAny
-		_childTemp, typeSwitchError = S7AddressAnyParse(readBuffer)
+		_childTemp, typeSwitchError = S7AddressAnyParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [addressType=%v]", addressType)
 	}

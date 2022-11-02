@@ -109,7 +109,11 @@ func (m HVACSensorStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACSensorStatusParse(readBuffer utils.ReadBuffer) (HVACSensorStatus, error) {
+func HVACSensorStatusParse(theBytes []byte) (HVACSensorStatus, error) {
+	return HVACSensorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACSensorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (HVACSensorStatus, error) {
 	val, err := readBuffer.ReadUint8("HVACSensorStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACSensorStatus")

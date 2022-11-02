@@ -185,7 +185,11 @@ func (m *_HVACZoneList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACZoneListParse(readBuffer utils.ReadBuffer) (HVACZoneList, error) {
+func HVACZoneListParse(theBytes []byte) (HVACZoneList, error) {
+	return HVACZoneListParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACZoneListParseWithBuffer(readBuffer utils.ReadBuffer) (HVACZoneList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACZoneList"); pullErr != nil {

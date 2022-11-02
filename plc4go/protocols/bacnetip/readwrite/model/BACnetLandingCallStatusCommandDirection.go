@@ -123,7 +123,11 @@ func (m *_BACnetLandingCallStatusCommandDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLandingCallStatusCommandDirectionParse(readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDirection, error) {
+func BACnetLandingCallStatusCommandDirectionParse(theBytes []byte) (BACnetLandingCallStatusCommandDirection, error) {
+	return BACnetLandingCallStatusCommandDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLandingCallStatusCommandDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDirection"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetLandingCallStatusCommandDirectionParse(readBuffer utils.ReadBuffer) (
 	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for direction")
 	}
-	_direction, _directionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_direction, _directionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _directionErr != nil {
 		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetLandingCallStatusCommandDirection")
 	}

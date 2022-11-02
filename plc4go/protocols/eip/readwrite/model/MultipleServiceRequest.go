@@ -153,7 +153,11 @@ func (m *_MultipleServiceRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceRequest, error) {
+func MultipleServiceRequestParse(theBytes []byte, serviceLen uint16) (MultipleServiceRequest, error) {
+	return MultipleServiceRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceLen) // TODO: get endianness from mspec
+}
+
+func MultipleServiceRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
@@ -184,7 +188,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
-	_data, _dataErr := ServicesParse(readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
+	_data, _dataErr := ServicesParseWithBuffer(readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MultipleServiceRequest")
 	}

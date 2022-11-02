@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueBitString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueBitStringParse(readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
+func BACnetChannelValueBitStringParse(theBytes []byte) (BACnetChannelValueBitString, error) {
+	return BACnetChannelValueBitStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueBitStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBitString"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueBitStringParse(readBuffer utils.ReadBuffer) (BACnetChanne
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
-	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _bitStringValueErr != nil {
 		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetChannelValueBitString")
 	}

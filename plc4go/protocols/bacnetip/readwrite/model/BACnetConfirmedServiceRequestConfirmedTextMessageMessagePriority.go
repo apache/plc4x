@@ -97,7 +97,11 @@ func (m BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) GetLen
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(theBytes []byte) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority")

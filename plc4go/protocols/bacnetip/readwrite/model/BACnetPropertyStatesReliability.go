@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesReliability) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesReliabilityParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReliability, error) {
+func BACnetPropertyStatesReliabilityParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesReliability, error) {
+	return BACnetPropertyStatesReliabilityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesReliabilityParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesReliability"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesReliabilityParse(readBuffer utils.ReadBuffer, peekedTag
 	if pullErr := readBuffer.PullContext("reliability"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reliability")
 	}
-	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_reliability, _reliabilityErr := BACnetReliabilityTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reliabilityErr != nil {
 		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field of BACnetPropertyStatesReliability")
 	}

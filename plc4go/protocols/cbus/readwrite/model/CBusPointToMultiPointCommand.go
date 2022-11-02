@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,7 +115,11 @@ func (m *_CBusPointToMultiPointCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
+func CBusPointToMultiPointCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
+	return CBusPointToMultiPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommand"); pullErr != nil {
@@ -143,9 +148,9 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions 
 	var typeSwitchError error
 	switch {
 	case peekedApplication == 0xFF: // CBusPointToMultiPointCommandStatus
-		_childTemp, typeSwitchError = CBusPointToMultiPointCommandStatusParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToMultiPointCommandStatusParseWithBuffer(readBuffer, cBusOptions)
 	case 0 == 0: // CBusPointToMultiPointCommandNormal
-		_childTemp, typeSwitchError = CBusPointToMultiPointCommandNormalParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToMultiPointCommandNormalParseWithBuffer(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}

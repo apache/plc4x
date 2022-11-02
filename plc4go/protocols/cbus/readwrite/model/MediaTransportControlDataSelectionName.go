@@ -124,7 +124,11 @@ func (m *_MediaTransportControlDataSelectionName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataSelectionNameParse(readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataSelectionName, error) {
+func MediaTransportControlDataSelectionNameParse(theBytes []byte, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataSelectionName, error) {
+	return MediaTransportControlDataSelectionNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataSelectionNameParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataSelectionName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSelectionName"); pullErr != nil {

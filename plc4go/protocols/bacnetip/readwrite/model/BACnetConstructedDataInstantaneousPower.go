@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataInstantaneousPower) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstantaneousPower, error) {
+func BACnetConstructedDataInstantaneousPowerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstantaneousPower, error) {
+	return BACnetConstructedDataInstantaneousPowerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataInstantaneousPowerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstantaneousPower, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInstantaneousPower"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("instantaneousPower"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for instantaneousPower")
 	}
-	_instantaneousPower, _instantaneousPowerErr := BACnetApplicationTagParse(readBuffer)
+	_instantaneousPower, _instantaneousPowerErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _instantaneousPowerErr != nil {
 		return nil, errors.Wrap(_instantaneousPowerErr, "Error parsing 'instantaneousPower' field of BACnetConstructedDataInstantaneousPower")
 	}

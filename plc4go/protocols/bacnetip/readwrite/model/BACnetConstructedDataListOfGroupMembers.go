@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataListOfGroupMembers) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataListOfGroupMembersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataListOfGroupMembers, error) {
+func BACnetConstructedDataListOfGroupMembersParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataListOfGroupMembers, error) {
+	return BACnetConstructedDataListOfGroupMembersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataListOfGroupMembersParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataListOfGroupMembers, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataListOfGroupMembers"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataListOfGroupMembersParse(readBuffer utils.ReadBuffer, t
 	var listOfGroupMembers []BACnetReadAccessSpecification
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetReadAccessSpecificationParse(readBuffer)
+			_item, _err := BACnetReadAccessSpecificationParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfGroupMembers' field of BACnetConstructedDataListOfGroupMembers")
 			}

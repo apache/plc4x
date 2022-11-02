@@ -98,7 +98,11 @@ func (m *_Dummy) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DummyParse(readBuffer utils.ReadBuffer) (Dummy, error) {
+func DummyParse(theBytes []byte) (Dummy, error) {
+	return DummyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DummyParseWithBuffer(readBuffer utils.ReadBuffer) (Dummy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Dummy"); pullErr != nil {

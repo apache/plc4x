@@ -136,7 +136,11 @@ func (m *_AdsWriteControlResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
+func AdsWriteControlResponseParse(theBytes []byte) (AdsWriteControlResponse, error) {
+	return AdsWriteControlResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsWriteControlResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlResponse"); pullErr != nil {
@@ -149,7 +153,7 @@ func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer) (AdsWriteControlR
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsWriteControlResponse")
 	}

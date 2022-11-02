@@ -147,7 +147,11 @@ func (m *_HVACStartTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACStartTimeParse(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
+func HVACStartTimeParse(theBytes []byte) (HVACStartTime, error) {
+	return HVACStartTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACStartTimeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACStartTime"); pullErr != nil {

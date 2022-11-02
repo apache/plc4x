@@ -123,7 +123,11 @@ func (m *_AlarmMessageAckType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
+func AlarmMessageAckTypeParse(theBytes []byte) (AlarmMessageAckType, error) {
+	return AlarmMessageAckTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmMessageAckTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckType"); pullErr != nil {
@@ -158,7 +162,7 @@ func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckType,
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageObjectAckTypeParse(readBuffer)
+			_item, _err := AlarmMessageObjectAckTypeParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessageAckType")
 			}

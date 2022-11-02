@@ -123,7 +123,11 @@ func (m *_BACnetTimeStampDateTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
+func BACnetTimeStampDateTimeParse(theBytes []byte) (BACnetTimeStampDateTime, error) {
+	return BACnetTimeStampDateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTimeStampDateTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampDateTime"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampD
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(2)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetTimeStampDateTime")
 	}

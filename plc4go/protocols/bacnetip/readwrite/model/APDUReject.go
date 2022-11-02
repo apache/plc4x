@@ -141,7 +141,11 @@ func (m *_APDUReject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject, error) {
+func APDURejectParse(theBytes []byte, apduLength uint16) (APDUReject, error) {
+	return APDURejectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+}
+
+func APDURejectParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
@@ -178,7 +182,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
 	}
-	_rejectReason, _rejectReasonErr := BACnetRejectReasonTaggedParse(readBuffer, uint32(uint32(1)))
+	_rejectReason, _rejectReasonErr := BACnetRejectReasonTaggedParseWithBuffer(readBuffer, uint32(uint32(1)))
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field of APDUReject")
 	}

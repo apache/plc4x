@@ -123,7 +123,11 @@ func (m *_BACnetTimerStateChangeValueOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerStateChangeValueOctetStringParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueOctetString, error) {
+func BACnetTimerStateChangeValueOctetStringParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueOctetString, error) {
+	return BACnetTimerStateChangeValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetTimerStateChangeValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueOctetString"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetTimerStateChangeValueOctetStringParse(readBuffer utils.ReadBuffer, ob
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetTimerStateChangeValueOctetString")
 	}

@@ -4912,7 +4912,11 @@ func (m KnxInterfaceObjectProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxInterfaceObjectPropertyParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
+func KnxInterfaceObjectPropertyParse(theBytes []byte) (KnxInterfaceObjectProperty, error) {
+	return KnxInterfaceObjectPropertyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxInterfaceObjectPropertyParseWithBuffer(readBuffer utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
 	val, err := readBuffer.ReadUint32("KnxInterfaceObjectProperty", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectProperty")

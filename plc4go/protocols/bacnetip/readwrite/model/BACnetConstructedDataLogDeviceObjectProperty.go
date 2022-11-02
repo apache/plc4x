@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLogDeviceObjectPropertyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogDeviceObjectProperty, error) {
+func BACnetConstructedDataLogDeviceObjectPropertyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogDeviceObjectProperty, error) {
+	return BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLogDeviceObjectProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogDeviceObjectProperty"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLogDeviceObjectPropertyParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("logDeviceObjectProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logDeviceObjectProperty")
 	}
-	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
+	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
 	if _logDeviceObjectPropertyErr != nil {
 		return nil, errors.Wrap(_logDeviceObjectPropertyErr, "Error parsing 'logDeviceObjectProperty' field of BACnetConstructedDataLogDeviceObjectProperty")
 	}

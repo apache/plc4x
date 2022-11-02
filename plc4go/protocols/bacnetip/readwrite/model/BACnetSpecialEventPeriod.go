@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetSpecialEventPeriod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriod, error) {
+func BACnetSpecialEventPeriodParse(theBytes []byte) (BACnetSpecialEventPeriod, error) {
+	return BACnetSpecialEventPeriodParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSpecialEventPeriodParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriod"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (BACnetSpecialEv
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -166,9 +171,9 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (BACnetSpecialEv
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetSpecialEventPeriodCalendarEntry
-		_childTemp, typeSwitchError = BACnetSpecialEventPeriodCalendarEntryParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetSpecialEventPeriodCalendarReference
-		_childTemp, typeSwitchError = BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

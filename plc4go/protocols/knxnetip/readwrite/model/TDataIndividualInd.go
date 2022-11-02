@@ -104,7 +104,11 @@ func (m *_TDataIndividualInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {
+func TDataIndividualIndParse(theBytes []byte, size uint16) (TDataIndividualInd, error) {
+	return TDataIndividualIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func TDataIndividualIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {

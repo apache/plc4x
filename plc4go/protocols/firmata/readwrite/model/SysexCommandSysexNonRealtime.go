@@ -108,7 +108,11 @@ func (m *_SysexCommandSysexNonRealtime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandSysexNonRealtime, error) {
+func SysexCommandSysexNonRealtimeParse(theBytes []byte, response bool) (SysexCommandSysexNonRealtime, error) {
+	return SysexCommandSysexNonRealtimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandSysexNonRealtimeParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandSysexNonRealtime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandSysexNonRealtime"); pullErr != nil {

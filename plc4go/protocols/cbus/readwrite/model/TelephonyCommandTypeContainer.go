@@ -584,7 +584,11 @@ func (m TelephonyCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyCommandTypeContainerParse(readBuffer utils.ReadBuffer) (TelephonyCommandTypeContainer, error) {
+func TelephonyCommandTypeContainerParse(theBytes []byte) (TelephonyCommandTypeContainer, error) {
+	return TelephonyCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("TelephonyCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TelephonyCommandTypeContainer")

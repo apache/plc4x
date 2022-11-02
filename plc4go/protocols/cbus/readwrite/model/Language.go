@@ -499,7 +499,11 @@ func (m Language) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LanguageParse(readBuffer utils.ReadBuffer) (Language, error) {
+func LanguageParse(theBytes []byte) (Language, error) {
+	return LanguageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LanguageParseWithBuffer(readBuffer utils.ReadBuffer) (Language, error) {
 	val, err := readBuffer.ReadUint8("Language", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Language")

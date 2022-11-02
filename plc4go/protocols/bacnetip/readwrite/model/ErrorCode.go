@@ -865,7 +865,11 @@ func (m ErrorCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorCodeParse(readBuffer utils.ReadBuffer) (ErrorCode, error) {
+func ErrorCodeParse(theBytes []byte) (ErrorCode, error) {
+	return ErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorCode, error) {
 	val, err := readBuffer.ReadUint16("ErrorCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorCode")

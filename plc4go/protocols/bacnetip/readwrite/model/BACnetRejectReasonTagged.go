@@ -128,7 +128,11 @@ func (m *_BACnetRejectReasonTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
+func BACnetRejectReasonTaggedParse(theBytes []byte, actualLength uint32) (BACnetRejectReasonTagged, error) {
+	return BACnetRejectReasonTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), actualLength) // TODO: get endianness from mspec
+}
+
+func BACnetRejectReasonTaggedParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRejectReasonTagged"); pullErr != nil {

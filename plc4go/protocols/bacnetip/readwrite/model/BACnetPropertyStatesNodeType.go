@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesNodeType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesNodeTypeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
+func BACnetPropertyStatesNodeTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
+	return BACnetPropertyStatesNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNodeType"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesNodeTypeParse(readBuffer utils.ReadBuffer, peekedTagNum
 	if pullErr := readBuffer.PullContext("nodeType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nodeType")
 	}
-	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _nodeTypeErr != nil {
 		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field of BACnetPropertyStatesNodeType")
 	}

@@ -127,7 +127,11 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
+func COTPParameterDisconnectAdditionalInformationParse(theBytes []byte, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
+	return COTPParameterDisconnectAdditionalInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), rest) // TODO: get endianness from mspec
+}
+
+func COTPParameterDisconnectAdditionalInformationParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {

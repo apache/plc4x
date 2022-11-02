@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIntegralConstant) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegralConstantParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstant, error) {
+func BACnetConstructedDataIntegralConstantParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstant, error) {
+	return BACnetConstructedDataIntegralConstantParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIntegralConstantParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegralConstant"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIntegralConstantParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("integralConstant"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integralConstant")
 	}
-	_integralConstant, _integralConstantErr := BACnetApplicationTagParse(readBuffer)
+	_integralConstant, _integralConstantErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _integralConstantErr != nil {
 		return nil, errors.Wrap(_integralConstantErr, "Error parsing 'integralConstant' field of BACnetConstructedDataIntegralConstant")
 	}

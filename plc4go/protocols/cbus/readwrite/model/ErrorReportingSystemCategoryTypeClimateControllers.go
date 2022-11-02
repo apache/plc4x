@@ -126,7 +126,11 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeClimateControllersParse(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+func ErrorReportingSystemCategoryTypeClimateControllersParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+	return ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorReportingSystemCategoryClass) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeClimateControllers"); pullErr != nil {
@@ -139,7 +143,7 @@ func ErrorReportingSystemCategoryTypeClimateControllersParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
 	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForClimateControllersParse(readBuffer)
+	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBuffer)
 	if _categoryForTypeErr != nil {
 		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeClimateControllers")
 	}

@@ -2833,7 +2833,11 @@ func (m BACnetPropertyIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {
+func BACnetPropertyIdentifierParse(theBytes []byte) (BACnetPropertyIdentifier, error) {
+	return BACnetPropertyIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {
 	val, err := readBuffer.ReadUint32("BACnetPropertyIdentifier", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPropertyIdentifier")

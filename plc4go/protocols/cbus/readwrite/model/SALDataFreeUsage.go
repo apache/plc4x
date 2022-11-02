@@ -106,7 +106,11 @@ func (m *_SALDataFreeUsage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataFreeUsageParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataFreeUsage, error) {
+func SALDataFreeUsageParse(theBytes []byte, applicationId ApplicationId) (SALDataFreeUsage, error) {
+	return SALDataFreeUsageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataFreeUsageParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataFreeUsage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataFreeUsage"); pullErr != nil {

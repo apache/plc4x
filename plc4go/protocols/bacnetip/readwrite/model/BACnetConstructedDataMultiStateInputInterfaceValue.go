@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMultiStateInputInterfaceValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputInterfaceValue, error) {
+func BACnetConstructedDataMultiStateInputInterfaceValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputInterfaceValue, error) {
+	return BACnetConstructedDataMultiStateInputInterfaceValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMultiStateInputInterfaceValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputInterfaceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateInputInterfaceValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataMultiStateInputInterfaceValueParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("interfaceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceValue")
 	}
-	_interfaceValue, _interfaceValueErr := BACnetOptionalBinaryPVParse(readBuffer)
+	_interfaceValue, _interfaceValueErr := BACnetOptionalBinaryPVParseWithBuffer(readBuffer)
 	if _interfaceValueErr != nil {
 		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataMultiStateInputInterfaceValue")
 	}

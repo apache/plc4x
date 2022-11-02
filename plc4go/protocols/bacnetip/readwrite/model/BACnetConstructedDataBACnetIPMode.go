@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBACnetIPMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMode, error) {
+func BACnetConstructedDataBACnetIPModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMode, error) {
+	return BACnetConstructedDataBACnetIPModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBACnetIPModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPMode"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("bacnetIpMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpMode")
 	}
-	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _bacnetIpModeErr != nil {
 		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field of BACnetConstructedDataBACnetIPMode")
 	}

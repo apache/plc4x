@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueOctetStringParse(readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
+func BACnetChannelValueOctetStringParse(theBytes []byte) (BACnetChannelValueOctetString, error) {
+	return BACnetChannelValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueOctetString"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueOctetStringParse(readBuffer utils.ReadBuffer) (BACnetChan
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetChannelValueOctetString")
 	}

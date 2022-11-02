@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
+func BACnetConstructedDataInitialTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
+	return BACnetConstructedDataInitialTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataInitialTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInitialTimeout"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("initialTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for initialTimeout")
 	}
-	_initialTimeout, _initialTimeoutErr := BACnetApplicationTagParse(readBuffer)
+	_initialTimeout, _initialTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _initialTimeoutErr != nil {
 		return nil, errors.Wrap(_initialTimeoutErr, "Error parsing 'initialTimeout' field of BACnetConstructedDataInitialTimeout")
 	}

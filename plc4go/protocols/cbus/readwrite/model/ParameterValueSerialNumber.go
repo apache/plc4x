@@ -138,7 +138,11 @@ func (m *_ParameterValueSerialNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
+func ParameterValueSerialNumberParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
+	return ParameterValueSerialNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes) // TODO: get endianness from mspec
+}
+
+func ParameterValueSerialNumberParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueSerialNumber"); pullErr != nil {
@@ -156,7 +160,7 @@ func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType 
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := SerialNumberParse(readBuffer)
+	_value, _valueErr := SerialNumberParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueSerialNumber")
 	}

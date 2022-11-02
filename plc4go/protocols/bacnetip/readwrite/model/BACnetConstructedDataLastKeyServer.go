@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastKeyServer, error) {
+func BACnetConstructedDataLastKeyServerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastKeyServer, error) {
+	return BACnetConstructedDataLastKeyServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastKeyServerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastKeyServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastKeyServer"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("lastKeyServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastKeyServer")
 	}
-	_lastKeyServer, _lastKeyServerErr := BACnetAddressBindingParse(readBuffer)
+	_lastKeyServer, _lastKeyServerErr := BACnetAddressBindingParseWithBuffer(readBuffer)
 	if _lastKeyServerErr != nil {
 		return nil, errors.Wrap(_lastKeyServerErr, "Error parsing 'lastKeyServer' field of BACnetConstructedDataLastKeyServer")
 	}

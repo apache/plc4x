@@ -124,7 +124,11 @@ func (m *_TriggerControlDataTriggerEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataTriggerEventParse(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {
+func TriggerControlDataTriggerEventParse(theBytes []byte) (TriggerControlDataTriggerEvent, error) {
+	return TriggerControlDataTriggerEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlDataTriggerEventParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerEvent"); pullErr != nil {

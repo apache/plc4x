@@ -104,7 +104,11 @@ func (m *_AccessControlDataRequestToExit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataRequestToExitParse(readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
+func AccessControlDataRequestToExitParse(theBytes []byte) (AccessControlDataRequestToExit, error) {
+	return AccessControlDataRequestToExitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlDataRequestToExitParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataRequestToExit"); pullErr != nil {

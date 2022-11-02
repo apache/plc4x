@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
+func BACnetConstructedDataAuthenticationStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
+	return BACnetConstructedDataAuthenticationStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAuthenticationStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationStatus"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("authenticationStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationStatus")
 	}
-	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authenticationStatusErr != nil {
 		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field of BACnetConstructedDataAuthenticationStatus")
 	}

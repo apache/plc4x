@@ -103,7 +103,11 @@ func (m AlarmType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmTypeParse(readBuffer utils.ReadBuffer) (AlarmType, error) {
+func AlarmTypeParse(theBytes []byte) (AlarmType, error) {
+	return AlarmTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmType, error) {
 	val, err := readBuffer.ReadUint8("AlarmType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AlarmType")

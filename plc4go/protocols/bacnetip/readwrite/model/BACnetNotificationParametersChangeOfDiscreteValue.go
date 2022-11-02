@@ -158,7 +158,11 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValue) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValue, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValue, error) {
+	return BACnetNotificationParametersChangeOfDiscreteValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfDiscreteValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValue"); pullErr != nil {
@@ -171,7 +175,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfDiscreteValue")
 	}
@@ -184,7 +188,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("newValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for newValue")
 	}
-	_newValue, _newValueErr := BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(readBuffer, uint8(uint8(0)))
+	_newValue, _newValueErr := BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _newValueErr != nil {
 		return nil, errors.Wrap(_newValueErr, "Error parsing 'newValue' field of BACnetNotificationParametersChangeOfDiscreteValue")
 	}
@@ -197,7 +201,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfDiscreteValue")
 	}
@@ -210,7 +214,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfDiscreteValue")
 	}

@@ -109,7 +109,11 @@ func (m BACnetLoggingType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLoggingTypeParse(readBuffer utils.ReadBuffer) (BACnetLoggingType, error) {
+func BACnetLoggingTypeParse(theBytes []byte) (BACnetLoggingType, error) {
+	return BACnetLoggingTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLoggingTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLoggingType, error) {
 	val, err := readBuffer.ReadUint8("BACnetLoggingType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLoggingType")

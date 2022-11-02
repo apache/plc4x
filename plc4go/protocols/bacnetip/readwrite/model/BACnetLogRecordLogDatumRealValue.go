@@ -125,7 +125,11 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumRealValueParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
+func BACnetLogRecordLogDatumRealValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
+	return BACnetLogRecordLogDatumRealValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLogRecordLogDatumRealValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumRealValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumRealValue"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetLogRecordLogDatumRealValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_realValue, _realValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetLogRecordLogDatumRealValue")
 	}

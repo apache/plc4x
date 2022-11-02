@@ -127,7 +127,11 @@ func (m *_SALDataLighting) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataLightingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataLighting, error) {
+func SALDataLightingParse(theBytes []byte, applicationId ApplicationId) (SALDataLighting, error) {
+	return SALDataLightingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataLightingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataLighting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataLighting"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataLightingParse(readBuffer utils.ReadBuffer, applicationId Application
 	if pullErr := readBuffer.PullContext("lightingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingData")
 	}
-	_lightingData, _lightingDataErr := LightingDataParse(readBuffer)
+	_lightingData, _lightingDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _lightingDataErr != nil {
 		return nil, errors.Wrap(_lightingDataErr, "Error parsing 'lightingData' field of SALDataLighting")
 	}

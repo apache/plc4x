@@ -103,7 +103,11 @@ func (m DestinationAddressType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DestinationAddressTypeParse(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
+func DestinationAddressTypeParse(theBytes []byte) (DestinationAddressType, error) {
+	return DestinationAddressTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DestinationAddressTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
 	val, err := readBuffer.ReadUint8("DestinationAddressType", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DestinationAddressType")

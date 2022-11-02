@@ -179,7 +179,11 @@ func (m ${type.name}) GetLengthInBytes() uint16 {
 <#if type.type?has_content && type.type.orElseThrow().isSimpleTypeReference()>
 	<#assign simpleTypeReference = type.type.orElseThrow().asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
-func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
+func ${type.name}Parse(theBytes []byte) (${type.name}, error) {
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type.orElseThrow(), null)}
 	if err != nil {
 		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")

@@ -115,7 +115,11 @@ func (m *_HVACRawLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACRawLevelsParse(readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+func HVACRawLevelsParse(theBytes []byte) (HVACRawLevels, error) {
+	return HVACRawLevelsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACRawLevelsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACRawLevels"); pullErr != nil {

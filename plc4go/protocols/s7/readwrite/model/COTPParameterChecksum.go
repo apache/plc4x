@@ -125,7 +125,11 @@ func (m *_COTPParameterChecksum) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterChecksum, error) {
+func COTPParameterChecksumParse(theBytes []byte, rest uint8) (COTPParameterChecksum, error) {
+	return COTPParameterChecksumParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), rest) // TODO: get endianness from mspec
+}
+
+func COTPParameterChecksumParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterChecksum, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {

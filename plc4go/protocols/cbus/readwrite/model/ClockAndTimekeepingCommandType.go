@@ -123,7 +123,11 @@ func (m ClockAndTimekeepingCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ClockAndTimekeepingCommandTypeParse(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandType, error) {
+func ClockAndTimekeepingCommandTypeParse(theBytes []byte) (ClockAndTimekeepingCommandType, error) {
+	return ClockAndTimekeepingCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ClockAndTimekeepingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandType, error) {
 	val, err := readBuffer.ReadUint8("ClockAndTimekeepingCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandType")

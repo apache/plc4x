@@ -295,7 +295,11 @@ func (m *_NPDU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
+func NPDUParse(theBytes []byte, npduLength uint16) (NPDU, error) {
+	return NPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), npduLength) // TODO: get endianness from mspec
+}
+
+func NPDUParseWithBuffer(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDU"); pullErr != nil {
@@ -315,7 +319,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	if pullErr := readBuffer.PullContext("control"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for control")
 	}
-	_control, _controlErr := NPDUControlParse(readBuffer)
+	_control, _controlErr := NPDUControlParseWithBuffer(readBuffer)
 	if _controlErr != nil {
 		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field of NPDU")
 	}
@@ -442,7 +446,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for nlm")
 		}
-		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
+		_val, _err := NLMParseWithBuffer(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -464,7 +468,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for apdu")
 		}
-		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
+		_val, _err := APDUParseWithBuffer(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

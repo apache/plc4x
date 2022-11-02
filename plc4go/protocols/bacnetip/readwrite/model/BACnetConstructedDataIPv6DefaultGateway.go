@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6DefaultGatewayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DefaultGateway, error) {
+func BACnetConstructedDataIPv6DefaultGatewayParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DefaultGateway, error) {
+	return BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DefaultGateway, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DefaultGateway"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIPv6DefaultGatewayParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("ipv6DefaultGateway"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DefaultGateway")
 	}
-	_ipv6DefaultGateway, _ipv6DefaultGatewayErr := BACnetApplicationTagParse(readBuffer)
+	_ipv6DefaultGateway, _ipv6DefaultGatewayErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipv6DefaultGatewayErr != nil {
 		return nil, errors.Wrap(_ipv6DefaultGatewayErr, "Error parsing 'ipv6DefaultGateway' field of BACnetConstructedDataIPv6DefaultGateway")
 	}

@@ -125,7 +125,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueReal, error) {
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueReal, error) {
+	return BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueReal"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParse(readBuffer)
+	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetFaultParameterFaultOutOfRangeMinNormalValueReal")
 	}

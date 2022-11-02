@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataEventParameters) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventParameters, error) {
+func BACnetConstructedDataEventParametersParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventParameters, error) {
+	return BACnetConstructedDataEventParametersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEventParametersParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventParameters"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("eventParameter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventParameter")
 	}
-	_eventParameter, _eventParameterErr := BACnetEventParameterParse(readBuffer)
+	_eventParameter, _eventParameterErr := BACnetEventParameterParseWithBuffer(readBuffer)
 	if _eventParameterErr != nil {
 		return nil, errors.Wrap(_eventParameterErr, "Error parsing 'eventParameter' field of BACnetConstructedDataEventParameters")
 	}

@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetLength
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryOctetStringParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryOctetString, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryOctetStringParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryOctetString, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryOctetStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryOctetString"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryOctetStringParse(readBuffer
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetFaultParameterFaultExtendedParametersEntryOctetString")
 	}

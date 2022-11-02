@@ -211,7 +211,11 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
+func S7ParameterUserDataItemCPUFunctionsParse(theBytes []byte) (S7ParameterUserDataItemCPUFunctions, error) {
+	return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {

@@ -130,7 +130,11 @@ func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (NLMInitalizeRoutingTablePortMapping, error) {
+func NLMInitalizeRoutingTablePortMappingParse(theBytes []byte) (NLMInitalizeRoutingTablePortMapping, error) {
+	return NLMInitalizeRoutingTablePortMappingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NLMInitalizeRoutingTablePortMappingParseWithBuffer(readBuffer utils.ReadBuffer) (NLMInitalizeRoutingTablePortMapping, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTablePortMapping"); pullErr != nil {

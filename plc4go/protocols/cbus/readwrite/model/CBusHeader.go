@@ -128,7 +128,11 @@ func (m *_CBusHeader) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
+func CBusHeaderParse(theBytes []byte) (CBusHeader, error) {
+	return CBusHeaderParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CBusHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusHeader"); pullErr != nil {
@@ -141,7 +145,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	if pullErr := readBuffer.PullContext("priorityClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priorityClass")
 	}
-	_priorityClass, _priorityClassErr := PriorityClassParse(readBuffer)
+	_priorityClass, _priorityClassErr := PriorityClassParseWithBuffer(readBuffer)
 	if _priorityClassErr != nil {
 		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field of CBusHeader")
 	}
@@ -168,7 +172,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	if pullErr := readBuffer.PullContext("destinationAddressType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddressType")
 	}
-	_destinationAddressType, _destinationAddressTypeErr := DestinationAddressTypeParse(readBuffer)
+	_destinationAddressType, _destinationAddressTypeErr := DestinationAddressTypeParseWithBuffer(readBuffer)
 	if _destinationAddressTypeErr != nil {
 		return nil, errors.Wrap(_destinationAddressTypeErr, "Error parsing 'destinationAddressType' field of CBusHeader")
 	}

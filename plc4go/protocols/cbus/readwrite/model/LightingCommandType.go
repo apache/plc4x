@@ -153,7 +153,11 @@ func (m LightingCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingCommandTypeParse(readBuffer utils.ReadBuffer) (LightingCommandType, error) {
+func LightingCommandTypeParse(theBytes []byte) (LightingCommandType, error) {
+	return LightingCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCommandType, error) {
 	val, err := readBuffer.ReadUint8("LightingCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingCommandType")

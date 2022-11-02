@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIntervalOffset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntervalOffsetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
+func BACnetConstructedDataIntervalOffsetParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
+	return BACnetConstructedDataIntervalOffsetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIntervalOffsetParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntervalOffset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntervalOffset"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIntervalOffsetParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("intervalOffset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for intervalOffset")
 	}
-	_intervalOffset, _intervalOffsetErr := BACnetApplicationTagParse(readBuffer)
+	_intervalOffset, _intervalOffsetErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _intervalOffsetErr != nil {
 		return nil, errors.Wrap(_intervalOffsetErr, "Error parsing 'intervalOffset' field of BACnetConstructedDataIntervalOffset")
 	}

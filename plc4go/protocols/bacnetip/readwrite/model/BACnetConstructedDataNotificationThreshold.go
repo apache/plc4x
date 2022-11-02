@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationThreshold, error) {
+func BACnetConstructedDataNotificationThresholdParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationThreshold, error) {
+	return BACnetConstructedDataNotificationThresholdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataNotificationThresholdParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationThreshold, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationThreshold"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("notificationThreshold"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notificationThreshold")
 	}
-	_notificationThreshold, _notificationThresholdErr := BACnetApplicationTagParse(readBuffer)
+	_notificationThreshold, _notificationThresholdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _notificationThresholdErr != nil {
 		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field of BACnetConstructedDataNotificationThreshold")
 	}

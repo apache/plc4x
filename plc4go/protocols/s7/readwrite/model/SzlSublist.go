@@ -199,7 +199,11 @@ func (m SzlSublist) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {
+func SzlSublistParse(theBytes []byte) (SzlSublist, error) {
+	return SzlSublistParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SzlSublistParseWithBuffer(readBuffer utils.ReadBuffer) (SzlSublist, error) {
 	val, err := readBuffer.ReadUint8("SzlSublist", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SzlSublist")

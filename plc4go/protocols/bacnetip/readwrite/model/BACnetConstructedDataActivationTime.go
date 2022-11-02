@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataActivationTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActivationTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActivationTime, error) {
+func BACnetConstructedDataActivationTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActivationTime, error) {
+	return BACnetConstructedDataActivationTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataActivationTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActivationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActivationTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataActivationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("activationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for activationTime")
 	}
-	_activationTime, _activationTimeErr := BACnetDateTimeParse(readBuffer)
+	_activationTime, _activationTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _activationTimeErr != nil {
 		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetConstructedDataActivationTime")
 	}

@@ -138,7 +138,11 @@ func (m *_ApduDataDeviceDescriptorResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorResponse, error) {
+func ApduDataDeviceDescriptorResponseParse(theBytes []byte, dataLength uint8) (ApduDataDeviceDescriptorResponse, error) {
+	return ApduDataDeviceDescriptorResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataDeviceDescriptorResponseParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorResponse"); pullErr != nil {

@@ -139,7 +139,11 @@ func (m *_DeviceConfigurationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {
+func DeviceConfigurationRequestParse(theBytes []byte, totalLength uint16) (DeviceConfigurationRequest, error) {
+	return DeviceConfigurationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength) // TODO: get endianness from mspec
+}
+
+func DeviceConfigurationRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {
@@ -152,7 +156,7 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationRequestDataBlock")
 	}
-	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(readBuffer)
+	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParseWithBuffer(readBuffer)
 	if _deviceConfigurationRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field of DeviceConfigurationRequest")
 	}
@@ -165,7 +169,7 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
-	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes())))))
+	_cemi, _cemiErr := CEMIParseWithBuffer(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of DeviceConfigurationRequest")
 	}

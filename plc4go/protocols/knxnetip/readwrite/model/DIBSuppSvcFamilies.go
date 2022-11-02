@@ -115,7 +115,11 @@ func (m *_DIBSuppSvcFamilies) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
+func DIBSuppSvcFamiliesParse(theBytes []byte) (DIBSuppSvcFamilies, error) {
+	return DIBSuppSvcFamiliesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DIBSuppSvcFamiliesParseWithBuffer(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DIBSuppSvcFamilies"); pullErr != nil {
@@ -148,7 +152,7 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, e
 		_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
 		_serviceIdsEndPos := positionAware.GetPos() + uint16(_serviceIdsLength)
 		for positionAware.GetPos() < _serviceIdsEndPos {
-			_item, _err := ServiceIdParse(readBuffer)
+			_item, _err := ServiceIdParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field of DIBSuppSvcFamilies")
 			}

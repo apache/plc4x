@@ -123,7 +123,11 @@ func (m *_BACnetAuthenticationFactorFormat) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
+func BACnetAuthenticationFactorFormatParse(theBytes []byte) (BACnetAuthenticationFactorFormat, error) {
+	return BACnetAuthenticationFactorFormatParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAuthenticationFactorFormatParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactorFormat"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetA
 	if pullErr := readBuffer.PullContext("formatType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for formatType")
 	}
-	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _formatTypeErr != nil {
 		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field of BACnetAuthenticationFactorFormat")
 	}
@@ -152,7 +156,7 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetA
 		if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 		}
-		_val, _err := BACnetVendorIdTaggedParse(readBuffer, uint8(1), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetVendorIdTaggedParseWithBuffer(readBuffer, uint8(1), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -174,7 +178,7 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (BACnetA
 		if pullErr := readBuffer.PullContext("vendorFormat"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for vendorFormat")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

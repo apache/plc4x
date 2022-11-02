@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
+func BACnetPropertyStatesEscalatorModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
+	return BACnetPropertyStatesEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorMode"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("escalatorMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorMode")
 	}
-	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorModeErr != nil {
 		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field of BACnetPropertyStatesEscalatorMode")
 	}

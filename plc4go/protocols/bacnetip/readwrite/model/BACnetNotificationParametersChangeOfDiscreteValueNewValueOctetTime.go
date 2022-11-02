@@ -125,7 +125,11 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Ge
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error) {
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParse(rea
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
+	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime")
 	}

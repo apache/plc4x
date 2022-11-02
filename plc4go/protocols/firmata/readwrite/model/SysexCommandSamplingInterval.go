@@ -108,7 +108,11 @@ func (m *_SysexCommandSamplingInterval) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandSamplingInterval, error) {
+func SysexCommandSamplingIntervalParse(theBytes []byte, response bool) (SysexCommandSamplingInterval, error) {
+	return SysexCommandSamplingIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandSamplingIntervalParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandSamplingInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {

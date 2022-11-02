@@ -133,7 +133,11 @@ func (m BACnetVTClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
+func BACnetVTClassParse(theBytes []byte) (BACnetVTClass, error) {
+	return BACnetVTClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetVTClassParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 	val, err := readBuffer.ReadUint16("BACnetVTClass", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVTClass")

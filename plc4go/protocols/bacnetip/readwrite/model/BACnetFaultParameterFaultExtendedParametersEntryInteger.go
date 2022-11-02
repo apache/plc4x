@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) GetLengthInBy
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryIntegerParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryInteger, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryIntegerParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryInteger, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryIntegerParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryInteger"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryIntegerParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
+	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetFaultParameterFaultExtendedParametersEntryInteger")
 	}

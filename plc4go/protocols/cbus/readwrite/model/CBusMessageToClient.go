@@ -125,7 +125,11 @@ func (m *_CBusMessageToClient) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
+func CBusMessageToClientParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
+	return CBusMessageToClientParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), isResponse, requestContext, cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusMessageToClientParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToClient, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToClient"); pullErr != nil {
@@ -138,7 +142,7 @@ func CBusMessageToClientParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reply")
 	}
-	_reply, _replyErr := ReplyOrConfirmationParse(readBuffer, cBusOptions, requestContext)
+	_reply, _replyErr := ReplyOrConfirmationParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	if _replyErr != nil {
 		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of CBusMessageToClient")
 	}

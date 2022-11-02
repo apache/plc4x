@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataSerialNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSerialNumber, error) {
+func BACnetConstructedDataSerialNumberParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSerialNumber, error) {
+	return BACnetConstructedDataSerialNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSerialNumberParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSerialNumber"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("serialNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serialNumber")
 	}
-	_serialNumber, _serialNumberErr := BACnetApplicationTagParse(readBuffer)
+	_serialNumber, _serialNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _serialNumberErr != nil {
 		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field of BACnetConstructedDataSerialNumber")
 	}

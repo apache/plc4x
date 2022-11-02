@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataOutOfService) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
+func BACnetConstructedDataOutOfServiceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
+	return BACnetConstructedDataOutOfServiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataOutOfServiceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOutOfService"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("outOfService"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for outOfService")
 	}
-	_outOfService, _outOfServiceErr := BACnetApplicationTagParse(readBuffer)
+	_outOfService, _outOfServiceErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _outOfServiceErr != nil {
 		return nil, errors.Wrap(_outOfServiceErr, "Error parsing 'outOfService' field of BACnetConstructedDataOutOfService")
 	}

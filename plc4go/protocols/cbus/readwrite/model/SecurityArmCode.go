@@ -147,7 +147,11 @@ func (m *_SecurityArmCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityArmCodeParse(readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
+func SecurityArmCodeParse(theBytes []byte) (SecurityArmCode, error) {
+	return SecurityArmCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityArmCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityArmCode"); pullErr != nil {

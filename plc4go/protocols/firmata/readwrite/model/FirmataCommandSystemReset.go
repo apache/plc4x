@@ -104,7 +104,11 @@ func (m *_FirmataCommandSystemReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSystemReset, error) {
+func FirmataCommandSystemResetParse(theBytes []byte, response bool) (FirmataCommandSystemReset, error) {
+	return FirmataCommandSystemResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataCommandSystemResetParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSystemReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSystemReset"); pullErr != nil {

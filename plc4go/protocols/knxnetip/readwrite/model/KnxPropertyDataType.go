@@ -1041,7 +1041,11 @@ func (m KnxPropertyDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
+func KnxPropertyDataTypeParse(theBytes []byte) (KnxPropertyDataType, error) {
+	return KnxPropertyDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxPropertyDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
 	val, err := readBuffer.ReadUint8("KnxPropertyDataType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxPropertyDataType")

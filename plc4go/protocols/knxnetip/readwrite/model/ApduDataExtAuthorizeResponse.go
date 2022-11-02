@@ -125,7 +125,11 @@ func (m *_ApduDataExtAuthorizeResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtAuthorizeResponse, error) {
+func ApduDataExtAuthorizeResponseParse(theBytes []byte, length uint8) (ApduDataExtAuthorizeResponse, error) {
+	return ApduDataExtAuthorizeResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtAuthorizeResponseParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtAuthorizeResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeResponse"); pullErr != nil {

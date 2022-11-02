@@ -104,7 +104,11 @@ func (m *_ApduDataExtMemoryBitWrite) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtMemoryBitWrite, error) {
+func ApduDataExtMemoryBitWriteParse(theBytes []byte, length uint8) (ApduDataExtMemoryBitWrite, error) {
+	return ApduDataExtMemoryBitWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtMemoryBitWriteParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtMemoryBitWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {

@@ -107,7 +107,11 @@ func (m *_ParameterChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) {
+func ParameterChangeParse(theBytes []byte) (ParameterChange, error) {
+	return ParameterChangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ParameterChangeParseWithBuffer(readBuffer utils.ReadBuffer) (ParameterChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChange"); pullErr != nil {

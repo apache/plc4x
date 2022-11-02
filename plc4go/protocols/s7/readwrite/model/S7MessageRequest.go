@@ -108,7 +108,11 @@ func (m *_S7MessageRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageRequestParse(readBuffer utils.ReadBuffer) (S7MessageRequest, error) {
+func S7MessageRequestParse(theBytes []byte) (S7MessageRequest, error) {
+	return S7MessageRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7MessageRequestParseWithBuffer(readBuffer utils.ReadBuffer) (S7MessageRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageRequest"); pullErr != nil {

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
+func BACnetConstructedDataAuthorizationModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
+	return BACnetConstructedDataAuthorizationModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAuthorizationModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationMode"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("authorizationMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authorizationMode")
 	}
-	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authorizationModeErr != nil {
 		return nil, errors.Wrap(_authorizationModeErr, "Error parsing 'authorizationMode' field of BACnetConstructedDataAuthorizationMode")
 	}

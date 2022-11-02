@@ -745,7 +745,12 @@ func (m *_${type.name}) GetLengthInBytes() uint16 {
 
 <#assign hasParserArguments=parserArguments?has_content/>
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
+<#assign parserArgumentNameList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
+func ${type.name}Parse(theBytes []byte<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))<#if hasParserArguments>, ${parserArgumentNameList}</#if>) <@emitImport import="encoding/binary" /> // TODO: get endianness from mspec
+}
+
+func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
@@ -835,7 +840,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                         </#list>
                                     </#if>
                                 </#assign>
-                                ${typeName}Parse(readBuffer${refParams})
+                                ${typeName}ParseWithBuffer(readBuffer${refParams})
                             </#if>
                         </@compress>
 
@@ -880,7 +885,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                     </#list>
                                 </#if>
                             </#assign>
-                            ${typeName}Parse(readBuffer${refParams})
+                            ${typeName}ParseWithBuffer(readBuffer${refParams})
                         </#if>
                         </@compress>
 
@@ -926,7 +931,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                         </#list>
                                     </#if>
                                 </#assign>
-                                ${typeName}Parse(readBuffer${refParams})
+                                ${typeName}ParseWithBuffer(readBuffer${refParams})
 							</#if>
 						</@compress>
 
@@ -987,7 +992,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		return nil, errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
                     <#else>
-	${constField.name}, _${constField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
+	${constField.name}, _${constField.name}Err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
 	if _${constField.name}Err != nil {
 		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1011,7 +1016,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	if pullErr := readBuffer.PullContext("${namedField.name}"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}Parse(readBuffer)
+	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}ParseWithBuffer(readBuffer)
 	var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(discriminatorField)} = ${helper.getVariableName(field)}_temp
 	if closeErr := readBuffer.CloseContext("${namedField.name}"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
@@ -1164,7 +1169,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
-		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
+		_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -1196,7 +1201,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 						</#list>
 					</#if>
 				</#assign>
-		_val, _err := ${typeName}Parse(readBuffer${refParams})
+		_val, _err := ${typeName}ParseWithBuffer(readBuffer${refParams})
                 </@compress>
 
 		switch {
@@ -1227,7 +1232,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 			<#elseif helper.isEnumField(field)>
-	${assertField.name}, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
+	${assertField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1244,7 +1249,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
 				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(assertField, null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
                 </@compress>
-	_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer${refParams})
+	_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer${refParams})
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1333,7 +1338,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                 </#list>
             </#if>
         </#assign>
-		${typeName}Parse(readBuffer${refParams})
+		${typeName}ParseWithBuffer(readBuffer${refParams})
 	</#if>
     </@compress>
 
@@ -1404,7 +1409,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 						</#if>: // ${case.name}
                     </@compress>
 
-		_childTemp, typeSwitchError = ${case.name}Parse(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+		_childTemp, typeSwitchError = ${case.name}ParseWithBuffer(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for<#if switchField.getDiscriminatorExpressions()?has_content> parameters [<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${discriminatorExpression.stringRepresentation()}=%v<#sep>, </#sep></#list>]</#if>"<#if switchField.getDiscriminatorExpressions()?has_content>, <#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)}<#sep>, </#sep></#list></#if>)<@emitImport import="github.com/pkg/errors" />
@@ -1462,7 +1467,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
 					return nil, errors.Wrap(pullErr, "Error pulling for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
 				}
-				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
+				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
 				if _err != nil {
 					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 				}
@@ -1493,7 +1498,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                 </#list>
                             </#if>
                         </#assign>
-				${peekField.name}, _ := ${typeName}Parse(readBuffer${refParams})
+				${peekField.name}, _ := ${typeName}ParseWithBuffer(readBuffer${refParams})
                     </@compress>
                 </#if>
 

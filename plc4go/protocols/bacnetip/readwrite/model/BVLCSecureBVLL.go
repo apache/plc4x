@@ -130,7 +130,11 @@ func (m *_BVLCSecureBVLL) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {
+func BVLCSecureBVLLParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {
+	return BVLCSecureBVLLParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+}
+
+func BVLCSecureBVLLParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {

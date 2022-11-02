@@ -104,7 +104,11 @@ func (m *_RoutingIndication) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RoutingIndicationParse(readBuffer utils.ReadBuffer) (RoutingIndication, error) {
+func RoutingIndicationParse(theBytes []byte) (RoutingIndication, error) {
+	return RoutingIndicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func RoutingIndicationParseWithBuffer(readBuffer utils.ReadBuffer) (RoutingIndication, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {

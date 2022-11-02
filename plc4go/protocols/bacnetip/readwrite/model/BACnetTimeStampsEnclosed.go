@@ -125,7 +125,11 @@ func (m *_BACnetTimeStampsEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetTimeStampsEnclosed, error) {
+func BACnetTimeStampsEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetTimeStampsEnclosed, error) {
+	return BACnetTimeStampsEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetTimeStampsEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetTimeStampsEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampsEnclosed"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetTimeStampsEnclosed")
 	}
@@ -155,7 +159,7 @@ func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	var timestamps []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimeStampParse(readBuffer)
+			_item, _err := BACnetTimeStampParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'timestamps' field of BACnetTimeStampsEnclosed")
 			}
@@ -171,7 +175,7 @@ func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetTimeStampsEnclosed")
 	}

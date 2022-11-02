@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPassbackMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackMode, error) {
+func BACnetConstructedDataPassbackModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackMode, error) {
+	return BACnetConstructedDataPassbackModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPassbackModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassbackMode"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("passbackMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for passbackMode")
 	}
-	_passbackMode, _passbackModeErr := BACnetAccessPassbackModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_passbackMode, _passbackModeErr := BACnetAccessPassbackModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _passbackModeErr != nil {
 		return nil, errors.Wrap(_passbackModeErr, "Error parsing 'passbackMode' field of BACnetConstructedDataPassbackMode")
 	}

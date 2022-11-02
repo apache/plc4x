@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBlinkWarnEnable, error) {
+func BACnetConstructedDataBlinkWarnEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBlinkWarnEnable, error) {
+	return BACnetConstructedDataBlinkWarnEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBlinkWarnEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBlinkWarnEnable"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("blinkWarnEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for blinkWarnEnable")
 	}
-	_blinkWarnEnable, _blinkWarnEnableErr := BACnetApplicationTagParse(readBuffer)
+	_blinkWarnEnable, _blinkWarnEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _blinkWarnEnableErr != nil {
 		return nil, errors.Wrap(_blinkWarnEnableErr, "Error parsing 'blinkWarnEnable' field of BACnetConstructedDataBlinkWarnEnable")
 	}

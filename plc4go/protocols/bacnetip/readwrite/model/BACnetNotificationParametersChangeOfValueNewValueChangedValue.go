@@ -125,7 +125,11 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetLeng
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
+func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(theBytes []byte, tagNumber uint8, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
+	return BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuff
 	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changedValue")
 	}
-	_changedValue, _changedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
+	_changedValue, _changedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _changedValueErr != nil {
 		return nil, errors.Wrap(_changedValueErr, "Error parsing 'changedValue' field of BACnetNotificationParametersChangeOfValueNewValueChangedValue")
 	}

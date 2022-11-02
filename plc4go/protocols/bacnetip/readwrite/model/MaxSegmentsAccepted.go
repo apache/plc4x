@@ -133,7 +133,11 @@ func (m MaxSegmentsAccepted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
+func MaxSegmentsAcceptedParse(theBytes []byte) (MaxSegmentsAccepted, error) {
+	return MaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxSegmentsAccepted", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")

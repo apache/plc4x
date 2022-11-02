@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimerMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMaxPresValue, error) {
+func BACnetConstructedDataTimerMaxPresValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMaxPresValue, error) {
+	return BACnetConstructedDataTimerMaxPresValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimerMaxPresValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMaxPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerMaxPresValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTimerMaxPresValueParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("maxPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxPresValue")
 	}
-	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParse(readBuffer)
+	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxPresValueErr != nil {
 		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataTimerMaxPresValue")
 	}

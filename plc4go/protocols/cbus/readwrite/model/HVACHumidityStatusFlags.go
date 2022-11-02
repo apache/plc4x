@@ -188,7 +188,11 @@ func (m *_HVACHumidityStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACHumidityStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
+func HVACHumidityStatusFlagsParse(theBytes []byte) (HVACHumidityStatusFlags, error) {
+	return HVACHumidityStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACHumidityStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACHumidityStatusFlags"); pullErr != nil {

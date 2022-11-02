@@ -78,7 +78,11 @@ func (m *_BACnetWeekNDay) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {
+func BACnetWeekNDayParse(theBytes []byte) (BACnetWeekNDay, error) {
+	return BACnetWeekNDayParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetWeekNDayParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetWeekNDay"); pullErr != nil {

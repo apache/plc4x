@@ -128,7 +128,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 				var readBuffer utils.ReadBuffer
 				if byteOrder == binary.LittleEndian {
-					readBuffer = utils.NewLittleEndianReadBufferByteBased(rawInput)
+					readBuffer = utils.NewReadBufferByteBased(rawInput, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				} else {
 					readBuffer = utils.NewReadBufferByteBased(rawInput)
 				}

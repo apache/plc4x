@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesDoorStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesDoorStatusParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorStatus, error) {
+func BACnetPropertyStatesDoorStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorStatus, error) {
+	return BACnetPropertyStatesDoorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorStatus"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesDoorStatusParse(readBuffer utils.ReadBuffer, peekedTagN
 	if pullErr := readBuffer.PullContext("doorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorStatus")
 	}
-	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorStatusErr != nil {
 		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field of BACnetPropertyStatesDoorStatus")
 	}

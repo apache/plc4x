@@ -125,7 +125,11 @@ func (m *_TunnelingResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TunnelingResponseParse(readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
+func TunnelingResponseParse(theBytes []byte) (TunnelingResponse, error) {
+	return TunnelingResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TunnelingResponseParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponse"); pullErr != nil {
@@ -138,7 +142,7 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (TunnelingResponse, err
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingResponseDataBlock")
 	}
-	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
+	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParseWithBuffer(readBuffer)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field of TunnelingResponse")
 	}

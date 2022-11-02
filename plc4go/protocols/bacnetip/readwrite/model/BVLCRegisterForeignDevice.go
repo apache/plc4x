@@ -125,7 +125,11 @@ func (m *_BVLCRegisterForeignDevice) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
+func BVLCRegisterForeignDeviceParse(theBytes []byte) (BVLCRegisterForeignDevice, error) {
+	return BVLCRegisterForeignDeviceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCRegisterForeignDeviceParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {

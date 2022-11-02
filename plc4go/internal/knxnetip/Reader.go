@@ -224,7 +224,7 @@ func (m Reader) readGroupAddress(ctx context.Context, field GroupAddressField) (
 				if field.GetFieldType().GetLengthInBits() > 6 {
 					_, _ = rb.ReadUint8("fieldType", 8)
 				}
-				plcValue, err := driverModel.KnxDatapointParse(rb, *field.GetFieldType())
+				plcValue, err := driverModel.KnxDatapointParseWithBuffer(rb, *field.GetFieldType())
 				// If any of the values doesn't decode correctly, we can't return any
 				if err != nil {
 					return apiModel.PlcResponseCode_INVALID_DATA, nil

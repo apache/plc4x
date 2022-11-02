@@ -147,7 +147,11 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
+func BACnetServiceAckGetAlarmSummaryParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
+	return BACnetServiceAckGetAlarmSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckGetAlarmSummaryParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
@@ -160,7 +164,7 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckGetAlarmSummary")
 	}
@@ -173,7 +177,7 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
-	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_eventState, _eventStateErr := BACnetEventStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of BACnetServiceAckGetAlarmSummary")
 	}
@@ -186,7 +190,7 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgedTransitions")
 	}
-	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _acknowledgedTransitionsErr != nil {
 		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field of BACnetServiceAckGetAlarmSummary")
 	}

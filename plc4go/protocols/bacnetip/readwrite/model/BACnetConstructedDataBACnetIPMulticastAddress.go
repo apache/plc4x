@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMulticastAddress, error) {
+func BACnetConstructedDataBACnetIPMulticastAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMulticastAddress, error) {
+	return BACnetConstructedDataBACnetIPMulticastAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBACnetIPMulticastAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMulticastAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPMulticastAddress"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("ipMulticastAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipMulticastAddress")
 	}
-	_ipMulticastAddress, _ipMulticastAddressErr := BACnetApplicationTagParse(readBuffer)
+	_ipMulticastAddress, _ipMulticastAddressErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipMulticastAddressErr != nil {
 		return nil, errors.Wrap(_ipMulticastAddressErr, "Error parsing 'ipMulticastAddress' field of BACnetConstructedDataBACnetIPMulticastAddress")
 	}

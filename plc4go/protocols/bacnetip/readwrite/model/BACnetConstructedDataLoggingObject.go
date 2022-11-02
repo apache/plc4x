@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLoggingObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoggingObjectParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingObject, error) {
+func BACnetConstructedDataLoggingObjectParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingObject, error) {
+	return BACnetConstructedDataLoggingObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLoggingObjectParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingObject"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLoggingObjectParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("loggingObject"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for loggingObject")
 	}
-	_loggingObject, _loggingObjectErr := BACnetApplicationTagParse(readBuffer)
+	_loggingObject, _loggingObjectErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _loggingObjectErr != nil {
 		return nil, errors.Wrap(_loggingObjectErr, "Error parsing 'loggingObject' field of BACnetConstructedDataLoggingObject")
 	}

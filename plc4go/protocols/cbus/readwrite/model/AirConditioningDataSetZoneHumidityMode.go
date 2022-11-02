@@ -196,7 +196,11 @@ func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataSetZoneHumidityModeParse(readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneHumidityMode, error) {
+func AirConditioningDataSetZoneHumidityModeParse(theBytes []byte) (AirConditioningDataSetZoneHumidityMode, error) {
+	return AirConditioningDataSetZoneHumidityModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataSetZoneHumidityModeParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneHumidityMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneHumidityMode"); pullErr != nil {
@@ -216,7 +220,7 @@ func AirConditioningDataSetZoneHumidityModeParse(readBuffer utils.ReadBuffer) (A
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParse(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataSetZoneHumidityMode")
 	}
@@ -229,7 +233,7 @@ func AirConditioningDataSetZoneHumidityModeParse(readBuffer utils.ReadBuffer) (A
 	if pullErr := readBuffer.PullContext("humidityModeAndFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for humidityModeAndFlags")
 	}
-	_humidityModeAndFlags, _humidityModeAndFlagsErr := HVACHumidityModeAndFlagsParse(readBuffer)
+	_humidityModeAndFlags, _humidityModeAndFlagsErr := HVACHumidityModeAndFlagsParseWithBuffer(readBuffer)
 	if _humidityModeAndFlagsErr != nil {
 		return nil, errors.Wrap(_humidityModeAndFlagsErr, "Error parsing 'humidityModeAndFlags' field of AirConditioningDataSetZoneHumidityMode")
 	}
@@ -242,7 +246,7 @@ func AirConditioningDataSetZoneHumidityModeParse(readBuffer utils.ReadBuffer) (A
 	if pullErr := readBuffer.PullContext("humidityType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for humidityType")
 	}
-	_humidityType, _humidityTypeErr := HVACHumidityTypeParse(readBuffer)
+	_humidityType, _humidityTypeErr := HVACHumidityTypeParseWithBuffer(readBuffer)
 	if _humidityTypeErr != nil {
 		return nil, errors.Wrap(_humidityTypeErr, "Error parsing 'humidityType' field of AirConditioningDataSetZoneHumidityMode")
 	}
@@ -258,7 +262,7 @@ func AirConditioningDataSetZoneHumidityModeParse(readBuffer utils.ReadBuffer) (A
 		if pullErr := readBuffer.PullContext("level"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for level")
 		}
-		_val, _err := HVACHumidityParse(readBuffer)
+		_val, _err := HVACHumidityParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -280,7 +284,7 @@ func AirConditioningDataSetZoneHumidityModeParse(readBuffer utils.ReadBuffer) (A
 		if pullErr := readBuffer.PullContext("rawLevel"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for rawLevel")
 		}
-		_val, _err := HVACRawLevelsParse(readBuffer)
+		_val, _err := HVACRawLevelsParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -302,7 +306,7 @@ func AirConditioningDataSetZoneHumidityModeParse(readBuffer utils.ReadBuffer) (A
 		if pullErr := readBuffer.PullContext("auxLevel"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for auxLevel")
 		}
-		_val, _err := HVACAuxiliaryLevelParse(readBuffer)
+		_val, _err := HVACAuxiliaryLevelParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

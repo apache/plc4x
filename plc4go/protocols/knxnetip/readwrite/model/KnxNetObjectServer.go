@@ -125,7 +125,11 @@ func (m *_KnxNetObjectServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (KnxNetObjectServer, error) {
+func KnxNetObjectServerParse(theBytes []byte) (KnxNetObjectServer, error) {
+	return KnxNetObjectServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxNetObjectServerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetObjectServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetObjectServer"); pullErr != nil {

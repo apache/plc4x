@@ -133,7 +133,11 @@ func (m BACnetTimerTransition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerTransitionParse(readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
+func BACnetTimerTransitionParse(theBytes []byte) (BACnetTimerTransition, error) {
+	return BACnetTimerTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTimerTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
 	val, err := readBuffer.ReadUint8("BACnetTimerTransition", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetTimerTransition")

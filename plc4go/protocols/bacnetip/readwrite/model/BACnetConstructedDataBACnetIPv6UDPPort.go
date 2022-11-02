@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
+func BACnetConstructedDataBACnetIPv6UDPPortParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
+	return BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6UDPPort"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("ipv6UdpPort"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6UdpPort")
 	}
-	_ipv6UdpPort, _ipv6UdpPortErr := BACnetApplicationTagParse(readBuffer)
+	_ipv6UdpPort, _ipv6UdpPortErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipv6UdpPortErr != nil {
 		return nil, errors.Wrap(_ipv6UdpPortErr, "Error parsing 'ipv6UdpPort' field of BACnetConstructedDataBACnetIPv6UDPPort")
 	}

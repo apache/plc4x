@@ -85,8 +85,7 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte, changed bool) {
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
-	garb := utils.NewReadBufferByteBased(destinationAddress)
-	groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
+	groupAddress, err := driverModel.KnxGroupAddressParse(destinationAddress, m.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
 	}
@@ -140,7 +139,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					plcValue := values2.NewRawPlcValue(rb, NewValueDecoder(rb))
 					plcValueList = append(plcValueList, plcValue)
 				} else {
-					plcValue, err2 := driverModel.KnxDatapointParse(rb, elementType)
+					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(rb, elementType)
 					if err2 == nil {
 						plcValueList = append(plcValueList, plcValue)
 					} else {

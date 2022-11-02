@@ -123,7 +123,11 @@ func (m *_BACnetHostAddressName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
+func BACnetHostAddressNameParse(theBytes []byte) (BACnetHostAddressName, error) {
+	return BACnetHostAddressNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetHostAddressNameParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressName"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (BACnetHostAddressN
 	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for name")
 	}
-	_name, _nameErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_name, _nameErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
 		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetHostAddressName")
 	}

@@ -128,7 +128,11 @@ func (m *_BVLCOriginalUnicastNPDU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCOriginalUnicastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalUnicastNPDU, error) {
+func BVLCOriginalUnicastNPDUParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCOriginalUnicastNPDU, error) {
+	return BVLCOriginalUnicastNPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+}
+
+func BVLCOriginalUnicastNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalUnicastNPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCOriginalUnicastNPDU"); pullErr != nil {
@@ -141,7 +145,7 @@ func BVLCOriginalUnicastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
 	}
-	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcPayloadLength))
+	_npdu, _npduErr := NPDUParseWithBuffer(readBuffer, uint16(bvlcPayloadLength))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCOriginalUnicastNPDU")
 	}

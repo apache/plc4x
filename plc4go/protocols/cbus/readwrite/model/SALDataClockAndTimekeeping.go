@@ -127,7 +127,11 @@ func (m *_SALDataClockAndTimekeeping) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataClockAndTimekeepingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataClockAndTimekeeping, error) {
+func SALDataClockAndTimekeepingParse(theBytes []byte, applicationId ApplicationId) (SALDataClockAndTimekeeping, error) {
+	return SALDataClockAndTimekeepingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataClockAndTimekeepingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataClockAndTimekeeping, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataClockAndTimekeeping"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataClockAndTimekeepingParse(readBuffer utils.ReadBuffer, applicationId 
 	if pullErr := readBuffer.PullContext("clockAndTimekeepingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for clockAndTimekeepingData")
 	}
-	_clockAndTimekeepingData, _clockAndTimekeepingDataErr := ClockAndTimekeepingDataParse(readBuffer)
+	_clockAndTimekeepingData, _clockAndTimekeepingDataErr := ClockAndTimekeepingDataParseWithBuffer(readBuffer)
 	if _clockAndTimekeepingDataErr != nil {
 		return nil, errors.Wrap(_clockAndTimekeepingDataErr, "Error parsing 'clockAndTimekeepingData' field of SALDataClockAndTimekeeping")
 	}

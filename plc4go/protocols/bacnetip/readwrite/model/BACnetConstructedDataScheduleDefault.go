@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataScheduleDefault) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScheduleDefault, error) {
+func BACnetConstructedDataScheduleDefaultParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScheduleDefault, error) {
+	return BACnetConstructedDataScheduleDefaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataScheduleDefaultParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScheduleDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScheduleDefault"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("scheduleDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for scheduleDefault")
 	}
-	_scheduleDefault, _scheduleDefaultErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), nil)
+	_scheduleDefault, _scheduleDefaultErr := BACnetConstructedDataElementParseWithBuffer(readBuffer, BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), nil)
 	if _scheduleDefaultErr != nil {
 		return nil, errors.Wrap(_scheduleDefaultErr, "Error parsing 'scheduleDefault' field of BACnetConstructedDataScheduleDefault")
 	}

@@ -130,7 +130,11 @@ func (m *_CIPEncapsulationReadRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (CIPEncapsulationReadRequest, error) {
+func CIPEncapsulationReadRequestParse(theBytes []byte) (CIPEncapsulationReadRequest, error) {
+	return CIPEncapsulationReadRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CIPEncapsulationReadRequestParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEncapsulationReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadRequest"); pullErr != nil {
@@ -143,7 +147,7 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (CIPEncapsula
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for request")
 	}
-	_request, _requestErr := DF1RequestMessageParse(readBuffer)
+	_request, _requestErr := DF1RequestMessageParseWithBuffer(readBuffer)
 	if _requestErr != nil {
 		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CIPEncapsulationReadRequest")
 	}

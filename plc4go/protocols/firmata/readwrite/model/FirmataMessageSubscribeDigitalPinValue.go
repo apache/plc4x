@@ -141,7 +141,11 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
+func FirmataMessageSubscribeDigitalPinValueParse(theBytes []byte, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
+	return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeDigitalPinValue"); pullErr != nil {

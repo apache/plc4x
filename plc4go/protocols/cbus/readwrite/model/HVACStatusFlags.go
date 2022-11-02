@@ -188,7 +188,11 @@ func (m *_HVACStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
+func HVACStatusFlagsParse(theBytes []byte) (HVACStatusFlags, error) {
+	return HVACStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACStatusFlags"); pullErr != nil {

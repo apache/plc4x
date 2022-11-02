@@ -133,7 +133,11 @@ func (m *_InterfaceOptions2) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func InterfaceOptions2Parse(readBuffer utils.ReadBuffer) (InterfaceOptions2, error) {
+func InterfaceOptions2Parse(theBytes []byte) (InterfaceOptions2, error) {
+	return InterfaceOptions2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func InterfaceOptions2ParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOptions2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InterfaceOptions2"); pullErr != nil {

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataShedDuration) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
+func BACnetConstructedDataShedDurationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
+	return BACnetConstructedDataShedDurationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataShedDurationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataShedDuration"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("shedDuration"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for shedDuration")
 	}
-	_shedDuration, _shedDurationErr := BACnetApplicationTagParse(readBuffer)
+	_shedDuration, _shedDurationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _shedDurationErr != nil {
 		return nil, errors.Wrap(_shedDurationErr, "Error parsing 'shedDuration' field of BACnetConstructedDataShedDuration")
 	}

@@ -173,7 +173,11 @@ func (m *_SecurityDataPasswordEntryStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataPasswordEntryStatusParse(readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
+func SecurityDataPasswordEntryStatusParse(theBytes []byte) (SecurityDataPasswordEntryStatus, error) {
+	return SecurityDataPasswordEntryStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataPasswordEntryStatusParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataPasswordEntryStatus"); pullErr != nil {

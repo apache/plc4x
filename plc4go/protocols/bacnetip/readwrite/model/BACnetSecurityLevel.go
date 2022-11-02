@@ -121,7 +121,11 @@ func (m BACnetSecurityLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSecurityLevelParse(readBuffer utils.ReadBuffer) (BACnetSecurityLevel, error) {
+func BACnetSecurityLevelParse(theBytes []byte) (BACnetSecurityLevel, error) {
+	return BACnetSecurityLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSecurityLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSecurityLevel, error) {
 	val, err := readBuffer.ReadUint8("BACnetSecurityLevel", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSecurityLevel")

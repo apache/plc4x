@@ -98,7 +98,11 @@ func (m *_ZoneStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ZoneStatusParse(readBuffer utils.ReadBuffer) (ZoneStatus, error) {
+func ZoneStatusParse(theBytes []byte) (ZoneStatus, error) {
+	return ZoneStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ZoneStatusParseWithBuffer(readBuffer utils.ReadBuffer) (ZoneStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ZoneStatus"); pullErr != nil {
@@ -111,7 +115,7 @@ func ZoneStatusParse(readBuffer utils.ReadBuffer) (ZoneStatus, error) {
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := ZoneStatusTempParse(readBuffer)
+	_value, _valueErr := ZoneStatusTempParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ZoneStatus")
 	}

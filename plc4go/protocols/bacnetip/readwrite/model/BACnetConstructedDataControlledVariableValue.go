@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
+func BACnetConstructedDataControlledVariableValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
+	return BACnetConstructedDataControlledVariableValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataControlledVariableValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataControlledVariableValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("controlledVariableValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for controlledVariableValue")
 	}
-	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParse(readBuffer)
+	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _controlledVariableValueErr != nil {
 		return nil, errors.Wrap(_controlledVariableValueErr, "Error parsing 'controlledVariableValue' field of BACnetConstructedDataControlledVariableValue")
 	}

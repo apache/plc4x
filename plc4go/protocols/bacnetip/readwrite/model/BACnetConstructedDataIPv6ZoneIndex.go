@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
+func BACnetConstructedDataIPv6ZoneIndexParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
+	return BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6ZoneIndex"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("ipv6ZoneIndex"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6ZoneIndex")
 	}
-	_ipv6ZoneIndex, _ipv6ZoneIndexErr := BACnetApplicationTagParse(readBuffer)
+	_ipv6ZoneIndex, _ipv6ZoneIndexErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipv6ZoneIndexErr != nil {
 		return nil, errors.Wrap(_ipv6ZoneIndexErr, "Error parsing 'ipv6ZoneIndex' field of BACnetConstructedDataIPv6ZoneIndex")
 	}

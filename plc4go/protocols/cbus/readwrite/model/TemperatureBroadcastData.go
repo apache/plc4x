@@ -143,7 +143,11 @@ func (m *_TemperatureBroadcastData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TemperatureBroadcastDataParse(readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
+func TemperatureBroadcastDataParse(theBytes []byte) (TemperatureBroadcastData, error) {
+	return TemperatureBroadcastDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TemperatureBroadcastDataParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TemperatureBroadcastData"); pullErr != nil {
@@ -161,7 +165,7 @@ func TemperatureBroadcastDataParse(readBuffer utils.ReadBuffer) (TemperatureBroa
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := TemperatureBroadcastCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := TemperatureBroadcastCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TemperatureBroadcastData")
 	}

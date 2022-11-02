@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataCOVPeriod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCOVPeriodParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVPeriod, error) {
+func BACnetConstructedDataCOVPeriodParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVPeriod, error) {
+	return BACnetConstructedDataCOVPeriodParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataCOVPeriodParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVPeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVPeriod"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataCOVPeriodParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("covPeriod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covPeriod")
 	}
-	_covPeriod, _covPeriodErr := BACnetApplicationTagParse(readBuffer)
+	_covPeriod, _covPeriodErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _covPeriodErr != nil {
 		return nil, errors.Wrap(_covPeriodErr, "Error parsing 'covPeriod' field of BACnetConstructedDataCOVPeriod")
 	}

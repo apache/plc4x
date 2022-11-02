@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLastRestartReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestartReason, error) {
+func BACnetConstructedDataLastRestartReasonParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestartReason, error) {
+	return BACnetConstructedDataLastRestartReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastRestartReasonParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestartReason, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastRestartReason"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("lastRestartReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastRestartReason")
 	}
-	_lastRestartReason, _lastRestartReasonErr := BACnetRestartReasonTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_lastRestartReason, _lastRestartReasonErr := BACnetRestartReasonTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastRestartReasonErr != nil {
 		return nil, errors.Wrap(_lastRestartReasonErr, "Error parsing 'lastRestartReason' field of BACnetConstructedDataLastRestartReason")
 	}

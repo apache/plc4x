@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPulseRate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPulseRateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPulseRate, error) {
+func BACnetConstructedDataPulseRateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPulseRate, error) {
+	return BACnetConstructedDataPulseRateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPulseRateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPulseRate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPulseRate"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPulseRateParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("pulseRate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pulseRate")
 	}
-	_pulseRate, _pulseRateErr := BACnetApplicationTagParse(readBuffer)
+	_pulseRate, _pulseRateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _pulseRateErr != nil {
 		return nil, errors.Wrap(_pulseRateErr, "Error parsing 'pulseRate' field of BACnetConstructedDataPulseRate")
 	}

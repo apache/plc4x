@@ -129,7 +129,11 @@ func (m *_TelephonyDataRinging) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataRingingParse(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {
+func TelephonyDataRingingParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {
+	return TelephonyDataRingingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func TelephonyDataRingingParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRinging"); pullErr != nil {

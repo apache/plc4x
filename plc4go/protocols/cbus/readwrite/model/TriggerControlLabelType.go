@@ -109,7 +109,11 @@ func (m TriggerControlLabelType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlLabelTypeParse(readBuffer utils.ReadBuffer) (TriggerControlLabelType, error) {
+func TriggerControlLabelTypeParse(theBytes []byte) (TriggerControlLabelType, error) {
+	return TriggerControlLabelTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlLabelTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlLabelType, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlLabelType", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlLabelType")

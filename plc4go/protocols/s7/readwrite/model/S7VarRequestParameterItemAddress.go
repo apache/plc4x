@@ -128,7 +128,11 @@ func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
+func S7VarRequestParameterItemAddressParse(theBytes []byte) (S7VarRequestParameterItemAddress, error) {
+	return S7VarRequestParameterItemAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7VarRequestParameterItemAddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
@@ -148,7 +152,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRe
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for address")
 	}
-	_address, _addressErr := S7AddressParse(readBuffer)
+	_address, _addressErr := S7AddressParseWithBuffer(readBuffer)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of S7VarRequestParameterItemAddress")
 	}

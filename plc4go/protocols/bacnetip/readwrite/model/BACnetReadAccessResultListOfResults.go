@@ -126,7 +126,11 @@ func (m *_BACnetReadAccessResultListOfResults) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
+func BACnetReadAccessResultListOfResultsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
+	return BACnetReadAccessResultListOfResultsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetReadAccessResultListOfResultsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessResultListOfResults"); pullErr != nil {
@@ -139,7 +143,7 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetReadAccessResultListOfResults")
 	}
@@ -156,7 +160,7 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 	var listOfReadAccessProperty []BACnetReadAccessProperty
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetReadAccessPropertyParse(readBuffer, objectTypeArgument)
+			_item, _err := BACnetReadAccessPropertyParseWithBuffer(readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfReadAccessProperty' field of BACnetReadAccessResultListOfResults")
 			}
@@ -172,7 +176,7 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetReadAccessResultListOfResults")
 	}

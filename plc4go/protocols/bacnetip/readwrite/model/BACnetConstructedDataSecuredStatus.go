@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataSecuredStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSecuredStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecuredStatus, error) {
+func BACnetConstructedDataSecuredStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecuredStatus, error) {
+	return BACnetConstructedDataSecuredStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSecuredStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecuredStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecuredStatus"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataSecuredStatusParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("securedStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securedStatus")
 	}
-	_securedStatus, _securedStatusErr := BACnetDoorSecuredStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_securedStatus, _securedStatusErr := BACnetDoorSecuredStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _securedStatusErr != nil {
 		return nil, errors.Wrap(_securedStatusErr, "Error parsing 'securedStatus' field of BACnetConstructedDataSecuredStatus")
 	}

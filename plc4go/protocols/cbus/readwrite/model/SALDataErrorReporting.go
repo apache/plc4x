@@ -127,7 +127,11 @@ func (m *_SALDataErrorReporting) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataErrorReportingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataErrorReporting, error) {
+func SALDataErrorReportingParse(theBytes []byte, applicationId ApplicationId) (SALDataErrorReporting, error) {
+	return SALDataErrorReportingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataErrorReportingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataErrorReporting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataErrorReporting"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataErrorReportingParse(readBuffer utils.ReadBuffer, applicationId Appli
 	if pullErr := readBuffer.PullContext("errorReportingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorReportingData")
 	}
-	_errorReportingData, _errorReportingDataErr := ErrorReportingDataParse(readBuffer)
+	_errorReportingData, _errorReportingDataErr := ErrorReportingDataParseWithBuffer(readBuffer)
 	if _errorReportingDataErr != nil {
 		return nil, errors.Wrap(_errorReportingDataErr, "Error parsing 'errorReportingData' field of SALDataErrorReporting")
 	}

@@ -125,7 +125,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger, error) {
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger, error) {
+	return BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
+	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger")
 	}

@@ -121,7 +121,11 @@ func (m BACnetCharacterEncoding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
+func BACnetCharacterEncodingParse(theBytes []byte) (BACnetCharacterEncoding, error) {
+	return BACnetCharacterEncodingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetCharacterEncodingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
 	val, err := readBuffer.ReadByte("BACnetCharacterEncoding")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetCharacterEncoding")

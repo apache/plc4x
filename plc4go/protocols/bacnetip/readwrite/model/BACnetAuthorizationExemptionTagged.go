@@ -139,7 +139,11 @@ func (m *_BACnetAuthorizationExemptionTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthorizationExemptionTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationExemptionTagged, error) {
+func BACnetAuthorizationExemptionTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationExemptionTagged, error) {
+	return BACnetAuthorizationExemptionTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetAuthorizationExemptionTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthorizationExemptionTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthorizationExemptionTagged"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetAuthorizationExemptionTaggedParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAuthorizationExemptionTagged")
 	}

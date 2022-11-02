@@ -109,7 +109,11 @@ func (m BACnetAccessUserType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessUserTypeParse(readBuffer utils.ReadBuffer) (BACnetAccessUserType, error) {
+func BACnetAccessUserTypeParse(theBytes []byte) (BACnetAccessUserType, error) {
+	return BACnetAccessUserTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessUserTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessUserType, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessUserType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessUserType")

@@ -109,7 +109,11 @@ func (m EventType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EventTypeParse(readBuffer utils.ReadBuffer) (EventType, error) {
+func EventTypeParse(theBytes []byte) (EventType, error) {
+	return EventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func EventTypeParseWithBuffer(readBuffer utils.ReadBuffer) (EventType, error) {
 	val, err := readBuffer.ReadUint8("EventType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EventType")

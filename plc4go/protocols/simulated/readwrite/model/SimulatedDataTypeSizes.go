@@ -373,7 +373,11 @@ func (m SimulatedDataTypeSizes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
+func SimulatedDataTypeSizesParse(theBytes []byte) (SimulatedDataTypeSizes, error) {
+	return SimulatedDataTypeSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SimulatedDataTypeSizesParseWithBuffer(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
 	val, err := readBuffer.ReadUint8("SimulatedDataTypeSizes", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SimulatedDataTypeSizes")

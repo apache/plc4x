@@ -141,7 +141,11 @@ func (m *_ConnectionStateRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (ConnectionStateRequest, error) {
+func ConnectionStateRequestParse(theBytes []byte) (ConnectionStateRequest, error) {
+	return ConnectionStateRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionStateRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionStateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionStateRequest"); pullErr != nil {
@@ -178,7 +182,7 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (ConnectionStateRe
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of ConnectionStateRequest")
 	}

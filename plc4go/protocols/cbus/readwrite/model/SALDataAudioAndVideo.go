@@ -127,7 +127,11 @@ func (m *_SALDataAudioAndVideo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataAudioAndVideoParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
+func SALDataAudioAndVideoParse(theBytes []byte, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
+	return SALDataAudioAndVideoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataAudioAndVideoParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAudioAndVideo"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataAudioAndVideoParse(readBuffer utils.ReadBuffer, applicationId Applic
 	if pullErr := readBuffer.PullContext("audioVideoData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for audioVideoData")
 	}
-	_audioVideoData, _audioVideoDataErr := LightingDataParse(readBuffer)
+	_audioVideoData, _audioVideoDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _audioVideoDataErr != nil {
 		return nil, errors.Wrap(_audioVideoDataErr, "Error parsing 'audioVideoData' field of SALDataAudioAndVideo")
 	}

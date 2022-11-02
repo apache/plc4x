@@ -108,7 +108,11 @@ func (m *_ProjectInstallationIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
+func ProjectInstallationIdentifierParse(theBytes []byte) (ProjectInstallationIdentifier, error) {
+	return ProjectInstallationIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ProjectInstallationIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ProjectInstallationIdentifier"); pullErr != nil {

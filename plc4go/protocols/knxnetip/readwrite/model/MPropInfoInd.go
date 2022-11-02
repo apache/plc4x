@@ -104,7 +104,11 @@ func (m *_MPropInfoInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (MPropInfoInd, error) {
+func MPropInfoIndParse(theBytes []byte, size uint16) (MPropInfoInd, error) {
+	return MPropInfoIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func MPropInfoIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MPropInfoInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropInfoInd"); pullErr != nil {

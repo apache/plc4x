@@ -129,7 +129,11 @@ func (m *_CBusPointToPointCommandDirect) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
+func CBusPointToPointCommandDirectParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
+	return CBusPointToPointCommandDirectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusPointToPointCommandDirectParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandDirect"); pullErr != nil {
@@ -142,7 +146,7 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, cBusOptions
 	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParse(readBuffer)
+	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(readBuffer)
 	if _unitAddressErr != nil {
 		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandDirect")
 	}

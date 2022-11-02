@@ -109,7 +109,11 @@ func (m StatusCoding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusCodingParse(readBuffer utils.ReadBuffer) (StatusCoding, error) {
+func StatusCodingParse(theBytes []byte) (StatusCoding, error) {
+	return StatusCodingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func StatusCodingParseWithBuffer(readBuffer utils.ReadBuffer) (StatusCoding, error) {
 	val, err := readBuffer.ReadByte("StatusCoding")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading StatusCoding")

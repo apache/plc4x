@@ -137,7 +137,11 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
+	return BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
@@ -150,7 +154,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("fileIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileIdentifier")
 	}
-	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileIdentifierErr != nil {
 		return nil, errors.Wrap(_fileIdentifierErr, "Error parsing 'fileIdentifier' field of BACnetConfirmedServiceRequestAtomicReadFile")
 	}
@@ -163,7 +167,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
 	}
-	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer)
+	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(readBuffer)
 	if _accessMethodErr != nil {
 		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetConfirmedServiceRequestAtomicReadFile")
 	}

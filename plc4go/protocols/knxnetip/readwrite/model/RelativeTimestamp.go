@@ -98,7 +98,11 @@ func (m *_RelativeTimestamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RelativeTimestampParse(readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {
+func RelativeTimestampParse(theBytes []byte) (RelativeTimestamp, error) {
+	return RelativeTimestampParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func RelativeTimestampParseWithBuffer(readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RelativeTimestamp"); pullErr != nil {

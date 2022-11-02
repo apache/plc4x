@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventAlgorithmInhibitRefParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
+func BACnetConstructedDataEventAlgorithmInhibitRefParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
+	return BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventAlgorithmInhibitRef"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("eventAlgorithmInhibitRef"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventAlgorithmInhibitRef")
 	}
-	_eventAlgorithmInhibitRef, _eventAlgorithmInhibitRefErr := BACnetObjectPropertyReferenceParse(readBuffer)
+	_eventAlgorithmInhibitRef, _eventAlgorithmInhibitRefErr := BACnetObjectPropertyReferenceParseWithBuffer(readBuffer)
 	if _eventAlgorithmInhibitRefErr != nil {
 		return nil, errors.Wrap(_eventAlgorithmInhibitRefErr, "Error parsing 'eventAlgorithmInhibitRef' field of BACnetConstructedDataEventAlgorithmInhibitRef")
 	}

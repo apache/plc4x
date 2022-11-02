@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTraceFlag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTraceFlagParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTraceFlag, error) {
+func BACnetConstructedDataTraceFlagParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTraceFlag, error) {
+	return BACnetConstructedDataTraceFlagParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTraceFlagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTraceFlag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTraceFlag"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTraceFlagParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("traceFlag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for traceFlag")
 	}
-	_traceFlag, _traceFlagErr := BACnetApplicationTagParse(readBuffer)
+	_traceFlag, _traceFlagErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _traceFlagErr != nil {
 		return nil, errors.Wrap(_traceFlagErr, "Error parsing 'traceFlag' field of BACnetConstructedDataTraceFlag")
 	}

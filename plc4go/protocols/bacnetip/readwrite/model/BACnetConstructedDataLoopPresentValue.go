@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLoopPresentValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoopPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoopPresentValue, error) {
+func BACnetConstructedDataLoopPresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoopPresentValue, error) {
+	return BACnetConstructedDataLoopPresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLoopPresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoopPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoopPresentValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLoopPresentValueParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetApplicationTagParse(readBuffer)
+	_presentValue, _presentValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataLoopPresentValue")
 	}

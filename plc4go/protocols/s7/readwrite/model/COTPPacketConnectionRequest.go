@@ -150,7 +150,11 @@ func (m *_COTPPacketConnectionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketConnectionRequestParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionRequest, error) {
+func COTPPacketConnectionRequestParse(theBytes []byte, cotpLen uint16) (COTPPacketConnectionRequest, error) {
+	return COTPPacketConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cotpLen) // TODO: get endianness from mspec
+}
+
+func COTPPacketConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionRequest"); pullErr != nil {
@@ -177,7 +181,7 @@ func COTPPacketConnectionRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolClass")
 	}
-	_protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
+	_protocolClass, _protocolClassErr := COTPProtocolClassParseWithBuffer(readBuffer)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field of COTPPacketConnectionRequest")
 	}

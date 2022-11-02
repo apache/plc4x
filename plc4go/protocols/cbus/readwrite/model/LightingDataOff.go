@@ -123,7 +123,11 @@ func (m *_LightingDataOff) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingDataOffParse(readBuffer utils.ReadBuffer) (LightingDataOff, error) {
+func LightingDataOffParse(theBytes []byte) (LightingDataOff, error) {
+	return LightingDataOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingDataOffParseWithBuffer(readBuffer utils.ReadBuffer) (LightingDataOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataOff"); pullErr != nil {

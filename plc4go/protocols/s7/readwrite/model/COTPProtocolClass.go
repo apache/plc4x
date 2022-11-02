@@ -115,7 +115,11 @@ func (m COTPProtocolClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
+func COTPProtocolClassParse(theBytes []byte) (COTPProtocolClass, error) {
+	return COTPProtocolClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func COTPProtocolClassParseWithBuffer(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
 	val, err := readBuffer.ReadUint8("COTPProtocolClass", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPProtocolClass")

@@ -149,7 +149,11 @@ func (m *_SecurityDataLowBatteryCharging) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataLowBatteryChargingParse(readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
+func SecurityDataLowBatteryChargingParse(theBytes []byte) (SecurityDataLowBatteryCharging, error) {
+	return SecurityDataLowBatteryChargingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataLowBatteryChargingParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataLowBatteryCharging"); pullErr != nil {

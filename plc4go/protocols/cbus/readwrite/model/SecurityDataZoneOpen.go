@@ -124,7 +124,11 @@ func (m *_SecurityDataZoneOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataZoneOpenParse(readBuffer utils.ReadBuffer) (SecurityDataZoneOpen, error) {
+func SecurityDataZoneOpenParse(theBytes []byte) (SecurityDataZoneOpen, error) {
+	return SecurityDataZoneOpenParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataZoneOpenParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataZoneOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataZoneOpen"); pullErr != nil {

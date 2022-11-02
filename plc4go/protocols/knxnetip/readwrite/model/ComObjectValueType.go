@@ -253,7 +253,11 @@ func (m ComObjectValueType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
+func ComObjectValueTypeParse(theBytes []byte) (ComObjectValueType, error) {
+	return ComObjectValueTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ComObjectValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
 	val, err := readBuffer.ReadUint8("ComObjectValueType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ComObjectValueType")

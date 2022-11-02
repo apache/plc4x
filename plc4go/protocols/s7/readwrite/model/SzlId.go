@@ -118,7 +118,11 @@ func (m *_SzlId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlIdParse(readBuffer utils.ReadBuffer) (SzlId, error) {
+func SzlIdParse(theBytes []byte) (SzlId, error) {
+	return SzlIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SzlIdParseWithBuffer(readBuffer utils.ReadBuffer) (SzlId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SzlId"); pullErr != nil {
@@ -131,7 +135,7 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (SzlId, error) {
 	if pullErr := readBuffer.PullContext("typeClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for typeClass")
 	}
-	_typeClass, _typeClassErr := SzlModuleTypeClassParse(readBuffer)
+	_typeClass, _typeClassErr := SzlModuleTypeClassParseWithBuffer(readBuffer)
 	if _typeClassErr != nil {
 		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field of SzlId")
 	}
@@ -151,7 +155,7 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (SzlId, error) {
 	if pullErr := readBuffer.PullContext("sublistList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sublistList")
 	}
-	_sublistList, _sublistListErr := SzlSublistParse(readBuffer)
+	_sublistList, _sublistListErr := SzlSublistParseWithBuffer(readBuffer)
 	if _sublistListErr != nil {
 		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field of SzlId")
 	}

@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesBackupState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBackupStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBackupState, error) {
+func BACnetPropertyStatesBackupStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBackupState, error) {
+	return BACnetPropertyStatesBackupStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesBackupStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBackupState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBackupState"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesBackupStateParse(readBuffer utils.ReadBuffer, peekedTag
 	if pullErr := readBuffer.PullContext("backupState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for backupState")
 	}
-	_backupState, _backupStateErr := BACnetBackupStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_backupState, _backupStateErr := BACnetBackupStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _backupStateErr != nil {
 		return nil, errors.Wrap(_backupStateErr, "Error parsing 'backupState' field of BACnetPropertyStatesBackupState")
 	}

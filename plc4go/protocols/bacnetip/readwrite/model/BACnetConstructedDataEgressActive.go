@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataEgressActive) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
+func BACnetConstructedDataEgressActiveParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
+	return BACnetConstructedDataEgressActiveParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEgressActiveParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressActive"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("egressActive"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for egressActive")
 	}
-	_egressActive, _egressActiveErr := BACnetApplicationTagParse(readBuffer)
+	_egressActive, _egressActiveErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _egressActiveErr != nil {
 		return nil, errors.Wrap(_egressActiveErr, "Error parsing 'egressActive' field of BACnetConstructedDataEgressActive")
 	}

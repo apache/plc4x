@@ -259,7 +259,11 @@ func (m *_BACnetTagHeader) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
+func BACnetTagHeaderParse(theBytes []byte) (BACnetTagHeader, error) {
+	return BACnetTagHeaderParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTagHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagHeader"); pullErr != nil {
@@ -279,7 +283,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) 
 	if pullErr := readBuffer.PullContext("tagClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tagClass")
 	}
-	_tagClass, _tagClassErr := TagClassParse(readBuffer)
+	_tagClass, _tagClassErr := TagClassParseWithBuffer(readBuffer)
 	if _tagClassErr != nil {
 		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field of BACnetTagHeader")
 	}

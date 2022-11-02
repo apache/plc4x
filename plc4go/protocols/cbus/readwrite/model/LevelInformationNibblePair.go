@@ -263,7 +263,11 @@ func (m LevelInformationNibblePair) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LevelInformationNibblePairParse(readBuffer utils.ReadBuffer) (LevelInformationNibblePair, error) {
+func LevelInformationNibblePairParse(theBytes []byte) (LevelInformationNibblePair, error) {
+	return LevelInformationNibblePairParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LevelInformationNibblePairParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformationNibblePair, error) {
 	val, err := readBuffer.ReadUint8("LevelInformationNibblePair", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LevelInformationNibblePair")

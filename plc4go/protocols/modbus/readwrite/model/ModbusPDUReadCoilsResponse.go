@@ -138,7 +138,11 @@ func (m *_ModbusPDUReadCoilsResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadCoilsResponse, error) {
+func ModbusPDUReadCoilsResponseParse(theBytes []byte, response bool) (ModbusPDUReadCoilsResponse, error) {
+	return ModbusPDUReadCoilsResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUReadCoilsResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadCoilsResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadCoilsResponse"); pullErr != nil {

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPSubnetMask, error) {
+func BACnetConstructedDataIPSubnetMaskParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPSubnetMask, error) {
+	return BACnetConstructedDataIPSubnetMaskParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPSubnetMaskParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPSubnetMask, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPSubnetMask"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("ipSubnetMask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipSubnetMask")
 	}
-	_ipSubnetMask, _ipSubnetMaskErr := BACnetApplicationTagParse(readBuffer)
+	_ipSubnetMask, _ipSubnetMaskErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipSubnetMaskErr != nil {
 		return nil, errors.Wrap(_ipSubnetMaskErr, "Error parsing 'ipSubnetMask' field of BACnetConstructedDataIPSubnetMask")
 	}

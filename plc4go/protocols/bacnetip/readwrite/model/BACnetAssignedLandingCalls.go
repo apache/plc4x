@@ -98,7 +98,11 @@ func (m *_BACnetAssignedLandingCalls) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAssignedLandingCallsParse(readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
+func BACnetAssignedLandingCallsParse(theBytes []byte) (BACnetAssignedLandingCalls, error) {
+	return BACnetAssignedLandingCallsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAssignedLandingCallsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedLandingCalls"); pullErr != nil {
@@ -111,7 +115,7 @@ func BACnetAssignedLandingCallsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	if pullErr := readBuffer.PullContext("landingCalls"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCalls")
 	}
-	_landingCalls, _landingCallsErr := BACnetAssignedLandingCallsLandingCallsListParse(readBuffer, uint8(uint8(0)))
+	_landingCalls, _landingCallsErr := BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _landingCallsErr != nil {
 		return nil, errors.Wrap(_landingCallsErr, "Error parsing 'landingCalls' field of BACnetAssignedLandingCalls")
 	}

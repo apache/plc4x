@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -126,7 +127,11 @@ func (m *_S7DataAlarmMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
+func S7DataAlarmMessageParse(theBytes []byte, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
+	return S7DataAlarmMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType) // TODO: get endianness from mspec
+}
+
+func S7DataAlarmMessageParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7DataAlarmMessage"); pullErr != nil {
@@ -164,9 +169,9 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	var typeSwitchError error
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		_childTemp, typeSwitchError = S7MessageObjectRequestParse(readBuffer, cpuFunctionType)
+		_childTemp, typeSwitchError = S7MessageObjectRequestParseWithBuffer(readBuffer, cpuFunctionType)
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		_childTemp, typeSwitchError = S7MessageObjectResponseParse(readBuffer, cpuFunctionType)
+		_childTemp, typeSwitchError = S7MessageObjectResponseParseWithBuffer(readBuffer, cpuFunctionType)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v]", cpuFunctionType)
 	}

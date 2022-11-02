@@ -163,7 +163,11 @@ func (m SyntaxIdType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
+func SyntaxIdTypeParse(theBytes []byte) (SyntaxIdType, error) {
+	return SyntaxIdTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SyntaxIdTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 	val, err := readBuffer.ReadUint8("SyntaxIdType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SyntaxIdType")

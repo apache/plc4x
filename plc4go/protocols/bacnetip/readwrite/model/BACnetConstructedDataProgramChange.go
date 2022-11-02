@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataProgramChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramChange, error) {
+func BACnetConstructedDataProgramChangeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramChange, error) {
+	return BACnetConstructedDataProgramChangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataProgramChangeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramChange"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("programChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for programChange")
 	}
-	_programChange, _programChangeErr := BACnetProgramRequestTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_programChange, _programChangeErr := BACnetProgramRequestTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _programChangeErr != nil {
 		return nil, errors.Wrap(_programChangeErr, "Error parsing 'programChange' field of BACnetConstructedDataProgramChange")
 	}

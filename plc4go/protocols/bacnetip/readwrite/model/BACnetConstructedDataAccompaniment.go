@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAccompaniment) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccompanimentParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompaniment, error) {
+func BACnetConstructedDataAccompanimentParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompaniment, error) {
+	return BACnetConstructedDataAccompanimentParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAccompanimentParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompaniment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccompaniment"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAccompanimentParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("accompaniment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accompaniment")
 	}
-	_accompaniment, _accompanimentErr := BACnetDeviceObjectReferenceParse(readBuffer)
+	_accompaniment, _accompanimentErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 	if _accompanimentErr != nil {
 		return nil, errors.Wrap(_accompanimentErr, "Error parsing 'accompaniment' field of BACnetConstructedDataAccompaniment")
 	}

@@ -159,7 +159,11 @@ func (m *_ReplyEncodedReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyEncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
+func ReplyEncodedReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
+	return ReplyEncodedReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext) // TODO: get endianness from mspec
+}
+
+func ReplyEncodedReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyEncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyEncodedReply"); pullErr != nil {

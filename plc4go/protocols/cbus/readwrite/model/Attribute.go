@@ -283,7 +283,11 @@ func (m Attribute) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AttributeParse(readBuffer utils.ReadBuffer) (Attribute, error) {
+func AttributeParse(theBytes []byte) (Attribute, error) {
+	return AttributeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AttributeParseWithBuffer(readBuffer utils.ReadBuffer) (Attribute, error) {
 	val, err := readBuffer.ReadUint8("Attribute", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Attribute")

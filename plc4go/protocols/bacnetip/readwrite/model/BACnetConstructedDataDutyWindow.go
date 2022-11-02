@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDutyWindow) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDutyWindowParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDutyWindow, error) {
+func BACnetConstructedDataDutyWindowParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDutyWindow, error) {
+	return BACnetConstructedDataDutyWindowParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDutyWindowParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDutyWindow, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDutyWindow"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDutyWindowParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("dutyWindow"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dutyWindow")
 	}
-	_dutyWindow, _dutyWindowErr := BACnetApplicationTagParse(readBuffer)
+	_dutyWindow, _dutyWindowErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dutyWindowErr != nil {
 		return nil, errors.Wrap(_dutyWindowErr, "Error parsing 'dutyWindow' field of BACnetConstructedDataDutyWindow")
 	}

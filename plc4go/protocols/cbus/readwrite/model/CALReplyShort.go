@@ -103,7 +103,11 @@ func (m *_CALReplyShort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyShortParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
+func CALReplyShortParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
+	return CALReplyShortParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext) // TODO: get endianness from mspec
+}
+
+func CALReplyShortParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyShort"); pullErr != nil {

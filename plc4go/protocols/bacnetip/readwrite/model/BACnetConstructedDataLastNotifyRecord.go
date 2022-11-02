@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLastNotifyRecord) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastNotifyRecord, error) {
+func BACnetConstructedDataLastNotifyRecordParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastNotifyRecord, error) {
+	return BACnetConstructedDataLastNotifyRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastNotifyRecordParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastNotifyRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastNotifyRecord"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("lastNotifyRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastNotifyRecord")
 	}
-	_lastNotifyRecord, _lastNotifyRecordErr := BACnetApplicationTagParse(readBuffer)
+	_lastNotifyRecord, _lastNotifyRecordErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _lastNotifyRecordErr != nil {
 		return nil, errors.Wrap(_lastNotifyRecordErr, "Error parsing 'lastNotifyRecord' field of BACnetConstructedDataLastNotifyRecord")
 	}

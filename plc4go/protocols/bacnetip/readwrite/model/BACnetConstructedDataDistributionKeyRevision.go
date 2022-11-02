@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
+func BACnetConstructedDataDistributionKeyRevisionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
+	return BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDistributionKeyRevision"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("distributionKeyRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for distributionKeyRevision")
 	}
-	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParse(readBuffer)
+	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _distributionKeyRevisionErr != nil {
 		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field of BACnetConstructedDataDistributionKeyRevision")
 	}

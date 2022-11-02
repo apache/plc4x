@@ -121,7 +121,11 @@ func (m *_BACnetAddressEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAddressEnclosed, error) {
+func BACnetAddressEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetAddressEnclosed, error) {
+	return BACnetAddressEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetAddressEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAddressEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAddressEnclosed"); pullErr != nil {
@@ -134,7 +138,7 @@ func BACnetAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetAddressEnclosed")
 	}
@@ -147,7 +151,7 @@ func BACnetAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for address")
 	}
-	_address, _addressErr := BACnetAddressParse(readBuffer)
+	_address, _addressErr := BACnetAddressParseWithBuffer(readBuffer)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of BACnetAddressEnclosed")
 	}
@@ -160,7 +164,7 @@ func BACnetAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetAddressEnclosed")
 	}

@@ -116,7 +116,11 @@ func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {
+func DeviceConfigurationRequestDataBlockParse(theBytes []byte) (DeviceConfigurationRequestDataBlock, error) {
+	return DeviceConfigurationRequestDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceConfigurationRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequestDataBlock"); pullErr != nil {

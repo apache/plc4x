@@ -98,7 +98,11 @@ func (m *_Checksum) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ChecksumParse(readBuffer utils.ReadBuffer) (Checksum, error) {
+func ChecksumParse(theBytes []byte) (Checksum, error) {
+	return ChecksumParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ChecksumParseWithBuffer(readBuffer utils.ReadBuffer) (Checksum, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Checksum"); pullErr != nil {

@@ -104,7 +104,11 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtDomainAddressSelectiveReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
+func ApduDataExtDomainAddressSelectiveReadParse(theBytes []byte, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
+	return ApduDataExtDomainAddressSelectiveReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtDomainAddressSelectiveReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressSelectiveRead"); pullErr != nil {

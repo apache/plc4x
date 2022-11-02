@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUserExternalIdentifierParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserExternalIdentifier, error) {
+func BACnetConstructedDataUserExternalIdentifierParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserExternalIdentifier, error) {
+	return BACnetConstructedDataUserExternalIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataUserExternalIdentifierParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserExternalIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserExternalIdentifier"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataUserExternalIdentifierParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("userExternalIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userExternalIdentifier")
 	}
-	_userExternalIdentifier, _userExternalIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_userExternalIdentifier, _userExternalIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _userExternalIdentifierErr != nil {
 		return nil, errors.Wrap(_userExternalIdentifierErr, "Error parsing 'userExternalIdentifier' field of BACnetConstructedDataUserExternalIdentifier")
 	}

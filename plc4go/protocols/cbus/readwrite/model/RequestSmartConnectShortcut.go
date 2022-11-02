@@ -157,7 +157,11 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
+func RequestSmartConnectShortcutParse(theBytes []byte, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
+	return RequestSmartConnectShortcutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func RequestSmartConnectShortcutParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestSmartConnectShortcut"); pullErr != nil {
@@ -180,7 +184,7 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions C
 	if pullErr := readBuffer.PullContext("pipePeek"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pipePeek")
 	}
-	pipePeek, _err := RequestTypeParse(readBuffer)
+	pipePeek, _err := RequestTypeParseWithBuffer(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'pipePeek' field of RequestSmartConnectShortcut")
 	}

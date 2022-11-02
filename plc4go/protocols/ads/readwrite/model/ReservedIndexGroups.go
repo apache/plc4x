@@ -301,7 +301,11 @@ func (m ReservedIndexGroups) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReservedIndexGroupsParse(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
+func ReservedIndexGroupsParse(theBytes []byte) (ReservedIndexGroups, error) {
+	return ReservedIndexGroupsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
 	val, err := readBuffer.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")

@@ -127,7 +127,11 @@ func (m *_SALDataAccessControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataAccessControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
+func SALDataAccessControlParse(theBytes []byte, applicationId ApplicationId) (SALDataAccessControl, error) {
+	return SALDataAccessControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataAccessControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAccessControl"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataAccessControlParse(readBuffer utils.ReadBuffer, applicationId Applic
 	if pullErr := readBuffer.PullContext("accessControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessControlData")
 	}
-	_accessControlData, _accessControlDataErr := AccessControlDataParse(readBuffer)
+	_accessControlData, _accessControlDataErr := AccessControlDataParseWithBuffer(readBuffer)
 	if _accessControlDataErr != nil {
 		return nil, errors.Wrap(_accessControlDataErr, "Error parsing 'accessControlData' field of SALDataAccessControl")
 	}

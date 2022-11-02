@@ -104,7 +104,11 @@ func (m *_AccessControlDataAccessPointClosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataAccessPointClosedParse(readBuffer utils.ReadBuffer) (AccessControlDataAccessPointClosed, error) {
+func AccessControlDataAccessPointClosedParse(theBytes []byte) (AccessControlDataAccessPointClosed, error) {
+	return AccessControlDataAccessPointClosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlDataAccessPointClosedParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDataAccessPointClosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataAccessPointClosed"); pullErr != nil {

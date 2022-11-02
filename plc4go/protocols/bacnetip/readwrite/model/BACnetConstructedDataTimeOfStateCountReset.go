@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTimeOfStateCountReset) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeOfStateCountResetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfStateCountReset, error) {
+func BACnetConstructedDataTimeOfStateCountResetParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfStateCountReset, error) {
+	return BACnetConstructedDataTimeOfStateCountResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimeOfStateCountResetParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfStateCountReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfStateCountReset"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTimeOfStateCountResetParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("timeOfStateCountReset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeOfStateCountReset")
 	}
-	_timeOfStateCountReset, _timeOfStateCountResetErr := BACnetDateTimeParse(readBuffer)
+	_timeOfStateCountReset, _timeOfStateCountResetErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _timeOfStateCountResetErr != nil {
 		return nil, errors.Wrap(_timeOfStateCountResetErr, "Error parsing 'timeOfStateCountReset' field of BACnetConstructedDataTimeOfStateCountReset")
 	}

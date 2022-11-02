@@ -373,7 +373,11 @@ func (m ModbusDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
+func ModbusDataTypeParse(theBytes []byte) (ModbusDataType, error) {
+	return ModbusDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModbusDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
 	val, err := readBuffer.ReadUint8("ModbusDataType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDataType")

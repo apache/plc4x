@@ -37,19 +37,19 @@ func (m FirmataParserHelper) Parse(typeName string, arguments []string, io utils
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.SysexCommandParse(io, response)
+		return model.SysexCommandParseWithBuffer(io, response)
 	case "FirmataMessage":
 		response, err := utils.StrToBool(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.FirmataMessageParse(io, response)
+		return model.FirmataMessageParseWithBuffer(io, response)
 	case "FirmataCommand":
 		response, err := utils.StrToBool(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.FirmataCommandParse(io, response)
+		return model.FirmataCommandParseWithBuffer(io, response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

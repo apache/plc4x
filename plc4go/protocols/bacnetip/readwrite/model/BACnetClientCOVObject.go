@@ -123,7 +123,11 @@ func (m *_BACnetClientCOVObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetClientCOVObjectParse(readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
+func BACnetClientCOVObjectParse(theBytes []byte) (BACnetClientCOVObject, error) {
+	return BACnetClientCOVObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetClientCOVObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClientCOVObject"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetClientCOVObjectParse(readBuffer utils.ReadBuffer) (BACnetClientCOVObj
 	if pullErr := readBuffer.PullContext("realIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realIncrement")
 	}
-	_realIncrement, _realIncrementErr := BACnetApplicationTagParse(readBuffer)
+	_realIncrement, _realIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _realIncrementErr != nil {
 		return nil, errors.Wrap(_realIncrementErr, "Error parsing 'realIncrement' field of BACnetClientCOVObject")
 	}

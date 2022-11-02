@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTimerMinPresValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimerMinPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMinPresValue, error) {
+func BACnetConstructedDataTimerMinPresValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMinPresValue, error) {
+	return BACnetConstructedDataTimerMinPresValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimerMinPresValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerMinPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerMinPresValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTimerMinPresValueParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("minPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minPresValue")
 	}
-	_minPresValue, _minPresValueErr := BACnetApplicationTagParse(readBuffer)
+	_minPresValue, _minPresValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _minPresValueErr != nil {
 		return nil, errors.Wrap(_minPresValueErr, "Error parsing 'minPresValue' field of BACnetConstructedDataTimerMinPresValue")
 	}

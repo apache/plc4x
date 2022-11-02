@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -120,7 +121,11 @@ func (m *_DF1Symbol) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
+func DF1SymbolParse(theBytes []byte) (DF1Symbol, error) {
+	return DF1SymbolParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DF1SymbolParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
@@ -155,11 +160,11 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	var typeSwitchError error
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameParse(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameParseWithBuffer(readBuffer)
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameACKParse(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameACKParseWithBuffer(readBuffer)
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
-		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParse(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [symbolType=%v]", symbolType)
 	}

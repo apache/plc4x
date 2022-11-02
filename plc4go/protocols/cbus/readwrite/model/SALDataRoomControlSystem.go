@@ -106,7 +106,11 @@ func (m *_SALDataRoomControlSystem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataRoomControlSystemParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
+func SALDataRoomControlSystemParse(theBytes []byte, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
+	return SALDataRoomControlSystemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataRoomControlSystemParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataRoomControlSystem"); pullErr != nil {

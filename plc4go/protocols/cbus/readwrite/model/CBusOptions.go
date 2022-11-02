@@ -178,7 +178,11 @@ func (m *_CBusOptions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusOptionsParse(readBuffer utils.ReadBuffer) (CBusOptions, error) {
+func CBusOptionsParse(theBytes []byte) (CBusOptions, error) {
+	return CBusOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CBusOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (CBusOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusOptions"); pullErr != nil {

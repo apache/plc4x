@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+func BACnetConstructedDataBBMDBroadcastDistributionTableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+	return BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 	var bbmdBroadcastDistributionTable []BACnetBDTEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetBDTEntryParse(readBuffer)
+			_item, _err := BACnetBDTEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'bbmdBroadcastDistributionTable' field of BACnetConstructedDataBBMDBroadcastDistributionTable")
 			}

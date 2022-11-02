@@ -156,7 +156,11 @@ func (m *_BACnetEventParameterCommandFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACnetEventParameterCommandFailure, error) {
+func BACnetEventParameterCommandFailureParse(theBytes []byte) (BACnetEventParameterCommandFailure, error) {
+	return BACnetEventParameterCommandFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterCommandFailureParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterCommandFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterCommandFailure"); pullErr != nil {
@@ -169,7 +173,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(3)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(3)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterCommandFailure")
 	}
@@ -182,7 +186,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterCommandFailure")
 	}
@@ -195,7 +199,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("feedbackPropertyReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for feedbackPropertyReference")
 	}
-	_feedbackPropertyReference, _feedbackPropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_feedbackPropertyReference, _feedbackPropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _feedbackPropertyReferenceErr != nil {
 		return nil, errors.Wrap(_feedbackPropertyReferenceErr, "Error parsing 'feedbackPropertyReference' field of BACnetEventParameterCommandFailure")
 	}
@@ -208,7 +212,7 @@ func BACnetEventParameterCommandFailureParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(3)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(3)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterCommandFailure")
 	}

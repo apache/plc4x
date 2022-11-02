@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAlarmValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAlarmValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlarmValue, error) {
+func BACnetConstructedDataAlarmValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlarmValue, error) {
+	return BACnetConstructedDataAlarmValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAlarmValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlarmValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlarmValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAlarmValueParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("binaryPv"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for binaryPv")
 	}
-	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _binaryPvErr != nil {
 		return nil, errors.Wrap(_binaryPvErr, "Error parsing 'binaryPv' field of BACnetConstructedDataAlarmValue")
 	}

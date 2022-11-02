@@ -127,7 +127,11 @@ func (m *_SALDataTriggerControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
+func SALDataTriggerControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTriggerControl, error) {
+	return SALDataTriggerControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataTriggerControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTriggerControl"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId Appli
 	if pullErr := readBuffer.PullContext("triggerControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlData")
 	}
-	_triggerControlData, _triggerControlDataErr := TriggerControlDataParse(readBuffer)
+	_triggerControlData, _triggerControlDataErr := TriggerControlDataParseWithBuffer(readBuffer)
 	if _triggerControlDataErr != nil {
 		return nil, errors.Wrap(_triggerControlDataErr, "Error parsing 'triggerControlData' field of SALDataTriggerControl")
 	}

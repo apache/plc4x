@@ -123,7 +123,11 @@ func (m *_BACnetValueSourceObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (BACnetValueSourceObject, error) {
+func BACnetValueSourceObjectParse(theBytes []byte) (BACnetValueSourceObject, error) {
+	return BACnetValueSourceObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetValueSourceObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetValueSourceObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetValueSourceObject"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (BACnetValueSourc
 	if pullErr := readBuffer.PullContext("object"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for object")
 	}
-	_object, _objectErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_object, _objectErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _objectErr != nil {
 		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field of BACnetValueSourceObject")
 	}

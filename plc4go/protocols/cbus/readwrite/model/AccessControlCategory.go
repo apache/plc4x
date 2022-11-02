@@ -97,7 +97,11 @@ func (m AccessControlCategory) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlCategoryParse(readBuffer utils.ReadBuffer) (AccessControlCategory, error) {
+func AccessControlCategoryParse(theBytes []byte) (AccessControlCategory, error) {
+	return AccessControlCategoryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCategory, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCategory", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCategory")

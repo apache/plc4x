@@ -104,7 +104,11 @@ func (m *_ApduDataExtNetworkParameterRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterRead, error) {
+func ApduDataExtNetworkParameterReadParse(theBytes []byte, length uint8) (ApduDataExtNetworkParameterRead, error) {
+	return ApduDataExtNetworkParameterReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtNetworkParameterReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterRead"); pullErr != nil {

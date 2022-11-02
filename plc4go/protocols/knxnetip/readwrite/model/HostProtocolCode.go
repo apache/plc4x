@@ -97,7 +97,11 @@ func (m HostProtocolCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HostProtocolCodeParse(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
+func HostProtocolCodeParse(theBytes []byte) (HostProtocolCode, error) {
+	return HostProtocolCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HostProtocolCodeParseWithBuffer(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
 	val, err := readBuffer.ReadUint8("HostProtocolCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HostProtocolCode")

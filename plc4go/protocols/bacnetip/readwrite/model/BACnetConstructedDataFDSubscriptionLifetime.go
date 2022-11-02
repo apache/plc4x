@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
+func BACnetConstructedDataFDSubscriptionLifetimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
+	return BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDSubscriptionLifetime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("fdSubscriptionLifetime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fdSubscriptionLifetime")
 	}
-	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParse(readBuffer)
+	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fdSubscriptionLifetimeErr != nil {
 		return nil, errors.Wrap(_fdSubscriptionLifetimeErr, "Error parsing 'fdSubscriptionLifetime' field of BACnetConstructedDataFDSubscriptionLifetime")
 	}

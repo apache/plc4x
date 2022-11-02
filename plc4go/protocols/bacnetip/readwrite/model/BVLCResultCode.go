@@ -127,7 +127,11 @@ func (m BVLCResultCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCResultCodeParse(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
+func BVLCResultCodeParse(theBytes []byte) (BVLCResultCode, error) {
+	return BVLCResultCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCResultCodeParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
 	val, err := readBuffer.ReadUint16("BVLCResultCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BVLCResultCode")

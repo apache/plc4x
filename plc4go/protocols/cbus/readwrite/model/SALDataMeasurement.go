@@ -127,7 +127,11 @@ func (m *_SALDataMeasurement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataMeasurementParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMeasurement, error) {
+func SALDataMeasurementParse(theBytes []byte, applicationId ApplicationId) (SALDataMeasurement, error) {
+	return SALDataMeasurementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataMeasurementParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMeasurement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMeasurement"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataMeasurementParse(readBuffer utils.ReadBuffer, applicationId Applicat
 	if pullErr := readBuffer.PullContext("measurementData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for measurementData")
 	}
-	_measurementData, _measurementDataErr := MeasurementDataParse(readBuffer)
+	_measurementData, _measurementDataErr := MeasurementDataParseWithBuffer(readBuffer)
 	if _measurementDataErr != nil {
 		return nil, errors.Wrap(_measurementDataErr, "Error parsing 'measurementData' field of SALDataMeasurement")
 	}

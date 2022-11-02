@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataActualShedLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActualShedLevel, error) {
+func BACnetConstructedDataActualShedLevelParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActualShedLevel, error) {
+	return BACnetConstructedDataActualShedLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataActualShedLevelParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActualShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActualShedLevel"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("actualShedLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for actualShedLevel")
 	}
-	_actualShedLevel, _actualShedLevelErr := BACnetShedLevelParse(readBuffer)
+	_actualShedLevel, _actualShedLevelErr := BACnetShedLevelParseWithBuffer(readBuffer)
 	if _actualShedLevelErr != nil {
 		return nil, errors.Wrap(_actualShedLevelErr, "Error parsing 'actualShedLevel' field of BACnetConstructedDataActualShedLevel")
 	}

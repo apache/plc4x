@@ -127,7 +127,11 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataPoolsSpasPondsFountainsControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
+func SALDataPoolsSpasPondsFountainsControlParse(theBytes []byte, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
+	return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataPoolsSpasPondsFountainsControl"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataPoolsSpasPondsFountainsControlParse(readBuffer utils.ReadBuffer, app
 	if pullErr := readBuffer.PullContext("poolsSpaPondsFountainsData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for poolsSpaPondsFountainsData")
 	}
-	_poolsSpaPondsFountainsData, _poolsSpaPondsFountainsDataErr := LightingDataParse(readBuffer)
+	_poolsSpaPondsFountainsData, _poolsSpaPondsFountainsDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _poolsSpaPondsFountainsDataErr != nil {
 		return nil, errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error parsing 'poolsSpaPondsFountainsData' field of SALDataPoolsSpasPondsFountainsControl")
 	}

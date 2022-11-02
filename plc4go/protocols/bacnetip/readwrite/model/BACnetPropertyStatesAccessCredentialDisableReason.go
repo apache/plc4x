@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesAccessCredentialDisableReasonParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
+func BACnetPropertyStatesAccessCredentialDisableReasonParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
+	return BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessCredentialDisableReason"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesAccessCredentialDisableReasonParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("accessCredentialDisableReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessCredentialDisableReason")
 	}
-	_accessCredentialDisableReason, _accessCredentialDisableReasonErr := BACnetAccessCredentialDisableReasonTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_accessCredentialDisableReason, _accessCredentialDisableReasonErr := BACnetAccessCredentialDisableReasonTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessCredentialDisableReasonErr != nil {
 		return nil, errors.Wrap(_accessCredentialDisableReasonErr, "Error parsing 'accessCredentialDisableReason' field of BACnetPropertyStatesAccessCredentialDisableReason")
 	}

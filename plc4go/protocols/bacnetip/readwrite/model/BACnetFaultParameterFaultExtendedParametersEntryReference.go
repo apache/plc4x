@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(readBuffer u
 	if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reference")
 	}
-	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
+	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _referenceErr != nil {
 		return nil, errors.Wrap(_referenceErr, "Error parsing 'reference' field of BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}

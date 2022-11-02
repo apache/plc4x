@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataExpirationTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataExpirationTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExpirationTime, error) {
+func BACnetConstructedDataExpirationTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExpirationTime, error) {
+	return BACnetConstructedDataExpirationTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataExpirationTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExpirationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExpirationTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataExpirationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
 	}
-	_expirationTime, _expirationTimeErr := BACnetDateTimeParse(readBuffer)
+	_expirationTime, _expirationTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _expirationTimeErr != nil {
 		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field of BACnetConstructedDataExpirationTime")
 	}

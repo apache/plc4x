@@ -132,7 +132,11 @@ func (m *_BACnetReadAccessSpecification) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetReadAccessSpecification, error) {
+func BACnetReadAccessSpecificationParse(theBytes []byte) (BACnetReadAccessSpecification, error) {
+	return BACnetReadAccessSpecificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetReadAccessSpecification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessSpecification"); pullErr != nil {
@@ -145,7 +149,7 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetRead
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetReadAccessSpecification")
 	}
@@ -158,7 +162,7 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetRead
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetReadAccessSpecification")
 	}
@@ -175,7 +179,7 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetRead
 	var listOfPropertyReferences []BACnetPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
-			_item, _err := BACnetPropertyReferenceParse(readBuffer)
+			_item, _err := BACnetPropertyReferenceParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyReferences' field of BACnetReadAccessSpecification")
 			}
@@ -191,7 +195,7 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetRead
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetReadAccessSpecification")
 	}

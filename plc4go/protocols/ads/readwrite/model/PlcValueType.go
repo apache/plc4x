@@ -271,7 +271,11 @@ func (m PlcValueType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PlcValueTypeParse(readBuffer utils.ReadBuffer) (PlcValueType, error) {
+func PlcValueTypeParse(theBytes []byte) (PlcValueType, error) {
+	return PlcValueTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func PlcValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (PlcValueType, error) {
 	val, err := readBuffer.ReadUint8("PlcValueType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PlcValueType")

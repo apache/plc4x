@@ -318,7 +318,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
 		arr := make([]readWriteModel.CipService, nb)
-		read := utils.NewLittleEndianReadBufferByteBased(multipleServiceResponse.GetServicesData())
+		read := utils.NewReadBufferByteBased(multipleServiceResponse.GetServicesData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		total := read.GetTotalBytes()
 		for i := uint16(0); i < nb; i++ {
 			length := uint16(0)
@@ -328,9 +328,9 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 			} else {
 				length = multipleServiceResponse.GetOffsets()[i+1] - offset - multipleServiceResponse.GetOffsets()[0] //Calculate length with offsets (substracting first offset)
 			}
-			serviceBuf := utils.NewLittleEndianReadBufferByteBased(read.GetBytes()[offset : offset+length])
+			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 			var err error
-			arr[i], err = readWriteModel.CipServiceParse(serviceBuf, length)
+			arr[i], err = readWriteModel.CipServiceParseWithBuffer(serviceBuf, length)
 			if err != nil {
 				return nil, err
 			}

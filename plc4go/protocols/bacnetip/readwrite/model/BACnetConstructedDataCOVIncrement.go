@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
+func BACnetConstructedDataCOVIncrementParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
+	return BACnetConstructedDataCOVIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataCOVIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVIncrement"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 	}
-	_covIncrement, _covIncrementErr := BACnetApplicationTagParse(readBuffer)
+	_covIncrement, _covIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _covIncrementErr != nil {
 		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataCOVIncrement")
 	}

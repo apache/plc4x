@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDoNotHide) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDoNotHideParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoNotHide, error) {
+func BACnetConstructedDataDoNotHideParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoNotHide, error) {
+	return BACnetConstructedDataDoNotHideParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDoNotHideParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoNotHide, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoNotHide"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDoNotHideParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("doNotHide"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doNotHide")
 	}
-	_doNotHide, _doNotHideErr := BACnetApplicationTagParse(readBuffer)
+	_doNotHide, _doNotHideErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _doNotHideErr != nil {
 		return nil, errors.Wrap(_doNotHideErr, "Error parsing 'doNotHide' field of BACnetConstructedDataDoNotHide")
 	}

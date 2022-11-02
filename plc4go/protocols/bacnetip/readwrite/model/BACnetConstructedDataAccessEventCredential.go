@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAccessEventCredential) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventCredential, error) {
+func BACnetConstructedDataAccessEventCredentialParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventCredential, error) {
+	return BACnetConstructedDataAccessEventCredentialParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAccessEventCredentialParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventCredential, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventCredential"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("accessEventCredential"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessEventCredential")
 	}
-	_accessEventCredential, _accessEventCredentialErr := BACnetDeviceObjectReferenceParse(readBuffer)
+	_accessEventCredential, _accessEventCredentialErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 	if _accessEventCredentialErr != nil {
 		return nil, errors.Wrap(_accessEventCredentialErr, "Error parsing 'accessEventCredential' field of BACnetConstructedDataAccessEventCredential")
 	}

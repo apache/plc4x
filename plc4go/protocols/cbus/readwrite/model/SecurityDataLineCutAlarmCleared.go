@@ -103,7 +103,11 @@ func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataLineCutAlarmClearedParse(readBuffer utils.ReadBuffer) (SecurityDataLineCutAlarmCleared, error) {
+func SecurityDataLineCutAlarmClearedParse(theBytes []byte) (SecurityDataLineCutAlarmCleared, error) {
+	return SecurityDataLineCutAlarmClearedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataLineCutAlarmClearedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataLineCutAlarmCleared, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataLineCutAlarmCleared"); pullErr != nil {

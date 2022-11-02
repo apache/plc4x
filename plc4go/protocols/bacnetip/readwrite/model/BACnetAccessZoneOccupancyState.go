@@ -133,7 +133,11 @@ func (m BACnetAccessZoneOccupancyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessZoneOccupancyStateParse(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
+func BACnetAccessZoneOccupancyStateParse(theBytes []byte) (BACnetAccessZoneOccupancyState, error) {
+	return BACnetAccessZoneOccupancyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessZoneOccupancyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessZoneOccupancyState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")

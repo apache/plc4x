@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTime, error) {
+func BACnetConstructedDataIPv6DHCPLeaseTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTime, error) {
+	return BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPv6DHCPLeaseTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPLeaseTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("ipv6DhcpLeaseTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DhcpLeaseTime")
 	}
-	_ipv6DhcpLeaseTime, _ipv6DhcpLeaseTimeErr := BACnetApplicationTagParse(readBuffer)
+	_ipv6DhcpLeaseTime, _ipv6DhcpLeaseTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipv6DhcpLeaseTimeErr != nil {
 		return nil, errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error parsing 'ipv6DhcpLeaseTime' field of BACnetConstructedDataIPv6DHCPLeaseTime")
 	}

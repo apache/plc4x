@@ -113,7 +113,11 @@ func (m *_NetworkRoute) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+func NetworkRouteParse(theBytes []byte) (NetworkRoute, error) {
+	return NetworkRouteParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NetworkRouteParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkRoute"); pullErr != nil {
@@ -126,7 +130,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	if pullErr := readBuffer.PullContext("networkPCI"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkPCI")
 	}
-	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParse(readBuffer)
+	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParseWithBuffer(readBuffer)
 	if _networkPCIErr != nil {
 		return nil, errors.Wrap(_networkPCIErr, "Error parsing 'networkPCI' field of NetworkRoute")
 	}
@@ -147,7 +151,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(networkPCI.GetStackDepth())-uint16(uint16(1))); curItem++ {
-			_item, _err := BridgeAddressParse(readBuffer)
+			_item, _err := BridgeAddressParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field of NetworkRoute")
 			}

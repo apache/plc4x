@@ -104,7 +104,11 @@ func (m *_ApduDataExtWriteRouterMemoryRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtWriteRouterMemoryRequest, error) {
+func ApduDataExtWriteRouterMemoryRequestParse(theBytes []byte, length uint8) (ApduDataExtWriteRouterMemoryRequest, error) {
+	return ApduDataExtWriteRouterMemoryRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtWriteRouterMemoryRequestParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtWriteRouterMemoryRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRouterMemoryRequest"); pullErr != nil {

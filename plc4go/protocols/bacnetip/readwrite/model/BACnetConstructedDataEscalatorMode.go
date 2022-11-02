@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEscalatorModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEscalatorMode, error) {
+func BACnetConstructedDataEscalatorModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEscalatorMode, error) {
+	return BACnetConstructedDataEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEscalatorMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEscalatorMode"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataEscalatorModeParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("escalatorMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorMode")
 	}
-	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _escalatorModeErr != nil {
 		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field of BACnetConstructedDataEscalatorMode")
 	}

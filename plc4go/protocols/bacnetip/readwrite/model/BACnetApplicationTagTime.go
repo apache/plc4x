@@ -123,7 +123,11 @@ func (m *_BACnetApplicationTagTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
+func BACnetApplicationTagTimeParse(theBytes []byte) (BACnetApplicationTagTime, error) {
+	return BACnetApplicationTagTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetApplicationTagTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagTime"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (BACnetApplicati
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadTimeParse(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadTimeParseWithBuffer(readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagTime")
 	}

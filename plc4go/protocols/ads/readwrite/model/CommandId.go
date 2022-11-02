@@ -145,7 +145,11 @@ func (m CommandId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {
+func CommandIdParse(theBytes []byte) (CommandId, error) {
+	return CommandIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CommandIdParseWithBuffer(readBuffer utils.ReadBuffer) (CommandId, error) {
 	val, err := readBuffer.ReadUint16("CommandId", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CommandId")

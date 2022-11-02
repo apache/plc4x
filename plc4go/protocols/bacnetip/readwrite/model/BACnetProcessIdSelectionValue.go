@@ -123,7 +123,11 @@ func (m *_BACnetProcessIdSelectionValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetProcessIdSelectionValueParse(readBuffer utils.ReadBuffer) (BACnetProcessIdSelectionValue, error) {
+func BACnetProcessIdSelectionValueParse(theBytes []byte) (BACnetProcessIdSelectionValue, error) {
+	return BACnetProcessIdSelectionValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetProcessIdSelectionValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProcessIdSelectionValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetProcessIdSelectionValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetProcessIdSelectionValueParse(readBuffer utils.ReadBuffer) (BACnetProc
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
-	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _processIdentifierErr != nil {
 		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetProcessIdSelectionValue")
 	}

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
+func BACnetConstructedDataTimeSynchronizationIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
+	return BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationInterval"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("timeSynchronization"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeSynchronization")
 	}
-	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParse(readBuffer)
+	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timeSynchronizationErr != nil {
 		return nil, errors.Wrap(_timeSynchronizationErr, "Error parsing 'timeSynchronization' field of BACnetConstructedDataTimeSynchronizationInterval")
 	}

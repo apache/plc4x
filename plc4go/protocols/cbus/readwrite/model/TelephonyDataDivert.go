@@ -124,7 +124,11 @@ func (m *_TelephonyDataDivert) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataDivertParse(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
+func TelephonyDataDivertParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
+	return TelephonyDataDivertParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func TelephonyDataDivertParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataDivert"); pullErr != nil {

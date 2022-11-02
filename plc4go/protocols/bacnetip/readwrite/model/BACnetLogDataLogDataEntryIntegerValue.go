@@ -123,7 +123,11 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataEntryIntegerValueParse(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryIntegerValue, error) {
+func BACnetLogDataLogDataEntryIntegerValueParse(theBytes []byte) (BACnetLogDataLogDataEntryIntegerValue, error) {
+	return BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryIntegerValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryIntegerValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetLogDataLogDataEntryIntegerValueParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_integerValue, _integerValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetLogDataLogDataEntryIntegerValue")
 	}

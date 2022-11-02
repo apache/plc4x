@@ -26,7 +26,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"
@@ -190,8 +189,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 
 	// Decode the data according to the information from the request
 	log.Trace().Msg("decode data")
-	rb := utils.NewReadBufferByteBased(data)
-	value, err := readWriteModel.DataItemParse(rb, field.Datatype, field.Quantity)
+	value, err := readWriteModel.DataItemParse(data, field.Datatype, field.Quantity)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}

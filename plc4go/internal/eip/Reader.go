@@ -375,7 +375,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		var plcValue values.PlcValue
 		_type := cipReadResponse.GetDataType()
-		data := utils.NewLittleEndianReadBufferByteBased(cipReadResponse.GetData())
+		data := utils.NewReadBufferByteBased(cipReadResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		if code == model.PlcResponseCode_OK {
 			var err error
 			plcValue, err = parsePlcValue(field, data, _type)
@@ -389,7 +389,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
 		arr := make([]readWriteModel.CipService, nb)
-		read := utils.NewLittleEndianReadBufferByteBased(multipleServiceResponse.GetServicesData())
+		read := utils.NewReadBufferByteBased(multipleServiceResponse.GetServicesData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		total := read.GetTotalBytes()
 		for i := uint16(0); i < nb; i++ {
 			length := uint16(0)
@@ -399,9 +399,9 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 			} else {
 				length = multipleServiceResponse.GetOffsets()[i+1] - offset - multipleServiceResponse.GetOffsets()[0] //Calculate length with offsets (substracting first offset)
 			}
-			serviceBuf := utils.NewLittleEndianReadBufferByteBased(read.GetBytes()[offset : offset+length])
+			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 			var err error
-			arr[i], err = readWriteModel.CipServiceParse(serviceBuf, length)
+			arr[i], err = readWriteModel.CipServiceParseWithBuffer(serviceBuf, length)
 			if err != nil {
 				return nil, err
 			}
@@ -412,7 +412,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 			if cipReadResponse, ok := services.Services[i].(readWriteModel.CipReadResponse); ok {
 				code := decodeResponseCode(cipReadResponse.GetStatus())
 				_type := cipReadResponse.GetDataType()
-				data := utils.NewLittleEndianReadBufferByteBased(cipReadResponse.GetData())
+				data := utils.NewReadBufferByteBased(cipReadResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				var plcValue values.PlcValue
 				if code == model.PlcResponseCode_OK {
 					var err error

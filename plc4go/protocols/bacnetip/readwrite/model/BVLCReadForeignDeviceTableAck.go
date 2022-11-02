@@ -132,7 +132,11 @@ func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
+func BVLCReadForeignDeviceTableAckParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
+	return BVLCReadForeignDeviceTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+}
+
+func BVLCReadForeignDeviceTableAckParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTableAck"); pullErr != nil {
@@ -151,7 +155,7 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
 		for positionAware.GetPos() < _tableEndPos {
-			_item, _err := BVLCForeignDeviceTableEntryParse(readBuffer)
+			_item, _err := BVLCForeignDeviceTableEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field of BVLCReadForeignDeviceTableAck")
 			}

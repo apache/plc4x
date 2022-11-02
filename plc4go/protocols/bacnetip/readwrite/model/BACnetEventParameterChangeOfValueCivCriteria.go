@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -151,7 +152,11 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
+func BACnetEventParameterChangeOfValueCivCriteriaParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
+	return BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteria"); pullErr != nil {
@@ -164,7 +169,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfValueCivCriteria")
 	}
@@ -178,7 +183,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -197,9 +202,9 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfValueCivCriteriaBitmask
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(readBuffer, tagNumber)
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(readBuffer, tagNumber)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -212,7 +217,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfValueCivCriteria")
 	}

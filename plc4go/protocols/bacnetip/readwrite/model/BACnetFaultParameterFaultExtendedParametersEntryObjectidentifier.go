@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetL
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readB
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
-	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
+	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectidentifierValueErr != nil {
 		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier")
 	}

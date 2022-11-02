@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueLightingCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetChannelValueLightingCommand, error) {
+func BACnetChannelValueLightingCommandParse(theBytes []byte) (BACnetChannelValueLightingCommand, error) {
+	return BACnetChannelValueLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueLightingCommand"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("ligthingCommandValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ligthingCommandValue")
 	}
-	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParse(readBuffer, uint8(uint8(0)))
+	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _ligthingCommandValueErr != nil {
 		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field of BACnetChannelValueLightingCommand")
 	}

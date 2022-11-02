@@ -151,7 +151,11 @@ func (m *_SysexCommandReportFirmwareResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareResponse, error) {
+func SysexCommandReportFirmwareResponseParse(theBytes []byte, response bool) (SysexCommandReportFirmwareResponse, error) {
+	return SysexCommandReportFirmwareResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandReportFirmwareResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareResponse"); pullErr != nil {

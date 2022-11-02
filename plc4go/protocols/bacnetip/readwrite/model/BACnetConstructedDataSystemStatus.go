@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataSystemStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSystemStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
+func BACnetConstructedDataSystemStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
+	return BACnetConstructedDataSystemStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSystemStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSystemStatus"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataSystemStatusParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("systemStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for systemStatus")
 	}
-	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _systemStatusErr != nil {
 		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field of BACnetConstructedDataSystemStatus")
 	}

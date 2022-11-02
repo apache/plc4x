@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLiftCarDriveStatusParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDriveStatus, error) {
+func BACnetPropertyStatesLiftCarDriveStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDriveStatus, error) {
+	return BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDriveStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDriveStatus"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesLiftCarDriveStatusParse(readBuffer utils.ReadBuffer, pe
 	if pullErr := readBuffer.PullContext("liftCarDriveStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDriveStatus")
 	}
-	_liftCarDriveStatus, _liftCarDriveStatusErr := BACnetLiftCarDriveStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_liftCarDriveStatus, _liftCarDriveStatusErr := BACnetLiftCarDriveStatusTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDriveStatusErr != nil {
 		return nil, errors.Wrap(_liftCarDriveStatusErr, "Error parsing 'liftCarDriveStatus' field of BACnetPropertyStatesLiftCarDriveStatus")
 	}

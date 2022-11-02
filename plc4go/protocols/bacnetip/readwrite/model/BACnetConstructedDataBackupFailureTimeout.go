@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBackupFailureTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupFailureTimeout, error) {
+func BACnetConstructedDataBackupFailureTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupFailureTimeout, error) {
+	return BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupFailureTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupFailureTimeout"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBackupFailureTimeoutParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("backupFailureTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for backupFailureTimeout")
 	}
-	_backupFailureTimeout, _backupFailureTimeoutErr := BACnetApplicationTagParse(readBuffer)
+	_backupFailureTimeout, _backupFailureTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _backupFailureTimeoutErr != nil {
 		return nil, errors.Wrap(_backupFailureTimeoutErr, "Error parsing 'backupFailureTimeout' field of BACnetConstructedDataBackupFailureTimeout")
 	}

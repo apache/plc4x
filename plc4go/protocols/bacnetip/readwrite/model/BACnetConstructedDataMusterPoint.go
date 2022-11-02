@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataMusterPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMusterPointParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
+func BACnetConstructedDataMusterPointParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
+	return BACnetConstructedDataMusterPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMusterPointParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMusterPoint"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataMusterPointParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("musterPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for musterPoint")
 	}
-	_musterPoint, _musterPointErr := BACnetApplicationTagParse(readBuffer)
+	_musterPoint, _musterPointErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _musterPointErr != nil {
 		return nil, errors.Wrap(_musterPointErr, "Error parsing 'musterPoint' field of BACnetConstructedDataMusterPoint")
 	}

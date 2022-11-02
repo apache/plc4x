@@ -103,7 +103,11 @@ func (m *_TelephonyDataClearDiversion) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataClearDiversionParse(readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
+func TelephonyDataClearDiversionParse(theBytes []byte) (TelephonyDataClearDiversion, error) {
+	return TelephonyDataClearDiversionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyDataClearDiversionParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataClearDiversion"); pullErr != nil {

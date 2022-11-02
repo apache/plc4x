@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
+func BACnetConstructedDataIPv6PrefixLengthParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
+	return BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6PrefixLength"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("ipv6PrefixLength"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6PrefixLength")
 	}
-	_ipv6PrefixLength, _ipv6PrefixLengthErr := BACnetApplicationTagParse(readBuffer)
+	_ipv6PrefixLength, _ipv6PrefixLengthErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipv6PrefixLengthErr != nil {
 		return nil, errors.Wrap(_ipv6PrefixLengthErr, "Error parsing 'ipv6PrefixLength' field of BACnetConstructedDataIPv6PrefixLength")
 	}

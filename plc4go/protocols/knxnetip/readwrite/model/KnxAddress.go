@@ -118,7 +118,11 @@ func (m *_KnxAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxAddressParse(readBuffer utils.ReadBuffer) (KnxAddress, error) {
+func KnxAddressParse(theBytes []byte) (KnxAddress, error) {
+	return KnxAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxAddressParseWithBuffer(readBuffer utils.ReadBuffer) (KnxAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {

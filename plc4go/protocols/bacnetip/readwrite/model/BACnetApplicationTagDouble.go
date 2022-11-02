@@ -140,7 +140,11 @@ func (m *_BACnetApplicationTagDouble) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagDoubleParse(readBuffer utils.ReadBuffer) (BACnetApplicationTagDouble, error) {
+func BACnetApplicationTagDoubleParse(theBytes []byte) (BACnetApplicationTagDouble, error) {
+	return BACnetApplicationTagDoubleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetApplicationTagDoubleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTagDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagDouble"); pullErr != nil {
@@ -153,7 +157,7 @@ func BACnetApplicationTagDoubleParse(readBuffer utils.ReadBuffer) (BACnetApplica
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadDoubleParse(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadDoubleParseWithBuffer(readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagDouble")
 	}

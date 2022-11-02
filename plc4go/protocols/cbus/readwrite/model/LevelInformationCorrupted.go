@@ -156,7 +156,11 @@ func (m *_LevelInformationCorrupted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LevelInformationCorruptedParse(readBuffer utils.ReadBuffer) (LevelInformationCorrupted, error) {
+func LevelInformationCorruptedParse(theBytes []byte) (LevelInformationCorrupted, error) {
+	return LevelInformationCorruptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LevelInformationCorruptedParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformationCorrupted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationCorrupted"); pullErr != nil {

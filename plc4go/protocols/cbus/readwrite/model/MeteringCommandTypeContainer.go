@@ -234,7 +234,11 @@ func (m MeteringCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringCommandTypeContainerParse(readBuffer utils.ReadBuffer) (MeteringCommandTypeContainer, error) {
+func MeteringCommandTypeContainerParse(theBytes []byte) (MeteringCommandTypeContainer, error) {
+	return MeteringCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("MeteringCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeteringCommandTypeContainer")

@@ -127,7 +127,11 @@ func (m *_SALDataHvacActuator) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHvacActuator, error) {
+func SALDataHvacActuatorParse(theBytes []byte, applicationId ApplicationId) (SALDataHvacActuator, error) {
+	return SALDataHvacActuatorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataHvacActuatorParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHvacActuator, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataHvacActuator"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId Applica
 	if pullErr := readBuffer.PullContext("hvacActuatorData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacActuatorData")
 	}
-	_hvacActuatorData, _hvacActuatorDataErr := LightingDataParse(readBuffer)
+	_hvacActuatorData, _hvacActuatorDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _hvacActuatorDataErr != nil {
 		return nil, errors.Wrap(_hvacActuatorDataErr, "Error parsing 'hvacActuatorData' field of SALDataHvacActuator")
 	}

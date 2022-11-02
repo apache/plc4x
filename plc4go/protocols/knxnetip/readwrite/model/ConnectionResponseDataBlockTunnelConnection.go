@@ -126,7 +126,11 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(theBytes []byte) (ConnectionResponseDataBlockTunnelConnection, error) {
+	return ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
@@ -139,7 +143,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for knxAddress")
 	}
-	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
+	_knxAddress, _knxAddressErr := KnxAddressParseWithBuffer(readBuffer)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field of ConnectionResponseDataBlockTunnelConnection")
 	}

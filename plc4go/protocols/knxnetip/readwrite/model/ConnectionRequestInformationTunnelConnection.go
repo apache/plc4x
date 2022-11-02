@@ -131,7 +131,11 @@ func (m *_ConnectionRequestInformationTunnelConnection) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuffer) (ConnectionRequestInformationTunnelConnection, error) {
+func ConnectionRequestInformationTunnelConnectionParse(theBytes []byte) (ConnectionRequestInformationTunnelConnection, error) {
+	return ConnectionRequestInformationTunnelConnectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionRequestInformationTunnelConnectionParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequestInformationTunnelConnection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
@@ -144,7 +148,7 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("knxLayer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for knxLayer")
 	}
-	_knxLayer, _knxLayerErr := KnxLayerParse(readBuffer)
+	_knxLayer, _knxLayerErr := KnxLayerParseWithBuffer(readBuffer)
 	if _knxLayerErr != nil {
 		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field of ConnectionRequestInformationTunnelConnection")
 	}

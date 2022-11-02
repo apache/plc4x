@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesLifeSafetyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyState, error) {
+func BACnetPropertyStatesLifeSafetyStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyState, error) {
+	return BACnetPropertyStatesLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyState"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peeke
 	if pullErr := readBuffer.PullContext("lifeSafetyState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyState")
 	}
-	_lifeSafetyState, _lifeSafetyStateErr := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lifeSafetyState, _lifeSafetyStateErr := BACnetLifeSafetyStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyStateErr != nil {
 		return nil, errors.Wrap(_lifeSafetyStateErr, "Error parsing 'lifeSafetyState' field of BACnetPropertyStatesLifeSafetyState")
 	}

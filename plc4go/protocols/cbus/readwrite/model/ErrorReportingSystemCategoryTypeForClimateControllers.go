@@ -181,7 +181,11 @@ func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeForClimateControllersParse(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
+func ErrorReportingSystemCategoryTypeForClimateControllersParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
+	return ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForClimateControllers", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForClimateControllers")

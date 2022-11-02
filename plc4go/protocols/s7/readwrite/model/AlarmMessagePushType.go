@@ -133,7 +133,11 @@ func (m *_AlarmMessagePushType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
+func AlarmMessagePushTypeParse(theBytes []byte) (AlarmMessagePushType, error) {
+	return AlarmMessagePushTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmMessagePushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessagePushType"); pullErr != nil {
@@ -146,7 +150,7 @@ func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessagePushTyp
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
 	}
-	_TimeStamp, _TimeStampErr := DateAndTimeParse(readBuffer)
+	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(readBuffer)
 	if _TimeStampErr != nil {
 		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of AlarmMessagePushType")
 	}
@@ -181,7 +185,7 @@ func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessagePushTyp
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageObjectPushTypeParse(readBuffer)
+			_item, _err := AlarmMessageObjectPushTypeParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessagePushType")
 			}

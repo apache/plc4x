@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
+func BACnetConstructedDataUpdateKeySetTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
+	return BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateKeySetTimeout"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("updateKeySetTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for updateKeySetTimeout")
 	}
-	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParse(readBuffer)
+	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _updateKeySetTimeoutErr != nil {
 		return nil, errors.Wrap(_updateKeySetTimeoutErr, "Error parsing 'updateKeySetTimeout' field of BACnetConstructedDataUpdateKeySetTimeout")
 	}

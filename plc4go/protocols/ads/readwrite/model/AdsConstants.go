@@ -99,7 +99,11 @@ func (m *_AdsConstants) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsConstantsParse(readBuffer utils.ReadBuffer) (AdsConstants, error) {
+func AdsConstantsParse(theBytes []byte) (AdsConstants, error) {
+	return AdsConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (AdsConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsConstants"); pullErr != nil {

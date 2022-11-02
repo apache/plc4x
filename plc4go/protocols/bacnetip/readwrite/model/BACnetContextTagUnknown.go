@@ -132,7 +132,11 @@ func (m *_BACnetContextTagUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
+func BACnetContextTagUnknownParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
+	return BACnetContextTagUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument, dataType, actualLength) // TODO: get endianness from mspec
+}
+
+func BACnetContextTagUnknownParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnknown"); pullErr != nil {

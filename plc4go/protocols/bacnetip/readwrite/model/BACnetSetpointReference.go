@@ -101,7 +101,11 @@ func (m *_BACnetSetpointReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
+func BACnetSetpointReferenceParse(theBytes []byte) (BACnetSetpointReference, error) {
+	return BACnetSetpointReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSetpointReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSetpointReference"); pullErr != nil {
@@ -117,7 +121,7 @@ func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointRe
 		if pullErr := readBuffer.PullContext("setPointReference"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for setPointReference")
 		}
-		_val, _err := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(0))
+		_val, _err := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

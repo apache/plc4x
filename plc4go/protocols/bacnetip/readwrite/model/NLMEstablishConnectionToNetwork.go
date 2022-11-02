@@ -138,7 +138,11 @@ func (m *_NLMEstablishConnectionToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMEstablishConnectionToNetwork, error) {
+func NLMEstablishConnectionToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMEstablishConnectionToNetwork, error) {
+	return NLMEstablishConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+}
+
+func NLMEstablishConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMEstablishConnectionToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMEstablishConnectionToNetwork"); pullErr != nil {

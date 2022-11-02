@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesRestartReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesRestartReasonParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesRestartReason, error) {
+func BACnetPropertyStatesRestartReasonParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesRestartReason, error) {
+	return BACnetPropertyStatesRestartReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesRestartReasonParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesRestartReason, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesRestartReason"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesRestartReasonParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("restartReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for restartReason")
 	}
-	_restartReason, _restartReasonErr := BACnetRestartReasonTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_restartReason, _restartReasonErr := BACnetRestartReasonTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _restartReasonErr != nil {
 		return nil, errors.Wrap(_restartReasonErr, "Error parsing 'restartReason' field of BACnetPropertyStatesRestartReason")
 	}

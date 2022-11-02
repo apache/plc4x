@@ -138,7 +138,11 @@ func (m *_AccessControlDataValidAccessRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataValidAccessRequestParse(readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
+func AccessControlDataValidAccessRequestParse(theBytes []byte, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
+	return AccessControlDataValidAccessRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func AccessControlDataValidAccessRequestParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataValidAccessRequest"); pullErr != nil {
@@ -151,7 +155,7 @@ func AccessControlDataValidAccessRequestParse(readBuffer utils.ReadBuffer, comma
 	if pullErr := readBuffer.PullContext("accessControlDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessControlDirection")
 	}
-	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParse(readBuffer)
+	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParseWithBuffer(readBuffer)
 	if _accessControlDirectionErr != nil {
 		return nil, errors.Wrap(_accessControlDirectionErr, "Error parsing 'accessControlDirection' field of AccessControlDataValidAccessRequest")
 	}

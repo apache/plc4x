@@ -31,7 +31,7 @@ import (
 
 func TestS7Driver(t *testing.T) {
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return s7Model.TPKTPacketParse(readBufferByteBased)
+		return s7Model.TPKTPacketParseWithBuffer(readBufferByteBased)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml", s7IO.S7XmlParserHelper{}, options)
 }

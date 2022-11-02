@@ -98,7 +98,11 @@ func (m *_UnitAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func UnitAddressParse(readBuffer utils.ReadBuffer) (UnitAddress, error) {
+func UnitAddressParse(theBytes []byte) (UnitAddress, error) {
+	return UnitAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func UnitAddressParseWithBuffer(readBuffer utils.ReadBuffer) (UnitAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnitAddress"); pullErr != nil {

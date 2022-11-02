@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesAuthenticationStatusParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAuthenticationStatus, error) {
+func BACnetPropertyStatesAuthenticationStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAuthenticationStatus, error) {
+	return BACnetPropertyStatesAuthenticationStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesAuthenticationStatusParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAuthenticationStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAuthenticationStatus"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesAuthenticationStatusParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("authenticationStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationStatus")
 	}
-	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _authenticationStatusErr != nil {
 		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field of BACnetPropertyStatesAuthenticationStatus")
 	}

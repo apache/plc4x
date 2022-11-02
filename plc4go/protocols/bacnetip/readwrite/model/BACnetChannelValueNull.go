@@ -123,7 +123,11 @@ func (m *_BACnetChannelValueNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueNullParse(readBuffer utils.ReadBuffer) (BACnetChannelValueNull, error) {
+func BACnetChannelValueNullParse(theBytes []byte) (BACnetChannelValueNull, error) {
+	return BACnetChannelValueNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueNull"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetChannelValueNullParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
+	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetChannelValueNull")
 	}

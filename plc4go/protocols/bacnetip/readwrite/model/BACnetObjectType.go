@@ -451,7 +451,11 @@ func (m BACnetObjectType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetObjectTypeParse(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
+func BACnetObjectTypeParse(theBytes []byte) (BACnetObjectType, error) {
+	return BACnetObjectTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetObjectTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
 	val, err := readBuffer.ReadUint16("BACnetObjectType", 10)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetObjectType")

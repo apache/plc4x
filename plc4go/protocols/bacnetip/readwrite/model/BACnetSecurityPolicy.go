@@ -109,7 +109,11 @@ func (m BACnetSecurityPolicy) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetSecurityPolicy, error) {
+func BACnetSecurityPolicyParse(theBytes []byte) (BACnetSecurityPolicy, error) {
+	return BACnetSecurityPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSecurityPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSecurityPolicy, error) {
 	val, err := readBuffer.ReadUint8("BACnetSecurityPolicy", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSecurityPolicy")

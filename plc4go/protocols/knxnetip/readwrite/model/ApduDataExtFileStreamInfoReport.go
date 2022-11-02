@@ -104,7 +104,11 @@ func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtFileStreamInfoReport, error) {
+func ApduDataExtFileStreamInfoReportParse(theBytes []byte, length uint8) (ApduDataExtFileStreamInfoReport, error) {
+	return ApduDataExtFileStreamInfoReportParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtFileStreamInfoReportParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtFileStreamInfoReport, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {

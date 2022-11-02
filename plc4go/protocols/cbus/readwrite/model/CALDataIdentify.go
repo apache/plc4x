@@ -124,7 +124,11 @@ func (m *_CALDataIdentify) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataIdentifyParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataIdentify, error) {
+func CALDataIdentifyParse(theBytes []byte, requestContext RequestContext) (CALDataIdentify, error) {
+	return CALDataIdentifyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext) // TODO: get endianness from mspec
+}
+
+func CALDataIdentifyParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataIdentify, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataIdentify"); pullErr != nil {
@@ -137,7 +141,7 @@ func CALDataIdentifyParse(readBuffer utils.ReadBuffer, requestContext RequestCon
 	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
 	}
-	_attribute, _attributeErr := AttributeParse(readBuffer)
+	_attribute, _attributeErr := AttributeParseWithBuffer(readBuffer)
 	if _attributeErr != nil {
 		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataIdentify")
 	}

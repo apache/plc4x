@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockoutRelinquishTime, error) {
+func BACnetConstructedDataLockoutRelinquishTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockoutRelinquishTime, error) {
+	return BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockoutRelinquishTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockoutRelinquishTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("lockoutRelinquishTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lockoutRelinquishTime")
 	}
-	_lockoutRelinquishTime, _lockoutRelinquishTimeErr := BACnetApplicationTagParse(readBuffer)
+	_lockoutRelinquishTime, _lockoutRelinquishTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _lockoutRelinquishTimeErr != nil {
 		return nil, errors.Wrap(_lockoutRelinquishTimeErr, "Error parsing 'lockoutRelinquishTime' field of BACnetConstructedDataLockoutRelinquishTime")
 	}

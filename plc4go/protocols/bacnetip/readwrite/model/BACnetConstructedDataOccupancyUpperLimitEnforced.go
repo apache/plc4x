@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
+func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
+	return BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("occupancyUpperLimitEnforced"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyUpperLimitEnforced")
 	}
-	_occupancyUpperLimitEnforced, _occupancyUpperLimitEnforcedErr := BACnetApplicationTagParse(readBuffer)
+	_occupancyUpperLimitEnforced, _occupancyUpperLimitEnforcedErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _occupancyUpperLimitEnforcedErr != nil {
 		return nil, errors.Wrap(_occupancyUpperLimitEnforcedErr, "Error parsing 'occupancyUpperLimitEnforced' field of BACnetConstructedDataOccupancyUpperLimitEnforced")
 	}

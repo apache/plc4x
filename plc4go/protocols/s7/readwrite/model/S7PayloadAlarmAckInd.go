@@ -136,7 +136,11 @@ func (m *_S7PayloadAlarmAckInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
+func S7PayloadAlarmAckIndParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
+	return S7PayloadAlarmAckIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadAlarmAckIndParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmAckInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmAckInd"); pullErr != nil {
@@ -149,7 +153,7 @@ func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmMessage")
 	}
-	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParse(readBuffer)
+	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParseWithBuffer(readBuffer)
 	if _alarmMessageErr != nil {
 		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadAlarmAckInd")
 	}

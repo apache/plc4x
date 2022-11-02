@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSlaveAddressBindingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveAddressBinding, error) {
+func BACnetConstructedDataSlaveAddressBindingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveAddressBinding, error) {
+	return BACnetConstructedDataSlaveAddressBindingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSlaveAddressBindingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveAddressBinding"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataSlaveAddressBindingParse(readBuffer utils.ReadBuffer, 
 	var slaveAddressBinding []BACnetAddressBinding
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAddressBindingParse(readBuffer)
+			_item, _err := BACnetAddressBindingParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'slaveAddressBinding' field of BACnetConstructedDataSlaveAddressBinding")
 			}

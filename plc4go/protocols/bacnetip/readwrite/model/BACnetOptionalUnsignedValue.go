@@ -123,7 +123,11 @@ func (m *_BACnetOptionalUnsignedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOptionalUnsignedValueParse(readBuffer utils.ReadBuffer) (BACnetOptionalUnsignedValue, error) {
+func BACnetOptionalUnsignedValueParse(theBytes []byte) (BACnetOptionalUnsignedValue, error) {
+	return BACnetOptionalUnsignedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetOptionalUnsignedValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalUnsignedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsignedValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetOptionalUnsignedValueParse(readBuffer utils.ReadBuffer) (BACnetOption
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
+	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _unsignedValueErr != nil {
 		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetOptionalUnsignedValue")
 	}

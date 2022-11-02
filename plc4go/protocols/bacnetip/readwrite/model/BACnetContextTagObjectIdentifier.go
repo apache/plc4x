@@ -152,7 +152,11 @@ func (m *_BACnetContextTagObjectIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
+func BACnetContextTagObjectIdentifierParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
+	return BACnetContextTagObjectIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument, dataType) // TODO: get endianness from mspec
+}
+
+func BACnetContextTagObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagObjectIdentifier"); pullErr != nil {
@@ -165,7 +169,7 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadObjectIdentifierParse(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadObjectIdentifierParseWithBuffer(readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagObjectIdentifier")
 	}

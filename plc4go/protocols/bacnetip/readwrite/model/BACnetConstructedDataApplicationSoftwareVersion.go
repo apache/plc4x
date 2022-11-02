@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataApplicationSoftwareVersion, error) {
+func BACnetConstructedDataApplicationSoftwareVersionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataApplicationSoftwareVersion, error) {
+	return BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataApplicationSoftwareVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataApplicationSoftwareVersion"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("applicationSoftwareVersion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for applicationSoftwareVersion")
 	}
-	_applicationSoftwareVersion, _applicationSoftwareVersionErr := BACnetApplicationTagParse(readBuffer)
+	_applicationSoftwareVersion, _applicationSoftwareVersionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _applicationSoftwareVersionErr != nil {
 		return nil, errors.Wrap(_applicationSoftwareVersionErr, "Error parsing 'applicationSoftwareVersion' field of BACnetConstructedDataApplicationSoftwareVersion")
 	}

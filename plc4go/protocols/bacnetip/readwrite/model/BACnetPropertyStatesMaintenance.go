@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesMaintenance) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
+func BACnetPropertyStatesMaintenanceParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
+	return BACnetPropertyStatesMaintenanceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesMaintenanceParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesMaintenance"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTag
 	if pullErr := readBuffer.PullContext("maintenance"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maintenance")
 	}
-	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _maintenanceErr != nil {
 		return nil, errors.Wrap(_maintenanceErr, "Error parsing 'maintenance' field of BACnetPropertyStatesMaintenance")
 	}

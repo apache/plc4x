@@ -173,7 +173,11 @@ func (m *_CipWriteRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteRequest, error) {
+func CipWriteRequestParse(theBytes []byte, serviceLen uint16) (CipWriteRequest, error) {
+	return CipWriteRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceLen) // TODO: get endianness from mspec
+}
+
+func CipWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteRequest"); pullErr != nil {
@@ -199,7 +203,7 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWr
 	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
 	}
-	_dataType, _dataTypeErr := CIPDataTypeCodeParse(readBuffer)
+	_dataType, _dataTypeErr := CIPDataTypeCodeParseWithBuffer(readBuffer)
 	if _dataTypeErr != nil {
 		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CipWriteRequest")
 	}

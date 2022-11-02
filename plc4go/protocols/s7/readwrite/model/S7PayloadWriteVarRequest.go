@@ -134,7 +134,11 @@ func (m *_S7PayloadWriteVarRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarRequest, error) {
+func S7PayloadWriteVarRequestParse(theBytes []byte, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarRequest, error) {
+	return S7PayloadWriteVarRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType, parameter) // TODO: get endianness from mspec
+}
+
+func S7PayloadWriteVarRequestParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadWriteVarRequest"); pullErr != nil {
@@ -155,7 +159,7 @@ func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).GetItems()))); curItem++ {
-			_item, _err := S7VarPayloadDataItemParse(readBuffer)
+			_item, _err := S7VarPayloadDataItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadWriteVarRequest")
 			}

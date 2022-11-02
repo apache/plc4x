@@ -123,7 +123,11 @@ func (m *_AirConditioningDataSetZoneGroupOff) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataSetZoneGroupOffParse(readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOff, error) {
+func AirConditioningDataSetZoneGroupOffParse(theBytes []byte) (AirConditioningDataSetZoneGroupOff, error) {
+	return AirConditioningDataSetZoneGroupOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataSetZoneGroupOffParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneGroupOff"); pullErr != nil {

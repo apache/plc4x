@@ -139,7 +139,11 @@ func (m ModeTransitionType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModeTransitionTypeParse(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
+func ModeTransitionTypeParse(theBytes []byte) (ModeTransitionType, error) {
+	return ModeTransitionTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModeTransitionTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
 	val, err := readBuffer.ReadUint8("ModeTransitionType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModeTransitionType")

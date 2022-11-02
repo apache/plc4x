@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBacnetIpModeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
+func BACnetPropertyStatesBacnetIpModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
+	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesBacnetIpModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBacnetIpMode"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesBacnetIpModeParse(readBuffer utils.ReadBuffer, peekedTa
 	if pullErr := readBuffer.PullContext("bacnetIpMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpMode")
 	}
-	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _bacnetIpModeErr != nil {
 		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field of BACnetPropertyStatesBacnetIpMode")
 	}

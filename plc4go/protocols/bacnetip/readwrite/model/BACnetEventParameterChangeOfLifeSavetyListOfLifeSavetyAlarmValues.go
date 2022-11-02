@@ -125,7 +125,11 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Get
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error) {
+func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error) {
+	return BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(read
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
 	}
@@ -155,7 +159,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(read
 	var listOfLifeSavetyAlarmValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetLifeSafetyStateTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfLifeSavetyAlarmValues' field of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
 			}
@@ -171,7 +175,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(read
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
 	}

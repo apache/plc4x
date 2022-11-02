@@ -123,7 +123,11 @@ func (m *_BACnetPriorityValueUnsigned) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueUnsignedParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueUnsigned, error) {
+func BACnetPriorityValueUnsignedParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueUnsigned, error) {
+	return BACnetPriorityValueUnsignedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetPriorityValueUnsignedParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueUnsigned"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPriorityValueUnsignedParse(readBuffer utils.ReadBuffer, objectTypeArg
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
+	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _unsignedValueErr != nil {
 		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetPriorityValueUnsigned")
 	}

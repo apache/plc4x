@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitMonitoringInterval, error) {
+func BACnetConstructedDataLimitMonitoringIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitMonitoringInterval, error) {
+	return BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitMonitoringInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLimitMonitoringInterval"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("limitMonitoringInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for limitMonitoringInterval")
 	}
-	_limitMonitoringInterval, _limitMonitoringIntervalErr := BACnetApplicationTagParse(readBuffer)
+	_limitMonitoringInterval, _limitMonitoringIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _limitMonitoringIntervalErr != nil {
 		return nil, errors.Wrap(_limitMonitoringIntervalErr, "Error parsing 'limitMonitoringInterval' field of BACnetConstructedDataLimitMonitoringInterval")
 	}

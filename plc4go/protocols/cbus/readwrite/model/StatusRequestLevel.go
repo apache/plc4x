@@ -143,7 +143,11 @@ func (m *_StatusRequestLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, error) {
+func StatusRequestLevelParse(theBytes []byte) (StatusRequestLevel, error) {
+	return StatusRequestLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func StatusRequestLevelParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequestLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestLevel"); pullErr != nil {
@@ -190,7 +194,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestLevel")
 	}

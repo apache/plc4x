@@ -127,7 +127,11 @@ func (m BACnetEscalatorMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorModeParse(readBuffer utils.ReadBuffer) (BACnetEscalatorMode, error) {
+func BACnetEscalatorModeParse(theBytes []byte) (BACnetEscalatorMode, error) {
+	return BACnetEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEscalatorMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorMode")

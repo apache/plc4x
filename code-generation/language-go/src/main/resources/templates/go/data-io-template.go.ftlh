@@ -68,7 +68,11 @@ import (
 	
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
+func ${type.name}Parse(theBytes []byte<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>) // TODO: get endianness from mspec
+}
+
+func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
 	readBuffer.PullContext("${type.name}")
 	switch {
 	<#list type.switchField.orElseThrow().cases as case>

@@ -98,7 +98,11 @@ func (m *_Alpha) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlphaParse(readBuffer utils.ReadBuffer) (Alpha, error) {
+func AlphaParse(theBytes []byte) (Alpha, error) {
+	return AlphaParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlphaParseWithBuffer(readBuffer utils.ReadBuffer) (Alpha, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Alpha"); pullErr != nil {

@@ -176,7 +176,11 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLength
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(theBytes []byte) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); pullErr != nil {

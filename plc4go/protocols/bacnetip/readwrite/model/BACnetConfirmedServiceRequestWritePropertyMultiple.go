@@ -133,7 +133,11 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
+func BACnetConfirmedServiceRequestWritePropertyMultipleParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
+	return BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength, serviceRequestPayloadLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestWritePropertyMultipleParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 		_dataLength := serviceRequestPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
 		for positionAware.GetPos() < _dataEndPos {
-			_item, _err := BACnetWriteAccessSpecificationParse(readBuffer)
+			_item, _err := BACnetWriteAccessSpecificationParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetConfirmedServiceRequestWritePropertyMultiple")
 			}

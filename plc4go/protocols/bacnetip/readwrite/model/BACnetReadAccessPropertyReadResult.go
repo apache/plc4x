@@ -146,7 +146,11 @@ func (m *_BACnetReadAccessPropertyReadResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetReadAccessPropertyReadResult, error) {
+func BACnetReadAccessPropertyReadResultParse(theBytes []byte, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetReadAccessPropertyReadResult, error) {
+	return BACnetReadAccessPropertyReadResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetReadAccessPropertyReadResultParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetReadAccessPropertyReadResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessPropertyReadResult"); pullErr != nil {
@@ -160,7 +164,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -175,7 +179,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -202,7 +206,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 		if pullErr := readBuffer.PullContext("propertyAccessError"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyAccessError")
 		}
-		_val, _err := ErrorEnclosedParse(readBuffer, uint8(5))
+		_val, _err := ErrorEnclosedParseWithBuffer(readBuffer, uint8(5))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

@@ -127,7 +127,11 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandGAVPhysicalAddressesParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
+func IdentifyReplyCommandGAVPhysicalAddressesParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
+	return IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVPhysicalAddresses"); pullErr != nil {

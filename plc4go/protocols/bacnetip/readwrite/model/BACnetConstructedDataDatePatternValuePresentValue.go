@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDatePatternValuePresentValue) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDatePatternValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatePatternValuePresentValue, error) {
+func BACnetConstructedDataDatePatternValuePresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatePatternValuePresentValue, error) {
+	return BACnetConstructedDataDatePatternValuePresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDatePatternValuePresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatePatternValuePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDatePatternValuePresentValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDatePatternValuePresentValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetApplicationTagParse(readBuffer)
+	_presentValue, _presentValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataDatePatternValuePresentValue")
 	}

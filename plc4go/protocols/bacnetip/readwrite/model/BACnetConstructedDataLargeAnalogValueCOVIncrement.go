@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
+func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
+	return BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueCOVIncrement"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 	}
-	_covIncrement, _covIncrementErr := BACnetApplicationTagParse(readBuffer)
+	_covIncrement, _covIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _covIncrementErr != nil {
 		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataLargeAnalogValueCOVIncrement")
 	}

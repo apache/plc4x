@@ -130,7 +130,11 @@ func (m *_UnknownMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
+func UnknownMessageParse(theBytes []byte, totalLength uint16) (UnknownMessage, error) {
+	return UnknownMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength) // TODO: get endianness from mspec
+}
+
+func UnknownMessageParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {

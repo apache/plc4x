@@ -101,7 +101,11 @@ func (m *_BACnetOpeningTag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetOpeningTag, error) {
+func BACnetOpeningTagParse(theBytes []byte, tagNumberArgument uint8) (BACnetOpeningTag, error) {
+	return BACnetOpeningTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument) // TODO: get endianness from mspec
+}
+
+func BACnetOpeningTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetOpeningTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOpeningTag"); pullErr != nil {
@@ -114,7 +118,7 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetOpeningTag")
 	}

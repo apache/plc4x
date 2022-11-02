@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAnalogValuePresentValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValuePresentValue, error) {
+func BACnetConstructedDataAnalogValuePresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValuePresentValue, error) {
+	return BACnetConstructedDataAnalogValuePresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAnalogValuePresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValuePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogValuePresentValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAnalogValuePresentValueParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetApplicationTagParse(readBuffer)
+	_presentValue, _presentValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataAnalogValuePresentValue")
 	}

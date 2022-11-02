@@ -134,7 +134,11 @@ func (m *_S7PayloadUserData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadUserData, error) {
+func S7PayloadUserDataParse(theBytes []byte, messageType uint8, parameter S7Parameter) (S7PayloadUserData, error) {
+	return S7PayloadUserDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType, parameter) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadUserData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserData"); pullErr != nil {
@@ -155,7 +159,7 @@ func S7PayloadUserDataParse(readBuffer utils.ReadBuffer, messageType uint8, para
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).GetItems()))); curItem++ {
-			_item, _err := S7PayloadUserDataItemParse(readBuffer, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionType(), CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuSubfunction())
+			_item, _err := S7PayloadUserDataItemParseWithBuffer(readBuffer, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionType(), CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuSubfunction())
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadUserData")
 			}

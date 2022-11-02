@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIntegerValueHighLimit) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegerValueHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueHighLimit, error) {
+func BACnetConstructedDataIntegerValueHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueHighLimit, error) {
+	return BACnetConstructedDataIntegerValueHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIntegerValueHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueHighLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIntegerValueHighLimitParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
-	_highLimit, _highLimitErr := BACnetApplicationTagParse(readBuffer)
+	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _highLimitErr != nil {
 		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetConstructedDataIntegerValueHighLimit")
 	}

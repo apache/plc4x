@@ -184,7 +184,11 @@ func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
+func MonitoredSALShortFormBasicModeParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
+	return MonitoredSALShortFormBasicModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func MonitoredSALShortFormBasicModeParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
@@ -236,7 +240,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer, cBusOption
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALShortFormBasicMode")
 	}
@@ -252,7 +256,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer, cBusOption
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for salData")
 		}
-		_val, _err := SALDataParse(readBuffer, application.ApplicationId())
+		_val, _err := SALDataParseWithBuffer(readBuffer, application.ApplicationId())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

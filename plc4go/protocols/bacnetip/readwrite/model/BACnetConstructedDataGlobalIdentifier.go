@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGlobalIdentifierParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalIdentifier, error) {
+func BACnetConstructedDataGlobalIdentifierParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalIdentifier, error) {
+	return BACnetConstructedDataGlobalIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataGlobalIdentifierParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalIdentifier"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataGlobalIdentifierParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("globalIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for globalIdentifier")
 	}
-	_globalIdentifier, _globalIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_globalIdentifier, _globalIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _globalIdentifierErr != nil {
 		return nil, errors.Wrap(_globalIdentifierErr, "Error parsing 'globalIdentifier' field of BACnetConstructedDataGlobalIdentifier")
 	}

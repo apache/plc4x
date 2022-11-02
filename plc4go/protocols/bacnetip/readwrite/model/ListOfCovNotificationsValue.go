@@ -136,7 +136,11 @@ func (m *_ListOfCovNotificationsValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
+func ListOfCovNotificationsValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
+	return ListOfCovNotificationsValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func ListOfCovNotificationsValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ListOfCovNotificationsValue"); pullErr != nil {
@@ -149,7 +153,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of ListOfCovNotificationsValue")
 	}
@@ -165,7 +169,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -184,7 +188,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+	_propertyValue, _propertyValueErr := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field of ListOfCovNotificationsValue")
 	}
@@ -200,7 +204,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 		if pullErr := readBuffer.PullContext("timeOfChange"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for timeOfChange")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_TIME)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_TIME)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

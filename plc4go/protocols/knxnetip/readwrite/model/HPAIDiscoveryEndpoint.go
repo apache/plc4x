@@ -121,7 +121,11 @@ func (m *_HPAIDiscoveryEndpoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HPAIDiscoveryEndpointParse(readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
+func HPAIDiscoveryEndpointParse(theBytes []byte) (HPAIDiscoveryEndpoint, error) {
+	return HPAIDiscoveryEndpointParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HPAIDiscoveryEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HPAIDiscoveryEndpoint"); pullErr != nil {
@@ -141,7 +145,7 @@ func HPAIDiscoveryEndpointParse(readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpo
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hostProtocolCode")
 	}
-	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(readBuffer)
+	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParseWithBuffer(readBuffer)
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field of HPAIDiscoveryEndpoint")
 	}
@@ -154,7 +158,7 @@ func HPAIDiscoveryEndpointParse(readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpo
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
 	}
-	_ipAddress, _ipAddressErr := IPAddressParse(readBuffer)
+	_ipAddress, _ipAddressErr := IPAddressParseWithBuffer(readBuffer)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of HPAIDiscoveryEndpoint")
 	}

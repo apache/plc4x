@@ -178,7 +178,11 @@ func (m ErrorReportingCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (ErrorReportingCommandTypeContainer, error) {
+func ErrorReportingCommandTypeContainerParse(theBytes []byte) (ErrorReportingCommandTypeContainer, error) {
+	return ErrorReportingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingCommandTypeContainer")

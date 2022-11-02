@@ -128,7 +128,11 @@ func (m *_Services) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
+func ServicesParse(theBytes []byte, servicesLen uint16) (Services, error) {
+	return ServicesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), servicesLen) // TODO: get endianness from mspec
+}
+
+func ServicesParseWithBuffer(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
@@ -179,7 +183,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, e
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
-			_item, _err := CipServiceParse(readBuffer, uint16(servicesLen)/uint16(serviceNb))
+			_item, _err := CipServiceParseWithBuffer(readBuffer, uint16(servicesLen)/uint16(serviceNb))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'services' field of Services")
 			}

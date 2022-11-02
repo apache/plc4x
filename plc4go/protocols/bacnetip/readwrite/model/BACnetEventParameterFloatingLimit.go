@@ -189,7 +189,11 @@ func (m *_BACnetEventParameterFloatingLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnetEventParameterFloatingLimit, error) {
+func BACnetEventParameterFloatingLimitParse(theBytes []byte) (BACnetEventParameterFloatingLimit, error) {
+	return BACnetEventParameterFloatingLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterFloatingLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterFloatingLimit"); pullErr != nil {
@@ -202,7 +206,7 @@ func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(4)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(4)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterFloatingLimit")
 	}
@@ -215,7 +219,7 @@ func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterFloatingLimit")
 	}
@@ -228,7 +232,7 @@ func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("setpointReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setpointReference")
 	}
-	_setpointReference, _setpointReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_setpointReference, _setpointReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _setpointReferenceErr != nil {
 		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field of BACnetEventParameterFloatingLimit")
 	}
@@ -241,7 +245,7 @@ func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("lowDiffLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowDiffLimit")
 	}
-	_lowDiffLimit, _lowDiffLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_lowDiffLimit, _lowDiffLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _lowDiffLimitErr != nil {
 		return nil, errors.Wrap(_lowDiffLimitErr, "Error parsing 'lowDiffLimit' field of BACnetEventParameterFloatingLimit")
 	}
@@ -254,7 +258,7 @@ func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("highDiffLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highDiffLimit")
 	}
-	_highDiffLimit, _highDiffLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
+	_highDiffLimit, _highDiffLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
 	if _highDiffLimitErr != nil {
 		return nil, errors.Wrap(_highDiffLimitErr, "Error parsing 'highDiffLimit' field of BACnetEventParameterFloatingLimit")
 	}
@@ -267,7 +271,7 @@ func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
 	}
-	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_REAL))
+	_deadband, _deadbandErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_REAL))
 	if _deadbandErr != nil {
 		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetEventParameterFloatingLimit")
 	}
@@ -280,7 +284,7 @@ func BACnetEventParameterFloatingLimitParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(4)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(4)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterFloatingLimit")
 	}

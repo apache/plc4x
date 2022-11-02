@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataOccupancyUpperLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyUpperLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyUpperLimit, error) {
+func BACnetConstructedDataOccupancyUpperLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyUpperLimit, error) {
+	return BACnetConstructedDataOccupancyUpperLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataOccupancyUpperLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyUpperLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyUpperLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataOccupancyUpperLimitParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("occupancyUpperLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyUpperLimit")
 	}
-	_occupancyUpperLimit, _occupancyUpperLimitErr := BACnetApplicationTagParse(readBuffer)
+	_occupancyUpperLimit, _occupancyUpperLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _occupancyUpperLimitErr != nil {
 		return nil, errors.Wrap(_occupancyUpperLimitErr, "Error parsing 'occupancyUpperLimit' field of BACnetConstructedDataOccupancyUpperLimit")
 	}

@@ -148,7 +148,11 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
+func BACnetUnconfirmedServiceRequestIHaveParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
+	return BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
@@ -161,7 +165,7 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetUnconfirmedServiceRequestIHave")
 	}
@@ -174,7 +178,7 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetUnconfirmedServiceRequestIHave")
 	}
@@ -187,7 +191,7 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
 	}
-	_objectName, _objectNameErr := BACnetApplicationTagParse(readBuffer)
+	_objectName, _objectNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectNameErr != nil {
 		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetUnconfirmedServiceRequestIHave")
 	}

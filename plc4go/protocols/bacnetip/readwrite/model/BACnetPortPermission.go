@@ -111,7 +111,11 @@ func (m *_BACnetPortPermission) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
+func BACnetPortPermissionParse(theBytes []byte) (BACnetPortPermission, error) {
+	return BACnetPortPermissionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetPortPermissionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPortPermission"); pullErr != nil {
@@ -124,7 +128,7 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (BACnetPortPermissio
 	if pullErr := readBuffer.PullContext("port"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for port")
 	}
-	_port, _portErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_port, _portErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BACnetPortPermission")
 	}
@@ -140,7 +144,7 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (BACnetPortPermissio
 		if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for enable")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BOOLEAN)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

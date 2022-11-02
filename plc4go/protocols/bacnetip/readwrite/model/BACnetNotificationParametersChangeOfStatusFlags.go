@@ -158,7 +158,11 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfStatusFlags, error) {
+func BACnetNotificationParametersChangeOfStatusFlagsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfStatusFlags, error) {
+	return BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfStatusFlags"); pullErr != nil {
@@ -171,7 +175,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}
@@ -184,7 +188,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_presentValue, _presentValueErr := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}
@@ -197,7 +201,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("referencedFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referencedFlags")
 	}
-	_referencedFlags, _referencedFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_referencedFlags, _referencedFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _referencedFlagsErr != nil {
 		return nil, errors.Wrap(_referencedFlagsErr, "Error parsing 'referencedFlags' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}
@@ -210,7 +214,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfStatusFlags")
 	}

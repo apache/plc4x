@@ -135,7 +135,11 @@ func (m *_CALDataAcknowledge) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataAcknowledgeParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
+func CALDataAcknowledgeParse(theBytes []byte, requestContext RequestContext) (CALDataAcknowledge, error) {
+	return CALDataAcknowledgeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext) // TODO: get endianness from mspec
+}
+
+func CALDataAcknowledgeParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataAcknowledge"); pullErr != nil {
@@ -148,7 +152,7 @@ func CALDataAcknowledgeParse(readBuffer utils.ReadBuffer, requestContext Request
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataAcknowledge")
 	}

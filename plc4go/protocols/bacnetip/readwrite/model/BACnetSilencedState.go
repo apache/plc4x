@@ -115,7 +115,11 @@ func (m BACnetSilencedState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
+func BACnetSilencedStateParse(theBytes []byte) (BACnetSilencedState, error) {
+	return BACnetSilencedStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSilencedStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
 	val, err := readBuffer.ReadUint16("BACnetSilencedState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSilencedState")

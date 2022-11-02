@@ -104,7 +104,11 @@ func (m *_ApduDataExtLinkRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtLinkReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkRead, error) {
+func ApduDataExtLinkReadParse(theBytes []byte, length uint8) (ApduDataExtLinkRead, error) {
+	return ApduDataExtLinkReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtLinkReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkRead"); pullErr != nil {

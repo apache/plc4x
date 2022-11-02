@@ -103,7 +103,11 @@ func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataInternetConnectionRequestMadeParse(readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
+func TelephonyDataInternetConnectionRequestMadeParse(theBytes []byte) (TelephonyDataInternetConnectionRequestMade, error) {
+	return TelephonyDataInternetConnectionRequestMadeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyDataInternetConnectionRequestMadeParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataInternetConnectionRequestMade"); pullErr != nil {

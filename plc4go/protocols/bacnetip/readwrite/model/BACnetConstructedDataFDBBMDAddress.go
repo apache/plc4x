@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
+func BACnetConstructedDataFDBBMDAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
+	return BACnetConstructedDataFDBBMDAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataFDBBMDAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDBBMDAddress"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("fDBBMDAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fDBBMDAddress")
 	}
-	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParse(readBuffer)
+	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParseWithBuffer(readBuffer)
 	if _fDBBMDAddressErr != nil {
 		return nil, errors.Wrap(_fDBBMDAddressErr, "Error parsing 'fDBBMDAddress' field of BACnetConstructedDataFDBBMDAddress")
 	}

@@ -139,7 +139,11 @@ func (m *_CBusPointToMultiPointCommandNormal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandNormal, error) {
+func CBusPointToMultiPointCommandNormalParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToMultiPointCommandNormal, error) {
+	return CBusPointToMultiPointCommandNormalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusPointToMultiPointCommandNormalParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommandNormal"); pullErr != nil {
@@ -152,7 +156,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, cBusOp
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CBusPointToMultiPointCommandNormal")
 	}
@@ -182,7 +186,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, cBusOp
 	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for salData")
 	}
-	_salData, _salDataErr := SALDataParse(readBuffer, ApplicationId(application.ApplicationId()))
+	_salData, _salDataErr := SALDataParseWithBuffer(readBuffer, ApplicationId(application.ApplicationId()))
 	if _salDataErr != nil {
 		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of CBusPointToMultiPointCommandNormal")
 	}

@@ -148,7 +148,11 @@ func (m *_AmsSerialAcknowledgeFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (AmsSerialAcknowledgeFrame, error) {
+func AmsSerialAcknowledgeFrameParse(theBytes []byte) (AmsSerialAcknowledgeFrame, error) {
+	return AmsSerialAcknowledgeFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AmsSerialAcknowledgeFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialAcknowledgeFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {

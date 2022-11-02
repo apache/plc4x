@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesTimerState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesTimerStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerState, error) {
+func BACnetPropertyStatesTimerStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesTimerState, error) {
+	return BACnetPropertyStatesTimerStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesTimerStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesTimerState"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesTimerStateParse(readBuffer utils.ReadBuffer, peekedTagN
 	if pullErr := readBuffer.PullContext("timerState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timerState")
 	}
-	_timerState, _timerStateErr := BACnetTimerStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_timerState, _timerStateErr := BACnetTimerStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timerStateErr != nil {
 		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field of BACnetPropertyStatesTimerState")
 	}

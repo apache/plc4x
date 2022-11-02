@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
+func BACnetConstructedDataSecurityTimeWindowParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
+	return BACnetConstructedDataSecurityTimeWindowParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityTimeWindow"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("securityTimeWindow"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securityTimeWindow")
 	}
-	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParse(readBuffer)
+	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _securityTimeWindowErr != nil {
 		return nil, errors.Wrap(_securityTimeWindowErr, "Error parsing 'securityTimeWindow' field of BACnetConstructedDataSecurityTimeWindow")
 	}

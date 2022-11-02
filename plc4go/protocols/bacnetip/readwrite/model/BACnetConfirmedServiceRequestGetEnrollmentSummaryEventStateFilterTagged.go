@@ -112,7 +112,11 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagge
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedPars
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged")
 	}

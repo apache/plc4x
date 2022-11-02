@@ -121,7 +121,11 @@ func (m AlarmStateType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmStateTypeParse(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
+func AlarmStateTypeParse(theBytes []byte) (AlarmStateType, error) {
+	return AlarmStateTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmStateTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 	val, err := readBuffer.ReadUint8("AlarmStateType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AlarmStateType")

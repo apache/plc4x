@@ -104,7 +104,11 @@ func (m *_TDataConnectedInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TDataConnectedIndParse(readBuffer utils.ReadBuffer, size uint16) (TDataConnectedInd, error) {
+func TDataConnectedIndParse(theBytes []byte, size uint16) (TDataConnectedInd, error) {
+	return TDataConnectedIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func TDataConnectedIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (TDataConnectedInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataConnectedInd"); pullErr != nil {

@@ -169,7 +169,11 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {
+func DF1RequestProtectedTypedLogicalReadParse(theBytes []byte) (DF1RequestProtectedTypedLogicalRead, error) {
+	return DF1RequestProtectedTypedLogicalReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DF1RequestProtectedTypedLogicalReadParseWithBuffer(readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestProtectedTypedLogicalRead"); pullErr != nil {

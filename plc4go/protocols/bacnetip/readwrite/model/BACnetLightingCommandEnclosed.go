@@ -121,7 +121,11 @@ func (m *_BACnetLightingCommandEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {
+func BACnetLightingCommandEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {
+	return BACnetLightingCommandEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLightingCommandEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLightingCommandEnclosed"); pullErr != nil {
@@ -134,7 +138,7 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetLightingCommandEnclosed")
 	}
@@ -147,7 +151,7 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("lightingCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommand")
 	}
-	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParse(readBuffer)
+	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParseWithBuffer(readBuffer)
 	if _lightingCommandErr != nil {
 		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field of BACnetLightingCommandEnclosed")
 	}
@@ -160,7 +164,7 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetLightingCommandEnclosed")
 	}

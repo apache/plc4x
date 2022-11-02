@@ -151,7 +151,11 @@ func (m *_LDataInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (LDataInd, error) {
+func LDataIndParse(theBytes []byte, size uint16) (LDataInd, error) {
+	return LDataIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func LDataIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LDataInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataInd"); pullErr != nil {
@@ -177,7 +181,7 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (LDataInd, error) {
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
 		for positionAware.GetPos() < _additionalInformationEndPos {
-			_item, _err := CEMIAdditionalInformationParse(readBuffer)
+			_item, _err := CEMIAdditionalInformationParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LDataInd")
 			}
@@ -192,7 +196,7 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (LDataInd, error) {
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
 	}
-	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
+	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LDataInd")
 	}

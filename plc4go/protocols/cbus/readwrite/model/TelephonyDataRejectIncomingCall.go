@@ -103,7 +103,11 @@ func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataRejectIncomingCallParse(readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
+func TelephonyDataRejectIncomingCallParse(theBytes []byte) (TelephonyDataRejectIncomingCall, error) {
+	return TelephonyDataRejectIncomingCallParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyDataRejectIncomingCallParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRejectIncomingCall"); pullErr != nil {

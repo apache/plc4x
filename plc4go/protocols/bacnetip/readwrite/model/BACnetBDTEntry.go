@@ -111,7 +111,11 @@ func (m *_BACnetBDTEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
+func BACnetBDTEntryParse(theBytes []byte) (BACnetBDTEntry, error) {
+	return BACnetBDTEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetBDTEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetBDTEntry"); pullErr != nil {
@@ -124,7 +128,7 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 	if pullErr := readBuffer.PullContext("bbmdAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bbmdAddress")
 	}
-	_bbmdAddress, _bbmdAddressErr := BACnetHostNPortEnclosedParse(readBuffer, uint8(uint8(0)))
+	_bbmdAddress, _bbmdAddressErr := BACnetHostNPortEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _bbmdAddressErr != nil {
 		return nil, errors.Wrap(_bbmdAddressErr, "Error parsing 'bbmdAddress' field of BACnetBDTEntry")
 	}
@@ -140,7 +144,7 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 		if pullErr := readBuffer.PullContext("broadcastMask"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for broadcastMask")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

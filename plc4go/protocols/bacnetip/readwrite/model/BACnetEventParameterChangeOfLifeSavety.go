@@ -178,7 +178,11 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfLifeSavety, error) {
+func BACnetEventParameterChangeOfLifeSavetyParse(theBytes []byte) (BACnetEventParameterChangeOfLifeSavety, error) {
+	return BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfLifeSavety, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfLifeSavety"); pullErr != nil {
@@ -191,7 +195,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(8)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(8)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfLifeSavety")
 	}
@@ -204,7 +208,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfLifeSavety")
 	}
@@ -217,7 +221,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("listOfLifeSavetyAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfLifeSavetyAlarmValues")
 	}
-	_listOfLifeSavetyAlarmValues, _listOfLifeSavetyAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(readBuffer, uint8(uint8(1)))
+	_listOfLifeSavetyAlarmValues, _listOfLifeSavetyAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _listOfLifeSavetyAlarmValuesErr != nil {
 		return nil, errors.Wrap(_listOfLifeSavetyAlarmValuesErr, "Error parsing 'listOfLifeSavetyAlarmValues' field of BACnetEventParameterChangeOfLifeSavety")
 	}
@@ -230,7 +234,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("listOfAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfAlarmValues")
 	}
-	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParse(readBuffer, uint8(uint8(2)))
+	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _listOfAlarmValuesErr != nil {
 		return nil, errors.Wrap(_listOfAlarmValuesErr, "Error parsing 'listOfAlarmValues' field of BACnetEventParameterChangeOfLifeSavety")
 	}
@@ -243,7 +247,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("modePropertyReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for modePropertyReference")
 	}
-	_modePropertyReference, _modePropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(4)))
+	_modePropertyReference, _modePropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(4)))
 	if _modePropertyReferenceErr != nil {
 		return nil, errors.Wrap(_modePropertyReferenceErr, "Error parsing 'modePropertyReference' field of BACnetEventParameterChangeOfLifeSavety")
 	}
@@ -256,7 +260,7 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (B
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(8)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(8)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfLifeSavety")
 	}

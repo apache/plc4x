@@ -125,7 +125,11 @@ func (m *_COTPParameterCalledTsap) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCalledTsap, error) {
+func COTPParameterCalledTsapParse(theBytes []byte, rest uint8) (COTPParameterCalledTsap, error) {
+	return COTPParameterCalledTsapParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), rest) // TODO: get endianness from mspec
+}
+
+func COTPParameterCalledTsapParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCalledTsap, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {

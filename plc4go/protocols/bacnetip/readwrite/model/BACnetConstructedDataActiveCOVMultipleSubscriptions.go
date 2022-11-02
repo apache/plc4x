@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
+func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
+	return BACnetConstructedDataActiveCOVMultipleSubscriptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataActiveCOVMultipleSubscriptionsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVMultipleSubscriptions"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.R
 	var activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetCOVMultipleSubscriptionParse(readBuffer)
+			_item, _err := BACnetCOVMultipleSubscriptionParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'activeCOVMultipleSubscriptions' field of BACnetConstructedDataActiveCOVMultipleSubscriptions")
 			}

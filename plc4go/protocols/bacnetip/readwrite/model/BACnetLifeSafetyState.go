@@ -235,7 +235,11 @@ func (m BACnetLifeSafetyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLifeSafetyStateParse(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
+func BACnetLifeSafetyStateParse(theBytes []byte) (BACnetLifeSafetyState, error) {
+	return BACnetLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetLifeSafetyState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyState")

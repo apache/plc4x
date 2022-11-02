@@ -127,7 +127,11 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandNetworkTerminalLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
+func IdentifyReplyCommandNetworkTerminalLevelsParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
+	return IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkTerminalLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkTerminalLevels"); pullErr != nil {

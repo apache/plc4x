@@ -127,7 +127,11 @@ func (m BACnetAuthorizationMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
+func BACnetAuthorizationModeParse(theBytes []byte) (BACnetAuthorizationMode, error) {
+	return BACnetAuthorizationModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAuthorizationModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetAuthorizationMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")

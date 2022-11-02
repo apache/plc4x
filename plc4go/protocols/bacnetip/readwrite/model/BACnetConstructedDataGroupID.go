@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataGroupID) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGroupIDParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupID, error) {
+func BACnetConstructedDataGroupIDParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupID, error) {
+	return BACnetConstructedDataGroupIDParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataGroupIDParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupID, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupID"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataGroupIDParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("groupId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for groupId")
 	}
-	_groupId, _groupIdErr := BACnetApplicationTagParse(readBuffer)
+	_groupId, _groupIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _groupIdErr != nil {
 		return nil, errors.Wrap(_groupIdErr, "Error parsing 'groupId' field of BACnetConstructedDataGroupID")
 	}

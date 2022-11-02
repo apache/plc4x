@@ -97,7 +97,11 @@ func (m BACnetAccessRuleLocationSpecifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessRuleLocationSpecifierParse(readBuffer utils.ReadBuffer) (BACnetAccessRuleLocationSpecifier, error) {
+func BACnetAccessRuleLocationSpecifierParse(theBytes []byte) (BACnetAccessRuleLocationSpecifier, error) {
+	return BACnetAccessRuleLocationSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessRuleLocationSpecifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessRuleLocationSpecifier, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessRuleLocationSpecifier", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleLocationSpecifier")

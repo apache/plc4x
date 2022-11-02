@@ -156,7 +156,11 @@ func (m *_BACnetEventParameterBufferReady) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEventParameterBufferReady, error) {
+func BACnetEventParameterBufferReadyParse(theBytes []byte) (BACnetEventParameterBufferReady, error) {
+	return BACnetEventParameterBufferReadyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterBufferReadyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterBufferReady, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterBufferReady"); pullErr != nil {
@@ -169,7 +173,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(10)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(10)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterBufferReady")
 	}
@@ -182,7 +186,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("notificationThreshold"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notificationThreshold")
 	}
-	_notificationThreshold, _notificationThresholdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_notificationThreshold, _notificationThresholdErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _notificationThresholdErr != nil {
 		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field of BACnetEventParameterBufferReady")
 	}
@@ -195,7 +199,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("previousNotificationCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for previousNotificationCount")
 	}
-	_previousNotificationCount, _previousNotificationCountErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_previousNotificationCount, _previousNotificationCountErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _previousNotificationCountErr != nil {
 		return nil, errors.Wrap(_previousNotificationCountErr, "Error parsing 'previousNotificationCount' field of BACnetEventParameterBufferReady")
 	}
@@ -208,7 +212,7 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(10)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(10)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterBufferReady")
 	}

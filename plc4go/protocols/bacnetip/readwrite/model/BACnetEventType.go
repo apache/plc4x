@@ -211,7 +211,11 @@ func (m BACnetEventType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventTypeParse(readBuffer utils.ReadBuffer) (BACnetEventType, error) {
+func BACnetEventTypeParse(theBytes []byte) (BACnetEventType, error) {
+	return BACnetEventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventType, error) {
 	val, err := readBuffer.ReadUint16("BACnetEventType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEventType")

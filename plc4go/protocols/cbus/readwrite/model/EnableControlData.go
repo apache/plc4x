@@ -135,7 +135,11 @@ func (m *_EnableControlData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EnableControlDataParse(readBuffer utils.ReadBuffer) (EnableControlData, error) {
+func EnableControlDataParse(theBytes []byte) (EnableControlData, error) {
+	return EnableControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func EnableControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EnableControlData"); pullErr != nil {
@@ -153,7 +157,7 @@ func EnableControlDataParse(readBuffer utils.ReadBuffer) (EnableControlData, err
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := EnableControlCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := EnableControlCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of EnableControlData")
 	}

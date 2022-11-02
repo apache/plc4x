@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataWindowInterval) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowInterval, error) {
+func BACnetConstructedDataWindowIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowInterval, error) {
+	return BACnetConstructedDataWindowIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataWindowIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowInterval"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("windowInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for windowInterval")
 	}
-	_windowInterval, _windowIntervalErr := BACnetApplicationTagParse(readBuffer)
+	_windowInterval, _windowIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _windowIntervalErr != nil {
 		return nil, errors.Wrap(_windowIntervalErr, "Error parsing 'windowInterval' field of BACnetConstructedDataWindowInterval")
 	}

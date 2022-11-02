@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLightingOutputFeedbackValue) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingOutputFeedbackValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputFeedbackValue, error) {
+func BACnetConstructedDataLightingOutputFeedbackValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputFeedbackValue, error) {
+	return BACnetConstructedDataLightingOutputFeedbackValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLightingOutputFeedbackValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputFeedbackValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputFeedbackValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLightingOutputFeedbackValueParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for feedbackValue")
 	}
-	_feedbackValue, _feedbackValueErr := BACnetApplicationTagParse(readBuffer)
+	_feedbackValue, _feedbackValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _feedbackValueErr != nil {
 		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataLightingOutputFeedbackValue")
 	}

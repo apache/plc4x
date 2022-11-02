@@ -151,7 +151,11 @@ func (m *_CALDataStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataStatusParse(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatus, error) {
+func CALDataStatusParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatus, error) {
+	return CALDataStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext, commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func CALDataStatusParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataStatus"); pullErr != nil {
@@ -164,7 +168,7 @@ func CALDataStatusParse(readBuffer utils.ReadBuffer, requestContext RequestConte
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CALDataStatus")
 	}
@@ -192,7 +196,7 @@ func CALDataStatusParse(readBuffer utils.ReadBuffer, requestContext RequestConte
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(commandTypeContainer.NumBytes())-uint16(uint16(2))); curItem++ {
-			_item, _err := StatusByteParse(readBuffer)
+			_item, _err := StatusByteParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field of CALDataStatus")
 			}

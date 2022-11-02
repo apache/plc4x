@@ -145,7 +145,11 @@ func (m BACnetDoorAlarmState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorAlarmStateParse(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
+func BACnetDoorAlarmStateParse(theBytes []byte) (BACnetDoorAlarmState, error) {
+	return BACnetDoorAlarmStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetDoorAlarmStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorAlarmState", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorAlarmState")

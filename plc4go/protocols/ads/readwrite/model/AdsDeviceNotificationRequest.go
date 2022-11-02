@@ -163,7 +163,11 @@ func (m *_AdsDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
+func AdsDeviceNotificationRequestParse(theBytes []byte) (AdsDeviceNotificationRequest, error) {
+	return AdsDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
@@ -198,7 +202,7 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsDeviceNo
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
-			_item, _err := AdsStampHeaderParse(readBuffer)
+			_item, _err := AdsStampHeaderParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field of AdsDeviceNotificationRequest")
 			}

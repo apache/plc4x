@@ -113,7 +113,11 @@ func (m *_NetworkProtocolControlInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NetworkProtocolControlInformationParse(readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
+func NetworkProtocolControlInformationParse(theBytes []byte) (NetworkProtocolControlInformation, error) {
+	return NetworkProtocolControlInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NetworkProtocolControlInformationParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkProtocolControlInformation"); pullErr != nil {

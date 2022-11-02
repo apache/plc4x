@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueLowLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueLowLimit, error) {
+func BACnetConstructedDataPositiveIntegerValueLowLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueLowLimit, error) {
+	return BACnetConstructedDataPositiveIntegerValueLowLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPositiveIntegerValueLowLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueLowLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPositiveIntegerValueLowLimitParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
 	}
-	_lowLimit, _lowLimitErr := BACnetApplicationTagParse(readBuffer)
+	_lowLimit, _lowLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _lowLimitErr != nil {
 		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetConstructedDataPositiveIntegerValueLowLimit")
 	}

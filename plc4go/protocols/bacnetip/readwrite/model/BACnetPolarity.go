@@ -97,7 +97,11 @@ func (m BACnetPolarity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPolarityParse(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
+func BACnetPolarityParse(theBytes []byte) (BACnetPolarity, error) {
+	return BACnetPolarityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetPolarityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 	val, err := readBuffer.ReadUint8("BACnetPolarity", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPolarity")

@@ -148,7 +148,11 @@ func (m *_AmsSerialResetFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (AmsSerialResetFrame, error) {
+func AmsSerialResetFrameParse(theBytes []byte) (AmsSerialResetFrame, error) {
+	return AmsSerialResetFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AmsSerialResetFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialResetFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialResetFrame"); pullErr != nil {

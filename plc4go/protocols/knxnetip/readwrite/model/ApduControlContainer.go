@@ -128,7 +128,11 @@ func (m *_ApduControlContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
+func ApduControlContainerParse(theBytes []byte, dataLength uint8) (ApduControlContainer, error) {
+	return ApduControlContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduControlContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
@@ -141,7 +145,7 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (A
 	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for controlApdu")
 	}
-	_controlApdu, _controlApduErr := ApduControlParse(readBuffer)
+	_controlApdu, _controlApduErr := ApduControlParseWithBuffer(readBuffer)
 	if _controlApduErr != nil {
 		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field of ApduControlContainer")
 	}

@@ -139,7 +139,11 @@ func (m *_TunnelingRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (TunnelingRequest, error) {
+func TunnelingRequestParse(theBytes []byte, totalLength uint16) (TunnelingRequest, error) {
+	return TunnelingRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength) // TODO: get endianness from mspec
+}
+
+func TunnelingRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (TunnelingRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingRequest"); pullErr != nil {
@@ -152,7 +156,7 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (Tun
 	if pullErr := readBuffer.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingRequestDataBlock")
 	}
-	_tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(readBuffer)
+	_tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParseWithBuffer(readBuffer)
 	if _tunnelingRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field of TunnelingRequest")
 	}
@@ -165,7 +169,7 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (Tun
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
-	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
+	_cemi, _cemiErr := CEMIParseWithBuffer(readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of TunnelingRequest")
 	}

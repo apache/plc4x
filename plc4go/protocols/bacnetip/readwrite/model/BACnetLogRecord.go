@@ -121,7 +121,11 @@ func (m *_BACnetLogRecord) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) {
+func BACnetLogRecordParse(theBytes []byte) (BACnetLogRecord, error) {
+	return BACnetLogRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecord"); pullErr != nil {
@@ -134,7 +138,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
+	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetLogRecord")
 	}
@@ -147,7 +151,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 	if pullErr := readBuffer.PullContext("logDatum"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logDatum")
 	}
-	_logDatum, _logDatumErr := BACnetLogRecordLogDatumParse(readBuffer, uint8(uint8(1)))
+	_logDatum, _logDatumErr := BACnetLogRecordLogDatumParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _logDatumErr != nil {
 		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field of BACnetLogRecord")
 	}
@@ -163,7 +167,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 		if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 		}
-		_val, _err := BACnetStatusFlagsTaggedParse(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

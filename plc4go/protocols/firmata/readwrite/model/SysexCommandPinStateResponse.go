@@ -151,7 +151,11 @@ func (m *_SysexCommandPinStateResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateResponse, error) {
+func SysexCommandPinStateResponseParse(theBytes []byte, response bool) (SysexCommandPinStateResponse, error) {
+	return SysexCommandPinStateResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandPinStateResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {

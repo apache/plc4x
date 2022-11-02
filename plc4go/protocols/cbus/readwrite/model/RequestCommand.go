@@ -201,7 +201,11 @@ func (m *_RequestCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
+func RequestCommandParse(theBytes []byte, cBusOptions CBusOptions) (RequestCommand, error) {
+	return RequestCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func RequestCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestCommand"); pullErr != nil {
@@ -256,7 +260,7 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

@@ -139,7 +139,11 @@ func (m *_BACnetNetworkPortCommandTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkPortCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkPortCommandTagged, error) {
+func BACnetNetworkPortCommandTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetNetworkPortCommandTagged, error) {
+	return BACnetNetworkPortCommandTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetNetworkPortCommandTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkPortCommandTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNetworkPortCommandTagged"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetNetworkPortCommandTaggedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetNetworkPortCommandTagged")
 	}

@@ -103,7 +103,11 @@ func (m BACnetResultFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetResultFlagsParse(readBuffer utils.ReadBuffer) (BACnetResultFlags, error) {
+func BACnetResultFlagsParse(theBytes []byte) (BACnetResultFlags, error) {
+	return BACnetResultFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetResultFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetResultFlags, error) {
 	val, err := readBuffer.ReadUint8("BACnetResultFlags", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetResultFlags")

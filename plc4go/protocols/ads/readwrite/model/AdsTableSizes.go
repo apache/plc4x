@@ -148,7 +148,11 @@ func (m *_AdsTableSizes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsTableSizesParse(readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
+func AdsTableSizesParse(theBytes []byte) (AdsTableSizes, error) {
+	return AdsTableSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsTableSizesParseWithBuffer(readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsTableSizes"); pullErr != nil {

@@ -271,7 +271,11 @@ func (m BACnetRelationship) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRelationshipParse(readBuffer utils.ReadBuffer) (BACnetRelationship, error) {
+func BACnetRelationshipParse(theBytes []byte) (BACnetRelationship, error) {
+	return BACnetRelationshipParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetRelationshipParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRelationship, error) {
 	val, err := readBuffer.ReadUint16("BACnetRelationship", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRelationship")

@@ -124,7 +124,11 @@ func (m *_SecurityDataRequestZoneName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataRequestZoneNameParse(readBuffer utils.ReadBuffer) (SecurityDataRequestZoneName, error) {
+func SecurityDataRequestZoneNameParse(theBytes []byte) (SecurityDataRequestZoneName, error) {
+	return SecurityDataRequestZoneNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataRequestZoneNameParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataRequestZoneName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataRequestZoneName"); pullErr != nil {

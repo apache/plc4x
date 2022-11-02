@@ -21,6 +21,7 @@ package ads
 
 import (
 	"context"
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
@@ -354,12 +355,12 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	responseCodes := map[string]model.PlcResponseCode{}
 	switch data := amsTcpPaket.GetUserdata().(type) {
 	case readWriteModel.AdsReadResponse:
-		rb = utils.NewLittleEndianReadBufferByteBased(data.GetData())
+		rb = utils.NewReadBufferByteBased(data.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		for _, fieldName := range readRequest.GetFieldNames() {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
 	case readWriteModel.AdsReadWriteResponse:
-		rb = utils.NewLittleEndianReadBufferByteBased(data.GetData())
+		rb = utils.NewReadBufferByteBased(data.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		// When parsing a multi-item response, the error codes of each items come
 		// in sequence and then come the values.
 		for _, fieldName := range readRequest.GetFieldNames() {
@@ -398,7 +399,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().PlcValueType(), field.GetStringLength())
+		value, err := readWriteModel.DataItemParseWithBuffer(rb, field.GetDatatype().PlcValueType(), field.GetStringLength())
 		if err != nil {
 			log.Error().Err(err).Msg("Error parsing data item")
 			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR

@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
+func BACnetPropertyStatesEscalatorOperationDirectionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
+	return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorOperationDirection"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesEscalatorOperationDirectionParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("escalatorOperationDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorOperationDirection")
 	}
-	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorOperationDirectionErr != nil {
 		return nil, errors.Wrap(_escalatorOperationDirectionErr, "Error parsing 'escalatorOperationDirection' field of BACnetPropertyStatesEscalatorOperationDirection")
 	}

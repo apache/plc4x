@@ -107,7 +107,11 @@ func (m *_PowerUp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PowerUpParse(readBuffer utils.ReadBuffer) (PowerUp, error) {
+func PowerUpParse(theBytes []byte) (PowerUp, error) {
+	return PowerUpParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func PowerUpParseWithBuffer(readBuffer utils.ReadBuffer) (PowerUp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUp"); pullErr != nil {

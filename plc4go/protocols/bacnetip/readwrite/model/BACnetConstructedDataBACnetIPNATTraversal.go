@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPNATTraversal, error) {
+func BACnetConstructedDataBACnetIPNATTraversalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPNATTraversal, error) {
+	return BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPNATTraversal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPNATTraversal"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("bacnetIPNATTraversal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIPNATTraversal")
 	}
-	_bacnetIPNATTraversal, _bacnetIPNATTraversalErr := BACnetApplicationTagParse(readBuffer)
+	_bacnetIPNATTraversal, _bacnetIPNATTraversalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _bacnetIPNATTraversalErr != nil {
 		return nil, errors.Wrap(_bacnetIPNATTraversalErr, "Error parsing 'bacnetIPNATTraversal' field of BACnetConstructedDataBACnetIPNATTraversal")
 	}

@@ -113,7 +113,11 @@ func (m EnableControlCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EnableControlCommandTypeParse(readBuffer utils.ReadBuffer) (EnableControlCommandType, error) {
+func EnableControlCommandTypeParse(theBytes []byte) (EnableControlCommandType, error) {
+	return EnableControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func EnableControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("EnableControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EnableControlCommandType")

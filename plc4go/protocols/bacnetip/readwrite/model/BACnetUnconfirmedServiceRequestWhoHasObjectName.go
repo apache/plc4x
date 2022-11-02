@@ -123,7 +123,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
+func BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
+	return BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHasObjectName"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
 	}
-	_objectName, _objectNameErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_objectName, _objectNameErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _objectNameErr != nil {
 		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetUnconfirmedServiceRequestWhoHasObjectName")
 	}

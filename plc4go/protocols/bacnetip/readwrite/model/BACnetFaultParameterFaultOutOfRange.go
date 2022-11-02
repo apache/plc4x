@@ -156,7 +156,11 @@ func (m *_BACnetFaultParameterFaultOutOfRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRange, error) {
+func BACnetFaultParameterFaultOutOfRangeParse(theBytes []byte) (BACnetFaultParameterFaultOutOfRange, error) {
+	return BACnetFaultParameterFaultOutOfRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultOutOfRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRange"); pullErr != nil {
@@ -169,7 +173,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(6)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(6)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultOutOfRange")
 	}
@@ -182,7 +186,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("minNormalValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minNormalValue")
 	}
-	_minNormalValue, _minNormalValueErr := BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer, uint8(uint8(0)))
+	_minNormalValue, _minNormalValueErr := BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _minNormalValueErr != nil {
 		return nil, errors.Wrap(_minNormalValueErr, "Error parsing 'minNormalValue' field of BACnetFaultParameterFaultOutOfRange")
 	}
@@ -195,7 +199,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("maxNormalValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxNormalValue")
 	}
-	_maxNormalValue, _maxNormalValueErr := BACnetFaultParameterFaultOutOfRangeMaxNormalValueParse(readBuffer, uint8(uint8(0)))
+	_maxNormalValue, _maxNormalValueErr := BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _maxNormalValueErr != nil {
 		return nil, errors.Wrap(_maxNormalValueErr, "Error parsing 'maxNormalValue' field of BACnetFaultParameterFaultOutOfRange")
 	}
@@ -208,7 +212,7 @@ func BACnetFaultParameterFaultOutOfRangeParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(6)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(6)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultOutOfRange")
 	}

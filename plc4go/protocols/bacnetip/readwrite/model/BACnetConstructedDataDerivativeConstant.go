@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDerivativeConstant) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDerivativeConstant, error) {
+func BACnetConstructedDataDerivativeConstantParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDerivativeConstant, error) {
+	return BACnetConstructedDataDerivativeConstantParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDerivativeConstantParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDerivativeConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDerivativeConstant"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("derivativeConstant"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for derivativeConstant")
 	}
-	_derivativeConstant, _derivativeConstantErr := BACnetApplicationTagParse(readBuffer)
+	_derivativeConstant, _derivativeConstantErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _derivativeConstantErr != nil {
 		return nil, errors.Wrap(_derivativeConstantErr, "Error parsing 'derivativeConstant' field of BACnetConstructedDataDerivativeConstant")
 	}

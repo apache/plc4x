@@ -127,7 +127,11 @@ func (m *_SALDataIrrigationControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
+func SALDataIrrigationControlParse(theBytes []byte, applicationId ApplicationId) (SALDataIrrigationControl, error) {
+	return SALDataIrrigationControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataIrrigationControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataIrrigationControl"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId Ap
 	if pullErr := readBuffer.PullContext("irrigationControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for irrigationControlData")
 	}
-	_irrigationControlData, _irrigationControlDataErr := LightingDataParse(readBuffer)
+	_irrigationControlData, _irrigationControlDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _irrigationControlDataErr != nil {
 		return nil, errors.Wrap(_irrigationControlDataErr, "Error parsing 'irrigationControlData' field of SALDataIrrigationControl")
 	}

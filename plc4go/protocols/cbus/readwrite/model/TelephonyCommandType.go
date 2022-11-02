@@ -113,7 +113,11 @@ func (m TelephonyCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyCommandTypeParse(readBuffer utils.ReadBuffer) (TelephonyCommandType, error) {
+func TelephonyCommandTypeParse(theBytes []byte) (TelephonyCommandType, error) {
+	return TelephonyCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyCommandType, error) {
 	val, err := readBuffer.ReadUint8("TelephonyCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TelephonyCommandType")

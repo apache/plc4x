@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataFullDutyBaseline) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFullDutyBaseline, error) {
+func BACnetConstructedDataFullDutyBaselineParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFullDutyBaseline, error) {
+	return BACnetConstructedDataFullDutyBaselineParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataFullDutyBaselineParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFullDutyBaseline, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFullDutyBaseline"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("fullDutyBaseLine"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fullDutyBaseLine")
 	}
-	_fullDutyBaseLine, _fullDutyBaseLineErr := BACnetApplicationTagParse(readBuffer)
+	_fullDutyBaseLine, _fullDutyBaseLineErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fullDutyBaseLineErr != nil {
 		return nil, errors.Wrap(_fullDutyBaseLineErr, "Error parsing 'fullDutyBaseLine' field of BACnetConstructedDataFullDutyBaseline")
 	}

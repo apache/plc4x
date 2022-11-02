@@ -107,7 +107,11 @@ func (m *_LevelInformationAbsent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LevelInformationAbsentParse(readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {
+func LevelInformationAbsentParse(theBytes []byte) (LevelInformationAbsent, error) {
+	return LevelInformationAbsentParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LevelInformationAbsentParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationAbsent"); pullErr != nil {

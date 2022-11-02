@@ -104,7 +104,11 @@ func (m *_ApduDataExtReadRoutingTableResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtReadRoutingTableResponseParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtReadRoutingTableResponse, error) {
+func ApduDataExtReadRoutingTableResponseParse(theBytes []byte, length uint8) (ApduDataExtReadRoutingTableResponse, error) {
+	return ApduDataExtReadRoutingTableResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtReadRoutingTableResponseParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtReadRoutingTableResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRoutingTableResponse"); pullErr != nil {

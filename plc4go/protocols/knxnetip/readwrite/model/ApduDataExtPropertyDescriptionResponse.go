@@ -211,7 +211,11 @@ func (m *_ApduDataExtPropertyDescriptionResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyDescriptionResponse, error) {
+func ApduDataExtPropertyDescriptionResponseParse(theBytes []byte, length uint8) (ApduDataExtPropertyDescriptionResponse, error) {
+	return ApduDataExtPropertyDescriptionResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtPropertyDescriptionResponseParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyDescriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionResponse"); pullErr != nil {
@@ -269,7 +273,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	if pullErr := readBuffer.PullContext("propertyDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyDataType")
 	}
-	_propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(readBuffer)
+	_propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParseWithBuffer(readBuffer)
 	if _propertyDataTypeErr != nil {
 		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field of ApduDataExtPropertyDescriptionResponse")
 	}
@@ -306,7 +310,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	if pullErr := readBuffer.PullContext("readLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for readLevel")
 	}
-	_readLevel, _readLevelErr := AccessLevelParse(readBuffer)
+	_readLevel, _readLevelErr := AccessLevelParseWithBuffer(readBuffer)
 	if _readLevelErr != nil {
 		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field of ApduDataExtPropertyDescriptionResponse")
 	}
@@ -319,7 +323,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	if pullErr := readBuffer.PullContext("writeLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for writeLevel")
 	}
-	_writeLevel, _writeLevelErr := AccessLevelParse(readBuffer)
+	_writeLevel, _writeLevelErr := AccessLevelParseWithBuffer(readBuffer)
 	if _writeLevelErr != nil {
 		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field of ApduDataExtPropertyDescriptionResponse")
 	}

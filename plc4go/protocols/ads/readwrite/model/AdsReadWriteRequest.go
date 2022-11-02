@@ -190,7 +190,11 @@ func (m *_AdsReadWriteRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
+func AdsReadWriteRequestParse(theBytes []byte) (AdsReadWriteRequest, error) {
+	return AdsReadWriteRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsReadWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadWriteRequest"); pullErr != nil {
@@ -239,7 +243,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (AdsReadWriteRequest,
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
-			_item, _err := AdsMultiRequestItemParse(readBuffer, indexGroup)
+			_item, _err := AdsMultiRequestItemParseWithBuffer(readBuffer, indexGroup)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of AdsReadWriteRequest")
 			}

@@ -125,7 +125,11 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) G
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated, error) {
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParse(re
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
+	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated")
 	}

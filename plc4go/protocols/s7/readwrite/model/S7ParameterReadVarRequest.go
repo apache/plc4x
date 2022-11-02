@@ -137,7 +137,11 @@ func (m *_S7ParameterReadVarRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarRequest, error) {
+func S7ParameterReadVarRequestParse(theBytes []byte, messageType uint8) (S7ParameterReadVarRequest, error) {
+	return S7ParameterReadVarRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+}
+
+func S7ParameterReadVarRequestParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarRequest"); pullErr != nil {
@@ -165,7 +169,7 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
-			_item, _err := S7VarRequestParameterItemParse(readBuffer)
+			_item, _err := S7VarRequestParameterItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7ParameterReadVarRequest")
 			}

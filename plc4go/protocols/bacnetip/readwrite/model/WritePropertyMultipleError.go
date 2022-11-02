@@ -136,7 +136,11 @@ func (m *_WritePropertyMultipleError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func WritePropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
+func WritePropertyMultipleErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
+	return WritePropertyMultipleErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorChoice) // TODO: get endianness from mspec
+}
+
+func WritePropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("WritePropertyMultipleError"); pullErr != nil {
@@ -149,7 +153,7 @@ func WritePropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorChoice BA
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of WritePropertyMultipleError")
 	}
@@ -162,7 +166,7 @@ func WritePropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorChoice BA
 	if pullErr := readBuffer.PullContext("firstFailedWriteAttempt"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedWriteAttempt")
 	}
-	_firstFailedWriteAttempt, _firstFailedWriteAttemptErr := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_firstFailedWriteAttempt, _firstFailedWriteAttemptErr := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _firstFailedWriteAttemptErr != nil {
 		return nil, errors.Wrap(_firstFailedWriteAttemptErr, "Error parsing 'firstFailedWriteAttempt' field of WritePropertyMultipleError")
 	}

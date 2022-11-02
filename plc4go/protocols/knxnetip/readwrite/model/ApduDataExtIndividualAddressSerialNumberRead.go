@@ -104,7 +104,11 @@ func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtIndividualAddressSerialNumberReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
+func ApduDataExtIndividualAddressSerialNumberReadParse(theBytes []byte, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
+	return ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtIndividualAddressSerialNumberRead"); pullErr != nil {

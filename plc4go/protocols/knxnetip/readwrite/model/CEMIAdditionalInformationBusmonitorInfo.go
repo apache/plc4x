@@ -201,7 +201,11 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(theBytes []byte) (CEMIAdditionalInformationBusmonitorInfo, error) {
+	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {

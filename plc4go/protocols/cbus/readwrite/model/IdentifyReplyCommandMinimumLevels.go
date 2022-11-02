@@ -127,7 +127,11 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
+func IdentifyReplyCommandMinimumLevelsParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
+	return IdentifyReplyCommandMinimumLevelsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandMinimumLevelsParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMinimumLevels"); pullErr != nil {

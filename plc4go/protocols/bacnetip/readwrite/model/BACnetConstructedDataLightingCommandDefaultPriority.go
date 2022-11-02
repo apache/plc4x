@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
+func BACnetConstructedDataLightingCommandDefaultPriorityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
+	return BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommandDefaultPriority"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("lightingCommandDefaultPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommandDefaultPriority")
 	}
-	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParse(readBuffer)
+	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _lightingCommandDefaultPriorityErr != nil {
 		return nil, errors.Wrap(_lightingCommandDefaultPriorityErr, "Error parsing 'lightingCommandDefaultPriority' field of BACnetConstructedDataLightingCommandDefaultPriority")
 	}

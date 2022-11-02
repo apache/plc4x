@@ -138,7 +138,11 @@ func (m *_ParameterValueInterfaceOptions3) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueInterfaceOptions3Parse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions3, error) {
+func ParameterValueInterfaceOptions3Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions3, error) {
+	return ParameterValueInterfaceOptions3ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes) // TODO: get endianness from mspec
+}
+
+func ParameterValueInterfaceOptions3ParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions3, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions3"); pullErr != nil {
@@ -156,7 +160,7 @@ func ParameterValueInterfaceOptions3Parse(readBuffer utils.ReadBuffer, parameter
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := InterfaceOptions3Parse(readBuffer)
+	_value, _valueErr := InterfaceOptions3ParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueInterfaceOptions3")
 	}

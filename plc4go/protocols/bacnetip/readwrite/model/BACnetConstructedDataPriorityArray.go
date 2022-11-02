@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPriorityArray) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityArray, error) {
+func BACnetConstructedDataPriorityArrayParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityArray, error) {
+	return BACnetConstructedDataPriorityArrayParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriorityArray"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("priorityArray"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priorityArray")
 	}
-	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParse(readBuffer, BACnetObjectType(objectTypeArgument), uint8(tagNumber), arrayIndexArgument)
+	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParseWithBuffer(readBuffer, BACnetObjectType(objectTypeArgument), uint8(tagNumber), arrayIndexArgument)
 	if _priorityArrayErr != nil {
 		return nil, errors.Wrap(_priorityArrayErr, "Error parsing 'priorityArray' field of BACnetConstructedDataPriorityArray")
 	}

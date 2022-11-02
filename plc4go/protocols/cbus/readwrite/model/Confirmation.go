@@ -140,7 +140,11 @@ func (m *_Confirmation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
+func ConfirmationParse(theBytes []byte) (Confirmation, error) {
+	return ConfirmationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConfirmationParseWithBuffer(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Confirmation"); pullErr != nil {
@@ -153,7 +157,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 	}
-	_alpha, _alphaErr := AlphaParse(readBuffer)
+	_alpha, _alphaErr := AlphaParseWithBuffer(readBuffer)
 	if _alphaErr != nil {
 		return nil, errors.Wrap(_alphaErr, "Error parsing 'alpha' field of Confirmation")
 	}
@@ -169,7 +173,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 		if pullErr := readBuffer.PullContext("secondAlpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for secondAlpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -188,7 +192,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	if pullErr := readBuffer.PullContext("confirmationType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for confirmationType")
 	}
-	_confirmationType, _confirmationTypeErr := ConfirmationTypeParse(readBuffer)
+	_confirmationType, _confirmationTypeErr := ConfirmationTypeParseWithBuffer(readBuffer)
 	if _confirmationTypeErr != nil {
 		return nil, errors.Wrap(_confirmationTypeErr, "Error parsing 'confirmationType' field of Confirmation")
 	}

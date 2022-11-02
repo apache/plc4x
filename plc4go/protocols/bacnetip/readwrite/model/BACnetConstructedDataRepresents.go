@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataRepresents) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRepresentsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRepresents, error) {
+func BACnetConstructedDataRepresentsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRepresents, error) {
+	return BACnetConstructedDataRepresentsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataRepresentsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRepresents, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRepresents"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataRepresentsParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("represents"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for represents")
 	}
-	_represents, _representsErr := BACnetDeviceObjectReferenceParse(readBuffer)
+	_represents, _representsErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 	if _representsErr != nil {
 		return nil, errors.Wrap(_representsErr, "Error parsing 'represents' field of BACnetConstructedDataRepresents")
 	}

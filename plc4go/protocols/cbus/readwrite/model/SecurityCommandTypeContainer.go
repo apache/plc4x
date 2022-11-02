@@ -1802,7 +1802,11 @@ func (m SecurityCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityCommandTypeContainerParse(readBuffer utils.ReadBuffer) (SecurityCommandTypeContainer, error) {
+func SecurityCommandTypeContainerParse(theBytes []byte) (SecurityCommandTypeContainer, error) {
+	return SecurityCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("SecurityCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SecurityCommandTypeContainer")

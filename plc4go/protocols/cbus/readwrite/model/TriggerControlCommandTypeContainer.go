@@ -836,7 +836,11 @@ func (m TriggerControlCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (TriggerControlCommandTypeContainer, error) {
+func TriggerControlCommandTypeContainerParse(theBytes []byte) (TriggerControlCommandTypeContainer, error) {
+	return TriggerControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlCommandTypeContainer")

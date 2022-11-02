@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesLightningInProgress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLightningInProgressParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningInProgress, error) {
+func BACnetPropertyStatesLightningInProgressParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningInProgress, error) {
+	return BACnetPropertyStatesLightningInProgressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLightningInProgressParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningInProgress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningInProgress"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesLightningInProgressParse(readBuffer utils.ReadBuffer, p
 	if pullErr := readBuffer.PullContext("lightningInProgress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightningInProgress")
 	}
-	_lightningInProgress, _lightningInProgressErr := BACnetLightingInProgressTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lightningInProgress, _lightningInProgressErr := BACnetLightingInProgressTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningInProgressErr != nil {
 		return nil, errors.Wrap(_lightningInProgressErr, "Error parsing 'lightningInProgress' field of BACnetPropertyStatesLightningInProgress")
 	}

@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVSubscriptions, error) {
+func BACnetConstructedDataActiveCOVSubscriptionsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVSubscriptions, error) {
+	return BACnetConstructedDataActiveCOVSubscriptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataActiveCOVSubscriptionsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVSubscriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVSubscriptions"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 	var activeCOVSubscriptions []BACnetCOVSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetCOVSubscriptionParse(readBuffer)
+			_item, _err := BACnetCOVSubscriptionParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'activeCOVSubscriptions' field of BACnetConstructedDataActiveCOVSubscriptions")
 			}

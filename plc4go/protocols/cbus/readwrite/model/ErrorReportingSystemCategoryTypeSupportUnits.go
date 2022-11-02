@@ -126,7 +126,11 @@ func (m *_ErrorReportingSystemCategoryTypeSupportUnits) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeSupportUnitsParse(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeSupportUnits, error) {
+func ErrorReportingSystemCategoryTypeSupportUnitsParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeSupportUnits, error) {
+	return ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorReportingSystemCategoryClass) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeSupportUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeSupportUnits"); pullErr != nil {
@@ -139,7 +143,7 @@ func ErrorReportingSystemCategoryTypeSupportUnitsParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
 	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForSupportUnitsParse(readBuffer)
+	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForSupportUnitsParseWithBuffer(readBuffer)
 	if _categoryForTypeErr != nil {
 		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeSupportUnits")
 	}

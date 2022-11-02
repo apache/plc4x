@@ -112,7 +112,11 @@ func (m *_BACnetBinaryPVTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
+func BACnetBinaryPVTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
+	return BACnetBinaryPVTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetBinaryPVTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetBinaryPVTagged"); pullErr != nil {
@@ -125,7 +129,7 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetBinaryPVTagged")
 	}

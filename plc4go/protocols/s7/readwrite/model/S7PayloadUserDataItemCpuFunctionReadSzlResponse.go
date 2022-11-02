@@ -186,7 +186,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pullErr != nil {
@@ -199,7 +203,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for szlId")
 	}
-	_szlId, _szlIdErr := SzlIdParse(readBuffer)
+	_szlId, _szlIdErr := SzlIdParseWithBuffer(readBuffer)
 	if _szlIdErr != nil {
 		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 	}
@@ -243,7 +247,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
-			_item, _err := SzlDataTreeItemParse(readBuffer)
+			_item, _err := SzlDataTreeItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 			}

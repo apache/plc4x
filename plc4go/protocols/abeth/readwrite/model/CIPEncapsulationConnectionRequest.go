@@ -109,7 +109,11 @@ func (m *_CIPEncapsulationConnectionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationConnectionRequestParse(readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {
+func CIPEncapsulationConnectionRequestParse(theBytes []byte) (CIPEncapsulationConnectionRequest, error) {
+	return CIPEncapsulationConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CIPEncapsulationConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationConnectionRequest"); pullErr != nil {

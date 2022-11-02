@@ -125,7 +125,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(r
 	if pullErr := readBuffer.PullContext("numericValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for numericValue")
 	}
-	_numericValue, _numericValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_numericValue, _numericValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _numericValueErr != nil {
 		return nil, errors.Wrap(_numericValueErr, "Error parsing 'numericValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 	}

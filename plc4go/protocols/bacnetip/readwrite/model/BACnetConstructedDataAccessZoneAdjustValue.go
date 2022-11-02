@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAdjustValue, error) {
+func BACnetConstructedDataAccessZoneAdjustValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAdjustValue, error) {
+	return BACnetConstructedDataAccessZoneAdjustValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAccessZoneAdjustValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAdjustValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessZoneAdjustValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("adjustValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for adjustValue")
 	}
-	_adjustValue, _adjustValueErr := BACnetApplicationTagParse(readBuffer)
+	_adjustValue, _adjustValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _adjustValueErr != nil {
 		return nil, errors.Wrap(_adjustValueErr, "Error parsing 'adjustValue' field of BACnetConstructedDataAccessZoneAdjustValue")
 	}

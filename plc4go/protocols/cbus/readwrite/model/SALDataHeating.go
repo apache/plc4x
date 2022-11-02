@@ -127,7 +127,11 @@ func (m *_SALDataHeating) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {
+func SALDataHeatingParse(theBytes []byte, applicationId ApplicationId) (SALDataHeating, error) {
+	return SALDataHeatingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataHeatingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataHeating"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 	if pullErr := readBuffer.PullContext("heatingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for heatingData")
 	}
-	_heatingData, _heatingDataErr := LightingDataParse(readBuffer)
+	_heatingData, _heatingDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _heatingDataErr != nil {
 		return nil, errors.Wrap(_heatingDataErr, "Error parsing 'heatingData' field of SALDataHeating")
 	}

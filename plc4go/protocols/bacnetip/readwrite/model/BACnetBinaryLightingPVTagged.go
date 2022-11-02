@@ -139,7 +139,11 @@ func (m *_BACnetBinaryLightingPVTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBinaryLightingPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryLightingPVTagged, error) {
+func BACnetBinaryLightingPVTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetBinaryLightingPVTagged, error) {
+	return BACnetBinaryLightingPVTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetBinaryLightingPVTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryLightingPVTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetBinaryLightingPVTagged"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetBinaryLightingPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetBinaryLightingPVTagged")
 	}

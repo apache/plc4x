@@ -936,7 +936,7 @@ func TestS7MessageBytes(t *testing.T) {
 			t.Run("xml roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringXml)
 				readBuffer := utils.NewXmlReadBuffer(reader)
-				if got, err := model.TPKTPacketParse(readBuffer); err != nil {
+				if got, err := model.TPKTPacketParseWithBuffer(readBuffer); err != nil {
 					t.Error(err)
 				} else {
 					assert.Equal(t, tt.args.debuggable, got)
@@ -945,7 +945,7 @@ func TestS7MessageBytes(t *testing.T) {
 			t.Run("json roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringJson)
 				readBuffer := utils.NewJsonReadBuffer(reader)
-				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
+				if got, err := model.TPKTPacketParseWithBuffer(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
 					if err != nil {
 						t.Error(err)
 					} else {

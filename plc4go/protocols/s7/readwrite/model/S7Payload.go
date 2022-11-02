@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_S7Payload) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7Payload, error) {
+func S7PayloadParse(theBytes []byte, messageType uint8, parameter S7Parameter) (S7Payload, error) {
+	return S7PayloadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType, parameter) // TODO: get endianness from mspec
+}
+
+func S7PayloadParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7Payload, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Payload"); pullErr != nil {
@@ -123,13 +128,13 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7
 	var typeSwitchError error
 	switch {
 	case CastS7Parameter(parameter).GetParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
-		_childTemp, typeSwitchError = S7PayloadReadVarResponseParse(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadReadVarResponseParseWithBuffer(readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
-		_childTemp, typeSwitchError = S7PayloadWriteVarRequestParse(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadWriteVarRequestParseWithBuffer(readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
-		_childTemp, typeSwitchError = S7PayloadWriteVarResponseParse(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadWriteVarResponseParseWithBuffer(readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).GetParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
-		_childTemp, typeSwitchError = S7PayloadUserDataParse(readBuffer, messageType, parameter)
+		_childTemp, typeSwitchError = S7PayloadUserDataParseWithBuffer(readBuffer, messageType, parameter)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterparameterType=%v, messageType=%v]", CastS7Parameter(parameter).GetParameterType(), messageType)
 	}

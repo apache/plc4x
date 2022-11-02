@@ -37,21 +37,21 @@ func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CipServiceParse(io, serviceLen)
+		return model.CipServiceParseWithBuffer(io, serviceLen)
 	case "EipPacket":
-		return model.EipPacketParse(io)
+		return model.EipPacketParseWithBuffer(io)
 	case "Services":
 		servicesLen, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ServicesParse(io, servicesLen)
+		return model.ServicesParseWithBuffer(io, servicesLen)
 	case "CipExchange":
 		exchangeLen, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CipExchangeParse(io, exchangeLen)
+		return model.CipExchangeParseWithBuffer(io, exchangeLen)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

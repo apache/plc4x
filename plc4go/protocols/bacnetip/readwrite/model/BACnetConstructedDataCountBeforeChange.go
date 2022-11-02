@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataCountBeforeChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCountBeforeChange, error) {
+func BACnetConstructedDataCountBeforeChangeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCountBeforeChange, error) {
+	return BACnetConstructedDataCountBeforeChangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataCountBeforeChangeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCountBeforeChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCountBeforeChange"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("countBeforeChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for countBeforeChange")
 	}
-	_countBeforeChange, _countBeforeChangeErr := BACnetApplicationTagParse(readBuffer)
+	_countBeforeChange, _countBeforeChangeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _countBeforeChangeErr != nil {
 		return nil, errors.Wrap(_countBeforeChangeErr, "Error parsing 'countBeforeChange' field of BACnetConstructedDataCountBeforeChange")
 	}

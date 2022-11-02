@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAnalogOutputMaxPresValue) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogOutputMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputMaxPresValue, error) {
+func BACnetConstructedDataAnalogOutputMaxPresValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputMaxPresValue, error) {
+	return BACnetConstructedDataAnalogOutputMaxPresValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAnalogOutputMaxPresValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputMaxPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogOutputMaxPresValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAnalogOutputMaxPresValueParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("maxPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxPresValue")
 	}
-	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParse(readBuffer)
+	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxPresValueErr != nil {
 		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataAnalogOutputMaxPresValue")
 	}

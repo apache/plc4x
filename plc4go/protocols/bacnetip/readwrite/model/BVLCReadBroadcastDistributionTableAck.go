@@ -132,7 +132,11 @@ func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {
+func BVLCReadBroadcastDistributionTableAckParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {
+	return BVLCReadBroadcastDistributionTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+}
+
+func BVLCReadBroadcastDistributionTableAckParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTableAck"); pullErr != nil {
@@ -151,7 +155,7 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
 		for positionAware.GetPos() < _tableEndPos {
-			_item, _err := BVLCBroadcastDistributionTableEntryParse(readBuffer)
+			_item, _err := BVLCBroadcastDistributionTableEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field of BVLCReadBroadcastDistributionTableAck")
 			}

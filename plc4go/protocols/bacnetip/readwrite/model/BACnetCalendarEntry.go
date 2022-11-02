@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetCalendarEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntry, error) {
+func BACnetCalendarEntryParse(theBytes []byte) (BACnetCalendarEntry, error) {
+	return BACnetCalendarEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCalendarEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntry"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntry,
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -166,11 +171,11 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntry,
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetCalendarEntryDate
-		_childTemp, typeSwitchError = BACnetCalendarEntryDateParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetCalendarEntryDateParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetCalendarEntryDateRange
-		_childTemp, typeSwitchError = BACnetCalendarEntryDateRangeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetCalendarEntryDateRangeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetCalendarEntryWeekNDay
-		_childTemp, typeSwitchError = BACnetCalendarEntryWeekNDayParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetCalendarEntryWeekNDayParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

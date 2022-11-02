@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+func BACnetConstructedDataLightingOutputTrackingValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+	return BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputTrackingValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("trackingValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for trackingValue")
 	}
-	_trackingValue, _trackingValueErr := BACnetApplicationTagParse(readBuffer)
+	_trackingValue, _trackingValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _trackingValueErr != nil {
 		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field of BACnetConstructedDataLightingOutputTrackingValue")
 	}

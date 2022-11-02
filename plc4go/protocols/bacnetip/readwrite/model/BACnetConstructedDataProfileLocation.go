@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataProfileLocation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProfileLocationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileLocation, error) {
+func BACnetConstructedDataProfileLocationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileLocation, error) {
+	return BACnetConstructedDataProfileLocationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataProfileLocationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileLocation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProfileLocation"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataProfileLocationParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("profileLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for profileLocation")
 	}
-	_profileLocation, _profileLocationErr := BACnetApplicationTagParse(readBuffer)
+	_profileLocation, _profileLocationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _profileLocationErr != nil {
 		return nil, errors.Wrap(_profileLocationErr, "Error parsing 'profileLocation' field of BACnetConstructedDataProfileLocation")
 	}

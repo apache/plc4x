@@ -103,7 +103,11 @@ func (m KnxLayer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
+func KnxLayerParse(theBytes []byte) (KnxLayer, error) {
+	return KnxLayerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxLayerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 	val, err := readBuffer.ReadUint8("KnxLayer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxLayer")

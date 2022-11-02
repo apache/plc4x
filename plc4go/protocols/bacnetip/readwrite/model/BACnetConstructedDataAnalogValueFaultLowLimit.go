@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAnalogValueFaultLowLimit) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogValueFaultLowLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultLowLimit, error) {
+func BACnetConstructedDataAnalogValueFaultLowLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultLowLimit, error) {
+	return BACnetConstructedDataAnalogValueFaultLowLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAnalogValueFaultLowLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultLowLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogValueFaultLowLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAnalogValueFaultLowLimitParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("faultLowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultLowLimit")
 	}
-	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParse(readBuffer)
+	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _faultLowLimitErr != nil {
 		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field of BACnetConstructedDataAnalogValueFaultLowLimit")
 	}

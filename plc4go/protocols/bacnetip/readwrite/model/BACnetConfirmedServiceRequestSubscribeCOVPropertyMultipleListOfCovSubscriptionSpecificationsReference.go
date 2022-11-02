@@ -121,7 +121,11 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubs
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParse(theBytes []byte) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error) {
+	return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference"); pullErr != nil {
@@ -134,7 +138,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 	if pullErr := readBuffer.PullContext("monitoredProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredProperty")
 	}
-	_monitoredProperty, _monitoredPropertyErr := BACnetPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_monitoredProperty, _monitoredPropertyErr := BACnetPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _monitoredPropertyErr != nil {
 		return nil, errors.Wrap(_monitoredPropertyErr, "Error parsing 'monitoredProperty' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference")
 	}
@@ -150,7 +154,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -169,7 +173,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 	if pullErr := readBuffer.PullContext("timestamped"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamped")
 	}
-	_timestamped, _timestampedErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_timestamped, _timestampedErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _timestampedErr != nil {
 		return nil, errors.Wrap(_timestampedErr, "Error parsing 'timestamped' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference")
 	}

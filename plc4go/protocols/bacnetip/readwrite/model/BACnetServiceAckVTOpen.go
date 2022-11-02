@@ -125,7 +125,11 @@ func (m *_BACnetServiceAckVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
+func BACnetServiceAckVTOpenParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
+	return BACnetServiceAckVTOpenParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckVTOpenParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	if pullErr := readBuffer.PullContext("remoteVtSessionIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtSessionIdentifier")
 	}
-	_remoteVtSessionIdentifier, _remoteVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_remoteVtSessionIdentifier, _remoteVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _remoteVtSessionIdentifierErr != nil {
 		return nil, errors.Wrap(_remoteVtSessionIdentifierErr, "Error parsing 'remoteVtSessionIdentifier' field of BACnetServiceAckVTOpen")
 	}

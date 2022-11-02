@@ -125,7 +125,11 @@ func (m *_AdsDataTypeArrayInfo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDataTypeArrayInfoParse(readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+func AdsDataTypeArrayInfoParse(theBytes []byte) (AdsDataTypeArrayInfo, error) {
+	return AdsDataTypeArrayInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsDataTypeArrayInfoParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDataTypeArrayInfo"); pullErr != nil {

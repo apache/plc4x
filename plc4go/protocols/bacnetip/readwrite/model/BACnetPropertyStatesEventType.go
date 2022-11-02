@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesEventType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesEventTypeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
+func BACnetPropertyStatesEventTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
+	return BACnetPropertyStatesEventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEventType"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesEventTypeParse(readBuffer utils.ReadBuffer, peekedTagNu
 	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
 	}
-	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventTypeErr != nil {
 		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetPropertyStatesEventType")
 	}

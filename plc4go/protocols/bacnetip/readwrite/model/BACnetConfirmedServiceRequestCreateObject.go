@@ -140,7 +140,11 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
+func BACnetConfirmedServiceRequestCreateObjectParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
+	return BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObject"); pullErr != nil {
@@ -153,7 +157,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("objectSpecifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectSpecifier")
 	}
-	_objectSpecifier, _objectSpecifierErr := BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer, uint8(uint8(0)))
+	_objectSpecifier, _objectSpecifierErr := BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _objectSpecifierErr != nil {
 		return nil, errors.Wrap(_objectSpecifierErr, "Error parsing 'objectSpecifier' field of BACnetConfirmedServiceRequestCreateObject")
 	}
@@ -169,7 +173,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 		}
-		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
+		_val, _err := BACnetPropertyValuesParseWithBuffer(readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

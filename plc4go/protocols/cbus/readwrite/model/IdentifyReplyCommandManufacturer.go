@@ -125,7 +125,11 @@ func (m *_IdentifyReplyCommandManufacturer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandManufacturerParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
+func IdentifyReplyCommandManufacturerParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
+	return IdentifyReplyCommandManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandManufacturer"); pullErr != nil {

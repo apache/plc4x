@@ -153,7 +153,11 @@ func (m TriggerControlCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlCommandTypeParse(readBuffer utils.ReadBuffer) (TriggerControlCommandType, error) {
+func TriggerControlCommandTypeParse(theBytes []byte) (TriggerControlCommandType, error) {
+	return TriggerControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlCommandType")

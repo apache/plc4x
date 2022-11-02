@@ -130,7 +130,11 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
+func IdentifyReplyCommandLogicalAssignmentParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
+	return IdentifyReplyCommandLogicalAssignmentParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandLogicalAssignment"); pullErr != nil {
@@ -151,7 +155,7 @@ func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, att
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
-			_item, _err := LogicAssignmentParse(readBuffer)
+			_item, _err := LogicAssignmentParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'logicAssigment' field of IdentifyReplyCommandLogicalAssignment")
 			}

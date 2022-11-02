@@ -123,7 +123,11 @@ func (m *_BACnetScaleFloatScale) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
+func BACnetScaleFloatScaleParse(theBytes []byte) (BACnetScaleFloatScale, error) {
+	return BACnetScaleFloatScaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetScaleFloatScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleFloatScale"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleFloatSc
 	if pullErr := readBuffer.PullContext("floatScale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floatScale")
 	}
-	_floatScale, _floatScaleErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
+	_floatScale, _floatScaleErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _floatScaleErr != nil {
 		return nil, errors.Wrap(_floatScaleErr, "Error parsing 'floatScale' field of BACnetScaleFloatScale")
 	}

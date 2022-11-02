@@ -836,7 +836,11 @@ func (m LightingCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (LightingCommandTypeContainer, error) {
+func LightingCommandTypeContainerParse(theBytes []byte) (LightingCommandTypeContainer, error) {
+	return LightingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("LightingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingCommandTypeContainer")

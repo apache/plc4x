@@ -141,7 +141,11 @@ func (m *_APDUSimpleAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
+func APDUSimpleAckParse(theBytes []byte, apduLength uint16) (APDUSimpleAck, error) {
+	return APDUSimpleAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+}
+
+func APDUSimpleAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {

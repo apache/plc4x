@@ -156,7 +156,11 @@ func (m *_BACnetEventParameterAccessEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterAccessEventParse(readBuffer utils.ReadBuffer) (BACnetEventParameterAccessEvent, error) {
+func BACnetEventParameterAccessEventParse(theBytes []byte) (BACnetEventParameterAccessEvent, error) {
+	return BACnetEventParameterAccessEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterAccessEventParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterAccessEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterAccessEvent"); pullErr != nil {
@@ -169,7 +173,7 @@ func BACnetEventParameterAccessEventParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(13)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(13)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterAccessEvent")
 	}
@@ -182,7 +186,7 @@ func BACnetEventParameterAccessEventParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("listOfAccessEvents"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfAccessEvents")
 	}
-	_listOfAccessEvents, _listOfAccessEventsErr := BACnetEventParameterAccessEventListOfAccessEventsParse(readBuffer, uint8(uint8(0)))
+	_listOfAccessEvents, _listOfAccessEventsErr := BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _listOfAccessEventsErr != nil {
 		return nil, errors.Wrap(_listOfAccessEventsErr, "Error parsing 'listOfAccessEvents' field of BACnetEventParameterAccessEvent")
 	}
@@ -195,7 +199,7 @@ func BACnetEventParameterAccessEventParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("accessEventTimeReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessEventTimeReference")
 	}
-	_accessEventTimeReference, _accessEventTimeReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_accessEventTimeReference, _accessEventTimeReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _accessEventTimeReferenceErr != nil {
 		return nil, errors.Wrap(_accessEventTimeReferenceErr, "Error parsing 'accessEventTimeReference' field of BACnetEventParameterAccessEvent")
 	}
@@ -208,7 +212,7 @@ func BACnetEventParameterAccessEventParse(readBuffer utils.ReadBuffer) (BACnetEv
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(13)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(13)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterAccessEvent")
 	}

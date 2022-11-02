@@ -141,7 +141,11 @@ func (m *_S7MessageObjectResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
+func S7MessageObjectResponseParse(theBytes []byte, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
+	return S7MessageObjectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType) // TODO: get endianness from mspec
+}
+
+func S7MessageObjectResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
@@ -154,7 +158,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7MessageObjectResponse")
 	}
@@ -167,7 +171,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7MessageObjectResponse")
 	}

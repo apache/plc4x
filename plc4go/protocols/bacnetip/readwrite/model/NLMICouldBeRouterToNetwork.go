@@ -138,7 +138,11 @@ func (m *_NLMICouldBeRouterToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMICouldBeRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMICouldBeRouterToNetwork, error) {
+func NLMICouldBeRouterToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMICouldBeRouterToNetwork, error) {
+	return NLMICouldBeRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+}
+
+func NLMICouldBeRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMICouldBeRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMICouldBeRouterToNetwork"); pullErr != nil {

@@ -148,7 +148,11 @@ func (m *_AmsNetId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsNetIdParse(readBuffer utils.ReadBuffer) (AmsNetId, error) {
+func AmsNetIdParse(theBytes []byte) (AmsNetId, error) {
+	return AmsNetIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {

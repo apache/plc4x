@@ -132,7 +132,11 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
+func BACnetServiceAckReadPropertyMultipleParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
+	return BACnetServiceAckReadPropertyMultipleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength, serviceAckPayloadLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckReadPropertyMultipleParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
@@ -151,7 +155,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 		_dataLength := serviceAckPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
 		for positionAware.GetPos() < _dataEndPos {
-			_item, _err := BACnetReadAccessResultParse(readBuffer)
+			_item, _err := BACnetReadAccessResultParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetServiceAckReadPropertyMultiple")
 			}

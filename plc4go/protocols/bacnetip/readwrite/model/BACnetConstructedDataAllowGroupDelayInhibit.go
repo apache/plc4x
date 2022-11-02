@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAllowGroupDelayInhibitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
+func BACnetConstructedDataAllowGroupDelayInhibitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
+	return BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllowGroupDelayInhibit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAllowGroupDelayInhibitParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("allowGroupDelayInhibit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for allowGroupDelayInhibit")
 	}
-	_allowGroupDelayInhibit, _allowGroupDelayInhibitErr := BACnetApplicationTagParse(readBuffer)
+	_allowGroupDelayInhibit, _allowGroupDelayInhibitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _allowGroupDelayInhibitErr != nil {
 		return nil, errors.Wrap(_allowGroupDelayInhibitErr, "Error parsing 'allowGroupDelayInhibit' field of BACnetConstructedDataAllowGroupDelayInhibit")
 	}

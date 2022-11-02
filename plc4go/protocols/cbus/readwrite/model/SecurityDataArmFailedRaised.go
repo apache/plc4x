@@ -103,7 +103,11 @@ func (m *_SecurityDataArmFailedRaised) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataArmFailedRaisedParse(readBuffer utils.ReadBuffer) (SecurityDataArmFailedRaised, error) {
+func SecurityDataArmFailedRaisedParse(theBytes []byte) (SecurityDataArmFailedRaised, error) {
+	return SecurityDataArmFailedRaisedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataArmFailedRaisedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataArmFailedRaised, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataArmFailedRaised"); pullErr != nil {

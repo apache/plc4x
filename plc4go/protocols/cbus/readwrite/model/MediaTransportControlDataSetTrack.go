@@ -157,7 +157,11 @@ func (m *_MediaTransportControlDataSetTrack) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataSetTrackParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetTrack, error) {
+func MediaTransportControlDataSetTrackParse(theBytes []byte) (MediaTransportControlDataSetTrack, error) {
+	return MediaTransportControlDataSetTrackParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataSetTrackParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetTrack, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetTrack"); pullErr != nil {

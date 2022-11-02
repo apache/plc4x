@@ -125,7 +125,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	if pullErr := readBuffer.PullContext("characterValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for characterValue")
 	}
-	_characterValue, _characterValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_characterValue, _characterValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _characterValueErr != nil {
 		return nil, errors.Wrap(_characterValueErr, "Error parsing 'characterValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 	}

@@ -165,7 +165,11 @@ func (m *_CipReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipReadResponse, error) {
+func CipReadResponseParse(theBytes []byte, serviceLen uint16) (CipReadResponse, error) {
+	return CipReadResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceLen) // TODO: get endianness from mspec
+}
+
+func CipReadResponseParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipReadResponse"); pullErr != nil {
@@ -209,7 +213,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRe
 	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
 	}
-	_dataType, _dataTypeErr := CIPDataTypeCodeParse(readBuffer)
+	_dataType, _dataTypeErr := CIPDataTypeCodeParseWithBuffer(readBuffer)
 	if _dataTypeErr != nil {
 		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CipReadResponse")
 	}

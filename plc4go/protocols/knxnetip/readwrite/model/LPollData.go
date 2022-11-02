@@ -164,7 +164,11 @@ func (m *_LPollData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
+func LPollDataParse(theBytes []byte) (LPollData, error) {
+	return LPollDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LPollDataParseWithBuffer(readBuffer utils.ReadBuffer) (LPollData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
@@ -177,7 +181,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
-	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
+	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(readBuffer)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LPollData")
 	}

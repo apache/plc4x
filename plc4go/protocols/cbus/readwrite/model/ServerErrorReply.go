@@ -123,7 +123,11 @@ func (m *_ServerErrorReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServerErrorReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
+func ServerErrorReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
+	return ServerErrorReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext) // TODO: get endianness from mspec
+}
+
+func ServerErrorReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {

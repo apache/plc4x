@@ -130,7 +130,11 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+func BACnetServiceAckReadPropertyConditionalParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength, serviceAckPayloadLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {

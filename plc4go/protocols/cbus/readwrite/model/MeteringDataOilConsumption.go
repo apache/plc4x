@@ -124,7 +124,11 @@ func (m *_MeteringDataOilConsumption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataOilConsumptionParse(readBuffer utils.ReadBuffer) (MeteringDataOilConsumption, error) {
+func MeteringDataOilConsumptionParse(theBytes []byte) (MeteringDataOilConsumption, error) {
+	return MeteringDataOilConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringDataOilConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataOilConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataOilConsumption"); pullErr != nil {

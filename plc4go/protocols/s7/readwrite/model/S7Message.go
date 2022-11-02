@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -175,7 +176,11 @@ func (m *_S7Message) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
+func S7MessageParse(theBytes []byte) (S7Message, error) {
+	return S7MessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7MessageParseWithBuffer(readBuffer utils.ReadBuffer) (S7Message, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Message"); pullErr != nil {
@@ -248,13 +253,13 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	var typeSwitchError error
 	switch {
 	case messageType == 0x01: // S7MessageRequest
-		_childTemp, typeSwitchError = S7MessageRequestParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageRequestParseWithBuffer(readBuffer)
 	case messageType == 0x02: // S7MessageResponse
-		_childTemp, typeSwitchError = S7MessageResponseParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageResponseParseWithBuffer(readBuffer)
 	case messageType == 0x03: // S7MessageResponseData
-		_childTemp, typeSwitchError = S7MessageResponseDataParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageResponseDataParseWithBuffer(readBuffer)
 	case messageType == 0x07: // S7MessageUserData
-		_childTemp, typeSwitchError = S7MessageUserDataParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageUserDataParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v]", messageType)
 	}
@@ -270,7 +275,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for parameter")
 		}
-		_val, _err := S7ParameterParse(readBuffer, messageType)
+		_val, _err := S7ParameterParseWithBuffer(readBuffer, messageType)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -292,7 +297,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for payload")
 		}
-		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
+		_val, _err := S7PayloadParseWithBuffer(readBuffer, messageType, (parameter))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

@@ -104,7 +104,11 @@ func (m *_MPropWriteCon) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (MPropWriteCon, error) {
+func MPropWriteConParse(theBytes []byte, size uint16) (MPropWriteCon, error) {
+	return MPropWriteConParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func MPropWriteConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MPropWriteCon, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropWriteCon"); pullErr != nil {

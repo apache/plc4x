@@ -149,7 +149,11 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataIsolateSecondaryOutletParse(readBuffer utils.ReadBuffer) (TelephonyDataIsolateSecondaryOutlet, error) {
+func TelephonyDataIsolateSecondaryOutletParse(theBytes []byte) (TelephonyDataIsolateSecondaryOutlet, error) {
+	return TelephonyDataIsolateSecondaryOutletParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyDataIsolateSecondaryOutletParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataIsolateSecondaryOutlet, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataIsolateSecondaryOutlet"); pullErr != nil {

@@ -136,7 +136,11 @@ func (m *_CreateObjectError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CreateObjectErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
+func CreateObjectErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
+	return CreateObjectErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorChoice) // TODO: get endianness from mspec
+}
+
+func CreateObjectErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CreateObjectError"); pullErr != nil {
@@ -149,7 +153,7 @@ func CreateObjectErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfi
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of CreateObjectError")
 	}
@@ -162,7 +166,7 @@ func CreateObjectErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfi
 	if pullErr := readBuffer.PullContext("firstFailedElementNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedElementNumber")
 	}
-	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _firstFailedElementNumberErr != nil {
 		return nil, errors.Wrap(_firstFailedElementNumberErr, "Error parsing 'firstFailedElementNumber' field of CreateObjectError")
 	}

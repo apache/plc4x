@@ -145,7 +145,11 @@ func (m BACnetRestartReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRestartReasonParse(readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
+func BACnetRestartReasonParse(theBytes []byte) (BACnetRestartReason, error) {
+	return BACnetRestartReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetRestartReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRestartReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRestartReason")

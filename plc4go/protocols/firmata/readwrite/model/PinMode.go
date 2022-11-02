@@ -157,7 +157,11 @@ func (m PinMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {
+func PinModeParse(theBytes []byte) (PinMode, error) {
+	return PinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func PinModeParseWithBuffer(readBuffer utils.ReadBuffer) (PinMode, error) {
 	val, err := readBuffer.ReadUint8("PinMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PinMode")

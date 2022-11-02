@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultFadeTime, error) {
+func BACnetConstructedDataDefaultFadeTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultFadeTime, error) {
+	return BACnetConstructedDataDefaultFadeTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultFadeTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultFadeTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("defaultFadeTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultFadeTime")
 	}
-	_defaultFadeTime, _defaultFadeTimeErr := BACnetApplicationTagParse(readBuffer)
+	_defaultFadeTime, _defaultFadeTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _defaultFadeTimeErr != nil {
 		return nil, errors.Wrap(_defaultFadeTimeErr, "Error parsing 'defaultFadeTime' field of BACnetConstructedDataDefaultFadeTime")
 	}

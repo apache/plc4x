@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDeviceType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDeviceTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceType, error) {
+func BACnetConstructedDataDeviceTypeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceType, error) {
+	return BACnetConstructedDataDeviceTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDeviceTypeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceType"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDeviceTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("deviceType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceType")
 	}
-	_deviceType, _deviceTypeErr := BACnetApplicationTagParse(readBuffer)
+	_deviceType, _deviceTypeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _deviceTypeErr != nil {
 		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of BACnetConstructedDataDeviceType")
 	}

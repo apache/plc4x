@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTimerState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimerStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerState, error) {
+func BACnetConstructedDataTimerStateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerState, error) {
+	return BACnetConstructedDataTimerStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimerStateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerState"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTimerStateParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("timerState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timerState")
 	}
-	_timerState, _timerStateErr := BACnetTimerStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_timerState, _timerStateErr := BACnetTimerStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _timerStateErr != nil {
 		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field of BACnetConstructedDataTimerState")
 	}

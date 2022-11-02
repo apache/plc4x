@@ -123,7 +123,11 @@ func (m *_BACnetTimeStampSequence) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (BACnetTimeStampSequence, error) {
+func BACnetTimeStampSequenceParse(theBytes []byte) (BACnetTimeStampSequence, error) {
+	return BACnetTimeStampSequenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTimeStampSequenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStampSequence, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampSequence"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (BACnetTimeStampS
 	if pullErr := readBuffer.PullContext("sequenceNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sequenceNumber")
 	}
-	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of BACnetTimeStampSequence")
 	}

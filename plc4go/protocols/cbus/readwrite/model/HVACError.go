@@ -925,7 +925,11 @@ func (m HVACError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACErrorParse(readBuffer utils.ReadBuffer) (HVACError, error) {
+func HVACErrorParse(theBytes []byte) (HVACError, error) {
+	return HVACErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACErrorParseWithBuffer(readBuffer utils.ReadBuffer) (HVACError, error) {
 	val, err := readBuffer.ReadUint8("HVACError", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACError")

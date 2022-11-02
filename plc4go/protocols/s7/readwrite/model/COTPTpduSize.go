@@ -173,7 +173,11 @@ func (m COTPTpduSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
+func COTPTpduSizeParse(theBytes []byte) (COTPTpduSize, error) {
+	return COTPTpduSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func COTPTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
 	val, err := readBuffer.ReadUint8("COTPTpduSize", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPTpduSize")

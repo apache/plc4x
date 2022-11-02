@@ -120,7 +120,11 @@ func (m *_AlarmMessageAckResponseType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckResponseType, error) {
+func AlarmMessageAckResponseTypeParse(theBytes []byte) (AlarmMessageAckResponseType, error) {
+	return AlarmMessageAckResponseTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmMessageAckResponseTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageAckResponseType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckResponseType"); pullErr != nil {

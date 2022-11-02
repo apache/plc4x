@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueMaxPresValue, error) {
+func BACnetConstructedDataPositiveIntegerValueMaxPresValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueMaxPresValue, error) {
+	return BACnetConstructedDataPositiveIntegerValueMaxPresValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPositiveIntegerValueMaxPresValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueMaxPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueMaxPresValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPositiveIntegerValueMaxPresValueParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("maxPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxPresValue")
 	}
-	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParse(readBuffer)
+	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxPresValueErr != nil {
 		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataPositiveIntegerValueMaxPresValue")
 	}

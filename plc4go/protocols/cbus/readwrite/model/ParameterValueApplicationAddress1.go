@@ -138,7 +138,11 @@ func (m *_ParameterValueApplicationAddress1) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
+func ParameterValueApplicationAddress1Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
+	return ParameterValueApplicationAddress1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes) // TODO: get endianness from mspec
+}
+
+func ParameterValueApplicationAddress1ParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueApplicationAddress1"); pullErr != nil {
@@ -156,7 +160,7 @@ func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, paramet
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := ApplicationAddress1Parse(readBuffer)
+	_value, _valueErr := ApplicationAddress1ParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueApplicationAddress1")
 	}

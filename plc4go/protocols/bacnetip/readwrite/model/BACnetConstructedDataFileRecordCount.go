@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFileRecordCountParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileRecordCount, error) {
+func BACnetConstructedDataFileRecordCountParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileRecordCount, error) {
+	return BACnetConstructedDataFileRecordCountParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataFileRecordCountParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileRecordCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileRecordCount"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataFileRecordCountParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("recordCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recordCount")
 	}
-	_recordCount, _recordCountErr := BACnetApplicationTagParse(readBuffer)
+	_recordCount, _recordCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _recordCountErr != nil {
 		return nil, errors.Wrap(_recordCountErr, "Error parsing 'recordCount' field of BACnetConstructedDataFileRecordCount")
 	}

@@ -138,7 +138,11 @@ func (m *_EipConnectionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (EipConnectionRequest, error) {
+func EipConnectionRequestParse(theBytes []byte) (EipConnectionRequest, error) {
+	return EipConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func EipConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (EipConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {

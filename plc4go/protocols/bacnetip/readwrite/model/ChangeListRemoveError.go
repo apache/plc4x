@@ -136,7 +136,11 @@ func (m *_ChangeListRemoveError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ChangeListRemoveErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (ChangeListRemoveError, error) {
+func ChangeListRemoveErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (ChangeListRemoveError, error) {
+	return ChangeListRemoveErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorChoice) // TODO: get endianness from mspec
+}
+
+func ChangeListRemoveErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (ChangeListRemoveError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChangeListRemoveError"); pullErr != nil {
@@ -149,7 +153,7 @@ func ChangeListRemoveErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetC
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of ChangeListRemoveError")
 	}
@@ -162,7 +166,7 @@ func ChangeListRemoveErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetC
 	if pullErr := readBuffer.PullContext("firstFailedElementNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedElementNumber")
 	}
-	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _firstFailedElementNumberErr != nil {
 		return nil, errors.Wrap(_firstFailedElementNumberErr, "Error parsing 'firstFailedElementNumber' field of ChangeListRemoveError")
 	}

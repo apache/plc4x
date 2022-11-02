@@ -131,7 +131,11 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+func BACnetConfirmedServiceRequestReadPropertyConditionalParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+	return BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength, serviceRequestPayloadLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyConditional"); pullErr != nil {

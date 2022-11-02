@@ -181,7 +181,11 @@ func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthI
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParse(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
+func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
+	return ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForBuildingManagementSystems", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForBuildingManagementSystems")

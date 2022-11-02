@@ -104,7 +104,11 @@ func (m *_DF1SymbolMessageFrameNAK) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {
+func DF1SymbolMessageFrameNAKParse(theBytes []byte) (DF1SymbolMessageFrameNAK, error) {
+	return DF1SymbolMessageFrameNAKParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DF1SymbolMessageFrameNAKParseWithBuffer(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameNAK"); pullErr != nil {

@@ -127,7 +127,11 @@ func (m BACnetLiftGroupMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftGroupModeParse(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode, error) {
+func BACnetLiftGroupModeParse(theBytes []byte) (BACnetLiftGroupMode, error) {
+	return BACnetLiftGroupModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLiftGroupModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftGroupMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftGroupMode")

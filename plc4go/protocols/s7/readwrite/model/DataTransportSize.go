@@ -173,7 +173,11 @@ func (m DataTransportSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DataTransportSizeParse(readBuffer utils.ReadBuffer) (DataTransportSize, error) {
+func DataTransportSizeParse(theBytes []byte) (DataTransportSize, error) {
+	return DataTransportSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DataTransportSizeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportSize, error) {
 	val, err := readBuffer.ReadUint8("DataTransportSize", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportSize")

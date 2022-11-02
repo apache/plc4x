@@ -123,7 +123,11 @@ func (m *_BACnetApplicationTagOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
+func BACnetApplicationTagOctetStringParse(theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
+	return BACnetApplicationTagOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), header) // TODO: get endianness from mspec
+}
+
+func BACnetApplicationTagOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagOctetString"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header BA
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadOctetStringParse(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadOctetStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagOctetString")
 	}

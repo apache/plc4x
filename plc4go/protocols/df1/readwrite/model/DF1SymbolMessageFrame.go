@@ -178,7 +178,11 @@ func (m *_DF1SymbolMessageFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
+func DF1SymbolMessageFrameParse(theBytes []byte) (DF1SymbolMessageFrame, error) {
+	return DF1SymbolMessageFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DF1SymbolMessageFrameParseWithBuffer(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrame"); pullErr != nil {
@@ -205,7 +209,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFr
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := DF1CommandParse(readBuffer)
+	_command, _commandErr := DF1CommandParseWithBuffer(readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of DF1SymbolMessageFrame")
 	}

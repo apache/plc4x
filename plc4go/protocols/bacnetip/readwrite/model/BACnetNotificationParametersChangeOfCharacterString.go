@@ -169,7 +169,11 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfCharacterString, error) {
+func BACnetNotificationParametersChangeOfCharacterStringParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfCharacterString, error) {
+	return BACnetNotificationParametersChangeOfCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfCharacterString"); pullErr != nil {
@@ -182,7 +186,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfCharacterString")
 	}
@@ -195,7 +199,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changedValue")
 	}
-	_changedValue, _changedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_changedValue, _changedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _changedValueErr != nil {
 		return nil, errors.Wrap(_changedValueErr, "Error parsing 'changedValue' field of BACnetNotificationParametersChangeOfCharacterString")
 	}
@@ -208,7 +212,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfCharacterString")
 	}
@@ -221,7 +225,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("alarmValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmValue")
 	}
-	_alarmValue, _alarmValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_alarmValue, _alarmValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _alarmValueErr != nil {
 		return nil, errors.Wrap(_alarmValueErr, "Error parsing 'alarmValue' field of BACnetNotificationParametersChangeOfCharacterString")
 	}
@@ -234,7 +238,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfCharacterString")
 	}

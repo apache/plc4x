@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAccumulatorFaultHighLimit) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccumulatorFaultHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorFaultHighLimit, error) {
+func BACnetConstructedDataAccumulatorFaultHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorFaultHighLimit, error) {
+	return BACnetConstructedDataAccumulatorFaultHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAccumulatorFaultHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorFaultHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccumulatorFaultHighLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAccumulatorFaultHighLimitParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("faultHighLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultHighLimit")
 	}
-	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParse(readBuffer)
+	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _faultHighLimitErr != nil {
 		return nil, errors.Wrap(_faultHighLimitErr, "Error parsing 'faultHighLimit' field of BACnetConstructedDataAccumulatorFaultHighLimit")
 	}

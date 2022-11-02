@@ -104,7 +104,11 @@ func (m *_LRawInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LRawIndParse(readBuffer utils.ReadBuffer, size uint16) (LRawInd, error) {
+func LRawIndParse(theBytes []byte, size uint16) (LRawInd, error) {
+	return LRawIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func LRawIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LRawInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LRawInd"); pullErr != nil {

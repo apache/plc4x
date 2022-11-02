@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataObjectName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataObjectNameParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectName, error) {
+func BACnetConstructedDataObjectNameParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectName, error) {
+	return BACnetConstructedDataObjectNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataObjectNameParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectName"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataObjectNameParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
 	}
-	_objectName, _objectNameErr := BACnetApplicationTagParse(readBuffer)
+	_objectName, _objectNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectNameErr != nil {
 		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetConstructedDataObjectName")
 	}

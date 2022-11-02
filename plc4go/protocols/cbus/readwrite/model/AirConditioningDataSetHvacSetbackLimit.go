@@ -156,7 +156,11 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataSetHvacSetbackLimitParse(readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacSetbackLimit, error) {
+func AirConditioningDataSetHvacSetbackLimitParse(theBytes []byte) (AirConditioningDataSetHvacSetbackLimit, error) {
+	return AirConditioningDataSetHvacSetbackLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataSetHvacSetbackLimitParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacSetbackLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetHvacSetbackLimit"); pullErr != nil {
@@ -176,7 +180,7 @@ func AirConditioningDataSetHvacSetbackLimitParse(readBuffer utils.ReadBuffer) (A
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParse(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataSetHvacSetbackLimit")
 	}
@@ -189,7 +193,7 @@ func AirConditioningDataSetHvacSetbackLimitParse(readBuffer utils.ReadBuffer) (A
 	if pullErr := readBuffer.PullContext("limit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for limit")
 	}
-	_limit, _limitErr := HVACTemperatureParse(readBuffer)
+	_limit, _limitErr := HVACTemperatureParseWithBuffer(readBuffer)
 	if _limitErr != nil {
 		return nil, errors.Wrap(_limitErr, "Error parsing 'limit' field of AirConditioningDataSetHvacSetbackLimit")
 	}
@@ -202,7 +206,7 @@ func AirConditioningDataSetHvacSetbackLimitParse(readBuffer utils.ReadBuffer) (A
 	if pullErr := readBuffer.PullContext("hvacModeAndFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacModeAndFlags")
 	}
-	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACModeAndFlagsParse(readBuffer)
+	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACModeAndFlagsParseWithBuffer(readBuffer)
 	if _hvacModeAndFlagsErr != nil {
 		return nil, errors.Wrap(_hvacModeAndFlagsErr, "Error parsing 'hvacModeAndFlags' field of AirConditioningDataSetHvacSetbackLimit")
 	}

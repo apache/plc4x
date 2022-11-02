@@ -103,7 +103,11 @@ func (m *_SecurityDataEntryDelayStarted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataEntryDelayStartedParse(readBuffer utils.ReadBuffer) (SecurityDataEntryDelayStarted, error) {
+func SecurityDataEntryDelayStartedParse(theBytes []byte) (SecurityDataEntryDelayStarted, error) {
+	return SecurityDataEntryDelayStartedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataEntryDelayStartedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataEntryDelayStarted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEntryDelayStarted"); pullErr != nil {

@@ -136,7 +136,11 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLength
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
+	return BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); pullErr != nil {
@@ -149,7 +153,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 	if pullErr := readBuffer.PullContext("referenceSequenceNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referenceSequenceNumber")
 	}
-	_referenceSequenceNumber, _referenceSequenceNumberErr := BACnetApplicationTagParse(readBuffer)
+	_referenceSequenceNumber, _referenceSequenceNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _referenceSequenceNumberErr != nil {
 		return nil, errors.Wrap(_referenceSequenceNumberErr, "Error parsing 'referenceSequenceNumber' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
@@ -162,7 +166,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
-	_count, _countErr := BACnetApplicationTagParse(readBuffer)
+	_count, _countErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}

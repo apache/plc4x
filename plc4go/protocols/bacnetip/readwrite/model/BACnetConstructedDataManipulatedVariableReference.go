@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManipulatedVariableReference, error) {
+func BACnetConstructedDataManipulatedVariableReferenceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManipulatedVariableReference, error) {
+	return BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManipulatedVariableReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataManipulatedVariableReference"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("manipulatedVariableReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for manipulatedVariableReference")
 	}
-	_manipulatedVariableReference, _manipulatedVariableReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
+	_manipulatedVariableReference, _manipulatedVariableReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(readBuffer)
 	if _manipulatedVariableReferenceErr != nil {
 		return nil, errors.Wrap(_manipulatedVariableReferenceErr, "Error parsing 'manipulatedVariableReference' field of BACnetConstructedDataManipulatedVariableReference")
 	}

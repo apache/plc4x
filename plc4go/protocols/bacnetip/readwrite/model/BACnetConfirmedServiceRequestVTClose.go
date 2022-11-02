@@ -133,7 +133,11 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
+func BACnetConfirmedServiceRequestVTCloseParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
+	return BACnetConfirmedServiceRequestVTCloseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength, serviceRequestPayloadLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serv
 		_listOfRemoteVtSessionIdentifiersLength := serviceRequestPayloadLength
 		_listOfRemoteVtSessionIdentifiersEndPos := positionAware.GetPos() + uint16(_listOfRemoteVtSessionIdentifiersLength)
 		for positionAware.GetPos() < _listOfRemoteVtSessionIdentifiersEndPos {
-			_item, _err := BACnetApplicationTagParse(readBuffer)
+			_item, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfRemoteVtSessionIdentifiers' field of BACnetConfirmedServiceRequestVTClose")
 			}

@@ -201,7 +201,7 @@ func (m *_AdsAddDeviceNotificationRequest) GetLengthInBytes() uint16 {
 }
 
 func AdsAddDeviceNotificationRequestParse(theBytes []byte) (AdsAddDeviceNotificationRequest, error) {
-	return AdsAddDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsAddDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
 }
 
 func AdsAddDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {

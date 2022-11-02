@@ -125,7 +125,11 @@ func (m *_BACnetLogDataLogStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogStatus, error) {
+func BACnetLogDataLogStatusParse(theBytes []byte, tagNumber uint8) (BACnetLogDataLogStatus, error) {
+	return BACnetLogDataLogStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogStatus"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetLogDataLogStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8) (
 	if pullErr := readBuffer.PullContext("logStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logStatus")
 	}
-	_logStatus, _logStatusErr := BACnetLogStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_logStatus, _logStatusErr := BACnetLogStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _logStatusErr != nil {
 		return nil, errors.Wrap(_logStatusErr, "Error parsing 'logStatus' field of BACnetLogDataLogStatus")
 	}

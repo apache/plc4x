@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataVendorName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataVendorNameParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVendorName, error) {
+func BACnetConstructedDataVendorNameParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVendorName, error) {
+	return BACnetConstructedDataVendorNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataVendorNameParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVendorName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVendorName"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataVendorNameParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("vendorName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vendorName")
 	}
-	_vendorName, _vendorNameErr := BACnetApplicationTagParse(readBuffer)
+	_vendorName, _vendorNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _vendorNameErr != nil {
 		return nil, errors.Wrap(_vendorNameErr, "Error parsing 'vendorName' field of BACnetConstructedDataVendorName")
 	}

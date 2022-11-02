@@ -91,7 +91,11 @@ func (m CIPStructTypeCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPStructTypeCodeParse(readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
+func CIPStructTypeCodeParse(theBytes []byte) (CIPStructTypeCode, error) {
+	return CIPStructTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CIPStructTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPStructTypeCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CIPStructTypeCode")

@@ -149,7 +149,11 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataNextPreviousSelectionParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousSelection, error) {
+func MediaTransportControlDataNextPreviousSelectionParse(theBytes []byte) (MediaTransportControlDataNextPreviousSelection, error) {
+	return MediaTransportControlDataNextPreviousSelectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataNextPreviousSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousSelection"); pullErr != nil {

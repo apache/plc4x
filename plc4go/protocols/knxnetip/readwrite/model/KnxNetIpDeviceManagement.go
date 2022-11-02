@@ -125,7 +125,11 @@ func (m *_KnxNetIpDeviceManagement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
+func KnxNetIpDeviceManagementParse(theBytes []byte) (KnxNetIpDeviceManagement, error) {
+	return KnxNetIpDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxNetIpDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {

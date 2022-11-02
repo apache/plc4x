@@ -157,7 +157,11 @@ func (m Status) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {
+func StatusParse(theBytes []byte) (Status, error) {
+	return StatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func StatusParseWithBuffer(readBuffer utils.ReadBuffer) (Status, error) {
 	val, err := readBuffer.ReadUint8("Status", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Status")

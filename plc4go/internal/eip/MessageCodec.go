@@ -20,6 +20,7 @@
 package eip
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -83,8 +84,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewLittleEndianReadBufferByteBased(data)
-		eipPacket, err := model.EipPacketParse(rb)
+		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+		eipPacket, err := model.EipPacketParseWithBuffer(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

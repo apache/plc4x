@@ -123,7 +123,11 @@ func (m *_MonitoredSALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
+func MonitoredSALReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
+	return MonitoredSALReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext) // TODO: get endianness from mspec
+}
+
+func MonitoredSALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
@@ -136,7 +140,7 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	if pullErr := readBuffer.PullContext("monitoredSAL"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredSAL")
 	}
-	_monitoredSAL, _monitoredSALErr := MonitoredSALParse(readBuffer, cBusOptions)
+	_monitoredSAL, _monitoredSALErr := MonitoredSALParseWithBuffer(readBuffer, cBusOptions)
 	if _monitoredSALErr != nil {
 		return nil, errors.Wrap(_monitoredSALErr, "Error parsing 'monitoredSAL' field of MonitoredSALReply")
 	}

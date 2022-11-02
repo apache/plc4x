@@ -136,7 +136,11 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
+func FirmataCommandSetPinModeParse(theBytes []byte, response bool) (FirmataCommandSetPinMode, error) {
+	return FirmataCommandSetPinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataCommandSetPinModeParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
@@ -156,7 +160,7 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := PinModeParse(readBuffer)
+	_mode, _modeErr := PinModeParseWithBuffer(readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of FirmataCommandSetPinMode")
 	}

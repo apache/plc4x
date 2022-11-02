@@ -181,7 +181,11 @@ func (m *_S7ParameterModeTransition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterModeTransition, error) {
+func S7ParameterModeTransitionParse(theBytes []byte, messageType uint8) (S7ParameterModeTransition, error) {
+	return S7ParameterModeTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+}
+
+func S7ParameterModeTransitionParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterModeTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {

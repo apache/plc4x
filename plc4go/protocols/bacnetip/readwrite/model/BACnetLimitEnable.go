@@ -97,7 +97,11 @@ func (m BACnetLimitEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLimitEnableParse(readBuffer utils.ReadBuffer) (BACnetLimitEnable, error) {
+func BACnetLimitEnableParse(theBytes []byte) (BACnetLimitEnable, error) {
+	return BACnetLimitEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLimitEnableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLimitEnable, error) {
 	val, err := readBuffer.ReadUint8("BACnetLimitEnable", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLimitEnable")

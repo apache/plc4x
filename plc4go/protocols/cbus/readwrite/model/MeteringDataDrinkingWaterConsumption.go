@@ -124,7 +124,11 @@ func (m *_MeteringDataDrinkingWaterConsumption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataDrinkingWaterConsumptionParse(readBuffer utils.ReadBuffer) (MeteringDataDrinkingWaterConsumption, error) {
+func MeteringDataDrinkingWaterConsumptionParse(theBytes []byte) (MeteringDataDrinkingWaterConsumption, error) {
+	return MeteringDataDrinkingWaterConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringDataDrinkingWaterConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataDrinkingWaterConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataDrinkingWaterConsumption"); pullErr != nil {

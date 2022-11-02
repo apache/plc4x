@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIntegerValueFaultLowLimit) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegerValueFaultLowLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueFaultLowLimit, error) {
+func BACnetConstructedDataIntegerValueFaultLowLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueFaultLowLimit, error) {
+	return BACnetConstructedDataIntegerValueFaultLowLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIntegerValueFaultLowLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegerValueFaultLowLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueFaultLowLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIntegerValueFaultLowLimitParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("faultLowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultLowLimit")
 	}
-	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParse(readBuffer)
+	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _faultLowLimitErr != nil {
 		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field of BACnetConstructedDataIntegerValueFaultLowLimit")
 	}

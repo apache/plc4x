@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccumulatorMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorMaxPresValue, error) {
+func BACnetConstructedDataAccumulatorMaxPresValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorMaxPresValue, error) {
+	return BACnetConstructedDataAccumulatorMaxPresValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAccumulatorMaxPresValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorMaxPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccumulatorMaxPresValue"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAccumulatorMaxPresValueParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("maxPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxPresValue")
 	}
-	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParse(readBuffer)
+	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxPresValueErr != nil {
 		return nil, errors.Wrap(_maxPresValueErr, "Error parsing 'maxPresValue' field of BACnetConstructedDataAccumulatorMaxPresValue")
 	}

@@ -109,7 +109,11 @@ func (m GAVState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func GAVStateParse(readBuffer utils.ReadBuffer) (GAVState, error) {
+func GAVStateParse(theBytes []byte) (GAVState, error) {
+	return GAVStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func GAVStateParseWithBuffer(readBuffer utils.ReadBuffer) (GAVState, error) {
 	val, err := readBuffer.ReadUint8("GAVState", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading GAVState")

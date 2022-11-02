@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnable, error) {
+func BACnetConstructedDataEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnable, error) {
+	return BACnetConstructedDataEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnable"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataEnableParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enable")
 	}
-	_enable, _enableErr := BACnetApplicationTagParse(readBuffer)
+	_enable, _enableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _enableErr != nil {
 		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetConstructedDataEnable")
 	}

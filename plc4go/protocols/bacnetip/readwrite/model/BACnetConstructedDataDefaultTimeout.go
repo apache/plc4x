@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultTimeout, error) {
+func BACnetConstructedDataDefaultTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultTimeout, error) {
+	return BACnetConstructedDataDefaultTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDefaultTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultTimeout"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("defaultTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultTimeout")
 	}
-	_defaultTimeout, _defaultTimeoutErr := BACnetApplicationTagParse(readBuffer)
+	_defaultTimeout, _defaultTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _defaultTimeoutErr != nil {
 		return nil, errors.Wrap(_defaultTimeoutErr, "Error parsing 'defaultTimeout' field of BACnetConstructedDataDefaultTimeout")
 	}

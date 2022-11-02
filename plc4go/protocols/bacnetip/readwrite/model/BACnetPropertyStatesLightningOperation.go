@@ -123,7 +123,11 @@ func (m *_BACnetPropertyStatesLightningOperation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLightningOperationParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningOperation, error) {
+func BACnetPropertyStatesLightningOperationParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningOperation, error) {
+	return BACnetPropertyStatesLightningOperationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLightningOperationParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningOperation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningOperation"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPropertyStatesLightningOperationParse(readBuffer utils.ReadBuffer, pe
 	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
 	}
-	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
 		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetPropertyStatesLightningOperation")
 	}

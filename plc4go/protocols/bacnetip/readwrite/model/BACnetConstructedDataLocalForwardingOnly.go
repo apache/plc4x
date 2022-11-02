@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalForwardingOnly, error) {
+func BACnetConstructedDataLocalForwardingOnlyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalForwardingOnly, error) {
+	return BACnetConstructedDataLocalForwardingOnlyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLocalForwardingOnlyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalForwardingOnly, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalForwardingOnly"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("localForwardingOnly"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for localForwardingOnly")
 	}
-	_localForwardingOnly, _localForwardingOnlyErr := BACnetApplicationTagParse(readBuffer)
+	_localForwardingOnly, _localForwardingOnlyErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _localForwardingOnlyErr != nil {
 		return nil, errors.Wrap(_localForwardingOnlyErr, "Error parsing 'localForwardingOnly' field of BACnetConstructedDataLocalForwardingOnly")
 	}

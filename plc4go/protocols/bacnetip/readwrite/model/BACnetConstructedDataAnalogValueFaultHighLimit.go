@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataAnalogValueFaultHighLimit) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogValueFaultHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultHighLimit, error) {
+func BACnetConstructedDataAnalogValueFaultHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultHighLimit, error) {
+	return BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAnalogValueFaultHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueFaultHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogValueFaultHighLimit"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataAnalogValueFaultHighLimitParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("faultHighLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultHighLimit")
 	}
-	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParse(readBuffer)
+	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _faultHighLimitErr != nil {
 		return nil, errors.Wrap(_faultHighLimitErr, "Error parsing 'faultHighLimit' field of BACnetConstructedDataAnalogValueFaultHighLimit")
 	}

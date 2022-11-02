@@ -123,7 +123,11 @@ func (m *_BACnetPriorityValueDateTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueDateTimeParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDateTime, error) {
+func BACnetPriorityValueDateTimeParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDateTime, error) {
+	return BACnetPriorityValueDateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetPriorityValueDateTimeParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDateTime"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetPriorityValueDateTimeParse(readBuffer utils.ReadBuffer, objectTypeArg
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(1)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetPriorityValueDateTime")
 	}

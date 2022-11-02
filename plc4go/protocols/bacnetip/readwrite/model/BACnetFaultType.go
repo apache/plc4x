@@ -133,7 +133,11 @@ func (m BACnetFaultType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultTypeParse(readBuffer utils.ReadBuffer) (BACnetFaultType, error) {
+func BACnetFaultTypeParse(theBytes []byte) (BACnetFaultType, error) {
+	return BACnetFaultTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultType, error) {
 	val, err := readBuffer.ReadUint8("BACnetFaultType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetFaultType")

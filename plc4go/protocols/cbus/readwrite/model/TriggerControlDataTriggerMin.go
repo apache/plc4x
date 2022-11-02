@@ -103,7 +103,11 @@ func (m *_TriggerControlDataTriggerMin) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataTriggerMinParse(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMin, error) {
+func TriggerControlDataTriggerMinParse(theBytes []byte) (TriggerControlDataTriggerMin, error) {
+	return TriggerControlDataTriggerMinParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlDataTriggerMinParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMin, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMin"); pullErr != nil {

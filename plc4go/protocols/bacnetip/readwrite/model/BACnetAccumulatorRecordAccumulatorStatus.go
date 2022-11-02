@@ -115,7 +115,11 @@ func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccumulatorRecordAccumulatorStatusParse(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
+func BACnetAccumulatorRecordAccumulatorStatusParse(theBytes []byte) (BACnetAccumulatorRecordAccumulatorStatus, error) {
+	return BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccumulatorRecordAccumulatorStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccumulatorRecordAccumulatorStatus")

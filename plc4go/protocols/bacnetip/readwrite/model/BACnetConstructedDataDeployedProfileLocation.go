@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
+func BACnetConstructedDataDeployedProfileLocationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
+	return BACnetConstructedDataDeployedProfileLocationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDeployedProfileLocationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeployedProfileLocation"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("deployedProfileLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deployedProfileLocation")
 	}
-	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParse(readBuffer)
+	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _deployedProfileLocationErr != nil {
 		return nil, errors.Wrap(_deployedProfileLocationErr, "Error parsing 'deployedProfileLocation' field of BACnetConstructedDataDeployedProfileLocation")
 	}

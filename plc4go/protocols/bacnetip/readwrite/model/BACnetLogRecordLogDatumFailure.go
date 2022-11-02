@@ -125,7 +125,11 @@ func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumFailureParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
+func BACnetLogRecordLogDatumFailureParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
+	return BACnetLogRecordLogDatumFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLogRecordLogDatumFailureParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumFailure"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetLogRecordLogDatumFailureParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for failure")
 	}
-	_failure, _failureErr := ErrorEnclosedParse(readBuffer, uint8(uint8(8)))
+	_failure, _failureErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(8)))
 	if _failureErr != nil {
 		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogRecordLogDatumFailure")
 	}

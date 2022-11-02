@@ -125,7 +125,11 @@ func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
+func KnxGroupAddressFreeLevelParse(theBytes []byte, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
+	return KnxGroupAddressFreeLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), numLevels) // TODO: get endianness from mspec
+}
+
+func KnxGroupAddressFreeLevelParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {

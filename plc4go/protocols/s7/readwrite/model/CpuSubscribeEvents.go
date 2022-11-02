@@ -109,7 +109,11 @@ func (m CpuSubscribeEvents) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CpuSubscribeEventsParse(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {
+func CpuSubscribeEventsParse(theBytes []byte) (CpuSubscribeEvents, error) {
+	return CpuSubscribeEventsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CpuSubscribeEventsParseWithBuffer(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {
 	val, err := readBuffer.ReadUint8("CpuSubscribeEvents", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CpuSubscribeEvents")

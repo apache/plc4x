@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
+func BACnetConstructedDataPacketReorderTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
+	return BACnetConstructedDataPacketReorderTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPacketReorderTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPacketReorderTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("packetReorderTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for packetReorderTime")
 	}
-	_packetReorderTime, _packetReorderTimeErr := BACnetApplicationTagParse(readBuffer)
+	_packetReorderTime, _packetReorderTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _packetReorderTimeErr != nil {
 		return nil, errors.Wrap(_packetReorderTimeErr, "Error parsing 'packetReorderTime' field of BACnetConstructedDataPacketReorderTime")
 	}

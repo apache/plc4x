@@ -97,7 +97,11 @@ func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessRuleTimeRangeSpecifierParse(readBuffer utils.ReadBuffer) (BACnetAccessRuleTimeRangeSpecifier, error) {
+func BACnetAccessRuleTimeRangeSpecifierParse(theBytes []byte) (BACnetAccessRuleTimeRangeSpecifier, error) {
+	return BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessRuleTimeRangeSpecifier, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessRuleTimeRangeSpecifier", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleTimeRangeSpecifier")

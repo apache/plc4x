@@ -115,7 +115,11 @@ func (m *_BACnetTagPayloadBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {
+func BACnetTagPayloadBooleanParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadBoolean, error) {
+	return BACnetTagPayloadBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), actualLength) // TODO: get endianness from mspec
+}
+
+func BACnetTagPayloadBooleanParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBoolean"); pullErr != nil {

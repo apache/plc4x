@@ -127,7 +127,11 @@ func (m BACnetDaysOfWeek) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDaysOfWeekParse(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
+func BACnetDaysOfWeekParse(theBytes []byte) (BACnetDaysOfWeek, error) {
+	return BACnetDaysOfWeekParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetDaysOfWeekParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
 	val, err := readBuffer.ReadUint8("BACnetDaysOfWeek", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDaysOfWeek")

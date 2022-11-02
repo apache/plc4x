@@ -1597,7 +1597,11 @@ func (m BACnetEngineeringUnits) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEngineeringUnitsParse(readBuffer utils.ReadBuffer) (BACnetEngineeringUnits, error) {
+func BACnetEngineeringUnitsParse(theBytes []byte) (BACnetEngineeringUnits, error) {
+	return BACnetEngineeringUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEngineeringUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEngineeringUnits, error) {
 	val, err := readBuffer.ReadUint32("BACnetEngineeringUnits", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEngineeringUnits")

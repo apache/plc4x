@@ -98,7 +98,11 @@ func (m *_BACnetAccessThreatLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessThreatLevelParse(readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
+func BACnetAccessThreatLevelParse(theBytes []byte) (BACnetAccessThreatLevel, error) {
+	return BACnetAccessThreatLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessThreatLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessThreatLevel"); pullErr != nil {
@@ -111,7 +115,7 @@ func BACnetAccessThreatLevelParse(readBuffer utils.ReadBuffer) (BACnetAccessThre
 	if pullErr := readBuffer.PullContext("threatLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for threatLevel")
 	}
-	_threatLevel, _threatLevelErr := BACnetApplicationTagParse(readBuffer)
+	_threatLevel, _threatLevelErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _threatLevelErr != nil {
 		return nil, errors.Wrap(_threatLevelErr, "Error parsing 'threatLevel' field of BACnetAccessThreatLevel")
 	}

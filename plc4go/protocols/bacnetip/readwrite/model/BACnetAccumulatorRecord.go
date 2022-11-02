@@ -128,7 +128,11 @@ func (m *_BACnetAccumulatorRecord) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
+func BACnetAccumulatorRecordParse(theBytes []byte) (BACnetAccumulatorRecord, error) {
+	return BACnetAccumulatorRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccumulatorRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccumulatorRecord"); pullErr != nil {
@@ -141,7 +145,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
+	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetAccumulatorRecord")
 	}
@@ -154,7 +158,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_presentValue, _presentValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetAccumulatorRecord")
 	}
@@ -167,7 +171,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	if pullErr := readBuffer.PullContext("accumulatedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accumulatedValue")
 	}
-	_accumulatedValue, _accumulatedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_accumulatedValue, _accumulatedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _accumulatedValueErr != nil {
 		return nil, errors.Wrap(_accumulatedValueErr, "Error parsing 'accumulatedValue' field of BACnetAccumulatorRecord")
 	}
@@ -180,7 +184,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (BACnetAccumulato
 	if pullErr := readBuffer.PullContext("accumulatorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accumulatorStatus")
 	}
-	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accumulatorStatusErr != nil {
 		return nil, errors.Wrap(_accumulatorStatusErr, "Error parsing 'accumulatorStatus' field of BACnetAccumulatorRecord")
 	}

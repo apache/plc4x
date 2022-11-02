@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataNotificationClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
+func BACnetConstructedDataNotificationClassParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
+	return BACnetConstructedDataNotificationClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataNotificationClassParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationClass"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("notificationClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notificationClass")
 	}
-	_notificationClass, _notificationClassErr := BACnetApplicationTagParse(readBuffer)
+	_notificationClass, _notificationClassErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _notificationClassErr != nil {
 		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field of BACnetConstructedDataNotificationClass")
 	}

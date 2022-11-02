@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataPower) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
+func BACnetConstructedDataPowerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
+	return BACnetConstructedDataPowerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPowerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPower, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPower"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if pullErr := readBuffer.PullContext("power"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for power")
 	}
-	_power, _powerErr := BACnetApplicationTagParse(readBuffer)
+	_power, _powerErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _powerErr != nil {
 		return nil, errors.Wrap(_powerErr, "Error parsing 'power' field of BACnetConstructedDataPower")
 	}

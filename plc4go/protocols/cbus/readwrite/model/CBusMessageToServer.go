@@ -125,7 +125,11 @@ func (m *_CBusMessageToServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
+func CBusMessageToServerParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
+	return CBusMessageToServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), isResponse, requestContext, cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusMessageToServerParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToServer"); pullErr != nil {
@@ -138,7 +142,7 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for request")
 	}
-	_request, _requestErr := RequestParse(readBuffer, cBusOptions)
+	_request, _requestErr := RequestParseWithBuffer(readBuffer, cBusOptions)
 	if _requestErr != nil {
 		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CBusMessageToServer")
 	}

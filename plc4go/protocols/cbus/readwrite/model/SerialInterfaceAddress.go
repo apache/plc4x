@@ -98,7 +98,11 @@ func (m *_SerialInterfaceAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SerialInterfaceAddressParse(readBuffer utils.ReadBuffer) (SerialInterfaceAddress, error) {
+func SerialInterfaceAddressParse(theBytes []byte) (SerialInterfaceAddress, error) {
+	return SerialInterfaceAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SerialInterfaceAddressParseWithBuffer(readBuffer utils.ReadBuffer) (SerialInterfaceAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SerialInterfaceAddress"); pullErr != nil {

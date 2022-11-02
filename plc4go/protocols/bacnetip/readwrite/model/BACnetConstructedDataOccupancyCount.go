@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataOccupancyCount) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
+func BACnetConstructedDataOccupancyCountParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
+	return BACnetConstructedDataOccupancyCountParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataOccupancyCountParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyCount"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("occupancyCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyCount")
 	}
-	_occupancyCount, _occupancyCountErr := BACnetApplicationTagParse(readBuffer)
+	_occupancyCount, _occupancyCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _occupancyCountErr != nil {
 		return nil, errors.Wrap(_occupancyCountErr, "Error parsing 'occupancyCount' field of BACnetConstructedDataOccupancyCount")
 	}

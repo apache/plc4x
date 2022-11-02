@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataInputReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInputReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
+func BACnetConstructedDataInputReferenceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
+	return BACnetConstructedDataInputReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataInputReferenceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInputReference"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataInputReferenceParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("inputReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for inputReference")
 	}
-	_inputReference, _inputReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
+	_inputReference, _inputReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(readBuffer)
 	if _inputReferenceErr != nil {
 		return nil, errors.Wrap(_inputReferenceErr, "Error parsing 'inputReference' field of BACnetConstructedDataInputReference")
 	}

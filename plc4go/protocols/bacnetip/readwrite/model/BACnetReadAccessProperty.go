@@ -126,7 +126,11 @@ func (m *_BACnetReadAccessProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
+func BACnetReadAccessPropertyParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
+	return BACnetReadAccessPropertyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetReadAccessPropertyParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessProperty"); pullErr != nil {
@@ -139,7 +143,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetReadAccessProperty")
 	}
@@ -155,7 +159,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -177,7 +181,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for readResult")
 		}
-		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetReadAccessPropertyReadResultParseWithBuffer(readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

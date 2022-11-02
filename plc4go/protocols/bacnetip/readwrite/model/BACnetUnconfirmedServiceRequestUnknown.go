@@ -128,7 +128,11 @@ func (m *_BACnetUnconfirmedServiceRequestUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnknownParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnknown, error) {
+func BACnetUnconfirmedServiceRequestUnknownParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnknown, error) {
+	return BACnetUnconfirmedServiceRequestUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetUnconfirmedServiceRequestUnknownParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnknown"); pullErr != nil {

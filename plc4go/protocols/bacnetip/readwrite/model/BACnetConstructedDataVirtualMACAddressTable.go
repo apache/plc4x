@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVirtualMACAddressTable, error) {
+func BACnetConstructedDataVirtualMACAddressTableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVirtualMACAddressTable, error) {
+	return BACnetConstructedDataVirtualMACAddressTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataVirtualMACAddressTableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVirtualMACAddressTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVirtualMACAddressTable"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffe
 	var virtualMacAddressTable []BACnetVMACEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetVMACEntryParse(readBuffer)
+			_item, _err := BACnetVMACEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'virtualMacAddressTable' field of BACnetConstructedDataVirtualMACAddressTable")
 			}

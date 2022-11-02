@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxSegmentsAccepted, error) {
+func BACnetConstructedDataMaxSegmentsAcceptedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxSegmentsAccepted, error) {
+	return BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxSegmentsAccepted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxSegmentsAccepted"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataMaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxSegmentsAccepted")
 	}
-	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := BACnetApplicationTagParse(readBuffer)
+	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxSegmentsAcceptedErr != nil {
 		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field of BACnetConstructedDataMaxSegmentsAccepted")
 	}

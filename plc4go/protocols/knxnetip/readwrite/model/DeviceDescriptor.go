@@ -528,7 +528,11 @@ func (m DeviceDescriptor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
+func DeviceDescriptorParse(theBytes []byte) (DeviceDescriptor, error) {
+	return DeviceDescriptorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceDescriptorParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
 	val, err := readBuffer.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceDescriptor")

@@ -1401,7 +1401,11 @@ func (m AccessControlCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (AccessControlCommandTypeContainer, error) {
+func AccessControlCommandTypeContainerParse(theBytes []byte) (AccessControlCommandTypeContainer, error) {
+	return AccessControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCommandTypeContainer")

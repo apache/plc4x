@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransactionNotificationClass, error) {
+func BACnetConstructedDataTransactionNotificationClassParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransactionNotificationClass, error) {
+	return BACnetConstructedDataTransactionNotificationClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTransactionNotificationClassParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransactionNotificationClass, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTransactionNotificationClass"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("transactionNotificationClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transactionNotificationClass")
 	}
-	_transactionNotificationClass, _transactionNotificationClassErr := BACnetApplicationTagParse(readBuffer)
+	_transactionNotificationClass, _transactionNotificationClassErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _transactionNotificationClassErr != nil {
 		return nil, errors.Wrap(_transactionNotificationClassErr, "Error parsing 'transactionNotificationClass' field of BACnetConstructedDataTransactionNotificationClass")
 	}

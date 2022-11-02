@@ -103,7 +103,11 @@ func (m BACnetNotifyType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error) {
+func BACnetNotifyTypeParse(theBytes []byte) (BACnetNotifyType, error) {
+	return BACnetNotifyTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetNotifyTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNotifyType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNotifyType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNotifyType")

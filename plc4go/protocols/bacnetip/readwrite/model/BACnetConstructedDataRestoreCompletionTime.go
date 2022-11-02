@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
+func BACnetConstructedDataRestoreCompletionTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
+	return BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestoreCompletionTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestoreCompletionTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("completionTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for completionTime")
 	}
-	_completionTime, _completionTimeErr := BACnetApplicationTagParse(readBuffer)
+	_completionTime, _completionTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _completionTimeErr != nil {
 		return nil, errors.Wrap(_completionTimeErr, "Error parsing 'completionTime' field of BACnetConstructedDataRestoreCompletionTime")
 	}

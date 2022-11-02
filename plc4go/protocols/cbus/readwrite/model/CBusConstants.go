@@ -99,7 +99,11 @@ func (m *_CBusConstants) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusConstantsParse(readBuffer utils.ReadBuffer) (CBusConstants, error) {
+func CBusConstantsParse(theBytes []byte) (CBusConstants, error) {
+	return CBusConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CBusConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (CBusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusConstants"); pullErr != nil {

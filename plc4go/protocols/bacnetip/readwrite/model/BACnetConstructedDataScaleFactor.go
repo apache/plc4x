@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataScaleFactor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataScaleFactorParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScaleFactor, error) {
+func BACnetConstructedDataScaleFactorParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScaleFactor, error) {
+	return BACnetConstructedDataScaleFactorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataScaleFactorParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScaleFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScaleFactor"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataScaleFactorParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("scaleFactor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for scaleFactor")
 	}
-	_scaleFactor, _scaleFactorErr := BACnetApplicationTagParse(readBuffer)
+	_scaleFactor, _scaleFactorErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _scaleFactorErr != nil {
 		return nil, errors.Wrap(_scaleFactorErr, "Error parsing 'scaleFactor' field of BACnetConstructedDataScaleFactor")
 	}

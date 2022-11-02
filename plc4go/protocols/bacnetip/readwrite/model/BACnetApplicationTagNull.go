@@ -102,7 +102,11 @@ func (m *_BACnetApplicationTagNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
+func BACnetApplicationTagNullParse(theBytes []byte) (BACnetApplicationTagNull, error) {
+	return BACnetApplicationTagNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetApplicationTagNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagNull"); pullErr != nil {

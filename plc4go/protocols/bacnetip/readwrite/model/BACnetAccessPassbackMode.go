@@ -103,7 +103,11 @@ func (m BACnetAccessPassbackMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessPassbackModeParse(readBuffer utils.ReadBuffer) (BACnetAccessPassbackMode, error) {
+func BACnetAccessPassbackModeParse(theBytes []byte) (BACnetAccessPassbackMode, error) {
+	return BACnetAccessPassbackModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessPassbackModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessPassbackMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessPassbackMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessPassbackMode")

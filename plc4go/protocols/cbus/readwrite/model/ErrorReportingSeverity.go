@@ -133,7 +133,11 @@ func (m ErrorReportingSeverity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSeverityParse(readBuffer utils.ReadBuffer) (ErrorReportingSeverity, error) {
+func ErrorReportingSeverityParse(theBytes []byte) (ErrorReportingSeverity, error) {
+	return ErrorReportingSeverityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSeverityParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSeverity, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSeverity", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSeverity")

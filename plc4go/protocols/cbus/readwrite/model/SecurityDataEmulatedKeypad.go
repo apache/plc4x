@@ -221,7 +221,11 @@ func (m *_SecurityDataEmulatedKeypad) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataEmulatedKeypadParse(readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
+func SecurityDataEmulatedKeypadParse(theBytes []byte) (SecurityDataEmulatedKeypad, error) {
+	return SecurityDataEmulatedKeypadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataEmulatedKeypadParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEmulatedKeypad"); pullErr != nil {

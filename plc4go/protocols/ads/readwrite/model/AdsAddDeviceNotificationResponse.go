@@ -147,7 +147,11 @@ func (m *_AdsAddDeviceNotificationResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationResponse, error) {
+func AdsAddDeviceNotificationResponseParse(theBytes []byte) (AdsAddDeviceNotificationResponse, error) {
+	return AdsAddDeviceNotificationResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsAddDeviceNotificationResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationResponse"); pullErr != nil {
@@ -160,7 +164,7 @@ func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsAddD
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsAddDeviceNotificationResponse")
 	}

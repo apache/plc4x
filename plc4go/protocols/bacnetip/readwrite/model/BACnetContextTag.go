@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -145,7 +146,11 @@ func (m *_BACnetContextTag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTag, error) {
+func BACnetContextTagParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTag, error) {
+	return BACnetContextTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument, dataType) // TODO: get endianness from mspec
+}
+
+func BACnetContextTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTag"); pullErr != nil {
@@ -158,7 +163,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetContextTag")
 	}
@@ -203,33 +208,33 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	var typeSwitchError error
 	switch {
 	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
-		_childTemp, typeSwitchError = BACnetContextTagNullParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagNullParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
-		_childTemp, typeSwitchError = BACnetContextTagBooleanParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagBooleanParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
-		_childTemp, typeSwitchError = BACnetContextTagUnsignedIntegerParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagUnsignedIntegerParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_SIGNED_INTEGER: // BACnetContextTagSignedInteger
-		_childTemp, typeSwitchError = BACnetContextTagSignedIntegerParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagSignedIntegerParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_REAL: // BACnetContextTagReal
-		_childTemp, typeSwitchError = BACnetContextTagRealParse(readBuffer, tagNumberArgument, dataType)
+		_childTemp, typeSwitchError = BACnetContextTagRealParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_DOUBLE: // BACnetContextTagDouble
-		_childTemp, typeSwitchError = BACnetContextTagDoubleParse(readBuffer, tagNumberArgument, dataType)
+		_childTemp, typeSwitchError = BACnetContextTagDoubleParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetContextTagOctetString
-		_childTemp, typeSwitchError = BACnetContextTagOctetStringParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagOctetStringParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetContextTagCharacterString
-		_childTemp, typeSwitchError = BACnetContextTagCharacterStringParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagCharacterStringParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_BIT_STRING: // BACnetContextTagBitString
-		_childTemp, typeSwitchError = BACnetContextTagBitStringParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagBitStringParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_ENUMERATED: // BACnetContextTagEnumerated
-		_childTemp, typeSwitchError = BACnetContextTagEnumeratedParse(readBuffer, tagNumberArgument, dataType, header)
+		_childTemp, typeSwitchError = BACnetContextTagEnumeratedParseWithBuffer(readBuffer, tagNumberArgument, dataType, header)
 	case dataType == BACnetDataType_DATE: // BACnetContextTagDate
-		_childTemp, typeSwitchError = BACnetContextTagDateParse(readBuffer, tagNumberArgument, dataType)
+		_childTemp, typeSwitchError = BACnetContextTagDateParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_TIME: // BACnetContextTagTime
-		_childTemp, typeSwitchError = BACnetContextTagTimeParse(readBuffer, tagNumberArgument, dataType)
+		_childTemp, typeSwitchError = BACnetContextTagTimeParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetContextTagObjectIdentifier
-		_childTemp, typeSwitchError = BACnetContextTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType)
+		_childTemp, typeSwitchError = BACnetContextTagObjectIdentifierParseWithBuffer(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_UNKNOWN: // BACnetContextTagUnknown
-		_childTemp, typeSwitchError = BACnetContextTagUnknownParse(readBuffer, tagNumberArgument, dataType, actualLength)
+		_childTemp, typeSwitchError = BACnetContextTagUnknownParseWithBuffer(readBuffer, tagNumberArgument, dataType, actualLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [dataType=%v]", dataType)
 	}

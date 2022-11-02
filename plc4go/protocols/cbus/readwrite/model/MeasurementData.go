@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,7 +132,11 @@ func (m *_MeasurementData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeasurementDataParse(readBuffer utils.ReadBuffer) (MeasurementData, error) {
+func MeasurementDataParse(theBytes []byte) (MeasurementData, error) {
+	return MeasurementDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeasurementDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeasurementData"); pullErr != nil {
@@ -149,7 +154,7 @@ func MeasurementDataParse(readBuffer utils.ReadBuffer) (MeasurementData, error) 
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := MeasurementCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := MeasurementCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of MeasurementData")
 	}
@@ -174,7 +179,7 @@ func MeasurementDataParse(readBuffer utils.ReadBuffer) (MeasurementData, error) 
 	var typeSwitchError error
 	switch {
 	case commandType == MeasurementCommandType_MEASUREMENT_EVENT: // MeasurementDataChannelMeasurementData
-		_childTemp, typeSwitchError = MeasurementDataChannelMeasurementDataParse(readBuffer)
+		_childTemp, typeSwitchError = MeasurementDataChannelMeasurementDataParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

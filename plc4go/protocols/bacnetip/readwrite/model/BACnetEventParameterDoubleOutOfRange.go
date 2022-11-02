@@ -178,7 +178,11 @@ func (m *_BACnetEventParameterDoubleOutOfRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterDoubleOutOfRangeParse(readBuffer utils.ReadBuffer) (BACnetEventParameterDoubleOutOfRange, error) {
+func BACnetEventParameterDoubleOutOfRangeParse(theBytes []byte) (BACnetEventParameterDoubleOutOfRange, error) {
+	return BACnetEventParameterDoubleOutOfRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterDoubleOutOfRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterDoubleOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterDoubleOutOfRange"); pullErr != nil {
@@ -191,7 +195,7 @@ func BACnetEventParameterDoubleOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(14)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(14)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterDoubleOutOfRange")
 	}
@@ -204,7 +208,7 @@ func BACnetEventParameterDoubleOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterDoubleOutOfRange")
 	}
@@ -217,7 +221,7 @@ func BACnetEventParameterDoubleOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
 	}
-	_lowLimit, _lowLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_DOUBLE))
+	_lowLimit, _lowLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_DOUBLE))
 	if _lowLimitErr != nil {
 		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetEventParameterDoubleOutOfRange")
 	}
@@ -230,7 +234,7 @@ func BACnetEventParameterDoubleOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
-	_highLimit, _highLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_DOUBLE))
+	_highLimit, _highLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_DOUBLE))
 	if _highLimitErr != nil {
 		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetEventParameterDoubleOutOfRange")
 	}
@@ -243,7 +247,7 @@ func BACnetEventParameterDoubleOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
 	}
-	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_DOUBLE))
+	_deadband, _deadbandErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_DOUBLE))
 	if _deadbandErr != nil {
 		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetEventParameterDoubleOutOfRange")
 	}
@@ -256,7 +260,7 @@ func BACnetEventParameterDoubleOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(14)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(14)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterDoubleOutOfRange")
 	}

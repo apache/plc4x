@@ -123,7 +123,11 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
+func BACnetSpecialEventPeriodCalendarReferenceParse(theBytes []byte) (BACnetSpecialEventPeriodCalendarReference, error) {
+	return BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarReference"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer)
 	if pullErr := readBuffer.PullContext("calendarReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calendarReference")
 	}
-	_calendarReference, _calendarReferenceErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_calendarReference, _calendarReferenceErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _calendarReferenceErr != nil {
 		return nil, errors.Wrap(_calendarReferenceErr, "Error parsing 'calendarReference' field of BACnetSpecialEventPeriodCalendarReference")
 	}

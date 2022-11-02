@@ -163,7 +163,11 @@ func (m *_ConnectionResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, error) {
+func ConnectionResponseParse(theBytes []byte) (ConnectionResponse, error) {
+	return ConnectionResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionResponseParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponse"); pullErr != nil {
@@ -183,7 +187,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ConnectionResponse")
 	}
@@ -199,7 +203,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
 		}
-		_val, _err := HPAIDataEndpointParse(readBuffer)
+		_val, _err := HPAIDataEndpointParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -221,7 +225,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for connectionResponseDataBlock")
 		}
-		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
+		_val, _err := ConnectionResponseDataBlockParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

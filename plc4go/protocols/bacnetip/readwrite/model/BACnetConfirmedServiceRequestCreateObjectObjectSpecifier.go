@@ -181,7 +181,11 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
+func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
+	return BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier"); pullErr != nil {
@@ -194,7 +198,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 	}
@@ -210,7 +214,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 		if pullErr := readBuffer.PullContext("rawObjectType"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for rawObjectType")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_ENUMERATED)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_ENUMERATED)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -242,7 +246,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -271,7 +275,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 	}

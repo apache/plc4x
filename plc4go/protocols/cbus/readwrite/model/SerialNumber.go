@@ -128,7 +128,11 @@ func (m *_SerialNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SerialNumberParse(readBuffer utils.ReadBuffer) (SerialNumber, error) {
+func SerialNumberParse(theBytes []byte) (SerialNumber, error) {
+	return SerialNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SerialNumberParseWithBuffer(readBuffer utils.ReadBuffer) (SerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SerialNumber"); pullErr != nil {

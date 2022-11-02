@@ -131,7 +131,11 @@ func (m *_PanicStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PanicStatusParse(readBuffer utils.ReadBuffer) (PanicStatus, error) {
+func PanicStatusParse(theBytes []byte) (PanicStatus, error) {
+	return PanicStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func PanicStatusParseWithBuffer(readBuffer utils.ReadBuffer) (PanicStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PanicStatus"); pullErr != nil {

@@ -127,7 +127,11 @@ func (m BACnetEscalatorOperationDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer) (BACnetEscalatorOperationDirection, error) {
+func BACnetEscalatorOperationDirectionParse(theBytes []byte) (BACnetEscalatorOperationDirection, error) {
+	return BACnetEscalatorOperationDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEscalatorOperationDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEscalatorOperationDirection, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorOperationDirection", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorOperationDirection")

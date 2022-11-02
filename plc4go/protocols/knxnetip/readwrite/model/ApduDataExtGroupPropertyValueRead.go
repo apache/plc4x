@@ -104,7 +104,11 @@ func (m *_ApduDataExtGroupPropertyValueRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtGroupPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueRead, error) {
+func ApduDataExtGroupPropertyValueReadParse(theBytes []byte, length uint8) (ApduDataExtGroupPropertyValueRead, error) {
+	return ApduDataExtGroupPropertyValueReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtGroupPropertyValueReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueRead"); pullErr != nil {

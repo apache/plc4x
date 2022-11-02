@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataEventDetectionEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventDetectionEnable, error) {
+func BACnetConstructedDataEventDetectionEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventDetectionEnable, error) {
+	return BACnetConstructedDataEventDetectionEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEventDetectionEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventDetectionEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventDetectionEnable"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("eventDetectionEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventDetectionEnable")
 	}
-	_eventDetectionEnable, _eventDetectionEnableErr := BACnetApplicationTagParse(readBuffer)
+	_eventDetectionEnable, _eventDetectionEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _eventDetectionEnableErr != nil {
 		return nil, errors.Wrap(_eventDetectionEnableErr, "Error parsing 'eventDetectionEnable' field of BACnetConstructedDataEventDetectionEnable")
 	}

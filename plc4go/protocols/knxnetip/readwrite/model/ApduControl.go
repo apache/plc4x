@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +100,11 @@ func (m *_ApduControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlParse(readBuffer utils.ReadBuffer) (ApduControl, error) {
+func ApduControlParse(theBytes []byte) (ApduControl, error) {
+	return ApduControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ApduControlParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControl"); pullErr != nil {
@@ -125,13 +130,13 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (ApduControl, error) {
 	var typeSwitchError error
 	switch {
 	case controlType == 0x0: // ApduControlConnect
-		_childTemp, typeSwitchError = ApduControlConnectParse(readBuffer)
+		_childTemp, typeSwitchError = ApduControlConnectParseWithBuffer(readBuffer)
 	case controlType == 0x1: // ApduControlDisconnect
-		_childTemp, typeSwitchError = ApduControlDisconnectParse(readBuffer)
+		_childTemp, typeSwitchError = ApduControlDisconnectParseWithBuffer(readBuffer)
 	case controlType == 0x2: // ApduControlAck
-		_childTemp, typeSwitchError = ApduControlAckParse(readBuffer)
+		_childTemp, typeSwitchError = ApduControlAckParseWithBuffer(readBuffer)
 	case controlType == 0x3: // ApduControlNack
-		_childTemp, typeSwitchError = ApduControlNackParse(readBuffer)
+		_childTemp, typeSwitchError = ApduControlNackParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [controlType=%v]", controlType)
 	}

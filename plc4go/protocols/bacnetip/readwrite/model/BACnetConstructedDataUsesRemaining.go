@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
+func BACnetConstructedDataUsesRemainingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
+	return BACnetConstructedDataUsesRemainingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataUsesRemainingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUsesRemaining"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("usesRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for usesRemaining")
 	}
-	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParse(readBuffer)
+	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _usesRemainingErr != nil {
 		return nil, errors.Wrap(_usesRemainingErr, "Error parsing 'usesRemaining' field of BACnetConstructedDataUsesRemaining")
 	}

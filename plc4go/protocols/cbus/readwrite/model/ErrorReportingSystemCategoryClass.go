@@ -181,7 +181,11 @@ func (m ErrorReportingSystemCategoryClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryClassParse(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryClass, error) {
+func ErrorReportingSystemCategoryClassParse(theBytes []byte) (ErrorReportingSystemCategoryClass, error) {
+	return ErrorReportingSystemCategoryClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryClassParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryClass, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryClass", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryClass")

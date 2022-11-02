@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,7 +116,11 @@ func (m *_Reply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
+func ReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
+	return ReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext) // TODO: get endianness from mspec
+}
+
+func ReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
@@ -144,11 +149,11 @@ func ReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestCon
 	var typeSwitchError error
 	switch {
 	case peekedByte == 0x2B: // PowerUpReply
-		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = PowerUpReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	case peekedByte == 0x3D: // ParameterChangeReply
-		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ParameterChangeReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	case 0 == 0: // ReplyEncodedReply
-		_childTemp, typeSwitchError = ReplyEncodedReplyParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ReplyEncodedReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v]", peekedByte)
 	}

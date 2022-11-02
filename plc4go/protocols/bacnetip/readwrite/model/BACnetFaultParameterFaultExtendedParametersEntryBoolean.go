@@ -123,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBy
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
+	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 	}

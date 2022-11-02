@@ -141,7 +141,11 @@ func (m *_BACnetEventPriorities) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
+func BACnetEventPrioritiesParse(theBytes []byte, tagNumber uint8) (BACnetEventPriorities, error) {
+	return BACnetEventPrioritiesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventPriorities"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventPriorities")
 	}
@@ -167,7 +171,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toOffnormal")
 	}
-	_toOffnormal, _toOffnormalErr := BACnetApplicationTagParse(readBuffer)
+	_toOffnormal, _toOffnormalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _toOffnormalErr != nil {
 		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventPriorities")
 	}
@@ -180,7 +184,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toFault")
 	}
-	_toFault, _toFaultErr := BACnetApplicationTagParse(readBuffer)
+	_toFault, _toFaultErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _toFaultErr != nil {
 		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventPriorities")
 	}
@@ -193,7 +197,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toNormal")
 	}
-	_toNormal, _toNormalErr := BACnetApplicationTagParse(readBuffer)
+	_toNormal, _toNormalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _toNormalErr != nil {
 		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventPriorities")
 	}
@@ -206,7 +210,7 @@ func BACnetEventPrioritiesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (B
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventPriorities")
 	}

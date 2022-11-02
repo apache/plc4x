@@ -127,7 +127,11 @@ func (m *_SALDataEnableControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataEnableControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataEnableControl, error) {
+func SALDataEnableControlParse(theBytes []byte, applicationId ApplicationId) (SALDataEnableControl, error) {
+	return SALDataEnableControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataEnableControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataEnableControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataEnableControl"); pullErr != nil {
@@ -140,7 +144,7 @@ func SALDataEnableControlParse(readBuffer utils.ReadBuffer, applicationId Applic
 	if pullErr := readBuffer.PullContext("enableControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enableControlData")
 	}
-	_enableControlData, _enableControlDataErr := EnableControlDataParse(readBuffer)
+	_enableControlData, _enableControlDataErr := EnableControlDataParseWithBuffer(readBuffer)
 	if _enableControlDataErr != nil {
 		return nil, errors.Wrap(_enableControlDataErr, "Error parsing 'enableControlData' field of SALDataEnableControl")
 	}

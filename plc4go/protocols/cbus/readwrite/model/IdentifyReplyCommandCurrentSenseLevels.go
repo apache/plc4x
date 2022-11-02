@@ -127,7 +127,11 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
+func IdentifyReplyCommandCurrentSenseLevelsParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
+	return IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandCurrentSenseLevels"); pullErr != nil {

@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataIsUTC) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIsUTC, error) {
+func BACnetConstructedDataIsUTCParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIsUTC, error) {
+	return BACnetConstructedDataIsUTCParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIsUTCParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIsUTC, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIsUTC"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if pullErr := readBuffer.PullContext("isUtc"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for isUtc")
 	}
-	_isUtc, _isUtcErr := BACnetApplicationTagParse(readBuffer)
+	_isUtc, _isUtcErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _isUtcErr != nil {
 		return nil, errors.Wrap(_isUtcErr, "Error parsing 'isUtc' field of BACnetConstructedDataIsUTC")
 	}

@@ -121,7 +121,11 @@ func (m *_ErrorEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
+func ErrorEnclosedParse(theBytes []byte, tagNumber uint8) (ErrorEnclosed, error) {
+	return ErrorEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func ErrorEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorEnclosed"); pullErr != nil {
@@ -134,7 +138,7 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of ErrorEnclosed")
 	}
@@ -147,7 +151,7 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
-	_error, _errorErr := ErrorParse(readBuffer)
+	_error, _errorErr := ErrorParseWithBuffer(readBuffer)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of ErrorEnclosed")
 	}
@@ -160,7 +164,7 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of ErrorEnclosed")
 	}

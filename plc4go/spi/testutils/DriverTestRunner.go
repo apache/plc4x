@@ -311,11 +311,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Wrap(err, "error getting bytes from transport")
 		}
 
-		var bufferFactory func([]byte) utils.ReadBufferByteBased
+		var bufferFactory func([]byte, ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased
 		if m.byteOrder == binary.BigEndian {
 			bufferFactory = utils.NewReadBufferByteBased
 		} else {
-			bufferFactory = utils.NewLittleEndianReadBufferByteBased
+			bufferFactory = func(bytes []byte, options ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased {
+				return utils.NewReadBufferByteBased(bytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+			}
 		}
 		// Compare the bytes read with the ones we expect
 		log.Trace().Msg("Comparing outputs")

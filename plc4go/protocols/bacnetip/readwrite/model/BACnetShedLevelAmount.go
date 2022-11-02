@@ -123,7 +123,11 @@ func (m *_BACnetShedLevelAmount) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetShedLevelAmountParse(readBuffer utils.ReadBuffer) (BACnetShedLevelAmount, error) {
+func BACnetShedLevelAmountParse(theBytes []byte) (BACnetShedLevelAmount, error) {
+	return BACnetShedLevelAmountParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetShedLevelAmountParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetShedLevelAmount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevelAmount"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetShedLevelAmountParse(readBuffer utils.ReadBuffer) (BACnetShedLevelAmo
 	if pullErr := readBuffer.PullContext("amount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for amount")
 	}
-	_amount, _amountErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_amount, _amountErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _amountErr != nil {
 		return nil, errors.Wrap(_amountErr, "Error parsing 'amount' field of BACnetShedLevelAmount")
 	}

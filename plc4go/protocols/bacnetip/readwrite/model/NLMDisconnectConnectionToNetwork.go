@@ -127,7 +127,11 @@ func (m *_NLMDisconnectConnectionToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMDisconnectConnectionToNetwork, error) {
+func NLMDisconnectConnectionToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMDisconnectConnectionToNetwork, error) {
+	return NLMDisconnectConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+}
+
+func NLMDisconnectConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMDisconnectConnectionToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {

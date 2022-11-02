@@ -125,7 +125,11 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
+func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
+	return BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("bitmask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitmask")
 	}
-	_bitmask, _bitmaskErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitmaskErr != nil {
 		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field of BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 	}

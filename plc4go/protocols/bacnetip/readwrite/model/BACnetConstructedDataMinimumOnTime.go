@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMinimumOnTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOnTime, error) {
+func BACnetConstructedDataMinimumOnTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOnTime, error) {
+	return BACnetConstructedDataMinimumOnTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMinimumOnTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOnTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOnTime"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataMinimumOnTimeParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("minimumOnTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minimumOnTime")
 	}
-	_minimumOnTime, _minimumOnTimeErr := BACnetApplicationTagParse(readBuffer)
+	_minimumOnTime, _minimumOnTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _minimumOnTimeErr != nil {
 		return nil, errors.Wrap(_minimumOnTimeErr, "Error parsing 'minimumOnTime' field of BACnetConstructedDataMinimumOnTime")
 	}

@@ -147,7 +147,11 @@ func (m *_KnxGroupAddress3Level) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress3Level, error) {
+func KnxGroupAddress3LevelParse(theBytes []byte, numLevels uint8) (KnxGroupAddress3Level, error) {
+	return KnxGroupAddress3LevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), numLevels) // TODO: get endianness from mspec
+}
+
+func KnxGroupAddress3LevelParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress3Level, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddress3Level"); pullErr != nil {

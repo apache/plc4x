@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataMinimumOutput) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMinimumOutputParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOutput, error) {
+func BACnetConstructedDataMinimumOutputParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOutput, error) {
+	return BACnetConstructedDataMinimumOutputParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMinimumOutputParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOutput, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOutput"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataMinimumOutputParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("minimumOutput"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minimumOutput")
 	}
-	_minimumOutput, _minimumOutputErr := BACnetApplicationTagParse(readBuffer)
+	_minimumOutput, _minimumOutputErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _minimumOutputErr != nil {
 		return nil, errors.Wrap(_minimumOutputErr, "Error parsing 'minimumOutput' field of BACnetConstructedDataMinimumOutput")
 	}

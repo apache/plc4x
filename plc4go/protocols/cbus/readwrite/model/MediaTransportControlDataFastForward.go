@@ -197,7 +197,11 @@ func (m *_MediaTransportControlDataFastForward) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataFastForwardParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataFastForward, error) {
+func MediaTransportControlDataFastForwardParse(theBytes []byte) (MediaTransportControlDataFastForward, error) {
+	return MediaTransportControlDataFastForwardParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataFastForwardParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataFastForward, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataFastForward"); pullErr != nil {

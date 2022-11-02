@@ -103,7 +103,11 @@ func (m *_MeteringDataMeasureGas) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataMeasureGasParse(readBuffer utils.ReadBuffer) (MeteringDataMeasureGas, error) {
+func MeteringDataMeasureGasParse(theBytes []byte) (MeteringDataMeasureGas, error) {
+	return MeteringDataMeasureGasParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringDataMeasureGasParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataMeasureGas, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureGas"); pullErr != nil {

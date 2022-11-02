@@ -125,7 +125,11 @@ func (m *_DescriptionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DescriptionRequestParse(readBuffer utils.ReadBuffer) (DescriptionRequest, error) {
+func DescriptionRequestParse(theBytes []byte) (DescriptionRequest, error) {
+	return DescriptionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DescriptionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (DescriptionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionRequest"); pullErr != nil {
@@ -138,7 +142,7 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (DescriptionRequest, e
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DescriptionRequest")
 	}

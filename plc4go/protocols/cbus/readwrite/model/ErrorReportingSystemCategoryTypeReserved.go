@@ -126,7 +126,11 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeReservedParse(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeReserved, error) {
+func ErrorReportingSystemCategoryTypeReservedParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeReserved, error) {
+	return ErrorReportingSystemCategoryTypeReservedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorReportingSystemCategoryClass) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryTypeReservedParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeReserved, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeReserved"); pullErr != nil {

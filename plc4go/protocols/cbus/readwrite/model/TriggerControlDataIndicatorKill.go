@@ -103,7 +103,11 @@ func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataIndicatorKillParse(readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
+func TriggerControlDataIndicatorKillParse(theBytes []byte) (TriggerControlDataIndicatorKill, error) {
+	return TriggerControlDataIndicatorKillParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlDataIndicatorKillParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataIndicatorKill"); pullErr != nil {

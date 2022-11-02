@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
+func BACnetConstructedDataDefaultSubordinateRelationshipParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
+	return BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultSubordinateRelationship"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("defaultSubordinateRelationship"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultSubordinateRelationship")
 	}
-	_defaultSubordinateRelationship, _defaultSubordinateRelationshipErr := BACnetRelationshipTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_defaultSubordinateRelationship, _defaultSubordinateRelationshipErr := BACnetRelationshipTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _defaultSubordinateRelationshipErr != nil {
 		return nil, errors.Wrap(_defaultSubordinateRelationshipErr, "Error parsing 'defaultSubordinateRelationship' field of BACnetConstructedDataDefaultSubordinateRelationship")
 	}

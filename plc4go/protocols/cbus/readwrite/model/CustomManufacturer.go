@@ -101,7 +101,11 @@ func (m *_CustomManufacturer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CustomManufacturerParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
+func CustomManufacturerParse(theBytes []byte, numBytes uint8) (CustomManufacturer, error) {
+	return CustomManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), numBytes) // TODO: get endianness from mspec
+}
+
+func CustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CustomManufacturer"); pullErr != nil {

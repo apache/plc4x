@@ -123,7 +123,11 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerStateChangeValueConstructedValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueConstructedValue, error) {
+func BACnetTimerStateChangeValueConstructedValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueConstructedValue, error) {
+	return BACnetTimerStateChangeValueConstructedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetTimerStateChangeValueConstructedValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueConstructedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueConstructedValue"); pullErr != nil {
@@ -136,7 +140,7 @@ func BACnetTimerStateChangeValueConstructedValueParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for constructedValue")
 	}
-	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_constructedValue, _constructedValueErr := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _constructedValueErr != nil {
 		return nil, errors.Wrap(_constructedValueErr, "Error parsing 'constructedValue' field of BACnetTimerStateChangeValueConstructedValue")
 	}

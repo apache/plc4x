@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestartNotificationRecipients, error) {
+func BACnetConstructedDataRestartNotificationRecipientsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestartNotificationRecipients, error) {
+	return BACnetConstructedDataRestartNotificationRecipientsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataRestartNotificationRecipientsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestartNotificationRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestartNotificationRecipients"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.Re
 	var restartNotificationRecipients []BACnetRecipient
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetRecipientParse(readBuffer)
+			_item, _err := BACnetRecipientParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'restartNotificationRecipients' field of BACnetConstructedDataRestartNotificationRecipients")
 			}

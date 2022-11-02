@@ -98,7 +98,11 @@ func (m *_RequestContext) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestContextParse(readBuffer utils.ReadBuffer) (RequestContext, error) {
+func RequestContextParse(theBytes []byte) (RequestContext, error) {
+	return RequestContextParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func RequestContextParseWithBuffer(readBuffer utils.ReadBuffer) (RequestContext, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestContext"); pullErr != nil {

@@ -125,7 +125,11 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumUnsignedValueParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
+func BACnetLogRecordLogDatumUnsignedValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
+	return BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumUnsignedValue"); pullErr != nil {
@@ -138,7 +142,7 @@ func BACnetLogRecordLogDatumUnsignedValueParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
-	_unsignedValue, _unsignedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_unsignedValue, _unsignedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _unsignedValueErr != nil {
 		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetLogRecordLogDatumUnsignedValue")
 	}

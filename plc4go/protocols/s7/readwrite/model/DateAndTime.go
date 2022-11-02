@@ -168,7 +168,11 @@ func (m *_DateAndTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DateAndTimeParse(readBuffer utils.ReadBuffer) (DateAndTime, error) {
+func DateAndTimeParse(theBytes []byte) (DateAndTime, error) {
+	return DateAndTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DateAndTimeParseWithBuffer(readBuffer utils.ReadBuffer) (DateAndTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DateAndTime"); pullErr != nil {

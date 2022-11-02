@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataProtocolRevision) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProtocolRevisionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolRevision, error) {
+func BACnetConstructedDataProtocolRevisionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolRevision, error) {
+	return BACnetConstructedDataProtocolRevisionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataProtocolRevisionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolRevision"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataProtocolRevisionParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("protocolRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolRevision")
 	}
-	_protocolRevision, _protocolRevisionErr := BACnetApplicationTagParse(readBuffer)
+	_protocolRevision, _protocolRevisionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _protocolRevisionErr != nil {
 		return nil, errors.Wrap(_protocolRevisionErr, "Error parsing 'protocolRevision' field of BACnetConstructedDataProtocolRevision")
 	}

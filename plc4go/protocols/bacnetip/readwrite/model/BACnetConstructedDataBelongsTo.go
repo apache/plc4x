@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataBelongsTo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBelongsTo, error) {
+func BACnetConstructedDataBelongsToParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBelongsTo, error) {
+	return BACnetConstructedDataBelongsToParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBelongsToParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBelongsTo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBelongsTo"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("belongsTo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for belongsTo")
 	}
-	_belongsTo, _belongsToErr := BACnetDeviceObjectReferenceParse(readBuffer)
+	_belongsTo, _belongsToErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 	if _belongsToErr != nil {
 		return nil, errors.Wrap(_belongsToErr, "Error parsing 'belongsTo' field of BACnetConstructedDataBelongsTo")
 	}

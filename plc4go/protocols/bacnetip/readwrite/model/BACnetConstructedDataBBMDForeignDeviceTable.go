@@ -137,7 +137,11 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDForeignDeviceTable, error) {
+func BACnetConstructedDataBBMDForeignDeviceTableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDForeignDeviceTable, error) {
+	return BACnetConstructedDataBBMDForeignDeviceTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBBMDForeignDeviceTableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDForeignDeviceTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDForeignDeviceTable"); pullErr != nil {
@@ -154,7 +158,7 @@ func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffe
 	var bbmdForeignDeviceTable []BACnetBDTEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetBDTEntryParse(readBuffer)
+			_item, _err := BACnetBDTEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'bbmdForeignDeviceTable' field of BACnetConstructedDataBBMDForeignDeviceTable")
 			}

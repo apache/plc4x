@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataOccupancyCountAdjust) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyCountAdjustParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCountAdjust, error) {
+func BACnetConstructedDataOccupancyCountAdjustParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCountAdjust, error) {
+	return BACnetConstructedDataOccupancyCountAdjustParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataOccupancyCountAdjustParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCountAdjust, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyCountAdjust"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataOccupancyCountAdjustParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("occupancyCountAdjust"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyCountAdjust")
 	}
-	_occupancyCountAdjust, _occupancyCountAdjustErr := BACnetApplicationTagParse(readBuffer)
+	_occupancyCountAdjust, _occupancyCountAdjustErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _occupancyCountAdjustErr != nil {
 		return nil, errors.Wrap(_occupancyCountAdjustErr, "Error parsing 'occupancyCountAdjust' field of BACnetConstructedDataOccupancyCountAdjust")
 	}

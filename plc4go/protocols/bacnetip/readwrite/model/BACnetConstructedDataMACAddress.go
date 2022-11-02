@@ -150,7 +150,11 @@ func (m *_BACnetConstructedDataMACAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMACAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMACAddress, error) {
+func BACnetConstructedDataMACAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMACAddress, error) {
+	return BACnetConstructedDataMACAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMACAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMACAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMACAddress"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConstructedDataMACAddressParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
 	}
-	_macAddress, _macAddressErr := BACnetApplicationTagParse(readBuffer)
+	_macAddress, _macAddressErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _macAddressErr != nil {
 		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetConstructedDataMACAddress")
 	}
