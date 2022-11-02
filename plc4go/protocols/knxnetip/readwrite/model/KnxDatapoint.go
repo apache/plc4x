@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/spi/values"
@@ -7560,7 +7561,15 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	return nil, errors.New("unsupported type")
 }
 
-func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, datapointType KnxDatapointType) error {
+func KnxDatapointSerialize(value api.PlcValue, datapointType KnxDatapointType) ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := KnxDatapointSerializeWithWriteBuffer(wb, value, datapointType); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value api.PlcValue, datapointType KnxDatapointType) error {
 	m := struct {
 		DatapointType KnxDatapointType
 	}{

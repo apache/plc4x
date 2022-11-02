@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type ClockAndTimekeepingCommandType uint8
 
 type IClockAndTimekeepingCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -134,7 +136,15 @@ func ClockAndTimekeepingCommandTypeParse(readBuffer utils.ReadBuffer) (ClockAndT
 	}
 }
 
-func (e ClockAndTimekeepingCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ClockAndTimekeepingCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ClockAndTimekeepingCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ClockAndTimekeepingCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

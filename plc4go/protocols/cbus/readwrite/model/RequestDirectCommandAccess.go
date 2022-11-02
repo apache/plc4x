@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -250,7 +251,15 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 	return _child, nil
 }
 
-func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestDirectCommandAccess) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

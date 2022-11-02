@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetEscalatorMode uint16
 
 type IBACnetEscalatorMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -138,7 +140,15 @@ func BACnetEscalatorModeParse(readBuffer utils.ReadBuffer) (BACnetEscalatorMode,
 	}
 }
 
-func (e BACnetEscalatorMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEscalatorMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetEscalatorMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ErrorClass uint16
 
 type IErrorClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -150,7 +152,15 @@ func ErrorClassParse(readBuffer utils.ReadBuffer) (ErrorClass, error) {
 	}
 }
 
-func (e ErrorClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("ErrorClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetServicesSupported uint8
 
 type IBACnetServicesSupported interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -342,7 +344,15 @@ func BACnetServicesSupportedParse(readBuffer utils.ReadBuffer) (BACnetServicesSu
 	}
 }
 
-func (e BACnetServicesSupported) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetServicesSupported) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetServicesSupported) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetServicesSupported", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

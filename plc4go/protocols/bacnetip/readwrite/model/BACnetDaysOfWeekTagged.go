@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -269,7 +270,15 @@ func BACnetDaysOfWeekTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	}, nil
 }
 
-func (m *_BACnetDaysOfWeekTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDaysOfWeekTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDaysOfWeekTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDaysOfWeekTagged"); pushErr != nil {

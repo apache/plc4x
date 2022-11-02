@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -170,7 +171,15 @@ func S7PayloadAlarm8Parse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cp
 	return _child, nil
 }
 
-func (m *_S7PayloadAlarm8) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadAlarm8) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadAlarm8) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

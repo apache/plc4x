@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -592,7 +593,15 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	}, nil
 }
 
-func (m *_BACnetTagPayloadSignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadSignedInteger) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadSignedInteger"); pushErr != nil {

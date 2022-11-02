@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ModbusDeviceInformationConformityLevel uint8
 
 type IModbusDeviceInformationConformityLevel interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -114,7 +116,15 @@ func ModbusDeviceInformationConformityLevelParse(readBuffer utils.ReadBuffer) (M
 	}
 }
 
-func (e ModbusDeviceInformationConformityLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ModbusDeviceInformationConformityLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ModbusDeviceInformationConformityLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ModbusDeviceInformationConformityLevel", 7, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package eip
 
 import (
+	"encoding/binary"
 	readWrite "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -68,7 +69,15 @@ func (m PlcField) GetElementNb() uint16 {
 	return m.ElementNb
 }
 
-func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("EipField"); err != nil {
 		return err
 	}

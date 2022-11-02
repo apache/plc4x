@@ -51,14 +51,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	tcpAdu := message.(model.ModbusTcpADU)
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
-	err := tcpAdu.Serialize(wb)
+	theBytes, err := tcpAdu.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type CIPDataTypeCode uint16
 
 type ICIPDataTypeCode interface {
+	utils.Serializable
 	Size() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -198,7 +200,15 @@ func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) 
 	}
 }
 
-func (e CIPDataTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CIPDataTypeCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CIPDataTypeCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

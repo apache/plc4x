@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type MemoryArea uint8
 
 type IMemoryArea interface {
+	utils.Serializable
 	ShortName() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -204,7 +206,15 @@ func MemoryAreaParse(readBuffer utils.ReadBuffer) (MemoryArea, error) {
 	}
 }
 
-func (e MemoryArea) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MemoryArea) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MemoryArea) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

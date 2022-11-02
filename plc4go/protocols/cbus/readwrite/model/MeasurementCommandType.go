@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type MeasurementCommandType uint8
 
 type IMeasurementCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -124,7 +126,15 @@ func MeasurementCommandTypeParse(readBuffer utils.ReadBuffer) (MeasurementComman
 	}
 }
 
-func (e MeasurementCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MeasurementCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MeasurementCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MeasurementCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

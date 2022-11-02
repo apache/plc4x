@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type ComObjectTableAddresses uint16
 
 type IComObjectTableAddresses interface {
+	utils.Serializable
 	ComObjectTableAddress() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -18874,7 +18876,15 @@ func ComObjectTableAddressesParse(readBuffer utils.ReadBuffer) (ComObjectTableAd
 	}
 }
 
-func (e ComObjectTableAddresses) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ComObjectTableAddresses) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ComObjectTableAddresses) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("ComObjectTableAddresses", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -289,7 +290,15 @@ func HVACHumidityStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityStat
 	}, nil
 }
 
-func (m *_HVACHumidityStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACHumidityStatusFlags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACHumidityStatusFlags"); pushErr != nil {

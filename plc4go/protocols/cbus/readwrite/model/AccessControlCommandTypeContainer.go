@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,10 +32,10 @@ import (
 type AccessControlCommandTypeContainer uint8
 
 type IAccessControlCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() AccessControlCommandType
 	Category() AccessControlCategory
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1412,7 +1414,15 @@ func AccessControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (Access
 	}
 }
 
-func (e AccessControlCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AccessControlCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AccessControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AccessControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

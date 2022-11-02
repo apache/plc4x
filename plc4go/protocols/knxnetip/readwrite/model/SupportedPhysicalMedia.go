@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type SupportedPhysicalMedia uint8
 
 type ISupportedPhysicalMedia interface {
+	utils.Serializable
 	KnxSupport() bool
 	Description() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -427,7 +429,15 @@ func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysical
 	}
 }
 
-func (e SupportedPhysicalMedia) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SupportedPhysicalMedia) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SupportedPhysicalMedia) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SupportedPhysicalMedia", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

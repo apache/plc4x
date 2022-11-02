@@ -21,7 +21,6 @@ package values
 
 import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcBitString struct {
@@ -59,9 +58,8 @@ func NewPlcBitString(value interface{}) PlcBitString {
 }
 
 func (m PlcBitString) GetRaw() []byte {
-	buf := utils.NewWriteBufferByteBased()
-	_ = m.Serialize(buf)
-	return buf.GetBytes()
+	theBytes, _ := m.Serialize()
+	return theBytes
 }
 
 func (m PlcBitString) IsList() bool {

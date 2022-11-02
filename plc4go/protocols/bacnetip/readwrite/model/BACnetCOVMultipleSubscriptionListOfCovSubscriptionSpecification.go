@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -192,7 +193,15 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBu
 	}, nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification"); pushErr != nil {

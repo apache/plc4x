@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -180,7 +181,15 @@ func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckType,
 	}, nil
 }
 
-func (m *_AlarmMessageAckType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageAckType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageAckType"); pushErr != nil {

@@ -242,11 +242,11 @@ func (a *Analyzer) SerializePackage(message spi.Message) ([]byte, error) {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")
 	} else {
-		based := utils.NewWriteBufferByteBased()
-		if err := message.Serialize(based); err != nil {
+		theBytes, err := message.Serialize()
+		if err != nil {
 			return nil, errors.Wrap(err, "Error serializing")
 		}
-		return based.GetBytes(), nil
+		return theBytes, nil
 	}
 }
 

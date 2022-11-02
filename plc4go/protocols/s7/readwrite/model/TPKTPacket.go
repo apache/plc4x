@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -191,7 +192,15 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	}, nil
 }
 
-func (m *_TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TPKTPacket) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TPKTPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TPKTPacket"); pushErr != nil {

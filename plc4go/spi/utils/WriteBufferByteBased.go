@@ -253,7 +253,7 @@ func (wb *byteWriteBuffer) WriteSerializable(serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.Serialize(wb)
+	return serializable.SerializeWithWriteBuffer(wb)
 }
 
 func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {

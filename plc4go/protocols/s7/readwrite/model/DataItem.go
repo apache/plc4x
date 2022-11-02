@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/spi/values"
@@ -277,7 +278,15 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 	return nil, errors.New("unsupported type")
 }
 
-func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataProtocolId string, stringLength int32) error {
+func DataItemSerialize(value api.PlcValue, dataProtocolId string, stringLength int32) ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := DataItemSerializeWithWriteBuffer(wb, value, dataProtocolId, stringLength); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func DataItemSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value api.PlcValue, dataProtocolId string, stringLength int32) error {
 	m := struct {
 		DataProtocolId string
 		StringLength   int32

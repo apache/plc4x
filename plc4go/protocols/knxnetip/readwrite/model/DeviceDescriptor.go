@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type DeviceDescriptor uint16
 
 type IDeviceDescriptor interface {
+	utils.Serializable
 	FirmwareType() FirmwareType
 	MediumType() DeviceDescriptorMediumType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -539,7 +541,15 @@ func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error
 	}
 }
 
-func (e DeviceDescriptor) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DeviceDescriptor) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DeviceDescriptor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -159,7 +160,15 @@ func BACnetPriorityValueIntegerParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueInteger) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueInteger) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueInteger) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

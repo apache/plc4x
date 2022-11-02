@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -305,7 +306,15 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 	}, nil
 }
 
-func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLightingCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLightingCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLightingCommand"); pushErr != nil {

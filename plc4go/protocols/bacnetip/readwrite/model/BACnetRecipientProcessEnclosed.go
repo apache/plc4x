@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -181,7 +182,15 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}, nil
 }
 
-func (m *_BACnetRecipientProcessEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRecipientProcessEnclosed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRecipientProcessEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRecipientProcessEnclosed"); pushErr != nil {

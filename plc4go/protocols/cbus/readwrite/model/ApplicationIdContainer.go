@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type ApplicationIdContainer uint8
 
 type IApplicationIdContainer interface {
+	utils.Serializable
 	LightingCompatible() LightingCompatible
 	ApplicationId() ApplicationId
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -3717,7 +3719,15 @@ func ApplicationIdContainerParse(readBuffer utils.ReadBuffer) (ApplicationIdCont
 	}
 }
 
-func (e ApplicationIdContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ApplicationIdContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ApplicationIdContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ApplicationIdContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -173,7 +173,7 @@ func (p *writeBufferPlcValueBased) WriteSerializable(serializable utils.Serializ
 	if serializable == nil {
 		return nil
 	}
-	return serializable.Serialize(p)
+	return serializable.SerializeWithWriteBuffer(p)
 }
 
 func (p *writeBufferPlcValueBased) PopContext(logicalName string, _ ...utils.WithWriterArgs) error {

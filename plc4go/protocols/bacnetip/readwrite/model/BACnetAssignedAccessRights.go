@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,7 +154,15 @@ func BACnetAssignedAccessRightsParse(readBuffer utils.ReadBuffer) (BACnetAssigne
 	}, nil
 }
 
-func (m *_BACnetAssignedAccessRights) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAssignedAccessRights) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAssignedAccessRights) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAssignedAccessRights"); pushErr != nil {

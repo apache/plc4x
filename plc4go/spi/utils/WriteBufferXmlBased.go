@@ -206,7 +206,7 @@ func (x *xmlWriteBuffer) WriteSerializable(serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.Serialize(x)
+	return serializable.SerializeWithWriteBuffer(x)
 }
 
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -67,13 +68,21 @@ func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcB
 	return d.results[queryName]
 }
 
-func (d DefaultPlcBrowseResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d DefaultPlcBrowseResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcBrowseResponse"); err != nil {
 		return err
 	}
 
 	if serializableRequest, ok := d.request.(utils.Serializable); ok {
-		if err := serializableRequest.Serialize(writeBuffer); err != nil {
+		if err := serializableRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	} else {
@@ -89,7 +98,7 @@ func (d DefaultPlcBrowseResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 		for _, field := range foundFields {
 			if serializableField, ok := field.(utils.Serializable); ok {
-				if err := serializableField.Serialize(writeBuffer); err != nil {
+				if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 					return err
 				}
 			} else {

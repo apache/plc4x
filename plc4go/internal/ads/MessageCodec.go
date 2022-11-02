@@ -50,7 +50,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	tcpPaket := message.(model.AmsTCPPacket)
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	err := tcpPaket.Serialize(wb)
+	err := tcpPaket.SerializeWithWriteBuffer(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}

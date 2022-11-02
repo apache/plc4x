@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -166,7 +167,15 @@ func BACnetPolarityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}, nil
 }
 
-func (m *_BACnetPolarityTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPolarityTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPolarityTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPolarityTagged"); pushErr != nil {

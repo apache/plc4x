@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type TemperatureBroadcastCommandTypeContainer uint8
 
 type ITemperatureBroadcastCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() TemperatureBroadcastCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -357,7 +359,15 @@ func TemperatureBroadcastCommandTypeContainerParse(readBuffer utils.ReadBuffer) 
 	}
 }
 
-func (e TemperatureBroadcastCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TemperatureBroadcastCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TemperatureBroadcastCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TemperatureBroadcastCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

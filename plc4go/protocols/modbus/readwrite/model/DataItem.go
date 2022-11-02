@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/spi/values"
@@ -360,7 +361,15 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	return nil, errors.New("unsupported type")
 }
 
-func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataType ModbusDataType, numberOfValues uint16) error {
+func DataItemSerialize(value api.PlcValue, dataType ModbusDataType, numberOfValues uint16) ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := DataItemSerializeWithWriteBuffer(wb, value, dataType, numberOfValues); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func DataItemSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value api.PlcValue, dataType ModbusDataType, numberOfValues uint16) error {
 	m := struct {
 		DataType       ModbusDataType
 		NumberOfValues uint16

@@ -22,17 +22,26 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcSubscriptionEvent) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcSubscriptionEvent) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcSubscriptionEvent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcSubscriptionEvent"); err != nil {
 		return err
 	}
-	if err := d.DefaultResponse.Serialize(writeBuffer); err != nil {
+	if err := d.DefaultResponse.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("fields", utils.WithRenderAsList(true)); err != nil {
@@ -45,7 +54,7 @@ func (d *DefaultPlcSubscriptionEvent) Serialize(writeBuffer utils.WriteBuffer) e
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
-			if err := serializable.Serialize(writeBuffer); err != nil {
+			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(name); err != nil {
@@ -84,7 +93,7 @@ func (d *DefaultPlcSubscriptionEvent) Serialize(writeBuffer utils.WriteBuffer) e
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
-			if err := serializable.Serialize(writeBuffer); err != nil {
+			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(name); err != nil {
@@ -110,7 +119,7 @@ func (d *DefaultPlcSubscriptionEvent) Serialize(writeBuffer utils.WriteBuffer) e
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
-			if err := serializable.Serialize(writeBuffer); err != nil {
+			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(name); err != nil {

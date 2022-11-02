@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -462,7 +463,15 @@ func ConfirmedEventNotificationRequestParse(readBuffer utils.ReadBuffer) (Confir
 	}, nil
 }
 
-func (m *_ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ConfirmedEventNotificationRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ConfirmedEventNotificationRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ConfirmedEventNotificationRequest"); pushErr != nil {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/spi/values"
@@ -836,7 +837,15 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 	return nil, errors.New("unsupported type")
 }
 
-func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, propertyType KnxPropertyDataType, dataLengthInBytes uint8) error {
+func KnxPropertySerialize(value api.PlcValue, propertyType KnxPropertyDataType, dataLengthInBytes uint8) ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := KnxPropertySerializeWithWriteBuffer(wb, value, propertyType, dataLengthInBytes); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func KnxPropertySerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value api.PlcValue, propertyType KnxPropertyDataType, dataLengthInBytes uint8) error {
 	m := struct {
 		PropertyType      KnxPropertyDataType
 		DataLengthInBytes uint8

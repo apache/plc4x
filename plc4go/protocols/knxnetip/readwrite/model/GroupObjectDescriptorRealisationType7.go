@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -279,7 +280,15 @@ func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (Gr
 	}, nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType7) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_GroupObjectDescriptorRealisationType7) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("GroupObjectDescriptorRealisationType7"); pushErr != nil {

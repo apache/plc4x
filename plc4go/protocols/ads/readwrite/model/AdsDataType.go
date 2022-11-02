@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type AdsDataType int8
 
 type IAdsDataType interface {
+	utils.Serializable
 	NumBytes() uint16
 	PlcValueType() PlcValueType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -693,7 +695,15 @@ func AdsDataTypeParse(readBuffer utils.ReadBuffer) (AdsDataType, error) {
 	}
 }
 
-func (e AdsDataType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AdsDataType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AdsDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,13 +32,13 @@ import (
 type Parameter uint8
 
 type IParameter interface {
+	utils.Serializable
 	ParameterType() ParameterType
 	Form() string
 	IsVolatile() bool
 	ParameterDescription() string
 	ProtectionLevel() ProtectionLevel
 	Group() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -7889,7 +7891,15 @@ func ParameterParse(readBuffer utils.ReadBuffer) (Parameter, error) {
 	}
 }
 
-func (e Parameter) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e Parameter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e Parameter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("Parameter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -161,7 +162,15 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(r
 	return _child, nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

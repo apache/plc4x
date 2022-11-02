@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type LightingCommandTypeContainer uint8
 
 type ILightingCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() LightingCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -847,7 +849,15 @@ func LightingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (LightingCom
 	}
 }
 
-func (e LightingCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LightingCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LightingCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

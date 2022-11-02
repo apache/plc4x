@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,7 +154,15 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipl
 	}, nil
 }
 
-func (m *_BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogMultipleRecord) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLogMultipleRecord"); pushErr != nil {

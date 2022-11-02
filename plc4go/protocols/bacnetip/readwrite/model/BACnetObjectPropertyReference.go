@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -189,7 +190,15 @@ func BACnetObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACnetObje
 	}, nil
 }
 
-func (m *_BACnetObjectPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetObjectPropertyReference) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetObjectPropertyReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetObjectPropertyReference"); pushErr != nil {

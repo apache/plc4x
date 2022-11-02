@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,10 +32,10 @@ import (
 type KnxDatapointType uint32
 
 type IKnxDatapointType interface {
+	utils.Serializable
 	Number() uint16
 	Name() string
 	DatapointMainType() KnxDatapointMainType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -6434,7 +6436,15 @@ func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error
 	}
 }
 
-func (e KnxDatapointType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e KnxDatapointType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e KnxDatapointType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

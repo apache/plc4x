@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type CALCommandTypeContainer uint8
 
 type ICALCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() CALCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1771,7 +1773,15 @@ func CALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (CALCommandTypeCo
 	}
 }
 
-func (e CALCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CALCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CALCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("CALCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

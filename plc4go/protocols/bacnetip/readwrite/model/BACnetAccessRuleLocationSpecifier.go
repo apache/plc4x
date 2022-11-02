@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetAccessRuleLocationSpecifier uint8
 
 type IBACnetAccessRuleLocationSpecifier interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -108,7 +110,15 @@ func BACnetAccessRuleLocationSpecifierParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 }
 
-func (e BACnetAccessRuleLocationSpecifier) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessRuleLocationSpecifier) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessRuleLocationSpecifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAccessRuleLocationSpecifier", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

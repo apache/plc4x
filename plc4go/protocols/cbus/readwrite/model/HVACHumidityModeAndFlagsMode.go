@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type HVACHumidityModeAndFlagsMode uint8
 
 type IHVACHumidityModeAndFlagsMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -120,7 +122,15 @@ func HVACHumidityModeAndFlagsModeParse(readBuffer utils.ReadBuffer) (HVACHumidit
 	}
 }
 
-func (e HVACHumidityModeAndFlagsMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e HVACHumidityModeAndFlagsMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e HVACHumidityModeAndFlagsMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACHumidityModeAndFlagsMode", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

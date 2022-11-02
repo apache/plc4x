@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -189,7 +190,15 @@ func ModbusPDUReadFileRecordResponseParse(readBuffer utils.ReadBuffer, response 
 	return _child, nil
 }
 
-func (m *_ModbusPDUReadFileRecordResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadFileRecordResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUReadFileRecordResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	itemsArraySizeInBytes := func(items []ModbusPDUReadFileRecordResponseItem) uint32 {

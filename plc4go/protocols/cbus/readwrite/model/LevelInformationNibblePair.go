@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type LevelInformationNibblePair uint8
 
 type ILevelInformationNibblePair interface {
+	utils.Serializable
 	NibbleValue() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -274,7 +276,15 @@ func LevelInformationNibblePairParse(readBuffer utils.ReadBuffer) (LevelInformat
 	}
 }
 
-func (e LevelInformationNibblePair) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LevelInformationNibblePair) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LevelInformationNibblePair) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LevelInformationNibblePair", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

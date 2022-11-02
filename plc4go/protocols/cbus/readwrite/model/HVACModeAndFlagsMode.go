@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type HVACModeAndFlagsMode uint8
 
 type IHVACModeAndFlagsMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -126,7 +128,15 @@ func HVACModeAndFlagsModeParse(readBuffer utils.ReadBuffer) (HVACModeAndFlagsMod
 	}
 }
 
-func (e HVACModeAndFlagsMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e HVACModeAndFlagsMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e HVACModeAndFlagsMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACModeAndFlagsMode", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

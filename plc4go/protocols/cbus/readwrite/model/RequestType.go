@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type RequestType uint8
 
 type IRequestType interface {
+	utils.Serializable
 	ControlChar() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -184,7 +186,15 @@ func RequestTypeParse(readBuffer utils.ReadBuffer) (RequestType, error) {
 	}
 }
 
-func (e RequestType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e RequestType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e RequestType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("RequestType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

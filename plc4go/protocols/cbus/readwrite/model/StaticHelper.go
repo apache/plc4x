@@ -60,12 +60,11 @@ func CalculateChecksum(writeBuffer utils.WriteBuffer, message spi.Message, srchk
 
 func getChecksum(message spi.Message) (byte, error) {
 	checksum := byte(0x0)
-	checksumWriteBuffer := utils.NewWriteBufferByteBased()
-	err := message.Serialize(checksumWriteBuffer)
+	theBytes, err := message.Serialize()
 	if err != nil {
 		return 0, errors.Wrap(err, "Error serializing")
 	}
-	for _, aByte := range checksumWriteBuffer.GetBytes() {
+	for _, aByte := range theBytes {
 		checksum += aByte
 	}
 	checksum = ^checksum
@@ -163,13 +162,11 @@ func findHexEnd(readBuffer utils.ReadBuffer) int {
 }
 
 func writeSerializableToHex(logicalName string, writeBuffer utils.WriteBuffer, serializable utils.Serializable) error {
-	wbbb := utils.NewWriteBufferByteBased()
-	err := serializable.Serialize(wbbb)
+	theBytes, err := serializable.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "Error serializing")
 	}
-	bytesToWrite := wbbb.GetBytes()
-	return writeToHex(logicalName, writeBuffer, bytesToWrite)
+	return writeToHex(logicalName, writeBuffer, theBytes)
 }
 
 func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, bytesToWrite []byte) error {

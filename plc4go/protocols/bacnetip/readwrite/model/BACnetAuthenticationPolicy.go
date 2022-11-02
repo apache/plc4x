@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -177,7 +178,15 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}, nil
 }
 
-func (m *_BACnetAuthenticationPolicy) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAuthenticationPolicy) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationPolicy"); pushErr != nil {

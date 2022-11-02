@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -166,7 +167,15 @@ func BACnetTimerTransitionTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}, nil
 }
 
-func (m *_BACnetTimerTransitionTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimerTransitionTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTimerTransitionTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTimerTransitionTagged"); pushErr != nil {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetCharacterEncoding byte
 
 type IBACnetCharacterEncoding interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -132,7 +134,15 @@ func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterE
 	}
 }
 
-func (e BACnetCharacterEncoding) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetCharacterEncoding) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetCharacterEncoding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByte("BACnetCharacterEncoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

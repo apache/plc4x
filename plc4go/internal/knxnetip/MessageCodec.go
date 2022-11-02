@@ -56,14 +56,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	knxMessage := message.(model.KnxNetIpMessage)
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
-	err := knxMessage.Serialize(wb)
+	theBytes, err := knxMessage.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request ")
 	}

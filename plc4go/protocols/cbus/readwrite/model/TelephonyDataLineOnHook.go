@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,7 +124,15 @@ func TelephonyDataLineOnHookParse(readBuffer utils.ReadBuffer) (TelephonyDataLin
 	return _child, nil
 }
 
-func (m *_TelephonyDataLineOnHook) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataLineOnHook) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TelephonyDataLineOnHook) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

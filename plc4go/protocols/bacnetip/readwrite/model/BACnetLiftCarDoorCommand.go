@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetLiftCarDoorCommand uint8
 
 type IBACnetLiftCarDoorCommand interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -114,7 +116,15 @@ func BACnetLiftCarDoorCommandParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDo
 	}
 }
 
-func (e BACnetLiftCarDoorCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftCarDoorCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLiftCarDoorCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLiftCarDoorCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package modbus
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	model2 "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
@@ -89,7 +90,15 @@ func CastToModbusFieldFromPlcField(plcField model.PlcField) (PlcField, error) {
 	return PlcField{}, errors.New("couldn't cast to ModbusPlcField")
 }
 
-func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ErrorReportingSystemCategoryTypeForClimateControllers uint8
 
 type IErrorReportingSystemCategoryTypeForClimateControllers interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -192,7 +194,15 @@ func ErrorReportingSystemCategoryTypeForClimateControllersParse(readBuffer utils
 	}
 }
 
-func (e ErrorReportingSystemCategoryTypeForClimateControllers) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryTypeForClimateControllers) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingSystemCategoryTypeForClimateControllers) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForClimateControllers", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

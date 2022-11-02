@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -209,7 +210,15 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	}, nil
 }
 
-func (m *_BACnetVTClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetVTClassTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetVTClassTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVTClassTagged"); pushErr != nil {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type AirConditioningCommandType uint8
 
 type IAirConditioningCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -304,7 +306,15 @@ func AirConditioningCommandTypeParse(readBuffer utils.ReadBuffer) (AirConditioni
 	}
 }
 
-func (e AirConditioningCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AirConditioningCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AirConditioningCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AirConditioningCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

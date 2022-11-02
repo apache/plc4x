@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetAccessAuthenticationFactorDisable uint16
 
 type IBACnetAccessAuthenticationFactorDisable interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -138,7 +140,15 @@ func BACnetAccessAuthenticationFactorDisableParse(readBuffer utils.ReadBuffer) (
 	}
 }
 
-func (e BACnetAccessAuthenticationFactorDisable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessAuthenticationFactorDisable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessAuthenticationFactorDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessAuthenticationFactorDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -189,7 +189,7 @@ func (j *jsonWriteBuffer) WriteSerializable(serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.Serialize(j)
+	return serializable.SerializeWithWriteBuffer(j)
 }
 
 func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

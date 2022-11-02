@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -209,7 +210,15 @@ func ErrorClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClas
 	}, nil
 }
 
-func (m *_ErrorClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorClassTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ErrorClassTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ErrorClassTagged"); pushErr != nil {

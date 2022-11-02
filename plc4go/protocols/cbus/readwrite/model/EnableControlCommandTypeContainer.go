@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type EnableControlCommandTypeContainer uint8
 
 type IEnableControlCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() EnableControlCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -357,7 +359,15 @@ func EnableControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (Enable
 	}
 }
 
-func (e EnableControlCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e EnableControlCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e EnableControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("EnableControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

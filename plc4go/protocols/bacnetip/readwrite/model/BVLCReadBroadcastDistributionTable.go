@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,15 @@ func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (BVLCR
 	return _child, nil
 }
 
-func (m *_BVLCReadBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCReadBroadcastDistributionTable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BVLCReadBroadcastDistributionTable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

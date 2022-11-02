@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -330,7 +331,15 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	}, nil
 }
 
-func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataElement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConstructedDataElement"); pushErr != nil {

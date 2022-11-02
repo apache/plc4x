@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -165,7 +166,15 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (BACnetPortPermissio
 	}, nil
 }
 
-func (m *_BACnetPortPermission) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPortPermission) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPortPermission) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPortPermission"); pushErr != nil {

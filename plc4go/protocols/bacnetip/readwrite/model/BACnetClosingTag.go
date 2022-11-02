@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -148,7 +149,15 @@ func BACnetClosingTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	}, nil
 }
 
-func (m *_BACnetClosingTag) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetClosingTag) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetClosingTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetClosingTag"); pushErr != nil {

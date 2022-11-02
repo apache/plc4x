@@ -43,10 +43,10 @@ func SerializePackage(bvlc spi.Message) ([]byte, error) {
 		log.Fatal().Msgf("Unsupported type %T supplied", bvlc)
 		panic("unreachable statement")
 	} else {
-		based := utils.NewWriteBufferByteBased()
-		if err := bvlc.Serialize(based); err != nil {
+		theBytes, err := bvlc.Serialize()
+		if err != nil {
 			return nil, errors.Wrap(err, "Error serializing")
 		}
-		return based.GetBytes(), nil
+		return theBytes, nil
 	}
 }

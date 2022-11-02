@@ -22,17 +22,26 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcBrowseRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcBrowseRequest"); err != nil {
 		return err
 	}
-	if err := d.DefaultRequest.Serialize(writeBuffer); err != nil {
+	if err := d.DefaultRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -41,7 +50,7 @@ func (d *DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error
 			if err := writeBuffer.PushContext("browser"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("browser"); err != nil {

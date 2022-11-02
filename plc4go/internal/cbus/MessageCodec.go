@@ -70,14 +70,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	log.Debug().Msgf("Created request context\n%s", m.requestContext)
 
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
-	err := cbusMessage.Serialize(wb)
+	theBytes, err := cbusMessage.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -242,7 +243,15 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 	}, nil
 }
 
-func (m *_LightingLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LightingLabelOptions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LightingLabelOptions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("LightingLabelOptions"); pushErr != nil {

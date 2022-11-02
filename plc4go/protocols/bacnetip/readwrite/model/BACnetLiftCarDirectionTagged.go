@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -209,7 +210,15 @@ func BACnetLiftCarDirectionTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}, nil
 }
 
-func (m *_BACnetLiftCarDirectionTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLiftCarDirectionTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLiftCarDirectionTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLiftCarDirectionTagged"); pushErr != nil {

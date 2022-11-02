@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -145,7 +146,15 @@ func ApplicationAddress2Parse(readBuffer utils.ReadBuffer) (ApplicationAddress2,
 	}, nil
 }
 
-func (m *_ApplicationAddress2) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApplicationAddress2) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApplicationAddress2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApplicationAddress2"); pushErr != nil {

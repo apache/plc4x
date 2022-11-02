@@ -20,6 +20,7 @@
 package values
 
 import (
+	"encoding/binary"
 	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -38,9 +39,8 @@ func NewPlcREAL(value float32) PlcREAL {
 }
 
 func (m PlcREAL) GetRaw() []byte {
-	buf := utils.NewWriteBufferByteBased()
-	_ = m.Serialize(buf)
-	return buf.GetBytes()
+	theBytes, _ := m.Serialize()
+	return theBytes
 }
 
 func (m PlcREAL) GetBoolean() bool {
@@ -167,7 +167,15 @@ func (m PlcREAL) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.REAL
 }
 
-func (m PlcREAL) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcREAL) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcREAL) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteFloat32("PlcREAL", 32, m.value)
 }
 

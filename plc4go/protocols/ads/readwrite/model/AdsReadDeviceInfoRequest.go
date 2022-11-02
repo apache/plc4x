@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,7 +136,15 @@ func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer) (AdsReadDeviceIn
 	return _child, nil
 }
 
-func (m *_AdsReadDeviceInfoRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadDeviceInfoRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsReadDeviceInfoRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
