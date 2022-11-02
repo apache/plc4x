@@ -194,7 +194,7 @@ func BACnetConstructedDataIPv6AddressParse(readBuffer utils.ReadBuffer, tagNumbe
 }
 
 func (m *_BACnetConstructedDataIPv6Address) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

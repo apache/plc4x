@@ -200,7 +200,11 @@ func (m *_AdsAddDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
+func AdsAddDeviceNotificationRequestParse(theBytes []byte) (AdsAddDeviceNotificationRequest, error) {
+	return AdsAddDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsAddDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
@@ -306,7 +310,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsAddDe
 }
 
 func (m *_AdsAddDeviceNotificationRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

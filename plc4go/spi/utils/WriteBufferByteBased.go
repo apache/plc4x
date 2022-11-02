@@ -53,7 +53,7 @@ type WriteBufferByteBasedOptions = func(b *byteWriteBuffer)
 
 func WithInitialSizeForByteBasedBuffer(length int) WriteBufferByteBasedOptions {
 	return func(b *byteWriteBuffer) {
-		b.data = bytes.NewBuffer(make([]byte, length))
+		b.data.Grow(length)
 	}
 }
 
@@ -66,6 +66,7 @@ func WithByteOrderForByteBasedBuffer(byteOrder binary.ByteOrder) WriteBufferByte
 func WithCustomBufferForByteBasedBuffer(buffer *bytes.Buffer) WriteBufferByteBasedOptions {
 	return func(b *byteWriteBuffer) {
 		b.data = buffer
+		b.writer = bitio.NewWriter(b.data)
 	}
 }
 

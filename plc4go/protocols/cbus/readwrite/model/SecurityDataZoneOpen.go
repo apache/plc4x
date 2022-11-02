@@ -154,7 +154,7 @@ func SecurityDataZoneOpenParse(readBuffer utils.ReadBuffer) (SecurityDataZoneOpe
 }
 
 func (m *_SecurityDataZoneOpen) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}
