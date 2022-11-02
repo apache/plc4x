@@ -35,8 +35,8 @@
 
   <modules>
     <module>capture-replay</module>
-    <module>connection-pool</module>
     <module>connection-cache</module>
+    <module>connection-pool</module>
     <module>opm</module>
     <module>plc4x-server</module>
     <module>scraper</module>

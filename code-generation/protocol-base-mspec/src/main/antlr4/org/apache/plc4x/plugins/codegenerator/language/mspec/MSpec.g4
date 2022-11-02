@@ -343,13 +343,13 @@ STRING_CHARACTER
 // Stuff we just want to ignore
 
 LINE_COMMENT
- : '//' ~[\r\n]* -> skip
+ : '//' ~[\r\n]* -> channel(HIDDEN)
  ;
 
 BLOCK_COMMENT
- : '/*' .*? '*/' -> skip
+ : '/*' .*? '*/' -> channel(HIDDEN)
  ;
 
 WS
- : [ \t\r\n\u000C]+ -> skip
+ : [ \t\r\n\u000C]+ -> channel(HIDDEN)
  ;

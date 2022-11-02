@@ -198,6 +198,19 @@
             </configuration>
           </execution>
           <execution>
+            <id>generate-driver-ads-discovery</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>ads.discovery</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/protocols</outputDir>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-driver-bacnetip</id>
             <phase>generate-sources</phase>
             <goals>

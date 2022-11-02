@@ -21,12 +21,13 @@ package model
 
 import (
 	"context"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	"github.com/pkg/errors"
-	"time"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestBuilder
@@ -107,7 +108,7 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 	for name, field := range m.fields {
 		value, err := m.valueHandler.NewPlcValue(field, m.values[name])
 		if err != nil {
-			return nil, errors.Wrapf(err, "Error parsing value of type: %s", field.GetTypeName())
+			//			return nil, errors.Wrapf(err, "Error parsing value of type: %s", field.GetTypeName())
 		}
 		plcValues[name] = value
 	}

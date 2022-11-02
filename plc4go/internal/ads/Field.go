@@ -21,151 +21,21 @@ package ads
 
 import (
 	"encoding/xml"
-	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	model2 "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
+const NONE = int32(-1)
+
 type PlcField struct {
-	FieldType        FieldType
-	StringLength     int32
-	NumberOfElements uint32
-	Datatype         model2.AdsDataType
-}
-
-func (m PlcField) GetTypeName() string {
-	return m.FieldType.GetName()
-}
-
-func (m PlcField) GetQuantity() uint16 {
-	return uint16(m.NumberOfElements)
-}
-
-func (m PlcField) GetNumberOfElements() uint32 {
-	return m.NumberOfElements
-}
-
-func (m PlcField) GetDatatype() model2.AdsDataType {
-	return m.Datatype
-}
-
-func (m PlcField) GetStringLength() int32 {
-	return m.StringLength
-}
-
-func (m PlcField) GetAddressString() string {
-	return fmt.Sprintf("%dx%05d%05d:%s", m.FieldType, m.StringLength, m.NumberOfElements, m.Datatype.String())
-}
-
-type AdsPlcField interface {
-	GetDatatype() model2.AdsDataType
-	GetStringLength() int32
-	GetNumberOfElements() uint32
 	model.PlcField
-}
 
-func castToAdsFieldFromPlcField(plcField model.PlcField) (AdsPlcField, error) {
-	if adsField, ok := plcField.(AdsPlcField); ok {
-		return adsField, nil
-	}
-	return nil, errors.Errorf("couldn't %T cast to AdsPlcField", plcField)
-}
-
-type DirectPlcField struct {
-	IndexGroup  uint32
-	IndexOffset uint32
-	PlcField
-}
-
-func (m DirectPlcField) GetAddressString() string {
-	return fmt.Sprintf("%dx%05d%05d%05d%05d:%s", m.FieldType, m.IndexGroup, m.IndexOffset, m.StringLength, m.NumberOfElements, m.Datatype.String())
-}
-
-func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32) (model.PlcField, error) {
-	fieldType := DirectAdsField
-	if stringLength > 0 {
-		fieldType = DirectAdsStringField
-	}
-	return DirectPlcField{
-		IndexGroup:  indexGroup,
-		IndexOffset: indexOffset,
-		PlcField: PlcField{
-			FieldType:        fieldType,
-			StringLength:     stringLength,
-			NumberOfElements: numberOfElements,
-			Datatype:         adsDataType,
-		},
-	}, nil
-}
-
-func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, error) {
-	if adsField, ok := plcField.(DirectPlcField); ok {
-		return adsField, nil
-	}
-	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcField)
-}
-
-func (m DirectPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.WriteUint32("indexGroup", 32, m.IndexGroup); err != nil {
-		return err
-	}
-	if err := writeBuffer.WriteUint32("indexOffset", 32, m.IndexOffset); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.WriteUint32("numberOfElements", 32, m.NumberOfElements); err != nil {
-		return err
-	}
-
-	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
-		return err
-	}
-
-	if m.StringLength != 0 {
-		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
-			return err
-		}
-	}
-
-	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m DirectPlcField) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	panic(name)
-}
-
-type SymbolicPlcField struct {
-	SymbolicAddress string
-	PlcField
-}
-
-func (m SymbolicPlcField) GetAddressString() string {
-	return fmt.Sprintf("%dx%s%05d%05d:%s", m.FieldType, m.SymbolicAddress, m.StringLength, m.NumberOfElements, m.Datatype.String())
-}
-
-func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32) (model.PlcField, error) {
-	fieldType := SymbolicAdsField
-	if stringLength > 0 {
-		fieldType = SymbolicAdsStringField
-	}
-	return SymbolicPlcField{
-		SymbolicAddress: symbolicAddress,
-		PlcField: PlcField{
-			FieldType:        fieldType,
-			StringLength:     stringLength,
-			NumberOfElements: numberOfElements,
-			Datatype:         adsDataType,
-		},
-	}, nil
+	NumElements  int32
+	StartElement int32
+	EndElement   int32
 }
 
 func needsResolving(plcField model.PlcField) bool {
@@ -179,6 +49,96 @@ func needsResolving(plcField model.PlcField) bool {
 	}
 }
 
+type DirectPlcField struct {
+	PlcField
+
+	IndexGroup   uint32
+	IndexOffset  uint32
+	AdsDatatype  adsModel.AdsDataType
+	StringLength int32
+}
+
+func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDatatype adsModel.AdsDataType, stringLength int32, numElements int32, startElement int32, endElement int32) (model.PlcField, error) {
+	return DirectPlcField{
+		IndexGroup:   indexGroup,
+		IndexOffset:  indexOffset,
+		AdsDatatype:  adsDatatype,
+		StringLength: stringLength,
+		PlcField: PlcField{
+			NumElements:  numElements,
+			StartElement: startElement,
+			EndElement:   endElement,
+		},
+	}, nil
+}
+
+func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, error) {
+	if adsField, ok := plcField.(DirectPlcField); ok {
+		return adsField, nil
+	}
+	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcField)
+}
+
+func (m DirectPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("DirectPlcField"); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteUint32("indexGroup", 32, m.IndexGroup); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteUint32("indexOffset", 32, m.IndexOffset); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.AdsDatatype.String()))*8), "UTF-8", m.AdsDatatype.String()); err != nil {
+		return err
+	}
+	if (m.AdsDatatype == adsModel.AdsDataType_STRING || m.AdsDatatype == adsModel.AdsDataType_WSTRING) && (m.StringLength != NONE) {
+		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
+			return err
+		}
+	}
+	if m.NumElements != NONE {
+		if err := writeBuffer.WriteInt32("numElements", 32, m.NumElements); err != nil {
+			return err
+		}
+	}
+	if m.StartElement != NONE && m.EndElement != NONE {
+		if err := writeBuffer.WriteInt32("startElement", 32, m.StartElement); err != nil {
+			return err
+		}
+		if err := writeBuffer.WriteInt32("endElement", 32, m.EndElement); err != nil {
+			return err
+		}
+	}
+
+	if err := writeBuffer.PopContext("DirectPlcField"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m DirectPlcField) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	panic(name)
+}
+
+type SymbolicPlcField struct {
+	PlcField
+
+	SymbolicAddress string
+}
+
+func newAdsSymbolicPlcField(symbolicAddress string, numElements int32, startElement int32, endElement int32) (model.PlcField, error) {
+	return SymbolicPlcField{
+		SymbolicAddress: symbolicAddress,
+		PlcField: PlcField{
+			NumElements:  numElements,
+			StartElement: startElement,
+			EndElement:   endElement,
+		},
+	}, nil
+}
+
 func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcField, error) {
 	if adsField, ok := plcField.(SymbolicPlcField); ok {
 		return adsField, nil
@@ -187,29 +147,28 @@ func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcFie
 }
 
 func (m SymbolicPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
+	if err := writeBuffer.PushContext("SymbolicPlcField"); err != nil {
 		return err
 	}
 
 	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
 		return err
 	}
-
-	if err := writeBuffer.WriteUint32("numberOfElements", 32, m.NumberOfElements); err != nil {
-		return err
+	if m.NumElements != NONE {
+		if err := writeBuffer.WriteInt32("numElements", 32, m.NumElements); err != nil {
+			return err
+		}
 	}
-
-	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
-		return err
-	}
-
-	if m.StringLength > 0 {
-		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
+	if m.StartElement != NONE && m.EndElement != NONE {
+		if err := writeBuffer.WriteInt32("startElement", 32, m.StartElement); err != nil {
+			return err
+		}
+		if err := writeBuffer.WriteInt32("endElement", 32, m.EndElement); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext("SymbolicPlcField"); err != nil {
 		return err
 	}
 	return nil

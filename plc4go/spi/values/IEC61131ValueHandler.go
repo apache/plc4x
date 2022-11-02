@@ -21,11 +21,12 @@ package values
 
 import (
 	"errors"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 const (
@@ -87,34 +88,36 @@ type IEC61131ValueHandler struct {
 }
 
 func (m IEC61131ValueHandler) NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error) {
-	typeName := field.GetTypeName()
-	quantity := field.GetQuantity()
-	if quantity > 1 {
-		s := reflect.ValueOf(value)
-		if s.Kind() != reflect.Slice {
-			return nil, errors.New("couldn't cast value to []interface{}")
-		}
-		curValues := make([]interface{}, s.Len())
-		for i := 0; i < s.Len(); i++ {
-			curValues[i] = s.Index(i).Interface()
-		}
-
-		if len(curValues) != int(quantity) {
-			return nil, errors.New("number of actual values " + strconv.Itoa(len(curValues)) +
-				" doesn't match field size " + strconv.Itoa(int(quantity)))
-		}
-		var plcValues []values.PlcValue
-		for i := uint16(0); i < quantity; i++ {
-			curValue := curValues[i]
-			plcValue, err := m.NewPlcValueFromType(typeName, curValue)
-			if err != nil {
-				return nil, errors.New("error parsing PlcValue: " + err.Error())
+	/*	typeName := field.GetTypeName()
+		quantity := field.GetQuantity()
+		if quantity > 1 {
+			s := reflect.ValueOf(value)
+			if s.Kind() != reflect.Slice {
+				return nil, errors.New("couldn't cast value to []interface{}")
 			}
-			plcValues = append(plcValues, plcValue)
+			curValues := make([]interface{}, s.Len())
+			for i := 0; i < s.Len(); i++ {
+				curValues[i] = s.Index(i).Interface()
+			}
+
+			if len(curValues) != int(quantity) {
+				return nil, errors.New("number of actual values " + strconv.Itoa(len(curValues)) +
+					" doesn't match field size " + strconv.Itoa(int(quantity)))
+			}
+			var plcValues []values.PlcValue
+			for i := uint16(0); i < quantity; i++ {
+				curValue := curValues[i]
+				plcValue, err := m.NewPlcValueFromType(typeName, curValue)
+				if err != nil {
+					return nil, errors.New("error parsing PlcValue: " + err.Error())
+				}
+				plcValues = append(plcValues, plcValue)
+			}
+			return NewPlcList(plcValues), nil
 		}
-		return NewPlcList(plcValues), nil
-	}
-	return m.NewPlcValueFromType(typeName, value)
+		return m.NewPlcValueFromType(typeName, value)
+	*/
+	return nil, nil
 }
 
 func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interface{}) (values.PlcValue, error) {

@@ -22,42 +22,27 @@ package ads
 import (
 	"encoding/binary"
 	"encoding/hex"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	model2 "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"fmt"
 	"regexp"
 	"strconv"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 )
-
-type FieldType uint8
-
-//go:generate stringer -type FieldType
-const (
-	DirectAdsStringField   FieldType = 0x00
-	DirectAdsField         FieldType = 0x01
-	SymbolicAdsStringField FieldType = 0x03
-	SymbolicAdsField       FieldType = 0x04
-)
-
-func (i FieldType) GetName() string {
-	return i.String()
-}
 
 type FieldHandler struct {
-	directAdsStringField   *regexp.Regexp
-	directAdsField         *regexp.Regexp
-	symbolicAdsStringField *regexp.Regexp
-	symbolicAdsField       *regexp.Regexp
+	directAdsStringField *regexp.Regexp
+	directAdsField       *regexp.Regexp
+	symbolicAdsField     *regexp.Regexp
 }
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
-		directAdsStringField:   regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numberOfElements>\d+)])?`),
-		directAdsField:         regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(\[(?P<numberOfElements>\d+)])?`),
-		symbolicAdsStringField: regexp.MustCompile(`^(?P<symbolicAddress>.+):(?P<adsDataType>'STRING'|'WSTRING')\((?P<stringLength>\d{1,3})\)(\[(?P<numberOfElements>\d+)])?`),
-		symbolicAdsField:       regexp.MustCompile(`^(?P<symbolicAddress>.+):(?P<adsDataType>\w+)(\[(?P<numberOfElements>\d+)])?`),
+		directAdsStringField: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)((\[(?P<numElements>\d+)])|(\[(?P<startElement>\d+)\.\.(?P<endElement>\d+)])|(\[(?P<startElement2>\d+):(?P<numElements2>\d+)]))?`),
+		directAdsField:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)((\[(?P<numElements>\d+)])|(\[(?P<startElement>\d+)\.\.(?P<endElement>\d+)])|(\[(?P<startElement2>\d+):(?P<numElements2>\d+)]))?`),
+		symbolicAdsField:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)((\[(?P<numElements>\d+)])|(\[(?P<startElement>\d+)\.\.(?P<endElement>\d+)])|(\[(?P<startElement2>\d+):(?P<numElements2>\d+)]))?`),
 	}
 }
 
@@ -65,9 +50,13 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.directAdsStringField, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
-			decodeString, err := hex.DecodeString(indexGroupHexString[2:])
+			decodeString, err := hex.DecodeString(indexGroupHexString)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
+			}
+			// Fill up the array with missing bytes to get an array of size 4 bytes.
+			for i := len(decodeString); i < 4; i++ {
+				decodeString = append([]byte{0}, decodeString...)
 			}
 			indexGroup = binary.BigEndian.Uint32(decodeString)
 		} else {
@@ -79,9 +68,13 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		}
 		var indexOffset uint32
 		if indexOffsetHexString := match["indexOffsetHex"]; indexOffsetHexString != "" {
-			decodeString, err := hex.DecodeString(indexOffsetHexString[2:])
+			decodeString, err := hex.DecodeString(indexOffsetHexString)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
+			}
+			// Fill up the array with missing bytes to get an array of size 4 bytes.
+			for i := len(decodeString); i < 4; i++ {
+				decodeString = append([]byte{0}, decodeString...)
 			}
 			indexOffset = binary.BigEndian.Uint32(decodeString)
 		} else {
@@ -91,27 +84,72 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 			indexOffset = uint32(parsedIndexOffset)
 		}
-		stringLength, err := strconv.ParseInt(match["stringLength"], 10, 32)
+		adsDataTypeName := match["adsDataType"]
+		if adsDataTypeName == "" {
+			return nil, errors.Errorf("Missing ads data type")
+		}
+		adsDataType, ok := model.AdsDataTypeByName(adsDataTypeName)
+		if !ok {
+			return nil, fmt.Errorf("invalid ads data type")
+		}
+
+		stringLength := NONE
+		numElements := NONE
+		startElement := NONE
+		endElement := NONE
+
+		tmpStringLength, err := strconv.ParseInt(match["stringLength"], 10, 32)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error decoding string length")
 		}
-		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
-		if err != nil {
-			log.Trace().Msg("Falling back to number of elements 1")
-			numberOfElements = 1
+		stringLength = int32(tmpStringLength)
+
+		if match["numElements"] != "" {
+			tmpNumElements, err := strconv.ParseUint(match["numElements"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'numElements': %v", err)
+			} else {
+				numElements = int32(tmpNumElements)
+			}
+		} else if match["startElement"] != "" && match["endElement"] != "" {
+			tmpStartElement, err := strconv.ParseUint(match["startElement"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'startElement': %v", err)
+			} else {
+				startElement = int32(tmpStartElement)
+			}
+			tmpEndElement, err := strconv.ParseUint(match["endElement"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'endElement': %v", err)
+			} else {
+				endElement = int32(tmpEndElement)
+			}
+		} else if match["startElement2"] != "" && match["numElements2"] != "" {
+			tmpStartElement2, err := strconv.ParseUint(match["startElement2"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'startElement2': %v", err)
+			} else {
+				startElement = int32(tmpStartElement2)
+			}
+			tmpNumElements2, err := strconv.ParseUint(match["numElements2"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'numElements2': %v", err)
+			} else {
+				numElements = int32(tmpNumElements2)
+			}
 		}
 
-		typeByName, ok := model2.AdsDataTypeByName(match["adsDataType"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["adsDataType"])
-		}
-		return newDirectAdsPlcField(indexGroup, indexOffset, typeByName, int32(stringLength), uint32(numberOfElements))
+		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, stringLength, numElements, startElement, endElement)
 	} else if match := utils.GetSubgroupMatches(m.directAdsField, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
-			decodeString, err := hex.DecodeString(indexGroupHexString[2:])
+			decodeString, err := hex.DecodeString(indexGroupHexString)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
+			}
+			// Fill up the array with missing bytes to get an array of size 4 bytes.
+			for i := len(decodeString); i < 4; i++ {
+				decodeString = append([]byte{0}, decodeString...)
 			}
 			indexGroup = binary.BigEndian.Uint32(decodeString)
 		} else {
@@ -123,9 +161,13 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		}
 		var indexOffset uint32
 		if indexOffsetHexString := match["indexOffsetHex"]; indexOffsetHexString != "" {
-			decodeString, err := hex.DecodeString(indexOffsetHexString[2:])
+			decodeString, err := hex.DecodeString(indexOffsetHexString)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
+			}
+			// Fill up the array with missing bytes to get an array of size 4 bytes.
+			for i := len(decodeString); i < 4; i++ {
+				decodeString = append([]byte{0}, decodeString...)
 			}
 			indexOffset = binary.BigEndian.Uint32(decodeString)
 		} else {
@@ -135,42 +177,96 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 			indexOffset = uint32(parsedIndexOffset)
 		}
+		adsDataTypeName := match["adsDataType"]
+		if adsDataTypeName == "" {
+			return nil, errors.Errorf("Missing ads data type")
+		}
+		adsDataType, ok := model.AdsDataTypeByName(adsDataTypeName)
+		if !ok {
+			return nil, fmt.Errorf("invalid ads data type")
+		}
 
-		typeByName, ok := model2.AdsDataTypeByName(match["adsDataType"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["adsDataType"])
+		numElements := NONE
+		startElement := NONE
+		endElement := NONE
+
+		if match["numElements"] != "" {
+			tmpNumElements, err := strconv.ParseUint(match["numElements"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'numElements': %v", err)
+			} else {
+				numElements = int32(tmpNumElements)
+			}
+		} else if match["startElement"] != "" && match["endElement"] != "" {
+			tmpStartElement, err := strconv.ParseUint(match["startElement"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'startElement': %v", err)
+			} else {
+				startElement = int32(tmpStartElement)
+			}
+			tmpEndElement, err := strconv.ParseUint(match["endElement"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'endElement': %v", err)
+			} else {
+				endElement = int32(tmpEndElement)
+			}
+		} else if match["startElement2"] != "" && match["numElements2"] != "" {
+			tmpStartElement2, err := strconv.ParseUint(match["startElement2"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'startElement2': %v", err)
+			} else {
+				startElement = int32(tmpStartElement2)
+			}
+			tmpNumElements2, err := strconv.ParseUint(match["numElements2"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'numElements2': %v", err)
+			} else {
+				numElements = int32(tmpNumElements2)
+			}
 		}
-		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
-		if err != nil {
-			log.Trace().Msg("Falling back to number of elements 1")
-			numberOfElements = 1
-		}
-		return newDirectAdsPlcField(indexGroup, indexOffset, typeByName, int32(0), uint32(numberOfElements))
-	} else if match := utils.GetSubgroupMatches(m.symbolicAdsStringField, query); match != nil {
-		stringLength, err := strconv.ParseInt(match["stringLength"], 10, 32)
-		if err != nil {
-			return nil, errors.Wrap(err, "Error decoding string length")
-		}
-		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
-		if err != nil {
-			return nil, errors.Wrap(err, "Error decoding number of elements")
-		}
-		typeByName, ok := model2.AdsDataTypeByName(match["adsDataType"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["adsDataType"])
-		}
-		return newAdsSymbolicPlcField(match["symbolicAddress"], typeByName, int32(stringLength), uint32(numberOfElements))
+
+		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, NONE, numElements, startElement, endElement)
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsField, query); match != nil {
-		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
-		if err != nil {
-			log.Trace().Msg("Falling back to number of elements 1")
-			numberOfElements = 1
+		numElements := NONE
+		startElement := NONE
+		endElement := NONE
+
+		if match["numElements"] != "" {
+			tmpNumElements, err := strconv.ParseUint(match["numElements"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'numElements': %v", err)
+			} else {
+				numElements = int32(tmpNumElements)
+			}
+		} else if match["startElement"] != "" && match["endElement"] != "" {
+			tmpStartElement, err := strconv.ParseUint(match["startElement"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'startElement': %v", err)
+			} else {
+				startElement = int32(tmpStartElement)
+			}
+			tmpEndElement, err := strconv.ParseUint(match["endElement"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'endElement': %v", err)
+			} else {
+				endElement = int32(tmpEndElement)
+			}
+		} else if match["startElement2"] != "" && match["numElements2"] != "" {
+			tmpStartElement2, err := strconv.ParseUint(match["startElement2"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'startElement2': %v", err)
+			} else {
+				startElement = int32(tmpStartElement2)
+			}
+			tmpNumElements2, err := strconv.ParseUint(match["numElements2"], 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("invalid address format parsing 'numElements2': %v", err)
+			} else {
+				numElements = int32(tmpNumElements2)
+			}
 		}
-		typeByName, ok := model2.AdsDataTypeByName(match["adsDataType"])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match["adsDataType"])
-		}
-		return newAdsSymbolicPlcField(match["symbolicAddress"], typeByName, int32(0), uint32(numberOfElements))
+
+		return newAdsSymbolicPlcField(match["symbolicAddress"], numElements, startElement, endElement)
 	} else {
 		return nil, errors.Errorf("Invalid address format for address '%s'", query)
 	}
