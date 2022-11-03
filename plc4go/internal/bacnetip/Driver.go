@@ -42,6 +42,7 @@ type Driver struct {
 	tm                      spi.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
+	DeviceInventory         DeviceInventory
 }
 
 func NewDriver() plc4go.PlcDriver {
@@ -121,7 +122,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		return ch
 	}
 
-	codec := NewMessageCodec(transportInstance)
+	codec := NewApplicationLayerMessageCodec(transportInstance, &m.DeviceInventory)
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection

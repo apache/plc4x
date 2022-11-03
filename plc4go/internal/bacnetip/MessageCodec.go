@@ -28,6 +28,20 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
+type ApplicationLayerMessageCodec struct {
+	TransactionStateMachine
+}
+
+func NewApplicationLayerMessageCodec(transportInstance transports.TransportInstance, deviceInventory *DeviceInventory) *ApplicationLayerMessageCodec {
+	return &ApplicationLayerMessageCodec{
+		TransactionStateMachine{
+			MessageCodec:    NewMessageCodec(transportInstance),
+			deviceInventory: deviceInventory,
+		},
+	}
+}
+
 type MessageCodec struct {
 	_default.DefaultCodec
 }
