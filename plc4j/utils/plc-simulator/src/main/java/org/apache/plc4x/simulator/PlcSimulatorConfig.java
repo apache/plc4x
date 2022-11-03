@@ -24,6 +24,8 @@ public class PlcSimulatorConfig {
     String s7Port;
     String cBusPort;
 
+    String bacnetPort;
+
     public String getHost() {
         return host;
     }
@@ -34,5 +36,9 @@ public class PlcSimulatorConfig {
 
     public String getCBusPort() {
         return cBusPort;
+    }
+
+    public String getBacnetPort() {
+        return bacnetPort;
     }
 }

@@ -149,7 +149,8 @@ public class PlcSimulator {
         options.addOption("public", false, "listen on all interfaces (overrides host option)");
         options.addOption("host", true, "the host interface");
         options.addOption("s7Port", true, "changes the s7 port");
-        options.addOption("cBusPort", true, "changes the port");
+        options.addOption("cBusPort", true, "changes the C-Bus port");
+        options.addOption("bacnetPort", true, "changes the Bacnet port");
 
         // Parse args
         CommandLineParser parser = new DefaultParser();
@@ -163,6 +164,7 @@ public class PlcSimulator {
         }
         config.s7Port = cmd.getOptionValue("s7port");
         config.cBusPort = cmd.getOptionValue("cBusPort");
+        config.bacnetPort = cmd.getOptionValue("bacnetPort");
 
         return config;
     }

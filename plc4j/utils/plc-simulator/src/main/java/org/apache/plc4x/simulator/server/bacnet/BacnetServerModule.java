@@ -16,16 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.simulator.server.cbus;
+package org.apache.plc4x.simulator.server.bacnet;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DatagramPacketDecoder;
+import io.netty.handler.codec.DatagramPacketEncoder;
+import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageEncoder;
+import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
+import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
+import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
 import org.apache.plc4x.java.cbus.CBusDriver;
 import org.apache.plc4x.java.cbus.readwrite.CBusConstants;
 import org.apache.plc4x.java.cbus.readwrite.CBusMessage;
@@ -33,13 +40,17 @@ import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
 import org.apache.plc4x.java.cbus.readwrite.RequestContext;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.simulator.PlcSimulatorConfig;
 import org.apache.plc4x.simulator.exceptions.SimulatorException;
 import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
-import org.apache.plc4x.simulator.server.cbus.protocol.CBusServerAdapter;
+import org.apache.plc4x.simulator.server.bacnet.protocol.BacnetServerAdapter;
 
-public class CBusServerModule implements ServerModule {
+import java.util.List;
+
+public class BacnetServerModule implements ServerModule {
 
     private EventLoopGroup loopGroup;
     private EventLoopGroup workerGroup;
@@ -48,7 +59,7 @@ public class CBusServerModule implements ServerModule {
 
     @Override
     public String getName() {
-        return "C-BUS";
+        return "Bacnet";
     }
 
     @Override
@@ -69,27 +80,36 @@ public class CBusServerModule implements ServerModule {
 
         try {
             loopGroup = new NioEventLoopGroup();
-            workerGroup = new NioEventLoopGroup();
 
-            ServerBootstrap bootstrap = new ServerBootstrap();
-            bootstrap.group(loopGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(loopGroup)
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_BROADCAST, true)
+                .handler(new ChannelInitializer<NioDatagramChannel>() {
                     @Override
-                    public void initChannel(SocketChannel channel) {
+                    public void initChannel(NioDatagramChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
-                        pipeline.addLast(new GeneratedProtocolMessageCodec<>(CBusMessage.class,
-                            CBusMessage::staticParse, ByteOrder.BIG_ENDIAN,
-                            new Object[]{false, new RequestContext(false), new CBusOptions(false, false, false, false, false, false, false, false, false)},
-                            new CBusDriver.ByteLengthEstimator(),
-                            new CBusDriver.CorruptPackageCleaner()));
-                        pipeline.addLast(new CBusServerAdapter(context));
+                        pipeline.addLast(new DatagramPacketDecoder(new MessageToMessageDecoder<ByteBuf>() {
+                            @Override
+                            protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+                                byte[] bytes = new byte[msg.readableBytes()];
+                                msg.readBytes(bytes);
+                                out.add(BVLC.staticParse(new ReadBufferByteBased(bytes)));
+                            }
+                        }));
+                        pipeline.addLast(new DatagramPacketEncoder<>(new MessageToMessageEncoder<BVLC>() {
+                            @Override
+                            protected void encode(ChannelHandlerContext ctx, BVLC msg, List<Object> out) throws Exception {
+                                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(msg.getLengthInBytes());
+                                msg.serialize(writeBuffer);
+                                out.add(writeBuffer.getBytes());
+                            }
+                        }));
+                        pipeline.addLast(new BacnetServerAdapter(context));
                     }
-                })
-                .option(ChannelOption.SO_BACKLOG, 128)
-                .childOption(ChannelOption.SO_KEEPALIVE, true);
+                });
 
-            int port = CBusConstants.CBUSTCPDEFAULTPORT;
+            int port = BacnetConstants.BACNETUDPDEFAULTPORT;
             if (config.getCBusPort() != null) {
                 port = Integer.parseInt(config.getCBusPort());
             }
