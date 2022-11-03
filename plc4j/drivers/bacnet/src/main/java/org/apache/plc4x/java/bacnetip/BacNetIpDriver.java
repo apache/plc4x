@@ -35,8 +35,6 @@ import java.util.function.ToIntFunction;
 
 public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
-    public static final int BACNET_IP_PORT = 47808;
-
     @Override
     public String getProtocolCode() {
         return "bacnet-ip";

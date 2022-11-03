@@ -1345,6 +1345,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := model.TagClassByName(parserArguments[1])
 		return model.ErrorCodeTaggedParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
+	case "BacnetConstants":
+		return model.BacnetConstantsParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPolarityTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

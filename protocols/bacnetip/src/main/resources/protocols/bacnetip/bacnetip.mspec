@@ -17,6 +17,10 @@
  * under the License.
  */
 
+[type BacnetConstants
+    [const    uint 16     bacnetUdpDefaultPort 47808]
+]
+
 [discriminatedType BVLC byteOrder='BIG_ENDIAN'
     [const         uint 8   bacnetType   0x81                   ]
     [discriminator uint 8   bvlcFunction                        ]
